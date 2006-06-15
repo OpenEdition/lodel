@@ -325,19 +325,29 @@ ul.entitiesPath{
 
 /* moteur */
 
-#lightSearchForm{
+#lightSearchForm, fieldset.bar{
 	position: absolute;
 	top: 0;
 	right: 0;
 	text-align: right;
 }
 
-#lightSearchForm fieldset{
+#lightSearchForm fieldset, fieldset.bar{
 	margin: 0;
 	padding: 3px 15px 4px 25px;
 	border: 0;
 	width: auto;
 	background: #828486;
+}
+
+fieldset.bar label{
+	display: inline;
+	color: #fff;
+	font-weight: bold;
+}
+
+fieldset.bar{
+	padding-top: 6px;
 }
 
 #lightSearchForm input.text, #lightSearchForm input.lightSearch, select.barInfo{

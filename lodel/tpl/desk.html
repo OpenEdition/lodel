@@ -116,24 +116,6 @@
 	</IF>
 	</ul>
 
-	<IF COND="![#SITE]">
-	<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
-		<BEFORE>
-		<div class="sites">
-		[@LODELADMIN.SITE]:
-		<select onchange="select_url(this)" class="barInfo">		
-		<option>--</option>	
-		</BEFORE>
-		<DO>
-		<option value="..[#PATH]/lodel/edition/">[#TITLE]</option>
-		</DO>
-		<AFTER>
-		</select>
-		</div>
-		</AFTER>
-	</LOOP>
-	</IF>
-
 	<ul class="group2">
 	<li>
 	<IF COND="![#CURRENTURL|strpos('admin')]">
@@ -239,12 +221,31 @@
 			</li>
 
 		</IF>
-		<IF COND="[#SITE]">
+		
 			<li><a>&nbsp;</a></li>
-			<li>
-				<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
-			</li>
-		</IF>
+			
+				<li>
+					<IF COND="[#SITE]">
+						<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
+					<ELSE />
+						<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
+							<BEFORE>
+							<fieldset class="bar">
+								<label for="sites">[@LODELADMIN.SITE] :</label>
+								<select onchange="select_url(this)" class="barInfo" id="sites">		
+								<option>--</option>	
+								</BEFORE>
+								<DO>
+								<option value="..[#PATH]/lodel/edition/">[#TITLE]</option>
+								</DO>
+								<AFTER>
+								</select>
+							</fieldset>
+							</AFTER>
+						</LOOP>
+					</IF>
+				</li>
+			
 
 	</ul>
 
