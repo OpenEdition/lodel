@@ -30,26 +30,13 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_IMPORT_TRANSLATION]</td>
-	</tr>
-</table>
-
-
-<table class="table_normale" width="90%" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
-	<tr>
-		<td>
-
-                      [@ADMIN.CHOOSE_TRANSLATION].
-
+<ul id="actionsOnEntitiesPath">
+	<li><span class="intit">[@LODELADMIN.TITLE_IMPORT_TRANSLATION]</span></li>
+</ul>
+<br />&nbsp;<br />
 		    <LOOP NAME="files">
 			<BEFORE><dl></BEFORE>
    		    <DO>
-
-			<hr />
-                      <div>
 		      <dt><strong>[#TITLE]</strong></dt>
                       <dd>[#DESCRIPTION]</dd>
                       <dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
@@ -68,27 +55,22 @@
 		    </DO>
 			<AFTER></dl></AFTER>
 		    </LOOP>
-<hr/ >
+		<form enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+		<fieldset>
+		  <legend>[@ADMIN.TRANSLATION_UPLOAD]</legend>
+      			<IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR]</b> [@ADMIN.UPLOAD_IN] !</IF>
+			<input type="hidden" name="do" value="import" />
+			<input type="hidden" name="lo" value="translations" />
+			<input type="hidden" name="lang" value="[#LANG]" />
+			<input type="file" name="archive" size="40" />
+			<input class="button" type="submit" value="[@ADMIN.UPLOAD]" />
+      			
+		</fieldset>
+		</form>
 
-		  <p>[@ADMIN.TRANSLATION_UPLOAD]:</p>
-      <IF COND="[#ERROR_UPLOAD]"><b>[@COMMON.ERROR]</b> [@ADMIN.UPLOAD_IN] !</IF>
-                  <p>
-    <form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
-      <input type="hidden" name="do" value="import">
-       <input type="hidden" name="lo" value="translations">
-       <input type="hidden" name="lang" value="[#LANG]">
-      <input type="file" name="archive" size="40">
-      <input class="form" type="submit" value="[@ADMIN.UPLOAD]" />
-      </form>
-
-</td></tr>
-</table>
-
-<form>
-	<div class="pied_de_formulaire">
-		<input class="form" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
-	</div>
-</form>
+	<fieldset class="formButtons">
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php';" />
+	</fieldset>
 
 
 
