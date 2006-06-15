@@ -741,13 +741,13 @@ function defaultvalue($var1, $var2)
 /**
  * Fonction utilisée ci dessous pour la numérotation des paragraphes
  */
-function replacement($arg0, $arg1, $arg2, $arg3, $count)
+
+function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
 {
 	static $count;
 	
-	
 	++$count;
-	$repl = $arg1. 'id="pn'.$count.'"'.$arg2;
+	$repl = $arg1. $arg2. 'id="pn'.$count.'"'.$arg3;
 	$repl .= '<span class="paranumber">'.$count.'</span>';
 	return $repl;
 }
@@ -755,22 +755,32 @@ function replacement($arg0, $arg1, $arg2, $arg3, $count)
 /**
  * Filtre de numérotation des paragraphes
  * 
- * Ajoute un <span class="paramnumber"> contenant une ancre avec le numéro du paragraphe
+ * Ajoute un <span class="paranumber"> contenant une ancre avec le numéro du paragraphe
  *
  * @param string $texte le texte à numéroter passé par référence
  */
 function paranumber(&$texte)
 {
-  static $paranum_count;
+  	static $paranum_count;
+	
 	//Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
-	$regexp = "/(<p\b[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table)/ie";
+	//ignore aussi les cellules d'un tableau
+	//ignore tous les styles attribués à la balise <p> sauf "texte" ; on peut rajouter un style à <p> comme l'exemple suivant : (<p\b class=(\"texte\"|\"citation\"). On a ajouté le style "citation" avec un "|" (OU exclusif).
+	//ignore les puces
+
+	$regexp = "/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=(\"texte\"|\"citation\") [^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie";
+
+	// on formate les balises <td>, <li> pour faciliter la reconnaissance de la balise dans la regex
+	$search = array ("/<td\b[^>]*>/", "/<li\b[^>]*>/");
+	$replace = array ("<td>", "<li>");
+
+	$texte = preg_replace($search, $replace, $texte);
+
 	preg_match($regexp,$texte,$matches);
-	#print_r($matches);exit;
-	#$texte = preg_replace($regexp, '"\\0"."<span class=\"paranumber\">". (++$paranum_count). "</span>"', $texte);
-	$texte = preg_replace($regexp, 'replacement("\\0","\\1","\\2","\\3",1)', $texte);
-	#echo $texte;exit;
+
+	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
+
 	return $texte;
 }
-
 
 ?>
