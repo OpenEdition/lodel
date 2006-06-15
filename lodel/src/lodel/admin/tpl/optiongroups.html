@@ -46,15 +46,12 @@
 </ul>
 
 
-<br />
-<?php  $context['margin']=0; # initialise la marge 
-?>
+<br />&nbsp;<br />
 
-<table class="statistics fields">
-	<caption>[@COMMON.OPTIONGROUPS]</caption>
 
 <LOOP NAME="listoptiongroups" TABLE="optiongroups" ORDER="rank" WHERE="idparent='[#ID]'" WHERE="status gt -64">
 	<DO>
+	<table class="statistics fields">
 		<tr>
 			<th class="status group">[#REP][(#TITLE|nbsp)]</th>
 			<td class="actions" colspan="3">
@@ -77,9 +74,10 @@
       <MACRO NAME="AFFICHER_OPTIONS_DU_GROUPE"> 
       
 		<LOOP NAME="listoptiongroups"></LOOP>
+	</table>
 	</DO>
 </LOOP>
-</table>
+
 
 <MACRO NAME="OK_TOINDEX_ADMIN">
 
