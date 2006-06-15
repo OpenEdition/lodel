@@ -25,86 +25,46 @@
 <USE MACROFILE="macros.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 <meta name="ROBOTS" content="nofollow, noindex">
+<style type="text/css">
+body{
+	background: #cbcec5 url("[#SHAREURL]/images/bg_top.png") top left repeat-x;
+}
+</style>
 <TITLE>[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<br />
-<table width="800" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-    <tr> 
-      <td valign="middle" align="center"> 
-          <table width="330" align="CENTER" cellpadding="5" cellspacing="1" border="0">
-            <tr> 
-              <td> 
-                <div align="right">
-				<MACRO NAME="GIF_VISAGE_ADMINLODEL">	
-				<br />
-                  <br />
-                </div>
-              </td>
-              <td width="80%"> <b><font color="#FF0000" size="+1">[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</font></b> 
-                <br />
-                <br />
-		<IF COND="[#ERROR_LOGIN]">
-			<br />
-			<br />
-			<b>[@COMMON.INVALID_LOGIN_PASSWORD]</b><br />
-			<br />
-                </IF> 
-		<b>[@COMMON.DEMAND_IDENTIFICATION]</b><br />
-		<IF COND="[#ERROR_OPENSESSION]">
-			<b><br />
-			[@COMMON.ERROR_OPENSESSION]<br />
-			<br />
-			</b>
-		 </IF>
-		 <IF COND="[#ERROR_SETCOOKIE]">
-		 <b><br />
-                <br />
-                [@LODELADMIN.ERROR_SETCOOKIE]</b><br />
-                <br />
-                 </IF>
-		 <IF COND="[#ERROR_TIMEOUT]">
-		 <br />
-                <br />
-                <b>[@COMMON.SESSION_TIMEOUT]</b><br />
-                <br />
-                </IF>
-		<IF COND="[#ERROR_PRIVILEGE]">
-		 <b><br />
-                <br />
-                [@COMMON.ERROR_RIGHTS]</b><br />
-                <br />
-                </IF> </td>
-            </tr>
- <form action="login.php" method="POST">
-<input type="hidden" name="url_retour" value="[#URL_RETOUR]">           <tr> 
-                <td> 
-                  <div align="right"><b>[@COMMON.LOGIN]:</b></div>
-                </td>
-                <td width="80%"> 
-           <input type="text" name="login" value="[#LOGIN]">
-                </td>
-              </tr>
-              <tr> 
-                <td> 
-                  <div align="right"><b>[@COMMON.PASSWORD]:</b></div>
-                </td>
-                <td width="80%"> 
-   <input type="password" name="passwd">
+<div id="loginscreen">
+	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/>[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</h1>
+	<form action="login.php" method="POST">
+		<fieldset>
+			<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
+			<legend id="titre_formulaire">[@COMMON.DEMAND_IDENTIFICATION]</legend>
 
-
-
-
-<input class="form" type="submit" name="submit" value="[@COMMON.LOGIN]">
-
-            </form>
-          </table>
-          <br />
-	<!--[	<a href="http://">Je suis un utilisateur, non un administrateur Lodel</a> ]-->
-        </center>
-      </td>
-    </tr>
-  </table>
-<br />
-
+			<div class="error">
+				<IF COND="[#ERROR_LOGIN]">
+					[@COMMON.INVALID_LOGIN_PASSWORD]
+				</IF> 
+				<IF COND="[#ERROR_OPENSESSION]">
+					[@COMMON.ERROR_OPENSESSION]
+				</IF>
+				<IF COND="[#ERROR_SETCOOKIE]">
+					[@LODELADMIN.ERROR_SETCOOKIE]
+				</IF>
+				<IF COND="[#ERROR_TIMEOUT]">
+					[@COMMON.SESSION_TIMEOUT]
+				</IF>
+				<IF COND="[#ERROR_PRIVILEGE]">
+					[@COMMON.ERROR_RIGHTS]
+				</IF> 
+			</div>
+			<label for="login">[@COMMON.LOGIN] :</label>
+			<input type="text" name="login" id="login" value="[#LOGIN]" />
+			<label for="passwd">[@COMMON.PASSWORD] :</label>
+			<input type="password" name="passwd" id="passwd" />
+			<p class="login">
+			<input class="button" type="submit" name="submit" value="[@COMMON.LOGIN]" />
+			</p>
+		</fieldset>
+	</form>
+</div>
 <MACRO NAME="CLOSE_HTML">
