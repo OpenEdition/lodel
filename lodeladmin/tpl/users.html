@@ -30,30 +30,31 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
-	<tr>
-		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">[@LODELADMIN.TITLE_MANAGE_USERS] [#SITE]</td>
-	</tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+<li><span class="intit">[@LODELADMIN.TITLE_MANAGE_USERS]</span> <em>[#SITE]</em></li>
+<li>
+	<ul class="actions">
+		<li class="isolated">
+		<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('write')]">
+			<a href="index.php?do=view&amp;lo=users">[@ADMIN.ADD_USER]</a>
+		<ELSE />
+			<span class="inactif">[@ADMIN.ADD_USER]</span>
+		</IF>
+		</li>
+	</ul>
+</li>
+</ul>
 
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('write')]">
-	<a href="index.php?do=view&lo=users">[@ADMIN.ADD_USER]</a>
-	<ELSE />
-	<span class="inactif">[@ADMIN.ADD_USER]</span>
-	</IF>
-</div>
+
 <br /><br />
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+<table class="statistics users">
 	<tr>
-		<td class="texte_noir_gras" align="left">[@COMMON.LOGIN]</td>
-		<td class="texte_noir_gras" align="center">[@ADMIN.LEVEL]</td>
-		<td class="texte_noir_gras" align="center">[@ADMIN.NAME_AND_SURNAME]</td>
-		<td class="texte_noir_gras" align="center">[@COMMON.EMAIL]</td>
-		<td class="texte_noir_gras" align="center">[@ADMIN.SESSIONS]</td>
-		<td>&nbsp;</td>
+		<th class="status">[@COMMON.LOGIN]</th>
+		<th class="status">[@ADMIN.LEVEL]</th>
+		<th class="status">[@ADMIN.NAME_AND_SURNAME]</th>
+		<th class="status">[@COMMON.EMAIL]</th>
+		<th class="status">[@ADMIN.SESSIONS]</th>
+		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="users" TABLE="users" ORDER="rank,username" WHERE="status gt 0">
 		<DO>
@@ -83,7 +84,7 @@
 				</ALTERNATIVE>
 		        </LOOP>
 					</td>	
-				<td style="color: #CC9933;" align="left">
+				<td class="actions">
 				<div>
 
                			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
