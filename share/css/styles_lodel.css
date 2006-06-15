@@ -436,6 +436,10 @@ ul.listEntities li.unfoldedentities ul{
 	margin: 0 1em 2ex 0;
 }
 
+ul.listEntities li.unfoldedentities ul li ul{
+	margin-right: 0;
+}
+
 ul.listEntities img.picto_gauche{
 	position: absolute;
 	left: .5em;
@@ -497,6 +501,14 @@ div.action a{
 ul.listEntities div.document{
 	margin: 1ex 0 .8ex 35px;
 	width: 55%;
+}
+
+ul.listEntities div.document a{
+	color: #6b6b6b;
+}
+
+ul.listEntities div.document a:hover{
+	color: #000;
 }
 
 ul.listEntities li.unfoldedentities div.document{
