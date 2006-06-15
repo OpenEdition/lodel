@@ -191,6 +191,10 @@ fieldset span.error{
 	margin: 0;
 }
 
+fieldset a{
+	color: #e18600;
+}
+
 input, textarea, select{
 	background: #fff;
 	border: 1px solid #333;
