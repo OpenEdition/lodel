@@ -209,7 +209,7 @@ input.noText{
 input.disabled{
 	border: 1px solid #cecece;
 	color: #333;
-	background: #f1f5fb;
+	background: #f7f7f7;
 }
 
 input.button{
@@ -225,7 +225,7 @@ input.button:focus{
 }
 
 
-input:focus, textarea:focus{
+input:focus, textarea:focus, div.oneItem input:focus, div.oneItem  textarea:focus{
 	border: 1px solid #e18600;
 	background: #faf2e6;
 }
@@ -380,8 +380,8 @@ div.advancedFunc #addEntity select{
 	margin: 3ex 0 0 0;
 	font-size: 90%;
 	padding: .8ex;
-	background: #f1f5fb;
-	border-top: 1px solid #aaa;
+	background: #e5e8e3;
+	border-top: 1px solid #dadbdc;
 }
 
 #navResults li{
@@ -651,7 +651,7 @@ div.advancedFunc dd{
 }
 
 #listEntitiesEdit .titre_document a{
-	color: #0096b7;
+	color: #6b6b6b;
 }
 
 #listEntitiesEdit .auteurs_document{
