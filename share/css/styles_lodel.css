@@ -76,7 +76,7 @@ h2.formHead{
 }
 
 .intit{
-	color: #0e2d7c;
+	color: #0096b7;
 }
 
 /* Permet d'insérer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
@@ -169,7 +169,7 @@ fieldset label.boolean{
 }
 
 fieldset label.persons, fieldset label.entries, fieldset label.mltext{
-	color: #0e2d7c;
+	color: #0096b7;
 	font-weight: bold;
 }
 
@@ -249,7 +249,7 @@ div.add{
 
 div.mlTitle{
 	margin: 3ex 0 -1.5ex 0;
-	color: #0e2d7c;
+	color: #0096b7;
 }
 
 div.displayfield{
@@ -333,7 +333,7 @@ input.localChooseON{
 
 #checkbalisage td.openclass, #checkbalisage td.closeclass{
 	background: #f7f7f7;
-	color: #0e2d7c;
+	color: #0096b7;
 	font-weight: normal;
 }
 
@@ -469,6 +469,7 @@ td.actions span.item, div.action span.item, div.action div.move{
 }
 
 td.actions span.item{
+	margin-top: 0;
 	width: 60px;
 }
 
@@ -642,7 +643,7 @@ div.advancedFunc dd{
 }
 
 #listEntitiesEdit .titre_document a{
-	color: #0e2d7c;
+	color: #0096b7;
 }
 
 #listEntitiesEdit .auteurs_document{
