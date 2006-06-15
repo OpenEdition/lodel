@@ -410,14 +410,12 @@ cp_[#NAME].writeDiv();
 	<LOOP NAME="options" TABLE="options" ORDER="rank,name" WHERE="status gt 0" WHERE="idgroup='[#ID]'">
 		<DO>
 		<MACRO NAME="TR_LIST">
-			<td style="padding-left : [#MARGIN]px"><strong>[(#NAME|nbsp)]</strong></td>
+			<td><strong>[(#NAME|nbsp)]</strong></td>
 			<td>[(#TYPE|nbsp)]</td>
 			<td>[(#DEFAULTVALUE|nbsp)]</td>
-			<td align="left" style="color: #CC9933;">
-			<div>
+			<td class="actions">
 				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="options">
                 	         <FUNC NAME="MODIFY_DELETE_BUTTON" LO="options">
-			</div>
 			</td>
 		</tr>
 		</DO>
