@@ -180,7 +180,7 @@
 				</li>
 			</LOOP>
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')]">
+		<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')] AND ![#CURRENTURL|strpos('me')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('queue')]">
 				<strong>[@COMMON.QUEUE]</strong>
@@ -204,7 +204,7 @@
 			</li>
 
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')]">
+		<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')] OR [#CURRENTURL|strpos('me')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('statistics')]">
 				<strong>[@COMMON.STATISTICS]</strong>
@@ -218,6 +218,12 @@
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.TECHNICAL_INFORMATION_DESCRIPTION]">[@COMMON.TECHNICAL_INFORMATION]</a>
 			</IF>
+			<IF COND="[#CURRENTURL|strpos('me')]">
+				<strong>[@COMMON.ME_DESCRIPTOR]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_me" title="[@COMMON.ME_DESCRIPTOR_DESCRIPTION]">[@COMMON.ME_DESCRIPTOR]</a>
+			</IF>
+
 			</li>
 
 		</IF>

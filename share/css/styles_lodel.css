@@ -910,3 +910,26 @@ div.close{
 #loginscreen fieldset p.login{
 	text-align: right;
 }
+
+/**************** Descripteur de ME *******************************/
+
+#meDescriptor{
+	margin-left: 60px;
+}
+
+#meDescriptor h3{
+	color: #0096b7;
+}
+
+#meDescriptor h4{
+	color: #e18600;
+}
+
+#meDescriptor table.statistics{
+	margin-left: 0;
+	font-size: 90%;
+}
+
+#meDescriptor table.statistics caption{
+	font-size: 100%;
+}
