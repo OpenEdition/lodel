@@ -212,12 +212,8 @@
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.STATISTICS_DESCRIPTION]">[@COMMON.STATISTICS]</a>
 			</IF>
 			</li>
+
 			<li>
-			<IF COND="[#CURRENTURL|strpos('information')]">
-				<strong>[@COMMON.TECHNICAL_INFORMATION]</strong>
-			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.TECHNICAL_INFORMATION_DESCRIPTION]">[@COMMON.TECHNICAL_INFORMATION]</a>
-			</IF>
 			<IF COND="[#CURRENTURL|strpos('me')]">
 				<strong>[@COMMON.ME_DESCRIPTOR]</strong>
 			<ELSE/>
@@ -225,6 +221,13 @@
 			</IF>
 
 			</li>
+
+			<li>
+			<IF COND="[#CURRENTURL|strpos('information')]">
+				<strong>[@COMMON.TECHNICAL_INFORMATION]</strong>
+			<ELSE/>
+				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.TECHNICAL_INFORMATION_DESCRIPTION]">[@COMMON.TECHNICAL_INFORMATION]</a>
+			</IF>
 
 		</IF>
 		
