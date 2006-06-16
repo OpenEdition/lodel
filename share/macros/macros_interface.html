@@ -74,36 +74,39 @@
 
 
 
-<!--[ ************************************************** ]-->
 
-<!--[ Macros rajout�s le 17/11/03 ********************* ]-->
-<!--[ Macros servant �publication.html et               ]-->
-<!--[ document.html                                      ]-->
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
 
+	<LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER.GUI_COMPLEXITY]" LIMIT="0,1">
+		<fieldset>
+			<legend>
+			<MACRO NAME="INTERTITLE">
+			</legend>
+	</LOOP>
 	<LOOP NAME="edition_fields">
-		<BEFORE><!--[ information sur le groupe. Ne s'affichent que s'il y a des champs editable ]-->
-			<IF COND="[#IDGROUP]">
-			<fieldset>
-				<legend>
-				<MACRO NAME="INTERTITLE">
-				</legend>
+		<BEFORE> </BEFORE>
+		<DO>
+			<IF COND="[#LODELUSER.GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
+				<div class="hidden">
 			</IF>
-		</BEFORE>
-        <DO>
-	<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-	  <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"></label><br class="nobr" />
-	<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
-	<br />
-        </DO>
-        <AFTER>
-	<IF COND="[#IDGROUP]">
-	</fieldset>
-	</IF>
-        </AFTER>
-    </LOOP>
+				<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+				<label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> [#IDENTITY]
+				<!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
+				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
+				<br />
+			<IF COND="[#LODELUSER.GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
+				</div>
+			</IF>
+
+		</DO>
+		<AFTER> </AFTER>
+	</LOOP>
+	<LOOP NAME="getDisplayBool2" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER.GUI_COMPLEXITY]" LIMIT="0,1">
+		</fieldset>
+	</LOOP>
+
 </DEFMACRO>
 
 <!--[ -----------------------------------------------------------
