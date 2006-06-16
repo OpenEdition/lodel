@@ -928,8 +928,10 @@ div.close{
 #meDescriptor table.statistics{
 	margin-left: 0;
 	font-size: 90%;
+	width: 800px;
 }
 
 #meDescriptor table.statistics caption{
 	font-size: 100%;
+	min-width: 150px;
 }
