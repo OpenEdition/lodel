@@ -72,6 +72,7 @@
 	<br />
 	<MACRO NAME="AFFICHER_GROUPES_DE_CHAMPS_ENTITIES">
 	<br />
+	<IF COND="[#LODELUSER.GUI_COMPLEXITY] GT 32">
 	<fieldset>
 		<legend>
 			[@EDITION.MORE_OPTIONS]
@@ -81,8 +82,10 @@
 		</label>
 		<input  type="text" size="50" name="identifier" id="identifier" value="[#IDENTIFIER]" />
 		<br />
-		</fieldset>
+	</fieldset>
+	</IF>
 	<fieldset>
+	
 	<legend>[@COMMON.VALIDATION]</legend>
 		<input class="button" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
 		<input class="button" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
@@ -184,6 +187,7 @@
 	<FUNC NAME="LIST_ENTITIES_EDIT" ID="[#ID]" DISPLAYWHERE="display='advanced'">
 	</div>
 	
+	<IF COND="[#LODELUSER.GUI_COMPLEXITY] GT 32">
 	<div class="advancedFunc">
 	<h4>[@EDITION.XML_MANAGEMENT]</h4>
 	<ul>
@@ -194,6 +198,7 @@
 		</IF>
 	</ul>
 	</div>
+	</IF>
 
 </IF>
 
