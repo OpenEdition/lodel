@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Fichier utilitaire proposant des fonctions sur les textes dans Lodel
  *
@@ -677,15 +677,6 @@ function nicefilesize($lien)
 
 function wiki($text)
 {
-<<<<<<< textfunc.php
-	require_once ('wikirenderer/WikiRenderer.lib.php');
-	//require_once('mediawiki/Parser.php');
-	//$parser = new ParserMediawiki;
-	//$parserOutput = $parser->internalParse($text);
-	//print_r($parserOutput);
-	$wkr = new WikiRenderer();
-	return $wkr->render($text);
-=======
 	/* Fonction pour mediawiki : A TESTER !!!
 	require_once('mediawiki/Parser.php');
 	$parser = new ParserMediawiki;
@@ -695,7 +686,6 @@ function wiki($text)
 	require_once ('wikirenderer/WikiRenderer.lib.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
->>>>>>> 1.116
 }
 
 /**
@@ -763,14 +753,15 @@ function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
 }
 
 /**
- * Filtre de numérotation des paragraphes
+ * Filtre de numerotation des paragraphes
  * 
- * Ajoute un <span class="paranumber"> contenant une ancre avec le numéro du paragraphe
+ * Ajoute un <span class="paranumber"> contenant une ancre avec le numero du paragraphe
  * aux paragraphes ayant le style texte par défaut.
- * On ajoute des styles par défaut en valeur dans le paramètre $styles de la fonction séparés par un ";" 
+ *
  * Les paramètres sont modifiables dans le template et écrasent les paramètres par défaut.
  *
  * @param string $texte le texte à numéroter passé par référence
+ * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
  */
 function paranumber(&$texte, $styles='texte')
 {
@@ -816,78 +807,4 @@ function paranumber(&$texte, $styles='texte')
 	return $texte;
 }
 
-<<<<<<< textfunc.php
-function displaynotes($text,$coupe){
-
-	/*
-	echo '##############################';
-	print_r($coupe);
-	*/
-
-        //on recup~Cre chaque paragraphe du texte
-
-	//print_r($text);
-
-        preg_match_all('/<p class="texte" lang=[^>]* dir=[^>]*>(.*?)<\/p>/',$text,$paragraphes)    ;
-
-	 //preg_match_all('/(<p\b [^>]*)(>)(.*?)<\/p>/',$text,$paragraphes);
-
-//(<p\b (class=\"texte\")[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|table|blockquote)/ie
-
-	//print_r($paragraphes);
-
-        //on recupere chaque note de fin, et on les s~Cpare une ~C|  une
-        //preg_match_all('/<a class="endnotedefinition" id="([^>]*)"  href="#bodyftn[^>]*">/',$GLOBALS['context']['notefin'],$id_endnotes);
-        
-	preg_match_all('/<a class="footnotecall" id="bodyftn([^>]*)"  href="#ftn[^>]*">/',$GLOBALS['context']['notefin'],$id_endnotes);
-
-	$endnotes = preg_split('/<div class="endnotebody">/',$GLOBALS['context']['notefin']);
-        //on recupere chaque note de fin de page, et on les s~Cpare une ~C|  une
-        $pageendnotes = preg_split('/<div class="footnotebody">/',$GLOBALS['context']['notebaspage']);
-        $cptendnote=0;
-        $cptendpage=0;
-        //pour chaque paragraphe, on va matcher toutes les notes cit~Ces
-        //et faire la correspondance
-        $retour="";
-        for($j=1; $j<sizeof($paragraphes[0]); $j++){
-
-                $buffer="";
-                $tab2='/<a[^>]*href="#'.$id_endnotes[1][$cptendnote].'">[^<]*<\/a>/';
-                        //tant qu'il y a des notes de fin dans le paragraphe
-                while(preg_match($tab2,$paragraphes[0][$j],$tmp)){
-
-                        $cptendnote++;
-                        $tmp=preg_split('/<\/a>*/',$endnotes[$cptendnote]);
-                        //on casse les liens (pour eviter que les notes se renvoient la balle)
-                        $tmp[0] = preg_replace('/id="ftn[^"]*"/','',$tmp[0]);
-                        
-			$tmp[0] = preg_replace('/"endnotecall"/','"sidenote"',$tmp[0]);
-                        
-			//$tmp[0] = preg_replace('/<\/div>/','',$tmp[0]);
-                        if($coupe > 0 ){
-                                //on coupe la note et affiche
-                                //$tmp[1] = textebrut($tmp[1]);
-                                $result = $tmp[0]."</a>".couper($tmp[1],$coupe)."(...)";
-
-                                        //$tmp[1] = textebrut($tmp[1]);
-                                }
-                                else
-                                        $result = $pageendnotes[$cptendpage];
-
-                                $result = preg_replace('/<\/div>/s',"",$result);
-                                $buffer=$buffer."<li>".$result."</li>";
-                                $tab2='/<a[^>]*href="#'.$id_pageendnotes[1][$cptendpage].'">[^<]*<\/a>/';
-                                $cpt++;
-                }
-//      $buffer=$buffer;
-        $retour = $cpt > 0 ? $retour."<div class=\"textandnotes\">\n".$paragraphes[0][$j]."\n<ul class=\"sidenotes\">".$buffer."\n</ul></d
-iv>\n" : $retour.$paragraphes[0][$j];
-        $cpt = 0;
-        }
-        return $retour;
-}
-
-
 ?>
-=======
-?>>>>>>>> 1.116
