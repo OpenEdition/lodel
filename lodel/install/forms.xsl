@@ -69,10 +69,10 @@
 			</xsl:when>
 
 			<!-- input type="text" -->
-			<xsl:when test="@edittype='mltext' or @edittype='image'">
+			<xsl:when test="@edittype='mltext' or @edittype='image' or @edittype='file'">
 				<xsl:call-template name="label" />
 				<xsl:element name="FUNC">
-					<xsl:attribute name="NAME">PRINT_EDIT_FIELD_XSLT</xsl:attribute>
+					<xsl:attribute name="NAME">PRINT_EDIT_FIELD</xsl:attribute>
 					<xsl:attribute name="VARNAME"><xsl:value-of select="@name"/></xsl:attribute>
 					<xsl:attribute name="TYPE"><xsl:value-of select="@edittype"/></xsl:attribute>
 					<xsl:attribute name="VALUE"><xsl:call-template name="lsvariable" /></xsl:attribute>
