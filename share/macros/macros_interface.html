@@ -180,7 +180,8 @@
 <br />
 </IF>
 <IF COND="[#TYPE] eq 'image'">
-	<table>
+<FUNC NAME="PRINT_EDIT_FIELD" TYPE="image" EDITION="" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
+<!--[	<table>
 	<tr>
 	<IF COND="[#VALUE]">
 		<td><img src="[(#VALUE|vignette(100))]" alt="[#VALUE]"></td></IF>
@@ -195,7 +196,7 @@
 		</td>
 	</tr>
 	</table>
-	<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" />
+	<input  type="hidden" id="[#VARNAME][previousvalue]" name="[#FULLVARNAME][previousvalue]"  VALUE="[#VALUE]" /> ]-->
 </IF>
 </DEFFUNC>
 
