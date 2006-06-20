@@ -41,6 +41,7 @@
  * 
  * @package lodel/logic
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -128,7 +129,7 @@ class DataLogic
 				//nom du fichier SQL
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 				//noms des répertoires acceptés
-				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'docannexe/file', 'docannexe/image');
+				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image');
 		
 				require_once 'backupfunc.php';
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
@@ -202,7 +203,7 @@ class DataLogic
 															'docannexe/image/tmpdir-\*',
 															'docannexe/tmp\*'
 															);
-			$dirs            = $context['sqlonly'] ? '' : 'lodel/sources docannexe';
+			$dirs            = $context['sqlonly'] ? '' : 'lodel/icons lodel/sources docannexe';
 		
 			if ($zipcmd && $zipcmd != 'pclzip') { //Commande ZIP
 
@@ -239,6 +240,7 @@ class DataLogic
 					}
 					// end of function to exclude files
 					$archive->create(array(SITEROOT. 'lodel/sources',
+							SITEROOT. 'lodel/icons',
 							SITEROOT. 'docannexe',
 							$tmpdir. '/'. $outfile
 							),
@@ -387,7 +389,7 @@ class DataLogic
 			require_once 'backupfunc.php';
 			require_once 'func.php';
 			$sqlfile = tempnam(tmpdir(), 'lodelimport_');
-			$accepteddirs = array('tpl', 'css', 'images', 'js');
+			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
 			if (!importFromZip($file, $accepteddirs, $acceptedexts, $sqlfile)) {
 				$err = $context['error_extract'] = 1;
@@ -532,7 +534,7 @@ class DataLogic
 			}
 		
 			$dirs = array();
-			$dirstest = array('tpl', 'css', 'images', 'js');
+			$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			foreach($dirstest as $dir) {
 				if ($context[$dir]) {
 					$dirs[] = $dir;
@@ -658,7 +660,7 @@ class DataLogic
 
 	/**
 	 * Crée un fichier ZIP du ME contenant le fichier SQL et éventuellement les répertoires
-	 * images, css, js et tpl.
+	 * images, css, js et tpl et lodel/icons
 	 *
 	 * @access private
 	 * @param string $sqlfile le fichier dump SQL
