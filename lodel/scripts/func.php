@@ -1,32 +1,44 @@
 <?php
-/*
+/**
+ * Fichier utilitaire proposant des fonctions souvent utilisées dans Lodel
  *
- *  LODEL - Logiciel d'Edition ELectronique.
+ * PHP version 4
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * LODEL - Logiciel d'Edition ELectronique.
  *
- *  Home page: http://www.lodel.org
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  *
- *  E-Mail: lodel@lodel.org
+ * Home page: http://www.lodel.org
  *
- *                            All Rights Reserved
+ * E-Mail: lodel@lodel.org
  *
- *     This program is free software; you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation; either version 2 of the License, or
- *     (at your option) any later version.
+ * All Rights Reserved
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @author Sophie Malafosse
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @version CVS:$Id:
+ * @package lodel
+ */
 
 
 function writefile ($filename,$text)
@@ -396,8 +408,9 @@ if (!function_exists("file_get_contents")) {
   }
 }
 /**
- * retourne le chemin complet vers une entitées *
- * @param integer $id identifiant numérique de l'entitée * @param string $urltype le type d'url utilisée(path,querystring)
+ * retourne le chemin complet vers une entitée *
+ * @param integer $id identifiant numérique de l'entitée * 
+ * @param string $urltype le type d'url utilisée(path,querystring)
  * @return string le chemin
  * @since fonction ajoutée en 0.8
  */
@@ -554,9 +567,10 @@ function get_PMA_define()
  * Save the file or image files associated with a entites (annex file). Check it is a valid image.
  *
  * @param    dir    If $dir is numeric it is the id of the entites. In the other case, $dir should be a temporary directory.
+ * @param docAnnexe boolean = true if the file is saved in the directory "docannexe", else false
  *
  */
-function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error) 
+function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $docAnnexe=true) 
 {
 	if ($type != 'file' && $type != 'image') {
 		die("ERROR: type is not a valid file type");
@@ -568,7 +582,7 @@ function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error)
 		$dir = "docannexe/$type/$dir";
 	}
 	if (!$file) {
-		die("ERROR: save_annex_file file is not set");
+		die("ERROR: save_file file is not set");
 	}
 	if ($type == 'image') { // check this is really an image
 		if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
@@ -593,7 +607,9 @@ function save_annex_file($type,$dir,$file,$filename,$uploaded,$move,&$error)
 		}
 	}
 
-	checkdocannexedir($dir);
+	if ($docAnnexe === true) {
+		checkdocannexedir($dir);
+		}
 
 	if ($type == 'image') {
 		$filename = preg_replace("/\.\w+$/", "", basename($filename)); // take only the name, remove the extensio
