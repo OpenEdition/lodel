@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 28-02-2006.
+// Fichier généré automatiquement le 20-06-2006.
 //
 
 
@@ -73,6 +73,7 @@ class classesVO
 	var $title;
 	var $altertitle;
 	var $status;
+	var $icon;
 	var $comment;
 	var $rank;
 	var $upd;
