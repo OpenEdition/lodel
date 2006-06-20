@@ -55,7 +55,7 @@
 
 <br />&nbsp;<br />
 
-<form method="post" name="forms_type" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<form method="post" enctype="multipart/form-data" name="forms_type" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="types">
@@ -87,10 +87,14 @@
     </span>
   </LOOP>
   <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+  <label for="icon">[@ADMIN.ICON] : 
+		</label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
   <input type="hidden" name="class" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
     <a id="class"></a><span class="error">

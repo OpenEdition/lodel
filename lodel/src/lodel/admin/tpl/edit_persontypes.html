@@ -37,18 +37,18 @@
 	</li>
 </ul>
 <br />&nbsp;<br />
-<form method="POST" name="formulaire_personne" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<form method="post" enctype="multipart/form-data" name="formulaire_personne" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="persontypes">
-<input type="hidden" name="id" value="[#ID]">
-<LOOP NAME="fielderror" FIELD="id">
-  <a id="id"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-  </span>
-</LOOP>
 <fieldset>
   <legend>[@ADMIN.FIELDSET_TITLE]</legend>
+  <input type="hidden" name="id" value="[#ID]">
+  <LOOP NAME="fielderror" FIELD="id">
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
+  </LOOP>
   <label for="type">[@ADMIN.NAME_PERSON_TYPE]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
@@ -75,10 +75,14 @@
     </span>
   </LOOP>
   <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+  <label for="icon">[@ADMIN.ICON] : 
+		</label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.FIELDSET_DEFINITION]</legend>
@@ -125,7 +129,7 @@
   <br />
 </fieldset>
 <fieldset>
-  <legend>[@ADMIN.FIELDSET_SITE]</legend>
+  <legend>[@ADMIN.SITE]</legend>
   <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON] : 
 		</label>
   <br class="nobr">
