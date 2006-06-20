@@ -66,6 +66,11 @@ mkdir lodel 0755
 mkdir lodel/sources 0777
 htaccess lodel/sources
 
+### repertoire des icones associees aus types et aux classes (dans l'interface Lodel) ###
+mkdir lodel/icons 0777
+touch lodel/icons/index.html
+htaccess lodel/icons
+
 dirsource $homesite/lodel
 dirdestination lodel
 
