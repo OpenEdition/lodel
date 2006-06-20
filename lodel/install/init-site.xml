@@ -203,10 +203,9 @@
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
 <column name="status"
         type="TINYINT"
@@ -215,6 +214,12 @@
 <vcolumn name="protected"
         label="[@ADMIN.PROTECTED_DATAFIELD]"
         edittype="boolean"/>
+<column name="icon"
+	type="VARCHAR"
+	size="255"
+	description="icone de la classe"
+	label="[@ADMIN.ICON]"
+  	edittype="image" />
 <column name="comment"
         type="LONGVARCHAR"
         description="commentaire sur la class"
@@ -268,7 +273,6 @@
         edittype="text" />
 <column name="altertitle"
 	type="LONGVARCHAR"
-	required="true"
 	description="nom multilingue"
 	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
@@ -454,10 +458,9 @@
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
 <column name="type"
         type="VARCHAR"
@@ -541,10 +544,9 @@
         label="[@ADMIN.INTERFACENAME]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
 <column name="comment"
         type="LONGVARCHAR"
@@ -587,7 +589,7 @@
 
 
 <table name="persons"
-        description="Table des entrees des index par personnes"
+        description="Table des entrees des index de personnes"
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
@@ -881,7 +883,7 @@
 	writeright="admin"
 	protectright="adminlodel">
 <vgroup name="grtitre"
-				label="[@ADMIN.FIELDSET_TITLE]">
+	label="[@ADMIN.FIELDSET_TITLE]">
 <column name="id"
         type="INTEGER"
         required="true"
@@ -900,17 +902,22 @@
         label="[@ADMIN.TITLE_TYPE]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
+<column name="icon"
+	type="VARCHAR"
+	size="255"
+	description="icone du type"
+	label="[@ADMIN.ICON]"
+  	edittype="image" />
 <column name="class"
-				type="VARCHAR"
-				size="64"
-				required="true"
-				description="name de la table complementaire"
-				visibility="hidden"
+	type="VARCHAR"
+	size="64"
+	required="true"
+	description="name de la table complementaire"
+	visibility="hidden"
 	edittype="class" />
 </vgroup>
 <vgroup name="grcreation"
@@ -1128,7 +1135,8 @@
         uniqueid="yes"
 	writeright="admin"
 	protectright="adminlodel">
-
+<vgroup name="grtitre"
+	label="[@ADMIN.FIELDSET_TITLE]">
 <column name="id"
         type="INTEGER"
         required="true"
@@ -1155,23 +1163,44 @@
         label="[@ADMIN.TITLE_PERSON_TYPE]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
+<column name="icon"
+	type="VARCHAR"
+	size="255"
+	description="icone du type d'index de personnes"
+	label="[@ADMIN.ICON]"
+  	edittype="image" />
+</vgroup>
+<vgroup name="grdefinition"
+				label="[@ADMIN.FIELDSET_DEFINITION]">
+<column name="g_type"
+	type="VARCHAR"
+	size="255"
+	description="type generique equivalent"
+	label="[@ADMIN.GENERIC_EQUIVALENT]"
+        edittype="select"/>
+</vgroup>
+<vgroup name="grcreation"
+				label="[@ADMIN.FIELDSET_CREATION]">
 <column name="style"
         type="VARCHAR"
         size="255"
         description="style qui conduit a ce type"
         label="[@ADMIN.STYLE_PERSON_TYPE]"
         edittype="style" />
-<column name="g_type"
-        type="VARCHAR"
-        size="255"
-        description="type generique equivalent"
-        label="[@ADMIN.GENERIC_EQUIVALENT]"
-        edittype="select"/>
+<column name="gui_user_complexity"
+	type="TINYINT"
+	default="64"
+	required="true"
+	description="Degré de complexité de l'interface dans lequel un type est affiché"
+	label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+	edittype="select" />
+</vgroup>
+<vgroup name="grsite"
+				label="[@ADMIN.SITE]">
 <column name="tpl"
         type="VARCHAR"
         size="255"
@@ -1184,13 +1213,14 @@
         description="name du fichier template pour l index"
         label="[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]"
         edittype="tplfile" />
-<column name="gui_user_complexity"
-				type="TINYINT"
-				default="64"
-				required="true"
-				description="Degré de complexité de l'interface dans lequel un type est affiché"
-				label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-				edittype="select" />
+</vgroup>
+<vgroup name="grprotected"
+				label="[@ADMIN.FIELDSET_PROTECTED]">
+<vcolumn name="protected"
+	 label="[@ADMIN.PROTECTED_TYPE]"
+	edittype="boolean"
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+</vgroup>
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -1200,10 +1230,7 @@
         type="TINYINT"
         default="1"
         required="true" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_TYPE]"
-        edittype="boolean"
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+
 <column name="upd"
         type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
@@ -1230,7 +1257,8 @@
         uniqueid="yes"
 	writeright="admin"
 	protectright="adminlodel">
-
+<vgroup name="grtitre"
+	label="[@ADMIN.FIELDSET_TITLE]">
 <column name="id"
         type="INTEGER"
         default="0"
@@ -1258,24 +1286,65 @@
         label="[@ADMIN.TITLE_INDEX_TYPE]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_TITLE]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_TITLE]"
 	edittype="mltext"/>
-<column name="style"
-        type="VARCHAR"
-        size="255"
-        description="style qui conduit a cette balises"
-        label="[@ADMIN.STYLE_INDEX_TYPE]"
-        edittype="style" />
+<column name="icon"
+	type="VARCHAR"
+	size="255"
+	description="icone du type d'index"
+	label="[@ADMIN.ICON]"
+  	edittype="image" />
+</vgroup>
+<vgroup name="grdefinition"
+				label="[@ADMIN.FIELDSET_DEFINITION]">
 <column name="g_type"
         type="VARCHAR"
         size="255"
         description="type generique equivalent"
         label="[@ADMIN.GENERIC_EQUIVALENT]"
         edittype="select"/>
-<column name="tpl"
+<column name="flat"
+	type="TINYINT"
+	default="0"
+	required="true"
+	label="[@ADMIN.FLAT_INDEX]" 
+	edittype="boolean"/>
+</vgroup>
+<vgroup name="grcreation"
+				label="[@ADMIN.FIELDSET_CREATION]">
+<column name="newbyimportallowed"
+	type="TINYINT"
+	default="0"
+	label="[@ADMIN.NEWIMPORTALLOWED]"
+	edittype="boolean" />
+<column name="style"
+	type="VARCHAR"
+	size="255"
+	description="style qui conduit a cette balises"
+	label="[@ADMIN.STYLE_INDEX_TYPE]"
+        edittype="style" />
+<column name="gui_user_complexity"
+	type="TINYINT"
+	default="64"
+	required="true"
+	description="Degré de complexité de l'interface dans lequel un type est affiché"
+	label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+	edittype="select" />
+</vgroup>
+<vgroup name="gredition"
+				label="[@ADMIN.FIELDSET_EDITION]">
+<column name="edition"
+	type="VARCHAR"
+	size="255"
+	description="input pour l edition"
+	label="[@ADMIN.INTERFACE_EDITION]"
+        edittype="select" />
+</vgroup>
+<vgroup name="grsite"
+				label="[@ADMIN.SITE]">
+	<column name="tpl"
         type="VARCHAR"
         size="255"
         description="name du fichier template pour l entree"
@@ -1287,13 +1356,22 @@
         description="name du fichier template pour l index"
         label="[@ADMIN.TEMPLATE_FILENAME_INDEX]"
         edittype="tplfile" />
-<column name="gui_user_complexity"
-				type="TINYINT"
-				default="64"
-				required="true"
-				description="Degré de complexité de l'interface dans lequel un type est affiché"
-				label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-				edittype="select" />
+<column name="sort"
+	type="VARCHAR"
+	size="64"
+	default="rank"
+	required="true"
+	description=""
+	label="[@ADMIN.SORTBY]"
+	edittype="select" />
+</vgroup>
+<vgroup name="grprotected"
+				label="[@ADMIN.FIELDSET_PROTECTED]">
+<vcolumn name="protected"
+	 label="[@ADMIN.PROTECTED_TYPE]"
+	 edittype="boolean" 
+	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+</vgroup>
 <column name="rank"
         type="INTEGER"
         default="0"
@@ -1303,37 +1381,9 @@
         type="TINYINT"
         default="1"
         required="true" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_TYPE]"
-        edittype="boolean" 
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
-<column name="flat"
-        type="TINYINT"
-        default="0"
-        required="true"
-        label="[@ADMIN.FLAT_INDEX]" 
-	edittype="boolean"/>
-<column name="edition"
-        type="VARCHAR"
-        size="255"
-        description="input pour l edition"
-        label="[@ADMIN.INTERFACE_EDITION]"
-        edittype="select" />
-<column name="newbyimportallowed"
-        type="TINYINT"
-        default="0"
-        label="[@ADMIN.NEWIMPORTALLOWED]"
-	edittype="boolean" />
-<column name="sort"
-        type="VARCHAR"
-        size="64"
-        default="rank"
-        required="true"
-        description=""
-        label="[@ADMIN.SORTBY]"
-	edittype="select" />
 <column name="upd"
         type="TIMESTAMP" />
+
 <!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
@@ -1403,9 +1453,7 @@
         required="true" />
 <vcolumn name="protected"
         label="[@ADMIN.PERMANENT_ENTRY]"
-        edittype="boolean"
-        
-        />
+        edittype="boolean" />
 <column name="upd"
         type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
@@ -1561,10 +1609,9 @@
         label="[@COMMON.TITLE]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
 <column name="idgroup"
         type="INTEGER"
@@ -1673,10 +1720,9 @@
         label="[@COMMON.TITLE]"
         edittype="text" />
 <column name="altertitle"
-				type="LONGVARCHAR"
-				required="true"
-				description="nom multilingue"
-				label="[@ADMIN.MULTILINGUAL_NAME]"
+	type="LONGVARCHAR"
+	description="nom multilingue"
+	label="[@ADMIN.MULTILINGUAL_NAME]"
 	edittype="mltext"/>
 <column name="logic"
         type="VARCHAR"
