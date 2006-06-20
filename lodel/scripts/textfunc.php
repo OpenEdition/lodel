@@ -329,9 +329,9 @@ function vignette($text, $width)
 	global $home;
 	if (!$text)
 		return;
-	if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
+	/*if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
 		return getlodeltextcontents("ERROR_INVALID_PATH_TO_IMAGE", "COMMON");
-	}
+	}*/
 	if (defined("SITEROOT"))
 		$text = SITEROOT.$text;
 	if (!file_exists($text))
