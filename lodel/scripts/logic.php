@@ -33,6 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
@@ -359,6 +360,11 @@ class Logic
 	function validateFields(&$context, &$error) 
 	{
 		global $db;
+		
+		// Noms des logics qui sont traitées par des formulaires dans lesquels il y a des champs de type file ou image, et qui ont besoin d'un traitement particulier pour ces champs (i.e. pas des docs annexes)
+		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
+		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
+		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
 		require_once "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -373,8 +379,15 @@ class Logic
 				// passwd can be empty only if $context[id] exists... it is a little hack but.
 				unset($context[$field]); // remove it
 			} else {
-				require_once 'validfunc.php';
-				$valid = validfield($context[$field], $type, "",$field);
+				if (($type == "image" || $type == "file") && in_array($this->maintable, $adminFormLogics)){
+					// traitement particulier des champs de type file et images dans les formulaires de la partie admin
+					
+					// répertoire de destination pour les fichiers et les images : array ($field, $répertoire)
+					$directory =array ('icon' => 'lodel/icons');
+					$valid = validfield($context[$field], $type, "",$field, "", $directory[$field]);
+				} else {
+					$valid = validfield($context[$field], $type, "",$field);
+				}
 				if ($valid === false) {
 					die("ERROR: \"$type\" can not be validated in logic.php");
 				}
