@@ -227,7 +227,8 @@ class TypesLogic extends Logic {
 	{
 		return array('type' => array('type', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
+									'icon' => array('image', ''),
 									'class' => array('class', '+'),
 									'tplcreation' => array('tplfile', ''),
 									'import' => array('select', '+'),

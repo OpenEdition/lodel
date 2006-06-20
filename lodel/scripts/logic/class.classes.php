@@ -303,7 +303,8 @@ class ClassesLogic extends Logic
 		return array('class' => array('class', '+'),
 									'classtype' => array('text', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
+									'icon' => array('image', ''),
 									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //

@@ -176,7 +176,7 @@ class OptionsLogic extends Logic {
 	{
 		return array('name' => array('text', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
 									'idgroup' => array('int', '+'),
 									'type' => array('select', ''),
 									'edition' => array('select', ''),

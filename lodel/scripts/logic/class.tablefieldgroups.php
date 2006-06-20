@@ -110,7 +110,7 @@ class TablefieldgroupsLogic extends Logic {
 		return array('name' => array('text', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
 									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //

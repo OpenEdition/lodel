@@ -168,7 +168,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 		return array('name' => array('select', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
 									'type' => array('class', '+'),
 									'edition' => array('select', ''),
 									'comment' => array('longtext', ''),

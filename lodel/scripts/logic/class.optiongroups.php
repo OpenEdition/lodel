@@ -261,7 +261,7 @@ class OptiongroupsLogic extends Logic {
 		return array('idparent' => array('select', '+'),
 									'name' => array('text', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
 									'logic' => array('text', ''),
 									'comment' => array('longtext', ''),
 									'exportpolicy' => array('boolean', '+'));

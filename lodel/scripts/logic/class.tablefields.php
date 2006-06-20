@@ -374,7 +374,7 @@ class TableFieldsLogic extends Logic
 		return array('name' => array('tablefield', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
-									'altertitle' => array('mltext', '+'),
+									'altertitle' => array('mltext', ''),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
 									'comment' => array('longtext', ''),
