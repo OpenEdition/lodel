@@ -33,6 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Bruno Cénou, Jean Lamy
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
@@ -54,7 +55,7 @@
  * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
  * @return boolean true si le champ est valide. false sinon
  */
-function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
+function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="")
 {
 	static $tmpdir;
 	require_once 'fieldfunc.php';
@@ -268,33 +269,48 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 				unset ($text);
 				return 'upload';
 			}
-			// check if the tmpdir is defined
-			if (!$tmpdir[$type]) {
-				// look for a unique dirname.
-				do {
-					$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
-				}	while (file_exists(SITEROOT. $tmpdir[$type]));
-			}
-			// let's transfer
+			
 			require_once 'func.php';
-			$text = save_annex_file($type, $tmpdir[$type], $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err);
+
+			if (!empty($directory)) {
+				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
+				$text = save_file($type, $directory, $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err, false);
+			} else {
+				// check if the tmpdir is defined
+				if (!$tmpdir[$type]) {
+					// look for a unique dirname.
+					do {
+						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
+					}	while (file_exists(SITEROOT. $tmpdir[$type]));
+				}
+				// let's transfer
+				$text = save_file($type, $tmpdir[$type], $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err);
+			}
 			if ($err) {
 				return $err;
 			}
 			return true;
 		case 'serverfile' :
 			// check if the tmpdir is defined
-			if (!$tmpdir[$type]) {
-				// look for a unique dirname.
-				do {
-					$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
-				} while (file_exists(SITEROOT. $tmpdir[$type]));
-			}
-
-			// let's move
-			$text = basename($text['localfilename']);
 			require_once 'func.php';
-			$text = save_annex_file($type, $tmpdir[$type], SITEROOT."upload/$text", $text, false, false, $err);
+			
+				if (!empty($directory)) {
+				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
+				$text = basename($text['localfilename']);
+				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);
+			} else {
+				// check if the tmpdir is defined
+				if (!$tmpdir[$type]) {
+					// look for a unique dirname.
+					do {
+						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
+					} while (file_exists(SITEROOT. $tmpdir[$type]));
+				}
+
+				// let's move
+				$text = basename($text['localfilename']);
+				$text = save_file($type, $tmpdir[$type], SITEROOT."upload/$text", $text, false, false, $err);
+			}
 			if ($err) {
 				return $err;
 			}
@@ -307,8 +323,16 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "")
 			if (!$text) {
 				return true;
 			}
-			if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/", $text)) {
-				die("ERROR: invalid filename of type $type");
+			if (!empty($directory)) {//echo "text = $text <p>";
+				$directory= str_replace('/', '\/', $directory);//echo $directory;
+				
+				if (!preg_match("/^$directory\/[^\/]+$/", $text)) {
+					die("ERROR: invalid filename of type $type");
+				}
+			} else {
+				if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/", $text)) {
+					die("ERROR: invalid filename of type $type");
+				}
 			}
 			if ($filetodelete) {
 				unlink(SITEROOT.$text);
