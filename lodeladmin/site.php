@@ -167,7 +167,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
 		// Ajout de slashes pour autoriser les guillemets dans le titre et le sous-titre du site
 		$context['title'] = magic_addslashes($context['title']);
-		$context['subtitle'] = magic_addslashes($context['title']);
+		$context['subtitle'] = magic_addslashes($context['subtitle']);
 
 		mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
