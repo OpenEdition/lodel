@@ -165,6 +165,10 @@ if ($edit || $maindefault) { // modifie ou ajoute
 		//suppression de l'eventuel / a la fin de l'url
 		$context['url'] = preg_replace("/\/$/", '', $context[url]);
 
+		// Ajout de slashes pour autoriser les guillemets dans le titre et le sous-titre du site
+		$context['title'] = magic_addslashes($context['title']);
+		$context['subtitle'] = magic_addslashes($context['title']);
+
 		mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('$id','$context[title]','$context[name]','$context[path]','$context[url]','$context[subtitle]','$status')") or die (mysql_error());
 
 		update();
