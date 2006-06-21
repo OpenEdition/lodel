@@ -106,9 +106,11 @@ function clean_request_variable(&$var)
 
 function magic_addslashes($var) 
 {
-	if (!get_magic_quotes_gpc()) {
+	/*if (!get_magic_quotes_gpc()) {
 		$var = addslashes($var);
-	}
+	}*/
+	$var = stripslashes($var);
+	$var = addslashes($var);
 	return $var;
 }
 
