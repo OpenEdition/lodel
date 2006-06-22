@@ -22,6 +22,7 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
+
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
@@ -57,7 +58,7 @@
 	<ul  class="group1">
 	<IF COND="[#SITE]">
 		<li>
-			<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
+			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
 			<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 			<ELSE/>
 			<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
@@ -67,7 +68,7 @@
 		</li>
 
 		<li>
-			<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')]">
+			<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('dashboard_information')] AND ![#CURRENTURL|strpos('dashboard_statistics')] AND ![#CURRENTURL|strpos('dashboard_me')]">
 				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">	
@@ -77,7 +78,7 @@
 		</li>
 
 		<li>
-			<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')]">
+			<IF COND="[#CURRENTURL|strpos('dashboard_information')] OR [#CURRENTURL|strpos('dashboard_statistics')] OR [#CURRENTURL|strpos('dashboard_me')]">
 				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
@@ -128,7 +129,7 @@
 	<IF COND="[#LODELUSER.ADMIN]">
 		<a href="[#CLEARCACHEURL|htmlentities]" id="clearcache" title="[@COMMON.CLEARCACHE]">
 	<ELSE/>
-		<a id="compile_inactif" title="[@COMMON.CLEARCACHE]">
+		<a id="clearcache" class="inactif" title="[@COMMON.CLEARCACHE]">
 	</IF>
 		[@COMMON.CLEARCACHE]</a>
 	</li>
