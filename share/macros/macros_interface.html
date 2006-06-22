@@ -1386,7 +1386,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul id="actionsOnEntitiesPath">
 		<li class="entitieTitle">
 			<LOOP NAME="getTitle0" TABLE="entities, types" WHERE="entities.id='[#ID]' AND idtype = types.id ">
+				<div class="entityIcons">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]">
+				</div>
 				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
 					<FUNC NAME="STATUS_ICON" STATUS="1">[@EDITION.WEBSITE_BASE]
@@ -1509,7 +1512,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<ELSE/>
 			<li class="line2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+			<div class="entityIcons">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]">
+			</div>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			</li>
@@ -1722,6 +1728,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</IF>
 </DEFMACRO>
 
+<DEFFUNC NAME="GET_ASSOCIATED_ICON" REQUIRED="idtype">
+	<LOOP NAME="getTypeIcon" TABLE="types" WHERE="id = '[#IDTYPE]'">
+		<IF COND="[#ICON]">
+			<img src="../../[#ICON]" alt="" class="associatedIcon" />
+		<ELSE />
+			<LOOP SELECT="classes.icon AS classicon" NAME="getClassIcon" TABLE="types, classes" WHERE="types.class = classes.class AND types.id = '[#IDTYPE]'">
+				<img src="../../[#CLASSICON]" alt=""  class="associatedIcon" />
+			</LOOP>
+		</IF>
+	</LOOP>
+</DEFFUNC>
 
 <DEFMACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 	<div class="pas_de_publication">

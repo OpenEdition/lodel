@@ -416,8 +416,8 @@ ul.listEntities{
 ul.listEntities li{
 	padding: .5ex 0;
 	position: relative;
-	height: 48px;
-	background: #e9e9e9;
+	min-height: 48px;
+/* 	background: #e9e9e9; */
 	border-bottom: 1px solid #dadbdc;
 }
 
@@ -441,18 +441,39 @@ ul.listEntities li.unfoldedentities ul li{
 }
 
 ul.listEntities li.unfoldedentities ul{
-	margin: 0 1em 2ex 0;
+	margin: 0 1em 2ex 1.5em;
+}
+
+ul.listEntities li.unfoldedentities ul ul{
+	margin-left: 0.9em;
 }
 
 ul.listEntities li.unfoldedentities ul li ul{
 	margin-right: 0;
 }
 
-ul.listEntities img.picto_gauche{
+ul.listEntities div.entityIcons{
 	position: absolute;
 	left: .5em;
-	top: .5ex;
-	margin-right: .5em;
+	top: 1ex;
+	width: 70px;
+/* 	background: red; */
+}
+
+ul.listEntities div.entityIcons img.statusIcon, ul.listEntities div.entityIcons img.associatedIcon{
+	display: block;
+	float: left;
+	margin: 1.5ex 0 0 25px;
+	width: 11px;
+/* 	top: 1ex; */
+}
+
+ul.listEntities div.entityIcons img.associatedIcon{
+	float: right;
+	margin: .5ex 0 0 0;
+	width: auto;
+	max-width: 22px;
+/* 	top: .5ex; */
 }
 
 div.action{
@@ -508,8 +529,8 @@ div.action a{
 }
 
 ul.listEntities div.document{
-	margin: 1ex 0 .8ex 35px;
-	width: 55%;
+	margin: 1ex 0 .8ex 90px;
+	width: 45%;
 }
 
 ul.listEntities div.document a{
@@ -521,7 +542,7 @@ ul.listEntities div.document a:hover{
 }
 
 ul.listEntities li.unfoldedentities div.document{
-	width: 45%;
+	width: 40%;
 }
 
 ul.listEntities div.document .titre_document{

@@ -189,7 +189,7 @@ ul.entitiesPath li.this{
 
 
 
-.inactif{
+.inactif, a.inactif{
 	color: #666;
 }
 
@@ -247,17 +247,30 @@ ul.entitiesPath{
 #actionsOnEntitiesPath li.entitieTitle{
 	font-weight: bold;
 	color: #ed8400;
-	padding-left: 3em;
+	padding-left: 100px;
 }
 
 #actionsOnEntitiesPath li.entitieTitle em{
 	font-weight: normal;
 }
 
-#actionsOnEntitiesPath li img.statusIcon{
-	display: block;
+#actionsOnEntitiesPath div.entityIcons{
+	width: 80px;
 	position: absolute;
-	top: 1.6em;
+	top: 20%;
+/* 	background: red; */
+}
+
+#actionsOnEntitiesPath div.entityIcons img.statusIcon{
+	display: block;
+	float: left;
+	margin-top: 1.6ex;
+}
+
+#actionsOnEntitiesPath div.entityIcons img.associatedIcon{
+	display: block;
+	float: right;
+	margin-top: 1ex;
 }
 
 #actionsOnEntitiesPath ul.actions{
