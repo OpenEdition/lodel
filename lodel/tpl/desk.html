@@ -86,7 +86,7 @@
 		</li>
 
 		<li>
-			<IF COND="![#CURRENTURL|strpos('admin')] AND ![#CURRENTURL|strpos('edition')]">	
+			<IF COND="![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodel/edition')]">	
 				<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
 			<ELSE/>
 				<a href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]" title="[@COMMON.SITE]">
@@ -99,7 +99,7 @@
 			<IF COND="![#LODELUSER.REDACTOR]">	
 				<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 			<ELSE/>
-				<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')])">	
+				<IF COND="[#CURRENTURL|strpos('lodel/admin')] AND !(([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')])">	
 					<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 				<ELSE/>
 					<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
@@ -119,7 +119,7 @@
 
 	<ul class="group2">
 	<li>
-	<IF COND="![#CURRENTURL|strpos('admin')]">
+	<IF COND="![#CURRENTURL|strpos('lodel/admin')]">
 		<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	<ELSE />
 		<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
@@ -136,16 +136,16 @@
 	</ul>
 
 	<ul id="deskContext">
-		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
+		<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<li>
-			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID]">
+			<IF COND="![#CURRENTURL|strpos('lodel/edition/search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID]">
 				<strong>[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a>
 			</IF>
 			</li>
 			<li>
-			<IF COND="[#CURRENTURL|strpos('search')]">
+			<IF COND="[#CURRENTURL|strpos('lodel/edition/search')]">
 				<strong>[@COMMON.SEARCH_ENGINE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/search.php">[@COMMON.SEARCH_ENGINE]</a>
