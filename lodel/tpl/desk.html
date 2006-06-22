@@ -58,7 +58,7 @@
 	<ul  class="group1">
 	<IF COND="[#SITE]">
 		<li>
-			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
+			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 			<ELSE/>
 			<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
@@ -68,7 +68,7 @@
 		</li>
 
 		<li>
-			<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('dashboard_information')] AND ![#CURRENTURL|strpos('dashboard_statistics')] AND ![#CURRENTURL|strpos('dashboard_me')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard')] AND ![#CURRENTURL|strpos('page=dashboard_information')] AND ![#CURRENTURL|strpos('page=dashboard_statistics')] AND ![#CURRENTURL|strpos('page=dashboard_me')]">
 				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.DASHBOARD]">	
@@ -78,7 +78,7 @@
 		</li>
 
 		<li>
-			<IF COND="[#CURRENTURL|strpos('dashboard_information')] OR [#CURRENTURL|strpos('dashboard_statistics')] OR [#CURRENTURL|strpos('dashboard_me')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_information')] OR [#CURRENTURL|strpos('page=dashboard_statistics')] OR [#CURRENTURL|strpos('page=dashboard_me')]">
 				<a class="actif" href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.INFORMATION_DESCRIPTION]">[@COMMON.INFORMATION]</a>
@@ -99,7 +99,7 @@
 			<IF COND="![#LODELUSER.REDACTOR]">	
 				<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 			<ELSE/>
-				<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')])">	
+				<IF COND="[#CURRENTURL|strpos('admin')] AND !(([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')])">	
 					<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 				<ELSE/>
 					<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
@@ -136,9 +136,9 @@
 	</ul>
 
 	<ul id="deskContext">
-		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('dashboard')]">
+		<IF COND="([#CURRENTURL|strpos('edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<li>
-			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('dashboard')] AND ![#ID]">
+			<IF COND="![#CURRENTURL|strpos('search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID]">
 				<strong>[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a>
@@ -181,7 +181,7 @@
 				</li>
 			</LOOP>
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')] AND ![#CURRENTURL|strpos('me')]">
+		<IF COND="[#CURRENTURL|strpos('page=dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')] AND ![#CURRENTURL|strpos('me')]">
 			<li>
 			<IF COND="[#CURRENTURL|strpos('queue')]">
 				<strong>[@COMMON.QUEUE]</strong>
