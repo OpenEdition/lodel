@@ -65,6 +65,10 @@ br.nobr{
 	display: none;
 }
 
+hr{
+	clear: both;
+}
+
 table{
 	border: 0;
 	border-collapse: collapse;
@@ -979,6 +983,10 @@ div.close{
 #meDescriptor table.statistics caption{
 	font-size: 100%;
 	min-width: 150px;
+}
+
+#translation{
+	clear: both;
 }
 
 #translation dt{
