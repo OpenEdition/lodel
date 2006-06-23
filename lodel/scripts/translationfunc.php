@@ -116,13 +116,6 @@ lodeltextchangecolor(obj,'2');
     lodeltextchangecolor(obj,obj.options[obj.selectedIndex].value);
   }
 --></script>
-<STYLE TYPE="text/css" MEDIA=screen>
-<!--
-       .selectred { background-color: red; }
-       .selectorange { background-color: orange; }
-       .selectgreen { background-color: green; }
--->
-</STYLE>
 <?php
 
 }

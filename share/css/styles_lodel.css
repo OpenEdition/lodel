@@ -989,3 +989,7 @@ div.close{
 #translation dd{
 	margin-left: 0;
 }
+
+.selectred { background-color: red; }
+.selectorange { background-color: orange; }
+.selectgreen { background-color: green; }
