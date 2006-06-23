@@ -401,6 +401,12 @@ div.advancedFunc #addEntity select{
 	padding-bottom: 8ex;
 }
 
+#entries{
+	margin-top: 4em;
+}
+
+
+
 ul.listEntities, ul.listEntities li{
 	padding: 0;
 	margin: 0;
@@ -416,12 +422,12 @@ ul.listEntities{
 ul.listEntities li{
 	padding: .5ex 0;
 	position: relative;
-	min-height: 48px;
+	height: 48px;
 /* 	background: #e9e9e9; */
 	border-bottom: 1px solid #dadbdc;
 }
 
-*>ul.listEntities>*>li, *>ul.listEntities>li{
+*>ul.listEntities li{
 	height: auto;
 	min-height: 48px;
 }
@@ -543,6 +549,24 @@ ul.listEntities div.document a:hover{
 
 ul.listEntities li.unfoldedentities div.document{
 	width: 40%;
+}
+
+#entries div.document{
+	margin-top: 2ex;
+	margin-bottom: 0;
+}
+
+#entries ul.listEntities li{
+	height: auto;
+	padding-bottom: 0;
+}
+
+#entries ul.listEntities div.entityIcons img.associatedIcon{
+	margin-top: 1.4ex;
+}
+
+#entries div.action{
+	margin-top: .5ex;
 }
 
 ul.listEntities div.document .titre_document{

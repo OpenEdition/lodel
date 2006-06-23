@@ -94,7 +94,14 @@
 		<ELSE/>
 			<li class="line2">
 		</IF>
-			[#G_NAME|nbsp] <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+			<div class="entityIcons">
+			<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+			<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+			</div>
+			<div class="document">
+				<span class="titre_document">[#G_NAME|nbsp]</span>
+				<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+			</div>
 			<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
 			<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 			</li>

@@ -247,7 +247,7 @@ ul.entitiesPath{
 #actionsOnEntitiesPath li.entitieTitle{
 	font-weight: bold;
 	color: #ed8400;
-	padding-left: 100px;
+	padding-left: 85px;
 }
 
 #actionsOnEntitiesPath li.entitieTitle em{
@@ -255,7 +255,7 @@ ul.entitiesPath{
 }
 
 #actionsOnEntitiesPath div.entityIcons{
-	width: 80px;
+	width: 60px;
 	position: absolute;
 	top: 20%;
 /* 	background: red; */
