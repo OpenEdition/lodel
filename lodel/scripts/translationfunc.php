@@ -62,8 +62,8 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 		$nrows = 1;
 	if ($nrows > 10)
 		$nrows = 10; // limit for very long text, it's not usefull anyway
-	echo '<dt><label for="texte" style="">@'.strtoupper($name).'</label></dt>
-	<dd><textarea name="contents['.$id.']" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea>
+	echo '<dt><label for="contents'.$id.'">@'.strtoupper($name).'</label></dt>
+	<dd><textarea name="contents['.$id.']" id="contents'.$id.'" cols="'.$ncols.'" rows="'.$nrows.'" " onchange=" tachanged('.$id.');" >'.htmlspecialchars($text).'</textarea>
 	 <select class="select'.lodeltextcolor($status).'" onchange="selectchanged(this);" id="selectstatus'.$id.'" name="status['.$id.']">';
 
 	foreach (array (-1, 1, 2) as $s) {

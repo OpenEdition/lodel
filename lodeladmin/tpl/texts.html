@@ -44,19 +44,20 @@
 <input type="hidden" name="lo" value="[#LO]">
 <input type="hidden" name="textgroup" value="[#TEXTGROUP]">
 <input type="hidden" name="lang" value="[#LANG]">
-<div id="translationforms">
+<fieldset>
+<legend>[(#TEXTGROUP|strtoupper)] : <LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'"><em> [#TITLE]</em></LOOP></legend>
 <LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="name" SELECT="name,textgroup">
 <BEFORE>
-	<table>
+	<dl id="translation">
 </BEFORE>
 <DO>
 <?php mkeditlodeltext($context['name'],$context['textgroup'],$context['lang']);?>
 </DO>
 <AFTER>
-	</table>
+	</dl>
 </AFTER>
 </LOOP>
-</div>
+</fieldset>
 <fieldset>
 	<legend>[@COMMON.VALIDATION]</legend>
 	<input class="button" type="submit" value="[@COMMON.UPDATE]" />&nbsp;&nbsp;&nbsp;&nbsp;
