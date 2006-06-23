@@ -40,11 +40,12 @@
 
 <?php mkeditlodeltextJS(); ?>
 <form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
-<input type="hidden" name="do" value="edit">
-<input type="hidden" name="lo" value="[#LO]">
-<input type="hidden" name="textgroup" value="[#TEXTGROUP]">
-<input type="hidden" name="lang" value="[#LANG]">
+
 <fieldset>
+<input type="hidden" name="do" value="edit" />
+<input type="hidden" name="lo" value="[#LO]" />
+<input type="hidden" name="textgroup" value="[#TEXTGROUP]" />
+<input type="hidden" name="lang" value="[#LANG]" />
 <legend>[(#TEXTGROUP|strtoupper)] : <LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'"><em> [#TITLE]</em></LOOP></legend>
 <LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="name" SELECT="name,textgroup">
 <BEFORE>
@@ -61,7 +62,7 @@
 <fieldset>
 	<legend>[@COMMON.VALIDATION]</legend>
 	<input class="button" type="submit" value="[@COMMON.UPDATE]" />&nbsp;&nbsp;&nbsp;&nbsp;
-	<input class="button" type="button" value="[@COMMON.BACK]" onclick="javascript:window.location='index.php?do=list&lo=translations'" />
+	<input class="button" type="button" value="[@COMMON.BACK]" onclick="javascript:window.location='index.php?do=list&amp;lo=translations'" />
 </fieldset>
-
+</form>
 <MACRO NAME="CLOSE_HTML">
