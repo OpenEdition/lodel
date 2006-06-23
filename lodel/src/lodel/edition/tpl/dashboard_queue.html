@@ -82,10 +82,11 @@
 		<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DO>
 	</LOOP>
 	</span>
+	<br />
 	<span class="date">
-	[@COMMON.CREATIONDATE] : 	[#CREATIONDATE|formateddate('%d/%m/%Y')]
+	[@COMMON.CREATIONDATE] : [#CREATIONDATE|formateddate('%d/%m/%Y')]
 	<IF COND="[#MODIFICATIONDATE|formateddate('%d/%m/%Y')] NE [#CREATIONDATE|formateddate('%d/%m/%Y')]">
-	[@COMMON.LASTMODIFIED] : [#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
+	, [@COMMON.LASTMODIFIED] : [#MODIFICATIONDATE|formateddate('%d/%m/%Y')]
 	</IF>
 	</span>
 	</div>
