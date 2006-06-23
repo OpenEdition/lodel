@@ -61,7 +61,11 @@
 		<li class="line1">
 	</IF>
 
-	<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+	<div class="entityIcons">
+		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+		<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]">
+	</div>
+
 	<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="document">
 	<span class="titre_document">
