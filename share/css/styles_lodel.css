@@ -998,6 +998,10 @@ div.close{
 	margin-left: 0;
 }
 
+#translationforms{
+	margin-top: 5ex;
+}
+
 .selectred { background-color: red; }
 .selectorange { background-color: orange; }
 .selectgreen { background-color: green; }

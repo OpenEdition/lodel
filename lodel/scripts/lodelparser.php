@@ -473,9 +473,9 @@ class LodelParser extends Parser
 			<input type="hidden" name="lo" value="texts" />
 			<fieldset id="translationforms">
 				<legend>'.getlodeltextcontents('TRANSLATIONS_FOR_THIS_PAGE','lodeladmin') .'</legend>
-			<input type="submit" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
-			<dl><a name="top" href="#bottom"> --bottom -- </a>'.join("", $this->translationform).'<a name="bottom" href="#top"> --top-- </a></dl>
-			<input type="submit" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			<input type="submit" class="button" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			<dl id="translation"><a id="top" href="#bottom"> --bottom -- </a>'.join("", $this->translationform).'<a id="bottom" href="#top"> --top-- </a></dl>
+			<input type="submit" class="button" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
 			</fieldset>
 			</form>
 			<?php } ?>';
