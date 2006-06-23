@@ -26,7 +26,6 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
-
 <script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
 
 <style type="text/css">
@@ -50,7 +49,11 @@
 	#lodel-desk ul.group2 a#clearcache{
 		background: transparent url("[#SHAREURL]/images/bg_clearcache.png") top left no-repeat;
 	}
-
+	ul.listEntities li ul li div.entityIcons{
+		background-image: url("[#SHAREURL]/images/tree.gif");
+		background-position: 0 .5ex;
+		background-repeat: no-repeat;
+	}
 </style>
 
 <div id="lodel-desk">
@@ -181,23 +184,23 @@
 				</li>
 			</LOOP>
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('page=dashboard')] AND ![#CURRENTURL|strpos('information')] AND ![#CURRENTURL|strpos('statistics')] AND ![#CURRENTURL|strpos('me')]">
+		<IF COND="[#CURRENTURL|strpos('page=dashboard')] AND ![#CURRENTURL|strpos('page=dashboard_information')] AND ![#CURRENTURL|strpos('page=dashboard_statistics')] AND ![#CURRENTURL|strpos('page=dashboard_me')]">
 			<li>
-			<IF COND="[#CURRENTURL|strpos('queue')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_queue')]">
 				<strong>[@COMMON.QUEUE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_queue" title="[@COMMON.QUEUE_DESCRIPTION]">[@COMMON.QUEUE]</a>
 			</IF>
 			</li>
 			<li>
-			<IF COND="[#CURRENTURL|strpos('history')] AND ![#CURRENTURL|strpos('public_history')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_history')] AND ![#CURRENTURL|strpos('page=dashboard_public_history')]">
 				<strong>[@COMMON.HISTORY]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_history" title="[@COMMON.HISTORY_DESCRIPTION]">[@COMMON.HISTORY]</a>
 			</IF>
 			</li>
 			<li>
-			<IF COND="[#CURRENTURL|strpos('public_history')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_public_history')]">
 				<strong>[@COMMON.PUBLIC_HISTORY]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_public_history" title="[@COMMON.PUBLIC_HISTORY_DESCRIPTION]">[@COMMON.PUBLIC_HISTORY]</a>
@@ -205,9 +208,9 @@
 			</li>
 
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('information')] OR [#CURRENTURL|strpos('statistics')] OR [#CURRENTURL|strpos('me')]">
+		<IF COND="[#CURRENTURL|strpos('page=dashboard_information')] OR [#CURRENTURL|strpos('page=dashboard_statistics')] OR [#CURRENTURL|strpos('page=dashboard_me')]">
 			<li>
-			<IF COND="[#CURRENTURL|strpos('statistics')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_statistics')]">
 				<strong>[@COMMON.STATISTICS]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_statistics" title="[@COMMON.STATISTICS_DESCRIPTION]">[@COMMON.STATISTICS]</a>
@@ -215,7 +218,7 @@
 			</li>
 
 			<li>
-			<IF COND="[#CURRENTURL|strpos('me')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_me')]">
 				<strong>[@COMMON.ME_DESCRIPTOR]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_me" title="[@COMMON.ME_DESCRIPTOR_DESCRIPTION]">[@COMMON.ME_DESCRIPTOR]</a>
@@ -224,7 +227,7 @@
 			</li>
 
 			<li>
-			<IF COND="[#CURRENTURL|strpos('information')]">
+			<IF COND="[#CURRENTURL|strpos('page=dashboard_information')]">
 				<strong>[@COMMON.TECHNICAL_INFORMATION]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/index.php?page=dashboard_information" title="[@COMMON.TECHNICAL_INFORMATION_DESCRIPTION]">[@COMMON.TECHNICAL_INFORMATION]</a>
