@@ -1555,7 +1555,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<ELSE/>
 			<li class="line2">
 		</IF>
-			<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+			<div class="entityIcons">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
+			</div>
+
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT_EDIT">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			
@@ -1648,7 +1652,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="BOUTONS_STATUS_ENTITIES">
 	<IF COND="[#STATUS]==-8">
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
@@ -1660,7 +1664,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</LOOP>
 	</IF>
 	<IF COND="[#STATUS]==-1">
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
@@ -1672,7 +1676,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</LOOP>
 	</IF>
 	<IF COND="[#STATUS]==1">
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
@@ -1686,7 +1690,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</LOOP>
 	</IF>
 	<IF COND="[#STATUS]==8">
-		<MACRO NAME="AFFICHER_ICONE_STATUS_ENTITIES">
+		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
