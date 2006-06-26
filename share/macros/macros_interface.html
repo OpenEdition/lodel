@@ -1741,6 +1741,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFFUNC NAME="GET_ASSOCIATED_ICON" REQUIRED="idtype, table">
+<LET VAR="table"><?php echo $GLOBALS['tp'];?>[#TABLE]</LET>
 	<LOOP NAME="getTypeIcon" SELECT="icon" TABLE="[#TABLE]" WHERE="id = '[#IDTYPE]'">
 		<IF COND="[#ICON]">
 			<img src="../../[#ICON]" alt="" class="associatedIcon" />
