@@ -40,7 +40,7 @@ ln search.php
 ln oai.php
 
 #Sitemap
-dirsource $homelodel/lodel
+dirsource $homelodel/lodel-0.8
 ln tpl/sitemap.html
 
 #ln tpl/oai20_getrecord.html
