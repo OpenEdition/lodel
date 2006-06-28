@@ -31,6 +31,11 @@
 <LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]' AND status GT 0">[#URL]</LOOP>
 </DEFMACRO>
 
+<!--[ Renvoie le chemin sur le serveur de la racine d'un site : URL du site sans le nom de domaine]-->
+<DEFMACRO NAME="RELATIF_SITE_ROOT">
+<LOOP NAME="getRoot" TABLE="sites" WHERE="name = '[#SITE]' AND status GT 0">[#URL|url_path]</LOOP>
+</DEFMACRO>
+
 <DEFMACRO NAME="HEADER_HEAD_CLOSE">  
     <link rel="stylesheet" href="[#SHAREURL]/css/styles_lodel.css" />
     <IF COND="[#STYLECSS]">
