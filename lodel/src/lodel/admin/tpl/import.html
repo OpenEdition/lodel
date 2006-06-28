@@ -34,8 +34,13 @@
 </ul>
 <br />&nbsp;<br />
 <IF COND="[#SUCCESS]">
-<p>[@ADMIN.DATA_IMPORT_SUCCESSFUL]</p>
-<input class="button" type="button" value="[@COMMON.OK]" onclick="javascript:window.location='index.php'" />
+<fieldset>
+		<legend>[@ADMIN.DATA_IMPORT]</legend>
+	<p>[@ADMIN.DATA_IMPORT_SUCCESSFUL]</p>
+</fieldset>
+<fieldset>
+	<input class="button" type="button" value="[@COMMON.OK]" onclick="javascript:window.location='index.php'" />
+</fieldset>
 <ELSE/>
 <form enctype="multipart/form-data" action="index.php" method="post">
 	<input type="hidden" name="do" value="import" />
@@ -47,9 +52,9 @@
 		</div>
 		<fieldset>
 		<input class="button" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php'" />
-		</fieldset>
 	<ELSE/>
 		<fieldset>
+		<legend>[@ADMIN.DATA_IMPORT]</legend>
 		[@ADMIN.SAVE_DATABASE_BEFORE_NEW] : <a href="index.php?do=backup&amp;lo=data" class="action">[@ADMIN.SAVE_DATABASE]</a>
 			<br /><br /><br />
 		    <IF COND="[#ERROR_EXTRACT]"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXTRACT].<br /><br /></IF>
@@ -59,7 +64,7 @@
 			[@ADMIN.HOWTO_IMPORT_DATABASE] :
 		<ul>
 		  <li>
-		    <p>[@ADMIN.TRANSFER_ZIP_FTP_IN] [#IMPORTDIR] [@ADMIN.OR_DIR] [#SITE]/lodel/admin/CACHE.</p>
+		    <p>[@ADMIN.TRANSFER_ZIP_FTP_IN] [#IMPORTDIR] [@ADMIN.OR_DIR] <MACRO NAME="RELATIF_SITE_ROOT">/lodel/admin/CACHE.</p>
 		    <p>[@ADMIN.FILES_LIST] :</p>
 		    <LOOP NAME="files">
    		    <DO>
@@ -70,15 +75,20 @@
 		<li>
 		  <p>[@ADMIN.LOAD_FILE_POST_PHP_CONFIGURATION] : <?php echo ini_get('post_max_size'); ?></p>
       <IF COND="[#ERROR_UPLOAD]"><p class="error">[@ADMIN.ERROR_LOADING_FILE]</p></IF>
-
+	<IF COND="[#ERROR_REGEXP]"><p class="error">[#ERROR_REGEXP]</p></IF>
+<!--[
     <label for="archive">[@COMMON.ARCHIVE]</label>
-      <input type="file" name="archive" id="archive" />
-		</li>
-	      </ul>
+      <input type="file" name="archive" id="archive" />]-->
+		<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+			<input type="hidden" name="do" value="import" />
+			<input type="hidden" name="lo" value="data" />
+			<input type="file" name="archive" size="40" />
+			<input class="button" type="submit" value="[@ADMIN.UPLOAD]" />
+		</form>
 		</fieldset>
-	<fieldset>
-		<legend>[@COMMON.VALIDATION]</legend>
-		<input class="button" type="submit" value="[@ADMIN.LOAD]" />&nbsp;&nbsp;&nbsp;<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.history.go(-1)" />
+	<fieldset></li>
+	      </ul>
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
 	</fieldset>
 </form>
 </IF>
