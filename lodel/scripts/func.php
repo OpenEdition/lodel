@@ -1200,6 +1200,20 @@ function getgenericfields(&$context)
 	return $context; // pas nécessaire le context est passé par référence
 }
 
+
+/**
+ * Analyse une url et retourne le chemin en local qu'elle contient éventuellement
+ * Cf. parse_url : élément 'path' du tableau retourné
+ *
+ * @param string $url 
+ * @return le chemin contenu dans l'URL
+ */
+function url_path($url)
+{
+	$url_parts = parse_url($url);
+	return $url_parts['path'];
+}
+
 // valeur de retour identifier ce script
 return 568;
 ?>
