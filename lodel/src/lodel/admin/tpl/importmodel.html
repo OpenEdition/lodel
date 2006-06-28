@@ -34,9 +34,13 @@
 </ul>
 <br />&nbsp;<br />
 <IF COND="[#SUCCESS] EQ 1">
-[@ADMIN.THE_EDITORIAL_MODEL_HAS_BEEN_SUCCESSFULY_INSTALLED]
-	<br />
+<fieldset>
+	<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
+	<p>[@ADMIN.THE_EDITORIAL_MODEL_HAS_BEEN_SUCCESSFULY_INSTALLED]</p>
+</fieldset>
+<fieldset>
 	<input class="button" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php';" />
+</fieldset>
 <ELSE/>
 	<fieldset>
 	<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
@@ -49,12 +53,10 @@
 		<IF COND="[#ERROR_READING]">
 			<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].</p>
 		</IF>
-		<h3>[@ADMIN.EM_INSTALL].</h3>
-		[@ADMIN.CHOOSE_EM].
+		<p>[@ADMIN.CHOOSE_EM]</p>
 		<LOOP NAME="files_model">
 			<BEFORE><dl></BEFORE>
 			<DO>
-				<hr />
 				<div>
 				<dt><strong>[#TITLE]</strong></dt>
 				<dd>[#DESCRIPTION]</dd>
@@ -62,27 +64,27 @@
 				<dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
 				<dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
 				<dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
-				<IF COND="[#WARNING_VERSION]">
+				<!--[<IF COND="[#WARNING_VERSION]">
 					<div>
 						<strong>[@ADMIN.VERSION] :</strong>[@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])]. [@ADMIN.VERIFY_COMPATIBILITY].
 					</div>
-				</IF>
+				</IF>]-->
 
-				<div style="text-align: right"><a href="index.php?do=importmodel&amp;lo=data&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong></a></div>
+				<div style="text-align: right"><a class="action"  href="index.php?do=importmodel&amp;lo=data&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong></a></div>
 				</div>
 			</DO>
 			<AFTER></dl></AFTER>
 		</LOOP>
-		<hr />
-		<p>[@ADD_A_MODEL_TO_THE_ABOVE_LIST] :</p>
+		<p>[@ADMIN.ADD_A_MODEL_TO_THE_ABOVE_LIST] :</p>
 		<IF COND="[#ERROR_UPLOAD]">
-			<strong>[@COMMON.ERROR]</strong> [@ADMIN.UPLOAD_IN]
+			<p class="error">[@ADMIN.ERROR_LOADING_FILE]</p>
 		</IF>
+			<IF COND="[#ERROR_REGEXP]"><p class="error">[@ADMIN.FILENAME_MUST_MATCH] model-<em>modelname</em>.zip ([@COMMON.EG] model-revorg.zip)</p></IF>
 		<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
 			<input type="hidden" name="do" value="importmodel" />
 			<input type="hidden" name="lo" value="data" />
-			<input type="file" name="archive" size="40" />
-			<input class="form" type="submit" value="[@ADMIN.UPLOAD]" />
+			<input type="file" name="archive" id="archive" size="40" />
+			<input class="button" type="submit" value="[@ADMIN.UPLOAD]" />
 		</form>
 	</IF>
 	</fieldset>
