@@ -97,31 +97,16 @@ class DataLogic
 		global $db;
 		require_once 'func.php';
 		$context['importdir'] = $GLOBALS['importdir'];
-		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-\w+-\d+.'. $this->fileExtension;
+		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-\w+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
 		$context['importdirs'] = array('CACHE');
 		if ($context['importdir']) {
   		$context['importdirs'][] = $context['importdir'];
 		}
-		//Si un fichier a été uploadé		
-		if($_FILES) {
-		$archive                 = $_FILES['archive']['tmp_name'];
-		$context['error_upload'] = $_FILES['archive']['error'];
-		}
-		// Upload du fichier
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($context['archive'])) {
-			$prefixre   = '(site|revue)';
-			$prefixunix = '{site,revue}';
-			$file       = $archive;
-			unset($_FILES);
-		// Ficher sur le disque
-		} elseif ($context['file'] && preg_match("/^(?:". str_replace("/", "\/", join('|', $context['importdirs'])). ")\/".$this->fileRegexp."$/", $context['file'], $result) && file_exists($context['file'])) {
-			$prefixre = $prefixunix = $result[1];
-			$file = $context['file'];
-		} else { // rien
-			$file = '';
-		}
+
+		$file = $this->_extractImport($context);
+
 		if ($file) { // Si on a bien spécifié un fichier
 			do { // control block
 
@@ -779,18 +764,22 @@ class DataLogic
 		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé			
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
-				$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
+				$context['error_regexp'] = 1;
+				return;
+				//$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
 			}
 			
 			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
-				die('ERROR: a problem occurs while moving the uploaded file.');
+				//die('ERROR: a problem occurs while moving the uploaded file.');
+				$context['error_upload'] = 1;
+				//return;
 			}
 			$file = ''; // on repropose la page
-		} elseif ($context['file'] && 
-							preg_match("/^(?:". str_replace("/", "\/", join("|", $GLOBALS['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
+		} elseif ($context['file']) {
+						if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
 							file_exists($context['file']))	{ // fichier sur le disque
-			$file = $context['file'];
-			$prefix = $result[1];
+							$file = $context['file'];
+							$prefix = $result[1];}
 		}	else	{ // rien
 			$file = '';
 		}
