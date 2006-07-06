@@ -93,7 +93,7 @@ class Controler
 		$do = $therequest['do'];
 
 		if ($do == 'back') {
-			require 'view.php';
+			require_once 'view.php';
 			View::back(2); //revient 2 rang en arrière dans l'historique.
 			return;
 		}
@@ -110,7 +110,7 @@ class Controler
 			$context['lo'] = $lo;
 
 			// get the various common parameters
-			require 'validfunc.php';
+			require_once 'validfunc.php';
 			foreach (array('class', 'classtype', 'type', 'textgroups') as $var) {
 				if ($therequest[$var]) {
 					if (!validfield($therequest[$var], $var))
@@ -159,7 +159,7 @@ class Controler
 			}
 
 			//Appel de la vue nécessaire
-			require 'view.php';
+			require_once 'view.php';
 			$view = &View::getView();
 			switch($ret) {
 				case '_back' :
@@ -173,7 +173,7 @@ class Controler
 					mystripslashes($context);
 					$logic->viewAction($context, $error); // in case anything is needed to be put in the context
 					$context['error'] = $error;
-					print_r($error);
+					//print_r($error);
 				case '_ok' :
 					if ($do == 'listAction') {
 						$view->renderCached($context, $lo);
@@ -189,7 +189,7 @@ class Controler
 				$view->render($context, $ret);
 			}
 		} else {
-			require 'view.php';
+			require_once 'view.php';
 			$view = &View::getView();
 			$view->renderCached($context, 'index');
 		}
