@@ -83,7 +83,7 @@ $lodelconfig="CACHE/lodelconfig-cfg.php";
 if ( !defined('PATH_SEPARATOR') ) {
     define('PATH_SEPARATOR', ( substr(PHP_OS, 0, 3) == 'WIN' ) ? ';' : ':');
 }
-ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
+ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . LODELROOT . "share$versionsuffix" . PATH_SEPARATOR . ini_get("include_path"));
 
 
 //
@@ -408,26 +408,37 @@ $dirs=array("CACHE"=>7,
 	    "lodel$versionsuffix/install/plateform"=>5,
 	    "lodel$versionsuffix/scripts"=>5,
 	    "lodel$versionsuffix/src"=>5,
-	    "lodeladmin$versionsuffix/images"=>5);
+	    "lodeladmin$versionsuffix/images"=>5,
+	    "share$versionsuffix/css"=>5,
+	    "share$versionsuffix/js"=>5,
+	    "share$versionsuffix/macros"=>5);
 
-$have_chmod=function_exists("chmod");
-	       
-$entete=0;
 foreach ($dirs as $dir => $mode) {
-  do { // block de control
-    if (!file_exists(LODELROOT.$dir)) { die("ERROR: the directory $dir does not exists. Check your distribution and/or report the bug."); }
-    if (testdirmode($dir,$mode)) break;
-    // let try to chmod
-    if ($have_chmod) {
-      @chmod (LODELROOT.$dir);
-      if (testdirmode($dir,$mode)) break;
-    }
-    if (!$entete) { probleme_droits_debut(); $entete=1; }
-    probleme_droits($dir,$mode);
-  } while(0);
-  if ($entete) { probleme_droits_fin(); return; }
+	if (!testdirmode($dir,$mode)) { // vérifie les droits sur le répertoire
+ 		if (!@file_exists(LODELROOT.$dir)){
+			$missing_dirs[] = $dir; // le répertoire n'existe pas
+		} else {/*
+			if (function_exists("chmod")) { // essaie de changer les droits
+				if ($mode == 7) {@chmod (LODELROOT.$dir, 0777);}
+				else { @chmod (LODELROOT.$dir, 0755);}
+				if (!testdirmode($dir,$mode)) { // raté !
+					$bad_rights_dirs[$dir] =$mode;
+				}
+			} else { // impossible d'attribuer les bons droits*/
+				if ($mode == 7) {$not_writable_dirs[] = $dir;}
+				else {$not_readable_dirs[] = $dir;}
+			//}
+		}
+	}
 }
 
+if ($missing_dirs || $not_writable_dirs || $not_readable_dirs){
+//print_r ($problem_dirs);
+	if (!$missing_dirs) $missing_dirs = array();
+	if(!$not_writable_dirs) $not_writable_dirs = array();
+	if(!$not_readable_dirs) $not_readable_dirs = array();
+	probleme_droits($missing_dirs, $not_writable_dirs, $not_readable_dirs);
+}
 //
 // Check PHP has the needed function 
 //
@@ -789,7 +800,7 @@ function guessfilemask() {
 function include_tpl($file)
 {
   global $langcache,$installlang;
-	echo "installang=$installlang";
+	//echo "installang=$installlang";
   extract($GLOBALS,EXTR_SKIP);
 	$installlang = $_REQUEST['installlang'];
 	if (!$installlang) $installlang="fr";
@@ -835,23 +846,14 @@ Please check your directory  tpl and the file tpl/<?php echo $filename; ?> exist
 function testdirmode($dir,$mode)
 
 {
-  if ($mode & 2) { // writeable ?
-    $testfile=LODELROOT.$dir."/tmp_install_test.tmp";
-    if (file_exists($testfile)) @unlink($testfile); // if I have not the write permission in the directory, I won't be able to do that.
-    $fh=@fopen($testfile,"w");
-    if (!$fh) return FALSE;
-    if (!(@fputs($fh,"Lodel is great\n"))) return FALSE;
-    fclose($fh);
-    if (!(@unlink($testfile))) return FALSE;
-  }
-  if ($mode & 4) { // readable ? (et executable)
-    if (substr($dir,0,1)!="/") $dir=LODELROOT.$dir;
-    $dh=@opendir($dir);
-    if (!$dh) return FALSE;
-    if (!(@readdir($dh))) return FALSE;
-    closedir($dh);
-  }    
-  return TRUE;
+	$dir = LODELROOT . $dir;
+	if ($mode == 7){
+		if (is_writable($dir)) { return true; }
+		else { return false; }
+	} elseif($mode == 5){
+		if (is_readable($dir)) { return true; }
+		else { return false; }
+	}
 }
 
 
@@ -869,7 +871,7 @@ if (!$langcache) {
   	}
 
   $messages=array(
-		  "version"=>sprintf($langcache[$installlang]['install.versionphp'],phpversion()),
+		  "version"=>sprintf($langcache[$installlang]['install.php_installation_or_configuration_error'],phpversion()),
   //'La version de php sur votre serveur ne permet pas un fonctionnement correct de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Versions recommandées : php 4.3 (ou supérieure), et inférieure à 5',
 
 		  "reading_lodelconfig"=>$langcache[$installlang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
@@ -902,47 +904,59 @@ if (!$langcache) {
   die();
 }
 
-
-function probleme_droits_debut()
-
-{
-  global $langcache,$installlang;
-?>
-<h2><?php echo $langcache[$installlang]['install.directories_access']; ?></h2>
-<p align="center">
-   <strong><?php echo $langcache[$installlang]['install.directories_access_speech']; ?></strong>
-</p>
-<ul>
-<?php }
-
-function probleme_droits($file,$mode)
+function probleme_droits($missing_dirs, $not_writable_dirs, $not_readable_dirs)
 
 {
-  global $langcache,$installlang;
+	global $langcache, $installoption;
+	$installlang = $_REQUEST['installlang'];
+	if (!$installlang) $installlang="fr";
 
-  echo "<li>".$langcache[$installlang]['install.directory'].": $file<br> ".$langcache[$installlang]['install.required_rights'];//."droits requis: lecture, exécution"; 
-  if (($mode & 2) == 2) echo ", <u>".$langcache[$installlang]['install.writing']."</u>";  // écriture
- echo "</li>";
+	if (!$langcache) {
+		if (!(@include ("tpl/install-lang-$installlang.html"))) problem_include("tpl/install-lang-$installlang.html");
+  	}
+	include 'tpl/install-openhtml.html';
+	echo '<html><head></head><body>';
+	echo '<h2>' . $langcache[$installlang]['install.check_directories'] . '</h2>';
+	
+	echo '<p><strong>' . $langcache[$installlang]['install.directories_access_speech'] . '</strong></p>';
+
+	if (!empty($missing_dirs)) {
+		echo '<p><strong>' . $langcache[$installlang]['install.missing_directories'] . '</strong> :</p><ul>';
+		foreach ($missing_dirs as $dir) {
+			echo '<li>' . $dir . '</li>';
+		}
+		echo '</ul>';
+	}
+
+	if (!empty($not_writable_dirs)) {
+		echo '<p><strong>' . $langcache[$installlang]['install.not_writable_directories'] . '</strong> :</p><ul>';
+		foreach ($not_writable_dirs as $dir) {
+			echo '<li>' . $dir  . '</li>';
+		}
+		echo '</ul>';
+	}
+
+	if (!empty($not_readable_dirs)) {
+		echo '<p><strong>' . $langcache[$installlang]['install.not_readable_directories'] . '</strong> :</p><ul>';
+		foreach ($not_readable_dirs as $dir) {
+			echo '<li>' . $dir  . '</li>';
+		}
+		echo '</ul>';
+	}
+	
+	echo '
+	<p>
+	<form method="post" action="install.php">
+	<input type="hidden" name="tache" value="droits">
+	<input type="hidden" name="installoption" value="' . $installoption . '">
+	<input type="hidden" name="installlang" value="' . $installlang . '">
+	<input type="submit" value="continuer">
+	</form>
+	</p>
+	<p><strong>N.B. :&nbsp;</strong>' . $langcache[$installlang]['install.notice_security_directory_rights'] . '</p>';
+	include 'tpl/install-closehtml.html';
+	exit;
 }
-
-function probleme_droits_fin()
-
-{
-  global $installoption,$langcache,$installlang;
-?>
-</ul>
-<p align="center">
-<form method="post" action="install.php">
-<input type="hidden" name="tache" value="droits">
-<input type="hidden" name="installoption" value="<?php echo $installoption; ?>">
-<input type="hidden" name="installlang" value="<?php echo $installlang; ?>">
-<input type="submit" value="continuer">
-</form>
-</p>
-<p><?php echo $langcache[$installlang]['install.notice_security_directory_rights']; ?></p>
-<?php
- }
-
 
 function makeSelectLang()
 
@@ -959,5 +973,3 @@ function makeSelectLang()
 }
 
 ?>
-
-
