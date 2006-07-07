@@ -36,53 +36,53 @@ include "tpl/install-openhtml.html";
 <h2>[@INSTALL.DATABASE]</h2>
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-<p align="justify">
-[@INSTALL.CHOOSE_EXISTING_DATABASE_OR_CREATE_NEW].<br/>[@INSTALL.PROVIDER_USUALLY_CREATES_DATABASE_SEE_TECHNICAL_SUPPORT].</p>
+<p>
+[@INSTALL.CHOOSE_EXISTING_DATABASE_OR_CREATE_NEW]<br/>[@INSTALL.PROVIDER_USUALLY_CREATES_DATABASE_SEE_TECHNICAL_SUPPORT]</p>
 <?php } else { // OPTION 2 ?>
-<p align="justify">
+<p>
 [@INSTALL.CAN_USE_EXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
 </p>
 <code>
 CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>;
 </code>
 <p>
-[@INSTALL.ANYWAY_GIVE_RIGHTS_ALL_TO_DATABASE_USER] "<?php echo $dbusername; ?>":
+[@INSTALL.ANYWAY_GIVE_RIGHTS_ALL_TO_DATABASE_USER] "<?php echo $dbusername; ?>" :
 <p>
 <code>
 GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>.* TO <?php echo "$dbusername@$dbhost";?>;
 </code>
-<p align="justify">
-[@INSTALL.WHY_TABLE_PREFIX].
+<p>
+[@INSTALL.WHY_TABLE_PREFIX]
 </p>
-<p align="justify">
+<p>
 [@INSTALL.SINGLE_LODEL_INSTALLATION_CAN_MANAGE_SEVERAL_WEBSITES_AND_CHOOSE] : 
 <ul>
-<li>[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES_ADVANTAGES_DISADVANTAGES].
-<li>[@INSTALL.SINGLE_DATABASE_FOR_SINGLE_WEBSITE_PLUS_MAIN_DATABASE_RECOMMENDED_SOLUTION] !
+<li>[@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES_ADVANTAGES_DISADVANTAGES]
+<li>[@INSTALL.SINGLE_DATABASE_FOR_SINGLE_WEBSITE_PLUS_MAIN_DATABASE_RECOMMENDED_SOLUTION]
 </ul>
 </p>
 <?php } // fin OPTION 2 ?>
 
 <?php  if ($erreur_createdatabase) { ?>
-<p style="border : 1px solid red">
+<p class="error">
 <strong>[@INSTALL.ERROR]</strong>: [@INSTALL.UNABLE_TO_CREATE_OR_ACCESS_DATABASE_ERROR_IS|sprintf($database)] : <?php  echo mysql_error(); ?>
 </p>
 <?php } ?>
 
 <?php  if ($erreur_usedatabase) { ?>
-<p style="border : 1px solid red">
+<p class="error">
 <strong>[@INSTALL.ERROR]</strong>: [@INSTALL.UNABLE_TO_USE_DATABASE_CHECK_DATABASEUSER_RIGHTS_ERROR_IS] : <?php  echo mysql_error(); ?>
 </p> 
 <?php } ?>
 
 <?php  if ($erreur_createtables) { ?>
-<p style="border : 1px solid red">
-<strong>[@INSTALL.ERROR]</strong>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo $erreur_createtables; ?>
+<p class="error">
+<strong>[@INSTALL.ERROR]</strong>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo mysql_error(); ?>
 </p>
 <?php } ?>
 
 <?php  if ($erreur_tablesexist) { ?> 
-<p style="border : 1px solid red">
+<p class="error">
 <strong>[@INSTALL.WARNING]</strong>: [@INSTALL.SELECTED_DATABASE_CONTENT_DATA_FOR_LODEL_YOU_MAY_SAVE_DATAS_OR_ERASE_OR_SELECT_ANOTHER_DATABASES]
 </p>
 <form method="post" action="install.php">
@@ -93,8 +93,6 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 </form>
 <br/>
 <?php } ?>
-
-<hr style="width: 100%; height: 2px;" />
 
 <form method="post" action="install.php">
 <?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
