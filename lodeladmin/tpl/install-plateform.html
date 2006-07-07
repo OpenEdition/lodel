@@ -35,12 +35,13 @@ include("tpl/install-openhtml.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 
-<h2>[@INSTALL.CHOOSE_SERVER_CONFIGURATION].</h2>
-<p align="justify">
-	[@INSTALL.CHOOSE_SERVER_CONFIGURATION_TYPE_COMPATIBLE_WITH_YOUR_PROVIDER] :
-</p>
-<hr style="width: 100%; height: 2px;">
+<h2>[@INSTALL.CHOOSE_SERVER_CONFIGURATION]</h2>
+<p>
+	[@INSTALL.CHOOSE_SERVER_CONFIGURATION_TYPE_COMPATIBLE_WITH_YOUR_PROVIDER]</p>
+
 <form method="post" action="install.php">
+	<fieldset>
+	<legend>[@INSTALL.CHOOSE_SERVER_CONFIGURATION]</legend>
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="plateform" />
 	<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
@@ -70,7 +71,8 @@ include("tpl/install-openhtml.html");
 </table>
 <br />
 	<input type="submit" value="[@INSTALL.CONTINUE]" />
+</fieldset>
 </form>
-<p align="justify">[@INSTALL.HOWTO_CONFIGURE_TO_EASE_INSTALLATION].</p>
-<p align="justify">[@INSTALL.IF_INSTALLATION_SUCCESSFULL_ON_UNLISTED_PROVIDER_LET_IT_KNOWN].</p>
+<p>[@INSTALL.HOWTO_CONFIGURE_TO_EASE_INSTALLATION]</p>
+<p>[@INSTALL.IF_INSTALLATION_SUCCESSFULL_ON_UNLISTED_PROVIDER_LET_IT_KNOWN]</p>
 <?php  include("tpl/install-closehtml.html"); ?>
