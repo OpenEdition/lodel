@@ -2,8 +2,10 @@
 $current = 'admin';
 include 'tpl/install-openhtml.html';
 ?>
-<h2>[@INSTALL.CREATE_INITIAL_ADMIN_AND_CHOOSE_LOGIN_PASSWORD].</h2>
+<h2>[@INSTALL.CREATE_INITIAL_ADMIN]</h2>
 <!--[ ce fichier n'est pas un template ]-->
+
+<p>[@INSTALL.PLEASE_CHOOSE_LOGIN_PASSWORD]</p>
 
 <?php  if ($erreur_create) { ?> 
 	<strong>[@INSTALL.ERROR]</strong>:&nbsp;
@@ -11,16 +13,27 @@ include 'tpl/install-openhtml.html';
 	<?php  echo mysql_error(); } ?>
 
 <form method="post" action="install.php">
+	<fieldset>
+  <legend>[@INSTALL.CREATE_INITIAL_ADMIN]</legend>
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="admin" />
 	<label for="adminusername">[@INSTALL.LOGIN] :</label>
 	<input type="text" size="20" name="adminusername" id="adminusername" value="<?php  echo $adminusername; ?>" />
+	<?php  if ($erreur_empty_user_or_passwd) { ?>
+		<strong>[@INSTALL.ERROR]&nbsp;:</strong>&nbsp;
+		[@INSTALL.PASSWORD_AND_USERNAME_MUST_NOT_BE_EMPTY] 
+	<?php } ?>
 	<label for="adminpasswd">[@INSTALL.PASSWORD] :</label>
 	<input type="password" size="20" name="adminpasswd" id="adminpasswd" value="" />
+	<?php  if ($erreur_admin_passwd) { ?>
+		<strong>[@INSTALL.ERROR]&nbsp;:</strong>&nbsp;
+		[@INSTALL.ERREUR_ADMIN_PASSWD] 
+	<?php } ?>
+	
 	<label for="adminpasswd">[@INSTALL.CONFIRM_PASSWORD]:</label>
 	<input type="password" size="20" name="adminpasswd2" id="adminpasswd2" value="" />
 	<?php  if ($erreur_confirm_passwd) { ?>
-		<strong>[@INSTALL.ERROR]</strong>:&nbsp;
+		<strong>[@INSTALL.ERROR]&nbsp;:</strong>&nbsp;
 		[@INSTALL.THE_TWO_PASSWD_ARE_NOT_IDENTICAL] 
 	<?php } ?>
 	<label for="lang">[@INSTALL.LANGUAGE]:</label>
@@ -28,6 +41,7 @@ include 'tpl/install-openhtml.html';
 		<?php makeSelectLang(); ?>
 	</select>
 	<input type="submit" value="[@INSTALL.CONTINUE]" />
+</fieldset>
 </form>
 
 <!--[ Inclusion du template de fermeture HTML ]-->
