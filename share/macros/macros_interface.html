@@ -82,7 +82,9 @@
 	<LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER.GUI_COMPLEXITY]" LIMIT="0,1">
 		<fieldset>
 			<legend>
-			<MACRO NAME="INTERTITLE">
+			<LOOP NAME="getGroupInfo" TABLE="tablefieldgroups" WHERE="id = [#IDGROUP]">
+			<MACRO NAME="INTERTITLE" />
+			</LOOP>
 			</legend>
 	</LOOP>
 	<LOOP NAME="edition_fields">
