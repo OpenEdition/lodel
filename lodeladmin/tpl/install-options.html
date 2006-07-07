@@ -41,7 +41,7 @@ include 'tpl/install-openhtml.html';
 		[@INSTALL.UNABLE_TO_READ_DIRECTORY_BY_WEBSERVER|sprintf($importdir)].
 	</p>
 <?php } ?>
-<p>[@INSTALL.OPTIONS_ALLOW_ACUTE_CONTROL_OF_LODEL_DEFAULT_VALUES_FIT_FOR_MANY_WEBSITES] :</p>
+<p>[@INSTALL.OPTIONS_ALLOW_ACUTE_CONTROL_OF_LODEL_DEFAULT_VALUES_FIT_FOR_MANY_WEBSITES]</p>
 
 <form method="post" action="install.php">
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
@@ -57,7 +57,7 @@ include 'tpl/install-openhtml.html';
 	<tr>
 		<td>
 			<p><strong>[@INSTALL.FILE_RIGHTS] :</strong></p>
-			<p>[@INSTALL.COMMENT_ABOUT_FILE_RIGHTS_FOR_LODEL].</p>
+			<p>[@INSTALL.COMMENT_ABOUT_FILE_RIGHTS_FOR_LODEL]</p>
 			<table cellspacing="0" cellpadding="0">
 				<tr>
 					<td>[@INSTALL.GROUP]</td>
@@ -85,11 +85,11 @@ include 'tpl/install-openhtml.html';
 					[@INSTALL.TO_USE_SERVOO_IMPORT_OR_LODEL_BACKUP_SYSTEM_PLEASE_CHOOSE_ONE_OF_THESE_TWO_OPTIONS] :
 				</dt>
 				<dd>
-					<input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >[@INSTALL.TO_USE_PCLZIP_CHECK_ZLIB_EXTENSION_IS_INSTALLED] <?php if (function_exists('gzopen')) { ?>([@INSTALL.IT_SEEMS_SO]) <?php } else { ?>(<strong>[@INSTALL.IT_DOESNT_SEEM_SO]</strong>)<?php } ?>
+					<input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >[@INSTALL.TO_USE_PCLZIP_CHECK_ZLIB_EXTENSION_IS_INSTALLED] <?php if (function_exists('gzopen')) { ?>,[@INSTALL.IT_SEEMS_SO]. <?php } else { ?>(<strong>[@INSTALL.IT_DOESNT_SEEM_SO]</strong>)<?php } ?>
 				</dd>
 				<dd>
 					<input type="radio" name="pclzip" value="cmd" <?php if ($unzipcmd!='pclzip' || $zipcmd!='pclzip') { echo "checked";}?> > 
-					[@INSTALL.TO_USE_UNIX_ZIP_UNZIP_COMMAND_SPECIFY_ACCESS_PATH_TO_COMMAND_WARNING_PHP_CONFIGURATION_MAY_FORBID_THIS_SOLUTION].
+					[@INSTALL.TO_USE_UNIX_ZIP_UNZIP_COMMAND_SPECIFY_ACCESS_PATH_TO_COMMAND_WARNING_PHP_CONFIGURATION_MAY_FORBID_THIS_SOLUTION]
 					<br />&nbsp;<br />
 				</dd>
 			</dl>
@@ -103,7 +103,7 @@ include 'tpl/install-openhtml.html';
 	<tr>
 		<td>
 			<p><strong>[@INSTALL.SCRIPTS_EXTENSIONS] :</strong></p>
-			<p>[@INSTALL.HOWTO_ON_SCRIPTS_EXTENSIONS_CHOOSE_PHP_OR_HTML_EXTENSIONS].</p>
+			<p>[@INSTALL.HOWTO_ON_SCRIPTS_EXTENSIONS_CHOOSE_PHP_OR_HTML_EXTENSIONS]</p>
 			<table cellspacing="0" cellpadding="0">
 				<tr>
 					<td>.php :</td><td><input type="radio" name="newextensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
@@ -118,7 +118,7 @@ include 'tpl/install-openhtml.html';
 	<tr>
 		<td>
 			<p><strong>[@INSTALL.CONTACT_IF_TEMPLATES_BUG] :</strong></p>
-			<p>[@INSTALL.HOWTO_AUTOMATIC_ACCOUNT_ON_BUGS_WHEN_ERROR_DONT_APPEAR_ON_SCREEN].</p>
+			<p>[@INSTALL.HOWTO_AUTOMATIC_ACCOUNT_ON_BUGS_WHEN_ERROR_DONT_APPEAR_ON_SCREEN]</p>
 			<input type="text" size="60" name="newcontactbug" value="<?php echo $contactbug; ?>">
 			<br />&nbsp;<br />
 		</td>
@@ -126,7 +126,7 @@ include 'tpl/install-openhtml.html';
 	<tr>
 		<td>
 			<p><strong>[@INSTALL.USE_SYMBOLIC_LINKS] :</strong></p>
-			<p>[@INSTALL.HOWTO_SYMBOLIC_LINKS_IN_LODEL].</p>
+			<p>[@INSTALL.HOWTO_SYMBOLIC_LINKS_IN_LODEL]</p>
 			[@INSTALL.YES] :&nbsp;
 			<input type="radio" name="newusesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> >
 			<br />
@@ -138,8 +138,8 @@ include 'tpl/install-openhtml.html';
 	<tr>
 		<td>
 			<p><strong>[@INSTALL.IMPORT_DIRECTORY] :</strong></p>
-			<p>[@INSTALL.HOWTO_IMPORT_HUGE_FILES_AND_DATABASE] !</p>
-			<p>[@INSTALL.SPECIFY_ABSOLUTE_PATH_OUTSIDE_LODEL_FILE_SYSTEM_DIRECTORY_MUST_BE_READEABLE_BY_WEBSERVER_SECURITY_WARNING_OUTSIDE_WEB_ZONE]:</p>
+			<p>[@INSTALL.HOWTO_IMPORT_HUGE_FILES_AND_DATABASE]</p>
+			<p>[@INSTALL.SPECIFY_ABSOLUTE_PATH_OUTSIDE_LODEL_FILE_SYSTEM_DIRECTORY_MUST_BE_READEABLE_BY_WEBSERVER_SECURITY_WARNING_OUTSIDE_WEB_ZONE]</p>
 			<input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>" />
 			<br />&nbsp;<br />
 		</td>
@@ -150,7 +150,7 @@ include 'tpl/install-openhtml.html';
 				<strong>[@INSTALL.URL_FORMAT]</strong>
 			</p>
 			<p>
-				[@INSTALL.SPECIFY_URL_FORMAT_YOU_CAN_CHOOSE_ONE_BETWEEN_PATH_FORMAT_LEFTID_FORMAT_RIGHTID_FORMAT_SEE_BELOW]
+				[@INSTALL.SPECIFY_URL_FORMAT_YOU_CAN_CHOOSE_ONE_BETWEEN_PATH_FORMAT_LEFTID_FORMAT_RIGHTID_FORMAT_SEE_BELOW] :
 			</p>
 			<input type="radio" name="newuri" value="path" <? if(URI=="path") echo "checked";?> />
 			[@INSTALL.PATH_FORMAT]&nbsp;
