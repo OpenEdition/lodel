@@ -268,6 +268,18 @@ if ($tache=="database") {
 if ($tache=="admin") {
   @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
 
+ if(empty($adminusername) || empty($adminpasswd)) {
+	$erreur_empty_user_or_passwd=true;
+	include_tpl("install-admin.html");
+	return;
+  }
+
+if (strlen($adminpasswd) < 3 || strlen($adminpasswd) > 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $adminpasswd)) {
+	$erreur_admin_passwd=true;
+	include_tpl("install-admin.html");
+	return;	
+}
+
   if ($adminpasswd2 && $adminpasswd2!=$adminpasswd) {
     $erreur_confirm_passwd=true;
     include_tpl("install-admin.html");
