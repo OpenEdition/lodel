@@ -120,8 +120,8 @@ function cleanEntities ()
 		}
 		
 		if (is_array($ids)) {
-			require 'logic.php';
-			require 'func.php';
+			require_once 'logic.php';
+			require_once 'func.php';
 			$logic = &getLogic('entities');
 			foreach($ids as $id) {
 				$context['id'] = $id;
