@@ -82,7 +82,7 @@ function authenticate($level = 0, $mode = "")
 		if (!$name) {
 			break;
 		}
-		require_once "connect.php";
+		require_once 'connect.php';
 		usemaindb();
 		
 
@@ -255,22 +255,46 @@ $session   = '';
 
 // tres important d'initialiser le context.
 $context = array ('version' => $GLOBALS['version'],
-									'shareurl' => $GLOBALS['shareurl'],
-									'extensionscripts' => $GLOBALS['extensionscripts'], 
-									'currenturl' => 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
-									'siteroot' => defined('SITEROOT') ? SITEROOT : '',
-									'site' => $site,
-									'charset' => getacceptedcharset($charset),
-									'langcache' => array ()); 
+			'shareurl' => $GLOBALS['shareurl'],
+			'extensionscripts' => $GLOBALS['extensionscripts'], 
+			'currenturl' => 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
+			'siteroot' => defined('SITEROOT') ? SITEROOT : '',
+			'site' => $site,
+			'charset' => getacceptedcharset($charset),
+			'langcache' => array ()); 
+
+if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale (options définies pour un site)
+	$context['options'] = array ();
+	push_into_context ($context);
+	//$context['oai'] = array ();
+	//push_into_context ($context);
+}
 
 if (!$GLOBALS['filemask']) {
 	$GLOBALS['filemask'] = "0700";
 }
-header("Content-type: text/html; charset=". $context['charset']);
 
+header("Content-type: text/html; charset=". $context['charset']);
+print_r($logic);
 // Langue ?
 $GLOBALS['la'] = $_GET['la'] ? $_GET['la'] : $_POST['la'];
 if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['la'])) {
 	$GLOBALS['la'] = '';
 }
+
+// Pour mettre dans le context les champs de la table options (title et value)
+function push_into_context (&$context, $table='') {
+	global $db;
+	require_once 'connect.php';
+	usecurrentdb();
+	$result = $db->execute(lq("SELECT title, value FROM #_TP_options". " WHERE type !='passwd' AND type !='username' AND status>0")) or dberror();
+	
+	while(!$result->EOF) {
+		$title = $result->fields['title'];
+		$value = $result->fields['value'];
+		$context['options'] [$title] = $value;
+		$result->MoveNext();
+	}
+}
+
 ?>
