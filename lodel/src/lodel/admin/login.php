@@ -39,14 +39,14 @@
  * @package lodel/source/lodel/admin
  */
 
-include 'siteconfig.php';
-include 'auth.php';
+require_once 'siteconfig.php';
+require_once 'auth.php';
 
 if ($_POST['login']) {
 	include 'func.php';
 	extract_post();
-	include 'connect.php';
-	include 'loginfunc.php';
+	require_once 'connect.php';
+	require_once 'loginfunc.php';
 	do {
 		if (!check_auth($context['login'], $context['passwd'], $site)) {
 			$context['error_login'] = 1;
@@ -74,7 +74,7 @@ if ($_POST['login']) {
 	} while (0);
 }
 
-include_once 'connect.php';
+require_once 'connect.php';
 $context['passwd'] = $passwd = 0;
 // variable: sitebloque
 /*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
@@ -91,7 +91,7 @@ $context['error_timeout']   = $error_timeout;
 $context['error_privilege'] = $error_privilege;
 
 
-require 'view.php';
+require_once 'view.php';
 $view = &View::getView();
 $view->render($context, 'login');
 ?>
