@@ -194,7 +194,7 @@ class Entities_EditionLogic extends GenericLogic
 		/////
 		$ret = GenericLogic::viewAction($context, $error);
 
-		if (!$context['id'] && !$error) { // add
+		if ((!$context['id'] || preg_match ("/servoo.*/", $context['creationmethod'])) && !$error) { // add
 			$daotablefields = &getDAO("tablefields");
 			$fields = $daotablefields->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
