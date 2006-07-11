@@ -194,10 +194,12 @@ class Entities_EditionLogic extends GenericLogic
 		/////
 		$ret = GenericLogic::viewAction($context, $error);
 
-		if ((!$context['id'] || preg_match ("/servoo.*/", $context['creationmethod'])) && !$error) { // add
+		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
+		if (!$context['id'] && !$error) { // add : récupération des valeurs par défaut
 			$daotablefields = &getDAO("tablefields");
 			$fields = $daotablefields->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
+				if (empty($context['data'][$field->name]))
 				$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
@@ -261,6 +263,16 @@ class Entities_EditionLogic extends GenericLogic
 		$class = $context['class']=$votype->class;
 		if (!$class) {
 			die ("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
+		}
+		
+		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
+		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
+			$daotablefields = &getDAO("tablefields");
+			$fields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
+			foreach($fields as $field) {
+				if (empty($context['data'][$field->name]))
+				$context['data'][$field->name] = $field->defaultvalue;
+			}
 		}
 
 		if (!$this->validateFields($context, $error)) {
