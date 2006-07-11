@@ -1402,7 +1402,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				</div>
 				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
-					<FUNC NAME="STATUS_ICON" STATUS="1">[@EDITION.WEBSITE_BASE]
+					<div class="entityIcons">
+					<FUNC NAME="STATUS_ICON" STATUS="1">
+					<img src="[#SHAREURL]/images/root.gif" alt="[@EDITION.WEBSITE_BASE]" class="associatedIcon" />
+					</div>
+					[@EDITION.WEBSITE_BASE]
 				</ALTERNATIVE>
 			</LOOP>
 		</li>
@@ -1744,12 +1748,18 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFFUNC NAME="GET_ASSOCIATED_ICON" REQUIRED="idtype, table">
 <LET VAR="table"><?php echo $GLOBALS['tp'];?>[#TABLE]</LET>
+<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')] OR [#CURRENTURL|strpos('lodeladmin')]">
+	<LET VAR="imgdir">../../</LET>
+<ELSE />
+	<LET VAR="imgdir"></LET>
+</IF>
+
 	<LOOP NAME="getTypeIcon" SELECT="icon" TABLE="[#TABLE]" WHERE="id = '[#IDTYPE]'">
 		<IF COND="[#ICON]">
-			<img src="../../[#ICON]" alt="" class="associatedIcon" />
+			<img src="[#IMGDIR][#ICON]" alt="" class="associatedIcon" />
 		<ELSE />
 			<LOOP SELECT="classes.icon AS classicon" NAME="getClassIcon" TABLE="[#TABLE], classes" WHERE="[#TABLE].class = classes.class AND [#TABLE].id = '[#IDTYPE]'">
-				<img src="../../[#CLASSICON]" alt=""  class="associatedIcon" />
+				<img src="[#IMGDIR][#CLASSICON]" alt=""  class="associatedIcon" />
 			</LOOP>
 		</IF>
 	</LOOP>
