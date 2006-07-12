@@ -43,11 +43,15 @@
  * Mise en cache des options (table Option) dans un fichier
  *
  * En plus de créer le fichier de cache des options, un tableau de ces options est aussi créé
+ * Tableau de la forme [groupname.optionname][value]
  *
+ * Si la fonction est appelée sans argument, le fichier n'est pas écrit et le tableau est de la forme [groupname][optionname][value] : utilisé pour passer les options dans le $context
  * @param string $optionsfile le nom du fichier cache des options
  * @return array le tableau des options
  */
-function cacheOptionsInFile($optionsfile)
+
+require_once 'func.php';
+function cacheOptionsInFile($optionsfile='')
 {
 	global $db;
 	do {
@@ -72,7 +76,12 @@ function cacheOptionsInFile($optionsfile)
 		}
 	}	while ($ids);
 
-	$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 ORDER BY rank");
+	if (!empty($optionsfile)) {
+		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 ORDER BY rank");
+	} else { // pas les username et passwd dans le context
+		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
+	}
+
 	$result = $db->execute($sql);
 	$txt = "<"."?php\n\$options_cache=array(\n";
 	while (!$result->EOF)	{
@@ -80,15 +89,23 @@ function cacheOptionsInFile($optionsfile)
 		$name = $result->fields['name'];
 		$idgroup = $result->fields['idgroup'];
 		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
-		$optname = $arr[$idgroup].".".$name;
-		clean_request_variable($value);
-		$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
-		$options_cache[$optname] = addslashes($value);
+		if (!empty($optionsfile)) {
+			$optname = $arr[$idgroup].".".$name;
+			clean_request_variable($value);
+			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+			$options_cache[$optname] = addslashes($value);
+		} else {
+			$optname = $name;
+			clean_request_variable($value);
+			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+			$papa = $arr[$idgroup];
+			$options_cache[$papa][$optname] = addslashes($value);
+		}
 		$result->MoveNext();
 	}
 	$txt .= ");?".">";
 	#echo "<textarea cols=100 rows=10>$txt</textarea>";
-	$ret = writefile($optionsfile, $txt);
-	return $options_cache;
+	if (!empty($optionsfile)) { $ret = writefile($optionsfile, $txt); }
+	return $options_cache; 
 }
 ?>
