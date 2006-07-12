@@ -40,14 +40,14 @@
  */
 
 
-require 'siteconfig.php';
-require 'auth.php';
+require_once 'siteconfig.php';
+require_once 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
-require 'func.php';
-require 'taskfunc.php';
-require 'xmlimport.php';
-require 'class.checkImportHandler.php';
+require_once 'func.php';
+require_once 'taskfunc.php';
+require_once 'xmlimport.php';
+require_once 'class.checkImportHandler.php';
 $task              = gettask($idtask);
 $context['idtask'] = $idtask;
 gettypeandclassfromtask($task, $context);
@@ -62,7 +62,7 @@ $parser->parse($text, $handler);
 $context['tablecontents'] = $handler->contents();
 $context['multidoc']      = $handler->multidoc;
 
-require 'view.php';
+require_once 'view.php';
 $view = &View::getView();
 $view->render($context, 'checkimport');
 
