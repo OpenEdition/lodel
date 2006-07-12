@@ -42,7 +42,7 @@
 
 
 include ('siteconfig.php');
-include ('auth.php');
+require_once ('auth.php');
 
 // Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
 if ($_GET['page'] == 'backend' && $_GET['format'] ) {
@@ -57,7 +57,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
 	recordurl();
 	$context['id'] = $id = intval($_GET['id']);
-	require 'view.php';
+	require_once 'view.php';
 	$view = &View::getView();
 
 	if ($view->renderIfCacheIsValid()) { 
@@ -94,7 +94,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	return;
 } else {
 	
-	require 'controler.php';
+	require_once 'controler.php';
 	// automatic logic
 	$do = $_GET['do'] ? $_GET['do'] : $_POST['do'];
 	$lo = $_GET['lo'] ? $_GET['lo'] : $_POST['lo'];

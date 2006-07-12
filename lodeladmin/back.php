@@ -39,10 +39,10 @@
  * @package lodeladmin
  */
 
-require 'lodelconfig.php';
-require 'auth.php';
+require_once 'lodelconfig.php';
+require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-require 'func.php';
+require_once 'func.php';
 
 if ($_REQUEST['back']) {
 	$back = intval($back);

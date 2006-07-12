@@ -39,11 +39,11 @@
  * @package lodel/source/lodel/edition
  */
 
-require 'siteconfig.php';
-require 'auth.php';
+require_once 'siteconfig.php';
+require_once 'auth.php';
 authenticate(LEVEL_REDACTOR);
-require 'func.php';
-require 'utf8.php'; // conversion des caracteres
+require_once 'func.php';
+require_once 'utf8.php'; // conversion des caracteres
 
 if ($_POST) {
 	$therequest = &$_POST;
@@ -83,7 +83,7 @@ if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tm
 	$source          = '';
 }
 
-require 'servoofunc.php';
+require_once 'servoofunc.php';
 $client = new ServOO;
 
 if ($client->error_message) {
@@ -133,7 +133,7 @@ if ($client->error_message) {
 			die(htmlentities($xhtml));
 		}
 
-		require 'balises.php';
+		require_once 'balises.php';
 		$fileconverted = $source. '.converted';
 		if (!writefile($fileconverted, $xhtml)) {
 			$context['error'] = 'unable to write converted file';
@@ -153,7 +153,7 @@ if ($client->error_message) {
 			$row['idtype']        = $context['idtype'];
 		}
 		
-		require 'taskfunc.php';
+		require_once 'taskfunc.php';
 		$idtask = maketask("Import $file1_name", 3, $row);
 
 		header("Location: checkimport.php?idtask=". $idtask);
@@ -163,7 +163,7 @@ if ($client->error_message) {
 
 $context['url'] = 'oochargement.php';
 
-require 'view.php';
+require_once 'view.php';
 $view = &View::getView();
 $view->render($context, 'oochargement', !(bool)$_POST);
 
