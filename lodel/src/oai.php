@@ -48,9 +48,9 @@
  * @version CVS:$Id:
  * @package lodel/source
  */
-require 'siteconfig.php';
-require 'auth.php';
-require 'func.php';
+require_once 'siteconfig.php';
+require_once 'auth.php';
+require_once 'func.php';
 authenticate();
 
 require_once 'connect.php';
