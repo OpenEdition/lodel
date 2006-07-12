@@ -75,7 +75,7 @@
 		<li>
 		  <p>[@ADMIN.LOAD_FILE_POST_PHP_CONFIGURATION] : <?php echo ini_get('post_max_size'); ?></p>
       <IF COND="[#ERROR_UPLOAD]"><p class="error">[@ADMIN.ERROR_LOADING_FILE]</p></IF>
-	<IF COND="[#ERROR_REGEXP]"><p class="error">[#ERROR_REGEXP]</p></IF>
+	<IF COND="[#ERROR_REGEXP]"><p class="error">[@ADMIN.FILENAME_MUST_MATCH] site-<em>sitename</em>-<em>date</em>.zip ([@COMMON.EG] site-revorg08-140706.zip)</p></IF>
 <!--[
     <label for="archive">[@COMMON.ARCHIVE]</label>
       <input type="file" name="archive" id="archive" />]-->
