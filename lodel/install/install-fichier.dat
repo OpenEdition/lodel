@@ -246,7 +246,7 @@ ln tpl/transfer.html
 
 #ln importmodel.php
 ln tpl/importmodel.html
-ln tpl/importmodel-frominstall.html
+#ln tpl/importmodel-frominstall.html
 #ln backupmodel.php
 ln tpl/backupmodel.html
 
