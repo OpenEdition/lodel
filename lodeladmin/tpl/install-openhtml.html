@@ -30,13 +30,67 @@
 	echo $GLOBALS['langcache'][$installlang]['install.install_lodel'];
 ?>
 </title>
-<link rel="stylesheet" type="text/css" href="css/install.css" />
+<link rel="stylesheet" type="text/css" href="../share/css/styles_lodel.css" />
+<style type="text/css">
+	body{
+		
+	}
+
+	h3{
+		font-size: 120%;
+	}
+
+	h4{
+		font-size: 110%;
+		color: #0075ab;
+	}
+	
+	li{
+		margin-bottom: 1.5ex;
+	}
+	
+	code{
+		font-size: 130%;
+	}
+
+	fieldset.install{
+		margin: 4em 0;
+	}
+
+	fieldset.install.database label{
+		display: inline;
+	}
+
+	#bandeau{
+		color: #333;
+		padding: 0 50px .4em 50px;
+		background: #cbcec5 url("../share/images/bg_top.png") top left repeat-x;
+	}	
+
+	#install{
+		color: #666;
+	}
+
+	#lodel{
+		margin-left: -50px;
+	}	
+
+	#main{
+		background: #fff;
+		padding: 50px;
+	}
+
+	#main dl dd{
+		text-align: justify;
+		margin: 1ex 0 2ex 0;
+	}
+	
+	#db{
+		list-style: none;
+	}
+</style>
 </head>
 <body>
-
-<h1 id="logo"><img src="images/install_bandeau.jpg" alt="<?php echo $GLOBALS['langcache'][$installlang]['install.lodel_electronic_edition_software'];?>" /></h1>
-<h2 id="install"><?php echo $GLOBALS['langcache'][$installlang]['install.installation']; ?></h2>
-
 <?php
 switch($current){
 case "plateform":
@@ -77,6 +131,8 @@ default:
 }
 ?>
 <div id="bandeau">
-	<h3><?php echo $msg; ?></h3>
+	<h1 id="lodel"><img src="../share/images/lodel.png" alt="<?php echo $GLOBALS['langcache'][$installlang]['install.lodel_electronic_edition_software'];?>" /></h1>
+	<h2 id="install"><?php echo $GLOBALS['langcache'][$installlang]['install.installation']; ?></h2>
+	<h3><?php echo "$msg  $current"; ?></h3>
 </div>
 <div id="main">

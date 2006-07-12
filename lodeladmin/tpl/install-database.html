@@ -33,7 +33,7 @@ include "tpl/install-openhtml.html";
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-<h2>[@INSTALL.DATABASE]</h2>
+<h4>[@INSTALL.DATABASE]</h4>
 
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p>
@@ -97,23 +97,19 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 <form method="post" action="install.php">
 <?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 <input type="hidden" name="tache" value="database">
-<table cellspacing="0" cellpadding="0">
-<tr>
-	<th>&nbsp;</th>
-	<th>
-		[@INSTALL.DATABASE] :
-	</th>
+
+<fieldset class="install <?php echo $current?>">
+<legend>[@INSTALL.DATABASE]</legend>
+	<ul id="db">
 	<?php  if (!$resultshowdatabases) $resultshowdatabases=@mysql_query("SHOW DATABASES");
 	if (!$resultshowdatabases && mysql_error()) { // can't do show databases
 	?>
-<tr>
-	<td>
-		<input type="radio" name="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> >
-	</td>
-	<td>[@INSTALL.USE_EXISTING_EMPTY_DATABASE] : 
-			<input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>">
-	</td>
-</tr>
+
+	<li>
+		<input type="radio" class="noText" name="newdatabase" id="newdatabase" value="-1" <?php  if ($existingdatabase) echo "checked"; ?> />
+		[@INSTALL.USE_EXISTING_EMPTY_DATABASE] : 
+			<input type="text" size="20" name="existingdatabase" value="<?php echo $existingdatabase; ?>" />
+	</li>
 <?php
 	} else {
 		while ($row=mysql_fetch_array($resultshowdatabases)) {
@@ -124,34 +120,33 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 				$checked="";
 			}
 ?>
-<tr>
-	<td>
-		<input type="radio" name="newdatabase" value="<?php echo $dbname; ?>" <?php echo $checked; ?> />
-	</td>
-	<td><?php echo $dbname; ?></td>
-</tr>
+	<li>
+		<input type="radio" class="noText" name="newdatabase" id="<?php echo $dbname; ?>" value="<?php echo $dbname; ?>" <?php echo $checked; ?> /> <label for="<?php echo $dbname; ?>"><?php echo $dbname; ?></label>
+	</li>
 <?php  
 	}
 }
 ?>
-<tr>
-	<td>
-		<input type="radio" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> >
-	</td>
-	<td>[@INSTALL.CREATE_NEW_DATABASE] : 
+	<li>
+		<input type="radio" class="noText" name="newdatabase" value="-2" <?php  if (!$oneischecked) echo "checked"; ?> >
+	[@INSTALL.CREATE_NEW_DATABASE] : 
 	<input type="text" size="20" name="createdatabase" value="<?php echo $createdatabase; ?>" />
-	</td>
-</tr>
-</table>
+	</li>
+	</ul>
+</fieldset>
 <?php if ($installoption>1) { // OPTION superieure a 1 ?>
+<fieldset class="install">
 <label for="newsingledatabase">
 [@INSTALL.SINGLE_DATABASE_FOR_ALL_WEBSITES].
 </label>
-<input type="checkbox" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?> />
-<label for="nextableprefix">[@INSTALL.TABLE_PREFIX] : </label>
-<input type="text" size="20" name="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>" />
+<input type="checkbox" class="noText" id="newsingledatabase" name="newsingledatabase" <?php  if ($singledatabase=="on") echo "checked"; ?> />
+<label for="newtableprefix">[@INSTALL.TABLE_PREFIX] : </label>
+<input type="text" size="20" name="newtableprefix" id="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>" />
 <?php } ?>
-<br />
-<input type="submit" value="[@INSTALL.CONTINUE]" />
+</fieldset>
+
+<fieldset class="install">
+	<input type="submit" class="button" value="[@INSTALL.CONTINUE]" />
+</fieldset>
 </form>
 <?php  include("tpl/install-closehtml.html"); ?>

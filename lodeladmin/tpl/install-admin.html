@@ -2,7 +2,7 @@
 $current = 'admin';
 include 'tpl/install-openhtml.html';
 ?>
-<h2>[@INSTALL.CREATE_INITIAL_ADMIN]</h2>
+<h4>[@INSTALL.CREATE_INITIAL_ADMIN]</h4>
 <!--[ ce fichier n'est pas un template ]-->
 
 <p>[@INSTALL.PLEASE_CHOOSE_LOGIN_PASSWORD]</p>
@@ -13,7 +13,7 @@ include 'tpl/install-openhtml.html';
 	<?php  echo mysql_error(); } ?>
 
 <form method="post" action="install.php">
-	<fieldset>
+	<fieldset class="install">
   <legend>[@INSTALL.CREATE_INITIAL_ADMIN]</legend>
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="admin" />
@@ -30,7 +30,7 @@ include 'tpl/install-openhtml.html';
 		[@INSTALL.ERREUR_ADMIN_PASSWD] 
 	<?php } ?>
 	
-	<label for="adminpasswd">[@INSTALL.CONFIRM_PASSWORD]:</label>
+	<label for="adminpasswd2">[@INSTALL.CONFIRM_PASSWORD]:</label>
 	<input type="password" size="20" name="adminpasswd2" id="adminpasswd2" value="" />
 	<?php  if ($erreur_confirm_passwd) { ?>
 		<strong>[@INSTALL.ERROR]&nbsp;:</strong>&nbsp;
@@ -40,7 +40,7 @@ include 'tpl/install-openhtml.html';
 	<select id="lang" name="lang">
 		<?php makeSelectLang(); ?>
 	</select>
-	<input type="submit" value="[@INSTALL.CONTINUE]" />
+	<input type="submit" value="[@INSTALL.CONTINUE]" class="button" />
 </fieldset>
 </form>
 

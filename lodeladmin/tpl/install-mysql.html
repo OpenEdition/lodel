@@ -32,7 +32,7 @@ include 'tpl/install-openhtml.html';
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-<h2>[@INSTALL.ACCESS_TO_DATABASE_SERVER]</h2>
+<h4>[@INSTALL.ACCESS_TO_DATABASE_SERVER]</h4>
 <?php if ($installoption==1) { // OPTION 1 ?>
 	<p>[@INSTALL.GIVE_INFORMATION_TO_CONNECT_TO_DATABASE]</p>
 <?php } else { // OPTION 2 ?>
@@ -69,7 +69,7 @@ include 'tpl/install-openhtml.html';
 <?php } ?>
 
 <form method="post" action="install.php">
-	<fieldset>
+	<fieldset class="install">
 	<legend>[@INSTALL.ACCESS_TO_DATABASE_SERVER]</legend>
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="mysql" />
@@ -80,7 +80,7 @@ include 'tpl/install-openhtml.html';
 	<label for="newdbpasswd">[@INSTALL.PASSWORD_FOR_DATABASE_USER]</label>
 	<input type="password" size="60" name="newdbpasswd" id="newdbpasswd" value="" />
 	<br /><br />
-	<input type="submit" value="[@INSTALL.CONTINUE]" />
+	<input type="submit" value="[@INSTALL.CONTINUE]" class="button" />
 	</fieldset>
 </form>
 

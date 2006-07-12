@@ -34,7 +34,7 @@ include 'tpl/install-openhtml.html';
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<h2>[@INSTALL.CHOOSE_INSTALLATION_LANGUAGE]</h2>
+<h4>[@INSTALL.CHOOSE_INSTALLATION_LANGUAGE]</h4>
 <form action="install.php" method="get" id="langform">
 <label for="lang">
 [@INSTALL.PLEASE_CHOOSE_INSTALLATION_LANGUAGE]
@@ -56,51 +56,51 @@ unset($langs);
 </select>
 </form>
 
-<h2>[@INSTALL.CHOOSE_INSTALLATION_TYPE]</h2>
+<h4>[@INSTALL.CHOOSE_INSTALLATION_TYPE]</h4>
 <dl>
 	<dt><strong>[@INSTALL.EASY_INSTALLATION]</strong></dt>
-	<dd>[@INSTALL.EASY_INSTALLATION_FOR_WEBSITE_PROVIDER]</dd>
-	<dd>[@INSTALL.ADVANTAGE] :&nbsp;[@INSTALL.EASY_AND_FAST_OPTION_FOR_PROVIDER_CONTROLLING_FILERIGHTS_SECURITY]</dd>
-	<dd>[@INSTALL.INCONVENIENCE_LOW_SECURITY_LEVEL]</dd>
-<dt><strong>[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]</strong></dt>
-	<dd>[@INSTALL.ADVANCED_INSTALLATION_FOR_SYSTEM_ADMIN_WORKING_ON_OWN_SERVER]</dd>
-	<dd>[@INSTALL.ADVANTAGE] :&nbsp;
-				[@INSTALL.SAFE_AND_CONFIGURABLE_INSTALLATION_ALLOW_ACUTE_ADMINISTRATION_FOR_FILERIGHTS_DATABASERIGHTS_AND_OTHER_OPTIONS]</dd>
-	<dd>[@INSTALL.DISADVANTAGE] :&nbsp;
-				[@INSTALL.MORE_COMPLEX_NEED_SYSTEM_ADMIN_SKILLS_READ_COMPLETELY_INSTALLATIONDOC]</dd>
+	<dd>
+		<p>[@INSTALL.EASY_INSTALLATION_FOR_WEBSITE_PROVIDER]</p>
+		<p>[@INSTALL.ADVANTAGE] :&nbsp;[@INSTALL.EASY_AND_FAST_OPTION_FOR_PROVIDER_CONTROLLING_FILERIGHTS_SECURITY]</p>
+		<p>[@INSTALL.INCONVENIENCE_LOW_SECURITY_LEVEL]</p>
+	</dd>
 
+	<dt><strong>[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]</strong></dt>
+	<dd>
+		<p>[@INSTALL.ADVANCED_INSTALLATION_FOR_SYSTEM_ADMIN_WORKING_ON_OWN_SERVER]</p>
+		<p>[@INSTALL.ADVANTAGE] :&nbsp;
+				[@INSTALL.SAFE_AND_CONFIGURABLE_INSTALLATION_ALLOW_ACUTE_ADMINISTRATION_FOR_FILERIGHTS_DATABASERIGHTS_AND_OTHER_OPTIONS]</p>
+		<p>[@INSTALL.DISADVANTAGE] :&nbsp;
+				[@INSTALL.MORE_COMPLEX_NEED_SYSTEM_ADMIN_SKILLS_READ_COMPLETELY_INSTALLATIONDOC]</p>
+	</dd>
 </dl>
 	
 
 
 <form method="post" action="install.php">
-	<fieldset>
+	<fieldset class="install <?php echo $current;?>">
 		<legend>[@INSTALL.PLEASE_CHOOSE_INSTALLATION_TYPE]</legend>
 		<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 		<input type="hidden" name="tache" value="droits" />
 		<?php if ($installing) { ?>
 		<p>[@INSTALL.INSTALLATION_BEGUN_WHAT_TO_DO] :</p>
-		<p>&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="continue" value="[@INSTALL.CONTINUE_BEGUN_INSTALLATION]" />
-		</p>
-		<p>&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="erase_and_option1" value="[@INSTALL.DO_AGAIN_EASY_INSTALLATION]" />
-		</p>
-		<p>&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="erase_and_option2" value="[@INSTALL.DO_AGAIN_ADVANCED_INSTALLATION_FOR_SPECIALISTS]" />
-		</p>
+			<input type="submit" class="button"  class="button" name="continue" value="[@INSTALL.CONTINUE_BEGUN_INSTALLATION]" />
+
+			<input type="submit" class="button" name="erase_and_option1" value="[@INSTALL.DO_AGAIN_EASY_INSTALLATION]" />
+
+			<input type="submit" class="button" name="erase_and_option2" value="[@INSTALL.DO_AGAIN_ADVANCED_INSTALLATION_FOR_SPECIALISTS]" />
+
 		<?php } else { ?>
-		<p>&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="option1" value="[@INSTALL.EASY_INSTALLATION]" />
-		</p>
-		<p>&nbsp;&nbsp;&nbsp;
-			<input type="submit" name="option2" value="[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]" />
-		</p>
+
+			<input type="submit" class="button" name="option1" value="[@INSTALL.EASY_INSTALLATION]" />
+
+			<input type="submit" class="button" name="option2" value="[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]" />
+	
 		<?php } ?>
 	</fieldset>
 </form>
 
-<h2 id="conditions">[@INSTALL.USE_CONDITIONS]</h2>
+<h4 id="conditions">[@INSTALL.USE_CONDITIONS]</h4>
 
 <p>[@INSTALL.OPENSOURCE_SOFTWARE_GNU_LICENSE]</p>
 <p>[@INSTALL.NO_WARRANTY_SEE_GNU_GPL_LICENSE]</p>

@@ -33,7 +33,7 @@ include 'tpl/install-openhtml.html';
 ]-->
 
 <!--[ ce fichier n'est pas un template ]-->
-<h2>6. [@INSTALL.OPTIONS]</h2>
+<h4>[@INSTALL.OPTIONS]</h4>
 
 <?php if ($erreur_importdir) { ?>
 	<p>
@@ -46,40 +46,31 @@ include 'tpl/install-openhtml.html';
 <form method="post" action="install.php">
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="options" />
-	<table cellspacing="0" cellpadding="0">
-	<tr>
-		<td>
-			<label for="newurlroot">[@INSTALL.CHECK_URL_PATH_TO_LODEL_ROOT_IS_CORRECT] :</label>
-			<input type="text" size="60" name="newurlroot" value="<?php echo $urlroot; ?>" />
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.FILE_RIGHTS] :</strong></p>
-			<p>[@INSTALL.COMMENT_ABOUT_FILE_RIGHTS_FOR_LODEL]</p>
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td>[@INSTALL.GROUP]</td>
-					<td>[@INSTALL.ALL] (all)</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="checkbox" name="permission[group][read]" <?php if (octdec($filemask) & 0040) echo "checked";?> /> [@INSTALL.READING]<br />
-						<input type="checkbox" name="permission[group][write]" <?php if (octdec($filemask) & 0020) echo "checked";?> /> [@INSTALL.WRTING]
-					</td>
-					<td>
-						<input type="checkbox" name="permission[all][read]"  <?php if (octdec($filemask) & 0004) echo "checked";?> /> [@INSTALL.READING]<br />
-						<input type="checkbox" name="permission[all][write]" <?php if (octdec($filemask) & 0002) echo "checked";?> /> [@INSTALL.WRTING]
-					</td>
-				</tr>
-			</table>
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.ZIP_ARCHIVE_FUNCTION] :</strong></p>
+	<fieldset class="install">
+		<label for="newurlroot">[@INSTALL.CHECK_URL_PATH_TO_LODEL_ROOT_IS_CORRECT] :</label>
+		<input type="text" size="60" id="newurlroot" name="newurlroot" value="<?php echo $urlroot; ?>" />
+	</fieldset>
+
+	<fieldset class="install">
+		<legend>[@INSTALL.FILE_RIGHTS]</legend>
+		<p>[@INSTALL.COMMENT_ABOUT_FILE_RIGHTS_FOR_LODEL]</p>
+		<dl>
+			<dt>[@INSTALL.GROUP]</dt>
+			<dd>
+				<input type="checkbox" name="permission[group][read]" <?php if (octdec($filemask) & 0040) echo "checked";?> /> [@INSTALL.READING]<br />
+				<input type="checkbox" name="permission[group][write]" <?php if (octdec($filemask) & 0020) echo "checked";?> /> [@INSTALL.WRTING]
+			</dd>
+
+			<dt>[@INSTALL.ALL] (all)</dt>
+			<dd>
+				<input type="checkbox" name="permission[all][read]"  <?php if (octdec($filemask) & 0004) echo "checked";?> /> [@INSTALL.READING]<br />
+				<input type="checkbox" name="permission[all][write]" <?php if (octdec($filemask) & 0002) echo "checked";?> /> [@INSTALL.WRTING]
+			</dd>
+		</dl>
+	</fieldset>
+		
+	<fieldset class="install">
+		<legend>[@INSTALL.ZIP_ARCHIVE_FUNCTION]</legend>
 			<dl>
 				<dt>
 					[@INSTALL.TO_USE_SERVOO_IMPORT_OR_LODEL_BACKUP_SYSTEM_PLEASE_CHOOSE_ONE_OF_THESE_TWO_OPTIONS] :
@@ -93,85 +84,68 @@ include 'tpl/install-openhtml.html';
 					<br />&nbsp;<br />
 				</dd>
 			</dl>
-			<table cellspacing="0" cellpadding="0">
-				<tr><td>unzip :</td><td><input type="text" size="60" name="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>"></td></tr>
-				<tr><td>zip :</td><td><input type="text" size="60" name="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>"></td></tr>
-			</table>
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.SCRIPTS_EXTENSIONS] :</strong></p>
-			<p>[@INSTALL.HOWTO_ON_SCRIPTS_EXTENSIONS_CHOOSE_PHP_OR_HTML_EXTENSIONS]</p>
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td>.php :</td><td><input type="radio" name="newextensionscripts" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?> ></td>
-				</tr>
-				<tr>
-					<td>.html :</td><td><input type="radio" name="newextensionscripts" value="html"  <? if($extensionscripts=="html") echo "checked";?> ></td>
-				</tr>
-			</table>
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.CONTACT_IF_TEMPLATES_BUG] :</strong></p>
-			<p>[@INSTALL.HOWTO_AUTOMATIC_ACCOUNT_ON_BUGS_WHEN_ERROR_DONT_APPEAR_ON_SCREEN]</p>
-			<input type="text" size="60" name="newcontactbug" value="<?php echo $contactbug; ?>">
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.USE_SYMBOLIC_LINKS] :</strong></p>
-			<p>[@INSTALL.HOWTO_SYMBOLIC_LINKS_IN_LODEL]</p>
-			[@INSTALL.YES] :&nbsp;
-			<input type="radio" name="newusesymlink" value="oui" <? if($usesymlink=="oui") echo "checked";?> >
-			<br />
-			[@INSTALL.NO] :&nbsp;
-			<input type="radio" name="newusesymlink" value="non"  <? if($usesymlink!="oui") echo "checked";?> >
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p><strong>[@INSTALL.IMPORT_DIRECTORY] :</strong></p>
-			<p>[@INSTALL.HOWTO_IMPORT_HUGE_FILES_AND_DATABASE]</p>
-			<p>[@INSTALL.SPECIFY_ABSOLUTE_PATH_OUTSIDE_LODEL_FILE_SYSTEM_DIRECTORY_MUST_BE_READEABLE_BY_WEBSERVER_SECURITY_WARNING_OUTSIDE_WEB_ZONE]</p>
-			<input type="text" size="60" name="newimportdir" value="<?php echo $importdir; ?>" />
-			<br />&nbsp;<br />
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<p>
-				<strong>[@INSTALL.URL_FORMAT]</strong>
-			</p>
-			<p>
-				[@INSTALL.SPECIFY_URL_FORMAT_YOU_CAN_CHOOSE_ONE_BETWEEN_PATH_FORMAT_LEFTID_FORMAT_RIGHTID_FORMAT_SEE_BELOW] :
-			</p>
-			<input type="radio" name="newuri" value="path" <? if(URI=="path") echo "checked";?> />
-			[@INSTALL.PATH_FORMAT]&nbsp;
-			<code>http://monsite.com/index.php?/rubrique/1-mon-titre</code><br />
-			<input type="radio" name="newuri" value="leftid" <? if(URI=="leftid") echo "checked";?> />
-			[@INSTALL.LEFTID_FORMAT]&nbsp;
-			<code>http://monsite.com/index1.php</code><br />
-			<input type="radio" name="newuri" value="rightid" <? if(URI=="rightid" || (URI!="leftid" && URI!="path")) echo "checked";?> />
-			[@INSTALL.RIGHTID_FORMAT]&nbsp;
-			<code>http://monsite.com/index.php?id=1</code>
-			<br /><br />
-		</td>
-	</tr>
-</table>
+			<label for="newunzipcmd">unzip : </label>
+			<input type="text" size="60" name="newunzipcmd" id="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>" />
+			<label for="newzipcmd">zip : </label>
+			<input type="text" size="60" name="newzipcmd" id="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>" />
+	</fieldset>
 
-<br />
-<div style="text-align: right; margin-right: 13%;">
-	<input type="submit" value="[@INSTALL.CONTINUE]" />
-	<br />&nbsp;<br />
+	<fieldset class="install">
+		<legend>[@INSTALL.SCRIPTS_EXTENSIONS]</legend>
+		<p>[@INSTALL.HOWTO_ON_SCRIPTS_EXTENSIONS_CHOOSE_PHP_OR_HTML_EXTENSIONS]</p>
+		<label for="newextensionscriptsphp" class="boolean">.php :</label>
+		<input type="radio" name="newextensionscripts" id="newextensionscriptsphp" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?>  />
+		<br />
+		<label for="newextensionscriptshtml" class="boolean">.html :</label>
+		<input type="radio" name="newextensionscripts" id="newextensionscriptshtml" value="html"  <? if($extensionscripts=="html") echo "checked";?>
+	</fieldset>
+
+	<fieldset class="install">
+			<legend>[@INSTALL.CONTACT_IF_TEMPLATES_BUG]</legend>
+			<p>[@INSTALL.HOWTO_AUTOMATIC_ACCOUNT_ON_BUGS_WHEN_ERROR_DONT_APPEAR_ON_SCREEN]</p>
+			<input type="text" size="60" name="newcontactbug" value="<?php echo $contactbug; ?>" />
+	</fieldset>
+
+	<fieldset class="install">
+		<legend>[@INSTALL.USE_SYMBOLIC_LINKS]</legend>
+		<p>[@INSTALL.HOWTO_SYMBOLIC_LINKS_IN_LODEL]</p>
+		<label for="newusesymlinkoui" class="boolean">[@INSTALL.YES] :</label>
+		<input type="radio" name="newusesymlink" id="newusesymlinkoui" value="oui" <? if($usesymlink=="oui") echo "checked";?> />
+		<br />
+		<label for="newusesymlinknon" class="boolean">[@INSTALL.NO] :</label>
+		<input type="radio" name="newusesymlink" id="newusesymlinknon" value="non"  <? if($usesymlink!="oui") echo "checked";?>  />
+	</fieldset>
+
+	<fieldset class="install">
+		<legend>[@INSTALL.IMPORT_DIRECTORY]</legend>
+		<p>[@INSTALL.HOWTO_IMPORT_HUGE_FILES_AND_DATABASE]</p>
+		<label for="newimportdir">
+			[@INSTALL.SPECIFY_ABSOLUTE_PATH_OUTSIDE_LODEL_FILE_SYSTEM_DIRECTORY_MUST_BE_READEABLE_BY_WEBSERVER_SECURITY_WARNING_OUTSIDE_WEB_ZONE]
+		</label>
+		<input type="text" size="60" name="newimportdir" id="newimportdir" value="<?php echo $importdir; ?>" />
+	</fieldset>
+	
+	<fieldset class="install">
+		<legend>[@INSTALL.URL_FORMAT]</legend>
+		<p>
+			[@INSTALL.SPECIFY_URL_FORMAT_YOU_CAN_CHOOSE_ONE_BETWEEN_PATH_FORMAT_LEFTID_FORMAT_RIGHTID_FORMAT_SEE_BELOW] :
+		</p>
+		<input type="radio" name="newuri" id="newuripath" value="path" <? if(URI=="path") echo "checked";?> />
+		<label for="newuripath" class="boolean">[@INSTALL.PATH_FORMAT]</label>
+		<code>http://monsite.com/index.php?/rubrique/1-mon-titre</code><br />
+		<input type="radio" name="newuri" id="newurileftid" value="leftid" <? if(URI=="leftid") echo "checked";?> />
+		<label for="newurileftid" class="boolean">[@INSTALL.LEFTID_FORMAT]</label>
+		<code>http://monsite.com/index1.php</code><br />
+		<input type="radio" name="newuri" id="newurirightid" value="rightid" <? if(URI=="rightid" || (URI!="leftid" && URI!="path")) echo "checked";?> />
+		<label for="newurirightid" class="boolean">[@INSTALL.RIGHTID_FORMAT]</label>
+		<code>http://monsite.com/index.php?id=1</code>
+	</fieldset>
+
+	<fieldset class="install">
+		<input type="submit" class="button" value="[@INSTALL.CONTINUE]" />
+	</fieldset>
 </div>
 </form>
 
 <!--[ Inclusion du template de fermeture HTML ]-->
-<? include("tpl/install-closehtml.html"); ?>
+<?php include("tpl/install-closehtml.html"); ?>

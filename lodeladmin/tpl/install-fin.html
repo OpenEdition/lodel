@@ -35,12 +35,14 @@ include("tpl/install-openhtml.html");
 
 <!--[ ce fichier n'est pas un template ]-->
 
-<p align="justify">[@INSTALL.CONGRATULATIONS_LODEL_INSTALLATION_COMPLETED] !</p>
-<p align="justify">[@INSTALL.NOW_CREATE_WEBSITE_SO_CLICK_TO_CONTINUE]</p>
+<h4>[@INSTALL.CONGRATULATIONS_LODEL_INSTALLATION_COMPLETED] !</h4>
+<p>[@INSTALL.NOW_CREATE_WEBSITE_SO_CLICK_TO_CONTINUE]</p>
 
 <form method="post" action="site.php">
-<input type="submit" value="[@INSTALL.CONTINUE]">
-<input class="form" type="button" value="[@INSTALL.CANCEL]" onClick="javascript:window.location='index.php';" />
+<fieldset class="install">
+<input type="submit"  class="button" value="[@INSTALL.CONTINUE]" />
+<input class="button" type="button" value="[@INSTALL.CANCEL]" onClick="javascript:window.location='index.php';" />
+</fieldset>
 </form>
 
 <? include("tpl/install-closehtml.html"); ?>

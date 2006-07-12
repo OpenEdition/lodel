@@ -62,20 +62,31 @@ foreach($erreur_htaccess as $dir) {
 <ul><?php $writeable=print_directories();   ?></ul>
 </p>
 
-[@INSTALL.CHOOSE_SEVERAL_POSSIBILITIES] :
-<ul>
-<?php  if ($writeable) { ?>
-<li>[@INSTALL.LET_LODEL_INSTALL_HTACCESS_FILES_IN_ALLOWED_DIRECTORIES].<br />
-<input type="submit" name="write" value="[@INSTALL.AUTOMATIC_INSTALLATION_HTACCESS_FILES]">
-</li>
-<? } ?>
-<li>[@INSTALL.HOWTO_ADD_YOURSELF_HTACCESS_FILES] :<br /><code>deny from all</code><br />
-<input type="submit" name="verify" value="[@INSTALL.VERIFICATION]">
-</li>
-<li>[@INSTALL.NO_HTACCESS_FILE_NOT_RECOMMENDED_UNLESS_SERVER_NOT_SUPPORT_HTACCESS_FILES].<br />
-<input type="submit" name="nohtaccess" value="[@INSTALL.NO_HTACCESS_FILE]">
-</li>
-</ul>
+<fieldset class="install">
+	<legend>[@INSTALL.CHOOSE_SEVERAL_POSSIBILITIES] :</legend>
+	<ul>
+	<?php  if ($writeable) { ?>
+	<li>
+	<label for="write">
+		[@INSTALL.LET_LODEL_INSTALL_HTACCESS_FILES_IN_ALLOWED_DIRECTORIES]
+	</label>
+	<input type="submit" class="button" name="write" id="write" value="[@INSTALL.AUTOMATIC_INSTALLATION_HTACCESS_FILES]" />
+	</li>
+	<? } ?>
+	<li>
+		<label for="verify">
+			[@INSTALL.HOWTO_ADD_YOURSELF_HTACCESS_FILES] :<code>deny from all</code>
+		</label>
+	<input type="submit" class="button" name="verify" id="verify" value="[@INSTALL.VERIFICATION]" />
+	</li>
+	<li>
+		<label for="nohtaccess">
+			[@INSTALL.NO_HTACCESS_FILE_NOT_RECOMMENDED_UNLESS_SERVER_NOT_SUPPORT_HTACCESS_FILES]
+		</label>
+	<input type="submit" class="button" name="nohtaccess" id="nohtaccess" value="[@INSTALL.NO_HTACCESS_FILE]" />
+	</li>
+	</ul>
+</fieldset>
 
 
 

@@ -35,32 +35,32 @@ include("tpl/install-openhtml.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 
-<h2>[@INSTALL.CHOOSE_SERVER_CONFIGURATION]</h2>
+<h4>[@INSTALL.CHOOSE_SERVER_CONFIGURATION]</h4>
 <p>
 	[@INSTALL.CHOOSE_SERVER_CONFIGURATION_TYPE_COMPATIBLE_WITH_YOUR_PROVIDER]</p>
 
 <form method="post" action="install.php">
-	<fieldset>
+	<fieldset class="install">
 	<legend>[@INSTALL.CHOOSE_SERVER_CONFIGURATION]</legend>
 	<?php echo "<input type=\"hidden\" name=\"installlang\" value=\"$installlang\" />";?>
 	<input type="hidden" name="tache" value="plateform" />
-	<input type="hidden" name="installoption" value="<?php echo $installoption;?>">
-	<table cellspacing="0" cellpadding="0">
+	<input type="hidden" name="installoption" value="<?php echo $installoption;?>" />
+	<table>
 	<tr>
 		<th>&nbsp;</th>
 		<th>[@INSTALL.CONFIGURATION_NAME]</th>
 		<th>[@INSTALL.COMMENTS]</th>
 	</tr>
-<?php
-	$dir=opendir($plateformdir);
-	while ($file=readdir($dir)) {
-	$file=$plateformdir."/".$file;
-	if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
-	$plateform=$result[1];
-	preg_match("/\/\*\s*comment\s*\n(.*?)\ncomment\s*\*\//is",join("",file($file)),$result);
-	$commentaire=$result[1];
-	if (!$commentaire) $commentaire="&nbsp;";
-?>
+	<?php
+		$dir=opendir($plateformdir);
+		while ($file=readdir($dir)) {
+		$file=$plateformdir."/".$file;
+		if (!is_file($file) || !preg_match ("/lodelconfig-([a-zA-Z_-]+).php$/",$file,$result)) continue;
+		$plateform=$result[1];
+		preg_match("/\/\*\s*comment\s*\n(.*?)\ncomment\s*\*\//is",join("",file($file)),$result);
+		$commentaire=$result[1];
+		if (!$commentaire) $commentaire="&nbsp;";
+	?>
 	<tr>
 		<td>
 			<input type="radio" name="plateform" value="<?php  echo $plateform; ?>" />
@@ -70,7 +70,7 @@ include("tpl/install-openhtml.html");
 <?php  } ?>
 </table>
 <br />
-	<input type="submit" value="[@INSTALL.CONTINUE]" />
+	<input type="submit" class="button" value="[@INSTALL.CONTINUE]" />
 </fieldset>
 </form>
 <p>[@INSTALL.HOWTO_CONFIGURE_TO_EASE_INSTALLATION]</p>
