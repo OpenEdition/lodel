@@ -43,7 +43,7 @@ require_once 'siteconfig.php';
 require_once 'auth.php';
 
 if ($_POST['login']) {
-	include 'func.php';
+	require_once 'func.php';
 	extract_post();
 	require_once 'connect.php';
 	require_once 'loginfunc.php';
