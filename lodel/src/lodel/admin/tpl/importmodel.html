@@ -57,7 +57,6 @@
 		<LOOP NAME="files_model">
 			<BEFORE><dl></BEFORE>
 			<DO>
-				<div>
 				<dt><strong>[#TITLE]</strong></dt>
 				<dd>[#DESCRIPTION]</dd>
 				<dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
@@ -69,9 +68,9 @@
 						<strong>[@ADMIN.VERSION] :</strong>[@ADMIN.WARNING_VERSION|sprintf([#LODELVERSION],[#VERSION])]. [@ADMIN.VERIFY_COMPATIBILITY].
 					</div>
 				</IF>]-->
-
+				<dd>
 				<div style="text-align: right"><a class="action"  href="index.php?do=importmodel&amp;lo=data&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong></a></div>
-				</div>
+				</dd>
 			</DO>
 			<AFTER></dl></AFTER>
 		</LOOP>
