@@ -56,7 +56,7 @@ function cacheOptionsInFile($optionsfile='')
 	global $db;
 	do {
 		$sql = lq("SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent ".sql_in_array($ids)." ORDER BY rank");
-		$result = $db->execute($sql);
+		$result = $db->execute($sql) or dberror();
 		$ids = array ();
 		$i = 1;
 		$l = 1;
@@ -82,7 +82,7 @@ function cacheOptionsInFile($optionsfile='')
 		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
 	}
 
-	$result = $db->execute($sql);
+	$result = $db->execute($sql) or dberror();
 	$txt = "<"."?php\n\$options_cache=array(\n";
 	while (!$result->EOF)	{
 		$id = $result->fields['id'];
