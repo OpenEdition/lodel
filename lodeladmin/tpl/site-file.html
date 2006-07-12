@@ -28,38 +28,44 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
-<tr><td><div align="center">
-<br /><br /><b>[@LODELADMIN.COPY_SITECONFIGPHP_FILE]</b></div></td></tr>
-</table>
+<ul id="actionsOnEntitiesPath">
+	<li><span class="intit">[@LODELADMIN.COPY_SITECONFIGPHP_FILE]</span></li>
+</ul>
+<br />&nbsp;<br />
 
-<div align="center">
 
 <form method="post" action="site.php">
-<input type="hidden" name="id" value="[#ID]">
-<input type="hidden" name="task" value="file">
-<input type="hidden" name="versiondir" value="[#VERSIONDIR]">
 
-<table width="800" cellpadding="5" cellspacing="0" border="1" align="center"><tr><td>
+<fieldset>
+<legend>[@LODELADMIN.COPY_SITECONFIGPHP_FILE]</legend>
+
+<input type="hidden" name="id" value="[#ID]" />
+<input type="hidden" name="task" value="file" />
+<input type="hidden" name="versiondir" value="[#VERSIONDIR]" />
+
+
 
 <IF COND="[#INSTALLOPTION]=='1'"> <!--[ OPTION1 ]-->
-<p><strong>[@LODELADMIN.FAIL_TO_COPY_FILE_IN|sprintf([#SITECONFIGSRC])] [#SITECONFIGDEST]
-.</strong></p>
-<p>[@LODELADMIN.WARNING_STRANGE_CHECK_SOURCE_FILE_AND_DIRECTORY_EXISTS_AND_WEBSERVER_CAN_WRITE]</p>
+	<p class="avert">[@LODELADMIN.FAIL_TO_COPY_FILE_IN|sprintf([#SITECONFIGSRC])] [#SITECONFIGDEST].</p>
+	<p class="avert">[@LODELADMIN.WARNING_STRANGE_CHECK_SOURCE_FILE_AND_DIRECTORY_EXISTS_AND_WEBSERVER_CAN_WRITE]</p>
 <ELSE/> <!--[ OPTION2 ]-->
-[@LODELADMIN.SITECONFIGPHP_FILE_MUST_BE_INSTALLED_YOU_HAVE_TWO_POSSIBILITIES] :
-<ul>
-<li>[@LODELADMIN.DOWNLOAD_SITECONFIGPHP_FILE_COPY_IT_IN_DIRECTORY] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF>[@LODELADMIN.GIVE_READING_RIGHTS_TO_WEBSERVER_FOLLOW_WHEN_OPERATION_MADE].<br />
-<input type="submit" name="downloadsiteconfig" value="Télécharger"><input type="submit" value="continuer">
-</li>
-<li>[@LODELADMIN.GIVE_WRITING_RIGHTS_ON_DIRECTORY_TO_WEBSERVER] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF> [@LODELADMIN.CLICK_ON_CONTINUE_BUTTON].<br />
-<input type="submit" name="lodeldo" value="[@LODELADMIN.CONTINUE]">
-</li>
-</ul>
+	<p class="avert">
+		[@LODELADMIN.SITECONFIGPHP_FILE_MUST_BE_INSTALLED_YOU_HAVE_TWO_POSSIBILITIES] :
+	</p>
+	<ul>
+	<li>[@LODELADMIN.DOWNLOAD_SITECONFIGPHP_FILE_COPY_IT_IN_DIRECTORY] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF>[@LODELADMIN.GIVE_READING_RIGHTS_TO_WEBSERVER_FOLLOW_WHEN_OPERATION_MADE].<br />&nbsp;<br />
+	<input type="submit" class="button" name="downloadsiteconfig" value="[@LODELADMIN.DOWNLOAD]" />
+	<input type="submit" class="button" value="[@LODELADMIN.CONTINUE]" />
+	<br />&nbsp;<br />
+	</li>
+	<li>[@LODELADMIN.GIVE_WRITING_RIGHTS_ON_DIRECTORY_TO_WEBSERVER] <IF COND="[#PATH]=='/'">[@LODELADMIN.LODEL_ROOT]<ELSE/>[(#PATH|substr(1))]</IF> [@LODELADMIN.CLICK_ON_CONTINUE_BUTTON].<br />&nbsp;<br />
+	<input type="submit" class="button" name="lodeldo" value="[@LODELADMIN.CONTINUE]" />
+	</li>
+	</ul>
 </IF>
 
-</td></tr></table><br/>
+</fieldset>
 </form>
-</div>
+
 
 <MACRO NAME="CLOSE_HTML">
