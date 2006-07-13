@@ -1411,7 +1411,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 				</div>
-				[#G_TITLE|textebrut|nbsp|couper(130)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
+				[#G_TITLE|textebrut|nbsp|couper(80)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> <em>([#TYPE])</em>
 				<ALTERNATIVE>
 					<div class="entityIcons">
 					<FUNC NAME="STATUS_ICON" STATUS="1">
