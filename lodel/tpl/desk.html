@@ -26,6 +26,7 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
+<LET VAR="sitedesk"><?php echo $GLOBALS['site'];?></LET>
 <script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
 
 <style type="text/css">
@@ -59,7 +60,7 @@
 <div id="lodel-desk">
 	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
 	<ul  class="group1">
-	<IF COND="[#SITE]">
+	<IF COND="[#SITEDESK]">
 		<li>
 			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
@@ -238,7 +239,7 @@
 			<li><a>&nbsp;</a></li>
 			
 				<li>
-					<IF COND="[#SITE]">
+					<IF COND="[#SITEDESK]">
 						<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
 					<ELSE />
 						<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
@@ -264,7 +265,7 @@
 
 	<table class="infos">
 	
-	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
+	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITEDESK]' AND status GT 0">
 		<BEFORE>
 		<tr>
 		<th>[@COMMON.SITE]</th>
