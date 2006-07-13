@@ -39,8 +39,8 @@
  * @package lodel/source/lodel/admin
  */
 
-include 'siteconfig.php';
-include 'auth.php';
+require_once 'siteconfig.php';
+require_once 'auth.php';
 authenticate(LEVEL_VISITOR);
 
 $name = addslashes($_COOKIE[$sessionname]);
