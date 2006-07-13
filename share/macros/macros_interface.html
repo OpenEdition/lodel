@@ -1206,7 +1206,18 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<img class="statusIcon" src="[#SHAREURL]/images/unpublished.gif" alt="[@EDITION.READY_TO_BE_PUBLISHED]" title="[@EDITION.READY_TO_BE_PUBLISHED]" />
 	<ELSE/>
 	<IF COND="[#STATUS]==1">
-		<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
+		<IF COND="[#CLASS]">
+			<LET VAR="table"><?php echo $GLOBALS['tp'];?>[#CLASS]</LET>
+			<LOOP NAME="getDatePubli" TABLE="[#TABLE]" WHERE="identity = '[#ID]'">
+				<IF COND="[#DATEPUBLI|isadate] AND [#DATEPUBLI] GT today()">
+					<img class="statusIcon" src="[#SHAREURL]/images/later_published.gif" alt="[@EDITION.LATER_PUBLISHED]" title="[@EDITION.LATER_PUBLISHED]" />
+				<ELSE />
+					<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
+				</IF>
+			</LOOP>
+		<ELSE />
+			<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
+		</IF>
 	<ELSE/>
 	<IF COND="[#STATUS]==8">
 		<img class="statusIcon" src="[#SHAREURL]/images/locked.gif" alt="[@EDITION.PROTECTED]" title="[@EDITION.PROTECTED]" />
