@@ -123,7 +123,7 @@
 
 	<ul class="group2">
 	<li>
-	<IF COND="![#CURRENTURL|strpos('lodel/admin')]">
+	<IF COND="![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
 		<a href="[#SITEROOT]lodel/admin/logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	<ELSE />
 		<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
