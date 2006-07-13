@@ -602,7 +602,7 @@ if ($htaccess!="non") {
 //
 if ($installoption==1) {
 
-} elseif ($importdir && !testdirmode($importdir,5)) {
+} elseif ($importdir && !testdirmode($importdir,5, true)) {
   $erreur_importdir=1;
     include_tpl("install-options.html");
   return;
@@ -854,10 +854,12 @@ Please check your directory  tpl and the file tpl/<?php echo $filename; ?> exist
   die();
 }
 
-function testdirmode($dir,$mode)
+function testdirmode($dir,$mode, $cheminAbsolu=false)
 
 {
-	$dir = LODELROOT . $dir;
+	if ($cheminAbsolu==false) {
+		$dir = LODELROOT . $dir;
+	}
 	if ($mode == 7){
 		if (is_writable($dir)) { return true; }
 		else { return false; }
