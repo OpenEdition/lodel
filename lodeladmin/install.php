@@ -420,7 +420,6 @@ $dirs=array("CACHE"=>7,
 	    "lodel$versionsuffix/install/plateform"=>5,
 	    "lodel$versionsuffix/scripts"=>5,
 	    "lodel$versionsuffix/src"=>5,
-	    "lodeladmin$versionsuffix/images"=>5,
 	    "share$versionsuffix/css"=>5,
 	    "share$versionsuffix/js"=>5,
 	    "share$versionsuffix/macros"=>5);
