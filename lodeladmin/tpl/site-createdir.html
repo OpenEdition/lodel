@@ -28,13 +28,13 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<table width="800" cellpadding="5" cellspacing="1" border="0" align="CENTER">
-<tr><td><div align="center">
-<br /><br /><b>[@LODELADMIN.CREATION_WEBSITE]</b></div></td></tr>
-</table>
 
-<div align="center"><table width="800" cellpadding="5" cellspacing="0" border="1" align="CENTER"><tr><td>
+<ul id="actionsOnEntitiesPath">
+	<li><span class="intit">[@LODELADMIN.CREATION_WEBSITE]</span></li>
+</ul>
+<br />&nbsp;<br />
 
+<fieldset>
 <form method="post" action="site.php">
 <input type="hidden" name="id" value="[#ID]">
 <input type="hidden" name="versiondir" value="[#VERSIONDIR]">
@@ -44,7 +44,7 @@
 <IF COND="[#ERROR_TPLACCESS]">
 <p><strong>[@LODELADMIN.LODEL_CANT_CREATE_IN_TPL_DIRECTORY].</strong></p>
 <p>[@LODELADMIN.HOWTO_WRITING_RIGHTS_IN_TPL_DIRECTORY].</strong></p>
-<input type="submit" value="[@COMMON.CONTINUE]">
+<input type="submit" class="button" value="[@COMMON.CONTINUE]">
 <ELSE/>
 
 <IF COND="[#INSTALLOPTION]=='1'">
@@ -65,7 +65,7 @@
 <p><strong>[@LODELADMIN.LODEL_CANT_WRITE_IN_TPL_DIRECTORY]<strong></p>
 <p>[@LODELADMIN.GIVE_WRITING_RIGHTS_TO_SERVER_ON_THIS_DIRECTORY].</p>
 </IF>
-<input type="submit" value="continuer">
+<input type="submit" class="button" value="continuer">
 <ELSE/>
 <IF COND="[#ERROR_MKDIR]">
 <p><strong>[@LODELADMIN.LODEL_FAILS_DIRECTORY_CREATION] "[#PATH]".</strong></p>
@@ -98,8 +98,8 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 </IF>
 
 </code></p>
-<p>[@LODELADMIN.HOWTO_FILE_RIGHTS].</p>
-<input type="submit" name="mano" value="[@COMMON.CONTINUE]">
+<!--[<p>[@LODELADMIN.HOWTO_FILE_RIGHTS].</p>]-->
+<input type="submit" class="button" name="mano" value="[@COMMON.CONTINUE]">
 </li>
 
 <IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
@@ -107,26 +107,23 @@ lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecritu
 <ELSE/>
 <li>
 <p>[@LODELADMIN.CREATE_DIRECTORY_TO_LODEL_ROOT_GIVE_WRITING_RIGHTS_ON_DIRECTORY_TO_WEBSERVER_AND_LET_IT_LODEL_WARNING_SECURITY|sprintf([#PATH])].</p>
-<input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
+<input type="submit" class="button" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 </li>
 
 </IF>
 <li><p>[@LODELADMIN.GIVE_WRITING_RIGHTS_ON_LODEL_ROOT_TO_WEBSERVER_AND_LET_IT_LODEL_WARNING_SECURITY].</p>
 <IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
-<input type="submit" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
+<input type="submit" class="button" name="lodeldo" value="[@LODELADMIN.INSTALL_FILES]">
 <ELSE/>
-<input type="submit" name="lodeldo" value="[@LODELADMIN.CREATE_DIRECTORY_INSTALL_FILES]">
+<input type="submit" class="button" name="lodeldo" value="[@LODELADMIN.CREATE_DIRECTORY_INSTALL_FILES]">
 </IF>
 </li>
-<ul>
+</ul>
 
 </IF>
 </IF> <!--[ TPL_ACCESS ]-->
 
-</form>
-
-</td></tr></table><br/>
-<p>[@LODELADMIN.NO_WARRANTY_PROVIDED_PLEASE_READ_LICENSE_FILE].</p>
+</fieldset>
 
 
 
