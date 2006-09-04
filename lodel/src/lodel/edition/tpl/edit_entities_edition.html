@@ -89,12 +89,7 @@
 	<legend>[@COMMON.VALIDATION]</legend>
 		<input class="button" type="submit" name="soumettre" value="[@EDITION.FINISH]" /> - 
 		<input class="button" type="submit" name="visualiserdocument" value="[@EDITION.FINISH_AND_VIEW]" /> - 
-
-	<IF COND="[#TYPE.DISPLAY]=='advanced'">
-			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?do=view&amp;lo=entities_advanced&amp;id=[#IDPARENT]'"  />
-	<ELSE/>
-			<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="javascript:window.location='index.php?id=[#IDPARENT]'" />
-	</IF>
+		<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]"  onclick="document.location.href='index.php?id=[#IDPARENT]'" />
 	</fieldset>
 
 </div>
