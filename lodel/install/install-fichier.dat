@@ -148,7 +148,7 @@ ln tpl/dashboard_me.html
 ln tpl/delete_confirm.html
 ln tpl/unpublish_confirm.html
 
-ln tpl/edit_entities_advanced.html
+#ln tpl/edit_entities_advanced.html
 ln tpl/edit_entities_edition.html
 
 # xml
