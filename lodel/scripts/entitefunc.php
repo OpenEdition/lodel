@@ -109,9 +109,9 @@ function enregistre_entite (&$context,$id,$classe,$champcritere="",$returnonerro
     list($idparent,$context[idtype])=mysql_fetch_row($result);
   }
   if ($idparent>0) {
-    $result=mysql_query("SELECT cond FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite='$context[idtype]'") or die(mysql_error());
+    $result=mysql_query("SELECT `condition` FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites WHERE id='$idparent' AND idtypeentite2=idtype AND idtypeentite='$context[idtype]'") or die(mysql_error());
   } else {
-    $result=mysql_query("SELECT cond FROM $GLOBALS[tp]typeentites_typeentites WHERE idtypeentite2=0 AND idtypeentite='$context[idtype]'") or die(mysql_error());
+    $result=mysql_query("SELECT `condition` FROM $GLOBALS[tp]typeentites_typeentites WHERE idtypeentite2=0 AND idtypeentite='$context[idtype]'") or die(mysql_error());
 
   }
   if (mysql_num_rows($result)<=0) die("ERROR: Entities of type $context[idtype] are not allowed in entity $idparent");
