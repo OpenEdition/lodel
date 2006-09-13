@@ -93,7 +93,7 @@ $GLOBALS['g_entities_persons_fields'] = array('Title');
 					'passwd' => array ('sql' => 'tinytext',),
 					'entities' => array ('autostriptags' => true),
 					'list' => array ('sql' => 'text', 'autostriptags' => true),
-					'username' => array ('autostriptags' => true),
+					'username' => array ('sql' => 'tinytext', 'autostriptags' => true),
 					'type' => array (), 'class' => array (),
 					'tablefield' => array (), 
 					'style' => array (), 
