@@ -100,7 +100,8 @@ if ($option2) $installoption="2";
 // Test the PHP version
 //
 preg_match("/^\d+\.\d+/",phpversion(),$result);
-if (doubleval($result[0]<4.1) || doubleval($result[0]>=5.0)) {
+//if (doubleval($result[0]<4.1) || doubleval($result[0]>=5.0)) {
+if (doubleval($result[0]<4.1)) {
   problem('version');
   exit;
 }

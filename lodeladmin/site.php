@@ -188,7 +188,9 @@ if ($edit || $maindefault) { // modifie ou ajoute
 if ($id > 0) {
 	require_once 'connect.php';
 	$result = mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE $critere AND (status>0 || status=-32)") or die (mysql_error());
-	$context = array_merge($context, mysql_fetch_assoc($result));
+	$res = mysql_fetch_assoc($result);
+	settype($res, "array");
+	$context = array_merge($context, $res);
 }
 
 
