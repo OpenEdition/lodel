@@ -46,7 +46,7 @@ require_once('PEAR/Mail/mimePart.php');
 * @version  $Id$
 * @access   public
 */
-class soapclientmime extends soapclient {
+class soapclientmime extends mysoapclient {
 	var $requestAttachments = array();
 	var $responseAttachments;
 	var $mimeContentType;
