@@ -124,7 +124,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 		}
 	}
 	
-	Controler::controler(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
+	$Controler = new controler(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
 }
 
 ?>
