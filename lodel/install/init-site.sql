@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL, # contenu
 	idtypeentite2		INT UNSIGNED DEFAULT '0' NOT NULL, # contenant
-	cond			VARCHAR(16),
+	`condition`			VARCHAR(16),
 
 	KEY index_idtypeentite (idtypeentite),
 	KEY index_idtypeentite2 (idtypeentite2)
@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypeentree		INT UNSIGNED DEFAULT '0' NOT NULL,
-	cond			VARCHAR(16),
+	`condition`			VARCHAR(16),
 
 	KEY index_idtypeentree (idtypeentree),
 	KEY index_idtypeentite (idtypeentite)
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 	idtypeentite		INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtypepersonne		INT UNSIGNED DEFAULT '0' NOT NULL,
-	cond			VARCHAR(16),
+	`condition`		VARCHAR(16),
 
 	KEY index_idtypepersonne (idtypepersonne),
 	KEY index_idtypeentite (idtypeentite)
