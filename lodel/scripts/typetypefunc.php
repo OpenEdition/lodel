@@ -52,7 +52,7 @@ function typetype_insert($idtypeentite,$idtypetable,$typetable)
   }
   $table=$typetable!="typeentite2" ? $typetable : "typeentite";
 
-  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (idtypeentite,id$typetable,cond) VALUES ".join(",",$values)) or die(mysql_error());
+  mysql_query("INSERT INTO $GLOBALS[tp]typeentites_".$table."s (idtypeentite,id$typetable,`condition`) VALUES ".join(",",$values)) or die(mysql_error());
 }
 
 
@@ -83,7 +83,7 @@ function loop_typetable ($listtype,$criteretype,$context,$funcname,$checked=-1)
     if (is_array($checked)) {
       $localcontext[value]=$checked[$row['id']] ? "checked" : "";
     } else {
-      $localcontext[value]=$row[cond] ? "checked" : "";
+      $localcontext[value]=$row['condition'] ? "checked" : "";
     }
     
     call_user_func("code_do_$funcname",$localcontext);
