@@ -66,7 +66,7 @@ $authorized_logics = array('entrytypes', 'persontypes',
 					'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 					'internalstyles', 'characterstyles', 'entities_index',
 					'filebrowser', 'xml', 'data');
-Controler::controler($authorized_logics);
+$Controler = new controler($authorized_logics);
 
 function loop_classtypes($context, $funcname)
 {
