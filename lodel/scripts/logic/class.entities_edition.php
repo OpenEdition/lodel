@@ -691,6 +691,7 @@ class Entities_EditionLogic extends GenericLogic
 					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or dberror();
 					while (!$result2->EOF) {
 						$id = $result2->fields[$idfield];
+						settype($ids[$id]['data'], "array");
 						$ids[$id]['data'] = array_merge($ids[$id]['data'], $result2->fields);
 						$result2->MoveNext();
 					}
