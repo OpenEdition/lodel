@@ -28,67 +28,37 @@
 #     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # script de creation de l'archive lodel pour diffusion
+# a executer dans le repertoire parent d'une copie de travail du depot
+# le repertoire contenant la copie de travail doit s'appeler lodel
 
 if [ $# -lt 1 ]
 then
-  echo " usage $0 <version> [with-0.6]"
+  echo " usage $0 <version>"
   exit
 fi
 
 # nom du fichier genere
-FILE="lodel-$1.tar.gz"
+FILE="lodel-$1"
 
-# repertoire a archiver
-DIRS="lodel/lodel-$1 lodel/lodeladmin-$1 lodel/share-$1 lodel/tpl lodel/CACHE"
 
-# renomme les repertoires du CVS pour contenir le numero de version
+# renomme les repertoires du depot svn pour contenir le numero de version
 mv lodel/lodel lodel/lodel-$1
 mv lodel/lodeladmin lodel/lodeladmin-$1
 mv lodel/share lodel/share-$1
 
-EXTRADIRS=""
-if [ $# -eq 2 ]
+# tar.gz
+tar czf $FILE.tar.gz lodel
+if [ $? -ne 0 ]
 then
-        # bricolage pour precreer le lien vers share 0.6
-        mkdir lodel/lodel-0.6
-        touch lodel/lodel-0.6/share-0.6
-	cd lodel
-        ln -s lodel-0.6/share-0.6 .
-        cd lodel-$1
-        ln -s ../lodel-0.6/share-0.6 .
-        cd ../..
-        rm lodel/lodel-0.6/share-0.6
-        rmdir lodel/lodel-0.6
-        EXTRADIRS=lodel/share-0.6
+  exit 1
 fi
+echo "fichier $FILE.tar.gz cree";
 
-
-# fichier a exclure
-find $DIRS $EXTRADIRS \
-        -path '*/r2r/*' \
-        -o \( -path '*/CACHE/*' -and -not -name '.htaccess' \) \
-        -o -name 'CVS' \
-        -o -path '*/CVS/*' \
-        -o -path '*/src/tpl/*' \
-        -o -path '*/src/css/*' \
-        -o -name 'lodelia' \
-        -o -path '*/lodelia/*' \
-        -o -name '*~' \
-        -o -name '*.tmp' \
-        -o -name '#*#' \
-        -o -name '.#' \
-        -o -name '*.old' \
-        -o -name 'OLD*' | tar -p --gzip --create --file $FILE --exclude-from=- $DIRS $EXTRADIRS lodel/lodelconfig-dist.php lodel/index.php lodel/COPYING
-
-# restauration des noms des repertoires
-mv lodel/lodel-$1 lodel/lodel
-mv lodel/lodeladmin-$1 lodel/lodeladmin
-mv lodel/share-$1 lodel/share
-if [ $# -eq 2 ]
+# zip
+zip -rq $FILE.zip lodel/*
+if [ $? -ne 0 ]
 then
-        rm lodel/share-0.6
-	rm lodel/lodel/share-0.6
+  exit 1
 fi
-
-echo "fichier $FILE cree";
-ls -l  $FILE
+echo "fichier $FILE.zip cree";
+ls -altr  $FILE*

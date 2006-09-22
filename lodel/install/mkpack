@@ -37,24 +37,7 @@ if [ -e lodel ]; then
 	exit	
 fi
 
-cvs -Q co -P lodeldevel
-mv lodeldevel lodel
+svn export https://subversion.cru.fr/lodel/trunk lodel
 
+# creation des archives (.tar.gz et .zip)
 lodel/lodel/install/exportlodel 0.8
-mkdir tmp0808
-tar zxf lodel-0.8.tar.gz -C tmp0808
-
-
-# lodel latest
-rm lodel-latest.zip
-cd tmp0808/lodel
-zip -r ../../lodel-devel-latest.zip *
-cd ../..
-
-# lodel 0.8
-cd tmp0808
-zip -r ../lodel-0.8.zip *
-cd ..
-
-
-\rm -r tmp0808
