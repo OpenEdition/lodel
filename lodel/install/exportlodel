@@ -41,10 +41,16 @@ fi
 FILE="lodel-$1"
 
 
-# renomme les repertoires du depot svn pour contenir le numero de version
-mv lodel/lodel lodel/lodel-$1
-mv lodel/lodeladmin lodel/lodeladmin-$1
-mv lodel/share lodel/share-$1
+# verifie existence des repertoires
+if [ -d lodel/lodel -a -d lodel/lodeladmin -a -d lodel/share ]; then
+	# renomme les repertoires du depot svn pour contenir le numero de version
+	mv lodel/lodel lodel/lodel-$1
+	mv lodel/lodeladmin lodel/lodeladmin-$1
+	mv lodel/share lodel/share-$1
+else
+	echo " Tous les repertoires de Lodel ne sont pas presents "
+	exit
+fi
 
 # tar.gz
 tar czf $FILE.tar.gz lodel
@@ -55,10 +61,12 @@ fi
 echo "fichier $FILE.tar.gz cree";
 
 # zip
-zip -rq $FILE.zip lodel/*
+cd lodel
+zip -rq ../$FILE.zip *
 if [ $? -ne 0 ]
 then
   exit 1
 fi
 echo "fichier $FILE.zip cree";
+cd ../
 ls -altr  $FILE*
