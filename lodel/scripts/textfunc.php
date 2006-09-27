@@ -87,6 +87,56 @@ function textebrut($letexte) {
   return $letexte;
 }
 
+function cuttext($text,$length) {
+#  $texte = substr($texte, 0, ($long +50) * 3); /* heuristique pour prendre seulement le necessaire */
+
+  $GLOBALS['textfunc_hasbeencut']=false;
+  $open=strpos($text,"<");
+  if ($open===false || $open>$length) return cut_without_tags($text,$length);
+
+  $length-=$open;
+  $stack=array();
+
+  while ($open!==FALSE) {
+    $close=strpos($text,">",$open);
+    if ($text[$open+1]=="/") {
+      array_pop($stack); // fermante
+    } elseif ($tags[$close-1]!="/") {
+      array_push($stack,
+                                           "</".preg_replace("/\s.*/","",
+                                                             substr($text,$open+1,$close-1-$open))
+                                           .">"); // ouvrante
+    }
+    $open=strpos($text,"<",$close);
+    $piecelen=$open-1-$close;
+
+    if ($open===FALSE || $piecelen>$length)
+      return substr($text,0,$close+1).
+        cut_without_tags(substr($text,$close+1,$length+2),$length).  // 2 pour laisser de la marge
+        join("",array_reverse($stack));
+
+    $length-=$piecelen;
+    #echo $length,"<br>";
+  }
+  return $text;
+}
+
+function cut_without_tags($text,$length) {
+  $text2 = substr($text." ", 0, $length);
+  if (strlen($text2)<strlen($text)) { $GLOBALS['textfunc_hasbeencut']=true;}
+  $spacepos=strrpos($text2," ");
+##  $text2 = ereg_replace("([^[:space:]][[:space:]]+)[^[:space:]]*$", "\\1", $text2);
+
+  $text2 = preg_replace("/\S+$/", "", $text2);
+
+  return $text2;
+}
+
+function hasbeencut() {
+  return $GLOBALS['textfunc_hasbeencut'] ? true : false;
+}
+
+
 function couper($texte,$long) {
 #  $texte = substr($texte, 0, ($long +50) * 3); /* heuristique pour prendre seulement le necessaire */
 
@@ -419,6 +469,15 @@ function removenotes($text)
 function removeimages($text)
 {
   return preg_replace('/<img\b[^>]*>/',"",$text);
+}
+
+
+function removetags($text, $tags){
+  foreach(explode(',', $tags) as $v){
+    $find[] = '/<'.trim($v).'\b[^>]*>/';
+    $find[] = '/<\/'.trim($v).'>/';
+  }
+  return preg_replace($find, "", $text);
 }
 
 
