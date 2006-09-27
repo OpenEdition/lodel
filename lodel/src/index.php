@@ -148,7 +148,7 @@ if ($id || $identifier) {
 		$context['lodeluser'] = $lodeluser;
 		$accepted_logic = array('entities_edition');
 		$called_logic = 'entities_edition';
-		Controler::controler($accepted_logic, $called_logic);
+		$Controler = new controler($accepted_logic, $called_logic);
 		exit;
 	} else {
 		die('ERROR: unknown action');
