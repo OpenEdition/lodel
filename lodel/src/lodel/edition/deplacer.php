@@ -39,9 +39,9 @@ if ($idparent) {
   lock_write("entites","relations","typeentites_typeentites","entites as parent","entites as fils");
   // check whether we have the right or not
   if ($idparent>0) { // yeah there is a parent
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as parent,$GLOBALS[tp]entites as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND idtypeentite=fils.idtype") or die(mysql_error());
+    $result=mysql_query("SELECT `condition` FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as parent,$GLOBALS[tp]entites as fils WHERE parent.id='$idparent' AND fils.id='$id' AND idtypeentite2=parent.idtype AND idtypeentite=fils.idtype") or die(mysql_error());
   } else { // no parent, the base.
-    $result=mysql_query("SELECT condition FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as fils WHERE fils.id='$id' AND idtypeentite2=0 AND idtypeentite=fils.id") or die(mysql_error());
+    $result=mysql_query("SELECT `condition` FROM $GLOBALS[tp]typeentites_typeentites,$GLOBALS[tp]entites as fils WHERE fils.id='$id' AND idtypeentite2=0 AND idtypeentite=fils.id") or die(mysql_error());
   }
   if (mysql_num_rows($result)<=0) die("ERROR: Can move the entities $id into $idparent. Check the editorial model.");
 
