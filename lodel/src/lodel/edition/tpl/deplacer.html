@@ -46,7 +46,7 @@
 
 				<LOOP NAME="Deplace_document" TABLE="entites" WHERE="idparent='[#ID]' AND classe='publications'" ORDER="ordre">
 					[#BARRE]
-		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND idtypeentite=idtype AND idtypeentite2='[#IDTYPE]'" SELECT="condition">
+		                        <LOOP NAME="deplace_droit" TABLE="typeentites_typeentites,entites" WHERE="id='[#IDDOCUMENT]' AND idtypeentite=idtype AND idtypeentite2='[#IDTYPE]'" SELECT="`condition`">
 		                        <DO>
 		                        <!--[ on a le droit de la deplacer ici ]-->
 					<span style="margin-left: [#MARGIN]px;">
