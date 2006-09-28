@@ -33,7 +33,9 @@
 	<li><span class="intit">[@ADMIN.TITLE_BACKUP]</span></li>
 </ul>
 <br />&nbsp;<br />
-
+<IF COND="[#ERROR.FILES]">
+<p><span class="error">[@ADMIN.MISSING_DIRECTORIES_NOT_INCLUDED_IN_BACKUP] : [#ERROR.FILES]</span></p>
+</IF>
 <IF COND="[#SUCCESS]">
 	<p>
 	[@ADMIN.SAVED_IN]  : <strong>[#OUTFILENAME]</strong>

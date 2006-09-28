@@ -181,15 +181,33 @@ class DataLogic
 			// zip le site et ajoute la base
 			$archivetmp      = tempnam($tmpdir, 'lodeldump_'). '.zip';
 			$archivefilename = "site-$site-". date("dmy"). '.zip';
-			$GLOBALS['excludes'] = $excludes        = array('lodel/sources/.htaccess',
-															'docannexe/fichier/.htaccess',
-															'docannexe/image/index.html',
-															'docannexe/index.html',
-															'docannexe/image/tmpdir-\*',
-															'docannexe/tmp\*'
-															);
-			$dirs            = $context['sqlonly'] ? '' : 'lodel/icons lodel/sources docannexe';
-		
+			// fichiers à exclure de l'archive
+			$GLOBALS['excludes'] = $excludes = array('lodel/sources/.htaccess',
+						'docannexe/fichier/.htaccess',
+						'docannexe/image/index.html',
+						'docannexe/index.html',
+						'docannexe/image/tmpdir-\*',
+						'docannexe/tmp\*');
+			// répertoires à inclure
+			$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
+
+			// si sauvegarde des répertoires demandée (en + de la base)
+			if (!$context['sqlonly']) {
+					//verifie que les repertoires sont accessibles en lecture
+					foreach ($sitedirs as $sitedir) {
+						if(is_readable(SITEROOT . $sitedir)){
+							$good_dirs[] = $sitedir;
+						} else {
+							$bad_dirs[] = $sitedir;
+						}
+					}
+					// initialise $error pour affichage dans le template backup.html
+					if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
+
+					$dirs = implode(' ', $good_dirs);
+				}
+			else    { $dirs = ''; }
+
 			if ($zipcmd && $zipcmd != 'pclzip') { //Commande ZIP
 
 				if (!$context['sqlonly']) {
@@ -202,7 +220,7 @@ class DataLogic
 					if (!chdir("lodel/admin")) {
 						die ("ERROR: can't chdir in lodel/admin");
 					}
-					system($zipcmd. " -q -g $archivetmp -j $tmpdir/$outfile");
+					system($zipcmd. " -q -g $&nbsp;archivetmp -j $tmpdir/$outfile");
 				} else {
 					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
 				}
@@ -224,14 +242,17 @@ class DataLogic
 						return 1;
 					}
 					// end of function to exclude files
-					$archive->create(array(SITEROOT. 'lodel/sources',
-							SITEROOT. 'lodel/icons',
-							SITEROOT. 'docannexe',
-							$tmpdir. '/'. $outfile
-							),
+
+					// ajout de la racine du site aux chemins des répertoires
+					for($i=0 ; $i<count($good_dirs) ; $i++){
+						$good_dirs[$i] = SITEROOT. $good_dirs[$i];
+					}
+					// ajout du fichier sql issu du dump de la base du site
+					array_push($good_dirs, $tmpdir. '/'. $outfile);
+					// création de l'archive
+					$archive->create($good_dirs,
 							PCLZIP_OPT_REMOVE_PATH,SITEROOT,
-							PCLZIP_CB_PRE_ADD, 'preadd'
-							);
+							PCLZIP_CB_PRE_ADD, 'preadd');
 				} else {
 					$archive->create($tmpdir. "/". $outfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 				}
@@ -241,7 +262,10 @@ class DataLogic
 				die ("ERROR: the zip command or library does not produce any output");
 			}
 			@unlink($tmpdir. '/'. $outfile); // delete the sql file
-			#echo "toto";exit;
+			
+			if($error) { // Pour avoir accès aux erreurs dans les templates
+				$context['error'] = $error;}
+
 			if (operation($context['operation'], $archivetmp, $archivefilename, $context)) {
 				$context['success'] = 1;
 				return 'backup';
@@ -250,6 +274,7 @@ class DataLogic
 				$context['success'] = 1;
 				return 'backup';
 			}
+			
 			return 'backup';
 		}
 		else {
@@ -298,7 +323,7 @@ class DataLogic
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
 			
 			// Trouve les sites a inclure au backup.
-			$errors = array();
+			//$errors = array();
 			$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status > -32')) or dberror();
 			chdir(LODELROOT);
 			set_time_limit(60); // pas d'effet en safe mode
@@ -311,10 +336,10 @@ class DataLogic
 				$this->_dump($name, true, $errors, $fh);
 				if (!$context['sqlonly']) {
 					//verifie que le repertoire existe
-					if(is_readable("$name/lodel/sources") && is_readable("$name/docannexe")) {
-						array_push($dirtotar, "$name/lodel/sources", "$name/docannexe");
+					if(is_readable("$name/lodel/sources") && is_readable("$name/docannexe") && is_readable("$name/lodel/icons")){
+						array_push($dirtotar, "$name/lodel/sources", "$name/docannexe", "$name/lodel/icons");
 					} else {
-						$errors['files'] = "the directories  $name/lodel/sources and $name/docannexe are not readable or don't exists any more. They won't be included in the backup.";
+						$error['files'] = "the directories  $name/lodel/sources, $name/docannexe and/or $name/lodel/icons are not readable or don't exists any more. They won't be included in the backup.";
 					}
 				}
 				$result->MoveNext();
@@ -335,7 +360,7 @@ class DataLogic
 			}
 		}
 		
-		$context['error'] = $errors;
+		//$context['error'] = $errors;
 		return 'backup';
 	}
 
@@ -541,7 +566,7 @@ class DataLogic
 	}
 
 	/**
-	 * Dump SQL d'un site donné	 *
+	 * Dump SQL d'un site donné
 	 * @access private
 	 * @param string $site le nom du site
 	 * @param string $outfile le fichier dans lequel écrire le dump SQL
@@ -848,7 +873,6 @@ class DataLogic
 		}
 		return false;
 	}
-
 
 }// end of DataLogic class
 
