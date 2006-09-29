@@ -74,6 +74,13 @@
 	</LOOP>
 </table>
 
-<MACRO NAME="OK_BACK">
+<LOOP NAME="class_type" TABLE="classes" WHERE="class='[#CLASS]'">
+<!--[<MACRO NAME="OK_BACK">]-->
+	<DO>
+		<fieldset class="formButtons">
+			<input type="button" class="button" value="    OK    " onclick="javascript:window.location='[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=classes&amp;classtype=[#CLASSTYPE]'" />
+		</fieldset>
+	</DO>
+</LOOP>
 
 <MACRO NAME="CLOSE_HTML">
