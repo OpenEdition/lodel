@@ -26,6 +26,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * @package lodel/logic
+ * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
@@ -164,10 +165,16 @@ class DataLogic
 			require_once 'backupfunc.php';
 			$site = $context['site'];
 			$outfile = "site-$site.sql";
+
 			//$uselodelprefix = true; // ? NON UTILISE
 			$GLOBALS['tmpdir'] = $tmpdir = tmpdir();
 			$errors = array();
-			$this->_dump($site, $tmpdir. '/'. $outfile, $errors);
+			$fh = fopen($tmpdir. '/'. $outfile, 'w');
+			if (!$fh) {
+				die ("ERROR: unable to open a temporary file in write mode");
+			}
+			$this->_dump($site, $tmpdir. '/'. $outfile, $errors, $fh);
+			fclose($fh);
 			if($errors) {
 				$error = $errors;
 				return 'backup';
@@ -203,7 +210,8 @@ class DataLogic
 					}
 					// initialise $error pour affichage dans le template backup.html
 					if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
-
+					
+					// conversion en chaîne pour ligne de commande
 					$dirs = implode(' ', $good_dirs);
 				}
 			else    { $dirs = ''; }
@@ -220,7 +228,7 @@ class DataLogic
 					if (!chdir("lodel/admin")) {
 						die ("ERROR: can't chdir in lodel/admin");
 					}
-					system($zipcmd. " -q -g $&nbsp;archivetmp -j $tmpdir/$outfile");
+					system($zipcmd. " -q -g $archivetmp -j $tmpdir/$outfile");
 				} else {
 					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
 				}
@@ -324,23 +332,29 @@ class DataLogic
 			
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
-			$result = $db->execute(lq('SELECT name FROM #_MTP_sites WHERE status > -32')) or dberror();
-			chdir(LODELROOT);
+			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or dberror();
+			chdir(LODELROOT); 
 			set_time_limit(60); // pas d'effet en safe mode
 			$GLOBALS['currentprefix'] = '#_TP_';
 			while (!$result->EOF) {
 				$name = $result->fields['name'];
+				$sitepath = $result->fields['path'];
 				if (fputs($fh, 'DROP DATABASE IF EXISTS '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
 				die("ERROR: unable to write in the temporary file");
 			}
-				$this->_dump($name, true, $errors, $fh);
-				if (!$context['sqlonly']) {
-					//verifie que le repertoire existe
-					if(is_readable("$name/lodel/sources") && is_readable("$name/docannexe") && is_readable("$name/lodel/icons")){
-						array_push($dirtotar, "$name/lodel/sources", "$name/docannexe", "$name/lodel/icons");
-					} else {
-						$error['files'] = "the directories  $name/lodel/sources, $name/docannexe and/or $name/lodel/icons are not readable or don't exists any more. They won't be included in the backup.";
+				$this->_dump($name, $outfile, $errors, $fh);
+				if (!$context['sqlonly']) { 
+					if ($sitepath == '/') { $root = ''; } // site à la racine
+					else { $root = $name . '/'; }
+					// liste des répertoires du site à archiver
+					$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
+
+					//verifie que les repertoires sont accessibles en lecture
+					foreach ($sitedirs as $sitedir) {
+						if(is_readable($root . $sitedir)){ $dirtotar[] = $root . $sitedir;}
+						else { $bad_dirs[] = $root . $sitedir;}
 					}
+					 if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
 				}
 				$result->MoveNext();
 			}
@@ -354,7 +368,7 @@ class DataLogic
 			system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== false or die ("impossible d'executer tar");
 			unlink($dirlocked. '/'. $outfile);
 			rmdir($dirlocked);
-			chdir('lodeladmin'. ($version ? '-'. $version : ''));
+			chdir('lodeladmin'. ($GLOBALS['version'] ? '-'. $GLOBALS['version'] : ''));
 			if (operation($operation, $archivetmp, $archivefilename, $context)) {
 				return 'backup';
 			}
@@ -601,7 +615,7 @@ class DataLogic
 			if ($vo->classtype == 'persons')
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
-		// dump structure + donnÃ©es
+		// dump structure + données
 		mysql_dump($dbname, $tables, $outfile, $fh);
 		// dump structure seulement
 		$tables_nodatadump = $GLOBALS['lodelsitetables_nodatadump'];
