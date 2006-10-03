@@ -43,6 +43,10 @@ $GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entit
 $GLOBALS['lodelsitetables_nodatadump'] = array ("#_TP_search_engine");
 
 $GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session");
+if($GLOBALS['singledatabase'] != 'on') {
+	array_push($GLOBALS['lodelbasetables'], "#_MTP_translations", "#_MTP_texts");
+}
+
 
 $userlink = TRUE;
 $server = TRUE;
