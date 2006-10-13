@@ -37,7 +37,8 @@ $GLOBALS['langues']=array("fr"=>"fran\303\247ais",
 			  "de"=>"allemand",
 			  "it"=>"italien",
 			  "ru"=>"russe",
-			  "el"=>"grec");
+			  "el"=>"grec",
+			  "pt"=>"portugais");
 
 //
 // ne rien modifier ici
