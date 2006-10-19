@@ -329,9 +329,10 @@ class View
 			@unlink($this->_cachedfile. '.php'); // remove if the php file exists because it has the precedence above.
 		}
 		// write the file in the cache
-		$f = fopen($this->_cachedfile. '.'. $this->_extcachedfile, 'w');
-		fputs($f, $content);
-		fclose($f);
+		if($f = @fopen($this->_cachedfile. '.'. $this->_extcachedfile, 'w')){
+			fputs($f, $content);
+			fclose($f);
+		}
 		@chmod($dir, 0666 & octdec($GLOBALS['filemask']));
 		if ($this->_extcachedfile == 'php') { 
 			$dontcheckrefresh = 1;
