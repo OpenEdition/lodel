@@ -91,11 +91,15 @@ function calcul_page(&$context,$base,$cache_rep="",$base_rep="tpl/") {
   require_once($home."boucles.php");
 
   if ($context[charset]=="utf-8") { // utf-8 c'est le charset natif, donc on sort directement la chaine.
-    require($template_cache);
+    	if(is_readable($template_cache)){
+		require($template_cache);
+	}
   } else {
     // isolatin est l'autre charset par defaut
     ob_start();
-    require($template_cache);
+	if(is_readable($template_cache)){
+	    require($template_cache);
+	}
     $contents=ob_get_contents();
     ob_end_clean();
     echo utf8_decode($contents);
