@@ -104,7 +104,8 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
 		#$start = microtime();
 		ob_start();
-		require $template_cache;
+		if(is_readable($template_cache))
+			require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
 		echo _indent($contents);
@@ -115,7 +116,8 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	{
 		// isolatin est l'autre charset par defaut
 		ob_start();
-		require $template_cache;
+		if(is_readable($template_cache))
+			require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
 		echo _indent(utf8_decode($contents));
