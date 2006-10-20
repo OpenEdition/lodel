@@ -107,9 +107,10 @@ function calculate_cache_and_output ($context,$base,$cachedfile) {
   }
 
   // ecrit le fichier dans le cache
-  $f = fopen($cachedfile.".".$extension, "w");
-  fputs($f,$content);
-  fclose($f);
+  if($f = @fopen($cachedfile.".".$extension, "w")){
+        fputs($f,$content);
+        fclose($f);
+  }
 #  echo "ext:$extension";
 
   if ($extension=="php") { 
