@@ -51,7 +51,9 @@ if ($id) { // document
 
 include_once ($home."connect.php");
 $result=mysql_query("SELECT *, type  FROM $GLOBALS[tp]types, $GLOBALS[tp]entites, $GLOBALS[tp]$classe WHERE $GLOBALS[tp]entites.id='$id' AND identite='$id' AND idtype=$GLOBALS[tp]types.id") or die (mysql_error());
-$context=array_merge($context,mysql_fetch_assoc($result));
+$res = mysql_fetch_assoc($result);
+settype($res, 'array');
+$context=array_merge($context, $res);
 
 
 include ($home."calcul-page.php");
