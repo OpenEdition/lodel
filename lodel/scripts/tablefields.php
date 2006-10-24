@@ -29,6 +29,8 @@
 
 // build the arrays containing tables and fields
 
+require_once 'unset_globals.php';
+
 require_once($GLOBALS[home]."connect.php");
 
 // try first to get the cached array

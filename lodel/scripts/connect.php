@@ -28,6 +28,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+require_once 'unset_globals.php';
+
 if (!(INC_LODELCONFIG)) die("inc lodelconfig");
 
 

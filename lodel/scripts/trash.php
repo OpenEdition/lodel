@@ -31,6 +31,8 @@
 // fonction pour metre et enlever de la poubelle;
 // si $critere est numerique, il est considerer comme etant l'id
 
+require_once 'unset_globals.php';
+
 function deletetotrash($table,$critere)
 
 {

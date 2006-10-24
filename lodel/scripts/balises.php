@@ -33,6 +33,8 @@
 // les balises principales doivent etre associe a leur nom litteral
 // les ss balises doivent etre associees a une/ou des balises html ou etre vide.
 
+require_once 'unset_globals.php';
+
 $GLOBALS['balises']=array ("-" => "-",
 		"citation" => "<blockquote>",
 		"epigraphe" => "<div class=\"balisesinternes\">",

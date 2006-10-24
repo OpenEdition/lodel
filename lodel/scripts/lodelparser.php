@@ -32,6 +32,8 @@
 // en general etre ajouter ici
 //
 
+require_once 'unset_globals.php';
+
 require_once($home."func.php");
 require_once($home."balises.php");
 require_once($home."parser.php");

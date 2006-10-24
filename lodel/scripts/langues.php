@@ -31,6 +31,8 @@
 // liste des langues lodel
 //
 
+require_once 'unset_globals.php';
+
 $GLOBALS['langues']=array("fr"=>"fran\303\247ais",
 			  "en"=>"anglais",
 			  "es"=>"espagnol",

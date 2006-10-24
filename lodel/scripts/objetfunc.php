@@ -30,6 +30,8 @@
 
 // inclue les documents et les publi dans objets
 
+require_once 'unset_globals.php';
+
 function makeobjetstable()
 
 {

@@ -28,6 +28,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+require_once 'unset_globals.php';
+
 
 // apres l'ajout d'un type, il faut mettre a jour le Schema XML
 

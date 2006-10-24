@@ -29,6 +29,8 @@
 
 
 
+require_once 'unset_globals.php';
+
 function open_session ($login) {
 
   global $userpriv,$usergroupes,$sessionname,$timeout,$cookietimeout;

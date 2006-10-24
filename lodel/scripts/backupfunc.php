@@ -33,6 +33,7 @@
 // Thanks to the authors !
 //
 
+require_once 'unset_globals.php';
 define("LODELPREFIX","__LODELTP__");
 
 $GLOBALS['lodelsitetables']=array("$GLOBALS[tp]objets",

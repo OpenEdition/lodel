@@ -28,6 +28,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+require_once 'unset_globals.php';
+
 
 //
 // fonction qui renvoie les valeures perennes: statut, groupe, ordre, iduser
