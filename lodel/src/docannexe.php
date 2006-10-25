@@ -44,7 +44,7 @@ $result=mysql_query("SELECT lien,type FROM $GLOBALS[documentstypesjoin] WHERE $G
 if (mysql_num_rows($result)<1) { header ("Location: not-found.html"); return; }
 list($lien,$type)=mysql_fetch_row($result);
 
-if ($type=="documentannexe-lienfichier") {
+if ($type=="documentannexe-lienfichier" || $type=="documentannexe-lienfacsimile") {
   require_once($home."func.php");
   download($lien);
   return;

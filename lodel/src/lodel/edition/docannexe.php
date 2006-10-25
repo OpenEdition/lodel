@@ -86,7 +86,7 @@ if ($edit) { // modifie ou ajoute
   list($type)=mysql_fetch_row($result);
 
   $docfile=$_FILES['docfile'];
-  if ($type=="documentannexe-lienfichier") {
+  if ($type=="documentannexe-lienfichier" || $type=="documentannexe-lienfacsimile") {
     // charge le fichier si necessaire
       if ($docfile && $docfile['tmp_name'] && $docfile['tmp_name']!="none") {
 	if ($id>0) { // we know the document id, we can copy it.
@@ -151,7 +151,7 @@ if ($edit) { // modifie ou ajoute
 
     // New document, now we know the id, let's copy the uploaded file.
     if (!$id && $newid &&
-	$type=="documentannexe-lienfichier" &&
+	($type=="documentannexe-lienfichier" || $type=="documentannexe-lienfacsimile") &&
 	$docfile['tmp_name']) { // we know the document id, we can copie it.
       $lien=save_annex_file($newid,$docfile['tmp_name'],$docfile['name'],FALSE,$erreur);
       mysql_query("UPDATE $GLOBALS[tp]documents SET lien='$lien' WHERE identite=$newid");
