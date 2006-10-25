@@ -78,38 +78,45 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
+	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+        <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
+                <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
+        <ELSE />
+                <LET VAR="lodeluser_gui_complexity">64</LET>
+        </IF>
+        <LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER_GUI_COMPLEXITY]" LIMIT="0,1">
+                <fieldset>
+                        <legend>
+                        <LOOP NAME="getGroupInfo" TABLE="tablefieldgroups" WHERE="id = [#IDGROUP]">
+                        <MACRO NAME="INTERTITLE" />
+                        </LOOP>
+                        </legend>
+        </LOOP>
+        <LOOP NAME="edition_fields">
+                <BEFORE> </BEFORE>
+                <DO>
+                        <IF COND="[#LODELUSER_GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
+                                <div class="hidden">
+                        </IF>
+                                <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+                                <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> [#IDENTITY]
+                                <!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
+                                <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDIT
+ION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
+                                <br />
+                        <IF COND="[#LODELUSER_GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
+                                </div>
+                        </IF>
 
-	<LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER.GUI_COMPLEXITY]" LIMIT="0,1">
-		<fieldset>
-			<legend>
-			<LOOP NAME="getGroupInfo" TABLE="tablefieldgroups" WHERE="id = [#IDGROUP]">
-			<MACRO NAME="INTERTITLE" />
-			</LOOP>
-			</legend>
-	</LOOP>
-	<LOOP NAME="edition_fields">
-		<BEFORE> </BEFORE>
-		<DO>
-			<IF COND="[#LODELUSER.GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
-				<div class="hidden">
-			</IF>
-				<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-				<label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> [#IDENTITY]
-				<!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
-				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
-				<br />
-			<IF COND="[#LODELUSER.GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
-				</div>
-			</IF>
-
-		</DO>
-		<AFTER> </AFTER>
-	</LOOP>
-	<LOOP NAME="getDisplayBool2" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER.GUI_COMPLEXITY]" LIMIT="0,1">
-		</fieldset>
-	</LOOP>
+                </DO>
+                <AFTER> </AFTER>
+        </LOOP>
+        <LOOP NAME="getDisplayBool2" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER_GUI_COMPLEXITY]" LIMIT="0,1">
+                </fieldset>
+        </LOOP>
 
 </DEFMACRO>
+
 
 <!--[ -----------------------------------------------------------
   Parameters management macro
