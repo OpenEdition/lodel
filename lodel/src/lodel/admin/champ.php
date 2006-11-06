@@ -137,7 +137,7 @@ if ($edit) { // modifie ou ajoute
       $newstatut=$protege ? 32 : 1;
       $statut=$statut>0 ? $newstatut : -$newstatut;    
     }
-    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,'condition',defaut,traitement,balises,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$idgroupe','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balises]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]champs (id,nom,titre,commentaire,idgroupe,style,type,`condition`,defaut,traitement,balises,filtrage,edition,ordre,statut) VALUES ('$id','$context[nom]','$context[titre]','$context[commentaire]','$idgroupe','$context[style]','$context[type]','$context[condition]','$context[defaut]','$context[traitement]','$context[balises]','$context[filtrage]','$context[edition]','$ordre','$statut')") or die (mysql_error());
 
     if ($alter) { // modify or add or rename the field
       mysql_query("ALTER TABLE $GLOBALS[tp]$context[classe] $alter $context[nom] ".$sqltype[$context[type]]) or die (mysql_error());
