@@ -264,7 +264,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             }
 
             $tmpres[1]     = substr($tmpres[1], 0, 13)
-	      . (($use_backquotes) ? PMA_backquote(lodelpreifx($tmpres[0])) : lodelprefix($tmpres[0]))
+	      . (($use_backquotes) ? PMA_backquote(lodelprefix($tmpres[0])) : lodelprefix($tmpres[0]))
                            . substr($tmpres[1], $pos);
             $tmpres[1]     = str_replace("\n", $crlf, $tmpres[1]);
             if (preg_match_all('((,\n[\s]*CONSTRAINT[^\n,]+)+)', $tmpres[1], $regs)) {
