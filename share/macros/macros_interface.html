@@ -101,8 +101,7 @@
                                 <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
                                 <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> [#IDENTITY]
                                 <!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
-                                <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDIT
-ION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
+                                <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
                                 <br />
                         <IF COND="[#LODELUSER_GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
                                 </div>
@@ -241,7 +240,6 @@ ION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
-	
 	<IF COND="[#EDITION] EQ 'fckeditor'">
 	<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
  	<MACRO NAME="FCK_EDITOR_PARAMETERS">
