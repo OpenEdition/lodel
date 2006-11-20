@@ -42,6 +42,8 @@
 require_once 'siteconfig.php';
 require_once 'auth.php';
 
+$url_retour = strip_tags($url_retour);
+
 if ($_POST['login']) {
 	require_once 'func.php';
 	extract_post();
