@@ -431,7 +431,9 @@ function download($filename,$originalname="",$contents="")
   $size = $filename ? filesize($filename) : strlen($contents);
   if($mimetype[$ext]){
     $mime = $mimetype[$ext];
-    $disposition = "inline";
+    // $disposition = "inline";
+    $disposition = "attachment"; // inline ne fonctionne pas sous win !!
+    // TODO: trouver une solution pour ouverture dans plugin
   } else {
     $mime = "application/force-download";
     $disposition = "attachment";
