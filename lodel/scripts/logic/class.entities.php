@@ -255,6 +255,7 @@ class EntitiesLogic extends Logic
 	/**
 	 * Suppressions des relations entre une entité et des persons et des entries
 	 *
+	 * Dans la table relations, le champ nature = G ou E (G = gens, E=entrées)
 	 * @access private
 	 * @param array $ids les identifiants numériques des entités
 	 */
