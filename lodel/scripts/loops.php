@@ -43,14 +43,17 @@ function loop_parentsentities(& $context, $funcname, $critere = "")
 	$id = intval($context['id']);
 	if (!$id)
 		return;
-	$result = $db->execute(lq("SELECT *, type  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>". ($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
+	$result = $db->execute(lq("SELECT *  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>". ($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
 
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);
-		call_user_func("code_do_$funcname", $localcontext);
+		if (function_exists("code_do_$funcname")) {
+			call_user_func("code_do_$funcname", $localcontext); }
 		$result->MoveNext();
 	}
 }
+
+
 
 /**
  * Loop displaying the table of contents (toc)
@@ -61,10 +64,8 @@ function loop_parentsentities(& $context, $funcname, $critere = "")
  */
 function loop_toc($context, $funcname, $arguments)
 {
-	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", 
-											$arguments['text'], $results, PREG_SET_ORDER)) {
-		if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], 
-												$results, PREG_SET_ORDER)) {
+	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+		if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
 			if (function_exists("code_alter_$funcname"))
 				call_user_func("code_alter_$funcname", $context);
 			return;
