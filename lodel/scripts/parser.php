@@ -241,7 +241,7 @@ function parse_texte(&$text)
 	mysql_query("INSERT INTO $GLOBALS[tp]textes (nom,texte) VALUES ('$nom','')") or $this->errmsg (mysql_error());
       }
     }
-    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><p><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></p> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
+    $text=str_replace ($result[0],'<?php require_once("'.TOINCLUDE.'connect.php"); $result=mysql_query("SELECT id,texte FROM $GLOBALS[tp]textes WHERE nom=\''.$nom.'\' AND statut>0"); list($id,$texte)=mysql_fetch_row($result); if ($context[droitediteur]) { ?><span class="editText"><a href="lodel/admin/texte.php?id=<?php echo $id; ?>">[Modifier]</a></span> <?php } echo preg_replace("/(\r\n?\s*){2,}/","<br />",$texte); ?>',$text);
   }
 }
 
