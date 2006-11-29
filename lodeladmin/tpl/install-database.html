@@ -51,9 +51,7 @@ CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { ec
 <code>
 GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>.* TO <?php echo "$dbusername@$dbhost";?>;
 </code>
-<p>
-[@INSTALL.WHY_TABLE_PREFIX]
-</p>
+
 <p>
 [@INSTALL.SINGLE_LODEL_INSTALLATION_CAN_MANAGE_SEVERAL_WEBSITES_AND_CHOOSE]
 </p>
@@ -130,11 +128,19 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 	</li>
 	</ul>
 </fieldset>
-<?php if ($installoption>1) { // OPTION superieure a 1 ?>
+
+<h4>[@INSTALL.TABLE_PREFIX]</h4>
+<p>
+[@INSTALL.WHY_TABLE_PREFIX]
+</p>
 <fieldset class="install">
+<legend>[@INSTALL.TABLE_PREFIX]</legend>
 <label for="newtableprefix">[@INSTALL.TABLE_PREFIX] : </label>
-<input type="text" size="20" name="newtableprefix" id="newtableprefix" value="<?php echo $tableprefix ? $tableprefix : ($installoption==1 ? "lodel_" : ""); ?>" />
-<?php } ?>
+<input type="text" size="20" name="newtableprefix" id="newtableprefix" value="<?php 
+if ($installoption==1) $tableprefix='lodel_';
+else $tableprefix='';
+echo $tableprefix; ?>" />
+
 </fieldset>
 
 <fieldset class="install">
