@@ -550,7 +550,8 @@ function install_file($root, $homesite, $homelodel)
 		} elseif ($cmd == 'mkdir') {
 			$arg1 = $root. $arg1;
 			if (!file_exists($arg1)) {
-				mkdir($arg1, 0777 & octdec($GLOBALS['filemask']));
+				if(!@mkdir($arg1, 0777 & octdec($GLOBALS['filemask']))) {
+					die ("Unable to create $arg1 : please check the permissions (write access needed)"); }
 			}
 			@chmod($arg1, 0777 & octdec($GLOBALS['filemask']));
 		} elseif ($cmd == 'ln' && $usesymlink && $usesymlink != 'non') {
