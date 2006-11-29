@@ -35,6 +35,17 @@ include 'tpl/install-openhtml.html';
 <h4>[@INSTALL.ACCESS_TO_DATABASE_SERVER]</h4>
 <?php if ($installoption==1) { // OPTION 1 ?>
 	<p>[@INSTALL.GIVE_INFORMATION_TO_CONNECT_TO_DATABASE]</p>
+	<p>
+		<strong>[@INSTALL.DATABASE_SERVER] :&nbsp;</strong>
+		[@INSTALL.ADDRESS_GIVEN_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
+	</p>
+	<p>
+		<strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :&nbsp;</strong>
+		[@INSTALL.INDICATED_BY_YOUR_PROVIDER].
+	</p>
+		<strong>[@INSTALL.IF_ANY_DOUBT] :&nbsp;</strong>
+		[@INSTALL.CONTACT_YOUR_PROVIDER].
+	</p>
 <?php } else { // OPTION 2 ?>
 <!--[ 	<p>[[@INSTALL.OPTION_2]]</p>]-->
 	<p>
@@ -68,6 +79,8 @@ include 'tpl/install-openhtml.html';
 		<br />
 <?php } ?>
 
+
+
 <form method="post" action="install.php">
 	<fieldset class="install">
 	<legend>[@INSTALL.ACCESS_TO_DATABASE_SERVER]</legend>
@@ -85,19 +98,8 @@ include 'tpl/install-openhtml.html';
 </form>
 
 <?php if ($installoption==1) { // OPTION 1 ?>
-	<hr style="width: 100%; height: 2px;">
-	<p align="justify">
-		<strong>[@INSTALL.DATABASE_SERVER_ADDRESS] :&nbsp;</strong>
-		[@INSTALL.ADDRESS_GIVEN_IN_TECHNICAL_DOCUMENTATION_PROVIDED_BY_YOUR_PROVIDER]
-	</p>
-	<p align="justify">
-		<strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :&nbsp;</strong>
-		[@INSTALL.INDICATED_BY_YOUR_PROVIDER].
-	</p>
-	<p align="justify">
-		<strong>[@INSTALL.IF_ANY_DOUBT] :&nbsp;</strong>
-		[@INSTALL.CONTACT_YOUR_PROVIDER].
-	</p>
+
+	
 <?php } // fin OPTION 1 ?>
 
 <!--[ Inclusion du template de fermeture HTML ]-->
