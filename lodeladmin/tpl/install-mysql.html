@@ -43,8 +43,7 @@ include 'tpl/install-openhtml.html';
 		<strong>[@INSTALL.DATABASE_USER_AND_PASSWORD] :&nbsp;</strong>
 		[@INSTALL.INDICATED_BY_YOUR_PROVIDER].
 	</p>
-		<strong>[@INSTALL.IF_ANY_DOUBT] :&nbsp;</strong>
-		[@INSTALL.CONTACT_YOUR_PROVIDER].
+		[@INSTALL.IF_ANY_DOUBT], [@INSTALL.CONTACT_YOUR_PROVIDER].
 	</p>
 <?php } else { // OPTION 2 ?>
 <!--[ 	<p>[[@INSTALL.OPTION_2]]</p>]-->
@@ -72,11 +71,11 @@ include 'tpl/install-openhtml.html';
 
 
 <?php  if ($erreur_connect) { ?>
-	<strong>[@INSTALL.ERROR]</strong> :&nbsp;
-		<span class="error">
+	<p>
+		<span class="error"><strong>[@INSTALL.ERROR]</strong> :&nbsp;
 			[@INSTALL.UNABLE_TO_CONNECT_TO_DATABASE_SERVER_ERROR_IS]: <?php  echo mysql_error(); ?>
 		</span>
-		<br />
+		</p>
 <?php } ?>
 
 
@@ -96,11 +95,6 @@ include 'tpl/install-openhtml.html';
 	<input type="submit" value="[@INSTALL.CONTINUE]" class="button" />
 	</fieldset>
 </form>
-
-<?php if ($installoption==1) { // OPTION 1 ?>
-
-	
-<?php } // fin OPTION 1 ?>
 
 <!--[ Inclusion du template de fermeture HTML ]-->
 <?php  include("tpl/install-closehtml.html"); ?>

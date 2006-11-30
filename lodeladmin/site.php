@@ -54,7 +54,7 @@ $critere = "id='$id'";
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
-// supression et restauration
+// suppression et restauration
 if ($id>0 && ($delete || $restore)) {
 	if ($delete) {
 		mysql_query(lq("UPDATE #_TP_sites SET status=-abs(status) WHERE $critere")) or dberror();
@@ -139,12 +139,22 @@ if ($edit || $maindefault) { // modifie ou ajoute
 			}
 		}
 
-		// lit les informations options, status, etc... si le site existe deja
+		// édition d'un site : lit les informations options, status, etc.
 		if ($id) {
 			$result = mysql_query ("SELECT status,name,path FROM $GLOBALS[tp]sites WHERE id='$id'") or die (mysql_error());
 			list($status,$name,$context['path']) = mysql_fetch_row($result);
 			$context['name'] = $name;
-		} else {
+		} else { // création d'un site
+			// vérifie que le nom (base de données + répertoire du site) n'est pas déjà utilisé
+			$result = mysql_query ("SELECT name FROM $GLOBALS[tp]sites") or die (mysql_error());
+			while ($row = mysql_fetch_array($result)) {
+				$sites[] = $row['name'];
+			}
+ 			if(in_array($context['name'], $sites)) {
+				$context['error_unique_name'] = $err = 1;
+				break;
+			}
+
 			$options = '';
 			$status  = -32; // -32 signifie en creation
 			if ($context[atroot]) {
@@ -209,7 +219,7 @@ if ($task == 'version') {
 		global $lodelhomere;
 		$dir = opendir(LODELROOT);
 		if (!$dir) {
-			die ("impossible d'acceder en ecriture le repertoire racine... etrange, n'est-il pas ?");
+			die ("impossible d'acceder en ecriture le repertoire racine");
 		}
 		$versions = array();
 		while ($file = readdir($dir)) {
@@ -439,7 +449,7 @@ if ($task == 'file') {
 
 	$atroot = $context['path'] == '/' ? 'root' : '';
 	if (!copy(LODELROOT. "$versiondir/src/siteconfig$atroot.php", $siteconfigcache)) {
-		die("ERROR: unable to write in CACHE. Strange !");
+		die("ERROR: unable to write in CACHE.");
 	}
 	maj_siteconfig($siteconfigcache, array('site' => $context['name']));
 
@@ -523,7 +533,7 @@ $view->render($context, 'site');
 
 function install_file($root, $homesite, $homelodel)
 {
-	global $extensionscripts, $usesymlink;
+	global $extensionscripts, $usesymlink, $context;
 	$file = "$root$homesite/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
 	if (!file_exists($file)) {
 		die("Fichier $file introuvable. Verifiez votre pactage");
@@ -551,7 +561,12 @@ function install_file($root, $homesite, $homelodel)
 			$arg1 = $root. $arg1;
 			if (!file_exists($arg1)) {
 				if(!@mkdir($arg1, 0777 & octdec($GLOBALS['filemask']))) {
-					die ("Unable to create $arg1 : please check the permissions (write access needed)"); }
+					$context['error_mkdir'] = $arg1;
+					require 'view.php';
+					$view = &View::getView();
+					$view->render($context, 'site-createdir');
+					exit;	
+				 }
 			}
 			@chmod($arg1, 0777 & octdec($GLOBALS['filemask']));
 		} elseif ($cmd == 'ln' && $usesymlink && $usesymlink != 'non') {
