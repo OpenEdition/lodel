@@ -150,9 +150,11 @@ if ($edit || $maindefault) { // modifie ou ajoute
 			while ($row = mysql_fetch_array($result)) {
 				$sites[] = $row['name'];
 			}
- 			if(in_array($context['name'], $sites)) {
-				$context['error_unique_name'] = $err = 1;
-				break;
+			if(is_array($sites)) {
+ 				if(in_array($context['name'], $sites)) {
+					$context['error_unique_name'] = $err = 1;
+					break;
+				}
 			}
 
 			$options = '';
