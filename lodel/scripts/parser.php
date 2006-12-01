@@ -62,8 +62,10 @@ class Parser {
 
 
 function errmsg ($msg,$ind=0) { 
-  if ($ind) $line="line ".$this->$linearr[$ind];
-  die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
+  // À REVOIR : déterminer le numéro de ligne dans le template
+  //if ($ind) $line="line ".$this->$linearr[$ind];
+  //die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
+  die("LODELSCRIPT ERROR in file ".$this->infilename." : $msg");
 }
 
 function parse_loop_extra(&$tables,
