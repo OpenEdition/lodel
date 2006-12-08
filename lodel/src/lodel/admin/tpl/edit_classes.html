@@ -41,20 +41,20 @@
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="classes">
 <fieldset>
-  <legend>[@ADMIN.CLASS_FIELDSET_GENERAL]</legend>
+  <legend>[@ADMIN.IDENTIFICATION]</legend>
   <input type="hidden" name="id" value="[#ID]">
   <LOOP NAME="fielderror" FIELD="id">
     <a id="id"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
     </span>
   </LOOP>
-  <label for="class">[@ADMIN.NAME]<span class="optional">(*)</span> : 
+  <label for="class">[@ADMIN.UNIQUE_IDENTIFIER]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
   <input type="text" size="30" name="class" id="class" class="text" value="[#CLASS]">
   <LOOP NAME="fielderror" FIELD="class">
     <a id="class"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.UNIQUE_IDENTIFIER]"></FUNC>
     </span>
   </LOOP>
   <br />
@@ -74,11 +74,14 @@
     </span>
   </LOOP>
   <br />
-  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME]<span class="optional">(*)</span> : 
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-  <label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>
+  <label for="protected">[@ADMIN.PROTECTED_CLASS] : 
 		</label>
   <br class="nobr">
   <IF COND="abs([#STATUS]) ge 32">
@@ -88,14 +91,20 @@
   </IF>
   <LOOP NAME="fielderror" FIELD="protected">
     <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_DATAFIELD]"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_CLASS]"></FUNC>
     </span>
   </LOOP>
   <br />
-  <label for="icon">[@ADMIN.ICON] : 
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.DISPLAY_IN_INTERFACE]</legend>
+  <label for="icon">[@ADMIN.CLASS_ICON] : 
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.COMMENT]</legend>
   <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
   <br class="nobr">

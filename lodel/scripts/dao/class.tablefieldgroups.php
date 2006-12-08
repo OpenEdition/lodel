@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 20-06-2006.
+// Fichier généré automatiquement le 08-12-2006.
 //
 
 

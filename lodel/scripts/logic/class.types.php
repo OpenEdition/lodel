@@ -228,17 +228,17 @@ class TypesLogic extends Logic {
 		return array('type' => array('type', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
-									'icon' => array('image', ''),
 									'class' => array('class', '+'),
+									'icon' => array('image', ''),
+									'tpledition' => array('tplfile', ''),
+									'display' => array('select', ''),
 									'tplcreation' => array('tplfile', ''),
 									'import' => array('select', '+'),
 									'creationstatus' => array('select', '+'),
 									'gui_user_complexity' => array('select', '+'),
-									'tpledition' => array('tplfile', ''),
-									'display' => array('select', ''),
 									'search' => array('boolean', '+'),
-									'tpl' => array('tplfile', ''),
 									'oaireferenced' => array('boolean', '+'),
+									'tpl' => array('tplfile', ''),
 									'public' => array('boolean', '+'));
 	}
 	// end{publicfields} automatic generation  //

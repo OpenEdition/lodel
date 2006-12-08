@@ -56,14 +56,14 @@
   </span>
 </LOOP>
 <fieldset>
-  <legend>[@ADMIN.FIELDSET_TITLE]</legend>
-  <label for="name">[@ADMIN.NAME]<span class="optional">(*)</span> : 
+  <legend>[@ADMIN.IDENTIFICATION]</legend>
+  <label for="name">[@ADMIN.UNIQUE_IDENTIFIER]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
   <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
   <LOOP NAME="fielderror" FIELD="name">
     <a id="name"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NAME]"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.UNIQUE_IDENTIFIER]"></FUNC>
     </span>
   </LOOP>
   <br />

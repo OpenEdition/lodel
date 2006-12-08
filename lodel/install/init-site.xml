@@ -28,17 +28,25 @@
      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 -->
 
+<!--
+    Fichier utilisé pour générer les fichiers de logic, de dao et les formulaires de l'interface d'admin.
+    Cf. install/generate.php et install/generateform.php
+-->
+
 <database name="lodel" defaultIdMethod="native">
+
 <table name="objects"
-        description="">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="class"
-        type="VARCHAR"
-        size="64" />
+        description="Table contenant l'id et le nom de la table de tous les objets : classes, entites, etc.">
+	<column name="id"
+        	type="INTEGER"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="class"
+	        type="VARCHAR"
+	        size="64" />
+	<!-- class = nom de la table Lodel qui contient l'objet
+	           = types, persontypes, entrytypes, classes, entities, entries ou persons -->
 </table>
 
 <table name="entities"
@@ -46,74 +54,74 @@
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="idparent"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="idtype"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="identifier"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<column name="entitytitle"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="short title used in the interface" />
-<column name="usergroup"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<column name="iduser"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="status"
-        type="TINYINT"
-        default="-1"
-        required="true" />
-<column name="upd"
-        type="TIMESTAMP" />
-<column name="creationdate"
-        type="DATETIME" />
-<column name="modificationdate"
-        type="DATETIME" />
-<column name="creationmethod"
-        type="VARCHAR"
-        size="16"
-        required="true" />
-<column name="creationinfo"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="parameters for the creation" />
+	<column name="id"
+        	type="INTEGER"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="idparent"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="idtype"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="identifier"
+	        type="VARCHAR"
+	        size="255"
+	        required="true" />
+	<column name="entitytitle"
+        	type="VARCHAR"
+        	size="255"
+        	required="true"
+        	description="short title used in the interface" />
+	<column name="usergroup"
+	        type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="iduser"
+        	type="INTEGER"
+	        default="0"
+        	required="true" />
+	<column name="rank"
+        	type="INTEGER"
+	        default="0"
+        	required="true" />
+	<column name="status"
+        	type="TINYINT"
+	        default="-1"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<column name="creationdate"
+        	type="DATETIME" />
+	<column name="modificationdate"
+        	type="DATETIME" />
+	<column name="creationmethod"
+        	type="VARCHAR"
+	        size="16"
+        	required="true" />
+	<column name="creationinfo"
+        	type="VARCHAR"
+        	size="255"
+        	required="true"
+        	description="parameters for the creation" />
 <!--<foreign-key foreignTable="types" onDelete="setnull">
 <reference
 	local="idtype"
 	foreign="id" />
 </foreign-key>-->
 <!-- End foreign key -->
-<index name="index_idparent">
-<index-column name="idparent" />
-</index>
-<index name="index_idtype">
-<index-column name="idtype" />
-</index>
-<index name="index_identifier">
-<index-column name="identifier" />
-</index>
+	<index name="index_idparent">
+		<index-column name="idparent" />
+	</index>
+	<index name="index_idtype">
+		<index-column name="idtype" />
+	</index>
+	<index name="index_identifier">
+		<index-column name="identifier" />
+	</index>
 </table>
 
 
@@ -121,28 +129,28 @@
 
 <table name="relations"
         description="table contenant les relations entre les entites">
-<column name="idrelation"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="id1"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="id2"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="nature"
-        type="CHAR"
-        size="1"
-        default="P"
-        required="true" />
-<column name="degree"
-        type="TINYINT"
-        default="0"
-        required="true" />
+	<column name="idrelation"
+        	type="INTEGER"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="id1"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="id2"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="nature"
+        	type="CHAR"
+        	size="1"
+        	default="P"
+        	required="true" />
+	<column name="degree"
+        	type="TINYINT"
+	        default="0"
+        	required="true" />
 <!-- Foreign Key -  2005-02-07 -->        
 <!--<foreign-key foreignTable="entities" onDelete="setnull">
 <reference
@@ -155,208 +163,221 @@
 	foreign="id" />		
 </foreign-key>-->
 <!-- End Foreign Key -->
-<index name="index_id1">
-<index-column name="id1" />
-</index>
-<index name="index_id2">
-<index-column name="id2" />
-</index>
-<index name="index_degree">
-<index-column name="degree" />
-</index>
-<index name="index_nature">
-<index-column name="nature" />
-</index>
+	<index name="index_id1">
+		<index-column name="id1" />
+	</index>
+	<index name="index_id2">
+		<index-column name="id2" />
+	</index>
+	<index name="index_degree">
+		<index-column name="degree" />
+	</index>
+	<index name="index_nature">
+		<index-column name="nature" />
+	</index>
 </table>
 
 
 
 <table name="classes"
-        description="table qui contient les classes"
+        description="table qui contient les classes définies dans le ME"
 	writeright="admin"
 	protectright="adminlodel"
         uniqueid="yes">
-<vgroup name="general" label="[@ADMIN.CLASS_FIELDSET_GENERAL]">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="class"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="identifiant unique"
-        label="[@ADMIN.NAME]"
-        edittype="class" />
-<column name="classtype"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        visibility="hidden"
-        edittype="text" />
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="name en clair, utiliser dans l interface"
-        label="[@ADMIN.INTERFACENAME]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_NAME]"
-	edittype="mltext"/>
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_DATAFIELD]"
-        edittype="boolean"/>
-<column name="icon"
-	type="VARCHAR"
-	size="255"
-	description="icone de la classe"
-	label="[@ADMIN.ICON]"
-  	edittype="image" />
-<column name="comment"
-        type="LONGVARCHAR"
-        description="commentaire sur la class"
-        label="[@ADMIN.COMMENT]"
-        edittype="longtext" />
-</vgroup>
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="upd"
-        type="TIMESTAMP" />
+	<vgroup name="general" label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="class"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="identifiant unique de la classe"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+        		edittype="class" />
+		<column name="classtype"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		visibility="hidden"
+        		edittype="text" />
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="nom en clair, utilisé dans l interface"
+        		label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">	
+		<vcolumn name="protected"
+			 label="[@ADMIN.PROTECTED_CLASS]"
+			 edittype="boolean"/>
+	</vgroup>
+	<vgroup name="gricon"
+		label="[@ADMIN.DISPLAY_IN_INTERFACE]">
+		<column name="icon"
+			type="VARCHAR"
+			size="255"
+			description="icone de la classe"
+			label="[@ADMIN.CLASS_ICON]"
+			edittype="image" />
+	</vgroup>
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<vgroup name="grcomment"
+		label="[@ADMIN.COMMENT]">	
+		<column name="comment"
+			type="LONGVARCHAR"
+			description="description de la classe"
+			label="[@ADMIN.COMMENT]"
+        		edittype="longtext" />
+	</vgroup>
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
 
-<index name="index_class"><index-column name="class" /></index>
-<unique name="unique_class"><unique-column name="class" /></unique>
+	<index name="index_class">
+		<index-column name="class" />
+	</index>
+	<unique name="unique_class">
+		<unique-column name="class" />
+	</unique>
 </table>
 
 
 
 <table name="tablefields"
-			 description="table qui contient les champs supplementaires" 
-			 writeright="admin"
-			 protectright="adminlodel">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<vgroup name="grtitre"
-				label="[@ADMIN.FIELDSET_TITLE]">
-<column name="name"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="name/identifiant unique"
-        label="[@ADMIN.NAME]"
-        edittype="tablefield" />
-<column name="class"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
-        visibility="hidden"
-        edittype="class"/>
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="name en clair, utiliser dans l interface"
-        label="[@ADMIN.INTERFACENAME]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_NAME]"
-	edittype="mltext"/>
-</vgroup>
-<vgroup name="grdefinition"
-				label="[@ADMIN.FIELDSET_DEFINITION]">
-<column name="type"
-				type="VARCHAR"
-				size="255"
-				required="true"
-				description="type du champ"
-				label="[@ADMIN.TYPE]"
-				edittype="select"
-				confirm="confirm_change_type" /> <!-- confirmation is required for this type -->
-<column name="g_name"
-				type="VARCHAR"
-				size="255"
-				description="champ generique equivalent"
-				label="[@ADMIN.GENERIC_EQUIVALENT]"
-        edittype="select" />
-<column name="comment"
-				type="LONGVARCHAR"
-				description="commentaire sur le champs"
-				label="[@ADMIN.COMMENT]"
-        edittype="longtext" />
-</vgroup>
-<vgroup name="grcreation"
-				label="[@ADMIN.FIELDSET_CREATION]">
-<column name="style"
-					type="VARCHAR"
-					size="255"
-					description="style qui conduit a cette balises"
-					label="[@ADMIN.STYLE]"
-        edittype="mlstyle" />
-<column name="cond"
-				type="VARCHAR"
-				size="16"
-				required="true"
-				description="indique si un champ est obligatoire, ou non"
-				label="[@ADMIN.CONDITION]"
-				edittype="select" />
-<column name="defaultvalue"
-				type="VARCHAR"
-				size="255"
-				description="valeur par defaut"
-				label="[@ADMIN.DEFAULT_VALUE]"
-				edittype="text" />
-<column name="processing"
-				type="VARCHAR"
-				size="255"
-				description="traitement a faire a l import"
-				label="[@ADMIN.PROCESSING_IMPORT]"
-				edittype="text" />
-<column name="allowedtags"
-				type="VARCHAR"
-				size="255"
-				description="balises acceptees"
-				label="[@ADMIN.ALLOWED_TAGS]"
-				edittype="multipleselect" /> <!-- complex case -->
-<column name="gui_user_complexity"
-				type="TINYINT"
-				default="64"
-				required="true"
-				description="Degré de complexité de l'interface dans lequel un type est affiché"
-				label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-				edittype="select" />
-</vgroup>
+	description="définition des champs des classes du ME" 
+	writeright="admin"
+	protectright="adminlodel">
+	<column name="id"
+        	type="INTEGER"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<vgroup name="grtitre"
+		label="[@ADMIN.IDENTIFICATION]">
+		<column name="name"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="name/identifiant unique"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+        		edittype="tablefield" />
+		<column name="class"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
+        		visibility="hidden"
+        		edittype="class"/>
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="name en clair, utiliser dans l interface"
+        		label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grdefinition"
+		label="[@ADMIN.FIELDSET_DEFINITION]">
+		<column name="type"
+			type="VARCHAR"
+			size="255"
+			required="true"
+			description="type du champ"
+			label="[@ADMIN.TYPE]"
+			edittype="select"
+			confirm="confirm_change_type" /> <!-- confirmation is required for this type -->
+		<column name="g_name"
+			type="VARCHAR"
+			size="255"
+			description="champ generique equivalent"
+			label="[@ADMIN.GENERIC_EQUIVALENT]"
+        		edittype="select" />
+		<column name="comment"
+			type="LONGVARCHAR"
+			description="commentaire sur le champs"
+			label="[@ADMIN.COMMENT]"
+        		edittype="longtext" />
+	</vgroup>
+	<vgroup name="grcreation"
+		label="[@ADMIN.FIELDSET_CREATION]">
+		<column name="style"
+			type="VARCHAR"
+			size="255"
+			description="style qui conduit a cette balises"
+			label="[@ADMIN.STYLE]"
+        		edittype="mlstyle" />
+		<column name="cond"
+			type="VARCHAR"
+			size="16"
+			required="true"
+			description="indique si un champ est obligatoire, ou non"
+			label="[@ADMIN.CONDITION]"
+			edittype="select" />
+		<column name="defaultvalue"
+			type="VARCHAR"
+			size="255"
+			description="valeur par defaut"
+			label="[@ADMIN.DEFAULT_VALUE]"
+			edittype="text" />
+		<column name="processing"
+			type="VARCHAR"
+			size="255"
+			description="traitement a faire a l import"
+			label="[@ADMIN.PROCESSING_IMPORT]"
+			edittype="text" />
+		<column name="allowedtags"
+			type="VARCHAR"
+			size="255"
+			description="balises acceptees"
+			label="[@ADMIN.ALLOWED_TAGS]"
+			edittype="multipleselect" /> <!-- complex case -->
+		<column name="gui_user_complexity"
+			type="TINYINT"
+			default="64"
+			required="true"
+			description="Degré de complexité de l'interface dans lequel un type est affiché"
+			label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+			edittype="select" />
+	</vgroup>
 <vgroup name="gredition"
-				label="[@ADMIN.FIELDSET_EDITION]">
+	label="[@ADMIN.FIELDSET_EDITION]">
 <column name="edition"
-				type="VARCHAR"
-				size="255"
-				description="input pour l edition"
-				label="[@ADMIN.INTERFACE_EDITION]"
-				edittype="select" />
-	<column name="editionparams"
-				type="VARCHAR"
-				size="255"
-				description="params pour l edition"
-				label="[@ADMIN.PARAMETER_FOR_EDITION]"
+	type="VARCHAR"
+	size="255"
+	description="input pour l edition"
+	label="[@ADMIN.INTERFACE_EDITION]"
+	edittype="select" />
+<column name="editionparams"
+	type="VARCHAR"
+	size="255"
+	description="params pour l edition"
+	label="[@ADMIN.PARAMETER_FOR_EDITION]"
         edittype="text" />
-	<column name="weight"
-					type="TINYINT"
-					label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
+<column name="weight"
+	type="TINYINT"
+	label="[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE]"
         edittype="select" />
 </vgroup>
 <vgroup name="grsite"
@@ -514,60 +535,68 @@
 
 
 <table name="tablefieldgroups"
-        description="table qui contient les groupes de champs pour le XML"
+        description="table qui contient les groupes de champs définis dans le ME pour le XML"
 	writeright="admin"
 	protectright="adminlodel">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="name"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="name/identifiant unique"
-        label="[@ADMIN.TABLEFIELDGROUP_NAME]"
-        edittype="text" />
-<column name="class"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
-        visibility="hidden"
-        edittype="class"/>
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="name en clair, utiliser dans l interface"
-        label="[@ADMIN.INTERFACENAME]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_NAME]"
-	edittype="mltext"/>
-<column name="comment"
-        type="LONGVARCHAR"
-        description="commentaire sur le groupe de champs"
-        label="[@ADMIN.COMMENT]"
-        edittype="longtext" />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true"
-        description="determine qui a les droits de le modifier" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_GROUP]"
-        edittype="boolean" 
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="upd"
-        type="TIMESTAMP" />
+	<vgroup name="general" label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="name"
+	        	type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="name/identifiant unique"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+        		edittype="text" />
+		<column name="class"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
+        		visibility="hidden"
+        		edittype="class"/>
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="name en clair, utiliser dans l interface"
+        		label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">
+		<vcolumn name="protected"
+			label="[@ADMIN.PROTECTED_GROUP]"
+			edittype="boolean" 
+			editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+	</vgroup>
+	<vgroup name="grcomment"
+		label="[@ADMIN.COMMENT]">
+		<column name="comment"
+        		type="LONGVARCHAR"
+        		description="commentaire sur le groupe de champs"
+        		label="[@ADMIN.COMMENT]"
+        		edittype="longtext" />
+	</vgroup>
+	<column name="status"
+        	type="TINYINT"
+	        default="1"
+        	required="true"
+        	description="determine qui a les droits de le modifier" />
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
 <!-- Foreign Key -  2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
@@ -575,16 +604,16 @@
 	foreign="class" />		
 </foreign-key>-->
 <!-- End Foreign Key -->
-<index name="index_name">
-<index-column name="name" />
-</index>
-<index name="index_class">
-<index-column name="class" />
-</index>
-<unique name="unique_fieldgroupclass">
-<unique-column name="name" />
-<unique-column name="class" />
-</unique>
+	<index name="index_name">
+		<index-column name="name" />
+	</index>
+	<index name="index_class">
+		<index-column name="class" />
+	</index>
+	<unique name="unique_fieldgroupclass">
+		<unique-column name="name" />
+		<unique-column name="class" />
+	</unique>
 </table>
 
 
@@ -625,189 +654,170 @@
 	description="[@ADMIN.USER_INFORMATIONS]"
 	writeright="admin"
 	protectright="adminlodel">
-<vgroup name="general"
-				label="[@ADMIN.USER_GENERAL_INFORMATIONS]"
-				>
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="username"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        label="[@COMMON.LOGIN]"
-        edittype="username"  />
-<column name="passwd"
-        type="VARCHAR"
-	      size="64"
-        label="[@COMMON.PASSWD]"
-        edittype="passwd" />
-<vcolumn name="confirmpasswd"
-	 label="[@ADMIN.CONFIRM_PASSWORD]"
-	 edittype="passwd"
-	/>
-<!--column name="name"
-        type="VARCHAR"
-        size="64"
-        label="[@ADMIN.LASTNAME_AND_FIRSTNAME]"
-        edittype="text" /-->
-<column name="lastname"
-				type="VARCHAR"
-				size="255"
-				label="[@ADMIN.LASTNAME]"
-				edittype="text"
-				/>
-<column name="firstname"
-				type="VARCHAR"
-				size="255"
-				label="[@ADMIN.FIRSTNAME]"
-				edittype="text" />
-<column name="email"
-        type="VARCHAR"
-        size="255"
-        label="[@ADMIN.EMAIL]"
-        edittype="email" />
-</vgroup>
-<vgroup name="lodel_informations"
-				label="[@ADMIN.USER_LODEL_INFORMATIONS]">
-<column name="lang"
-				type="CHAR"
-				size="5"
-				required="true"
-				description="user lang"
-				label="[@ADMIN.USER_LANG]"
-				edittype="lang" />
-<column name="userrights"
-					type="TINYINT"
-					default="0"
-					required="true"
-					label="[@ADMIN.USER_RIGHTS]"
-        edittype="select" />
-<column name="gui_user_complexity"
-				type="TINYINT"
-				default="64"
-				required="true"
-				description="Complexité de l'interface graphique de l'utilisateur"
-				label="[@ADMIN.GUI_USER_COMPLEXITY]"
-				edittype="select" />
-<vcolumn name="protected"
-				label="[@ADMIN.PROTECTED_USER]"
-        edittype="boolean" />
-</vgroup>
-<vgroup name="user_optional"
-				label="[@ADMIN.USER_OPTIONAL_INFORMATION]"
-				>
-<column name="nickname"
-				label="[@ADMIN.NICKNAME]"
-				type="VARCHAR"
-				size="64"
-				edittype="text"
-				/>
-<columns name="function"
-				 label="[@ADMIN.FUNCTION]"
-				 type="VARCHAR"
-				 size="255"
-				 edittype="text"
-				 />
-<column name="biography"
-				label="[@ADMIN.BIOGRAPHY"
-				type="MEDIUMTEXT"
-				edittype="longtext"
-				/>
-<column name="photo"
-				label="[@ADMIN.PHOTO]"
-				type="VARCHAR"
-				size="255"
-				edittype="image"
-				/>
-<column name="professional_website"
-				label="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"
-				type="VARCHAR"
-				size="255"
-				edittype="text"
-				/>
-<column name="url_professional_website"
-				label="[@ADMIN.PROFESSIONAL_WEBSITE_URL"
-				type="VARCHAR"
-				size="255"
-				edittype="url"
-				/>
-<column name="rss_professional_website"
-				label="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"
-				type="VARCHAR"
-				size="255"
-				edittype="url"
-				/>
-<column name="personal_website"
-				label="[@ADMIN.PERSONNAL_WEBSITE]"
-				type="VARCHAR"
-				size="255"
-				edittype="text"
-				/>
-<column name="url_personal_website"
-				label="[@ADMIN.PERSONNAL_WEBSITE_URL]"
-				type="VARCHAR"
-				size="255"
-				edittype="url"
-				/>
-<column name="rss_personal_website"
-				label="[@ADMIN.RSS_PERSONNAL_WEBSITE"
-				type="VARCHAR"
-				size="255"
-				edittype="url"
-				/>
-<column name="pgp_key"
-				label="[@ADMIN.PGP_KEY]"
-				type="MEDIUMTEXT"
-				edittype="longtext"
-				/>
-<column name="alternate_email"
-				label="[@ADMIN.ALTERNATIVE_EMAIL]"
-				type="VARCHAR"
-				size="255"
-				edittype="email"
-				/>
-<column name="phonenumber"
-				label="[@ADMIN.PHONE_NUMBER]"
-				type="VARCHAR"
-				size="15"
-				edittype="text"
-				/>
-<column name="im_identifier"
-				label="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"
-				type="VARCHAR"
-				size="100"
-				edittype="text"
-				/>
-<column name="im_name"
-				label="[@ADMIN.INSTANT_MESSAGING_NAME]"
-				type="VARCHAR"
-				size="64"
-				edittype="text"
-				/>
-</vgroup>
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<vcolumn name="usergroups"
-	label="[@ADMIN.USERGROUPS]"
-	editcondition="[#SITE] and ![#LODELUSER.ADMIN]"
-	edittype="multipleselect" />
-<column name="upd"
-        type="TIMESTAMP" />
-<index name="index_username">
-<index-column name="username" />
-</index>
-<unique name="unique_username">
-<unique-column name="username" />
-</unique>
+	<vgroup name="general"
+		label="[@ADMIN.USER_GENERAL_INFORMATIONS]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="username"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		label="[@COMMON.LOGIN]"
+        		edittype="username"  />
+		<column name="passwd"
+        		type="VARCHAR"
+			size="64"
+        		label="[@COMMON.PASSWD]"
+        		edittype="passwd" />
+		<vcolumn name="confirmpasswd"
+	 		label="[@ADMIN.CONFIRM_PASSWORD]"
+	 		edittype="passwd"/>
+		<!--column name="name"
+        		type="VARCHAR"
+        		size="64"
+        		label="[@ADMIN.LASTNAME_AND_FIRSTNAME]"
+        		edittype="text" /-->
+		<column name="lastname"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.LASTNAME]"
+			edittype="text"/>
+		<column name="firstname"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.FIRSTNAME]"
+			edittype="text" />
+		<column name="email"
+        		type="VARCHAR"
+        		size="255"
+        		label="[@ADMIN.EMAIL]"
+        		edittype="email" />
+	</vgroup>
+	<vgroup name="lodel_informations"
+		label="[@ADMIN.USER_LODEL_INFORMATIONS]">
+		<column name="lang"
+			type="CHAR"
+			size="5"
+			required="true"
+			description="user lang"
+			label="[@ADMIN.USER_LANG]"
+			edittype="lang" />
+		<column name="userrights"
+			type="TINYINT"
+			default="0"
+			required="true"
+			label="[@ADMIN.USER_RIGHTS]"
+        		edittype="select" />
+		<column name="gui_user_complexity"
+			type="TINYINT"
+			default="64"
+			required="true"
+			description="Complexité de l'interface graphique de l'utilisateur"
+			label="[@ADMIN.GUI_USER_COMPLEXITY]"
+			edittype="select" />
+		<vcolumn name="protected"
+			label="[@ADMIN.PROTECTED_USER]"
+        		edittype="boolean" />
+	</vgroup>
+	<vgroup name="user_optional"
+			label="[@ADMIN.USER_OPTIONAL_INFORMATION]">
+		<column name="nickname"
+			label="[@ADMIN.NICKNAME]"
+			type="VARCHAR"
+			size="64"
+			edittype="text"/>
+		<columns name="function"
+			 label="[@ADMIN.FUNCTION]"
+			 type="VARCHAR"
+			 size="255"
+			 edittype="text" />
+		<column name="biography"
+			label="[@ADMIN.BIOGRAPHY"
+			type="MEDIUMTEXT"
+			edittype="longtext" />
+		<column name="photo"
+			label="[@ADMIN.PHOTO]"
+			type="VARCHAR"
+			size="255"
+			edittype="image" />
+		<column name="professional_website"
+			label="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"
+			type="VARCHAR"
+			size="255"
+			edittype="text" />
+		<column name="url_professional_website"
+			label="[@ADMIN.PROFESSIONAL_WEBSITE_URL"
+			type="VARCHAR"
+			size="255"
+			edittype="url" />
+		<column name="rss_professional_website"
+			label="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"
+			type="VARCHAR"
+			size="255"
+			edittype="url" />
+		<column name="personal_website"
+			label="[@ADMIN.PERSONNAL_WEBSITE]"
+			type="VARCHAR"
+			size="255"
+			edittype="text" />
+		<column name="url_personal_website"
+			label="[@ADMIN.PERSONNAL_WEBSITE_URL]"
+			type="VARCHAR"
+			size="255"
+			edittype="url" />
+		<column name="rss_personal_website"
+			label="[@ADMIN.RSS_PERSONNAL_WEBSITE"
+			type="VARCHAR"
+			size="255"
+			edittype="url" />
+		<column name="pgp_key"
+			label="[@ADMIN.PGP_KEY]"
+			type="MEDIUMTEXT"
+			edittype="longtext" />
+		<column name="alternate_email"
+			label="[@ADMIN.ALTERNATIVE_EMAIL]"
+			type="VARCHAR"
+			size="255"
+			edittype="email" />
+		<column name="phonenumber"
+			label="[@ADMIN.PHONE_NUMBER]"
+			type="VARCHAR"
+			size="15"
+			edittype="text" />
+		<column name="im_identifier"
+			label="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"
+			type="VARCHAR"
+			size="100"
+			edittype="text" />
+		<column name="im_name"
+			label="[@ADMIN.INSTANT_MESSAGING_NAME]"
+			type="VARCHAR"
+			size="64"
+			edittype="text" />
+	</vgroup>
+	<column name="status"
+		type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<vcolumn name="usergroups"
+		label="[@ADMIN.USERGROUPS]"
+		editcondition="[#SITE] and ![#LODELUSER.ADMIN]"
+		edittype="multipleselect" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<index name="index_username">
+		<index-column name="username" />
+	</index>
+	<unique name="unique_username">
+		<unique-column name="username" />
+	</unique>
 </table>
 
 
@@ -882,137 +892,140 @@
         uniqueid="yes"
 	writeright="admin"
 	protectright="adminlodel">
-<vgroup name="grtitre"
-	label="[@ADMIN.FIELDSET_TITLE]">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="type"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        label="[@ADMIN.NAME_TYPE]"
-	edittype="type" />
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        label="[@ADMIN.TITLE_TYPE]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_NAME]"
-	edittype="mltext"/>
-<column name="icon"
-	type="VARCHAR"
-	size="255"
-	description="icone du type"
-	label="[@ADMIN.ICON]"
-  	edittype="image" />
-<column name="class"
-	type="VARCHAR"
-	size="64"
-	required="true"
-	description="name de la table complementaire"
-	visibility="hidden"
-	edittype="class" />
-</vgroup>
-<vgroup name="grcreation"
-				label="[@ADMIN.FIELDSET_CREATION]">
-	<column name="tplcreation"
-					type="VARCHAR"
-					size="255"
-					description="name du fichier template pour la creation, ou information decrivant la creation"
-					label="[@ADMIN.CREATION_TEMPLATE_FILE]"
-					edittype="tplfile" />
-	<column name="import"
-					type="TINYINT"
-					default="0"
-					required="true"
-					description="1=import par servOO, 0 crï¿½tion par formulaire"
-					label="[@ADMIN.DEFAULT_CREATION_MODE]"
-					edittype="select" />
-	<column name="creationstatus"
-					type="TINYINT"
-					default="0"
-					required="true"
-					description="status for the new document"
-					label="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"
-					edittype="select" />
-	<column name="gui_user_complexity"
-					type="TINYINT"
-					default="64"
-					required="true"
-					description="Complexité de l'interface associé"
-					label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-					edittype="select" />
-</vgroup>
-<vgroup name="gredition"
-				label="[@ADMIN.FIELDSET_EDITION]">
-<column name="tpledition"
-        type="VARCHAR"
-        size="255"
-        description="name du fichier template pour l edition de son contenu"
-        label="[@ADMIN.EDITION_TEMPLATE_FILE]"
-        edittype="tplfile" />
-<column name="display"
-				type="VARCHAR"
-				size="10"
-				description="Mode d affichage"
-				label="[@ADMIN.DISPLAY]"
-        edittype="select" />
-<column name="search"
-				type="TINYINT"
-				default="1"
-				required="true"
-				description=""
-				label="[@ADMIN.INDEX_DOCUMENT]"
-        edittype="boolean" />
-</vgroup>
-<vgroup name="graffichagesite"
-				label="[@ADMIN.FIELDSET_SITE]">
-	<column name="tpl"
-					type="VARCHAR"
-					size="255"
-					description="name du fichier template utilise dans la zone de revue"
-					label="[@ADMIN.TEMPLATE_FILE]"
-					edittype="tplfile" />
-<column name="oaireferenced"
-				type="TINYINT"
-				default="0"
-				required="true"
-				description=""
-				label="[@ADMIN.OAI_REFERENCED_DOCUMENT]"
-        edittype="boolean" />
-<column name="public"
-				type="TINYINT"
-				default="0"
-				required="true"
-				description=""
-				label="[@ADMIN.PUBLIC_DOCUMENT]"
-				edittype="boolean" 
-					confirm="confirm_public_document(this)" /> <!-- confirmation is required for this type -->
-</vgroup>
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<vgroup name="grprotected"
-				label="[@ADMIN.FIELDSET_PROTECTED]">
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED_TYPE]"
-        edittype="boolean" 
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
-</vgroup>
-<column name="upd"
-        type="TIMESTAMP" />
+	<vgroup name="grtitre"
+		label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="type"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+			edittype="type" />
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+			label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>		
+		<column name="class"
+			type="VARCHAR"
+			size="64"
+			required="true"
+			description="name de la table complementaire"
+			visibility="hidden"
+			edittype="class" />
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">
+		<vcolumn name="protected"
+			 label="[@ADMIN.PROTECTED_TYPE]"
+			 edittype="boolean" 
+			 editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+	</vgroup>
+	<vgroup name="gricon"
+		label="[@ADMIN.DISPLAY_IN_INTERFACE]">
+		<column name="icon"
+			type="VARCHAR"
+			size="255"
+			description="icone du type"
+			label="[@ADMIN.TYPE_ICON]"
+  			edittype="image" />
+		<column name="tpledition"
+			type="VARCHAR"
+			size="255"
+			description="name du fichier template pour afficher son contenu"
+			label="[@ADMIN.EDITION_TEMPLATE_FILE_NAME_IN_EDITION_TAB]"
+			edittype="tplfile" />
+		<column name="display"
+			type="VARCHAR"
+			size="10"
+			description="Mode d affichage"
+			label="[@ADMIN.DISPLAY_IN_EDITION_TAB]"
+        		edittype="select" />
+	</vgroup>
+	<vgroup name="grcreation"
+		label="[@ADMIN.FIELDSET_CREATION]">
+		<column name="tplcreation"
+			type="VARCHAR"
+			size="255"
+			description="name du fichier template pour la creation, ou information decrivant la creation"
+			label="[@ADMIN.CREATION_TEMPLATE_FILE]"
+			edittype="tplfile" />
+		<column name="import"
+			type="TINYINT"
+			default="0"
+			required="true"
+			description="1=import par servOO, 0 création par formulaire"
+			label="[@ADMIN.DEFAULT_CREATION_MODE]"
+			edittype="select" />
+		<column name="creationstatus"
+			type="TINYINT"
+			default="0"
+			required="true"
+			description="status for the new document"
+			label="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"
+			edittype="select" />
+		<column name="gui_user_complexity"
+			type="TINYINT"
+			default="64"
+			required="true"
+			description="Complexité de l'interface associé"
+			label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+			edittype="select" />
+	</vgroup>
+	<vgroup name="grindexation"
+		label="[@ADMIN.FIELDSET_INDEXATION]">
+		<column name="search"
+			type="TINYINT"
+			default="1"
+			required="true"
+			description=""
+			label="[@ADMIN.INDEX_DOCUMENT]"
+        		edittype="boolean" />
+		<column name="oaireferenced"
+			type="TINYINT"
+			default="0"
+			required="true"
+			description=""
+			label="[@ADMIN.OAI_REFERENCED_DOCUMENT]"
+        		edittype="boolean" />
+	</vgroup>
+	<vgroup name="graffichagesite"
+		label="[@ADMIN.VIEW_IN_SITE]">
+		<column name="tpl"
+			type="VARCHAR"
+			size="255"
+			description="nom du fichier template utilise dans le site"
+			label="[@ADMIN.TEMPLATE_FILE]"
+			edittype="tplfile" />		
+		<column name="public"
+			type="TINYINT"
+			default="0"
+			required="true"
+			description=""
+			label="[@ADMIN.PUBLIC_DOCUMENT]"
+			edittype="boolean" 
+			confirm="confirm_public_document(this)" /> <!-- confirmation is required for this type -->
+	</vgroup>
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
@@ -1020,13 +1033,13 @@
 	foreign="class" />		
 </foreign-key>-->
 <!-- End Foreign Key -->        
-<index name="index_type">
-<index-column name="type" />
-</index>
-<unique name="unique_type_per_class">
-<unique-column name="type" />
-<unique-column name="class" />
-</unique>
+	<index name="index_type">
+		<index-column name="type" />
+	</index>
+	<unique name="unique_type_per_class">
+		<unique-column name="type" />
+		<unique-column name="class" />
+	</unique>
 </table>
 
 
@@ -1131,108 +1144,113 @@
 
 
 <table name="persontypes"
-        description=""
+        description="Types d'index de personnes"
         uniqueid="yes"
 	writeright="admin"
 	protectright="adminlodel">
-<vgroup name="grtitre"
-	label="[@ADMIN.FIELDSET_TITLE]">
-<column name="id"
-        type="INTEGER"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="type"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="name/identifiant unique"
-        label="[@ADMIN.NAME_PERSON_TYPE]"
-        edittype="type" />
-<column name="class"
-        type="VARCHAR"
-        size="64"
-	required="true"
-	visibility="hidden"
-	edittype="class" />
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="name en clair, utiliser dans l interface"
-        label="[@ADMIN.TITLE_PERSON_TYPE]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_NAME]"
-	edittype="mltext"/>
-<column name="icon"
-	type="VARCHAR"
-	size="255"
-	description="icone du type d'index de personnes"
-	label="[@ADMIN.ICON]"
-  	edittype="image" />
-</vgroup>
-<vgroup name="grdefinition"
-				label="[@ADMIN.FIELDSET_DEFINITION]">
-<column name="g_type"
-	type="VARCHAR"
-	size="255"
-	description="type generique equivalent"
-	label="[@ADMIN.GENERIC_EQUIVALENT]"
-        edittype="select"/>
-</vgroup>
-<vgroup name="grcreation"
-				label="[@ADMIN.FIELDSET_CREATION]">
-<column name="style"
-        type="VARCHAR"
-        size="255"
-        description="style qui conduit a ce type"
-        label="[@ADMIN.STYLE_PERSON_TYPE]"
-        edittype="style" />
-<column name="gui_user_complexity"
-	type="TINYINT"
-	default="64"
-	required="true"
-	description="Degré de complexité de l'interface dans lequel un type est affiché"
-	label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-	edittype="select" />
-</vgroup>
-<vgroup name="grsite"
-				label="[@ADMIN.SITE]">
-<column name="tpl"
-        type="VARCHAR"
-        size="255"
-        description="name du fichier template pour l entree"
-        label="[@ADMIN.TEMPLATE_FILENAME_FOR_PERSON]"
-        edittype="tplfile" />
-<column name="tplindex"
-        type="VARCHAR"
-        size="255"
-        description="name du fichier template pour l index"
-        label="[@ADMIN.TEMPLATE_FILENAME_PERSON_INDEX]"
-        edittype="tplfile" />
-</vgroup>
-<vgroup name="grprotected"
-				label="[@ADMIN.FIELDSET_PROTECTED]">
-<vcolumn name="protected"
-	 label="[@ADMIN.PROTECTED_TYPE]"
-	edittype="boolean"
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
-</vgroup>
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true"
-        description="rank sert pour l interface." />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-
-<column name="upd"
-        type="TIMESTAMP" />
+	<vgroup name="grtitre"
+		label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="type"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="name/identifiant unique"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+        		edittype="type" />
+		<column name="class"
+		        type="VARCHAR"
+		        size="64"
+			required="true"
+			visibility="hidden"
+			edittype="class" />
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="name en clair, utiliser dans l interface"
+			label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">
+		<vcolumn name="protected"
+			 label="[@ADMIN.PROTECTED_TYPE]"
+			 edittype="boolean"
+			 editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+	</vgroup>
+	<vgroup name="gricon"
+		label="[@ADMIN.DISPLAY_IN_INTERFACE]">
+		<column name="icon"
+		type="VARCHAR"
+		size="255"
+		description="icone du type d'index de personnes"
+		label="[@ADMIN.TYPE_ICON]"
+  		edittype="image" />
+	</vgroup>
+	<vgroup name="grdefinition"
+		label="[@ADMIN.METADONNEES]">
+		<column name="g_type"
+			type="VARCHAR"
+			size="255"
+			description="type generique equivalent"
+			label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
+        		edittype="select"/>
+	</vgroup>
+	<vgroup name="grcreation"
+		label="[@ADMIN.ENTRIES_IMPORT]">
+		<column name="style"
+        		type="VARCHAR"
+        		size="255"
+        		description="style qui conduit a ce type"
+			label="[@ADMIN.STYLE_INDEX_TYPE]"
+        		edittype="style" />
+	</vgroup>
+	<vgroup name="gredition"
+		label="[@ADMIN.INTERFACE_EDITION]">
+		<column name="gui_user_complexity"
+			type="TINYINT"
+			default="64"
+			required="true"
+			description="Degré de complexité de l'interface dans lequel un type est affiché"
+			label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+			edittype="select" />
+	</vgroup>
+	<vgroup name="grsite"
+		label="[@ADMIN.VIEW_IN_SITE]">
+		<column name="tpl"
+        		type="VARCHAR"
+        		size="255"
+        		description="name du fichier template pour l entree"
+			label="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"
+        		edittype="tplfile" />
+		<column name="tplindex"
+        		type="VARCHAR"
+        		size="255"
+        		description="name du fichier template pour l index"
+			label="[@ADMIN.TEMPLATE_FILENAME_INDEX]"
+        		edittype="tplfile" />
+	</vgroup>
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	description="rank sert pour l interface." />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
 <!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
 <reference
@@ -1240,15 +1258,15 @@
 	foreign="class" />		
 </foreign-key>-->
 <!-- End Foreign Key -->  
-<index name="index_type">
-<index-column name="type" />
-</index>
-<index name="index_g_type">
-<index-column name="g_type" />
-</index>
-<unique name="unique_type">
-<unique-column name="type" />
-</unique>
+	<index name="index_type">
+		<index-column name="type" />
+	</index>
+	<index name="index_g_type">
+		<index-column name="g_type" />
+	</index>
+	<unique name="unique_type">
+		<unique-column name="type" />
+	</unique>
 </table>
 
 
@@ -1257,132 +1275,138 @@
         uniqueid="yes"
 	writeright="admin"
 	protectright="adminlodel">
-<vgroup name="grtitre"
-	label="[@ADMIN.FIELDSET_TITLE]">
-<column name="id"
-        type="INTEGER"
-        default="0"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="type"
-        type="VARCHAR"
-        size="64"
-        required="true"
-        description="name/identifiant unique"
-        label="[@ADMIN.NAME_INDEX_TYPE]"
-        edittype="type" />
-<column name="class"
-        type="VARCHAR"
-        size="64"
-	required="true"
-	visibility="hidden"
-	edittype="class" />
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="nom en clair, utiliser dans l interface"
-        label="[@ADMIN.TITLE_INDEX_TYPE]"
-        edittype="text" />
-<column name="altertitle"
-	type="LONGVARCHAR"
-	description="nom multilingue"
-	label="[@ADMIN.MULTILINGUAL_TITLE]"
-	edittype="mltext"/>
-<column name="icon"
-	type="VARCHAR"
-	size="255"
-	description="icone du type d'index"
-	label="[@ADMIN.ICON]"
-  	edittype="image" />
-</vgroup>
-<vgroup name="grdefinition"
-				label="[@ADMIN.FIELDSET_DEFINITION]">
-<column name="g_type"
-        type="VARCHAR"
-        size="255"
-        description="type generique equivalent"
-        label="[@ADMIN.GENERIC_EQUIVALENT]"
-        edittype="select"/>
-<column name="flat"
-	type="TINYINT"
-	default="0"
-	required="true"
-	label="[@ADMIN.FLAT_INDEX]" 
-	edittype="boolean"/>
-</vgroup>
-<vgroup name="grcreation"
-				label="[@ADMIN.FIELDSET_CREATION]">
-<column name="newbyimportallowed"
-	type="TINYINT"
-	default="0"
-	label="[@ADMIN.NEWIMPORTALLOWED]"
-	edittype="boolean" />
-<column name="style"
-	type="VARCHAR"
-	size="255"
-	description="style qui conduit a cette balises"
-	label="[@ADMIN.STYLE_INDEX_TYPE]"
-        edittype="style" />
-<column name="gui_user_complexity"
-	type="TINYINT"
-	default="64"
-	required="true"
-	description="Degré de complexité de l'interface dans lequel un type est affiché"
-	label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
-	edittype="select" />
-</vgroup>
-<vgroup name="gredition"
-				label="[@ADMIN.FIELDSET_EDITION]">
-<column name="edition"
-	type="VARCHAR"
-	size="255"
-	description="input pour l edition"
-	label="[@ADMIN.INTERFACE_EDITION]"
-        edittype="select" />
-</vgroup>
-<vgroup name="grsite"
-				label="[@ADMIN.SITE]">
-	<column name="tpl"
-        type="VARCHAR"
-        size="255"
-        description="name du fichier template pour l entree"
-        label="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"
-        edittype="tplfile" />
-<column name="tplindex"
-        type="VARCHAR"
-        size="255"
-        description="name du fichier template pour l index"
-        label="[@ADMIN.TEMPLATE_FILENAME_INDEX]"
-        edittype="tplfile" />
-<column name="sort"
-	type="VARCHAR"
-	size="64"
-	default="rank"
-	required="true"
-	description=""
-	label="[@ADMIN.SORTBY]"
-	edittype="select" />
-</vgroup>
-<vgroup name="grprotected"
-				label="[@ADMIN.FIELDSET_PROTECTED]">
-<vcolumn name="protected"
-	 label="[@ADMIN.PROTECTED_TYPE]"
-	 edittype="boolean" 
-	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
-</vgroup>
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true"
-        description="rank sert pour l interface." />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<column name="upd"
-        type="TIMESTAMP" />
+	<vgroup name="grtitre"
+		label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		default="0"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="type"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="name/identifiant unique"
+			label="[@ADMIN.UNIQUE_IDENTIFIER]"
+        		edittype="type" />
+		<column name="class"
+        		type="VARCHAR"
+        		size="64"
+			required="true"
+			visibility="hidden"
+			edittype="class" />
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="nom en clair, utiliser dans l interface"
+			label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_TITLE]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">
+		<vcolumn name="protected"
+			 label="[@ADMIN.PROTECTED_TYPE]"
+			 edittype="boolean" 
+			 editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+	</vgroup>
+	<vgroup name="gricon"
+		label="[@ADMIN.DISPLAY_IN_INTERFACE]">
+		<column name="icon"
+			type="VARCHAR"
+			size="255"
+			description="icone du type d'index"
+			label="[@ADMIN.TYPE_ICON]"
+  			edittype="image" />
+	</vgroup>
+	<vgroup name="grflatindex"
+		label="[@ADMIN.HIERARCHIQUE_OR_FLAT_INDEX]">
+	<column name="flat"
+		type="TINYINT"
+		default="0"
+		required="true"
+		label="[@ADMIN.FLAT_INDEX]" 
+		edittype="boolean"/>
+	</vgroup>
+	<vgroup name="grdefinition"
+		label="[@ADMIN.METADONNEES]">
+		<column name="g_type"
+        		type="VARCHAR"
+        		size="255"
+        		description="type generique equivalent"
+        		label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
+        		edittype="select"/>
+	</vgroup>
+	<vgroup name="grcreation"
+		label="[@ADMIN.ENTRIES_IMPORT]">
+		<column name="newbyimportallowed"
+			type="TINYINT"
+			default="0"
+			label="[@ADMIN.NEWIMPORTALLOWED]"
+			edittype="boolean" />
+		<column name="style"
+			type="VARCHAR"
+			size="255"
+			description="style qui conduit a cette balise"
+			label="[@ADMIN.STYLE_INDEX_TYPE]"
+        		edittype="style" />		
+	</vgroup>
+	<vgroup name="gredition"
+		label="[@ADMIN.INTERFACE_EDITION]">
+		<column name="edition"
+			type="VARCHAR"
+			size="255"
+			description="input pour l edition"
+			label="[@ADMIN.INTERFACE_VIEW]"
+        		edittype="select" />
+		<column name="gui_user_complexity"
+			type="TINYINT"
+			default="64"
+			required="true"
+			description="Degré de complexité de l'interface à partir duquel un type est affiché"
+			label="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"
+			edittype="select" />
+	</vgroup>
+	<vgroup name="grsite"
+		label="[@ADMIN.VIEW_IN_SITE]">
+		<column name="tpl"
+        		type="VARCHAR"
+        		size="255"
+        		description="name du fichier template pour l entree"
+        		label="[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY]"
+        		edittype="tplfile" />
+		<column name="tplindex"
+        		type="VARCHAR"
+        		size="255"
+        		description="name du fichier template pour l index"
+        		label="[@ADMIN.TEMPLATE_FILENAME_INDEX]"
+        		edittype="tplfile" />
+		<column name="sort"
+			type="VARCHAR"
+			size="64"
+			default="rank"
+			required="true"
+			description=""
+			label="[@ADMIN.SORTBY]"
+			edittype="select" />
+	</vgroup>
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	description="rank sert pour l interface." />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
 
 <!-- Foreign Key - 2005-02-07 -->        
 <!--<foreign-key foreignTable="classes" onDelete="setnull">
@@ -1391,15 +1415,15 @@
 	foreign="class" />		
 </foreign-key>-->
 <!-- End Foreign Key -->  
-<index name="index_type">
-<index-column name="type" />
-</index>
-<index name="index_g_type">
-<index-column name="g_type" />
-</index>
-<unique name="unique_type">
-<unique-column name="type" />
-</unique>
+	<index name="index_type">
+		<index-column name="type" />
+	</index>
+	<index name="index_g_type">
+		<index-column name="g_type" />
+	</index>
+	<unique name="unique_type">
+		<unique-column name="type" />
+	</unique>
 </table>
 
 

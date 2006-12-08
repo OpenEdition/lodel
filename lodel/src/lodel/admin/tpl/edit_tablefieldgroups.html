@@ -34,73 +34,80 @@
 </ul>
 <br />&nbsp;<br />
 <form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
-<fieldset>
-<legend>[#TITLE]</legend>
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="tablefieldgroups">
-<input type="hidden" name="id" value="[#ID]">
-<LOOP NAME="fielderror" FIELD="id">
-  <a id="id"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-  </span>
-</LOOP>
-<label for="name">[@ADMIN.TABLEFIELDGROUP_NAME]<span class="optional">(*)</span> : 
-		</label>
-<br class="nobr">
-<input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
-<LOOP NAME="fielderror" FIELD="name">
-  <a id="name"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TABLEFIELDGROUP_NAME]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<input type="hidden" name="class" value="[#CLASS]">
-<LOOP NAME="fielderror" FIELD="class">
-  <a id="class"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-  </span>
-</LOOP>
-<label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
-		</label>
-<br class="nobr">
-<input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
-<LOOP NAME="fielderror" FIELD="title">
-  <a id="title"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
-		</label>
-<br class="nobr">
-<FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
-<label for="comment">[@ADMIN.COMMENT] : 
-		</label>
-<br class="nobr">
-<textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
-<LOOP NAME="fielderror" FIELD="comment">
-  <a id="comment"></a><span class="error">
-    <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
-  </span>
-</LOOP>
-<br />
-<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
-  <label for="protected">[@ADMIN.PROTECTED_GROUP] : 
+<fieldset>
+  <legend>[@ADMIN.IDENTIFICATION]</legend>
+  <input type="hidden" name="id" value="[#ID]">
+  <LOOP NAME="fielderror" FIELD="id">
+    <a id="id"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
+  </LOOP>
+  <label for="name">[@ADMIN.UNIQUE_IDENTIFIER]<span class="optional">(*)</span> : 
 		</label>
   <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
-    <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_GROUP]"></FUNC>
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <LOOP NAME="fielderror" FIELD="name">
+    <a id="name"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.UNIQUE_IDENTIFIER]"></FUNC>
     </span>
   </LOOP>
   <br />
-</IF>
+  <input type="hidden" name="class" value="[#CLASS]">
+  <LOOP NAME="fielderror" FIELD="class">
+    <a id="class"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
+    </span>
+  </LOOP>
+  <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
+		</label>
+  <br class="nobr">
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <LOOP NAME="fielderror" FIELD="title">
+    <a id="title"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
+		</label>
+  <br class="nobr">
+  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>
+  <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]">
+    <label for="protected">[@ADMIN.PROTECTED_GROUP] : 
+		</label>
+    <br class="nobr">
+    <IF COND="abs([#STATUS]) ge 32">
+      <input type="checkbox" name="protected" id="protected" checked>
+      <ELSE/>
+      <input type="checkbox" name="protected" id="protected">
+    </IF>
+    <LOOP NAME="fielderror" FIELD="protected">
+      <a id="protected"></a><span class="error">
+        <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_GROUP]"></FUNC>
+      </span>
+    </LOOP>
+    <br />
+  </IF>
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.COMMENT]</legend>
+  <label for="comment">[@ADMIN.COMMENT] : 
+		</label>
+  <br class="nobr">
+  <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
+  <LOOP NAME="fielderror" FIELD="comment">
+    <a id="comment"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.COMMENT]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+</fieldset>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->
 	</fieldset>
