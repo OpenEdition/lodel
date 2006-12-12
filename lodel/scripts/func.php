@@ -424,16 +424,29 @@ function download($filename,$originalname="",$contents="")
 		    'txt'=>'text/plain',
 		    'xls'=>'application/vnd.ms-excel'
 		    );
-
+  get_PMA_define();
   if (!$originalname) $originalname=$filename;
   $originalname=preg_replace("/.*\//","",$originalname);
   $ext=substr($originalname,strrpos($originalname,".")+1);
   $size = $filename ? filesize($filename) : strlen($contents);
   if($mimetype[$ext]){
     $mime = $mimetype[$ext];
-    // $disposition = "inline";
-    $disposition = "attachment"; // inline ne fonctionne pas sous win !!
-    // TODO: trouver une solution pour ouverture dans plugin
+    switch(PMA_USR_OS){
+	case 'Win':
+		if(PMA_USR_BROWSER_AGENT == 'IE'){
+			if(intval(PMA_USR_BROWSER_VER) <= 6){
+				$mime = "application/force-download";
+    				$disposition = "attachment";
+			}else{
+				$disposition = "inline";
+			}
+		}else{
+			$disposition = "inline";
+		}
+	break;
+	default:
+	$disposition = "inline";
+    }
   } else {
     $mime = "application/force-download";
     $disposition = "attachment";
