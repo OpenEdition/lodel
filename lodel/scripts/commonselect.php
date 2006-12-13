@@ -103,6 +103,7 @@ function makeSelectGuiUserComplexity($value)
 /**
  * Construit le SELECT des différents types d'édition d'un champ
  * Appel de renderOptions()
+ * Dans $arr, si la clé commence par "OPTGROUP", on génère une balise <optgroup> au lieu de <option>
  * Cf class.tablefields.php (makeselect, case edition)
  *
  * @param string $value la valeur courante (pour positionner le selected="selected")
@@ -112,16 +113,20 @@ function makeSelectGuiUserComplexity($value)
 function makeSelectEdition($value)
 {
 	$arr = array(
-		"editable" => getlodeltextcontents("edit_in_the_interface", "admin"),
-		"importable" => getlodeltextcontents("no_edit_but_import", "admin"),
-		"none" => getlodeltextcontents("no_change", "admin"),
-		"display" => getlodeltextcontents("display_no_edit", "admin"),
-		"textarea" => getlodeltextcontents("edit_textarea", "admin"),
-		"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)",
-		"select" => getlodeltextcontents("edit_select", "admin"),
-		"multipleselect" => getlodeltextcontents("edit_multiple_select", "admin"),
-		"radio" => getlodeltextcontents("edit_radio", "admin"),
-		"checkbox" => getlodeltextcontents("edit_checkbox", "admin"));
+		"none" => getlodeltextcontents("no_change_of_field_value", "admin"),
+		//"OPTGROUP-1"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
+		"importable" => getlodeltextcontents("no_show_in_interface", "admin"),
+		"display" => getlodeltextcontents("show_in_interface", "admin"),
+		//"ENDOPTGROUP-1"=> getlodeltextcontents("no_edit", "admin"),
+		//"OPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"),
+		//	"editable" => getlodeltextcontents("edit_text_1line", "admin"),
+		//	"textarea" => getlodeltextcontents("edit_textarea", "admin"),
+		"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)");
+		//	"select" => getlodeltextcontents("edit_select", "admin"),
+		//	"multipleselect" => getlodeltextcontents("edit_multipleselect", "admin"),
+		//	"radio" => getlodeltextcontents("edit_radio", "admin"),
+		//	"checkbox" => getlodeltextcontents("edit_checkbox", "admin"),
+		//"ENDOPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"));
 	renderOptions($arr, $value);
 }
 ?>

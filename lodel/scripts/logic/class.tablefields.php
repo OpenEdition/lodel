@@ -375,20 +375,20 @@ class TableFieldsLogic extends Logic
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
+									'gui_user_complexity' => array('select', '+'),
+									'idgroup' => array('select', '+'),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
-									'comment' => array('longtext', ''),
 									'style' => array('mlstyle', ''),
 									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
 									'processing' => array('text', ''),
 									'allowedtags' => array('multipleselect', ''),
-									'gui_user_complexity' => array('select', '+'),
 									'edition' => array('select', ''),
 									'editionparams' => array('text', ''),
 									'weight' => array('select', ''),
 									'filtering' => array('text', ''),
-									'idgroup' => array('select', '+'));
+									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //
 

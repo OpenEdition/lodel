@@ -263,8 +263,8 @@ class OptiongroupsLogic extends Logic {
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
 									'logic' => array('text', ''),
-									'comment' => array('longtext', ''),
-									'exportpolicy' => array('boolean', '+'));
+									'exportpolicy' => array('boolean', '+'),
+									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //
 

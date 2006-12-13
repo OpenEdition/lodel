@@ -204,9 +204,9 @@ class PersonTypesLogic extends Logic
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
 									'icon' => array('image', ''),
+									'gui_user_complexity' => array('select', '+'),
 									'g_type' => array('select', ''),
 									'style' => array('style', ''),
-									'gui_user_complexity' => array('select', '+'),
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''));
 	}

@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 08-12-2006.
+// Fichier généré automatiquement le 13-12-2006.
 //
 
 
@@ -73,9 +73,9 @@ class persontypesVO
 	var $title;
 	var $altertitle;
 	var $icon;
+	var $gui_user_complexity;
 	var $g_type;
 	var $style;
-	var $gui_user_complexity;
 	var $tpl;
 	var $tplindex;
 	var $rank;

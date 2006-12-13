@@ -123,6 +123,20 @@
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
+  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
+		</label>
+  <br class="nobr">
+  <select name="gui_user_complexity" id="gui_user_complexity">
+    <?php 
+						makeSelect($context,"gui_user_complexity","types","select");
+					?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
+    <a id="gui_user_complexity"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
   <label for="tpledition">[@ADMIN.EDITION_TEMPLATE_FILE_NAME_IN_EDITION_TAB] : 
 		</label>
   <br class="nobr">
@@ -149,14 +163,14 @@
   <br />
 </fieldset>
 <fieldset>
-  <legend>[@ADMIN.FIELDSET_CREATION]</legend>
-  <label for="tplcreation">[@ADMIN.CREATION_TEMPLATE_FILE] : 
+  <legend>[@ADMIN.FIELDSET_ADD_OR_EDIT_ENTITIES]</legend>
+  <label for="tplcreation">[@ADMIN.CREATION_TEMPLATE_FILE_NAME] : 
 		</label>
   <br class="nobr">
   <input type="text" size="30" name="tplcreation" id="tplcreation" class="text" value="[#TPLCREATION]">
   <LOOP NAME="fielderror" FIELD="tplcreation">
     <a id="tplcreation"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CREATION_TEMPLATE_FILE]"></FUNC>
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CREATION_TEMPLATE_FILE_NAME]"></FUNC>
     </span>
   </LOOP>
   <br />
@@ -185,20 +199,6 @@
   <LOOP NAME="fielderror" FIELD="creationstatus">
     <a id="creationstatus"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STATUS_OF_NEW_DOCUMENTS]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
-		</label>
-  <br class="nobr">
-  <select name="gui_user_complexity" id="gui_user_complexity">
-    <?php 
-						makeSelect($context,"gui_user_complexity","types","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
-    <a id="gui_user_complexity"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
     </span>
   </LOOP>
   <br />
@@ -235,17 +235,7 @@
   <br />
 </fieldset>
 <fieldset>
-  <legend>[@ADMIN.VIEW_IN_SITE]</legend>
-  <label for="tpl">[@ADMIN.TEMPLATE_FILE] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
-  <LOOP NAME="fielderror" FIELD="tpl">
-    <a id="tpl"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
+  <legend>[@ADMIN.EDIT_IN_SITE]</legend>
   <label for="public">[@ADMIN.PUBLIC_DOCUMENT] : 
 		</label>
   <br class="nobr">
@@ -257,6 +247,19 @@
   <LOOP NAME="fielderror" FIELD="public">
     <a id="public"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PUBLIC_DOCUMENT]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+</fieldset>
+<fieldset>
+  <legend>[@ADMIN.VIEW_IN_SITE]</legend>
+  <label for="tpl">[@ADMIN.TEMPLATE_FILE_NAME] : 
+		</label>
+  <br class="nobr">
+  <input type="text" size="30" name="tpl" id="tpl" class="text" value="[#TPL]">
+  <LOOP NAME="fielderror" FIELD="tpl">
+    <a id="tpl"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEMPLATE_FILE_NAME]"></FUNC>
     </span>
   </LOOP>
   <br />

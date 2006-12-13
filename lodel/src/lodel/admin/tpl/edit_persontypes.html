@@ -105,6 +105,20 @@
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
+  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
+		</label>
+  <br class="nobr">
+  <select name="gui_user_complexity" id="gui_user_complexity">
+    <?php 
+						makeSelect($context,"gui_user_complexity","persontypes","select");
+					?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
+    <a id="gui_user_complexity"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.METADONNEES]</legend>
@@ -132,23 +146,6 @@
   <LOOP NAME="fielderror" FIELD="style">
     <a id="style"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE_INDEX_TYPE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
-<fieldset>
-  <legend>[@ADMIN.INTERFACE_EDITION]</legend>
-  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
-		</label>
-  <br class="nobr">
-  <select name="gui_user_complexity" id="gui_user_complexity">
-    <?php 
-						makeSelect($context,"gui_user_complexity","persontypes","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
-    <a id="gui_user_complexity"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
     </span>
   </LOOP>
   <br />

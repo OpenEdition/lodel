@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 08-12-2006.
+// Fichier généré automatiquement le 13-12-2006.
 //
 
 
@@ -69,8 +69,8 @@ class internalstylesVO
 	 */
 	var $id;
 	var $style;
-	var $surrounding;
 	var $conversion;
+	var $surrounding;
 	var $greedy;
 	var $rank;
 	var $status;

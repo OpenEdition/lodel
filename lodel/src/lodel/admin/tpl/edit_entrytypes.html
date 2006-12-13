@@ -103,6 +103,34 @@
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="icon" TYPE="image" VALUE="[#ICON]" FULLVARNAME="icon"></FUNC>
+  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
+		</label>
+  <br class="nobr">
+  <select name="gui_user_complexity" id="gui_user_complexity">
+    <?php 
+						makeSelect($context,"gui_user_complexity","entrytypes","select");
+					?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
+    <a id="gui_user_complexity"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="edition">[@ADMIN.INTERFACE_VIEW] : 
+		</label>
+  <br class="nobr">
+  <select name="edition" id="edition">
+    <?php 
+						makeSelect($context,"edition","entrytypes","select");
+					?>
+  </select>
+  <LOOP NAME="fielderror" FIELD="edition">
+    <a id="edition"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_VIEW]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.HIERARCHIQUE_OR_FLAT_INDEX]</legend>
@@ -166,37 +194,6 @@
   <br />
 </fieldset>
 <fieldset>
-  <legend>[@ADMIN.INTERFACE_EDITION]</legend>
-  <label for="edition">[@ADMIN.INTERFACE_VIEW] : 
-		</label>
-  <br class="nobr">
-  <select name="edition" id="edition">
-    <?php 
-						makeSelect($context,"edition","entrytypes","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="edition">
-    <a id="edition"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACE_VIEW]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
-		</label>
-  <br class="nobr">
-  <select name="gui_user_complexity" id="gui_user_complexity">
-    <?php 
-						makeSelect($context,"gui_user_complexity","entrytypes","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
-    <a id="gui_user_complexity"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
-<fieldset>
   <legend>[@ADMIN.VIEW_IN_SITE]</legend>
   <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY] : 
 		</label>
@@ -237,7 +234,7 @@
 <!--[ end{form} Automatic generated. Don't edit ]-->
 	<fieldset>
 		<p class="avert">
-			(*) [@ADMIN.HOWTO_INDEX_TYPE_1].
+			(1) [@ADMIN.HOWTO_INDEX_TYPE_1].
 		</p>
 		<p class="avert">
 			[@ADMIN.HOWTO_INDEX_TYPE_2].

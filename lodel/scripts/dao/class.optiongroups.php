@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 08-12-2006.
+// Fichier généré automatiquement le 13-12-2006.
 //
 
 
@@ -73,10 +73,10 @@ class optiongroupsVO
 	var $title;
 	var $altertitle;
 	var $logic;
-	var $comment;
+	var $exportpolicy;
 	var $rank;
 	var $status;
-	var $exportpolicy;
+	var $comment;
 	var $upd;
 	/**#@-*/
 }

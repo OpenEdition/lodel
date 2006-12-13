@@ -380,7 +380,13 @@ function renderOptions($arr, $selected)
 			$s = $k == $selected ? "selected=\"selected\"" : "";
 		}
 		$k = htmlentities($k);
-		echo '<option value="'. htmlentities($k). '" '. $s. '>'. $v. "</option>\n";
+		
+		// si la clé commence par optgroup, on génère une balise <optgroup>
+		// Cf. la fonction makeSelectEdition($value), in commonselect.php
+		if(substr($k, 0, 8) == "OPTGROUP") { echo "<optgroup label=\"$v\">";}
+		elseif (substr($k, 0, 11) == "ENDOPTGROUP") { echo '</optgroup>';}
+		//sinon on génère une balise <option>
+		else { echo '<option value="'. $k. '" '. $s. '>'. $v. '</option>'; }
 	}
 }
 

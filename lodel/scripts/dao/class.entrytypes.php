@@ -44,7 +44,7 @@
  */
 
 //
-// Fichier généré automatiquement le 08-12-2006.
+// Fichier généré automatiquement le 13-12-2006.
 //
 
 
@@ -73,12 +73,12 @@ class entrytypesVO
 	var $title;
 	var $altertitle;
 	var $icon;
+	var $gui_user_complexity;
+	var $edition;
 	var $flat;
 	var $g_type;
 	var $newbyimportallowed;
 	var $style;
-	var $edition;
-	var $gui_user_complexity;
 	var $tpl;
 	var $tplindex;
 	var $sort;
