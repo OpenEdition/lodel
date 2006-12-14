@@ -114,19 +114,19 @@ function makeSelectEdition($value)
 {
 	$arr = array(
 		"none" => getlodeltextcontents("no_change_of_field_value", "admin"),
-		//"OPTGROUP-1"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
-		"importable" => getlodeltextcontents("no_show_in_interface", "admin"),
-		"display" => getlodeltextcontents("show_in_interface", "admin"),
-		//"ENDOPTGROUP-1"=> getlodeltextcontents("no_edit", "admin"),
-		//"OPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"),
-		//	"editable" => getlodeltextcontents("edit_text_1line", "admin"),
+		"OPTGROUP-1"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
+			"importable" => getlodeltextcontents("no_show_in_interface", "admin"),
+			"display" => getlodeltextcontents("show_in_interface", "admin"),
+		"ENDOPTGROUP-1"=> "",
+		"OPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"),
+			"editable" => getlodeltextcontents("edit_text_1line", "admin"),
 		//	"textarea" => getlodeltextcontents("edit_textarea", "admin"),
-		"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)");
+			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)",
 		//	"select" => getlodeltextcontents("edit_select", "admin"),
 		//	"multipleselect" => getlodeltextcontents("edit_multipleselect", "admin"),
 		//	"radio" => getlodeltextcontents("edit_radio", "admin"),
 		//	"checkbox" => getlodeltextcontents("edit_checkbox", "admin"),
-		//"ENDOPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"));
+		"ENDOPTGROUP-2"=> "");
 	renderOptions($arr, $value);
 }
 ?>
