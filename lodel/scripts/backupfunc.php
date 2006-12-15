@@ -222,7 +222,7 @@ function execute_dump($filename)
 
       #if (preg_match("/CREATE/",$pieces[$i])) echo $pieces[$i],"<br />";
 
-       PMA_mysql_query($pieces[$i]) or die(mysql_error());
+       PMA_mysql_query(str_replace(array('condition varchar(', 'condition tinytext'), array('`condition` varchar(',  '`condition` tinytext'), $pieces[$i])) or die(mysql_error());
 #       if ($result == FALSE) {     
 #        //      echo $pieces[$i],"<br>\n"; flush();
 #	return FALSE; }
