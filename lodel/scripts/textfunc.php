@@ -762,6 +762,8 @@ function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
  *
  * Les paramètres sont modifiables dans le template et écrasent les paramètres par défaut.
  *
+ * @author Mickael Sellapin
+ *
  * @param string $texte le texte à numéroter passé par référence
  * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
  */
@@ -807,6 +809,152 @@ function paranumber(&$texte, $styles='texte')
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
 
 	return $texte;
+}
+
+
+/**
+ * Filtre pour l'ajout des notes marginales
+ *
+ * Ajoute un <div class="textandnotes"> et encapsule les notes dans une liste : <ul class="sidenotes"> <li> ... </li> </ul> 
+ * contient le numéro de la note et celle-ci tronquée 
+ * (si trop longue) à 100 caractères.
+ * 
+ * Le seul paramètre sera le seuil d'affichage des notes
+ *
+ * @author Mickael Sellapin
+ *
+ * @param string $texte le texte à numéroter passé par référence
+ * @param string $coupe un entier (définit dans le template)
+ *
+ */
+
+function notesmarginales(&$texte, $coupe) {
+
+	static $condition = 0;
+
+	$cptendnote = 0;
+        $cptendpage = 0;
+	$compteur = 0;
+	$titre = $GLOBALS['context']['titre'];
+
+	//on récupère toutes les notes du texte
+	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
+	preg_match_all($regexp,$texte,$matches);
+
+	$regexpnote = '/<p\s+class="notebaspage"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/p>/s';	
+
+	$search = '/<p\s+class="notebaspage"[^>](.*?)>/';
+	$replace = '<br /><p class="notebaspage" \\1>';
+
+	$notesformatees = preg_replace($search, $replace, $GLOBALS['context']['notesbaspage']);
+
+	if(notes($GLOBALS['context']['notesbaspage'], "asterisque")) {
+		$notesmodif = notes($GLOBALS['context']['notesbaspage'], "asterisque");
+	}
+
+	if(notes($GLOBALS['context']['notesbaspage'], "lettre")) {
+		$notesmodif .= notes($GLOBALS['context']['notesbaspage'], "lettre");
+	}
+
+	if(notes($notesformatees, "nombre")) {
+		$notesmodif .= notes($GLOBALS['context']['notesbaspage'], "nombre");
+	}
+
+	//on recupére chaque note du bloc de notes
+	preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
+
+	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
+
+
+	//pour traiter les cas d'une note dans le titre principal
+	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
+
+		$condition = 2;
+		return $titre;
+
+	} elseif($condition == 0) {
+
+		$search = array ('/id="(.*?)" href="#(.*?)"/');
+
+		$replace = array ('href="#\\2"');
+
+		$hreftitre = preg_replace($search, $replace, $matches[2][0]);
+
+		$titre_modif = $titre;
+		
+		$titre_modif .= "\n<ul class=\"sidenotes\"><li><a ".$hreftitre.">".cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe);
+		
+		if(strlen($matchesnotebaspages[3][0]) > $coupe) {
+			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'(...)';
+		} else {
+			$titre_modif .= strip_tags($matchesnotebaspages[3][0]);
+		}
+
+		$titre_modif .= "</a></li></ul>";
+
+		$condition = 1;
+
+		return $titre_modif;
+	} 
+	
+	
+
+	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
+	$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+
+	preg_match_all($regexppar,$texte,$paragraphes);
+
+	//on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
+	if($condition == 1)
+		$cptendpage++;
+
+	$retour = "";
+	$nbparagraphes = sizeof($paragraphes[0]);
+
+	// on affiche à la suite de chaque paragraphe les notes correspondantes que l'on met dans la variable "buffer"
+	for($i = 0; $i < $nbparagraphes; $i++) {
+		$buffer = "";
+		preg_match_all($regexp, $paragraphes[0][$i], $tmp);
+
+		$tailletmp = sizeof($tmp[0]);
+		
+		for($j = 0; $j < $tailletmp; $j++) {
+
+			if(strlen($matchesnotebaspages[3][$cptendpage]) > 0) {
+
+				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$cptendpage],$m)) || (preg_match('/[a-zA-Z]+/',$matchesnotebaspages[2][$cptendpage],$m))) {
+
+				$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
+				$replace = array ('href="#\\1"');
+
+				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
+
+				$r = '<a " '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
+
+				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
+					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'(...)</a>';
+				} else {
+					$r .= strip_tags($matchesnotebaspages[3][$cptendpage]).'</a>';
+				}
+
+				$buffer .= '<li>'.$r.'</li>';
+			
+				$cpt++;
+				} else {
+					$cptendpage++;
+				}
+			}
+			$cptendpage++;			
+		}
+
+		$retour = $cpt > 0 ? $retour."<div class=\"textandnotes\">\n".$paragraphes[0][$i]."\n<ul class=\"sidenotes\">".$buffer."\n</ul></div>\n" : $retour.$paragraphes[0][$i];
+        	$cpt = 0;
+
+	}
+
+	$condition = 0;
+
+	return $retour;
 }
 
 ?>
