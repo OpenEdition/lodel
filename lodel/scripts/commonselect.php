@@ -121,7 +121,7 @@ function makeSelectEdition($value)
 			"display" => getlodeltextcontents("show_in_interface", "admin"),
 		"ENDOPTGROUP-1"=> "",
 		"OPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"),
-			"editable" => getlodeltextcontents("edit_text_1line", "admin"),
+			"editable" => getlodeltextcontents("edit_in_form_field", "admin"),
 		//	"textarea" => getlodeltextcontents("edit_textarea", "admin"),
 			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)",
 		//	"select" => getlodeltextcontents("edit_select", "admin"),
