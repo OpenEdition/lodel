@@ -215,7 +215,7 @@
 <DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <!--[ --------------- CONFIRM--------------------------- ]-->
 <IF COND="[#CONFIRM]">
-<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
+	<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
 </IF>
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
 
@@ -238,40 +238,44 @@
 		</div>
 	</IF>
 <ELSE/>
-<!--[ --------------- TEXT, LONGTEXT, USERNAME, EMAIL, URL -------------- ]-->
-<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'username' or [#TYPE] eq 'longtext' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
+<!--[ --------------- TEXT, LONGTEXT -------------- ]-->
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
 	<IF COND="[#EDITION] EQ 'fckeditor'">
-	<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
- 	<MACRO NAME="FCK_EDITOR_PARAMETERS">
-<?php
-$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
-?>	
-    <script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
-    <script type="text/javascript">
-    	var fck_[#FCKVARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    	fck_[#FCKVARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 	fck_[#FCKVARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
-    	fck_[#FCKVARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
-    	fck_[#FCKVARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
-    	fck_[#FCKVARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
-    	fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
-    	<?$context["value"] = str_replace("\n","",$context["value"]) ?>
-    	<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    	fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    	fck_[#FCKVARNAME]_editor.Create();
-    </script>
-    <ELSE/>   
-	<IF COND="[#EDITIONPARAMS] gt 1">
+		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
+ 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
+		<?php
+			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+		?>	
+    		<script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
+    		<script type="text/javascript">
+    			var fck_[#FCKVARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
+    			fck_[#FCKVARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
+ 			fck_[#FCKVARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
+    			fck_[#FCKVARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
+    			fck_[#FCKVARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
+    			fck_[#FCKVARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
+    			fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
+    			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
+    			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
+    			fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
+    			fck_[#FCKVARNAME]_editor.Create();
+    		</script>
+    	<ELSE/>
+		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-	<ELSE/>
-		<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
-        </IF>
+		<ELSE/>
+			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
+        	</IF>
       </IF>
 
 <ELSE/>
+<!--[ --------------- USERNAME, EMAIL, URL, HISTORY-------------- ]-->
+<IF COND="[#TYPE] eq 'username' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
+	<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
+<ELSE/>
 <!--[ --------------- PASSWD -------------- ]-->
 <IF COND="[#TYPE] eq 'passwd'">
-<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] />
+	<input size="50" type="password" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] />
 <ELSE/>
 <!--[ --------------- BOOLEAN -------------- ]-->
 <IF COND="[#TYPE] eq 'boolean'">
@@ -356,6 +360,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- PERSONS ------------- ]-->	    
 <IF COND="[#TYPE] eq 'persons'">
 <FUNC NAME="EDIT_PERSONS">
+
 <ELSE/>
 <!--[ --------------- ENTRIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entries'">
@@ -402,6 +407,7 @@ cp_[#VARNAME].writeDiv();
 <ELSE/>
 
 ???? Don't know how to edit this field. Type: [#TYPE] !
+</IF>
 </IF>
 </IF>
 </IF>
