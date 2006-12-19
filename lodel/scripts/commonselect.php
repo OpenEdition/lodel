@@ -115,20 +115,17 @@ function makeSelectGuiUserComplexity($value)
 function makeSelectEdition($value)
 {
 	$arr = array(
-		"none" => getlodeltextcontents("no_change_of_field_value", "admin"),
-		"OPTGROUP-1"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
+		"OPTGROUP-1"=> getlodeltextcontents("edit_in_the_interface", "admin"),
+			"editable" => getlodeltextcontents("edit_in_form_field", "admin"),
+			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin"),
+		"ENDOPTGROUP-1"=> "",
+		"OPTGROUP-2"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
 			"importable" => getlodeltextcontents("no_show_in_interface", "admin"),
 			"display" => getlodeltextcontents("show_in_interface", "admin"),
-		"ENDOPTGROUP-1"=> "",
-		"OPTGROUP-2"=> getlodeltextcontents("edit_in_the_interface", "admin"),
-			"editable" => getlodeltextcontents("edit_in_form_field", "admin"),
-		//	"textarea" => getlodeltextcontents("edit_textarea", "admin"),
-			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin")." (FCKEditor)",
-		//	"select" => getlodeltextcontents("edit_select", "admin"),
-		//	"multipleselect" => getlodeltextcontents("edit_multipleselect", "admin"),
-		//	"radio" => getlodeltextcontents("edit_radio", "admin"),
-		//	"checkbox" => getlodeltextcontents("edit_checkbox", "admin"),
-		"ENDOPTGROUP-2"=> "");
+		"ENDOPTGROUP-2"=> "",
+		"OPTGROUP-3"=> getlodeltextcontents("no_edit_and_no_import", "admin"),
+			"none" => getlodeltextcontents("no_show_in_interface", "admin"),
+		"ENDOPTGROUP-3"=> "");
 	renderOptions($arr, $value);
 }
 ?>

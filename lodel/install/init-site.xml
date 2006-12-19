@@ -1448,70 +1448,70 @@
         uniqueid="yes"
 	writeright="redactor"
 	protectright="redactor">
-<column name="id"
-        type="INTEGER"
-        default="0"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="idparent"
-        type="INTEGER"
-        default="0"
-        required="true"
-	label="[@COMMON.PARENT_ENTRY] ([@COMMON.PARENT_ENTRY_MUST_BE_PERMANENT])"
-	edittype="select"
-	editcondition="![#TYPE_FLAT]"/>
-<column name="g_name"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        label="[@ADMIN.ENTRY]"
-        edittype="text" />
-<column name="sortkey"
-        type="VARCHAR"
-        size="255" 
-	description="define the alphabetic order. suppleant partial support of utf-8 in mysql"/>
-<column name="lang"
-        type="CHAR"
-        size="2"
-        required="true"
-        label="[@COMMON.LANG]"
-        edittype="lang" />
-<column name="idtype"
-        type="INTEGER"
-        default="0"
-        required="true"
-	visibility="hidden"
-	edittype="int" />
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<vcolumn name="protected"
-        label="[@ADMIN.PERMANENT_ENTRY]"
-        edittype="boolean" />
-<column name="upd"
-        type="TIMESTAMP" />
-<!-- Foreign Key - 2005-02-07 -->        
-<!--<foreign-key foreignTable="entrytypes" onDelete="setnull">
-<reference
-	local="idtype"
-	foreign="id" />		
-</foreign-key>-->
-<!-- End Foreign Key -->  
-<index name="index_g_name">
-<index-column name="g_name" />
-</index>
-<index name="index_idparent">
-<index-column name="idparent" />
-</index>
-<index name="index_idtype">
-<index-column name="idtype" />
-</index>
+	<column name="id"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="idparent"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+		label="[@COMMON.PARENT_ENTRY] ([@COMMON.PARENT_ENTRY_MUST_BE_PERMANENT])"
+		edittype="select"
+		editcondition="![#TYPE_FLAT]"/>
+	<column name="g_name"
+        	type="VARCHAR"
+        	size="255"
+        	required="true"
+        	label="[@ADMIN.ENTRY]"
+        	edittype="text" />
+	<column name="sortkey"
+        	type="VARCHAR"
+        	size="255" 
+		description="define the alphabetic order. suppleant partial support of utf-8 in mysql"/>
+	<column name="lang"
+        	type="CHAR"
+        	size="2"
+        	required="true"
+        	label="[@COMMON.LANG]"
+        	edittype="lang" />
+	<column name="idtype"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+		visibility="hidden"
+		edittype="int" />
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<vcolumn name="protected"
+        	label="[@ADMIN.PERMANENT_ENTRY]"
+        	edittype="boolean" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<!-- Foreign Key - 2005-02-07 -->        
+	<!--<foreign-key foreignTable="entrytypes" onDelete="setnull">
+	<reference
+		local="idtype"
+		foreign="id" />		
+	</foreign-key>-->
+	<!-- End Foreign Key -->  
+	<index name="index_g_name">
+		<index-column name="g_name" />
+	</index>
+	<index name="index_idparent">
+		<index-column name="idparent" />
+	</index>
+	<index name="index_idtype">
+		<index-column name="idtype" />
+	</index>
 </table>
 
 
@@ -1521,39 +1521,39 @@
 	writeright="redactor"
 	protectright="redactor">
 
-<column name="id"
-        type="INTEGER"
-        default="0"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="name"
-        type="VARCHAR"
-        size="255"
-        required="true" />
-<column name="step"
-        type="TINYINT"
-        required="true"
-        default="0" />
-<column name="user"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="context"
-        type="LONGVARCHAR" />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<column name="upd"
-        type="TIMESTAMP" />
-<!-- Foreign Key - 2005-02-07 -->        
-<!--<foreign-key foreignTable="users" onDelete="setnull">
-<reference
-	local="user"
-	foreign="id" />		
-</foreign-key>-->
-<!-- End Foreign Key -->  
+	<column name="id"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="name"
+	        type="VARCHAR"
+        	size="255"
+        	required="true" />
+	<column name="step"
+        	type="TINYINT"
+        	required="true"
+        	default="0" />
+	<column name="user"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="context"
+        	type="LONGVARCHAR" />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<!-- Foreign Key - 2005-02-07 -->        
+	<!--<foreign-key foreignTable="users" onDelete="setnull">
+	<reference
+		local="user"
+		foreign="id" />		
+	</foreign-key>-->
+	<!-- End Foreign Key -->  
 </table>
 
 
@@ -1562,60 +1562,60 @@
         description="Table des minitextes"
 	writeright="admin"
 	protectright="adminlodel">
-<column name="id"
-        type="INTEGER"
-        default="0"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="name"
-        type="VARCHAR"
-        size="255"
-        description="name"
-        label="[@COMMON.NAME]" />
-<column name="contents"
-        type="LONGVARCHAR"
-        description="texte"
-        label="[@ADMIN.TEXT]"
-        edittype="longtext" />
-<column name="lang"
-        type="CHAR"
-        size="5"
-        required="true"
-        description="text lang"
-        label="[@COMMON.LANG]"
-	visibility="hidden" 
-	edittype="lang"	/>
-<column name="textgroup"
-        type="VARCHAR"
-        size="255"
-        required="true"
-        description="text group" 
-	visibility="hidden" 
-	edittype="text"	/>
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<vcolumn name="protected"
-        label="[@ADMIN.PROTECTED]"
-        edittype="boolean" />
-<column name="upd"
-        type="TIMESTAMP" />
-<index name="index_name">
-<index-column name="name" />
-</index>
-<index name="index_lang">
-<index-column name="lang" />
-</index>
-<index name="index_textgroup">
-<index-column name="textgroup" />
-</index>
-<unique name="unique_lang">
-<unique-column name="name" />
-<unique-column name="lang" />
-<unique-column name="textgroup" />
-</unique>
+	<column name="id"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="name"
+	        type="VARCHAR"
+        	size="255"
+        	description="name"
+        	label="[@COMMON.NAME]" />
+	<column name="contents"
+        	type="LONGVARCHAR"
+        	description="texte"
+        	label="[@ADMIN.TEXT]"
+        	edittype="longtext" />
+	<column name="lang"
+        	type="CHAR"
+        	size="5"
+        	required="true"
+        	description="text lang"
+        	label="[@COMMON.LANG]"
+		visibility="hidden" 
+		edittype="lang"	/>
+	<column name="textgroup"
+        	type="VARCHAR"
+        	size="255"
+        	required="true"
+        	description="text group" 
+		visibility="hidden" 
+		edittype="text"	/>
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<vcolumn name="protected"
+        	label="[@ADMIN.PROTECTED]"
+        	edittype="boolean" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<index name="index_name">
+		<index-column name="name" />
+	</index>
+	<index name="index_lang">
+		<index-column name="lang" />
+	</index>
+	<index name="index_textgroup">
+		<index-column name="textgroup" />
+	</index>
+	<unique name="unique_lang">
+		<unique-column name="name" />
+		<unique-column name="lang" />
+		<unique-column name="textgroup" />
+	</unique>
 </table>
 
 
@@ -1839,58 +1839,58 @@
         description=""
 	writeright="admin"
 	protectright="adminlodel">
-<column name="id"
-        type="INTEGER"
-        default="0"
-        required="true"
-        primaryKey="true"
-        autoIncrement="true" />
-<column name="lang"
-        type="CHAR"
-        size="5"
-        required="true"
-        description="code of the lang"
-        label="[@ADMIN.LANG_CODE]"
-        edittype="text" />
-<column name="title"
-        type="VARCHAR"
-        size="255"
-        label="[@COMMON.LANG]"
-        edittype="text" />
-<column name="textgroups"
-        type="VARCHAR"
-        size="255"
-	visibility="hidden"
-	edittype="text"  />
-<column name="translators"
-        type="VARCHAR"
-        label="[@ADMIN.TRANSLATORS]"
-        edittype="text" />
-<column name="modificationdate"
-        type="DATE" />
-<column name="creationdate"
-        type="DATE"
-	visibility="hidden"
-	edittype="date" />
-<column name="rank"
-        type="INTEGER"
-        default="0"
-        required="true" />
-<column name="status"
-        type="TINYINT"
-        default="1"
-        required="true" />
-<vcolumn name="protected"
-        label="[@COMMON.PROTECTED]"
-        edittype="boolean" />
-<column name="upd"
-        type="TIMESTAMP" />
-<index name="index_lang">
-<index-column name="lang" />
-</index>
-<unique name="unique_lang">
-<unique-column name="lang" />
-<unique-column name="textgroups" />
+	<column name="id"
+        	type="INTEGER"
+        	default="0"
+        	required="true"
+        	primaryKey="true"
+        	autoIncrement="true" />
+	<column name="lang"
+        	type="CHAR"
+        	size="5"
+        	required="true"
+        	description="code of the lang"
+        	label="[@ADMIN.LANG_CODE]"
+        	edittype="text" />
+	<column name="title"
+	        type="VARCHAR"
+        	size="255"
+        	label="[@COMMON.LANG]"
+        	edittype="text" />
+	<column name="textgroups"
+        	type="VARCHAR"
+        	size="255"
+		visibility="hidden"
+		edittype="text"  />
+	<column name="translators"
+	        type="VARCHAR"
+        	label="[@ADMIN.TRANSLATORS]"
+        	edittype="text" />
+	<column name="modificationdate"
+	        type="DATE" />
+	<column name="creationdate"
+        	type="DATE"
+		visibility="hidden"
+		edittype="date" />
+	<column name="rank"
+        	type="INTEGER"
+        	default="0"
+        	required="true" />
+	<column name="status"
+        	type="TINYINT"
+        	default="1"
+        	required="true" />
+	<vcolumn name="protected"
+        	label="[@COMMON.PROTECTED]"
+        	edittype="boolean" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<index name="index_lang">
+		<index-column name="lang" />
+	</index>
+	<unique name="unique_lang">
+		<unique-column name="lang" />
+	<unique-column name="textgroups" />
 </unique>
 </table>
 
@@ -1915,74 +1915,67 @@
 		type="DOUBLE"
 		default="0"
 		required="true" />
-<index name="index_word">
-<index-column name="word" />
-</index>
-<index name="index_identity">
-<index-column name="identity" />
-</index>
+	<index name="index_word">
+		<index-column name="word" />
+	</index>
+	<index name="index_identity">
+		<index-column name="identity" />
+	</index>
 </table>
+
+
 <!-- Gestion de l'oai -->
 <table name="oai_token"
-			description="Table contenant les tokens pour l'oai"
-			writeright=""
-			protectright=""
-			 >
-<column name="token"
-				type="VARCHAR(14)"
-				default=""
-				required="true"
-				/>
-<column name="query"
-				type="TEXT"
-				default=""
-				required="true"
-				/>
-<column name="metadataprefix"
-				type="VARCHAR(35)"
-				default=""
-				required="true"
-				/>
-<column	name="deliveredrecords"
-				type="INTEGER(11)"
-				default="0"
-				required="true"
-				/>
-<column name="expirationdatetime"
-				type="TIMESTAMP(14)"
-				default=""
-				required="true"
-				/>
-<unique name="unique_token">
-<unique-column name="token" />
-</unique>
-</table>
-<table name="oailogs"
-			description="Table contenant les logs pour l'oai"
-			writeright=""
-			protectright=""
-			 >
+	description="Table contenant les tokens pour l'oai"
+	writeright=""
+	protectright="">
 	
-<column name="id"
-			 type="INTEGER(11)"
-			 required="true"
-			 primarykey="true"
-			 auto_increment="true"
-			 />
-<column name="host"
-				type="TINYTEXT"
-				default=""
-				required="true"
-				/>
-<column name="date"
-				type="TIMESTAMP(14)"
-				default=""
-				required="true"
-				/>
-<column name="denied"
-				type="TINYINT(4)"
-				default="0"
-				required="true"
-				/>
+	<column name="token"
+		type="VARCHAR(14)"
+		default=""
+		required="true" />
+	<column name="query"
+		type="TEXT"
+		default=""
+		required="true" />
+	<column name="metadataprefix"
+		type="VARCHAR(35)"
+		default=""
+		required="true" />
+	<column	name="deliveredrecords"
+		type="INTEGER(11)"
+		default="0"
+		required="true" />
+	<column name="expirationdatetime"
+		type="TIMESTAMP(14)"
+		default=""
+		required="true" />
+	<unique name="unique_token">
+		<unique-column name="token" />
+	</unique>
+</table>
+
+<table name="oailogs"
+	description="Table contenant les logs pour l'oai"
+	writeright=""
+	protectright="">
+	
+	<column name="id"
+		 type="INTEGER(11)"
+		 required="true"
+		 primarykey="true"
+		 auto_increment="true" />
+	<column name="host"
+		type="TINYTEXT"
+		default=""
+		required="true" />
+	<column name="date"
+		type="TIMESTAMP(14)"
+		default=""
+		required="true" />
+	<column name="denied"
+		type="TINYINT(4)"
+		default="0"
+		required="true" />
 </table>
 </database>
