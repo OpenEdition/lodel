@@ -929,7 +929,7 @@ function notesmarginales(&$texte, $coupe) {
 
 				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
 
-				$r = '<a " '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
+				$r = '<a '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
 
 				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
 					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'(...)</a>';
