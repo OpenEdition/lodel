@@ -724,19 +724,19 @@ function ishtml($text)
  * Filtre pour l'ajout des notes marginales
  *
  * Ajoute un <div class="textandnotes"> et encapsule les notes dans une liste : <ul class="sidenotes"> <li> ... </li> </ul> 
- * contient le numéro de la note et celle-ci tronquée 
+ * contient le numéro de la note et celle-ci tronquee 
  * (si trop longue) à 100 caractères.
  * 
- * Le seul paramètre sera le seuil d'affichage des notes
+ * Le seul parametre sera le seuil d'affichage des notes
  *
  * @author Mickael Sellapin
  *
- * @param string $texte le texte à numéroter passé par référence
- * @param string $coupe un entier (définit dans le template)
+ * @param string $text le texte par d�faut a numeroter 
+ * @param string $coupe un entier (definit dans le template), nombre de caract�res maximal de la note marginale
  *
  */
 
-function notesmarginales(&$texte, $coupe) {
+function notesmarginales($text, $coupe) {
 
 	static $condition = 0;
 
@@ -745,25 +745,22 @@ function notesmarginales(&$texte, $coupe) {
 	$compteur = 0;
 	$titre = $GLOBALS['context']['titre'];
 
-	//on récupère toutes les notes du texte
+	//on recupere toutes les notes du texte
 	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
-	preg_match_all($regexp,$texte,$matches);
-
-	//debug
-	//echo "/////////////////////////// PRINTR ////////////////////////\n";
-	//print_r($GLOBALS['context']);
-	//echo "/////////////////////////// PRINTR ////////////////////////\n";
+	preg_match_all($regexp,$text,$matches);
 
 	$regexpnote = '/<div\s+class="footnotebody"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/div>/s';	
 
 	$search = '/<div\s+class="footnotebody"[^>](.*?)>/';
 	$replace = '<br /><div class="footnotebody" \\1>';
 
-	//$notesformatees = preg_replace($search, $replace, $GLOBALS['context']['notebaspage']);
 
-	if(notes($GLOBALS['context']['notebaspage'], "asterisque")) {
-		$notesmodif = notes($GLOBALS['context']['notesbaspage'], "asterisque");
-	}
+	// pour ajouter la note marginale asterisque du titre principal - oblig� de proc�der comme ceci car la fonction "notes" utilis�e ne renvoie rien pour une raison inconnue (il est � noter que j'ai fait
+	// plusieurs tests et que je n'ai pas trouv� l'origine du probl�me
+	preg_match_all('/<div class="(?:foot|end)notebody"[^>]*>.*?<\/div>/',$GLOBALS['context']['notebaspage'],$results,PREG_PATTERN_ORDER);
+	$notetitre = preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?\*+\]?<\/a>/',$results[0]);
+	if($notetitre != "")
+		$notesmodif .= join("", $notetitre);
 
 	if(notes($GLOBALS['context']['notebaspage'], "lettre")) {
 		$notesmodif .= notes($GLOBALS['context']['notebaspage'], "lettre");
@@ -773,21 +770,20 @@ function notesmarginales(&$texte, $coupe) {
 		$notesmodif .= notes($GLOBALS['context']['notebaspage'], "nombre");
 	}
 
-	//on recupére chaque note du bloc de notes
+	/*
+	if(notes($GLOBALS['context']['notebaspage'], "asterisque")) {
+		$notesmodif .= notes($GLOBALS['context']['notesbaspage'], "asterisque");
+	}
+	*/
+
+	//on recupere chaque note du bloc de notes
 	preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
 
 	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
 
 
-	//debug
-	/*
-	echo "/////////////////////////// PRINTR ////////////////////////\n";
-	print_r($matchesnotebaspages);
-	echo "/////////////////////////// PRINTR ////////////////////////\n";
-	*/
-
-
 	//pour traiter les cas d'une note dans le titre principal
+	
 	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
 
 		$condition = 2;
@@ -821,26 +817,18 @@ function notesmarginales(&$texte, $coupe) {
 	
 
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
-	$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+	//$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+	$regexppar = '/(<div class="section1"><a *href="#tocfrom[0-9]+" *id="tocto[0-9]+"*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
 
-	preg_match_all($regexppar,$texte,$paragraphes);
+	preg_match_all($regexppar,$text,$paragraphes);
 
-
-	//debug
-	echo "/////////////////////////// PRINTR ////////////////////////\n";
-	print_r($texte);
-	print_r($paragraphes);
-	echo "/////////////////////////// PRINTR ////////////////////////\n";
-
-
-	//on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
-	if($condition == 1)
-		$cptendpage++;
+	//on incremente cette variable pour palier l'affichage de la note asterisque et afficher la toute premiere note
+	if($condition == 1) $cptendpage++;
 
 	$retour = "";
 	$nbparagraphes = sizeof($paragraphes[0]);
 
-	// on affiche à la suite de chaque paragraphe les notes correspondantes que l'on met dans la variable "buffer"
+	// on affiche a la suite de chaque paragraphe les notes correspondantes que l'on met dans la variable "buffer"
 	for($i = 0; $i < $nbparagraphes; $i++) {
 		$buffer = "";
 		preg_match_all($regexp, $paragraphes[0][$i], $tmp);
@@ -853,12 +841,12 @@ function notesmarginales(&$texte, $coupe) {
 
 				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$cptendpage],$m)) || (preg_match('/[a-zA-Z]+/',$matchesnotebaspages[2][$cptendpage],$m))) {
 
-				$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
-				$replace = array ('href="#\\1"');
+				$search = '/class=".*" *id="(.*?)" *href="#(.*?)"/';
+				$replace = 'href="#\\1"';
 
 				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
 
-				$r = '<a " '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
+				$r = '<a '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
 
 				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
 					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'(...)</a>';
