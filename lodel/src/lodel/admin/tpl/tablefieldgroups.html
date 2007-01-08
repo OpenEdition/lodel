@@ -59,17 +59,45 @@
 	</ul>
 	<br />&nbsp;<br />
 
-			<table class="statistics fields">
-			<tr>
-				<th class="status">[@COMMON.TITLE]</th>
-				<th class="status">[@COMMON.NAME]</th>
-				<th class="status">[@COMMON.TYPE]</th>
-				<th class="status">[@COMMON.STYLE]</th>
-				<th class="status">[@COMMON.ACTIONS]</th>
-			</tr>
-			<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
-			</table>
+	<table class="statistics fields">
+		<tr>
+			<th class="status">[@COMMON.TITLE]</th>
+			<th class="status">[@COMMON.NAME]</th>
+			<th class="status">[@COMMON.TYPE]</th>
+			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@COMMON.ACTIONS]</th>
+		</tr>
+		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
+	</table>
 
+	<IF COND="[#CLASSTYPE]=='persons'">
+	<!--[ Affichage des champs de la table liée à l'index de personnes : entities_nom_Index_de_personnes ]-->
+		<ul id="actionsOnEntitiesPath">
+			<li><span class="intit">[@ADMIN.DEFINITION_DATAFIELDS_RELATION_BETWEEN_ENTITIES_AND_PERSONS]</span></li>
+			<li>
+				<ul class="actions">
+					<li class="isolated">
+						<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+							<a href="index.php?do=view&amp;lo=tablefields&amp;class=entities_[#CLASS]">[@ADMIN.ADD_FIELD]</a>
+						<ELSE />
+							<span class="inactif">[@ADMIN.ADD_FIELD]</span>
+						</IF>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<br />&nbsp;<br />
+	<table class="statistics fields">
+		<tr>
+			<th class="status">[@COMMON.TITLE]</th>
+			<th class="status">[@COMMON.NAME]</th>
+			<th class="status">[@COMMON.TYPE]</th>
+			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@COMMON.ACTIONS]</th>
+		</tr>
+		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='entities_[#CLASS]'">
+	</table>
+	</IF>
 
 	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
 
@@ -122,10 +150,8 @@
 		</DO>
 	</LOOP>
 </table>
-
-
-
 </LOOP>
+
 <MACRO NAME="OK_BACK_TO_PARENT">
 <!--[
 <LOOP NAME="class_type" TABLE="classes" WHERE="class='[#CLASS]'">
