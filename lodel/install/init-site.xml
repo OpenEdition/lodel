@@ -405,8 +405,6 @@
 			label="[@ADMIN.AUTOMATIC_FILTERING]"
         		edittype="text" />
 	</vgroup>
-
-
 	<vgroup name="grcomment"
 		label="[@ADMIN.COMMENT]">
 		<column name="comment"
@@ -459,42 +457,65 @@
 
 
 
-
 <vtable name="indextablefields"
         description=""
 	writeright="admin"
 	protectright="adminlodel">
-	<column name="id"
-        	type="INTEGER"
-        	required="true"
-        	primaryKey="true"
-        	autoIncrement="true" />
-	<column name="name"
-        	type="VARCHAR"
-        	size="64"
-        	required="true"
-        	description="name/identifiant unique"
-        	label="[@ADMIN.NAME]"
-        	edittype="select" />
-	<column name="class"
-        	type="VARCHAR"
-        	size="64"
-        	required="true"
-        	description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
-        	visibility="hidden"
-        	edittype="class"/>
-	<column name="title"
-        	type="VARCHAR"
-        	size="255"
-        	required="true"
-        	description="name en clair, utiliser dans l interface"
-        	label="[@ADMIN.INTERFACENAME]"
-        	edittype="text" />
-	<column name="altertitle"
-		type="LONGVARCHAR"
-		description="nom multilingue"
-		label="[@ADMIN.MULTILINGUAL_NAME]"
-		edittype="mltext"/>
+	<vgroup name="general" label="[@ADMIN.IDENTIFICATION]">
+		<column name="id"
+        		type="INTEGER"
+        		required="true"
+        		primaryKey="true"
+        		autoIncrement="true" />
+		<column name="name"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="name/identifiant unique"
+        		label="[@ADMIN.NAME]"
+        		edittype="select" />
+		<column name="class"
+        		type="VARCHAR"
+        		size="64"
+        		required="true"
+        		description="nom de la table (duplicate the information in available through double join with tablefieldgroups and classes"
+        		visibility="hidden"
+        		edittype="class"/>
+		<column name="title"
+        		type="VARCHAR"
+        		size="255"
+        		required="true"
+        		description="name en clair, utiliser dans l interface"
+        		label="[@ADMIN.INTERFACENAME]"
+        		edittype="text" />
+		<column name="altertitle"
+			type="LONGVARCHAR"
+			description="nom multilingue"
+			label="[@ADMIN.MULTILINGUAL_NAME]"
+			edittype="mltext"/>
+	</vgroup>
+	<vgroup name="grprotected"
+		label="[@ADMIN.FIELDSET_PROTECTED]">
+		<vcolumn name="protected"
+			label="[@ADMIN.PROTECTED_DATAFIELD]"
+	        	edittype="boolean" />
+	</vgroup>
+	<vgroup name="gredition"
+		label="[@ADMIN.FIELDSET_EDITION]">
+		<column name="edition"
+			type="VARCHAR"
+			size="255"
+			description="input pour l edition"
+			label="[@ADMIN.INTERFACE_EDITION]"
+        		edittype="select" />
+		<column name="idgroup"
+			type="INTEGER"
+			default="0"
+			required="true"
+			label="[@ADMIN.DATAFIELDGROUP]"
+			edittype="select"
+			editcondition="[#CLASSTYPE]=='entities'" />
+	</vgroup>
 	<column name="type"
 	        type="VARCHAR"
         	size="255"
@@ -502,27 +523,14 @@
         	description="type du champ"
         	edittype="class"
         	visibility="hidden" />
-	<column name="edition"
-	        type="VARCHAR"
-	        size="255"
-	        description="input pour l edition"
-	        label="[@ADMIN.INTERFACE_EDITION]"
-        	edittype="select" />
-	<column name="comment"
-	        type="LONGVARCHAR"
-        	description="commentaire sur le champs"
-        	label="[@ADMIN.COMMENT]"
-        	edittype="longtext" />
-	<column name="idgroup"
-        	type="INTEGER"
-        	default="0"
-        	required="true"
-		label="[@ADMIN.DATAFIELDGROUP]"
-		edittype="select"
-		editcondition="[#CLASSTYPE]=='entities'" />
-	<vcolumn name="protected"
-        	label="[@ADMIN.PROTECTED_DATAFIELD]"
-	        edittype="boolean" />
+	<vgroup name="grcomment"
+		label="[@ADMIN.COMMENT]">
+		<column name="comment"
+			type="LONGVARCHAR"
+			description="commentaire sur le champs"
+			label="[@ADMIN.COMMENT]"
+        		edittype="longtext" />
+	</vgroup>
 	<column name="rank"
         	type="INTEGER"
         	default="0"
@@ -540,9 +548,6 @@
 	<unique-column name="class" />
 	</unique>
 </vtable>
-
-
-
 
 
 <table name="tablefieldgroups"
