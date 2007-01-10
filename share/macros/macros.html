@@ -76,3 +76,39 @@
 		<input type="button" class="button" value="  OK   " onclick="javascript:window.history.go(-1)" />
 	</fieldset>
 </DEFMACRO>
+
+<!--[ Macro utilisée pour afficher les résultats d'une boucle sur plusieurs pages
+	Doit être appelée dans la balise <AFTER>
+]-->
+<DEFMACRO NAME="PRINT_PAGE_SCALE">
+	<LOOP NAME="page_scale">
+		<BEFORE>
+			<div class="pagination">
+				<IF COND="[#PREVIOUSURL]">
+					<a href="[#PREVIOUSURL]" title="Page précédente">&lt;&lt;</a>
+				</IF>
+		</BEFORE>
+		<DO>
+			<IF COND="[#HOLE] EQ 1">
+				&nbsp;...&nbsp;
+			</IF>
+			<IF COND="[#URLPAGE] NE ''">
+				<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#PAGENUMBER]">
+			<ELSE/>
+				<span class="currentpage">
+			</IF>
+			[#PAGENUMBER]
+			<IF COND="[#URLPAGE] NE ''">
+				</a>
+			<ELSE/>
+				</span>
+			</IF>
+		</DO>
+		<AFTER>
+			<IF COND="[#NEXTURL]">
+				<a href="[#NEXTURL]" title="Page suivante">&gt;&gt;</a>
+			</IF>
+			</div>
+		</AFTER>
+	</LOOP>
+</DEFMACRO>
