@@ -749,6 +749,8 @@ function notesmarginales($text, $coupe) {
 	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
 	preg_match_all($regexp,$text,$matches);
 
+	//print_r($matches);
+
 	$regexpnote = '/<div\s+class="footnotebody"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/div>/s';	
 
 	$search = '/<div\s+class="footnotebody"[^>](.*?)>/';
@@ -758,6 +760,7 @@ function notesmarginales($text, $coupe) {
 	// pour ajouter la note marginale asterisque du titre principal - obligé de procéder comme ceci car la fonction "notes" utilisée ne renvoie rien pour une raison inconnue (il est à noter que j'ai fait
 	// plusieurs tests et que je n'ai pas trouvé l'origine du problème
 	preg_match_all('/<div class="(?:foot|end)notebody"[^>]*>.*?<\/div>/',$GLOBALS['context']['notebaspage'],$results,PREG_PATTERN_ORDER);
+
 	$notetitre = preg_grep('/<a class="(foot|end)notedefinition[^>]*>\[?\*+\]?<\/a>/',$results[0]);
 	if($notetitre != "")
 		$notesmodif .= join("", $notetitre);
@@ -780,7 +783,6 @@ function notesmarginales($text, $coupe) {
 	preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
 
 	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
-
 
 	//pour traiter les cas d'une note dans le titre principal
 	
@@ -818,7 +820,7 @@ function notesmarginales($text, $coupe) {
 
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
 	//$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
-	$regexppar = '/(<div class="section1"><a *href="#tocfrom[0-9]+" *id="tocto[0-9]+"*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+	$regexppar = '/(<div class="section[0-9]+"><a \s*href="#tocfrom[0-9]+" \s*id="tocto[0-9]+"\s*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
 
 	preg_match_all($regexppar,$text,$paragraphes);
 
@@ -872,6 +874,7 @@ function notesmarginales($text, $coupe) {
 	$condition = 0;
 
 	return $retour;
+	//return $text;
 }
 
 ?>
