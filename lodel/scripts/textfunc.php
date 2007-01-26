@@ -745,11 +745,11 @@ function notesmarginales($text, $coupe) {
 	$compteur = 0;
 	$titre = $GLOBALS['context']['titre'];
 
+	//print_r($text);
+
 	//on recupere toutes les notes du texte
 	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
 	preg_match_all($regexp,$text,$matches);
-
-	//print_r($matches);
 
 	$regexpnote = '/<div\s+class="footnotebody"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/div>/s';	
 
@@ -784,6 +784,8 @@ function notesmarginales($text, $coupe) {
 
 	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
 
+	//print_r($matchesnotebaspages);
+
 	//pour traiter les cas d'une note dans le titre principal
 	
 	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
@@ -817,12 +819,16 @@ function notesmarginales($text, $coupe) {
 	} 
 	
 	
-
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
 	//$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
-	$regexppar = '/(<div class="section[0-9]+"><a \s*href="#tocfrom[0-9]+" \s*id="tocto[0-9]+"\s*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+	//$regexppar = '/(<div class="section[0-9]+"><a \s*href="#tocfrom[0-9]+" \s*id="tocto[0-9]+"\s*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+
+
+	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>)*((?:<ul\b class=[^>]*)(?:>).*?<\/ul>|(<p\b class=[^>]*)(?:>)(.*?)<\/p>)/ie';
 
 	preg_match_all($regexppar,$text,$paragraphes);
+
+	print_r($paragraphes);
 
 	//on incremente cette variable pour palier l'affichage de la note asterisque et afficher la toute premiere note
 	if($condition == 1) $cptendpage++;
