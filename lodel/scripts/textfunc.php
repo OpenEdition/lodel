@@ -745,8 +745,6 @@ function notesmarginales($text, $coupe) {
 	$compteur = 0;
 	$titre = $GLOBALS['context']['titre'];
 
-	//print_r($text);
-
 	//on recupere toutes les notes du texte
 	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
 	preg_match_all($regexp,$text,$matches);
@@ -827,8 +825,6 @@ function notesmarginales($text, $coupe) {
 	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>)*((?:<ul\b class=[^>]*)(?:>).*?<\/ul>|(<p\b class=[^>]*)(?:>)(.*?)<\/p>)/ie';
 
 	preg_match_all($regexppar,$text,$paragraphes);
-
-	print_r($paragraphes);
 
 	//on incremente cette variable pour palier l'affichage de la note asterisque et afficher la toute premiere note
 	if($condition == 1) $cptendpage++;
