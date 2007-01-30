@@ -59,8 +59,8 @@ if ($envoi) {
   // validation
   do {
 
-    if (!$context[to]) { $err=$context[erreur_to]=1; }
-    if (!$context[from]) { $err=$context[erreur_from]=1; }
+    if (!isEmail($context[to])) { $err=$context[erreur_to]=1; }
+    if (!isEmail($context[from])) { $err=$context[erreur_from]=1; }
 
     if ($err) break;
 

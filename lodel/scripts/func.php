@@ -649,6 +649,9 @@ function myhtmlentities($text)
   return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
 }
 
+function isEmail($str){
+	return eregi('^[_a-z0-9-]+(\.[_a-z0-9-]*)*@[a-z0-9-]+(\.[a-z0-9-]+)+$', $str);
+}
 
 // valeur de retour identifiant ce script
 return 568;
