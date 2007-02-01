@@ -980,7 +980,7 @@ class Parser
 		$test = replace_conditions($test, 'php');
 
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '<?php sitwch ('.$test.') { ';
+		$this->arr[$this->ind + 1] = '<?php switch ('.$test.') { ';
 		if (trim($this->arr[$this->ind + 2]))
 			$this->errmsg("Expecting a CASE tag after the SWITCH tag");
 
