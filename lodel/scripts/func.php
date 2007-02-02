@@ -314,7 +314,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			die("ERROR: unknow group for getlodeltext");
 		}
 	}
-	if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
 	if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
 	require_once("connect.php");
 	global $db;
@@ -352,7 +352,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 
 function getlodeltextcontents($name,$group="",$lang=-1)
 {
-	if ($lang==-1) $lang=$GLOBALS['la'] ? $GLOBALS['la'] : $GLOBALS['lodeluser']['lang'];
+	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
 	if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
 		return $GLOBALS['langcache'][$lang][$group.".".$name];
 	} else {

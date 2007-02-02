@@ -38,6 +38,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -136,7 +137,8 @@ function authenticate($level = 0, $mode = "")
 		$context['lodeluser']    = $lodeluser;
 
 		if ($lodeluser['lang']) {
-			$GLOBALS['la'] = $lodeluser['lang'];
+			$GLOBALS['lang'] = $lodeluser['lang'];
+			$context['sitelang'] = $GLOBALS['lang'];
 		}
 		
 		// clean the url - nettoyage de l'url
@@ -277,11 +279,28 @@ if (!$GLOBALS['filemask']) {
 	$GLOBALS['filemask'] = "0700";
 }
 
-header("Content-type: text/html; charset=". $context['charset']);
 
 // Langue ?
-$GLOBALS['la'] = $_GET['la'] ? $_GET['la'] : $_POST['la'];
-if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['la'])) {
-	$GLOBALS['la'] = '';
+// récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
+if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])) {
+	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) {
+		$GLOBALS['lang'] = $_COOKIE['language']; }
+	else {
+		setcookie('language');
+		$GLOBALS['lang'] = '';}
 }
+// langue passée en GET ou POST : initialise le cookie
+else {
+	$GLOBALS['lang'] = $_GET['lang'] ? $_GET['lang'] : $_POST['lang'];
+	if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['lang'])) {
+		$GLOBALS['lang'] = '';
+	}
+	else {	setcookie('language', $GLOBALS['lang']); }
+}
+
+// accès à la langue dans les templates
+$context['sitelang'] = $GLOBALS['lang'];
+
+//echo $GLOBALS['lang'];
+header("Content-type: text/html; charset=". $context['charset']);
 ?>

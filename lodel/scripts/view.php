@@ -34,6 +34,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -215,8 +216,11 @@ class View
 	function renderIfCacheIsValid()
 	{
 		if (!$this->_iscachevalid()) {
+			//echo '<h1>!$this->_iscachevalid</h1>';
 			return false;
 		}
+			//echo '<h1>$this->_extcachedfile = '.$this->_extcachedfile .'</h1>' . 
+			//	'<h1>$this->_cachedfile' . $this->_cachedfile .'</h1>';
 		if ($this->_extcachedfile == 'php') {
 			$ret = include $this->_cachedfile. '.php';
 			if ($ret == 'refresh') return false; // does php say we must refresh ?
@@ -264,6 +268,7 @@ class View
 		//  $this->_iscachevalid=false;
 		//  return false;
 		//}
+
 		include_once 'func.php';
 		if (defined('SITEROOT')) {
 			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
@@ -281,6 +286,8 @@ class View
 		if ($GLOBALS['context']['charset'] != 'utf-8') {
 			$cachedir = "il1.$cachedir";
 		}
+	
+		if (!empty($_COOKIE['language'])) $cachedir = 'i18n-' . $_COOKIE['language'] . '.' . $cachedir;
 
 		if (!file_exists("CACHE/$cachedir")) {
 			mkdir("CACHE/$cachedir", 0777 & octdec($GLOBALS['filemask']));

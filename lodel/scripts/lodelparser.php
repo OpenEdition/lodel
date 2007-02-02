@@ -33,6 +33,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -487,9 +488,9 @@ class LodelParser extends Parser
 		}
 		if ($this->translationtags)	{
 			$text = '<'.'?php
-	$langfile="CACHE/lang-". $GLOBALS[\'la\']. "/". basename(__FILE__);
+	$langfile="CACHE/lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__);
 	if (!file_exists($langfile)) {
-		generateLangCache($GLOBALS[\'la\'], $langfile, array('. join(',', $this->translationtags).'));
+		generateLangCache($GLOBALS[\'lang\'], $langfile, array('. join(',', $this->translationtags).'));
 	} else {
 		require_once($langfile);
 	}
