@@ -287,7 +287,7 @@ class View
 			$cachedir = "il1.$cachedir";
 		}
 	
-		if (!empty($_COOKIE['language'])) $cachedir = 'i18n-' . $_COOKIE['language'] . '.' . $cachedir;
+		if (!empty($_COOKIE['language'])) $cachedir = 'i18n-' . $GLOBALS['lang'] . '.' . $cachedir;
 
 		if (!file_exists("CACHE/$cachedir")) {
 			mkdir("CACHE/$cachedir", 0777 & octdec($GLOBALS['filemask']));
