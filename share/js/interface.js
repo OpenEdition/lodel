@@ -137,15 +137,17 @@ function changeNameAttributes(obj,index)
 {
 	for(i=0; i<obj.childNodes.length; i++) {
 		var child=obj.childNodes[i];
-		if (child.getAttribute) {
-		var content=child.innerHTML;
 		
-		if (content) {
-// 			alert(content);
-			newcontent=content.replace(/__lodel_wildcard/gi,index);
-// 			alert(newcontent);
-			child.innerHTML = newcontent;
-		}
+		if (child.getAttribute) {
+			
+			if (child.innerHTML) {
+				child.innerHTML = child.innerHTML.replace(/__lodel_wildcard/gi,index);
+	 			//alert(child.innerHTML)
+			}else{
+				child.name = child.name.replace(/__lodel_wildcard/gi,index);
+				//alert(child.name)
+			}
+		
 		}
 	}
 }
