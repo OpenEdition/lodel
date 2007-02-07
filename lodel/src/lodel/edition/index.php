@@ -55,8 +55,10 @@ else {
 	}
 
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
-	require_once ('entitiesfunc.php');
-	cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
+	if ($lodeluser['rights'] >= LEVEL_ADMIN) {
+		require_once ('entitiesfunc.php');
+		cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
+	}
 	recordurl();
 	$context['id'] = $id = intval($_GET['id']);
 	require_once 'view.php';
