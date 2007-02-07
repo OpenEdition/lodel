@@ -721,7 +721,7 @@ function ishtml($text)
 }
 
 /**
- * Filtre pour l'ajout des notes marginales
+ * Filtre pour l'ajout des notes marginales (doit s'appliquer comme premier filtre)
  *
  * Ajoute un <div class="textandnotes"> et encapsule les notes dans une liste : <ul class="sidenotes"> <li> ... </li> </ul> 
  * contient le numÃ©ro de la note et celle-ci tronquee 
@@ -782,8 +782,6 @@ function notesmarginales($text, $coupe) {
 
 	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
 
-	//print_r($matchesnotebaspages);
-
 	//pour traiter les cas d'une note dans le titre principal
 	
 	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
@@ -820,9 +818,16 @@ function notesmarginales($text, $coupe) {
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
 	//$regexppar = '/(<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
 	//$regexppar = '/(<div class="section[0-9]+"><a \s*href="#tocfrom[0-9]+" \s*id="tocto[0-9]+"\s*>.*?<\/a><\/div>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>/';
+	
+	/* cette regex reconnaît les différents éléments du texte qui sont reconnus comme des paragraphes 
+	 * à part entière. C'est le cas ici des listes, des tableaux et des blocs de texte, etc ...
+	 */
+	//  fonctionne mais ne prend pas en compte chaque élément (titre, illustration, bloc texte, ...) comme un bloc à part entière
+	/*
+	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>)*((?:<ul\b class=[^>]*)(?:>).*?<\/ul>|(?:<table\b [^>]*)(?:>).*?<\/table>|(<p\b class=[^>]*)(?:>)(.*?)<\/p>)/ie';
+	*/
 
-
-	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>)*((?:<ul\b class=[^>]*)(?:>).*?<\/ul>|(<p\b class=[^>]*)(?:>)(.*?)<\/p>)/ie';
+	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>|(?:<ul\b[^>]*)(?:>).*?<\/ul>|(?:<ol\b[^>]*)(?:>).*?<\/ol>|(?:<table\b [^>]*)(?:>).*?<\/table>|<p\b[^>]*>(.*?)<\/p>)/';
 
 	preg_match_all($regexppar,$text,$paragraphes);
 
