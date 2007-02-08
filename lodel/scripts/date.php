@@ -129,6 +129,8 @@ function mois($m)
 		return 2;
 	case "fv" :
 		return 2;
+	case "fév" :
+		return 2;
 	case "mar" :
 		return 3;
 	case "avr" :
@@ -139,6 +141,8 @@ function mois($m)
 		return 8;
 	case "ao" :
 		return 8;
+	case "aoû" :
+		return 8;
 	case "sep" :
 		return 9;
 	case "oct" :
@@ -146,6 +150,8 @@ function mois($m)
 	case "nov" :
 		return 11;
 	case "dec" :
+		return 12;
+	case "déc" :
 		return 12;
 	case "dc" :
 		return 12;
