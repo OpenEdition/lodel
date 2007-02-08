@@ -95,8 +95,8 @@ function cuttext($text, $length)
 {
 	$GLOBALS['textfunc_hasbeencut'] = false;
 	$open = strpos($text, "<");
-	if ($open === false || $open > $length)
-		return cut_without_tags($text, $length);
+	if ($open === false || $open > $length){
+		return cut_without_tags($text, $length);}
 	$length -= $open;
 	$stack = array ();
 	while ($open !== FALSE) {
@@ -122,9 +122,14 @@ function cut_without_tags($text, $length)
 	if (strlen($text2) < strlen($text)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
 	}
-	$spacepos = strrpos($text2, " ");
-	$text2 = preg_replace("/\S+$/", "", $text2);
-	return $text2;
+	$last_space_position = strrpos($text2, " ");
+	
+	if (!($last_space_position === false)) {
+		// supprime le dernier espace et tout ce qu'il y a derrière
+		//$text2 = substr($text2, 0, $last_space_position);
+		$text2 = preg_replace("/\S+$/", "", $text2);
+	}
+		return $text2;
 }
 
 function hasbeencut()
