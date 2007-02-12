@@ -81,16 +81,16 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 }
 
 /**
- * Test si l'entité pointée par $idcurrent est une descendante de $idref
+ * Teste si l'entité pointée par $idcurrent n'est pas une descendante de $idref
  *
  * @param integer $idref Identifiant de l'entité de référence
  * @param integer $idcurrent Identifiant de l'entité courante
- * @return boolean true si $idcurrent est une descendante de $idref
+ * @return boolean false si $idcurrent est une descendante de $idref
  */
 function isChild($idref, $idcurrent)
 {
 	global $db;
-	if(!$idcurrent || !$idref) {
+	if(!isset($idcurrent) || !isset($idref)) {
 		return;
 	}
 	$sql = lq("SELECT idrelation FROM #_TP_relations where id2='$idcurrent' AND id1='$idref'");
