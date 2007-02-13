@@ -172,10 +172,10 @@ class Entities_IndexLogic extends Logic
 		$prudent_timeout = $timeout*0.8;
 		$start = time();
 		//boucle sur toutes les entites a indexer.
-		$sql = "SELECT e.id,t.class,t.search from #_TP_entities e,#_TP_types t";
+		$sql = "SELECT e.id,t.class,t.search from (#_TP_entities e,#_TP_types t)";
 		$sql .=" LEFT OUTER JOIN #_TP_search_engine se ON e.id=se.identity ";
 		$sql .=" WHERE se.identity is null AND t.id=e.idtype AND t.search=1";
-		$result=$db->execute(lq($sql));
+		$result=$db->execute(lq($sql)) or dberror();
 		while (!$result->EOF) {
 			$context["id"] = $result->fields['id'];
 			$this->addIndexAction($context,$error);
@@ -183,7 +183,7 @@ class Entities_IndexLogic extends Logic
 			if ( ($current - $start) < $prudent_timeout)
 				$result->MoveNext();
 			else {
-	//80% du timeout est dï¿½assï¿½ il faut rediriger.
+	//80% du timeout est dépassé il faut rediriger.
 	header("Location: index.php?do=rebuildIndex&lo=entities_index&clean=0");
 			}  		
 		}
