@@ -12,9 +12,10 @@
 <DEFFUNC NAME="PRINT_ERROR_LISTING">
 <LOOP NAME="errors">
 <BEFORE>
+	<div class="error">
 	<a id="top"></a>
 	<span class="error">
-	[@COMMON.ERROR_DETECTED|sprintf([#COUNT])]
+	[@COMMON.ERROR_DETECTED]
 	</span>
 	<ul class="error">
 </BEFORE>
@@ -31,12 +32,13 @@
 					<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
 				</LOOP>
 			</IF>
-				<a href="#[#VARNAME]">[@COMMON.CORRECT]	&raquo;</a>
+				<a href="#[#VARNAME]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
 			</span>
 		</li>
 	</DO>
 <AFTER>
-		</ul>
+	</ul>
+	</div>
 </AFTER>
 </LOOP>
 </DEFFUNC>
@@ -69,6 +71,8 @@
 <IF COND="[#ERROR] eq 'reservedbylodel'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'upload'">[@COMMON.ERROR_UPLOAD_FILE]</IF>
 <IF COND="[#ERROR] eq 'identifier'">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</IF>
+<IF COND="[#ERROR] eq 'lang'">[@COMMON.INVALID_LANGUAGE_CODE]</IF>
+<IF COND="[#ERROR] eq 'numeric'">[@COMMON.ERROR_FIELD_MUST_BE_NUMERIC|sprintf([#TITLE])]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 

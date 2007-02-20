@@ -286,6 +286,14 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 	background: #f1f5fb;
 }
 
+div.error{
+	width: 550px;
+	border: 1px solid red;
+	margin: 0 0 3ex 40px;
+	padding: 2ex 1em 2ex 1em;
+	background: #ffffff;
+}
+
 /* images de previsualisation dans formulaire edition */
 
 img.imageEdit{
