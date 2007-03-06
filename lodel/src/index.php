@@ -61,13 +61,14 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
 
-// get the view and check the cache.
-require 'view.php';
-$view = &View::getView();
-if ($view->renderIfCacheIsValid()) {
-	return;
+if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
+	// get the view and check the cache.
+	require 'view.php';
+	$view = &View::getView();
+	if ($view->renderIfCacheIsValid()) {
+		return;
+	}
 }
-
 require 'textfunc.php';
 $id         = intval($_GET['id']);
 $identifier = $_GET['identifier'];
