@@ -54,7 +54,7 @@
 
 require 'siteconfig.php';
 //gestion de l'authentification
-require 'auth.php';
+require_once 'auth.php';
 authenticate();
 // record the url if logged
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
