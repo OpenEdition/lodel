@@ -369,7 +369,8 @@ function loop_rssitem($context,$funcname,$arguments)
     $localcontext=$context;
     $count++;
     $localcontext['count']=$count;
-		$item_keys = array_keys($item);
+    		if(is_array($item))
+			$item_keys = array_keys($item);
     /*foreach (array("title","link","description","author","category","comments","enclosure","guid","pubdate","source")
 	     as $v)*/
 		foreach($item_keys as $v) {
