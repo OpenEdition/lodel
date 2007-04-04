@@ -222,11 +222,16 @@ Will be reimplemented using a proper XML parser.
 
   // tableau search et replace
   $srch=array(); $rpl=array();
+	
+	# enleve tout ce qui precede le premier r2r
+	$find_me = '<r2r:';
+	$debut = strpos($file, $find_me);
+	$file = substr($file, $debut);
 
   array_push($srch,
-	     "/.*<body\b[^>]*>/s",
+#	     "/.*<body\b[^>]*>/s",
 	     "/<\/body>.*/s");
-  array_push($rpl,"","");
+  array_push($rpl,"");
   
   // styles transparents
   // on efface tout ce qu'il y a entre.
