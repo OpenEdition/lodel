@@ -40,7 +40,7 @@
  * @package lodel
  */
 
-if (file_exists("loops_local.php"))
+if (is_readable($home . 'loops_local.php'))
 	require_once "loops_local.php";
 
 /**
