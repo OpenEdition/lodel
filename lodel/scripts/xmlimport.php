@@ -395,6 +395,7 @@ class XMLImportParser
 	 */
 	function _init_class($class, $criteria = '')
 	{
+		
 		if ($this->contextstyles[$class])
 			return; // already done
 
@@ -404,7 +405,7 @@ class XMLImportParser
 			$criteria = "class='".$class."'";
 		}
 		$tfs = $dao->findMany("(".$criteria.") AND status>0");
-
+		$phpversion = explode('.', PHP_VERSION);
 		// create an assoc array style => tf information
 		foreach ($tfs as $tf) {
 			// is it an index ?
@@ -416,9 +417,16 @@ class XMLImportParser
 			}
 			// analyse the styles of the tablefields
 			foreach (preg_split("/[,;]/", $tf->style) as $style) {
-				$this->_prepare_style($style, $tf);
-				if ($style)
-					$this->commonstyles[$style] = $this->contextstyles[$class][$style] = $tf;
+				if ($phpversion[0]>4) {
+					$tf2 = clone $tf;
+					$this->_prepare_style($style, $tf2);
+					if ($style)
+						$this->commonstyles[$style] = $this->contextstyles[$class][$style] = $tf2;
+				} else {
+					$this->_prepare_style($style, $tf);
+					if ($style)
+						$this->commonstyles[$style] = $this->contextstyles[$class][$style] = $tf;
+				}
 			}
 		}
 	} //end of init_class
