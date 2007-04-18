@@ -453,9 +453,10 @@ function download($filename,$originalname="",$contents="")
     $mime = "application/force-download";
     $disposition = "attachment";
   }
-  if ($filename) {
-    $fp=fopen($filename,"rb");
-    if (!$fp) die ("ERROR: The file \"$filename\" is not readable");
+  if (is_readable($filename)) {
+    	$fp=fopen($filename,"rb");
+  }else{
+	die ("ERROR: The file \"$filename\" is not readable");
   }
   // fix for IE catching or PHP bug issue
   header("Pragma: public");
