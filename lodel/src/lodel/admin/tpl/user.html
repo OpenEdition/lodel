@@ -22,14 +22,21 @@
 
 
 <USE MACROFILE="macros.html"><MACRO NAME="HEADER_HEAD_OPEN">
-<title>Edition d'un utilisateur</title>
+<IF COND="[#USERTYPE] EQ 'abonne'">
+	<LET VAR="USER_TYPE">abonné</LET>
+	<LET VAR="DROITS">privilege = 5</LET>
+<ELSE/>
+	<LET VAR="USER_TYPE">utilisateur</LET>
+	<LET VAR="DROITS">privilege > 5</LET>
+</IF>
+<title>Edition d'un [#USER_TYPE]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <table width="100%" border="0" align="center" cellspacing="0" cellpadding="0">
 	<tr>
 		<td width="60" height="69"><img src="[#SHAREURL]/images/picto_admin.png" /></td>
-		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un utilisateur</td>
+		<td class="texte_ligne_haut_popup" width="100%" background="[#SHAREURL]/images/fond_haut_popup_edition.png">Edition d'un [#USER_TYPE]</td>
 	</tr>
 </table>
 
@@ -37,6 +44,7 @@
 <form method="POST" action="user.php">
 	<input type="hidden" name="edit" value="1" />
 	<input type="hidden" name="id" value="[#ID]" />
+	<input type="hidden" name="privilege" value="5" />
 	<table class="table_normale" style="margin-top:30px;" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td class="texte_intitule">Nom et prénom :</td>
@@ -52,21 +60,24 @@
 			<td class="texte_intitule">Login :</td>
 			<td><input size="30" type="text" name="usernamems" value="[#USERNAMEMS]" /></td>
 		</tr>
-		[(#ERREUR_USERNAME|true)<tr><td colspan="2" class="message_erreur">Le login doit contenir entre 
-		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
-		[(#ERREUR_DUPUSERNAME|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
-		Le nom que vous avez entrez existe deja.</td></tr>]
-		[(#ERREUR_DUPUSERNAMEADMIN|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit etre unique. 
-		Le nom que vous avez entrez existe deja parmi les administrateurs Lodel.</td></tr>]
+		[(#ERREUR_USERNAME|true)<tr><td colspan="2" class="message_erreur">Le login doit contenir au moins 3 caract&egrave;res (lettres et chiffres, plus les caract&egrave;res <strong>@ _ - . <strong>)</td></tr>]
+		[(#ERREUR_DUPUSERNAME|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit &ecirc;tre unique. 
+		Le nom que vous avez entr&eacute; existe d&eacute;j&agrave;.</td></tr>]
+		[(#ERREUR_DUPUSERNAMEADMIN|true)<tr><td colspan="2" class="message_erreur">Le <em>login</em> doit &ecirc;tre unique. 
+		Le nom que vous avez entr&eacute; existe d&eacute;j&agrave; parmi les administrateurs Lodel.</td></tr>]
 		<tr>
 			<td class="texte_intitule">Mot de passe :</td>
 			<td><input size="30" type="password" name="passwdms" value="" /></td>
 		</tr>
-		[(#ERREUR_PASSWD|true)<tr><td colspan="2" class="message_erreur">Le mot de passe doit contenir entre 
-		<strong>3</strong> et <strong>8</strong> caract&egrave;res (lettres et chiffres uniquement)</td></tr>]
+		[(#ERREUR_PASSWD|true)<tr><td colspan="2" class="message_erreur">Le mot de passe doit contenir au moins <strong>6</strong> caract&egrave;res</td></tr>]
 		<tr>
-			<td class="texte_intitule">Privil&egrave;ge :</td>
-			<td><select name="privilege"><?php  makeselectprivilege(); ?></select></td>
+			<IF COND="[#USERTYPE] NE 'abonne'">
+				<td class="texte_intitule">Privil&egrave;ge :</td>
+				<td><select name="privilege"><?php  makeselectprivilege(); ?></select></td>
+			<ELSE>
+				<td class="texte_intitule">Expiration de l'abonnement :</td>
+				<td><input size="30" type="text" name="expiration" value="[(#EXPIRATION|humandate)]" /></td>
+			</IF>
 		<tr>
 		<!--[
 		<tr>

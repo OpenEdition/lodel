@@ -29,6 +29,7 @@
 
 require_once 'unset_globals.php';
 // droit
+define("LEVEL_ABONNE",5);
 define("LEVEL_VISITEUR",10);
 define("LEVEL_REDACTEUR",20);
 define("LEVEL_EDITEUR",30);

@@ -69,14 +69,14 @@ if ($edit) { // modifie ou ajoute
 
   // validation
   do {
-    $len=strlen($context[username]);
-    if ($len<3 || $len>10 || !preg_match("/^[0-9A-Za-z]+$/",$context[username])) { $err=$context[erreur_username]=1; }
+    $len=strlen($context[username]); // username peut etre une adresse mail (pour les abonnes notamment)
+    if ($len<3 || $len>50 || !preg_match("/^([0-9A-Za-z@\.-_])+$/",$context[username])) { $err=$context[erreur_username]=1; }
 
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
     $passwd=$context[passwd];
     if ($passwd || !$id) { // si le pass a ete modifie
       $len=strlen($passwd);
-      if ($len<3 || $len>10) { $err=$context[erreur_passwd]=1; }
+      if ($len<6 || $len>20) { $err=$context[erreur_passwd]=1; }
     }
 
     // verifie le courriel
@@ -84,6 +84,11 @@ if ($edit) { // modifie ou ajoute
       
     if (!$groupes || !is_array($groupes)) { $context[erreur_groupes]=$err=1; }
  
+	// convertit la date d'expiration dans le format mysql
+	if(is_string($context[expiration])) {
+		require_once $home.'date.php';
+		$context[expiration] = mysqldate($context[expiration]);}
+
     if ($err) break;
     include_once ($home."connect.php");
 
@@ -112,7 +117,7 @@ if ($edit) { // modifie ou ajoute
       $passwd=md5($context[passwd].$context[username]);
     }
 
-    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,courriel,privilege,statut) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[courriel]','$context[privilege]','$statut')") or die (mysql_error());
+    mysql_query ("REPLACE INTO $GLOBALS[tp]users (id,username,passwd,nom,courriel,privilege,statut,expiration) VALUES ('$id','$context[username]','$passwd','$context[nom]','$context[courriel]','$context[privilege]','$statut','$context[expiration]')") or die (mysql_error());
 
     if ($context[privilege]<LEVEL_ADMIN) {
       if (!$id) $id=mysql_insert_id();
@@ -153,10 +158,11 @@ function makeselectprivilege()
 
 {
   global $context,$userpriv;
-  $arr=array(LEVEL_VISITEUR=>"Visiteur",
-	     LEVEL_REDACTEUR=>"R&eacute;dacteur",
-	     LEVEL_EDITEUR=>"Editeur",
-	     LEVEL_ADMIN=>"Administrateur",
+  $arr=array(
+	LEVEL_VISITEUR=>"Visiteur",
+	LEVEL_REDACTEUR=>"R&eacute;dacteur",
+	LEVEL_EDITEUR=>"Editeur",
+	LEVEL_ADMIN=>"Administrateur",
 	     );
 
   foreach ($arr as $k=>$v) {

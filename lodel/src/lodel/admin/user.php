@@ -40,6 +40,8 @@ require($home."userinc.php");
 
 
 require($home."calcul-page.php");
+if ($_GET['type'] === 'abonne') {
+	$context['usertype'] = 'abonne'; }
 calcul_page($context,"user");
 
 ?>

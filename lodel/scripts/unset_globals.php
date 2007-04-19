@@ -33,7 +33,7 @@ function unregister_GLOBALS() {
 	if (!ini_get('register_globals')) {
 		return;
    	}
-	if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS']) || isset($_REQUEST[home])) {
+	if (isset($_REQUEST['GLOBALS']) || isset($_FILES['GLOBALS']) || isset($_REQUEST['home'])) {
 	die('GLOBALS overwrite attempt detected');}
 }
 

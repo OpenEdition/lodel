@@ -32,6 +32,8 @@ include ($home."auth.php");
 authenticate(LEVEL_ADMIN);
 
 include ($home."calcul-page.php");
+if ($_GET['type'] === 'abonne') {
+	$context['usertype'] = 'abonne'; }
 calcul_page($context,"users");
 
 ?>
