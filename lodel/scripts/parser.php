@@ -755,7 +755,7 @@ class Parser
 		if ($dontselect) { // DONTSELECT
 			// at the moment, the dontselect should not be prefixed by the table name !
 			if (!$tablefields)
-				require_once (TOINCLUDE.'tablefields.php');
+				require (TOINCLUDE.'tablefields.php');
 			if (!$tablefields)
 				die("ERROR: internal error in decode_loop_content: table $table");
 

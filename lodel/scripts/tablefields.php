@@ -67,6 +67,7 @@ if (!(@include ("CACHE/tablefields.php"))) {
 	$tablefields = array ();
 
 	////////////////////////
+if (!function_exists("maketablefields"))	{
 	function maketablefields(& $tablefields)
 	{
 		global $db;
@@ -99,7 +100,7 @@ if (!(@include ("CACHE/tablefields.php"))) {
 		fputs($fp, '<?php  $tablefields='.var_export($tablefields, TRUE).' ; ?>');
 		fclose($fp);
 	}
-
+}
 	maketablefields($tablefields);
 
 }

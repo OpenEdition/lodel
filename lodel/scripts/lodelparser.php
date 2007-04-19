@@ -113,7 +113,7 @@ class LodelParser extends Parser
 		global $site, $home, $db;
 		static $tablefields; // charge qu'une seule fois
 		if (!$tablefields) {
-			require_once ('tablefields.php');
+			require ('tablefields.php');
 		}
 
 		// split the SQL parts into quoted/non-quoted par
@@ -531,7 +531,7 @@ class LodelParser extends Parser
 		global $home;
 		static $tablefields;
 		if (!$tablefields) {
-			require_once ('tablefields.php');
+			require ('tablefields.php');
 		}
 
 		if (preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i", $table, $result))	{
