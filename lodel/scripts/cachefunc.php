@@ -86,13 +86,13 @@ function removefilesincache()
 					if (substr($file, 0, 1) == ".")
 						continue;
 					$file = $rep2."/".$file;
-					if (is_file($file))	{
+					if (is_file($file) && is_writable($file))	{
 						@unlink($file);
 					}
 				}
 				closedir($fd2);
-			}	elseif (is_file($file))	{
-				unlink($file);
+			}	elseif (is_file($file)&& is_writable($file))	{
+				@unlink($file);
 			}
 		}
 		closedir($fd);
