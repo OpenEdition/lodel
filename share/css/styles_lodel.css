@@ -290,7 +290,7 @@ div.oneItem input, div.oneItem  textarea, div.oneItem  select{
 
 div.error{
 	width: 550px;
-	border: 1px solid red;
+	/*border: 1px solid red;*/
 	margin: 0 0 3ex 40px;
 	padding: 2ex 1em 2ex 1em;
 	background: #ffffff;
