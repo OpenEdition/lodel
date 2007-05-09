@@ -685,10 +685,10 @@
 		<column name="passwd"
         		type="VARCHAR"
 			size="64"
-        		label="[@COMMON.PASSWD]"
+        		label="[@COMMON.NEW_PASSWD]"
         		edittype="passwd" />
 		<vcolumn name="confirmpasswd"
-	 		label="[@ADMIN.CONFIRM_PASSWORD]"
+	 		label="[@ADMIN.CONFIRM_NEW_PASSWORD]"
 	 		edittype="passwd"/>
 		<!--column name="name"
         		type="VARCHAR"
