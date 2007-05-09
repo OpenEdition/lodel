@@ -144,9 +144,9 @@
 		<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<li>
 			<IF COND="![#CURRENTURL|strpos('lodel/edition/search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID]">
-				<strong>[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</strong>
+				<strong>[@COMMON.BROWSE]</strong>
 			<ELSE/>
-				<a href="[#SITEROOT]lodel/edition/">[@COMMON.EDITION] [@EDITION.BASE] [@COMMON.SITE]</a>
+				<a href="[#SITEROOT]lodel/edition/">[@COMMON.BROWSE]</a>
 			</IF>
 			</li>
 			<li>
