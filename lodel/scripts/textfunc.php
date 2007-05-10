@@ -827,7 +827,7 @@ function notesmarginales($text, $coupe) {
 	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>)*((?:<ul\b class=[^>]*)(?:>).*?<\/ul>|(?:<table\b [^>]*)(?:>).*?<\/table>|(<p\b class=[^>]*)(?:>)(.*?)<\/p>)/ie';
 	*/
 
-	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>|(?:<ul\b[^>]*)(?:>).*?<\/ul>|(?:<ol\b[^>]*)(?:>).*?<\/ol>|(?:<table\b [^>]*)(?:>).*?<\/table>|<p\b[^>]*>(.*?)<\/p>)/';
+	$regexppar = '/(<r2r:(?!citation).*?>.*?<\/r2r:(?!citation).*?>|(?:<ul\b[^>]*)(?:>).*?<\/ul>|(?:<ol\b[^>].*)(?:>).*?<\/ol>|(?:<table\b [^>].*)(?:>).*?<\/table>|<p\b[^>]*>(.*?)<\/p>)/';
 
 	preg_match_all($regexppar,$text,$paragraphes);
 
