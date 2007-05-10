@@ -56,6 +56,9 @@ $critere = "id='$id'";
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
+$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+$version_mysql_num = $version_mysql[0].$version_mysql[1];
+
 // suppression et restauration
 if ($id>0 && ($delete || $restore)) {
 	if ($delete) {
@@ -137,7 +140,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 			$result = mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE status>-32 AND name!='". $context['name']. "'") or die (mysql_error());
 			list($numsite) = mysql_fetch_row($result);
 			if ($numsite >= 1) {
-				die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données. Il faut utiliser plusieurs bases de donnée ou attendre la prochaine version.<br /> Merci de votre comprehension.");
+				die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données : il faut utiliser plusieurs bases de données.");
 			}
 		}
 
@@ -313,7 +316,12 @@ if ($task == 'createdb') {
 			$dbpasswd   = DBPASSWD;
 		}
 
-		$context['command1'] = "CREATE DATABASE $context[dbname]";
+		if ($version_mysql_num > 40) {
+			$db_charset = ' CHARACTER SET utf8 COLLATE utf8_general_ci';
+		} else { 
+			$db_charset = '';
+		}
+    		$context[command1]="CREATE DATABASE $context[dbname]$db_charset";
 		$context['command2'] = "GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
 		$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
 
@@ -354,6 +362,14 @@ if ($task == 'createtables') {
 
 	$text = join('', file(LODELROOT. "$versiondir/install/init-site.sql"));
 	$text.= "\n";
+	
+	if ($version_mysql_num > 40) {
+		$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+	} else { 
+		$db_charset = '';
+	}
+	
+	$text = str_replace("_CHARSET_",$db_charset,$text);
 	$sqlfile = lq($text);
 	$sqlcmds = preg_split ("/;\s*\n/", preg_replace("/#.*?$/m", '', $sqlfile));
 	if (!$sqlcmds) {

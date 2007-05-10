@@ -3,10 +3,11 @@
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
- *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  *
  *  Home page: http://www.lodel.org
  *
@@ -42,6 +43,12 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   require("auth.php");
   // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
   if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
+      $version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+      $version_mysql_num = $version_mysql[0].$version_mysql[1];
+
+      if ($version_mysql_num > 40) {
+		@mysql_query('SET NAMES UTF8'); }
+    
     @mysql_select_db($database);
     $result=mysql_query("SELECT username FROM $GLOBALS[tableprefix]users LIMIT 0,1");
     if ($result && mysql_num_rows($result)>0) {
@@ -206,6 +213,10 @@ if ($tache=="database") {
   } elseif ($erasetables) {
     @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+
+    $version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+    if ($version_mysql_num[0].$version_mysql_num[1] > 40)
+		{ mysql_query('SET NAMES UTF8'); }
     @mysql_select_db($database); // selectionne la database
 
     // erase the table of each site
@@ -254,7 +265,14 @@ if ($tache=="database") {
     if ($createdatabase) { // il faut creer la database
       @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
       @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-      if (!@mysql_query("CREATE DATABASE $createdatabase")) {
+	$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+	if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
+		mysql_query('SET NAMES UTF8');
+		$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+	} else { 
+		$db_charset = '';
+	}
+      if (!@mysql_query("CREATE DATABASE $createdatabase $db_charset")) {
 	$erreur_createdatabase=1;
 	include_tpl("install-database.html");
 	return;
@@ -289,6 +307,10 @@ if (strlen($adminpasswd) < 3 || strlen($adminpasswd) > 12 || !preg_match("/^[0-9
 
   if (!$home) die("ERROR: \$home is not defined");
   @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+	$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+	if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
+		mysql_query('SET NAMES UTF8');
+	}
   @mysql_select_db($database); // selectionne la database
   $adminusername=addslashes($adminusername);
   $pass=md5($adminpasswd.$adminusername);
@@ -732,8 +754,13 @@ function maj_lodelconfig_var($var,$val,&$text)
 function mysql_query_file($filename,$droptables=false)
 
 {
+  global $version_mysql_num;
+	if ($version_mysql_num > 40) {
+		$table_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';}
+	else { $table_charset = ''; }
   $sqlfile=preg_replace("/#_M?TP_/",$GLOBALS['tableprefix'] ,
 		       file_get_contents($filename));
+  $sqlfile=str_replace("_CHARSET_", $table_charset , $sqlfile);
   if (!$sqlfile) return;
   #$sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   #if (!$sql) return;

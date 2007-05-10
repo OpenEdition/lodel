@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS #_TP_objects (
 	class		VARCHAR(64),
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_entities (
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entities (
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype),
 	KEY index_identifier (identifier)
-);
+) _CHARSET_;
 
 #
 # table contenant les relations entre les entitess
@@ -85,20 +85,20 @@ CREATE TABLE IF NOT EXISTS #_TP_relations (
 	KEY index_id1 (id1),
 	KEY index_id2 (id2),
 	KEY index_nature (nature)
-);
+) _CHARSET_;
 
 
 
 ##CREATE TABLE IF NOT EXISTS #_TP_publications (
 ##	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 ##	KEY index_identite (identity)
-##);
+##) _CHARSET_;
 ##
 ##
 ##CREATE TABLE IF NOT EXISTS #_TP_documents (
 ##	identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 ##	KEY index_identite (identity)
-##);
+##) _CHARSET_;
 
 
 
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS #_TP_classes (
 
 	PRIMARY KEY (id),
 	KEY index_class (class)
-);
+) _CHARSET_;
 
 
 
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	KEY index_g_name (g_name),
 	KEY index_idgroup (idgroup),
 	KEY index_class (class)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 	PRIMARY KEY (id),
 	KEY index_name (name),
 	KEY index_class (class)
-);
+) _CHARSET_;
 
 
 
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persons (
 
 	PRIMARY KEY (id),
 	KEY index_idtype (idtype)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_users (
@@ -231,7 +231,7 @@ CREATE TABLE IF NOT EXISTS #_TP_users (
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
-);
+) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_usergroups (
 	id		INT UNSIGNED NOT NULL auto_increment,
@@ -243,7 +243,7 @@ CREATE TABLE IF NOT EXISTS #_TP_usergroups (
 
 	PRIMARY KEY (id),
 	KEY index_name (name)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_users_usergroups (
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS #_TP_users_usergroups (
 
 	KEY index_idgroup (idgroup),
 	KEY index_iduser (iduser)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_types (
@@ -281,7 +281,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_internalstyles (
@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS #_TP_internalstyles (
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_characterstyles (
@@ -309,7 +309,7 @@ CREATE TABLE IF NOT EXISTS #_TP_characterstyles (
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_persontypes (
@@ -335,7 +335,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	PRIMARY KEY (id),
 	KEY index_type (type),
 	KEY index_g_type (g_type)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
@@ -364,7 +364,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 
 
@@ -384,7 +384,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entries (
 	KEY index_g_name (g_name),
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype)
-);
+) _CHARSET_;
 
 
 
@@ -399,7 +399,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tasks (
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_texts (
@@ -418,7 +418,7 @@ CREATE TABLE IF NOT EXISTS #_TP_texts (
 	KEY index_lang (lang),
 	KEY index_textgroup (textgroup),
 	UNIQUE unique_text (name,textgroup,lang)
-);
+) _CHARSET_;
 
 
 
@@ -430,7 +430,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 
 	KEY index_identitytype (identitytype),
 	KEY index_identitytype2 (identitytype2)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_options (
@@ -457,7 +457,7 @@ CREATE TABLE IF NOT EXISTS #_TP_options (
 	KEY index_name (name),
 	KEY index_idgroup (idgroup),
 	UNIQUE unique_name (name,idgroup)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
@@ -477,7 +477,7 @@ CREATE TABLE IF NOT EXISTS #_TP_optiongroups (
 	PRIMARY KEY (id),
 	KEY index_name (name),
 	KEY index_idparent (idparent)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_translations (
@@ -497,7 +497,7 @@ CREATE TABLE IF NOT EXISTS #_TP_translations (
 	PRIMARY KEY (id),
 	KEY index_lang (lang),
 	UNIQUE unique_lang_groups (lang,textgroups)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_search_engine (
@@ -508,7 +508,7 @@ CREATE TABLE IF NOT EXISTS #_TP_search_engine (
 
 	KEY index_word (word),
 	KEY index_identity (identity)
-);
+) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_oaitokens (
   token varchar(14) NOT NULL default '',
@@ -517,7 +517,7 @@ CREATE TABLE IF NOT EXISTS #_TP_oaitokens (
   deliveredrecords int(11) NOT NULL default '0',
   expirationdatetime timestamp(14) NOT NULL,
   UNIQUE KEY token (token)
-) TYPE=MyISAM;
+) TYPE=MyISAM _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_oailogs (
@@ -526,7 +526,4 @@ CREATE TABLE IF NOT EXISTS #_TP_oailogs (
   date timestamp(14) NOT NULL,
   denied tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM AUTO_INCREMENT=566 ;
-
-
-
+) TYPE=MyISAM AUTO_INCREMENT=566  _CHARSET_;

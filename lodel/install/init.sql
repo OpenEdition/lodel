@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_sites (
 
 	PRIMARY KEY (id),
 	KEY index_name (name)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_users (
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_users (
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_session (
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_session (
 
 	PRIMARY KEY (id),
 	KEY index_name (name)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
@@ -108,7 +108,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
 
 	PRIMARY KEY (id),
 	KEY index_idsession (idsession)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_texts (
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_texts (
 	KEY index_name (name),
 	KEY index_lang (lang),
 	KEY index_textgroup (textgroup)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_MTP_translations (
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_translations (
 
 	PRIMARY KEY (id),
 	KEY index_lang (lang)
-);
+) _CHARSET_;
 
 
 

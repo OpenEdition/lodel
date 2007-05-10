@@ -44,7 +44,7 @@ include "tpl/install-openhtml.html";
 [@INSTALL.CAN_USE_EXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
 </p>
 <code>
-CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>;
+CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?> CHARACTER SET utf8 COLLATE utf8_general_ci;
 </code>
 <p>
 [@INSTALL.ANYWAY_GIVE_RIGHTS_ALL_TO_DATABASE_USER] "<?php echo $dbusername; ?>" :

@@ -68,6 +68,14 @@ if (!defined("SINGLESITE")) {
 }
 
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or dberror();
+if (DBDRIVER == 'mysql') {
+	$info_mysql = $GLOBALS['db']->ServerInfo();
+	$version_mysql = explode(".", substr($info_mysql['version'], 0, 3));;
+	if ($version_mysql[0].$version_mysql[1] > 40) {
+		$db->execute('SET NAMES UTF8');
+	}
+}
+
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'];
 
