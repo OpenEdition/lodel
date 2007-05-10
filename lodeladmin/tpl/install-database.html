@@ -41,11 +41,11 @@ include("tpl/install-openhtml.html");
 Choisissez une base de données existante ou créez en une nouvelle.<br/>En général, votre base de données a déjà été créée par votre h&eacute;bergeur. Veuillez vous reporter au support technique de votre hebergeur.</p>
 <?php } else { // OPTION 2 ?>
 <p align="justify">
-Vous pouvez utiliser une base de données existante, mais il est préférable de créer un base de données dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
+Vous pouvez utiliser une base de données existante, mais il est préférable de créer une base de données dédiée à Lodel <?php if (!$createdatabase) { echo "par exemple lodeldb"; }?>:
 </p>
 <p>
 <code>
-CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?>;
+CREATE database <?php if ($createdatabase) { echo "$createdatabase"; } else { echo "lodeldb";} ?> CHARACTER SET utf8 COLLATE utf8_general_ci;
 </code>
 </p>
 <p>

@@ -3,7 +3,7 @@
 #
 #  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 #  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
 #
 #  Home page: http://www.lodel.org
 #
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_objets (
 	classe		VARCHAR(255),
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	idparent	INT UNSIGNED DEFAULT '0' NOT NULL,
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
-	identifiant	VARCHAR(255) NOT NULL, # nom utilisé en interne
+	identifiant	VARCHAR(255) NOT NULL, # nom utilisÃ© en interne
 
 	groupe		TINYINT UNSIGNED DEFAULT '1' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites (
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype),
 	KEY index_identifiant (identifiant)
-);
+) _CHARSET_;
 
 #
 # table contenant les relations entre les entitess
@@ -74,20 +74,20 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_relations (
 	KEY index_id2 (id2),
 	KEY index_degres (degres),
 	KEY index_nature (nature)
-);
+) _CHARSET_;
 
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications (
 	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 	KEY index_identite (identite)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents (
 	identite	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE,
 	KEY index_identite (identite)
-);
+) _CHARSET_;
 
 
 
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_champs (
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
 	KEY index_idgroupe (idgroupe)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupesdechamps (
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
 	KEY index_classe (classe)
-);
+) _CHARSET_;
 
 
 
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_personnes (
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
-);
+) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
 	id		INT UNSIGNED NOT NULL auto_increment,
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_groupes (
 
 	PRIMARY KEY (id),
 	KEY index_nom (nom)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users_groupes (
 
 	KEY index_idgroupe (idgroupe),
 	KEY index_iduser (iduser)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_types (
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typepersonnes (
 	maj		TIMESTAMP,
 	PRIMARY KEY (id),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentrees (
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 
 
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entrees (
 	KEY index_abrev (abrev),
 	KEY index_idparent (idparent),
 	KEY index_idtype (idtype)
-);
+) _CHARSET_;
 
 
 
@@ -298,7 +298,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_taches (
 	maj		TIMESTAMP,
 
 	PRIMARY KEY (id)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
@@ -311,7 +311,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_textes (
 
 	PRIMARY KEY (id),
 	KEY index_nom (nom)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_personnes (
 	KEY index_idpersonne (idpersonne),
 	KEY index_identite (identite),
 	KEY index_idtype (idtype)
-);
+) _CHARSET_;
 
 
 # decrit le liens entre les entites et les entrees
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entites_entrees (
 
 	KEY index_identree (identree),
 	KEY index_identite (identite)
-);
+) _CHARSET_;
 
 # table qui decrit la possibilite de presence ou non de l'entite de type 1 dans l'entite de type 2.
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
@@ -349,7 +349,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentites (
 
 	KEY index_idtypeentite (idtypeentite),
 	KEY index_idtypeentite2 (idtypeentite2)
-);
+) _CHARSET_;
 
 
 # table qui decrit la presence ou non d'un type d'entree dans un type d'entite
@@ -360,7 +360,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typeentrees (
 
 	KEY index_idtypeentree (idtypeentree),
 	KEY index_idtypeentite (idtypeentite)
-);
+) _CHARSET_;
 
 # table qui decrit la presence ou non d'un type d'personne dans un type d'entite
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
@@ -370,7 +370,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_typeentites_typepersonnes (
 
 	KEY index_idtypepersonne (idtypepersonne),
 	KEY index_idtypeentite (idtypeentite)
-);
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
@@ -387,6 +387,6 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_options (
 	PRIMARY KEY (id),
 	KEY index_nom (nom),
 	KEY index_type (type)
-);
+) _CHARSET_;
 
 

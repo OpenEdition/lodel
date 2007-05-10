@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_sites (
 
 	PRIMARY KEY (id),
 	KEY index_rep (rep)
-);
+) _CHARSET_ ;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
-);
+) _CHARSET_ ;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_session (
 
 	PRIMARY KEY (id),
 	KEY index_name (name)
-);
+) _CHARSET_ ;
 
 
 CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_pileurl (
 	PRIMARY KEY (id),
 	KEY index_idsession (idsession),
 	KEY index_url (url)
-);
+) _CHARSET_ ;
 
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.

@@ -182,6 +182,11 @@ if ($tache) {
 // creation de la DataBase si besoin
 //
 $context[dbname]=$singledatabase=="on" ? $database : $database."_".$context[rep];
+
+$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+$version_mysql_num = $version_mysql[0].$version_mysql[1];
+
+
 if ($tache=="createdb") {
   if (!$context[rep]) die ("probleme interne");
   do { // bloc de controle
@@ -197,7 +202,13 @@ if ($tache=="createdb") {
     }
     // well, it does not exist, let's create it.
     //
-    $context[command1]="CREATE DATABASE $context[dbname]";
+	
+	if ($version_mysql_num > 40) {
+		$db_charset = ' CHARACTER SET utf8 COLLATE utf8_general_ci';
+	} else { 
+		$db_charset = '';
+	}
+    $context[command1]="CREATE DATABASE $context[dbname]$db_charset";
     $context[command2]="GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
     $pass=$dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : "";
 
@@ -239,6 +250,13 @@ if ($tache=="createtables") {
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('servoopasswd','pass','$servoopasswd','32','1');\n";
   $text.="REPLACE INTO _PREFIXTABLE_options (nom,type,valeur,statut,ordre) VALUES ('signalermail','s','inactif','32','1');\n"; 
 
+   // tables en UTF8 à partir de mysql 4.1.x
+   if ($version_mysql_num > 40) {
+		$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+	} else { 
+		$db_charset = '';
+	}
+  $text = str_replace("_CHARSET_",$db_charset,$text);
   $sqlfile=str_replace("_PREFIXTABLE_",$GLOBALS[tp],$text);
 
   $sqlcmds=preg_split ("/;\s*\n/",preg_replace("/#.*?$/m","",$sqlfile));

@@ -42,6 +42,11 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   require($home."auth.php");
   // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
   if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
+  $version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+  $version_mysql_num = $version_mysql[0].$version_mysql[1];
+
+	if ($version_mysql_num > 40) {
+		mysql_query('SET NAMES UTF8'); }
     @mysql_select_db($database);
     $result=mysql_query("SELECT username FROM $GLOBALS[tableprefix]users LIMIT 0,1");
     if ($result && mysql_num_rows($result)>0) {
@@ -194,6 +199,11 @@ if ($tache=="database") {
   } elseif ($erasetables) {
     @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+    $version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+    $version_mysql_num = $version_mysql[0].$version_mysql[1];
+
+	if ($version_mysql_num > 40) {
+		mysql_query('SET NAMES UTF8'); }
     @mysql_select_db($database); // selectionne la database
 
     // erase the table of each site
@@ -242,7 +252,16 @@ if ($tache=="database") {
     if ($createdatabase) { // il faut creer la database
       @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
       @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-      if (!@mysql_query("CREATE DATABASE $createdatabase")) {
+      $version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+      $version_mysql_num = $version_mysql[0].$version_mysql[1];
+
+	if ($version_mysql_num > 40) {
+		mysql_query('SET NAMES UTF8');
+		$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+	} else { 
+		$db_charset = '';
+	}
+      if (!@mysql_query("CREATE DATABASE $createdatabase $db_charset")) {
 	$erreur_createdatabase=1;
 	if (!(@include ("tpl/install-database.html"))) problem_include("install-database.html");
 	return;
@@ -257,6 +276,8 @@ if ($tache=="database") {
 if ($tache=="admin") {
     @include($lodelconfig); // insere lodelconfig, normalement pas de probleme
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+	if ($version_mysql_num > 40) {
+		mysql_query('SET NAMES UTF8'); }
     @mysql_select_db($database); // selectionne la database
     $adminusername=addslashes($adminusername);
     $pass=md5($adminpasswd.$adminusername);
@@ -684,8 +705,13 @@ function maj_lodelconfig_var($var,$val,&$text)
 function mysql_query_file($filename,$droptables=false)
 
 {
-  $sqlfile=str_replace("_PREFIXTABLE_", $GLOBALS['tableprefix'] ,
-		       join('',file($filename)));
+  global $version_mysql_num;
+	if ($version_mysql_num > 40) {
+		$table_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';}
+	else { $table_charset = ''; }
+  $sqlfile=str_replace("_PREFIXTABLE_", $GLOBALS['tableprefix'] ,file_get_contents($filename));
+  $sqlfile=str_replace("_CHARSET_", $table_charset , $sqlfile);
+  //echo $sqlfile; exit();
   if (!$sqlfile) return;
   $sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
   if (!$sql) return;
