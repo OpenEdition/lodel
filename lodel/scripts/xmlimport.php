@@ -396,7 +396,11 @@ class XMLImportParser
 	 */
 	function _init_class($class, $criteria = '')
 	{
-		global $phpversion;	
+		global $phpversion;
+		if ($phpversion[0]<=4) { // pour pouvoir utiliser clone en php5
+			require_once 'php4.inc.php';
+		}
+	
 		if ($this->contextstyles[$class])
 			return; // already done
 
@@ -418,9 +422,6 @@ class XMLImportParser
 			}
 			// analyse the styles of the tablefields
 			foreach (preg_split("/[,;]/", $tf->style) as $style) {
-				if ($phpversion[0]<=4) {
-					require_once 'php4.inc.php';
-				}
 					$tf2 = clone ($tf);
 					$this->_prepare_style($style, $tf2);
 					if ($style)
