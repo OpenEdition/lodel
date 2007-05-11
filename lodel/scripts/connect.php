@@ -35,14 +35,24 @@ if (!(INC_LODELCONFIG)) die("inc lodelconfig");
 
 
 mysql_connect($GLOBALS[dbhost],$GLOBALS[dbusername],$GLOBALS[dbpasswd]) or die ("ERROR  connect: ".mysql_error());
-$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
-if ($version_mysql_num[0].$version_mysql_num[1] > 40)
-	{ mysql_query('SET NAMES UTF8'); }
+
 if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
   $GLOBALS[currentdb]=$GLOBALS[database]."_".$GLOBALS[site];
 } else {
   $GLOBALS[currentdb]=$GLOBALS[database];
 }
+
+
+$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
+	$query = 'show create database ' . $GLOBALS[currentdb];
+	$result = mysql_query($query);
+	if ($show_create_db = mysql_fetch_array($result)) {
+		if (!(strpos($show_create_db['Create Database'], 'DEFAULT CHARACTER SET utf8') === FALSE))
+			 { mysql_query('SET NAMES UTF8'); }
+	}
+}
+
 mysql_select_db($GLOBALS[currentdb])  or die ("ERROR select: ".mysql_error());
 
 //
