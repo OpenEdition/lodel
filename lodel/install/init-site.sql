@@ -169,6 +169,7 @@ CREATE TABLE IF NOT EXISTS _PREFIXTABLE_users (
 	statut		TINYINT DEFAULT '1' NOT NULL,
 
 	maj		TIMESTAMP,
+	expiration	DATE DEFAULT NULL,
 
 	PRIMARY KEY (id),
 	KEY index_username (username)
