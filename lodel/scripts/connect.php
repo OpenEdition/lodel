@@ -70,9 +70,15 @@ if (!defined("SINGLESITE")) {
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or dberror();
 if (DBDRIVER == 'mysql') {
 	$info_mysql = $GLOBALS['db']->ServerInfo();
-	$version_mysql = explode(".", substr($info_mysql['version'], 0, 3));;
-	if ($version_mysql[0].$version_mysql[1] > 40) {
-		$db->execute('SET NAMES UTF8');
+	$vs_mysql = explode(".", substr($info_mysql['version'], 0, 3));
+	$GLOBALS['version_mysql'] = $vs_mysql[0] . $vs_mysql[1];
+
+	if ($GLOBALS['version_mysql'] > 40) {
+		$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
+		if ($GLOBALS['db_charset'] === false) {
+			$GLOBALS['db_charset'] = 'UTF8';
+		}
+		$db->execute('SET NAMES ' . $GLOBALS['db_charset']);
 	}
 }
 
@@ -198,4 +204,13 @@ function deleteuniqueid($id)
 		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id='$id'"));
 	}
 }
+
+function mysql_find_db_variable ($database_name, $var = '') {
+	mysql_select_db($database_name) or die ("ERROR select database");
+	$result = mysql_query("SHOW VARIABLES LIKE '$var'");
+	if ($db_charset = mysql_fetch_row($result)) {
+		return $db_charset[1]; }
+	else return false;
+}
+
 ?>

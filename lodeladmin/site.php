@@ -56,9 +56,6 @@ $critere = "id='$id'";
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
-$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
-$version_mysql_num = $version_mysql[0].$version_mysql[1];
-
 // suppression et restauration
 if ($id>0 && ($delete || $restore)) {
 	if ($delete) {
@@ -316,8 +313,8 @@ if ($task == 'createdb') {
 			$dbpasswd   = DBPASSWD;
 		}
 
-		if ($version_mysql_num > 40) {
-			$db_charset = ' CHARACTER SET utf8 COLLATE utf8_general_ci';
+		if ($GLOBALS['version_mysql'] > 40) {
+			$db_charset = find_mysql_db_charset($GLOBALS['currentdb']);
 		} else { 
 			$db_charset = '';
 		}
@@ -363,8 +360,8 @@ if ($task == 'createtables') {
 	$text = join('', file(LODELROOT. "$versiondir/install/init-site.sql"));
 	$text.= "\n";
 	
-	if ($version_mysql_num > 40) {
-		$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+	if ($GLOBALS['version_mysql'] > 40) {
+		$db_charset = find_mysql_db_charset($context['dbname']);
 	} else { 
 		$db_charset = '';
 	}
@@ -378,7 +375,7 @@ if ($task == 'createtables') {
 	$error = array();
 	foreach ($sqlcmds as $cmd) {
 		$cmd = trim($cmd);
-		if ($cmd && !@mysql_query($cmd)) {
+		if ($cmd && !mysql_query($cmd)) {
 			array_push($error, $cmd, mysql_error());
 		}
 	}
@@ -724,5 +721,15 @@ function maj_siteconfig($siteconfig, $var, $val = -1)
 	} else {
 		return $newtext;
 	}
+}
+
+function find_mysql_db_charset($database) {
+	$db_collation = mysql_find_db_variable($database, 'collation_database');
+	if (is_string($GLOBALS['db_charset']) && is_string($db_collation)) {
+				$db_charset = ' CHARACTER SET ' . $GLOBALS['db_charset'] . ' COLLATE ' . $db_collation;
+			} else {
+				$db_charset = '';
+			}
+	return $db_charset;
 }
 ?>
