@@ -277,6 +277,7 @@ function clean_expired_tokens()
  */
 function sql2TS($date)
 {
+	$date = str_replace(array(' ', '-', ':'), '', $date);
 	return mktime(substr($date, 8, 2), substr($date, 10, 2), substr($date, 12, 2), substr($date, 4, 2), substr($date, 6, 2), substr($date, 0, 4));
 }
 
@@ -774,6 +775,7 @@ function verbs_processing()
 						del_token($resumptionToken);
 					} else {
 						$errors = oai_error('badResumptionToken', '', $resumptionToken);
+// 						echo $info['expirationdatetime'];
 					}
         }
 				// Will we need a ResumptionToken?
