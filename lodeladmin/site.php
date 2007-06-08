@@ -63,7 +63,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 
   do {
     if (!$context[nom]) { $context[erreur_nom]=$err=1; }
-    if (!$id && (!$context[rep] || preg_match("/\W/",$context[rep]))) { $context[erreur_rep]=$err=1; }
+    if (!$id && (!$context[rep] || !preg_match("/^[a-z0-9\-]+$/",$context[rep]))) { $context[erreur_rep]=$err=1; }
     if ($err) break;
     require_once ($home."connect.php");
 
