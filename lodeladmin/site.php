@@ -125,7 +125,7 @@ if ($edit || $maindefault) { // modifie ou ajoute
 		if (!$context['title']) {
 			$context['error_title'] = $err = 1;
 		}
-		if (!$id && (!$context['name'] || preg_match("/\W/",$context['name']))) { $context['error_name'] = $err = 1;
+		if (!$id && (!$context['name'] || !preg_match("/^[a-z0-9\-]+$/",$context['name']))) { $context['error_name'] = $err = 1;
 		}
 		if ($err) {
 			break;
