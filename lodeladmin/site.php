@@ -318,8 +318,8 @@ if ($task == 'createdb') {
 		} else { 
 			$db_charset = '';
 		}
-    		$context[command1]="CREATE DATABASE $context[dbname]$db_charset";
-		$context['command2'] = "GRANT ALL ON $context[dbname].* TO $dbusername@$dbhost";
+    		$context[command1]="CREATE DATABASE `$context[dbname]`$db_charset";
+		$context['command2'] = "GRANT ALL ON `$context[dbname]`.* TO $dbusername@$dbhost";
 		$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
 
 		if ($installoption == '2' && !$lodeldo) {
