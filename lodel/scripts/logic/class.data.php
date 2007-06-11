@@ -100,7 +100,7 @@ class DataLogic
 		global $db;
 		require_once 'func.php';
 		$context['importdir'] = $GLOBALS['importdir'];
-		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-\w+-\d{6}.'. $this->fileExtension;
+		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
 		$context['importdirs'] = array('CACHE');
