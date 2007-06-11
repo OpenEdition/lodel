@@ -205,7 +205,14 @@ function deleteuniqueid($id)
 	}
 }
 
-function mysql_find_db_variable ($database_name, $var = '') {
+/**
+ * Recherche d'une variable MySQL
+ *
+ * @param string $database_name nom de la base de donnée
+ * @param string $var nom de la variable recherchée
+ * @return valeur de la variable
+ */
+function mysql_find_db_variable ($database_name, $var = 'character_set_database') {
 	mysql_select_db($database_name) or die ("ERROR select database");
 	$result = mysql_query("SHOW VARIABLES LIKE '$var'");
 	if ($db_charset = mysql_fetch_row($result)) {
