@@ -45,7 +45,7 @@ if ($GLOBALS[site] && $GLOBALS[singledatabase]!="on") {
 
 $version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
 if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
-	$query = 'show create database ' . $GLOBALS[currentdb];
+	$query = 'show create database `' . $GLOBALS[currentdb] . '`';
 	$result = mysql_query($query);
 	if ($show_create_db = mysql_fetch_array($result)) {
 		if (!(strpos($show_create_db['Create Database'], 'DEFAULT CHARACTER SET utf8') === FALSE))
