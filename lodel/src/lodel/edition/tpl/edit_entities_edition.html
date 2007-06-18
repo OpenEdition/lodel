@@ -158,11 +158,11 @@
 	<LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'" SELECT="import"> 
 		<DO>
 		<IF COND="[#IMPORT] eq '1'"> 		
-			<IF COND="[#LODELUSER.EDITOR]">	
+			<IF COND="[#LODELUSER.REDACTOR]">	
 				<li><a href="oochargement.php?identity=[#ID]&amp;idparent=[#IDPARENT]">[@EDITION.RELOAD_FILE]</a></li>
 			<ELSE/>
 				<li><span class="texte_intitule">[@EDITION.RELOAD_FILE]</span><br />
-				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_EDITOR]</span></li>
+				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_REDACTOR]</span></li>
 			</IF>
 		</IF>
 	</DO>
