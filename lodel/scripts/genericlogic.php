@@ -266,6 +266,13 @@ class GenericLogic extends Logic
 				$error[$name] = "+"; // required
 				continue;
 			}
+			
+			// champ unique
+			if ($field->cond == 'unique' && !$this->_is_unique($class, $name, $value, $context['id'])) {
+				$error[$name] = "1"; // must be unique
+				continue;
+			}
+
 			// clean automatically the fields when required.
 			if (!is_array($value) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
 				$value = trim(strip_tags($value));
@@ -425,6 +432,24 @@ class GenericLogic extends Logic
 	function _populateContextRelatedTables($vo, $context)
 	{
 	}
+
+	/**
+	 * Vérifie que la valeur d'un champ est unique (pas d'autre occurrence dans la table)
+	 *
+	 * @param string $class le nom de la classe de l'objet.
+	 * @param string $name le nom du champ.
+	 * @param string $value la valeur associée au champ.
+	 * @return bool true si pas d'autre occurrence, false sinon
+	 */
+	function _is_unique($class, $name, $value, $id) {
+		global $db;
+ 
+		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
+		if ($result == 0) {
+			return true; } else {
+			return false; }
+	}
+
 
 	/**
 	 * Populate the object from the context. Only the public fields are inputted.
