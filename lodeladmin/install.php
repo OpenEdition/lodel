@@ -41,15 +41,30 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
   if ($tache=="lodelconfig") $_SERVER['REQUEST_URI'].="?tache=lodelconfig";
 
   require("auth.php");
-  // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
+  
   if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
+	@mysql_select_db($database);
+	set_mysql_charset();
+	/*$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+	$version_mysql_num = $version_mysql[0] . $version_mysql[1];
+
+	if ($version_mysql_num > 40) {
+		$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
+			if ($db_charset = mysql_fetch_row($result)) {
+				mysql_query('SET NAMES '. $db_charset[1]);	
+			} else {
+				mysql_query('SET NAMES UTF8'); }
+			}*/
+	
+/*
       $version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
       $version_mysql_num = $version_mysql[0].$version_mysql[1];
 
       if ($version_mysql_num > 40) {
-		@mysql_query('SET NAMES UTF8'); }
+		@mysql_query('SET NAMES UTF8'); }*/
     
-    @mysql_select_db($database);
+    // test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
+    
     $result=mysql_query("SELECT username FROM $GLOBALS[tableprefix]users LIMIT 0,1");
     if ($result && mysql_num_rows($result)>0) {
       authenticate(LEVEL_ADMINLODEL);
@@ -213,12 +228,12 @@ if ($tache=="database") {
   } elseif ($erasetables) {
     @include($lodelconfig);    // insert the lodelconfig. Should not be a problem.
     @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-
-    $version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+    
+    /*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
     if ($version_mysql_num[0].$version_mysql_num[1] > 40)
-		{ mysql_query('SET NAMES UTF8'); }
+		{ mysql_query('SET NAMES UTF8'); }*/
     @mysql_select_db($database); // selectionne la database
-
+    set_mysql_charset();
     // erase the table of each site
     $result=mysql_query("SELECT name FROM $GLOBALS[tableprefix]sites") or die (mysql_error());
 
@@ -307,11 +322,13 @@ if (strlen($adminpasswd) < 3 || strlen($adminpasswd) > 12 || !preg_match("/^[0-9
 
   if (!$home) die("ERROR: \$home is not defined");
   @mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-	$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+	/*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
 	if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
 		mysql_query('SET NAMES UTF8');
-	}
+	}*/
   @mysql_select_db($database); // selectionne la database
+  set_mysql_charset();
+
   $adminusername=addslashes($adminusername);
   $pass=md5($adminpasswd.$adminusername);
   if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) die("ERROR: invalid lang");
@@ -562,11 +579,11 @@ if (!@mysql_select_db($database)) { // ok, database est defini, on tente la conn
   // il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
   // les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 
-  $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables);
+  $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init.sql",$erasetables,$database);
 
   // no error, let's add the translations of the interface.
   if (!$erreur_createtables) 
-    $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init-translations.sql",$erasetables);
+    $erreur_createtables=mysql_query_file(LODELROOT."lodel$versionsuffix/install/init-translations.sql",$erasetables, $database);
  
   if ($erreur_createtables) {
     // mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
@@ -751,13 +768,10 @@ function maj_lodelconfig_var($var,$val,&$text)
 }
 
 
-function mysql_query_file($filename,$droptables=false)
+function mysql_query_file($filename,$droptables=false, $database)
 
 {
-  global $version_mysql_num;
-	if ($version_mysql_num > 40) {
-		$table_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';}
-	else { $table_charset = ''; }
+  $table_charset = find_mysql_db_charset($database);
   $sqlfile=preg_replace("/#_M?TP_/",$GLOBALS['tableprefix'] ,
 		       file_get_contents($filename));
   $sqlfile=str_replace("_CHARSET_", $table_charset , $sqlfile);
@@ -1011,6 +1025,35 @@ function makeSelectLang()
     echo '<option value="'.$result->fields['lang'].'" '.$selected.'>'.$result->fields['title'].'</option>';
     $result->MoveNext();
   }
+}
+
+function set_mysql_charset() {
+	$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+	$version_mysql_num = $version_mysql[0] . $version_mysql[1];
+
+	if ($version_mysql_num > 40) {
+		$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
+			if ($db_charset = mysql_fetch_row($result)) {
+				mysql_query('SET NAMES '. $db_charset[1]);
+			} else {
+				mysql_query('SET NAMES UTF8'); }
+			}
+}
+
+function find_mysql_db_charset($database) {
+	@mysql_select_db($database);
+	$result = mysql_query("SHOW VARIABLES LIKE '%_database'");
+	while ($row = mysql_fetch_array($result)) {
+		if ($row['Variable_name'] == 'character_set_database') { $db_charset =  $row['Value'];}
+		if ($row['Variable_name'] == 'collation_database') { $db_collation =  $row['Value'];}
+	}
+	
+	if (is_string($db_charset) && is_string($db_collation)) {
+				$set_db_charset = " CHARACTER SET $db_charset COLLATE $db_collation";
+			} else {
+				$set_db_charset = '';
+			}
+	return $set_db_charset;
 }
 
 ?>
