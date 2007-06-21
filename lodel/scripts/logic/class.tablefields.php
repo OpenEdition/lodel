@@ -132,7 +132,7 @@ class TableFieldsLogic extends Logic
 			'+' => getlodeltextcontents('fieldrequired', 'admin'),
 			'defaultnew' => getlodeltextcontents('use_default_at_creation only', 'admin'),
 			'permanent' => getlodeltextcontents('permanent', 'admin'),
-			'1' => getlodeltextcontents('single', 'admin'),
+			'unique' => getlodeltextcontents('single', 'admin'),
 			);
 		renderOptions($arr,$context['cond']);
 			break;
