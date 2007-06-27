@@ -146,10 +146,14 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'lang' : //champ de type langue (i.e fr_FR, en_US)
-		if ($text && !preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/", $text)) {
-			return $type;
+		if ($text) {
+			if (!preg_match("/^[a-zA-Z]{2}(_[a-zA-Z]{2})?$/", $text) &&
+ 			!preg_match("/\b[a-zA-Z]{3}\b/", $text)) {
+				return $type;
+			}
 		}
 		break;
+//fre
 	case 'date' :
 	case 'datetime' :
 	case 'time' : //vérification des champs date, time et datetime
