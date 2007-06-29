@@ -29,7 +29,7 @@
 
 require("siteconfig.php");
 include ($home."auth.php");
-authenticate(LEVEL_VISITEUR);
+authenticate(LEVEL_ABONNE);
 
 $name=addslashes($_COOKIE[$sessionname]);
 
