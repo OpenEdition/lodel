@@ -54,9 +54,6 @@ function authenticate ($level=0,$norecordurl=FALSE)
     if (!$name) break;
 
     include_once($home."connect.php");
-    if (!empty($GLOBALS['dbcharset'][$database]) || $GLOBALS['dbcharset']['same_charset'] != true) {
-	mysql_set_db_charset($database);
-    }
     mysql_select_db($database) or die(mysql_error());
     if (!($result=mysql_query ("SELECT id,iduser,site,context,expire,expire2,currenturl FROM $GLOBALS[tp]session WHERE name='$name'")))  break;
     if (!($row=mysql_fetch_assoc($result))) break;
@@ -148,17 +145,10 @@ function authenticate ($level=0,$norecordurl=FALSE)
     //
     // relselection la DB du site comme DB par defaut.
     //
-
-    if (!empty($GLOBALS['dbcharset'][$GLOBALS[currentdb]]) || $GLOBALS['dbcharset']['same_charset'] != true) {
-	mysql_set_db_charset($GLOBALS[currentdb]);
-    }
     mysql_select_db($GLOBALS[currentdb]) or die (mysql_error());
     return; // ok !!!
   } while (0);
-  include_once($home."connect.php");
-  if (!empty($GLOBALS['dbcharset'][$GLOBALS[currentdb]]) || $GLOBALS['dbcharset']['same_charset'] != true) {
-	mysql_set_db_charset($GLOBALS[currentdb]);
-    }
+
   if ($GLOBALS[currentdb]) mysql_select_db($GLOBALS[currentdb]);
 
   // exception
