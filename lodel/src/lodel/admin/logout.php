@@ -39,11 +39,12 @@ mysql_select_db($database);
 mysql_query("UPDATE $GLOBALS[tp]session SET expire2='$time' WHERE name='$name'") or die (mysql_error());
 mysql_query("DELETE FROM $GLOBALS[tp]pileurl WHERE idsession='$idsession'") or die (mysql_error());
 setcookie($sessionname,"",$time,$urlroot);
-if(SITEROOT == "" && !empty($_GET['url_retour'])){
+
+if (SITEROOT == "" && !empty($_GET['url_retour'])) {
 	if (strpos($_GET['url_retour'], '?') === false) { $and = '?'; }
 	else { $and = '&'; }
-	header ("Location: http://".$_SERVER['SERVER_NAME'] . $_GET['url_retour'] . "$andrecalcul_templates=oui");
+	header ("Location: http://".$_SERVER['SERVER_NAME'] . $_GET['url_retour'] . $and . "recalcul_templates=oui");
 } else {
-	header ("Location: ".SITEROOT); // la norme ne supporte pas les chemins relatifs !!
+	header ("Location: " . SITEROOT); // la norme ne supporte pas les chemins relatifs !!
 }
 ?>

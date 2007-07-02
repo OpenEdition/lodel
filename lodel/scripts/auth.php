@@ -75,7 +75,8 @@ function authenticate ($level=0,$norecordurl=FALSE)
       } else {
 	break;
       }
-      header("location: $login?erreur_timeout=1&".$retour); exit();
+      if ($userpriv>=LEVEL_VISITEUR) { header("location: $login?erreur_timeout=1&".$retour); exit(); }
+      else { header ("Location: " . SITEROOT); exit(); }
     }
 
     // pass les variables en global
@@ -219,6 +220,8 @@ $context=array(
 	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
+if ($_GET['url_retour']) $context['url_retour'] = $_GET['url_retour'];
+elseif ($_POST['url_retour']) $context['url_retour'] = $_POST['url_retour'];
 
 
 $droitadminlodel=0;
