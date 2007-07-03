@@ -31,33 +31,41 @@
 require("siteconfig.php");
 require_once ($home."auth.php");
 
-if ($_POST['url_orig']) { // les $login/$passwd proviennent d'un autre formulaire que le login.html de base
-	$context['currenturl'] = $_POST['url_orig'];
-	$url = parse_url($_POST['url_orig'], PHP_URL_QUERY);
-	parse_str($url, $args); // initialisation variable $format si besoin (tpl du formulaire d'auth.)
-	if (!empty($args['format'])) {
-		if (!isset($base)) $base = 'index';
-		$tpl = $base . '_' . $args['format'];
-	} else {
-		$tpl = 'login';
-	}
-}
+if ($userpriv == LEVEL_ABONNE || $_POST['abo_url_retour']) { $level_abonne = true; }
 
-if ($login || $_POST['url_orig']) {
+
+if ($login || $level_abonne) {
   require_once($home."func.php");
   extract_post();
+
+  if ($level_abonne) {
+	if (strpos($abo_url_retour, '?') === false) { $and = '?'; }
+	else { $and = '&'; }
+	if (strpos($abo_url_retour, 'recalcul_templates=oui') === false) {
+		$arg = $and . 'recalcul_templates=oui';
+	} else { $arg = ''; }
+  }
+
   do {
     require_once ($home."connect.php");
     require_once ($home."loginfunc.php");
     if (!check_auth($context['login'],$context['passwd'],$site)) {
-      $context['erreur_login']=1;
-      break; 
+	 $context['erreur_login']=1;
+	if ($level_abonne) {
+		header ("Location: http://" . $_SERVER['SERVER_NAME'] . $abo_url_retour . $arg);
+		exit();
+	}
+     break;
     }
     // ouvre une session
     $err=open_session($context['login']);
     if ($err) { $context[$err]=1; break; }
+    if ($level_abonne) {
+	header ("Location: http://" . $_SERVER['SERVER_NAME'] . $abo_url_retour . $arg);
+	exit();
+    } else {
     header ("Location: http://".$_SERVER['SERVER_NAME'].$url_retour);
-    die ($url_retour);
+    die ($url_retour);}
   } while (0);
 }
 
@@ -65,8 +73,8 @@ $context[passwd]=$passwd=0;
 
 
 // variable: sitebloque
-if ($context['erreur_sitebloque']) { // on a deja verifie que la site est bloque.
-  $context['sitebloque']=1;
+if ($context[erreur_sitebloque]) { // on a deja verifie que la site est bloque.
+  $context[sitebloque]=1;
 } else { // test si la site est bloque dans la DB.
   require_once ($home."connect.php");
   mysql_select_db($database);
@@ -80,7 +88,13 @@ $context['erreur_timeout']=$erreur_timeout;
 $context['erreur_privilege']=$erreur_privilege;
 
 
-
-require ($home."calcul-page.php");
-if (empty($tpl)) $tpl = 'login';
-calcul_page($context, $tpl);
+if ($level_abonne) {
+	if ($abo_url_retour) { $where =  $abo_url_retour . $arg; }
+	else { $where = $_SERVER['REQUEST_URI']; }
+	header ("Location: http://".$_SERVER['SERVER_NAME'] . $where);
+	exit();
+} else {
+	require ($home."calcul-page.php");
+	calcul_page($context,"login");
+}
+?>

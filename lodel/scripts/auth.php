@@ -68,15 +68,15 @@ function authenticate ($level=0,$norecordurl=FALSE)
     //        echo $name,"   ",$row[expire],"  ",$time,"<br>";
     if ($row['expire']<$time || $row['expire2']<$time) { 
       $login="";
-      if (file_exists("login.php")) { 
+      if (file_exists("login.php")) {
 	$login="login.php"; 
       } elseif (file_exists("lodel/edition/login.php")) {
 	$login="lodel/edition/login.php"; 
       } else {
 	break;
       }
-      if ($userpriv>=LEVEL_VISITEUR) { header("location: $login?erreur_timeout=1&".$retour); exit(); }
-      else { header ("Location: " . SITEROOT); exit(); }
+       if ($userpriv>=LEVEL_VISITEUR) { header("location: $login?erreur_timeout=1&".$retour); exit(); }
+       else { header ("Location: " . SITEROOT); exit(); }
     }
 
     // pass les variables en global
@@ -220,8 +220,6 @@ $context=array(
 	       "extensionscripts"=>$GLOBALS['extensionscripts'],
 	       "currenturl"=>"http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']
 	       ); // tres important d'initialiser le context.
-if ($_GET['url_retour']) $context['url_retour'] = $_GET['url_retour'];
-elseif ($_POST['url_retour']) $context['url_retour'] = $_POST['url_retour'];
 
 
 $droitadminlodel=0;
