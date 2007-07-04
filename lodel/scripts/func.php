@@ -619,6 +619,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 		$filename = preg_replace("/\.\w+$/", "", basename($filename)); // take only the name, remove the extensio
 		$dest = $dir. '/'. $filename. '.'. $ext;
 	} else {
+		$filename = rewriteFilename($filename);
 		$dest = $dir. '/'. basename($filename);
 	}
 
@@ -1214,6 +1215,21 @@ function url_path($url)
 {
 	$url_parts = parse_url($url);
 	return $url_parts['path'];
+}
+
+function rewriteFilename($string) {
+     if(isUTF8($string)) {
+	$string = preg_replace('/[^\w.-\/]+/', '_', makeSortKey($string));
+     } else {
+	$string = strip_tags($string);
+     	$string = strtolower(htmlentities($string));
+     	$string = preg_replace("/&(.)(uml);/", "$1e", $string);
+     	$string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml);/", "$1", $string);
+     	$string = preg_replace("([^\w.-]+)/", "_", html_entity_decode($string));
+     	$string = trim($string, "-");
+     	
+     }
+     return $string;
 }
 
 // valeur de retour identifier ce script
