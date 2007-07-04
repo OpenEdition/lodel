@@ -35,7 +35,7 @@ function writefile ($filename,$text)
  //echo "nom de fichier : $filename";
    if (file_exists($filename)) 
    { 
-     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit contacter Luc ou Ghislain");
+     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de droit");
    }
    $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
    @chmod ($filename,0666 & octdec($GLOBALS[filemask]));
@@ -565,8 +565,10 @@ function save_annex_file($dir,$file,$filename,$uploaded,&$error) {
     if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"$dir\"");
     @chmod(SITEROOT.$dir,0777 & octdec($GLOBALS[filemask]));
   }
+  $filename = rewriteFilename($filename);
   $filename=basename($filename); // take only the name
   if (!$file) die("ERROR: save_annex_file file is not set");
+  //$filename = preg_replace('/[^\w.]+/', '-', $filename);
   $dest=$dir."/".$filename;
   if ($uploaded) {
     if (!move_uploaded_file($file,SITEROOT.$dest)) die("ERROR: a problem occurs while moving the uploaded file.");
@@ -655,6 +657,102 @@ function myhtmlentities($text)
 function isEmail($str){
 	return eregi('^[_a-z0-9-]+(\.[_a-z0-9-]*)*@[a-z0-9-]+(\.[a-z0-9-]+)+$', $str);
 }
+
+
+function rewriteFilename($string) {
+     if(isUTF8($string)) {
+	$string = preg_replace('/[^\w.-\/]+/', '_', makeSortKey($string));
+     } else {
+	$string = strip_tags($string);
+     	$string = strtolower(htmlentities($string));
+     	$string = preg_replace("/&(.)(uml);/", "$1e", $string);
+     	$string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml);/", "$1", $string);
+     	$string = preg_replace("([^\w.-]+)/", "_", html_entity_decode($string));
+     	$string = trim($string, "-");
+     	
+     }
+     return $string;
+}
+
+
+/**
+ * Fonction qui indique si une chaine est en utf-8 ou non
+ *
+ * Cette fonction est inspirée de Dotclear et de
+ * http://w3.org/International/questions/qa-forms-utf-8.html.
+ *
+ * @param string $string la chaîne à tester
+ * @return le résultat de la fonction preg_match c'est-a-dire false si la chaine n'est pas en
+ * UTF8
+ */
+function isUTF8($string)
+	{
+		// From http://w3.org/International/questions/qa-forms-utf-8.html
+		return preg_match('%^(?:
+			  [\x09\x0A\x0D\x20-\x7E]		# ASCII
+			| [\xC2-\xDF][\x80-\xBF]		# non-overlong 2-byte
+			| \xE0[\xA0-\xBF][\x80-\xBF]		# excluding overlongs
+			| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
+			| \xED[\x80-\x9F][\x80-\xBF]		# excluding surrogates
+			| \xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
+			| [\xF1-\xF3][\x80-\xBF]{3}		# planes 4-15
+			| \xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
+		)*$%xs', $string);
+	}
+
+/**
+ * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
+ *
+ * Cette fonction prends en entrée une chaîne en UTF8 et donne en sortie une chaîne
+ * où les accents ont été remplacés par leur équivalent désaccentué. De plus les caractères
+ * sont mis en minuscules et les espaces en début et fin de chaine sont enlevés.
+ *
+ * @param string $text le texte à passer en entrée
+ * @return le texte transformé en minuscule
+ */
+function makeSortKey($text)
+{
+	$text = strip_tags($text);
+	//remplacement des caractères accentues en UTF8
+	$replacement = array(chr(197).chr(146) => 'OE', chr(197).chr(147) => 'oe',
+			chr(197).chr(160) => 'S', chr(197).chr(189) => 'Z',
+			chr(197).chr(161) => 's', chr(197).chr(190) => 'z',
+			chr(197).chr(184) => 'Y', chr(194).chr(165) => 'Y',
+			chr(194).chr(181) => 'u', chr(195).chr(134) => 'AE',
+			chr(195).chr(133) => 'A', chr(195).chr(132) => 'A',
+			chr(195).chr(131) => 'A', chr(195).chr(130) => 'A',
+			chr(195).chr(129) => 'A', chr(195).chr(128) => 'A',
+			chr(195).chr(135) => 'C', chr(195).chr(136) => 'E',
+			chr(195).chr(137) => 'E', chr(195).chr(138) => 'E',
+			chr(195).chr(139) => 'E', chr(195).chr(140) => 'I',
+			chr(195).chr(141) => 'I', chr(195).chr(142) => 'I',
+			chr(195).chr(143) => 'I', chr(195).chr(144) => 'D',
+			chr(195).chr(145) => 'N', chr(195).chr(146) => 'O',
+			chr(195).chr(147) => 'O', chr(195).chr(148) => 'O',
+			chr(195).chr(149) => 'O', chr(195).chr(150) => 'O',
+			chr(195).chr(152) => 'O', chr(195).chr(153) => 'U',
+			chr(195).chr(154) => 'U', chr(195).chr(155) => 'U',
+			chr(195).chr(156) => 'U', chr(195).chr(157) => 'Y',
+			chr(195).chr(159) => 'SS', chr(195).chr(160) => 'a',
+			chr(195).chr(161) => 'a', chr(195).chr(162) => 'a',
+			chr(195).chr(163) => 'a', chr(195).chr(164) => 'a',
+			chr(195).chr(165) => 'a', chr(195).chr(166) => 'ae',
+			chr(195).chr(167) => 'c', chr(195).chr(168) => 'e',
+			chr(195).chr(169) => 'e', chr(195).chr(170) => 'e',
+			chr(195).chr(171) => 'e', chr(195).chr(172) => 'i',
+			chr(195).chr(173) => 'i', chr(195).chr(174) => 'i',
+			chr(195).chr(175) => 'i', chr(195).chr(176) => 'o',
+			chr(195).chr(177) => 'n', chr(195).chr(178) => 'o',
+			chr(195).chr(179) => 'o', chr(195).chr(180) => 'o',
+			chr(195).chr(181) => 'o', chr(195).chr(182) => 'o',
+			chr(195).chr(184) => 'o', chr(195).chr(185) => 'u',
+			chr(195).chr(186) => 'u', chr(195).chr(187) => 'u',
+			chr(195).chr(188) => 'u', chr(195).chr(189) => 'y',
+			chr(195).chr(191) => 'y');
+	$text = strtr($text,$replacement);
+	return trim(strtolower($text));
+}
+
 
 // valeur de retour identifiant ce script
 return 568;
