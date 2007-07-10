@@ -69,7 +69,11 @@ function mysqldate($s)
 	}
 
 	if (!$delimiter) {
-		return '';
+		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
+			return $s . '-00-00';
+		} else { return ''; }
+		
+	
 	}
 	list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
 	$d = intval(trim($d));
