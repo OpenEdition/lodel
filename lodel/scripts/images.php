@@ -93,6 +93,9 @@ function resize_image($taille, $src, &$dest)
 			if (!$im2) {
 				return false;
 			}
+			// conservation de la transparence
+			imagealphablending($im2, FALSE);
+			imagesavealpha($im2, TRUE);		  
 			ImageCopyResampled($im2, $im, 0, 0, 0, 0, $width, $height, $result[0], $result[1]);
 		}	else {
 			$im2 = ImageCreate($width, $height);
