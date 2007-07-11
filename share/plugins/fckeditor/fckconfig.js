@@ -49,6 +49,8 @@ FCKConfig.PluginsPath = FCKConfig.BasePath + 'plugins/' ;
 // FCKConfig.Plugins.Add( 'autogrow' ) ;
 FCKConfig.AutoGrowMax = 400 ;
 
+//LODEL
+FCKConfig.ProtectedSource.Add( /<script[\s\S]*?\/script>/gi ) ; // <SCRIPT> tags.
 // FCKConfig.ProtectedSource.Add( /<%[\s\S]*?%>/g ) ;	// ASP style server side code <%...%>
 // FCKConfig.ProtectedSource.Add( /<\?[\s\S]*?\?>/g ) ;	// PHP style server side code
 // FCKConfig.ProtectedSource.Add( /(<asp:[^\>]+>[\s|\S]*?<\/asp:[^\>]+>)|(<asp:[^\>]+\/>)/gi ) ;	// ASP.Net style tags <asp:control>
@@ -84,6 +86,8 @@ FCKConfig.ShowBorders	= true ;
 FCKConfig.SourcePopup	= false ;
 FCKConfig.ToolbarStartExpanded	= true ;
 FCKConfig.ToolbarCanCollapse	= true ;
+
+FCKConfig.IEForceVScroll = false ;//popop
 FCKConfig.IgnoreEmptyParagraphValue = true ;
 FCKConfig.PreserveSessionOnFileBrowser = false ;
 FCKConfig.FloatingPanelsZIndex = 10000 ;
@@ -247,8 +251,8 @@ FCKConfig.FlashUploadURL = FCKConfig.BasePath + 'filemanager/upload/' + _QuickUp
 FCKConfig.FlashUploadAllowedExtensions	= ".(swf|fla)$" ;		// empty for all
 FCKConfig.FlashUploadDeniedExtensions	= "" ;					// empty for no one
 
-FCKConfig.SmileyPath	= FCKConfig.BasePath + 'images/smiley/msn/' ;
-FCKConfig.SmileyImages	= ['regular_smile.gif','sad_smile.gif','wink_smile.gif','teeth_smile.gif','confused_smile.gif','tounge_smile.gif','embaressed_smile.gif','omg_smile.gif','whatchutalkingabout_smile.gif','angry_smile.gif','angel_smile.gif','shades_smile.gif','devil_smile.gif','cry_smile.gif','lightbulb.gif','thumbs_down.gif','thumbs_up.gif','heart.gif','broken_heart.gif','kiss.gif','envelope.gif'] ;
-FCKConfig.SmileyColumns = 8 ;
-FCKConfig.SmileyWindowWidth		= 320 ;
-FCKConfig.SmileyWindowHeight	= 240 ;
+//FCKConfig.SmileyPath	= FCKConfig.BasePath + 'images/smiley/msn/' ;
+//FCKConfig.SmileyImages	= ['regular_smile.gif','sad_smile.gif','wink_smile.gif','teeth_smile.gif','confused_smile.gif','tounge_smile.gif','embaressed_smile.gif','omg_smile.gif','whatchutalkingabout_smile.gif','angry_smile.gif','angel_smile.gif','shades_smile.gif','devil_smile.gif','cry_smile.gif','lightbulb.gif','thumbs_down.gif','thumbs_up.gif','heart.gif','broken_heart.gif','kiss.gif','envelope.gif'] ;
+//FCKConfig.SmileyColumns = 8 ;
+//FCKConfig.SmileyWindowWidth		= 320 ;
+//FCKConfig.SmileyWindowHeight	= 240 ;
