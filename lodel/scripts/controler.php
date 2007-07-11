@@ -81,20 +81,28 @@ class Controler
 	 *
 	 * @param array $logics Les logiques métiers acceptées par le point d'entrée
 	 * @param string $lo La logique métier appelée. Par défaut cette valeur est vide
+	 * @param array $request La requête à traiter, si elle n'est passée ni en GET ni en POST (dans un script par ex.) : utilisé pour l'import massif de XML
 	 * 
 	 */
-	function Controler($logics, $lo = '')
+	function Controler($logics, $lo = '', $request = array())
 	{
 		global $home, $context;
-		#cleanEntities();
-		if ($_POST) {
-			$therequest = &$_POST;
+		
+		// si la requete provient d'un script qui appelle le controleur
+		if (!empty($request)) {
+			$context = array_merge($context, $request);
+			$therequest = $request;
+		// GET ou POST
 		} else {
-			$therequest = &$_GET;
+			if ($_POST) {
+				$therequest = &$_POST;
+			} else {
+				$therequest = &$_GET;
+			}
 		}
-		#print_r($therequest);
+		
 		$do = $therequest['do'];
-
+		
 		if ($do == 'back') {
 			require_once 'view.php';
 			View::back(2); //revient 2 rang en arrière dans l'historique.
@@ -121,11 +129,13 @@ class Controler
 					$context[$var] = $therequest[$var];
 				}
 			}
+
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int.
 			foreach (array('id', 'idgroup', 'idclass', 'idparent') as $var) {
 				$context[$var] = intval($therequest[$var]);
 			}
-      // dir
+
+      			// dir
 			if ($therequest['dir'] && ($therequest['dir'] == 'up' || 
 					$therequest['dir'] == 'down' || 
 					is_numeric($therequest['dir']))) 
@@ -154,6 +164,7 @@ class Controler
 						}
 					} else {
 						// call the logic action
+//print_r($context);
 						$ret = $logic->$do($context, $error);
 					}
 			}
@@ -165,10 +176,12 @@ class Controler
 			require_once 'view.php';
 			$view = &View::getView();
 			switch($ret) {
+				case '_next' : // si le controleur est appelé par un script
+					return 'ok';
 				case '_back' :
 					$view->back();
 					break;
-      	case '_error' :
+      				case '_error' :
 					// hum... needs to remove the slashes... don't really like that, because some value may still 
 					// come from  database or lodel. Doing this way is not a security issue but may forbide
 					// user to use \' in there text
@@ -197,29 +210,5 @@ class Controler
 			$view->renderCached($context, 'index');
 		}
   } // constructor }}}
-
-	/**
-	 * Nettoyage des entités à -64. Cette fonction est appelée à chaque fois.
-	 *
-	 *
-	 */
-	
-
 } // }}}
-
-/*function cleanEntities() CETTE FONCTION N'EST PAS BONNE
-{
-		global $db;
-		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64');
-		$result = $db->execute($mysql);
-		while(!$result->EOF) {
-			$ids[] = $result->fields['id'];
-			$result->MoveNext();
-		}
-		$context['id'] = $ids;
-		require 'logic.php';
-		require 'func.php';
-		$logic = &getLogic('entities');
-		$logic->deleteAction($context, $error);
-	}*/ 
 ?>

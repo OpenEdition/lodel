@@ -328,7 +328,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		// If Identifier is not set, let's calcul it with the generic title
 		
-		if (!$vo->identifier || trim($context['identifier']) === '') {
+		if (!$vo->identifier && trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
 
@@ -338,7 +338,7 @@ class Entities_EditionLogic extends GenericLogic
 				$vo->identifier= $this->_calculateIdentifier ($id, $context['identifier']);
 			/*}*/
 		}
-		
+		//print_r($context);
 		if ($context['creationmethod']) {
 			$vo->creationmethod = $context['creationmethod'];
 		}
@@ -373,10 +373,17 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		update();
 
+		// pour import de plusieurs entités à la suite
+		if(is_string($context['next_entity'])) {
+			if ($context['next_entity'] == 'yes') { return $ret = "_next"; }
+			else { return $ret = "_back"; }
+		}
+
 		if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
 			return "_location: ". SITEROOT. makeurlwithid($id);
 		}
 		return $ret ? $ret : "_back";
+		//return $ret ? $ret : "_location" . SITEROOT. makeurlwithid($idparent);
 	} //end of editAction
 
 	/**
