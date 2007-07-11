@@ -1,21 +1,25 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: eu.js
- * 	Basque language file.
- * 	Euskara hizkuntza fitxategia.
- * 
- * File Authors:
- * 		Ibon Igartua (Librezale.org)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Basque language file.
+ * Euskara hizkuntza fitxategia.
  */
 
 var FCKLang =
@@ -99,8 +103,13 @@ Button			: "Botoia",
 SelectionField	: "Hautespen Eremua",
 ImageButton		: "Irudi Botoia",
 
+FitWindow		: "Maximizatu editorearen tamaina",
+
 // Context Menu
 EditLink			: "Aldatu Esteka",
+CellCM				: "Gelaxka",
+RowCM				: "Errenkada",
+ColumnCM			: "Zutabea",
 InsertRow			: "Txertatu Errenkada",
 DeleteRows			: "Ezabatu Errenkadak",
 InsertColumn		: "Txertatu Zutabea",
@@ -126,7 +135,7 @@ SelectionFieldProp	: "Hautespen Eremuaren Ezaugarriak",
 TextareaProp		: "Testu-arearen Ezaugarriak",
 FormProp			: "Formularioaren Ezaugarriak",
 
-FontFormats			: "Arrunta;Formateatua;Helbidea;Izenburua 1;Izenburua 2;Izenburua 3;Izenburua 4;Izenburua 5;Izenburua 6;Paragrafoa (DIV)",
+FontFormats			: "Arrunta;Formateatua;Helbidea;Izenburua 1;Izenburua 2;Izenburua 3;Izenburua 4;Izenburua 5;Izenburua 6;Paragrafoa (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "XHTML Prozesatzen. Itxaron mesedez...",
@@ -147,12 +156,12 @@ DlgBtnCancel		: "Utzi",
 DlgBtnClose			: "Itxi",
 DlgBtnBrowseServer	: "Zerbitzaria arakatu",
 DlgAdvancedTag		: "Aurreratua",
-DlgOpOther			: "&lt;Bestelakoak&gt;",
+DlgOpOther			: "<Bestelakoak>",
 DlgInfoTab			: "Informazioa",
 DlgAlertUrl			: "Mesedez URLa idatzi ezazu",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;Ezarri gabe&gt;",
+DlgGenNotSet		: "<Ezarri gabe>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Hizkuntzaren Norabidea",
 DlgGenLangDirLtr	: "Ezkerretik Eskumara(LTR)",
@@ -216,12 +225,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Aingura horrialde honentan",
 DlgLnkTypeEMail		: "ePosta",
 DlgLnkProto			: "Protokoloa",
-DlgLnkProtoOther	: "&lt;Beste batzuk&gt;",
+DlgLnkProtoOther	: "<Beste batzuk>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Aingura bat hautatu",
 DlgLnkAnchorByName	: "Aingura izenagatik",
 DlgLnkAnchorById	: "Elementuaren ID-gatik",
-DlgLnkNoAnchors		: "&lt;Ez daude aingurak eskuragarri dokumentuan&gt;",
+DlgLnkNoAnchors		: "<Ez daude aingurak eskuragarri dokumentuan>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "ePosta Helbidea",
 DlgLnkEMailSubject	: "Mezuaren Gaia",
 DlgLnkEMailBody		: "Mezuaren Gorputza",
@@ -229,8 +238,8 @@ DlgLnkUpload		: "Gora kargatu",
 DlgLnkBtnUpload		: "Zerbitzarira bidali",
 
 DlgLnkTarget		: "Target (Helburua)",
-DlgLnkTargetFrame	: "&lt;marko&gt;",
-DlgLnkTargetPopup	: "&lt;popup lehioa&gt;",
+DlgLnkTargetFrame	: "<marko>",
+DlgLnkTargetPopup	: "<popup lehioa>",
 DlgLnkTargetBlank	: "Lehio Berria (_blank)",
 DlgLnkTargetParent	: "Lehio Gurasoa (_parent)",
 DlgLnkTargetSelf	: "Lehio Berdina (_self)",
@@ -254,6 +263,7 @@ DlgLnkPopTop		: "Goiko Posizioa",
 DlnLnkMsgNoUrl		: "Mesedez URL esteka idatzi",
 DlnLnkMsgNoEMail	: "Mesedez ePosta helbidea idatzi",
 DlnLnkMsgNoAnchor	: "Mesedez aingura bat aukeratu",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Kolore Aukeraketa",
@@ -293,16 +303,16 @@ DlgCellWidthPx		: "pixel",
 DlgCellWidthPc		: "ehuneko",
 DlgCellHeight		: "Altuera",
 DlgCellWordWrap		: "Itzulbira",
-DlgCellWordWrapNotSet	: "&lt;Ezarri gabe&gt;",
+DlgCellWordWrapNotSet	: "<Ezarri gabe>",
 DlgCellWordWrapYes	: "Bai",
 DlgCellWordWrapNo	: "Ez",
 DlgCellHorAlign		: "Horizontal Alignment",
-DlgCellHorAlignNotSet	: "&lt;Ezarri gabe&gt;",
+DlgCellHorAlignNotSet	: "<Ezarri gabe>",
 DlgCellHorAlignLeft	: "Ezkerrean",
 DlgCellHorAlignCenter	: "Erdian",
 DlgCellHorAlignRight: "Eskuman",
 DlgCellVerAlign		: "Lerrokatu Bertikalki",
-DlgCellVerAlignNotSet	: "&lt;Ezarri gabe&gt;",
+DlgCellVerAlignNotSet	: "<Ezarri gabe>",
 DlgCellVerAlignTop	: "Goian",
 DlgCellVerAlignMiddle	: "Erdian",
 DlgCellVerAlignBottom	: "Behean",
@@ -328,7 +338,6 @@ DlgReplaceReplAllBtn	: "Ordeztu Guztiak",
 DlgReplaceWordChk		: "Esaldi osoa bilatu",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Zure web nabigatzailearen segurtasun ezarpenak testuak automatikoki itsastea ez dute baimentzen. Mesedez teklatua erabili ezazu (Ctrl+V).",
 PasteErrorCut	: "Zure web nabigatzailearen segurtasun ezarpenak testuak automatikoki moztea ez dute baimentzen. Mesedez teklatua erabili ezazu (Ctrl+X).",
 PasteErrorCopy	: "Zure web nabigatzailearen segurtasun ezarpenak testuak automatikoki kopiatzea ez dute baimentzen. Mesedez teklatua erabili ezazu (Ctrl+C).",
 
@@ -336,10 +345,10 @@ PasteAsText		: "Testu Arrunta bezala Itsatsi",
 PasteFromWord	: "Word-etik itsatsi",
 
 DlgPasteMsg2	: "Mesedez teklatua erabilita (<STRONG>Ctrl+V</STRONG>) ondorego eremuan testua itsatsi eta <STRONG>OK</STRONG> sakatu.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Letra Motaren definizioa ezikusi",
 DlgPasteRemoveStyles	: "Estilo definizioak kendu",
 DlgPasteCleanBox		: "Testu-eremua Garbitu",
-
 
 // Color Picker
 ColorAutomatic	: "Automatikoa",
@@ -371,8 +380,11 @@ DlgSpellManyChanges		: "Zuzenketa ortografikoa bukatuta: %1 hitz aldatu dira",
 IeSpellDownload			: "Zuzentzaile ortografikoa ez dago instalatuta. Deskargatu nahi duzu?",
 
 // Button Dialog
-DlgButtonText	: "Testua (Balorea)",
-DlgButtonType	: "Mota",
+DlgButtonText		: "Testua (Balorea)",
+DlgButtonType		: "Mota",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Izena",
@@ -421,6 +433,7 @@ DlgHiddenValue	: "Balorea",
 // Bulleted List Dialog
 BulletedListProp	: "Buletdun Zerrendaren Ezarpenak",
 NumberedListProp	: "Zenbakidun Zerrendaren Ezarpenak",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Mota",
 DlgLstTypeCircle	: "Zirkulua",
 DlgLstTypeDisc		: "Diskoa",
@@ -443,6 +456,15 @@ DlgDocLangDirLTR	: "Ezkerretik eskumara (LTR)",
 DlgDocLangDirRTL	: "Eskumatik ezkerrera (RTL)",
 DlgDocLangCode		: "Hizkuntzaren Kodea",
 DlgDocCharSet		: "Karaktere Multzoaren Kodeketa",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Beste Karaktere Multzoaren Kodeketa",
 
 DlgDocDocType		: "Document Type Goiburua",
@@ -472,11 +494,12 @@ DlgTemplatesTitle	: "Eduki Txantiloiak",
 DlgTemplatesSelMsg	: "Mesedez txantiloia aukeratu editorean kargatzeko<br>(orain dauden edukiak galduko dira):",
 DlgTemplatesLoading	: "Txantiloiak kargatzen. Itxaron mesedez...",
 DlgTemplatesNoTpl	: "(Ez dago definitutako txantiloirik)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Honi buruz",
 DlgAboutBrowserInfoTab	: "Nabigatzailearen Informazioa",
+DlgAboutLicenseTab	: "Lizentzia",
 DlgAboutVersion		: "bertsioa",
-DlgAboutLicense		: "GNU Lesser General Public License Lizentziapean",
 DlgAboutInfo		: "Informazio gehiago eskuratzeko hona joan"
-}
+};

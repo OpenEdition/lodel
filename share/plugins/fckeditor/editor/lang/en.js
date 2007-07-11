@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: en.js
- * 	English language file.
- * 
- * File Authors:
- * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * English language file.
  */
 
 var FCKLang =
@@ -49,7 +53,7 @@ InsertTableLbl		: "Table",
 InsertTable			: "Insert/Edit Table",
 InsertLineLbl		: "Line",
 InsertLine			: "Insert Horizontal Line",
-InsertSpecialCharLbl: "Special Char",
+InsertSpecialCharLbl: "Special Character",
 InsertSpecialChar	: "Insert Special Character",
 InsertSmileyLbl		: "Smiley",
 InsertSmiley		: "Insert Smiley",
@@ -83,7 +87,7 @@ BGColor				: "Background Color",
 Source				: "Source",
 Find				: "Find",
 Replace				: "Replace",
-SpellCheck			: "Check Spell",
+SpellCheck			: "Check Spelling",
 UniversalKeyboard	: "Universal Keyboard",
 PageBreakLbl		: "Page Break",
 PageBreak			: "Insert Page Break",
@@ -98,8 +102,13 @@ Button			: "Button",
 SelectionField	: "Selection Field",
 ImageButton		: "Image Button",
 
+FitWindow		: "Maximize the editor size",
+
 // Context Menu
 EditLink			: "Edit Link",
+CellCM				: "Cell",
+RowCM				: "Row",
+ColumnCM			: "Column",
 InsertRow			: "Insert Row",
 DeleteRows			: "Delete Rows",
 InsertColumn		: "Insert Column",
@@ -125,7 +134,7 @@ SelectionFieldProp	: "Selection Field Properties",
 TextareaProp		: "Textarea Properties",
 FormProp			: "Form Properties",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Processing XHTML. Please wait...",
@@ -136,7 +145,7 @@ UnknownToolbarItem	: "Unknown toolbar item \"%1\"",
 UnknownCommand		: "Unknown command name \"%1\"",
 NotImplemented		: "Command not implemented",
 UnknownToolbarSet	: "Toolbar set \"%1\" doesn't exist",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",
+NoActiveX			: "Your browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",
 BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",
 DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",
 
@@ -146,12 +155,12 @@ DlgBtnCancel		: "Cancel",
 DlgBtnClose			: "Close",
 DlgBtnBrowseServer	: "Browse Server",
 DlgAdvancedTag		: "Advanced",
-DlgOpOther			: "&lt;Other&gt;",
+DlgOpOther			: "<Other>",
 DlgInfoTab			: "Info",
 DlgAlertUrl			: "Please insert the URL",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;not set&gt;",
+DlgGenNotSet		: "<not set>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Language Direction",
 DlgGenLangDirLtr	: "Left to Right (LTR)",
@@ -212,15 +221,15 @@ DlgLnkTargetTab		: "Target",
 
 DlgLnkType			: "Link Type",
 DlgLnkTypeURL		: "URL",
-DlgLnkTypeAnchor	: "Anchor in this page",
+DlgLnkTypeAnchor	: "Link to anchor in the text",
 DlgLnkTypeEMail		: "E-Mail",
 DlgLnkProto			: "Protocol",
-DlgLnkProtoOther	: "&lt;other&gt;",
+DlgLnkProtoOther	: "<other>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Select an Anchor",
 DlgLnkAnchorByName	: "By Anchor Name",
 DlgLnkAnchorById	: "By Element Id",
-DlgLnkNoAnchors		: "&lt;No anchors available in the document&gt;",
+DlgLnkNoAnchors		: "(No anchors available in the document)",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Mail Address",
 DlgLnkEMailSubject	: "Message Subject",
 DlgLnkEMailBody		: "Message Body",
@@ -228,8 +237,8 @@ DlgLnkUpload		: "Upload",
 DlgLnkBtnUpload		: "Send it to the Server",
 
 DlgLnkTarget		: "Target",
-DlgLnkTargetFrame	: "&lt;frame&gt;",
-DlgLnkTargetPopup	: "&lt;popup window&gt;",
+DlgLnkTargetFrame	: "<frame>",
+DlgLnkTargetPopup	: "<popup window>",
 DlgLnkTargetBlank	: "New Window (_blank)",
 DlgLnkTargetParent	: "Parent Window (_parent)",
 DlgLnkTargetSelf	: "Same Window (_self)",
@@ -253,6 +262,7 @@ DlgLnkPopTop		: "Top Position",
 DlnLnkMsgNoUrl		: "Please type the link URL",
 DlnLnkMsgNoEMail	: "Please type the e-mail address",
 DlnLnkMsgNoAnchor	: "Please select an anchor",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",
 
 // Color Dialog
 DlgColorTitle		: "Select Color",
@@ -292,16 +302,16 @@ DlgCellWidthPx		: "pixels",
 DlgCellWidthPc		: "percent",
 DlgCellHeight		: "Height",
 DlgCellWordWrap		: "Word Wrap",
-DlgCellWordWrapNotSet	: "&lt;Not set&gt;",
+DlgCellWordWrapNotSet	: "<Not set>",
 DlgCellWordWrapYes	: "Yes",
 DlgCellWordWrapNo	: "No",
 DlgCellHorAlign		: "Horizontal Alignment",
-DlgCellHorAlignNotSet	: "&lt;Not set&gt;",
+DlgCellHorAlignNotSet	: "<Not set>",
 DlgCellHorAlignLeft	: "Left",
 DlgCellHorAlignCenter	: "Center",
 DlgCellHorAlignRight: "Right",
 DlgCellVerAlign		: "Vertical Alignment",
-DlgCellVerAlignNotSet	: "&lt;Not set&gt;",
+DlgCellVerAlignNotSet	: "<Not set>",
 DlgCellVerAlignTop	: "Top",
 DlgCellVerAlignMiddle	: "Middle",
 DlgCellVerAlignBottom	: "Bottom",
@@ -327,18 +337,17 @@ DlgReplaceReplAllBtn	: "Replace All",
 DlgReplaceWordChk		: "Match whole word",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Your browser security settings don't permit the editor to automatically execute pasting operations. Please use the keyboard for that (Ctrl+V).",
 PasteErrorCut	: "Your browser security settings don't permit the editor to automatically execute cutting operations. Please use the keyboard for that (Ctrl+X).",
 PasteErrorCopy	: "Your browser security settings don't permit the editor to automatically execute copying operations. Please use the keyboard for that (Ctrl+C).",
 
 PasteAsText		: "Paste as Plain Text",
 PasteFromWord	: "Paste from Word",
 
-DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<strong>Ctrl+V</strong>) and hit <strong>OK</strong>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",
 DlgPasteIgnoreFont		: "Ignore Font Face definitions",
 DlgPasteRemoveStyles	: "Remove Styles definitions",
 DlgPasteCleanBox		: "Clean Up Box",
-
 
 // Color Picker
 ColorAutomatic	: "Automatic",
@@ -370,8 +379,11 @@ DlgSpellManyChanges		: "Spell check complete: %1 words changed",
 IeSpellDownload			: "Spell checker not installed. Do you want to download it now?",
 
 // Button Dialog
-DlgButtonText	: "Text (Value)",
-DlgButtonType	: "Type",
+DlgButtonText		: "Text (Value)",
+DlgButtonType		: "Type",
+DlgButtonTypeBtn	: "Button",
+DlgButtonTypeSbm	: "Submit",
+DlgButtonTypeRst	: "Reset",
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Name",
@@ -420,6 +432,7 @@ DlgHiddenValue	: "Value",
 // Bulleted List Dialog
 BulletedListProp	: "Bulleted List Properties",
 NumberedListProp	: "Numbered List Properties",
+DlgLstStart			: "Start",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Circle",
 DlgLstTypeDisc		: "Disc",
@@ -442,6 +455,15 @@ DlgDocLangDirLTR	: "Left to Right (LTR)",
 DlgDocLangDirRTL	: "Right to Left (RTL)",
 DlgDocLangCode		: "Language Code",
 DlgDocCharSet		: "Character Set Encoding",
+DlgDocCharSetCE		: "Central European",
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",
+DlgDocCharSetCR		: "Cyrillic",
+DlgDocCharSetGR		: "Greek",
+DlgDocCharSetJP		: "Japanese",
+DlgDocCharSetKR		: "Korean",
+DlgDocCharSetTR		: "Turkish",
+DlgDocCharSetUN		: "Unicode (UTF-8)",
+DlgDocCharSetWE		: "Western European",
 DlgDocCharSetOther	: "Other Character Set Encoding",
 
 DlgDocDocType		: "Document Type Heading",
@@ -468,14 +490,15 @@ DlgDocPreview		: "Preview",
 // Templates Dialog
 Templates			: "Templates",
 DlgTemplatesTitle	: "Content Templates",
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br />(the actual contents will be lost):",
 DlgTemplatesLoading	: "Loading templates list. Please wait...",
 DlgTemplatesNoTpl	: "(No templates defined)",
+DlgTemplatesReplace	: "Replace actual contents",
 
 // About Dialog
 DlgAboutAboutTab	: "About",
 DlgAboutBrowserInfoTab	: "Browser Info",
+DlgAboutLicenseTab	: "License",
 DlgAboutVersion		: "version",
-DlgAboutLicense		: "Licensed under the terms of the GNU Lesser General Public License",
 DlgAboutInfo		: "For further information go to"
-}
+};
