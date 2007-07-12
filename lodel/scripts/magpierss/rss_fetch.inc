@@ -81,11 +81,11 @@ require_once( MAGPIE_EXTLIB . 'Snoopy.class.inc');
     version will be return, if it exists (and if MAGPIE_CACHE_FRESH_ONLY is off)
 \*=======================================================================*/
 
-define('MAGPIE_VERSION', '0.7');
+define('MAGPIE_VERSION', '0.72');
 
 $MAGPIE_ERROR = "";
 
-function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
+function fetch_rss ($url) {
     // initialize constants
     init();
     
@@ -114,7 +114,7 @@ function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
         // 3. if cached obj fails freshness check, fetch remote
         // 4. if remote fails, return stale object, or error
         
-        $cache = new RSSCache( MAGPIE_CACHE_DIR, $refresh );
+        $cache = new RSSCache( MAGPIE_CACHE_DIR, MAGPIE_CACHE_AGE );
         
         if (MAGPIE_DEBUG and $cache->ERROR) {
             debug($cache->ERROR, E_USER_WARNING);
@@ -134,15 +134,16 @@ function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
             // return cache HIT, MISS, or STALE
             $cache_status = $cache->check_cache( $cache_key);
         }
-        
+                
         // if object cached, and cache is fresh, return cached obj
         if ( $cache_status == 'HIT' ) {
             $rss = $cache->get( $cache_key );
             if ( isset($rss) and $rss ) {
+                // should be cache age
                 $rss->from_cache = 1;
                 if ( MAGPIE_DEBUG > 1) {
-                debug("MagpieRSS: Cache HIT", E_USER_NOTICE);
-            }
+                    debug("MagpieRSS: Cache HIT", E_USER_NOTICE);
+                }
                 return $rss;
             }
         }
@@ -151,8 +152,8 @@ function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
         
         // setup headers
         if ( $cache_status == 'STALE' ) {
-            $rss = $cache->get( $url );
-            if ( $rss->etag and $rss->last_modified ) {
+            $rss = $cache->get( $cache_key );
+            if ( $rss and $rss->etag and $rss->last_modified ) {
                 $request_headers['If-None-Match'] = $rss->etag;
                 $request_headers['If-Last-Modified'] = $rss->last_modified;
             }
@@ -161,7 +162,7 @@ function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
         $resp = _fetch_remote_file( $url, $request_headers );
         
         if (isset($resp) and $resp) {
-            if ($resp->status == '304' ) {
+          if ($resp->status == '304' ) {
                 // we have the most current copy
                 if ( MAGPIE_DEBUG > 1) {
                     debug("Got 304 for $url");
@@ -182,7 +183,7 @@ function fetch_rss ($url,$refresh=MAGPIE_CACHE_AGE) {
                 }
             }
             else {
-                $errormsg = "Failed to fetch $url. ";
+                $errormsg = "Failed to fetch $url ";
                 if ( $resp->status == '-100' ) {
                     $errormsg .= "(Request timed out after " . MAGPIE_FETCH_TIME_OUT . " seconds)";
                 }
@@ -234,12 +235,12 @@ function error ($errormsg, $lvl=E_USER_WARNING) {
         if ( $errormsg ) {
             $errormsg = "MagpieRSS: $errormsg";
             $MAGPIE_ERROR = $errormsg;
-            //trigger_error( $errormsg, $lvl);                
+            trigger_error( $errormsg, $lvl);                
         }
 }
 
 function debug ($debugmsg, $lvl=E_USER_NOTICE) {
-  trigger_error("MagpieRSS [debug] $debugmsg", $lvl);
+    trigger_error("MagpieRSS [debug] $debugmsg", $lvl);
 }
             
 /*=======================================================================*\
