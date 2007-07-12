@@ -1,6 +1,6 @@
 <?php
 /*
- V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+ V4.94 23 Jan 2007  (c) 2000-2007 John Lim (jlim#natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -49,7 +49,7 @@ function adodb_addslashes($s)
 {
 	$len = strlen($s);
 	if ($len == 0) return "''";
-	if (strncmp($s,"'",1) === 0 && substr(s,$len-1) == "'") return $s; // already quoted
+	if (strncmp($s,"'",1) === 0 && substr($s,$len-1) == "'") return $s; // already quoted
 	
 	return "'".addslashes($s)."'";
 }
@@ -73,12 +73,13 @@ class ADODB_postgres64 extends ADOConnection{
 	var $blobEncodeType = 'C';
 	var $metaColumnsSQL = "SELECT a.attname,t.typname,a.attlen,a.atttypmod,a.attnotnull,a.atthasdef,a.attnum 
 		FROM pg_class c, pg_attribute a,pg_type t 
-		WHERE relkind = 'r' AND (c.relname='%s' or c.relname = lower('%s')) and a.attname not like '....%%'
+		WHERE relkind in ('r','v') AND (c.relname='%s' or c.relname = lower('%s')) and a.attname not like '....%%'
 AND a.attnum > 0 AND a.atttypid = t.oid AND a.attrelid = c.oid ORDER BY a.attnum";
 
+	// used when schema defined
 	var $metaColumnsSQL1 = "SELECT a.attname, t.typname, a.attlen, a.atttypmod, a.attnotnull, a.atthasdef, a.attnum 
 FROM pg_class c, pg_attribute a, pg_type t, pg_namespace n 
-WHERE relkind = 'r' AND (c.relname='%s' or c.relname = lower('%s'))
+WHERE relkind in ('r','v') AND (c.relname='%s' or c.relname = lower('%s'))
  and c.relnamespace=n.oid and n.nspname='%s' 
 	and a.attname not like '....%%' AND a.attnum > 0 
 	AND a.atttypid = t.oid AND a.attrelid = c.oid ORDER BY a.attnum";
@@ -90,10 +91,10 @@ WHERE relkind = 'r' AND (c.relname='%s' or c.relname = lower('%s'))
 	var $hasAffectedRows = true;
 	var $hasLimit = false;	// set to true for pgsql 7 only. support pgsql/mysql SELECT * FROM TABLE LIMIT 10
 	// below suggested by Freek Dijkstra 
-	var $true = 't';		// string that represents TRUE for a database
-	var $false = 'f';		// string that represents FALSE for a database
+	var $true = 'TRUE';		// string that represents TRUE for a database
+	var $false = 'FALSE';		// string that represents FALSE for a database
 	var $fmtDate = "'Y-m-d'";	// used by DBDate() as the default date format used by the database
-	var $fmtTimeStamp = "'Y-m-d G:i:s'"; // used by DBTimeStamp as the default timestamp fmt.
+	var $fmtTimeStamp = "'Y-m-d H:i:s'"; // used by DBTimeStamp as the default timestamp fmt.
 	var $hasMoveFirst = true;
 	var $hasGenID = true;
 	var $_genIDSQL = "SELECT NEXTVAL('%s')";
@@ -101,10 +102,11 @@ WHERE relkind = 'r' AND (c.relname='%s' or c.relname = lower('%s'))
 	var $_dropSeqSQL = "DROP SEQUENCE %s";
 	var $metaDefaultsSQL = "SELECT d.adnum as num, d.adsrc as def from pg_attrdef d, pg_class c where d.adrelid=c.oid and c.relname='%s' order by d.adnum";
 	var $random = 'random()';		/// random function
-	var $autoRollback = true; // apparently pgsql does not autorollback properly before 4.3.4
+	var $autoRollback = true; // apparently pgsql does not autorollback properly before php 4.3.4
 							// http://bugs.php.net/bug.php?id=25404
 							
 	var $_bindInputArray = false; // requires postgresql 7.3+ and ability to modify database
+	var $disableBlobs = false; // set to true to disable blob checking, resulting in 2-5% improvement in performance.
 	
 	// The last (fmtTimeStamp is not entirely correct: 
 	// PostgreSQL also has support for time zones, 
@@ -159,7 +161,7 @@ a different OID if a database must be reloaded. */
 	}
 
 // I get this error with PHP before 4.0.6 - jlim
-// Warning: This compilation does not support pg_cmdtuples() in d:/inetpub/wwwroot/php/adodb/adodb-postgres.inc.php on line 44
+// Warning: This compilation does not support pg_cmdtuples() in adodb-postgres.inc.php on line 44
    function _affectedrows()
    {
    		if (!is_resource($this->_resultid) || get_resource_type($this->_resultid) !== 'pgsql result') return false;
@@ -172,13 +174,13 @@ a different OID if a database must be reloaded. */
 	{
 		if ($this->transOff) return true;
 		$this->transCnt += 1;
-		return @pg_Exec($this->_connectionID, "begin");
+		return @pg_Exec($this->_connectionID, "begin ".$this->_transmode);
 	}
 	
-	function RowLock($tables,$where) 
+	function RowLock($tables,$where,$flds='1 as ignore') 
 	{
 		if (!$this->transCnt) $this->BeginTrans();
-		return $this->GetOne("select 1 as ignore from $tables where $where for update");
+		return $this->GetOne("select $flds from $tables where $where for update");
 	}
 
 	// returns true/false. 
@@ -230,16 +232,19 @@ select viewname,'V' from pg_views where viewname like $mask";
 		return $ret;
 	}
 	
-	/*
+	
 	// if magic quotes disabled, use pg_escape_string()
 	function qstr($s,$magic_quotes=false)
 	{
 		if (!$magic_quotes) {
+			if (ADODB_PHPVER >= 0x5200) {
+				return  "'".pg_escape_string($this->_connectionID,$s)."'";
+			} 
 			if (ADODB_PHPVER >= 0x4200) {
 				return  "'".pg_escape_string($s)."'";
 			}
 			if ($this->replaceQuote[0] == '\\'){
-				$s = adodb_str_replace(array('\\',"\0"),array('\\\\',"\\\0"),$s);
+				$s = adodb_str_replace(array('\\',"\0"),array('\\\\',"\\\\000"),$s);
 			}
 			return  "'".str_replace("'",$this->replaceQuote,$s)."'"; 
 		}
@@ -248,7 +253,7 @@ select viewname,'V' from pg_views where viewname like $mask";
 		$s = str_replace('\\"','"',$s);
 		return "'$s'";
 	}
-	*/
+	
 	
 	
 	// Format date column in sql string given an input format that understands Y M D
@@ -303,6 +308,18 @@ select viewname,'V' from pg_views where viewname like $mask";
 				$s .= 'AM';
 				break;
 				
+			case 'w':
+				$s .= 'D';
+				break;
+			
+			case 'l':
+				$s .= 'DAY';
+				break;
+			
+			 case 'W':
+				$s .= 'WW';
+				break;
+
 			default:
 			// handle escape characters...
 				if ($ch == '\\') {
@@ -348,6 +365,22 @@ select viewname,'V' from pg_views where viewname like $mask";
 	} 
 	
 	/*
+	* Deletes/Unlinks a Blob from the database, otherwise it 
+	* will be left behind
+	*
+	* Returns TRUE on success or FALSE on failure.
+	*
+	* contributed by Todd Rogers todd#windfox.net
+	*/
+	function BlobDelete( $blob )
+	{
+		pg_exec ($this->_connectionID, "begin");
+		$result = @pg_lo_unlink($blob);
+		pg_exec ($this->_connectionID, "commit");
+		return( $result );
+	}
+
+	/*
 		Hueristic - not guaranteed to work.
 	*/
 	function GuessOID($oid)
@@ -383,7 +416,7 @@ select viewname,'V' from pg_views where viewname like $mask";
 		@pg_loclose($fd); 
 		if ($hastrans) @pg_exec($this->_connectionID,"commit"); 
 		return $realblob;
-	} 
+	}
 	
 	/* 
 		See http://www.postgresql.org/idocs/index.php?datatype-binary.html
@@ -394,6 +427,7 @@ select viewname,'V' from pg_views where viewname like $mask";
 	*/
 	function BlobEncode($blob)
 	{
+		if (ADODB_PHPVER >= 0x5200) return pg_escape_bytea($this->_connectionID, $blob);
 		if (ADODB_PHPVER >= 0x4200) return pg_escape_bytea($blob);
 		
 		/*92=backslash, 0=null, 39=single-quote*/
@@ -404,8 +438,13 @@ select viewname,'V' from pg_views where viewname like $mask";
 		// note that there is a pg_escape_bytea function only for php 4.2.0 or later
 	}
 	
+	// assumes bytea for blob, and varchar for clob
 	function UpdateBlob($table,$column,$val,$where,$blobtype='BLOB')
 	{
+	
+		if ($blobtype == 'CLOB') {
+    		return $this->Execute("UPDATE $table SET $column=" . $this->qstr($val) . " WHERE $where");
+		}
 		// do not use bind params which uses qstr(), as blobencode() already quotes data
 		return $this->Execute("UPDATE $table SET $column='".$this->BlobEncode($val)."'::bytea WHERE $where");
 	}
@@ -413,17 +452,24 @@ select viewname,'V' from pg_views where viewname like $mask";
 	function OffsetDate($dayFraction,$date=false)
 	{		
 		if (!$date) $date = $this->sysDate;
+		else if (strncmp($date,"'",1) == 0) {
+			$len = strlen($date);
+			if (10 <= $len && $len <= 12) $date = 'date '.$date;
+			else $date = 'timestamp '.$date;
+		}
 		return "($date+interval'$dayFraction days')";
 	}
 	
 
 	// for schema support, pass in the $table param "$schema.$tabname".
 	// converts field names to lowercase, $upper is ignored
+	// see http://phplens.com/lens/lensforum/msgs.php?id=14018 for more info
 	function &MetaColumns($table,$normalize=true) 
 	{
 	global $ADODB_FETCH_MODE;
 	
 		$schema = false;
+		$false = false;
 		$this->_findschema($table,$schema);
 		
 		if ($normalize) $table = strtolower($table);
@@ -438,7 +484,6 @@ select viewname,'V' from pg_views where viewname like $mask";
 		$ADODB_FETCH_MODE = $save;
 		
 		if ($rs === false) {
-			$false = false;
 			return $false;
 		}
 		if (!empty($this->metaKeySQL)) {
@@ -491,6 +536,8 @@ select viewname,'V' from pg_views where viewname like $mask";
 			$fld->name = $rs->fields[0];
 			$fld->type = $rs->fields[1];
 			$fld->max_length = $rs->fields[2];
+			$fld->attnum = $rs->fields[6];
+			
 			if ($fld->max_length <= 0) $fld->max_length = $rs->fields[3]-4;
 			if ($fld->max_length <= 0) $fld->max_length = -1;
 			if ($fld->type == 'numeric') {
@@ -505,16 +552,15 @@ select viewname,'V' from pg_views where viewname like $mask";
 			}
 
 			//Freek
-			if ($rs->fields[4] == $this->true) {
-				$fld->not_null = true;
-			}
+			$fld->not_null = $rs->fields[4] == 't';
+			
 			
 			// Freek
 			if (is_array($keys)) {
 				foreach($keys as $key) {
-					if ($fld->name == $key['column_name'] AND $key['primary_key'] == $this->true) 
+					if ($fld->name == $key['column_name'] AND $key['primary_key'] == 't') 
 						$fld->primary_key = true;
-					if ($fld->name == $key['column_name'] AND $key['unique_key'] == $this->true) 
+					if ($fld->name == $key['column_name'] AND $key['unique_key'] == 't') 
 						$fld->unique = true; // What name is more compatible?
 				}
 			}
@@ -525,7 +571,10 @@ select viewname,'V' from pg_views where viewname like $mask";
 			$rs->MoveNext();
 		}
 		$rs->Close();
-		return $retarr;	
+		if (empty($retarr))
+			return  $false;
+		else
+			return $retarr;	
 		
 	}
 
@@ -543,14 +592,14 @@ FROM pg_catalog.pg_class c
 JOIN pg_catalog.pg_index i ON i.indexrelid=c.oid 
 JOIN pg_catalog.pg_class c2 ON c2.oid=i.indrelid
 	,pg_namespace n 
-WHERE (c2.relname=\'%s\' or c2.relname=lower(\'%s\')) and c.relnamespace=c2.relnamespace and c.relnamespace=n.oid and n.nspname=\'%s\' AND i.indisprimary=false';
+WHERE (c2.relname=\'%s\' or c2.relname=lower(\'%s\')) and c.relnamespace=c2.relnamespace and c.relnamespace=n.oid and n.nspname=\'%s\'';
 				} else {
 	                $sql = '
 SELECT c.relname as "Name", i.indisunique as "Unique", i.indkey as "Columns"
 FROM pg_catalog.pg_class c
 JOIN pg_catalog.pg_index i ON i.indexrelid=c.oid
 JOIN pg_catalog.pg_class c2 ON c2.oid=i.indrelid
-WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
+WHERE (c2.relname=\'%s\' or c2.relname=lower(\'%s\'))';
     			}
 				            
                 if ($primary == FALSE) {
@@ -574,12 +623,14 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 					return $false;
                 }
 				
-                $col_names = $this->MetaColumnNames($table,true);
+                $col_names = $this->MetaColumnNames($table,true,true); 
+				//3rd param is use attnum, 
+				// see http://sourceforge.net/tracker/index.php?func=detail&aid=1451245&group_id=42718&atid=433976
                 $indexes = array();
                 while ($row = $rs->FetchRow()) {
                         $columns = array();
                         foreach (explode(' ', $row[2]) as $col) {
-                                $columns[] = $col_names[$col - 1];
+                                $columns[] = $col_names[$col];
                         }
                         
                         $indexes[$row[0]] = array(
@@ -598,7 +649,7 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 	function _connect($str,$user='',$pwd='',$db='',$ctype=0)
 	{
 		
-		if (!function_exists('pg_pconnect')) return null;
+		if (!function_exists('pg_connect')) return null;
 		
 		$this->_errorMsg = false;
 		
@@ -610,8 +661,9 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 		   	if ($str)  {
 			 	$host = split(":", $str);
 				if ($host[0]) $str = "host=".adodb_addslashes($host[0]);
-				else $str = 'host=localhost';
+				else $str = '';
 				if (isset($host[1])) $str .= " port=$host[1]";
+				else if (!empty($this->port)) $str .= " port=".$this->port;
 			}
 		   		if ($user) $str .= " user=".$user;
 		   		if ($pwd)  $str .= " password=".$pwd;
@@ -635,6 +687,12 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 		}
 		if ($this->_connectionID === false) return false;
 		$this->Execute("set datestyle='ISO'");
+		
+		$info = $this->ServerInfo();
+		$this->pgVersion = (float) substr($info['version'],0,3);
+		if ($this->pgVersion >= 7.1) { // good till version 999
+			$this->_nestedSQL = true;
+		}
 		return true;
 	}
 	
@@ -657,7 +715,7 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 	// returns queryID or false
 	function _query($sql,$inputarr)
 	{
-		
+		$this->_errorMsg = false;
 		if ($inputarr) {
 		/*
 			It appears that PREPARE/EXECUTE is slower for many queries.
@@ -687,6 +745,7 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 			if ($execp) $exsql = "EXECUTE $plan ($execp)";
 			else $exsql = "EXECUTE $plan";
 			
+			
 			$rez = @pg_exec($this->_connectionID,$exsql);
 			if (!$rez) {
 			# Perhaps plan does not exist? Prepare/compile plan.
@@ -711,13 +770,12 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 				}
 				$s = "PREPARE $plan ($params) AS ".substr($sql,0,strlen($sql)-2);		
 				//adodb_pr($s);
-				pg_exec($this->_connectionID,$s);
-				echo $this->ErrorMsg();
+				$rez = pg_exec($this->_connectionID,$s);
+				//echo $this->ErrorMsg();
 			}
-			
-			$rez = pg_exec($this->_connectionID,$exsql);
+			if ($rez)
+				$rez = pg_exec($this->_connectionID,$exsql);
 		} else {
-			$this->_errorMsg = false;
 			//adodb_backtrace();
 			$rez = pg_exec($this->_connectionID,$sql);
 		}
@@ -733,6 +791,11 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 		return $rez;
 	}
 	
+	function _errconnect()
+	{
+		if (defined('DB_ERROR_CONNECT_FAILED')) return DB_ERROR_CONNECT_FAILED;
+		else return 'Database connection failed';
+	}
 
 	/*	Returns: the last error message from previous database operation	*/	
 	function ErrorMsg() 
@@ -746,9 +809,9 @@ WHERE c2.relname=\'%s\' or c2.relname=lower(\'%s\')';
 			
 			if (!empty($this->_connectionID)) {
 				$this->_errorMsg = @pg_last_error($this->_connectionID);
-			} else $this->_errorMsg = @pg_last_error();
+			} else $this->_errorMsg = $this->_errconnect();
 		} else {
-			if (empty($this->_connectionID)) $this->_errorMsg = @pg_errormessage();
+			if (empty($this->_connectionID)) $this->_errconnect();
 			else $this->_errorMsg = @pg_errormessage($this->_connectionID);
 		}
 		return $this->_errorMsg;
@@ -814,9 +877,10 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 		{
 		case ADODB_FETCH_NUM: $this->fetchMode = PGSQL_NUM; break;
 		case ADODB_FETCH_ASSOC:$this->fetchMode = PGSQL_ASSOC; break;
-		default:
+		
 		case ADODB_FETCH_DEFAULT:
-		case ADODB_FETCH_BOTH:$this->fetchMode = PGSQL_BOTH; break;
+		case ADODB_FETCH_BOTH:
+		default: $this->fetchMode = PGSQL_BOTH; break;
 		}
 		$this->adodbFetchMode = $mode;
 		$this->ADORecordSet($queryID);
@@ -837,6 +901,8 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 		$this->_numOfFields = @pg_numfields($qid);
 		
 		// cache types for blob decode check
+		// apparently pg_fieldtype actually performs an sql query on the database to get the type.
+		if (empty($this->connection->noBlobs))
 		for ($i=0, $max = $this->_numOfFields; $i < $max; $i++) {  
 			if (pg_fieldtype($qid,$i) == 'bytea') {
 				$this->_blobArr[$i] = pg_fieldname($qid,$i);
@@ -921,7 +987,7 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 
 		$this->fields = @pg_fetch_array($this->_queryID,$this->_currentRow,$this->fetchMode);
 		
-	if ($this->fields && isset($this->_blobArr)) $this->_fixblobs();
+		if ($this->fields && isset($this->_blobArr)) $this->_fixblobs();
 			
 		return (is_array($this->fields));
 	}
@@ -947,6 +1013,8 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 				case 'NAME':
 		   		case 'BPCHAR':
 				case '_VARCHAR':
+				case 'INET':
+				case 'MACADDR':
 					if ($len <= $this->blobSize) return 'C';
 				
 				case 'TEXT':
@@ -966,6 +1034,8 @@ class ADORecordSet_postgres64 extends ADORecordSet{
 				case 'DATE':
 					return 'D';
 				
+				
+				case 'TIMESTAMP WITHOUT TIME ZONE':
 				case 'TIME':
 				case 'DATETIME':
 				case 'TIMESTAMP':

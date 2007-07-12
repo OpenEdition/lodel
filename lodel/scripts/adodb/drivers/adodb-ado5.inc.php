@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.94 23 Jan 2007  (c) 2000-2007 John Lim (jlim#natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -8,7 +8,7 @@ Set tabs to 4 for best viewing.
   
   Latest version is available at http://adodb.sourceforge.net
   
-	Microsoft ADO data driver. Requires ADO. Works only on MS Windows.
+	Microsoft ADO data driver. Requires ADO. Works only on MS Windows. PHP5 compat version.
 */
 
 // security - hide paths
@@ -58,8 +58,22 @@ class ADODB_ado extends ADOConnection {
 	// you can also pass a connection string like this:
 	//
 	// $DB->Connect('USER ID=sa;PASSWORD=pwd;SERVER=mangrove;DATABASE=ai',false,false,'SQLOLEDB');
-	function _connect($argHostname, $argUsername, $argPassword, $argProvider= 'MSDASQL')
+	function _connect($argHostname, $argUsername, $argPassword,$argDBorProvider, $argProvider= '')
 	{
+	// two modes
+	//	-	if $argProvider is empty, we assume that $argDBorProvider holds provider -- this is for backward compat
+	//	- 	if $argProvider is not empty, then $argDBorProvider holds db
+	
+		
+		 if ($argProvider) {
+		 	$argDatabasename = $argDBorProvider;
+		 } else {
+		 	$argDatabasename = '';
+		 	if ($argDBorProvider) $argProvider = $argDBorProvider;
+			else $argProvider = 'MSDASQL';
+		}
+		
+		
 		try {
 		$u = 'UID';
 		$p = 'PWD';
@@ -86,7 +100,8 @@ class ADODB_ado extends ADOConnection {
 			$argProvider = "Microsoft.Jet.OLEDB.4.0"; // Microsoft Jet Provider
 		
 		if ($argProvider) $dbc->Provider = $argProvider;	
-		
+
+		if ($argDatabasename) $argHostname .= ";DATABASE=$argDatabasename";		
 		if ($argUsername) $argHostname .= ";$u=$argUsername";
 		if ($argPassword)$argHostname .= ";$p=$argPassword";
 		
@@ -205,9 +220,6 @@ class ADODB_ado extends ADOConnection {
 		return $arr;
 	}
 	
-
-
-	
 	/* returns queryID or false */
 	function &_query($sql,$inputarr=false) 
 	{
@@ -216,6 +228,9 @@ class ADODB_ado extends ADOConnection {
 		$dbc = $this->_connectionID;
 		
 	//	return rs	
+	
+		$false = false;
+		
 		if ($inputarr) {
 			
 			if (!empty($this->charPage))
@@ -236,22 +251,25 @@ class ADODB_ado extends ADOConnection {
 			$p = false;
 			$rs = $oCmd->Execute();
 			$e = $dbc->Errors;
-			if ($dbc->Errors->Count > 0) return false;
+			if ($dbc->Errors->Count > 0) return $false;
 			return $rs;
 		}
 		
 		$rs = @$dbc->Execute($sql,$this->_affectedRows, $this->_execute_option);
 			
-		if ($dbc->Errors->Count > 0) return false;
-		if (! $rs) return false;
+		if ($dbc->Errors->Count > 0) return $false;
+		if (! $rs) return $false;
 		
-		if ($rs->State == 0) return true; // 0 = adStateClosed means no records returned
+		if ($rs->State == 0) {
+			$true = true;
+			return $true; // 0 = adStateClosed means no records returned
+		}
 		return $rs;
 		
 		} catch (exception $e) {
 			
 		}
-		return false;
+		return $false;
 	}
 
 	
@@ -290,10 +308,18 @@ class ADODB_ado extends ADOConnection {
 
 	function ErrorMsg() 
 	{
-		$errc = $this->_connectionID->Errors;
-		if ($errc->Count == 0) return '';
-		$err = $errc->Item($errc->Count-1);
-		return $err->Description;
+		if (!$this->_connectionID) return "No connection established";
+		$errmsg = '';
+		
+		try {
+			$errc = $this->_connectionID->Errors;
+			if (!$errc) return "No Errors object found";
+			if ($errc->Count == 0) return '';
+			$err = $errc->Item($errc->Count-1);
+			$errmsg = $err->Description;
+		}catch(exception $e) {
+		}
+		return $errmsg;
 	}
 	
 	function ErrorNo() 
@@ -341,7 +367,7 @@ class ADORecordSet_ado extends ADORecordSet {
 
 
 	// returns the field object
-	function FetchField($fieldOffset = -1) {
+	function &FetchField($fieldOffset = -1) {
 		$off=$fieldOffset+1; // offsets begin at 1
 		
 		$o= new ADOFieldObject();
@@ -561,8 +587,11 @@ class ADORecordSet_ado extends ADORecordSet {
 			case 135: // timestamp
 				if (!strlen((string)$f->value)) $this->fields[] = false;
 				else {
-					if (!is_numeric($f->value)) $val = variant_date_to_timestamp($f->value);
-					else $val = $f->value;
+					if (!is_numeric($f->value)) # $val = variant_date_to_timestamp($f->value);
+						// VT_DATE stores dates as (float) fractional days since 1899/12/30 00:00:00
+						$val= (float) variant_cast($f->value,VT_R8)*3600*24-2209161600;
+					else 
+						$val = $f->value;
 					$this->fields[] = adodb_date('Y-m-d H:i:s',$val);
 				}
 				break;			

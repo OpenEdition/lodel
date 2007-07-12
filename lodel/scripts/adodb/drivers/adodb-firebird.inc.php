@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.94 23 Jan 2007  (c) 2000-2007 John Lim (jlim#natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -19,7 +19,7 @@ class ADODB_firebird extends ADODB_ibase {
 	var $databaseType = "firebird";	
 	var $dialect = 3;
 	
-	var $sysTimeStamp = "cast('NOW' as timestamp)";
+	var $sysTimeStamp = "CURRENT_TIMESTAMP"; //"cast('NOW' as timestamp)";
 	
 	function ADODB_firebird()
 	{	
@@ -46,6 +46,8 @@ class ADODB_firebird extends ADODB_ibase {
 	//		SELECT col1, col2 FROM TABLE ORDER BY col1 ROWS 3 TO 7 -- first 5 skip 2
 	function &SelectLimit($sql,$nrows=-1,$offset=-1,$inputarr=false, $secs=0)
 	{
+		$nrows = (integer) $nrows;
+		$offset = (integer) $offset;
 		$str = 'SELECT ';
 		if ($nrows >= 0) $str .= "FIRST $nrows "; 
 		$str .=($offset>=0) ? "SKIP $offset " : '';

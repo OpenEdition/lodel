@@ -1,7 +1,7 @@
 <?php
 
 /*
-V4.54 5 Nov 2004  (c) 2000-2004 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.94 23 Jan 2007  (c) 2000-2007 John Lim (jlim#natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -28,6 +28,23 @@ class ADODB_mysqlt extends ADODB_mysql {
 	function ADODB_mysqlt() 
 	{			
 	global $ADODB_EXTENSION; if ($ADODB_EXTENSION) $this->rsPrefix .= 'ext_';
+	}
+	
+	/* set transaction mode
+	
+	SET [GLOBAL | SESSION] TRANSACTION ISOLATION LEVEL
+{ READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE }
+
+	*/
+	function SetTransactionMode( $transaction_mode ) 
+	{
+		$this->_transmode  = $transaction_mode;
+		if (empty($transaction_mode)) {
+			$this->Execute('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+			return;
+		}
+		if (!stristr($transaction_mode,'isolation')) $transaction_mode = 'ISOLATION LEVEL '.$transaction_mode;
+		$this->Execute("SET SESSION TRANSACTION ".$transaction_mode);
 	}
 	
 	function BeginTrans()
@@ -59,6 +76,14 @@ class ADODB_mysqlt extends ADODB_mysql {
 		return true;
 	}
 	
+	function RowLock($tables,$where='',$flds='1 as adodb_ignore') 
+	{
+		if ($this->transCnt==0) $this->BeginTrans();
+		if ($where) $where = ' where '.$where;
+		$rs =& $this->Execute("select $flds from $tables $where for update");
+		return !empty($rs); 
+	}
+	
 }
 
 class ADORecordSet_mysqlt extends ADORecordSet_mysql{	
@@ -70,21 +95,24 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 			global $ADODB_FETCH_MODE;
 			$mode = $ADODB_FETCH_MODE;
 		}
+		
 		switch ($mode)
 		{
 		case ADODB_FETCH_NUM: $this->fetchMode = MYSQL_NUM; break;
 		case ADODB_FETCH_ASSOC:$this->fetchMode = MYSQL_ASSOC; break;
-		default:
+		
 		case ADODB_FETCH_DEFAULT:
-		case ADODB_FETCH_BOTH:$this->fetchMode = MYSQL_BOTH; break;
+		case ADODB_FETCH_BOTH:
+		default: $this->fetchMode = MYSQL_BOTH; break;
 		}
 	
+		$this->adodbFetchMode = $mode;
 		$this->ADORecordSet($queryID);	
 	}
 	
 	function MoveNext()
 	{
-		if (@$this->fields =& mysql_fetch_array($this->_queryID,$this->fetchMode)) {
+		if (@$this->fields = mysql_fetch_array($this->_queryID,$this->fetchMode)) {
 			$this->_currentRow += 1;
 			return true;
 		}
@@ -98,7 +126,7 @@ class ADORecordSet_mysqlt extends ADORecordSet_mysql{
 
 class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {	
 
-	function ADORecordSet_ext_mysqli($queryID,$mode=false) 
+	function ADORecordSet_ext_mysqlt($queryID,$mode=false) 
 	{
 		if ($mode === false) { 
 			global $ADODB_FETCH_MODE;
@@ -108,11 +136,13 @@ class ADORecordSet_ext_mysqlt extends ADORecordSet_mysqlt {
 		{
 		case ADODB_FETCH_NUM: $this->fetchMode = MYSQL_NUM; break;
 		case ADODB_FETCH_ASSOC:$this->fetchMode = MYSQL_ASSOC; break;
-		default:
+		
 		case ADODB_FETCH_DEFAULT:
-		case ADODB_FETCH_BOTH:$this->fetchMode = MYSQL_BOTH; break;
+		case ADODB_FETCH_BOTH:
+		default: 
+			$this->fetchMode = MYSQL_BOTH; break;
 		}
-	
+		$this->adodbFetchMode = $mode;
 		$this->ADORecordSet($queryID);	
 	}
 	
