@@ -850,7 +850,7 @@ function convertCSSstyle ($style) {
     if (preg_match("/^font-size:(\d\d?%|\d+(\.\d)?pt)$/",$styles[$j]) && $styles[$j+1]) {
       if ($styles[$j+1]=="vertical-align:sub") {
 	$open.="<sub>";
-	$close.="</sub>".$close;
+	$close="</sub>".$close;
 	$styles[$j]=$styles[$j+1]="";
       } elseif (preg_match("/vertical-align:(super|\d\d?%)/",$styles[$j+1])) {
 	$open.="<sup>";
