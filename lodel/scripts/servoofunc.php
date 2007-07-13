@@ -71,6 +71,4 @@ class ServOO extends ServOO_Client {
   } // constructor
 }
 
-
-
 ?>
