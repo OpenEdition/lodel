@@ -167,24 +167,18 @@
 
 <DEFMACRO NAME="CHANGE_ENTRIES_STATUS">
 	<IF COND="([#STATUS] EQ 1) OR ([#STATUS] EQ 32)">
-		 <LOOP NAME="rightonentity" ACTION="unpublish">
-		   	<DO>
-				<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a></span>
-		   	</DO>
-		    <ALTERNATIVE>
+		<IF COND="[#LODELUSER.EDITOR]">
+			<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a></span>
+		<ELSE/>
 			<span class="item inactif">[@EDITION.UNPUBLISH]</span>
-		    </ALTERNATIVE>
-                   </LOOP>	
+		</IF>	
 	<ELSE/>
 		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -32) ">
-	 		<LOOP NAME="rightonentity" ACTION="publish">
-	  			<DO>
-					<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a></span>
-	   			</DO>
-		    		<ALTERNATIVE>
-					<span class="item inactif">[@EDITION.PUBLISH]</span>
-                   		</ALTERNATIVE>
-			</LOOP>
+	 		<IF COND="[#LODELUSER.EDITOR]">
+				<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a></span>
+			<ELSE/>
+				<span class="item inactif">[@EDITION.PUBLISH]</span>
+			</IF>
 		<ELSE/>
 			<span class="item inactif">[@EDITION.DRAFT]</span>
 		</IF>
