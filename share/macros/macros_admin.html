@@ -143,7 +143,9 @@
 <DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONTAL="[#TITLE]">
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
-	<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
+	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
+		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
+	</IF>
 	<span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.EDIT]</a></span>
 
 	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
@@ -158,6 +160,9 @@
 	  <ELSE/>
 	  <span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>
 	  </IF>
+	</IF>
+	<IF COND="[#LO] NE 'entries' AND [#LO] NE 'persons'">
+		<span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>
 	</IF>
 <ELSE/>
 	 <span class="item inactif">[@COMMON.EDIT]</span>
