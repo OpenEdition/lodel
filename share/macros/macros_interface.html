@@ -762,7 +762,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form id="searchform" action="search.php" method="get">
+<form id="searchform" action="search.[#EXTENSIONSCRIPTS]" method="get">
 <fieldset>
 <legend>[@COMMON.SEARCH_ENGINE]</legend>
 <input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
@@ -815,9 +815,9 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 	<IF COND="![#CURRENTURL|strpos('lodel/edition')]">
-		<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.php" method="get">
+		<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.[#EXTENSIONSCRIPTS]" method="get">
 	<ELSE />
-		<form id="lightSearchForm" action="search.php" method="get">
+		<form id="lightSearchForm" action="search.[#EXTENSIONSCRIPTS]" method="get">
 	</IF>
 		<fieldset>
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
