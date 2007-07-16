@@ -1655,6 +1655,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
+	<IF COND="[#CLASSTYPE] EQ 'entities'">
 	<ul class="actions">
 		<li>&nbsp;</li>
 	<IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')]">
@@ -1683,6 +1684,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</LOOP>
 		<li><span class="inactif">[@COMMON.DELETE]</span></li>
 	</ul>
+	</IF>
 </DEFMACRO>
 
 
