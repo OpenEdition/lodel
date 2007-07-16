@@ -190,6 +190,7 @@ $view->renderCached($context, 'index');
 function printEntities($id, $identifier, &$context)
 {
 	global $lodeluser, $home, $db;
+	$context['classtype'] = 'entities';
 	$critere = $lodeluser['visitor'] ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
 
 	// cherche le document, et le template
@@ -248,6 +249,7 @@ function printEntities($id, $identifier, &$context)
 function printIndex($id, $classtype, &$context)
 {
 	global $lodeluser, $home, $db;
+	$context['classtype'] = $classtype;
 	switch($classtype) {
 	case 'persons':
 		$typetable = '#_TP_persontypes';
