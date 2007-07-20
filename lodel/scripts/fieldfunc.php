@@ -47,7 +47,7 @@
 // Champs génériques pour les types d'index
 $GLOBALS['g_entrytypes_fields'] = array ('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
 // Champs génériques pour les types d'index de personnes
-$GLOBALS['g_persontypes_fields'] = array("DC.Creator","DC.Contributor");
+$GLOBALS['g_persontypes_fields'] = array('DC.Creator', 'DC.Contributor');
 //Champs génériques pour les entités
 $GLOBALS['g_entities_fields'] = array(
 					// Champs Dublin Core
@@ -63,6 +63,7 @@ $GLOBALS['g_entities_fields'] = array(
 					'DC.Relation',
 					'DC.Coverage',
 					'DC.Rights',
+					'DC.Creator',
 					'DCTERMS.accessRights',
 					'DCTERMS.bibliographicCitation',
 					'DCTERMS.isPartOf',
