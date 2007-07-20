@@ -34,32 +34,53 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
-include 'siteconfig.php';
-include 'lang.php';
-include 'auth.php';
-authenticate(LEVEL_VISITOR);
+require_once 'siteconfig.php';
+require_once 'lang.php';
+require_once 'auth.php';
 
+if ($_GET['insert'] == 'mets') {
+	// authentification avec pour niveau minimum administrateur d'un site
+	authenticate(LEVEL_ADMIN);
 
-if ($_GET['page']) { // call a special page (and template)
-  $page = $_GET['page'];
-  if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-		die('invalid page');
+	// insertion du METS dans la base
+	require_once ('mets_insert.php');
+	$mets = new mets_insert();
+	$partners = $mets->partners;
+	foreach($partners as $partner) {
+		$dir_revues = $mets->get_revues_dir($partner['import_directory']);
+		foreach ($dir_revues as $dir) {
+			$revue = array();
+			$revue['partner_Lodel_id'] = $partner['Lodel_id'];
+			$revue['directory'] = $dir;
+			$revue['mets'] = $partner['mets_directory'];
+			$revue['dc'] = $partner['dc_directory'];
+			$mets->parse_mets($revue); // insère les données de la revue dans la base, à partir du METS
+			$mets->parse_dc($revue); // mets à jour les données avec le dublin core
+		}
 	}
-  require 'view.php';
-  $view = &View::getView();
-  $view->renderCached($context, $page);
-  exit;
-}
+} else {
+	authenticate(LEVEL_VISITOR);
+	if ($_GET['page']) { // call a special page (and template)
+		$page = $_GET['page'];
+	  	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
+			die('invalid page');
+		}
+  	require 'view.php';
+  	$view = &View::getView();
+  	$view->renderCached($context, $page);
+  	exit;
+	}
 
 
-require 'controler.php';
-$authorized_logics = array('entrytypes', 'persontypes',
+	require 'controler.php';
+	$authorized_logics = array('entrytypes', 'persontypes',
 					'entries', 'persons',
 					'tablefieldgroups', 'tablefields', 'indextablefields',
 					'translations', 'texts',
@@ -68,7 +89,8 @@ $authorized_logics = array('entrytypes', 'persontypes',
 					'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 					'internalstyles', 'characterstyles', 'entities_index',
 					'filebrowser', 'xml', 'data');
-$Controler = new controler($authorized_logics);
+	$Controler = new controler($authorized_logics);
+}
 
 function loop_classtypes($context, $funcname)
 {
