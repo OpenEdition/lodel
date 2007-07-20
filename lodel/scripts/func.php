@@ -832,15 +832,15 @@ function rightonentity ($action, $context)
 		return ($GLOBALS['lodeluser']['editor'] ||  ($GLOBALS['lodeluser']['redactor'] && $context['status']<8));// &&  $context['id'];
 		break;
 	case 'delete' :
-		return abs($context['status'])<8 && $editorok;
+		return (abs($context['status'])<8 && $editorok) || ($context['status']<0 && $redactorok);
 		break;
 	case 'edit':
 	case 'advanced' :
-	case 'publish' :
-	case 'move' :
-	case 'changerank' :
 		return $editorok || $redactorok;
 		break;
+	case 'move' :
+	case 'changerank' :
+	case 'publish' :
 	case 'unpublish' :
 	case 'protect' :
 		return $editorok;
