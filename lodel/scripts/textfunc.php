@@ -757,7 +757,7 @@ function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
 	static $count;
 	
 	++$count;
-	$repl = $arg1. $arg2. 'id="pn'.$count.'"'.$arg3;
+	$repl = $arg1. $arg2. ' id="pn'.$count.'"'.$arg3;
 	$repl .= '<span class="paranumber">'.$count.'</span>';
 	return $repl;
 }
