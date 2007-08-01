@@ -816,6 +816,8 @@ function paranumber(&$texte, $styles='texte')
 	$replacer = '<td><p class="texte" dir="[^"]*">\\2\\3\\5\\6\\7</p></td>';
 	
 	$texte = preg_replace($regex, $replacer, $texte);
+	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
+
 	return $texte;
 }
 
