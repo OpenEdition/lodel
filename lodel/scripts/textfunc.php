@@ -805,17 +805,17 @@ function paranumber(&$texte, $styles='texte')
 	}
 
 
-	// on formate les balises <td>, <li> pour faciliter la reconnaissance de la balise dans la regex
+	// on formate les balises de tableau et <li> pour faciliter la reconnaissance de la balise dans la regex
 	
-	$search = array ('/<td\b[^>]*>/', '/<li\b[^>]*>/');
-	$replace = array ('<td>', '<li>');
-
+	$search = array ('/<table\b[^>]*>/', '/<tr\b[^>]*>/', '/<td\b[^>]*>/', '/<li\b[^>]*>/');
+	$replace = array ('<table>', '<tr>', '<td>', '<li>');
+	
 	$texte = preg_replace($search, $replace, $texte);
-
-	preg_match($regexp,$texte,$matches);
-
-	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
-
+	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
+	$regex = '`(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)|(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)`U';
+	$replacer = '<td><p class="texte" dir="[^"]*">\\2\\3\\5\\6\\7</p></td>';
+	
+	$texte = preg_replace($regex, $replacer, $texte);
 	return $texte;
 }
 
@@ -908,7 +908,7 @@ function notesmarginales(&$texte, $coupe) {
 	
 
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
-	$regexppar = '/(((<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>))|(<h[0-9] dir=[^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)/';
+	$regexppar = '/(((<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>))|(<h[0-9] dir=[^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>.*<\/table>)/';
 	
 
 	preg_match_all($regexppar,$texte,$paragraphes);
