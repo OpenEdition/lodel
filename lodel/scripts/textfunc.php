@@ -968,4 +968,172 @@ function notesmarginales(&$texte, $coupe) {
 	return $retour;
 }
 
+/** Extrait les images au sein du texte pour en faire une version petite taille et fournir un lien vers une version haute résolution dans un popup 
+* @author Bruno Cénou
+* @author Pierre-Alain Mignot
+* @param  string $text le texte à parser
+* @param  integer $width la largeur souhaitée pour les images dans le texte
+* @param  string $titlePos la position du titre de l'image dans le doc stylé
+* @param  integer $max la largeur maximale du popup
+* @param  integer $min la largeur minimale du popup
+*/
+
+function iconifier($text, $width=150, $titlePos='up', $max=640, $min=400){
+	if(!$text) return;
+	preg_match_all("|(<a[^>]+href=\"[^>]+\"[^>]*>)?<img[^>]+src=\"([^\">]+)\" alt=\"[^\">]+\" ([^>]*)/>|U", $text, $result, PREG_PATTERN_ORDER);
+	preg_match_all("`<p class=\"titreillustration\"[^>]*>.*</p>`U", $text, $regs, PREG_PATTERN_ORDER);
+	foreach($result[2] as $k=>$v){
+		$info = getimagesize($v);
+		$w = $info[0];
+		$h = $info[1];
+		if($w > $width){
+			$vign = $w > $width ? vignette($v, $width) : $v;
+			if($w > $max){
+				$full = vignette($v, $max);
+				$info = getimagesize($full);
+				$w = $info[0];
+				$h = $info[1];
+			}else{
+				$full = $v;
+			}
+			$w = $w < $min ? $min : $w;
+			$w += 100;
+			$h += 300;
+			$stop = !$regs[0][$k+1] ? strlen($text) : strpos($text, $regs[0][$k+1]);
+			$title = getImageTitle($text, $v, $titlePos, $stop);
+			$desc = getImageDesc($text, $v);
+			$credits = getImageCredits($text, $v);
+			$link = "<div class=\"textIcon\">";
+ 			if($titlePos == 'up') $link .= "\n".$title;
+			
+			$link .= "<a href=\"image.php?source=$full&amp;titlepos=$titlePos\" rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\">".str_replace($v, $vign, $result[0][$k])."</a>";
+			$link .= "<a class=\"fullSize\" href=\"image.php?source=$full&amp;titlepos=$titlePos\"  rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\"><img src=\"images/magnify.png\" alt=\"Agrandir\" /></a>";
+ 			if($titlePos == 'down') $link .= "\n".$title;
+ 			$link .= "\n".$desc."\n".$credits."\n";
+			$link .= "</div>";
+ 			$text = str_replace(array($title, $desc, $credits), '', $text);
+			$link = str_replace($result[3][$k], '', $link);
+			$text = str_replace($result[0][$k], $link, $text);
+			$text = str_replace($result[1][$k], '', $text);
+		}
+	}
+	$text = str_replace("</a></a>", "</a>", $text);
+	return($text);
+}
+
+/** Récupère le titre d'une image lorsque celui-ci se trouve au dessus ou au dessous de celle-là
+* @author Bruno Cénou
+* @author Pierre-Alain Mignot
+* @param  string $text le texte à parser
+* @param  mixed $source le nom du fichier image ou sa position dans le texte
+* @param  string $titlePos la position du titre de l'image dans le doc stylé
+* @param  integer $posi position de l'image suivante
+*/
+
+function getImageTitle($text, $source, $titlePos='up', $posi='0')
+{	
+	if(!$text) return;
+	if($titlePos == 'up'){
+		if(!is_numeric($source) && $posi == '0')
+		{ // ici on a pas la position de l'image suivante pour delimiter la recherche regex
+		// on le calcule
+			$test = explode('-', $source);
+			$nb = substr($test[1], 0, 1);
+			$nb++; //chose faite
+			//on cree maintenant le nom de l'image
+			$testing = $test[0]."-".$nb.".jpg";
+			//on recherche sa position dans le texte
+			$posi = strpos($text, $testing);
+			// si on ne trouve pas d'image suivante, $text reste inchange, sinon on le coupe
+			// pour obtenir seulement la portion du texte qui nous interesse
+			$text = !$posi ? $text : substr($text, 0 , $posi);
+			// on prepare notre regex
+			$regex = "`(<p class=\"titreillustration\" dir=\"ltr\">.+</p><p class=\"texte\" dir=\"ltr\"><img src=\"".$source."\" alt=\"[^\"]*\" style=\"[^\"]*\"[^/>]*/>)`U";
+			// on l'execute
+			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
+			// on met dans $titre un tableau contenant : 1. le titre 2. l'img 3.une deuxieme image ? pas normal
+			$titre = explode('<p class="titreillustration" dir="ltr">', array_pop($regs[1]));
+			$titre = explode('<img', array_pop($titre));
+			if(sizeof($titre) > 2)
+			{ // tiens il y a une autre image .. notre image n'a donc pas de titre, hop on sort
+				return;
+			}
+			// on renvoit le titre
+			return $titre[0];
+		}
+		else
+		{// on connait la position de l'image suivante, on coupe le texte
+			$text = substr($text, 0 , $posi);
+			// on prepare la regex et on l'execute
+			$regex = "`(<p class=\"titreillustration\" dir=\"ltr\">.*</p>[^<]*<p class=\"texte\" dir=\"ltr\"><img src=\"".$source."\" alt=\"[^\"]*\" style=\"[^\"]*\"[^/>]*/>)`U";
+			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
+			// on recupere le titre
+			$titre = explode('<img', array_pop($regs[1]));
+		}
+		return($titre[0]);
+	}elseif($titlePos == 'down'){
+		$text = str_replace($source, '', strstr($text, $source));
+		if(FALSE !== strpos($text, '<img')){
+			$text = substr($text, 0, strpos($text, '<img'));
+		}
+		if(FALSE !== strpos($text, '<table')){
+			$text = substr($text, 0, strpos($text, '<table'));
+		}
+		preg_match("|(<p class=\"titreillustration\"[^>]*>.*</p>)|U", $text, $regs);
+		return($regs[1]);
+	}
+}
+
+/** Récupère la légende d'une image lorsque celle-ci se trouve au dessous de celle-là 
+* @author Bruno Cénou
+* @param  string $text le texte à parser
+* @param  string $source le nom du fichier image
+*/
+
+function getImageDesc($text, $source){
+	if(!$text) return;
+	$text = str_replace($source, '', strstr($text, $source));
+	if(FALSE !== strpos($text, '<img')){
+		$text = substr($text, 0, strpos($text, '<img'));
+	}
+	if(FALSE !== strpos($text, '<table')){
+		$text = substr($text, 0, strpos($text, '<table'));
+	}
+	preg_match("|(<p class=\"legendeillustration\"[^>]*>.*</p>)|U", $text, $regs);
+	return($regs[1]);
+}
+
+/** Récupère les crédits d'une image lorsque ceux-ci se trouvent au dessous de celle-là
+* @author Bruno Cénou
+* @param  string $text le texte à parser
+* @param  string $source le nom du fichier image
+*/
+
+function getImageCredits($text, $source){
+	if(!$text) return;
+	$text = str_replace($source, '', strstr($text, $source));
+	if(FALSE !== strpos($text, '<img')){
+		$text = substr($text, 0, strpos($text, '<img'));
+	}
+	if(FALSE !== strpos($text, '<table')){
+		$text = substr($text, 0, strpos($text, '<table'));
+	}
+	preg_match("|(<p class=\"creditillustration\"[^>]*>.*</p>)|U", $text, $regs);
+	return($regs[1]);
+}
+
+/** renvoie le type mime d'un fichier, soit par l'extension PEAR fileinfo, soit par le système 
+* @author Bruno Cénou
+* @param  string $filename le nom du fichier
+*/
+
+function getFileMime($filename){
+	if(function_exists("finfo_open")){
+		$finfo = finfo_open(FILEINFO_MIME, "/usr/share/misc/file/magic");
+		return finfo_file($finfo, $filename);
+	}else{
+		system("file -i -b $filename");
+	}
+}
+
 ?>
