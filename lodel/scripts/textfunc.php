@@ -1003,14 +1003,14 @@ function iconifier($text, $width=150, $titlePos='up', $max=640, $min=400){
 			$title = getImageTitle($text, $v, $titlePos, $stop);
 			$desc = getImageDesc($text, $v);
 			$credits = getImageCredits($text, $v);
-			$link = "<span class=\"textIcon\">";
+			$link = "<div class=\"textIcon\">";
  			if($titlePos == 'up') $link .= "\n".$title;
 			
 			$link .= "<a href=\"image.php?source=$full&amp;titlepos=$titlePos\" rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\">".str_replace($v, $vign, $result[0][$k])."</a>";
 			$link .= "<a class=\"fullSize\" href=\"image.php?source=$full&amp;titlepos=$titlePos\"  rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\"><img src=\"images/magnify.png\" alt=\"Agrandir\" /></a>";
  			if($titlePos == 'down') $link .= "\n".$title;
  			$link .= "\n".$desc."\n".$credits."\n";
-			$link .= "</span>";
+			$link .= "</div>";
  			$text = str_replace(array($title, $desc, $credits), '', $text);
 			$link = str_replace($result[3][$k], '', $link);
 			$text = str_replace($result[0][$k], $link, $text);
