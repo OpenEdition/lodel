@@ -1021,7 +1021,7 @@ function iconifier($text, $width=150, $titlePos='up', $max=640, $min=400){
 	return($text);
 }
 
-/** Récupère le titre d'une image lorsque celui-ci se trouve au dessus ou au dessous de celle-là
+/** Récupère le titre d'une image lorsque celui-là se trouve au dessus ou au dessous de celle-ci
 * @author Bruno Cénou
 * @author Pierre-Alain Mignot
 * @param  string $text le texte à parser
@@ -1048,11 +1048,11 @@ function getImageTitle($text, $source, $titlePos='up', $posi='0')
 			// pour obtenir seulement la portion du texte qui nous interesse
 			$text = !$posi ? $text : substr($text, 0 , $posi);
 			// on prepare notre regex
-			$regex = "`(<p class=\"titreillustration\" dir=\"ltr\">.+</p><p class=\"texte\" dir=\"ltr\"><img src=\"".$source."\" alt=\"[^\"]*\" style=\"[^\"]*\"[^/>]*/>)`U";
+			$regex = "`(<p class=\"titreillustration\"[^>]*>.+</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
 			// on l'execute
 			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
 			// on met dans $titre un tableau contenant : 1. le titre 2. l'img 3.une deuxieme image ? pas normal
-			$titre = explode('<p class="titreillustration" dir="ltr">', array_pop($regs[1]));
+			$titre = split('<p class="titreillustration"[^>]*>', array_pop($regs[1]));
 			$titre = explode('<img', array_pop($titre));
 			if(sizeof($titre) > 2)
 			{ // tiens il y a une autre image .. notre image n'a donc pas de titre, hop on sort
@@ -1065,7 +1065,7 @@ function getImageTitle($text, $source, $titlePos='up', $posi='0')
 		{// on connait la position de l'image suivante, on coupe le texte
 			$text = substr($text, 0 , $posi);
 			// on prepare la regex et on l'execute
-			$regex = "`(<p class=\"titreillustration\" dir=\"ltr\">.*</p>[^<]*<p class=\"texte\" dir=\"ltr\"><img src=\"".$source."\" alt=\"[^\"]*\" style=\"[^\"]*\"[^/>]*/>)`U";
+			$regex = "`(<p class=\"titreillustration\"[^>]*>.*</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
 			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
 			// on recupere le titre
 			$titre = explode('<img', array_pop($regs[1]));
@@ -1084,7 +1084,7 @@ function getImageTitle($text, $source, $titlePos='up', $posi='0')
 	}
 }
 
-/** Récupère la légende d'une image lorsque celle-ci se trouve au dessous de celle-là 
+/** Récupère la légende d'une image lorsque celle-là se trouve au dessous de celle-ci 
 * @author Bruno Cénou
 * @param  string $text le texte à parser
 * @param  string $source le nom du fichier image
@@ -1103,7 +1103,7 @@ function getImageDesc($text, $source){
 	return($regs[1]);
 }
 
-/** Récupère les crédits d'une image lorsque ceux-ci se trouvent au dessous de celle-là
+/** Récupère les crédits d'une image lorsque ceux-là se trouvent au dessous de celle-ci
 * @author Bruno Cénou
 * @param  string $text le texte à parser
 * @param  string $source le nom du fichier image
