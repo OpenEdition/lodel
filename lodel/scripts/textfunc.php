@@ -277,7 +277,7 @@ function humandate($s)
 		$mois[10] = "octobre";
 		$mois[11] = "novembre";
 		$mois[12] = "décembre";
-		$ret = intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1]);
+		$ret = intval($result[3])." ".utf8_encode($mois[intval($result[2])])." ".intval($result[1]);
 	}
 	// time
 	if (preg_match("/(\s*\d\d:\d\d:\d\d)$/", $s, $result)) {
