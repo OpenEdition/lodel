@@ -47,19 +47,31 @@ require_once 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 require_once 'func.php';
-require_once 'class.siteManage.php';
 
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
-$website = new siteManage($id, $context);
+if(substr(phpversion(), 0, 1) == '5')
+{//php 5
+	require_once 'class.siteManage.php';
+	$website = new siteManage($id, $context);
+	$website->set_reinstall($reinstall);
+	$website->set_maindefault($maindefault);
+	$website->set_singledatabase($singledatabase);
+	$website->set_version($context['version']);
+	$website->set_downloadsiteconfig($downloadsiteconfig);
+	$website->set_mano($mano);
+}
+elseif(substr(phpversion(), 0, 1) == '4')
+{//php 4
+	require_once 'class.siteManage_php4.php';
+	$website = new siteManage($id, $context, $reinstall, $maindefault, $singledatabase, $context['version'], $downloadsiteconfig, $mano);
+}
 
-$website->set_reinstall($reinstall);
-$website->set_maindefault($maindefault);
-$website->set_singledatabase($singledatabase);
-$website->set_version($context['version']);
-$website->set_downloadsiteconfig($downloadsiteconfig);
-$website->set_mano($mano);
+
+
+
+
 
 // suppression et restauration
 if ($website->get_id()>0 && ($delete || $restore)) {
