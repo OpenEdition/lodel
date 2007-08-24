@@ -312,6 +312,7 @@ function loop_rssitem($context, $funcname, $arguments)
 		return;
 	}
 
+	$localcontext = $context;
 	// yes, there are, let's loop over them.
 	if (function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname", $localcontext);
