@@ -50,7 +50,7 @@ if ($backup) {
   if (fputs($fh,"DROP DATABASE $database;\nCREATE DATABASE $database;USE $database;\n")===FALSE) die("ERROR: unable to write in the temporary file");
 
   lock_write_all($database);
-  mysql_dump($database,$GLOBALS[lodelbasetables],"",TRUE,$fh);
+  mysql_dump($database,$GLOBALS[lodelbasetables],"",$fh);
   unlock();
 
   if (!$singledatabase) {
@@ -65,7 +65,7 @@ if ($backup) {
 #      echo $dbname," try to locked<br>\n"; flush();
       lock_write_all($dbname);
 #      echo $dbname," locked, let's dump<br>\n"; flush();
-      mysql_dump($dbname,$GLOBALS[lodelsitetables],"",TRUE,$fh);
+      mysql_dump($dbname,$GLOBALS[lodelsitetables],"",$fh);
       unlock();
 
       if (!$sqlonly) array_push($dirtotar,"$rep/lodel/sources","$rep/docannexe");
@@ -73,7 +73,7 @@ if ($backup) {
     }
   } else {
     lock_write_all($database);
-    mysql_dump($database,$GLOBALS[lodelsitetables],"",TRUE,$fh);
+    mysql_dump($database,$GLOBALS[lodelsitetables],"", $fh);
     unlock();
   }
   fclose($fh);
