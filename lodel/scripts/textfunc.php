@@ -255,9 +255,30 @@ function formatedtime($time, $format)
 
 function humandate($s)
 { # verifie que la date est sous forme sql
-	
+	if(preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d) (\s*\d\d:\d\d:\d\d)$/", $s, $result))
+	{
+		if ($result[1] > 9000)
+			return "jamais";
+		if ($result[1] == 0)
+			return "";
+		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
+			return $result[1];
 
-	if (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
+		$mois[1] = "janvier";
+		$mois[2] = "février";
+		$mois[3] = "mars";
+		$mois[4] = "avril";
+		$mois[5] = "mai";
+		$mois[6] = "juin";
+		$mois[7] = "juillet";
+		$mois[8] = "août";
+		$mois[9] = "septembre";
+		$mois[10] = "octobre";
+		$mois[11] = "novembre";
+		$mois[12] = "décembre";
+		$ret = intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1])." ".$result[4];
+	}
+	elseif (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
 		if ($result[1] > 9000)
 			return "jamais";
 		if ($result[1] == 0)
@@ -280,10 +301,9 @@ function humandate($s)
 		$ret = intval($result[3])." ".utf8_encode($mois[intval($result[2])])." ".intval($result[1]);
 	}
 	// time
-	if (preg_match("/(\s*\d\d:\d\d:\d\d)$/", $s, $result)) {
+	elseif (preg_match("/(\s*\d\d:\d\d:\d\d)$/", $s, $result)) {
 		$ret .= $result[0];
 	}
-
 	return $ret ? $ret : $s;
 }
 
