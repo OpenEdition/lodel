@@ -2,7 +2,7 @@
 /**
  * Classe siteManage - Gère un site
  *
- * PHP version 5
+ * PHP versions 4 et 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -142,7 +142,7 @@ class siteManage {
 	 * @param int $id identifiant du site
 	 * @param array $context le contexte passé par référence
 	 */
-	function __construct($id, &$context)
+	function siteManage($id, &$context)
 	{
 		$this->id = intval($id);
 		$this->critere = "id='$id'";
@@ -659,6 +659,7 @@ class siteManage {
 		if (!$this->context['name']) {
 			die ('probleme interne 1');
 		}
+		
 		do { // bloc de controle
 			if ($this->singledatabase == 'on') {
 				break;
@@ -715,6 +716,7 @@ class siteManage {
 				return false;
 			}
 		} while (0);
+		return true;
 	}
 
 	/**
