@@ -51,22 +51,15 @@ require_once 'func.php';
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
-if(substr(phpversion(), 0, 1) == '5')
-{//php 5
-	require_once 'class.siteManage.php';
-	$website = new siteManage($id, $context);
-	$website->set_reinstall($reinstall);
-	$website->set_maindefault($maindefault);
-	$website->set_singledatabase($singledatabase);
-	$website->set_version($context['version']);
-	$website->set_downloadsiteconfig($downloadsiteconfig);
-	$website->set_mano($mano);
-}
-elseif(substr(phpversion(), 0, 1) == '4')
-{//php 4
-	require_once 'class.siteManage_php4.php';
-	$website = new siteManage($id, $context, $reinstall, $maindefault, $singledatabase, $context['version'], $downloadsiteconfig, $mano);
-}
+require_once 'class.siteManage.php';
+$website = new siteManage($id, $context);
+$website->set('reinstall', $reinstall);
+$website->set('maindefault', $maindefault);
+$website->set('singledatabase',$singledatabase);
+$website->set('version',$context['version']);
+$website->set('downloadsiteconfig',$downloadsiteconfig);
+$website->set('mano',$mano);
+
 
 
 
@@ -121,6 +114,7 @@ if ($task) {
 		die ("ERROR: versiondir");
 	}
 }
+
 // creation de la DataBase si besoin
 if (defined('DATABASE')) {
 	$database = DATABASE;
