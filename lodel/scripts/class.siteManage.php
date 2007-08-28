@@ -514,7 +514,7 @@ class siteManage {
 				$this->mycopyrec("$root$dirsource/$arg1", $dest1);
 			} elseif ($cmd == 'touch') {
 				if (!file_exists($dest1)) {
-					$this->writefile($dest1, '');
+					writefile($dest1, '');
 				}
 				@chmod($dest1, 0666 & octdec($GLOBALS['filemask']));
 			} elseif ($cmd == 'htaccess') {
@@ -541,7 +541,7 @@ class siteManage {
 		if (file_exists("$dir/.htaccess") && file_get_contents("$dir/.htaccess") == $text) {
 			return;
 		}
-		$this->writefile ("$dir/.htaccess", $text);
+		writefile ("$dir/.htaccess", $text);
 		@chmod ("$dir/.htaccess", 0666 & octdec($GLOBALS['filemask']));
 	}
 
