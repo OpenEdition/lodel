@@ -151,36 +151,6 @@ class siteManage {
 	}
 
 	/**
-	 * Capture l'appel à des méthodes non existantes
-	 *
-	 * Cette fonction est utilisée en couple avec un des accesseurs afin de modifier les variables privées
-	 *
-	 * @param var $_method nom de la fonction inconnue
-	 * @param var $_attributes attributs de la fonction inconnue
-	 */
-	function __call($_method, $_attributes) 
-	{
-		$prefix = substr($_method, 0, 3);
-		$suffix = substr($_method, 4);
-		$c_attributes = count($_attributes);
-		if(property_exists($this, $suffix))
-		{
-			if( $prefix == 'set' && $c_attributes )
-			{
-				return $this->set( $suffix, $_attributes[0] );
-			}
-			if( $prefix == 'get' && !$c_attributes )
-			{
-				return $this->get( $suffix );
-			}
-		}
-		else
-		{
-			trigger_error("The method ". $_method ." does not exist", E_USER_ERROR);
-		}
-	}
-
-	/**
 	 * Accesseur
 	 *
 	 * Cette fonction renvoit la variable $_v passée en paramètre
