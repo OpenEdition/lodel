@@ -76,7 +76,6 @@ if ($website->get('id')>0 && ($delete || $restore)) {
 
 // reinstall all the sites
 if ($website->get('reinstall') == 'all') {
-
 	$website->reinstall($dir);
 }
 
@@ -149,7 +148,7 @@ if ($task == 'createdir'){
 // verifie la presence ou copie les fichiers necessaires
 // cherche dans le fichier install-file.dat les fichiers a copier
 if ($task == 'file') {
-	if(!$website->manageFiles())
+	if(!$website->manageFiles($lodeldo))
 		return;
 }
 
