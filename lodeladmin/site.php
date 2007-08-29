@@ -67,7 +67,7 @@ $website->set('mano',$mano);
 
 
 // suppression et restauration
-if ($website->get_id()>0 && ($delete || $restore)) {
+if ($website->get('id')>0 && ($delete || $restore)) {
 	if($delete)
 		$website->remove();
 	else
@@ -75,21 +75,21 @@ if ($website->get_id()>0 && ($delete || $restore)) {
 }
 
 // reinstall all the sites
-if ($website->get_reinstall() == 'all') {
+if ($website->get('reinstall') == 'all') {
 
 	$website->reinstall($dir);
 }
 
 // ajoute ou edit
-if ($edit || $website->get_maindefault()) { 
+if ($edit || $website->get('maindefault')) { 
 	$website->manageSite();
 	$task = 'version';
 }
 
 // on récupère les infos du site (url, path, status, etc..)
-if ($website->get_id() > 0) {
+if ($website->get('id') > 0) {
 	require_once 'connect.php';
-	$result = mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE ".$website->get_critere()." AND (status>0 || status=-32)") or die (mysql_error());
+	$result = mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or die (mysql_error());
 	$res = mysql_fetch_assoc($result);
 	settype($res, "array");
 	$website->context = array_merge($website->context, $res);
@@ -100,17 +100,17 @@ if ($task == 'version') {
 	// on verifie que versiondir match bien un repertoire local pour eviter un hack.
 	// on verifie en meme temps qu'il est bien defini, ce qui correspond quand meme 
 	// a la plupart des cas.
-	if  (!$website->get_versiondir() && !$context['versiondir']) {
+	if  (!$website->get('versiondir') && !$context['versiondir']) {
 		$website->selectVersion();
 	}
 	$task = 'createdb';
 }   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
 
 if ($task) {
-	if  (!$website->get_versiondir() && !$context['versiondir']) {
+	if  (!$website->get('versiondir') && !$context['versiondir']) {
 		$website->selectVersion();
 	}
-	if (!preg_match($website->get_lodelhomere(),$website->get_versiondir())) {
+	if (!preg_match($website->get('lodelhomere'),$website->get('versiondir'))) {
 		die ("ERROR: versiondir");
 	}
 }
@@ -119,8 +119,8 @@ if ($task) {
 if (defined('DATABASE')) {
 	$database = DATABASE;
 }
-$website->set_database($database);
-$website->context['dbname'] = $website->get_singledatabase() == 'on' ? $database : $database. '_'. $website->context['name'];
+$website->set('database', $database);
+$website->context['dbname'] = $website->get('singledatabase') == 'on' ? $database : $database. '_'. $website->context['name'];
 
 if ($task == 'createdb') {
 	if($website->createDB())
