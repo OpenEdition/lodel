@@ -871,7 +871,7 @@ class siteManage {
 	 * Cette fonction gère l'installation des fichiers de lodel
 	 *
 	 */
-	function manageFiles()
+	function manageFiles($lodeldo)
 	{
 		// verifie la presence ou copie les fichiers necessaires
 		// cherche dans le fichier install-file.dat les fichiers a copier
@@ -898,7 +898,7 @@ class siteManage {
 
 		// cherche si le fichier n'existe pas ou s'il est different de l'original
 		if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache) != file_get_contents($siteconfigdest)) {
-			if ($this->context['installoption'] == '2' && !$lodeldo) {	
+			if ($this->context['installoption'] == '2' && !$lodeldo) {
 				require_once 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-file');
