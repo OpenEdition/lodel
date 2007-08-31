@@ -160,6 +160,7 @@ class DataLogic
 	 */
 	function backupAction(&$context, &$error)
 	{
+		global $zipcmd;
 		$context['importdir'] = $GLOBALS['importdir'];
 		#print_r($context);
 		if ($context['backup']) { // si on a demandé le backup
