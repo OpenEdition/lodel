@@ -58,16 +58,9 @@ $website->set('maindefault', $maindefault);
 $website->set('singledatabase',$singledatabase);
 $website->set('version',$context['version']);
 $website->set('downloadsiteconfig',$downloadsiteconfig);
-$website->set('mano',$mano);
-
-
-
-
-
-
 
 // suppression et restauration
-if ($website->get('id')>0 && ($delete || $restore)) {
+if ($id>0 && ($delete || $restore)) {
 	if($delete)
 		$website->remove();
 	else
@@ -75,38 +68,38 @@ if ($website->get('id')>0 && ($delete || $restore)) {
 }
 
 // reinstall all the sites
-if ($website->get('reinstall') == 'all') {
+if ($reinstall == 'all') {
 	$website->reinstall($dir);
 }
 
 // ajoute ou edit
-if ($edit || $website->get('maindefault')) { 
+if ($edit || $maindefault) { 
 	$website->manageSite();
 	$task = 'version';
 }
 
 // on récupère les infos du site (url, path, status, etc..)
-if ($website->get('id') > 0) {
+if ($id > 0 || $context['id'] > 0) {
 	require_once 'connect.php';
-	$result = mysql_query("SELECT * FROM $GLOBALS[tp]sites WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or die (mysql_error());
+	$result = mysql_query("SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or die (mysql_error());
 	$res = mysql_fetch_assoc($result);
 	settype($res, "array");
 	$website->context = array_merge($website->context, $res);
 }
 
-if ($task == 'version') {
+if ($task === 'version') {
 
 	// on verifie que versiondir match bien un repertoire local pour eviter un hack.
 	// on verifie en meme temps qu'il est bien defini, ce qui correspond quand meme 
 	// a la plupart des cas.
-	if  (!$website->get('versiondir') && !$context['versiondir']) {
+	if  (!$website->get('versiondir')) {
 		$website->selectVersion();
 	}
 	$task = 'createdb';
 }   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
 
 if ($task) {
-	if  (!$website->get('versiondir') && !$context['versiondir']) {
+	if  (!$website->get('versiondir')) {
 		$website->selectVersion();
 	}
 	if (!preg_match($website->get('lodelhomere'),$website->get('versiondir'))) {
@@ -121,16 +114,15 @@ if (defined('DATABASE')) {
 $website->set('database', $database);
 $website->context['dbname'] = $website->get('singledatabase') == 'on' ? $database : $database. '_'. $website->context['name'];
 
-if ($task == 'createdb') {
-	if($website->createDB())
+if ($task === 'createdb') {
+	if($website->createDB($lodeldo))
 		$task = 'createtables';
 	else
 		return;
 }
 
 // creation des tables des sites
-if ($task == 'createtables') {
-	
+if ($task === 'createtables') {
 	if($website->createTables())
 		$task = 'createdir';
 	else
@@ -138,8 +130,8 @@ if ($task == 'createtables') {
 }
 
 // Creer le repertoire principale du site
-if ($task == 'createdir'){
-	if($website->createDir())
+if ($task === 'createdir'){
+	if($website->createDir($lodeldo, $mano, $filemask))
 		$task = 'file';
 	else
 		return;
@@ -147,7 +139,7 @@ if ($task == 'createdir'){
 
 // verifie la presence ou copie les fichiers necessaires
 // cherche dans le fichier install-file.dat les fichiers a copier
-if ($task == 'file') {
+if ($task === 'file') {
 	if(!$website->manageFiles($lodeldo))
 		return;
 }
