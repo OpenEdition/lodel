@@ -50,12 +50,6 @@ class siteManage {
 	private $version;
 
 	/**
-	 * Installation à la main ?
-	 * @var int
-	 */	
-	private $mano;
-
-	/**
 	 * Répertoire de la version lodel utilisée
 	 * @var string
 	 */	
@@ -144,6 +138,7 @@ class siteManage {
 	 */
 	function siteManage($id, &$context)
 	{
+		$this->context['id'] = $context['id'] ? $context['id'] : $id;
 		$this->id = intval($id);
 		$this->critere = "id='$id'";
 		$this->lodelhomere = "/^lodel(-[\w.]+)$/";
@@ -289,7 +284,7 @@ class siteManage {
 	
 			// verifie qu'on a qu'un site si on est en singledatabase
 			if (!$this->id && $this->singledatabase == 'on') {
-				$result = mysql_query ("SELECT COUNT(*) FROM $GLOBALS[tp]sites WHERE status>-32 AND name!='". $this->context['name']. "'") or die (mysql_error());
+				$result = mysql_query ("SELECT COUNT(*) FROM `$GLOBALS[tp]sites` WHERE status>-32 AND name!='". $this->context['name']. "'") or die (mysql_error());
 				list($numsite) = mysql_fetch_row($result);
 				if ($numsite >= 1) {
 					die("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données : il faut utiliser plusieurs bases de données.");
@@ -298,12 +293,12 @@ class siteManage {
 	
 			// édition d'un site : lit les informations options, status, etc.
 			if ($this->id) {
-				$result = mysql_query ("SELECT status,name,path FROM $GLOBALS[tp]sites WHERE id='".$this->id."'") or die (mysql_error());
+				$result = mysql_query ("SELECT status,name,path FROM `$GLOBALS[tp]sites` WHERE id='".$this->id."'") or die (mysql_error());
 				list($status,$name,$this->context['path']) = mysql_fetch_row($result);
 				$this->context['name'] = $name;
 			} else { // création d'un site
 				// vérifie que le nom (base de données + répertoire du site) n'est pas déjà utilisé
-				$result = mysql_query ("SELECT name FROM $GLOBALS[tp]sites") or die (mysql_error());
+				$result = mysql_query ("SELECT name FROM `$GLOBALS[tp]sites`") or die (mysql_error());
 				while ($row = mysql_fetch_array($result)) {
 					$sites[] = $row['name'];
 				}
@@ -316,7 +311,7 @@ class siteManage {
 	
 				$options = '';
 				$status  = -32; // -32 signifie en creation
-				if ($this->context[atroot]) {
+				if ($this->context['atroot']) {
 					$this->context['path'] = '/';
 				}
 				if (!$this->context['path']) {
@@ -338,7 +333,7 @@ class siteManage {
 			$this->context['title'] = magic_addslashes($this->context['title']);
 			$this->context['subtitle'] = magic_addslashes($this->context['subtitle']);
 	
-			mysql_query("REPLACE INTO $GLOBALS[tp]sites (id,title,name,path,url,subtitle,status) VALUES ('".$this->id."','".$this->context[title]."','".$this->context[name]."','".$this->context[path]."','".$this->context[url]."','".$this->context[subtitle]."','$status')") or die (mysql_error());
+			mysql_query("REPLACE INTO `$GLOBALS[tp]sites` (id,title,name,path,url,subtitle,status) VALUES ('".$this->id."','".$this->context['title']."','".$this->context['name']."','".$this->context['path']."','".$this->context['url']."','".$this->context['subtitle']."','".$status."')") or die (mysql_error());
 	
 			update();
 			
@@ -363,7 +358,7 @@ class siteManage {
 	{
 		$dir = opendir(LODELROOT);
 		if (!$dir) {
-			die ("impossible d'acceder en ecriture le repertoire racine");
+			die ("impossible d'acceder en ecriture sur le repertoire racine");
 		}
 		$this->versions = array();
 		while ($file = readdir($dir)) {
@@ -622,9 +617,8 @@ class siteManage {
 	 * Cette fonction crée la base de données si celle-ci n'existe pas déjà
 	 *
 	 */	
-	function createDB()
-	{ 
-		
+	function createDB($lodeldo)
+	{
 		// creation de la DataBase si besoin
 		if (!$this->context['name']) {
 			die ('probleme interne 1');
@@ -642,8 +636,7 @@ class siteManage {
 			$cnt = mysql_num_rows($db_list);
 			while ($i < $cnt) {
 				if ($this->context['dbname'] == mysql_db_name($db_list, $i)) {
-					return true;
-					break 2; // la database existe
+					return true; // la database existe
 				}
 				$i++;
 			}
@@ -663,8 +656,8 @@ class siteManage {
 			} else { 
 				$db_charset = '';
 			}
-			$this->context[command1]="CREATE DATABASE `".$this->context[dbname]."`$db_charset";
-			$this->context['command2'] = "GRANT ALL ON `".$this->context[dbname]."`.* TO $dbusername@$dbhost";
+			$this->context['command1']="CREATE DATABASE `".$this->context['dbname']."`$db_charset";
+			$this->context['command2'] = "GRANT ALL ON `".$this->context['dbname']."`.* TO $dbusername@$dbhost";
 			$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
 	
 			if ($this->context['installoption'] == '2' && !$lodeldo) {
@@ -680,6 +673,7 @@ class siteManage {
 				$this->context['error']      = mysql_error();
 				$this->context['dbusername'] = $dbusername;
 				$this->context['dbhost']     =$dbhost;
+
 				require_once 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdb');
@@ -721,7 +715,6 @@ class siteManage {
 
 		require_once 'connect.php';
 		mysql_select_db($this->context['dbname']); //selectionne la base de donnée du site
-
 		if (!file_exists(LODELROOT. $this->versiondir."/install/init-site.sql")) {
 			die ("impossible de faire l'installation, le fichier init-site.sql est absent");
 		}
@@ -745,7 +738,6 @@ class siteManage {
 		$error = array();
 		foreach ($sqlcmds as $cmd) {
 			$cmd = trim($cmd);
-			
 			if ($cmd && !mysql_query($cmd)) {
 				array_push($error, $cmd, mysql_error());
 			}
@@ -768,23 +760,23 @@ class siteManage {
 	 * Cette fonction gère la création des répertoires de lodel
 	 *
 	 */
-	function createDir()
+	function createDir($lodeldo, $mano, $filemask)
 	{
 
 		if(!$this->versiondir)
-			selectVersion();
-
-		
+			$this->selectVersion();
 		if (!$this->context['path']) {
 			$this->context['path'] = '/'. $this->context['name'];
 		}
 		$dir = LODELROOT. $this->context['path'];
 		if (!file_exists($dir) || !@opendir($dir)) {
+
 			// il faut creer le repertoire rep
 			if ($this->context['installoption'] == '2' && !$lodeldo) {
 				if ($mano) {
 					$this->context['error_nonexists'] = !file_exists($dir);
 					$this->context['error_nonaccess'] = !@opendir($dir);
+				
 				}
 				require_once 'view.php';
 				$view = &View::getView();
@@ -873,6 +865,7 @@ class siteManage {
 	 */
 	function manageFiles($lodeldo)
 	{
+
 		// verifie la presence ou copie les fichiers necessaires
 		// cherche dans le fichier install-file.dat les fichiers a copier
 		// on peut installer les fichiers
@@ -927,20 +920,20 @@ class siteManage {
 		// clear the CACHEs
 		require_once 'cachefunc.php';
 		removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
-		
+	
 		// ok on a fini, on change le status du site
 		mysql_select_db($GLOBALS[database]);
-		mysql_query ("UPDATE $GLOBALS[tp]sites SET status=1 WHERE id='".$this->id."'") or die (mysql_error());
-		
+		mysql_query ("UPDATE `$GLOBALS[tp]sites` SET status=1 WHERE id='".$this->id."'") or die (mysql_error());
+
 		
 		// ajouter le modele editorial ?
 		if ($GLOBALS[singledatabase]!="on") {
-			mysql_select_db($GLOBALS['database']. '_'. $this->context['name']);
+			mysql_select_db("`".$GLOBALS['database']. '_'. $this->context['name']."`");
 		}
 		$import = true;
 		// verifie qu'on peut importer le modele.
 		foreach(array('types', 'tablefields', 'persontypes', 'entrytypes') as $table) {
-			$result = mysql_query("SELECT 1 FROM $GLOBALS[tp]$table WHERE status>-64 LIMIT 0,1") or die(mysql_error());
+			$result = mysql_query("SELECT 1 FROM `$GLOBALS[tp]$table` WHERE status>-64 LIMIT 0,1") or die(mysql_error());
 			if (mysql_num_rows($result)) {
 				$import = false;
 				break;
