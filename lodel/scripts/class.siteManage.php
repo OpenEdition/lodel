@@ -292,7 +292,7 @@ class siteManage {
 				}
 				if(is_array($sites)) {
 					if(in_array($this->context['name'], $sites)) {
-						$website->context['error_unique_name'] = $err = 1;
+						$this->context['error_unique_name'] = $err = 1;
 						break;
 					}
 				}
@@ -650,7 +650,7 @@ class siteManage {
 			$this->context['command2'] = "GRANT ALL ON `".$this->context['dbname']."`.* TO $dbusername@$dbhost";
 			$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
 			
-			if ($this->context['installoption'] == '2' && $lodeldo ==='') {
+			if ($this->context['installoption'] == '2' && !$lodeldo) {
 				$this->context['dbusername'] = $dbusername;
 				$this->context['dbhost']     = $dbhost;
 				require_once 'view.php';
