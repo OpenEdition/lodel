@@ -52,6 +52,7 @@ $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
 
 require_once 'class.siteManage.php';
+$context['shareurl'] = $shareurl;
 $website = new siteManage($id, $context);
 $website->set('reinstall', $reinstall);
 $website->set('maindefault', $maindefault);
@@ -74,17 +75,18 @@ if ($reinstall == 'all') {
 
 // ajoute ou edit
 if ($edit || $maindefault) { 
-	$website->manageSite();
-	$task = 'version';
+	if($website->manageSite())
+		$task = 'version';
 }
 
 // on récupère les infos du site (url, path, status, etc..)
-if ($id > 0 || $context['id'] > 0) {
+if ($id > 0 || $website->get('id') > 0) {
 	require_once 'connect.php';
 	$result = mysql_query("SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or die (mysql_error());
 	$res = mysql_fetch_assoc($result);
 	settype($res, "array");
 	$website->context = array_merge($website->context, $res);
+
 }
 
 if ($task === 'version') {
@@ -112,13 +114,20 @@ if (defined('DATABASE')) {
 	$database = DATABASE;
 }
 $website->set('database', $database);
-$website->context['dbname'] = $website->get('singledatabase') == 'on' ? $database : $database. '_'. $website->context['name'];
+$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $context['name'];
 
+unset($t);
 if ($task === 'createdb') {
-	if($website->createDB($lodeldo))
+	$t = $website->createDB($lodeldo);
+
+	if($t === true)
+	{
 		$task = 'createtables';
+	}
 	else
+	{
 		return;
+	}
 }
 
 // creation des tables des sites
@@ -152,4 +161,5 @@ postprocessing($context);
 require_once 'view.php';
 $view = &View::getView();
 $view->render($context, 'site');
+
 ?>
