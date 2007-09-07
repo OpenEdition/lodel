@@ -80,18 +80,6 @@ class siteManage {
 	private $lodelhomere;
 
 	/**
-	 * Extension du script
-	 * @var string
-	 */		
-	private $extensionscripts;
-
-	/**
-	 * Utilisation des liens symboliques ?
-	 * @var string
-	 */	
-	private $usesymlink;
-
-	/**
 	 * Réinstallation ?
 	 * @var string
 	 */
@@ -304,7 +292,7 @@ class siteManage {
 				}
 				if(is_array($sites)) {
 					if(in_array($this->context['name'], $sites)) {
-						$this->context['error_unique_name'] = $err = 1;
+						$website->context['error_unique_name'] = $err = 1;
 						break;
 					}
 				}
@@ -336,7 +324,7 @@ class siteManage {
 			mysql_query("REPLACE INTO `$GLOBALS[tp]sites` (id,title,name,path,url,subtitle,status) VALUES ('".$this->id."','".$this->context['title']."','".$this->context['name']."','".$this->context['path']."','".$this->context['url']."','".$this->context['subtitle']."','".$status."')") or die (mysql_error());
 	
 			update();
-			
+
 			if ($status>-32) {
 				require_once 'view.php';
 				$view = &View::getView();
@@ -346,6 +334,7 @@ class siteManage {
 			if (!$this->id) {
 				$this->context['id'] = $this->id = mysql_insert_id();
 			}
+			return true;
 		} while (0);		
 	}
 
@@ -429,6 +418,7 @@ class siteManage {
 	 */	
 	function install_file($root, $homesite, $homelodel)
 	{
+		@include 'lodelconfig.php';
 		$file = "$root$homesite/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
 		if (!file_exists($file)) {
 			die("Fichier $file introuvable. Verifiez votre pactage");
@@ -463,8 +453,8 @@ class siteManage {
 					}
 				}
 				@chmod($arg1, 0777 & octdec($GLOBALS['filemask']));
-			} elseif ($cmd == 'ln' && $this->usesymlink && $this->usesymlink != 'non') {
-				if ($dirdest == '.' && 	$this->extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
+			} elseif ($cmd == 'ln' && $usesymlink && $usesymlink != 'non') {
+				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
 				}
 				if (!file_exists($dest1)) {
@@ -472,8 +462,8 @@ class siteManage {
 						array('', '../', ''), "$dirdest/$arg1");
 					$this->slink("$toroot$dirsource/$arg1", $dest1);
 				}
-			} elseif ($cmd == 'cp' || ($cmd == 'ln' && (!$this->usesymlink || $this->usesymlink == 'non'))) {
-				if ($dirdest == '.' && 	$this->extensionscripts == 'html' &&	$arg1 != 'lodelconfig.php') {
+			} elseif ($cmd == 'cp' || ($cmd == 'ln' && (!$usesymlink || $usesymlink == 'non'))) {
+				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
 				}
 				$this->mycopyrec("$root$dirsource/$arg1", $dest1);
@@ -659,11 +649,10 @@ class siteManage {
 			$this->context['command1']="CREATE DATABASE `".$this->context['dbname']."`$db_charset";
 			$this->context['command2'] = "GRANT ALL ON `".$this->context['dbname']."`.* TO $dbusername@$dbhost";
 			$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
-	
-			if ($this->context['installoption'] == '2' && !$lodeldo) {
+			
+			if ($this->context['installoption'] == '2' && $lodeldo ==='') {
 				$this->context['dbusername'] = $dbusername;
 				$this->context['dbhost']     = $dbhost;
-	
 				require_once 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdb');
@@ -673,12 +662,12 @@ class siteManage {
 				$this->context['error']      = mysql_error();
 				$this->context['dbusername'] = $dbusername;
 				$this->context['dbhost']     =$dbhost;
-
 				require_once 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdb');
 				return false;
 			}
+
 		} while (0);
 		return true;
 	}
@@ -862,6 +851,7 @@ class siteManage {
 	 *
 	 * Cette fonction gère l'installation des fichiers de lodel
 	 *
+	 * @param string $lodeldo 
 	 */
 	function manageFiles($lodeldo)
 	{
@@ -928,8 +918,18 @@ class siteManage {
 		
 		// ajouter le modele editorial ?
 		if ($GLOBALS[singledatabase]!="on") {
-			mysql_select_db("`".$GLOBALS['database']. '_'. $this->context['name']."`");
+			if($this->context['name'] != '')
+				$pattern = $this->context['name'];
+			elseif($GLOBALS['name'] != '')
+				$pattern = $GLOBALS['name'];
+
+			if(!preg_match("`".$pattern."`", $this->context['dbname']))
+			{
+				$this->context['dbname'] .= $this->context['name'];
+			}
+			mysql_select_db($this->context['dbname']);
 		}
+
 		$import = true;
 		// verifie qu'on peut importer le modele.
 		foreach(array('types', 'tablefields', 'persontypes', 'entrytypes') as $table) {
