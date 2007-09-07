@@ -114,7 +114,9 @@ if (defined('DATABASE')) {
 	$database = DATABASE;
 }
 $website->set('database', $database);
-$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $context['name'];
+
+if($website->context['name'] && !$website->context['dbname'])
+	$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $website->context['name'];
 
 unset($t);
 if ($task === 'createdb') {
