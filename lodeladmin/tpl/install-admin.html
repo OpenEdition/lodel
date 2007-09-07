@@ -37,8 +37,9 @@ include 'tpl/install-openhtml.html';
 		[@INSTALL.THE_TWO_PASSWD_ARE_NOT_IDENTICAL] 
 	<?php } ?>
 	<label for="lang">[@INSTALL.LANGUAGE]:</label>
+
 	<select id="lang" name="lang">
-		<?php makeSelectLang(); ?>
+		<?php $install->makeSelectLang($tableprefix); ?>
 	</select>
 	<input type="submit" value="[@INSTALL.CONTINUE]" class="button" />
 </fieldset>
