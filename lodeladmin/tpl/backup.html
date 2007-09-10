@@ -72,16 +72,17 @@
 		<label for="sqlonly" class="boolean">[@LODELADMIN.SAVE_DATABASE_ONLY]</label> <input type="checkbox" name="sqlonly" id="sqlonly" /><br class="nobr" />
 		<label for="operation">[@LODELADMIN.GET_FILE_OPERATION]</label>
 		<select name="operation" id="operation">
-			<option value="download">[@LODELADMIN.DOWNLOAD]</option>
+			<option value="download" onClick="document.getElementById('warning_cache').style.display = 'none';">[@LODELADMIN.DOWNLOAD]</option>
 			<IF COND="[#IMPORTDIR]">
 				<IF COND="[#IMPORTDIR|is_writable]">
-				<option value="importdir">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option>
+				<option value="importdir" onClick="document.getElementById('warning_cache').style.display = 'none';">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR]</option>
 				<ELSE/>
-				<option value="importdir" disabled="disabled">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR] ([@COMMON.NOT_WRITABLE])</option>
+				<option value="importdir" disabled="disabled" onClick="document.getElementById('warning_cache').style.display = 'none';">[@LODELADMIN.SAVE_IN_DIR] [#IMPORTDIR] ([@COMMON.NOT_WRITABLE])</option>
 				</IF>
 			</IF>
-			<option value="cache">[@LODELADMIN.SAVE_IN_CACHE]</option>
+			<option value="cache" onClick="document.getElementById('warning_cache').style.display = 'inline';">[@LODELADMIN.SAVE_IN_CACHE]</option>
 		</select>
+		<div id="warning_cache" class="error" style="display:none;">[@LODELADMIN.WARNING_SAVE_CACHE_DIRECTORY]</div>
 		</fieldset>
 		<fieldset>
 		<legend>[@COMMON.VALIDATION]</legend>
