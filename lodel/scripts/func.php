@@ -622,15 +622,18 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 		$filename = rewriteFilename($filename);
 		$dest = $dir. '/'. basename($filename);
 	}
-
-	if (!copy($file, SITEROOT. $dest)) {
+	if(defined("SITEROOT"))
+	{
+		$dest = SITEROOT . $dest;	
+	}
+	if (!copy($file, $dest)) {
 		die("ERROR: a problem occurs while moving the file.");
 	}
 	// and try to delete
 	if ($move) {
 		@unlink($file);
 	}
-	@chmod(SITEROOT.$dest, 0666 & octdec($GLOBALS['filemask']));
+	@chmod($dest, 0666 & octdec($GLOBALS['filemask']));
 	return $dest;
 }
 
@@ -642,12 +645,16 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
  */
 function checkdocannexedir($dir)
 {
-	if (!file_exists(SITEROOT.$dir)) {
-		if (!@mkdir(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']))) {
+	if(defined("SITEROOT"))
+	{
+		$dir = SITEROOT . $dir;	
+	}
+	if (!file_exists($dir)) {
+		if (!@mkdir($dir,0777 & octdec($GLOBALS['filemask']))) {
 			die("ERROR: impossible to create the directory \"$dir\"");
 		}
-		@chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
-		writefile(SITEROOT. $dir. '/index.html', '');
+		@chmod($dir,0777 & octdec($GLOBALS['filemask']));
+		writefile($dir. '/index.html', '');
 	}
 }
 
