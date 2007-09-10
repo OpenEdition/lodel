@@ -30,7 +30,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 // securise l'entree
-require_once 'class.Install.php';
+require_once '../lodel/scripts/class.Install.php';
 
 $test = false;
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
