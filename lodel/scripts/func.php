@@ -646,9 +646,43 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 function checkdocannexedir($dir)
 {
 	if(defined("SITEROOT"))
-	{
-		$dir = SITEROOT . $dir;	
+	{//si le siteroot est défini
+		if(!file_exists(SITEROOT . "docannexe/image"))
+		{//il n'y a pas de répertoire docannexe/image dans le siteroot, onessaye de le créer
+			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
+				//on arrive pas a le créer, peut etre que docannexe n'existe pas, on tente de le créer
+				if (!@mkdir(SITEROOT . "docannexe",0777 & octdec($GLOBALS['filemask']))) {
+					die("ERROR: impossible to create the directory \"docannexe\"");//peut rien faire
+				}
+				else
+				{//on a créé le repertoire docannexe, on tente de créer image
+					if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
+						die("ERROR: impossible to create the directory \"docannexe/image\"");//peut rien faire
+					}
+				}
+			}
+
+		}
 	}
+	else
+	{
+		if(!file_exists("docannexe/image"))
+		{
+			if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
+				if (!@mkdir("docannexe",0777 & octdec($GLOBALS['filemask']))) {
+					die("ERROR: impossible to create the directory \"docannexe\"");
+				}
+				else
+				{
+					if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
+						die("ERROR: impossible to create the directory \"docannexe/image\"");
+					}
+				}
+			}
+
+		}
+	}
+
 	if (!file_exists($dir)) {
 		if (!@mkdir($dir,0777 & octdec($GLOBALS['filemask']))) {
 			die("ERROR: impossible to create the directory \"$dir\"");
