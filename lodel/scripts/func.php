@@ -647,6 +647,7 @@ function checkdocannexedir($dir)
 {
 	if(defined("SITEROOT"))
 	{//si le siteroot est défini
+		$dir = SITEROOT . $dir;
 		if(!file_exists(SITEROOT . "docannexe/image"))
 		{//il n'y a pas de répertoire docannexe/image dans le siteroot, onessaye de le créer
 			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
