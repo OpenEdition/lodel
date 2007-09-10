@@ -53,10 +53,11 @@
 	<label for="sqlonly" class="boolean">[@ADMIN.SAVE_DATABASE_ONLY]</label><input class="notxt" type="checkbox" id="sqlonly" name="sqlonly" />
 	<label for="operation">[@ADMIN.GET_FILE_OPERATION] :</label><br class="nobr" />
 	<select name="operation" id="operation" class="barInfo">
-	<option value="download">[@COMMON.DOWNLOAD]</option>
-	<IF COND="[#IMPORTDIR]"><option value="importdir">[@COMMON.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
-	<option value="cache">[@COMMON.SAVE_IN_DIR] ./CACHE</option>
+	<option value="download" onClick="document.getElementById('warning_cache').style.display = 'none';">[@COMMON.DOWNLOAD]</option>
+	<IF COND="[#IMPORTDIR]"><option value="importdir" onClick="document.getElementById('warning_cache').style.display = 'none';">[@COMMON.SAVE_IN_DIR] [#IMPORTDIR]</option></IF>
+	<option value="cache" onClick="document.getElementById('warning_cache').style.display = 'inline';">[@COMMON.SAVE_IN_DIR] ./CACHE</option>
 	</select>
+	<div id="warning_cache" style="color:red;display:none;">[@LODELADMIN.WARNING_SAVE_CACHE_DIRECTORY]</div>
 </fieldset>
 
 <fieldset>
