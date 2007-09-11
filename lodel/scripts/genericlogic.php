@@ -375,7 +375,7 @@ class GenericLogic extends Logic
 	function _moveFiles($id, $files_to_move, &$vo)
 	{
 		foreach ($files_to_move as $file)	{
-			$src = SITEROOT.$file['filename'];
+			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
 				die("ERROR: error in move_files");
@@ -384,6 +384,7 @@ class GenericLogic extends Logic
 			$dirdest = "docannexe/". $file['type']. "/". $id;
 			checkdocannexedir($dirdest);
 			$dest = $dirdest. "/". $dest;
+
 			$vo->$file['name'] = addslashes($dest);
 			if ($src == SITEROOT. $dest) {
 				continue;
