@@ -352,6 +352,9 @@ class Entities_EditionLogic extends GenericLogic
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id'] = $context['id'];
 		$this->_moveImages ($context['data']);
+		//on va résoudre un bug : un double espace crée une entité html et fait planter l'enregistrement du texte
+		// on encode en utf8
+		$context['data']['texte'] = utf8_encode($context['data']['texte']);
 		$this->_populateObject ($gvo, $context['data']);
 		$gvo->identity = $id;
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
