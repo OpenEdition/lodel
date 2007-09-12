@@ -265,7 +265,7 @@ function humandate($s)
 			return $result[1];
 
 		$dat = intval($result[3])."-".intval($result[2])."-".intval($result[1]);
-		if($result[4] != "")
+		if($result[4] != "" && $result[4] != "00:00:00")
 			$ret = formateddate($dat, "%d %B %Y") . " " . $result[4];
 		else
 			$ret = formateddate($dat, "%d %B %Y");
