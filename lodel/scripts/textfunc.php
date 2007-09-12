@@ -264,19 +264,13 @@ function humandate($s)
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
 
-		$mois[1] = "janvier";
-		$mois[2] = "février";
-		$mois[3] = "mars";
-		$mois[4] = "avril";
-		$mois[5] = "mai";
-		$mois[6] = "juin";
-		$mois[7] = "juillet";
-		$mois[8] = "août";
-		$mois[9] = "septembre";
-		$mois[10] = "octobre";
-		$mois[11] = "novembre";
-		$mois[12] = "décembre";
-		$ret = intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1])." ".$result[4];
+		$dat = intval($result[3])."-".intval($result[2])."-".intval($result[1]);
+		if($result[4] != "")
+			$ret = formateddate($dat, "%d %B %Y") . " " . $result[4];
+		else
+			$ret = formateddate($dat, "%d %B %Y");
+
+		//$ret = intval($result[3])." ".$mois[intval($result[2])]." ".intval($result[1])." ".$result[4];
 	}
 	elseif (preg_match("/^(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
 		if ($result[1] > 9000)
@@ -285,20 +279,9 @@ function humandate($s)
 			return "";
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
-
-		$mois[1] = "janvier";
-		$mois[2] = "février";
-		$mois[3] = "mars";
-		$mois[4] = "avril";
-		$mois[5] = "mai";
-		$mois[6] = "juin";
-		$mois[7] = "juillet";
-		$mois[8] = "août";
-		$mois[9] = "septembre";
-		$mois[10] = "octobre";
-		$mois[11] = "novembre";
-		$mois[12] = "décembre";
-		$ret = intval($result[3])." ".utf8_encode($mois[intval($result[2])])." ".intval($result[1]);
+		$dat = intval($result[3])."-".intval($result[2])."-".intval($result[1]);
+		$ret = formateddate($dat, "%d %B %Y");
+		//$ret = intval($result[3])." ".utf8_encode($mois[intval($result[2])])." ".intval($result[1]);
 	}
 	// time
 	elseif (preg_match("/(\s*\d\d:\d\d:\d\d)$/", $s, $result)) {
