@@ -1,3 +1,11 @@
+function preserveDatas()
+{
+	if(document.getElementById('edit_ent'))
+	{
+		document.edit_ent.submit();
+	}
+}
+
 function displayObj(item, obj){
 	var obj = document.getElementById(obj);
 	if(obj.className == "displayOff"){
