@@ -82,7 +82,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par dÃ©faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -162,10 +162,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
-	variable qui diffère.]-->
+<!--[ Gestion de l'Ã©dition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisÃ©e dans les templates gÃ©nÃ©rÃ©s automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien Ã  cause du nom de la
+	variable qui diffÃ¨re.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -815,9 +815,13 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 	<IF COND="![#CURRENTURL|strpos('lodel/edition')]">
-		<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.[#EXTENSIONSCRIPTS]" method="get">
+		<IF COND="![#CURRENTURL|strpos('lodel/admin')]">
+			<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.php" method="get">
+		<ELSE />
+			<form id="lightSearchForm" action="../edition/search.php" method="get">
+		</IF>
 	<ELSE />
-		<form id="lightSearchForm" action="search.[#EXTENSIONSCRIPTS]" method="get">
+		<form id="lightSearchForm" action="search.php" method="get">
 	</IF>
 		<fieldset>
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
@@ -935,7 +939,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisé.
+Affichage du titre internationalisÃ©.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -947,7 +951,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
+C'est ignoble de remettre cette macro lÃ  alors qu'elle est dÃ©jÃ  dans macros_admin !!
 
 ]-->
 
@@ -959,20 +963,20 @@ C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admi
 
 <!--[ 
 
-Macros rapatriées de lodel/src/lodel/edition/tpl
+Macros rapatriÃ©es de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'édition. 2002                        ]-->
+<!--[ * Macros de l'Ã©dition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutÃ©e le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ cachÃ© "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -986,7 +990,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutÃ©es le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1035,8 +1039,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
-<!--[ Macro servant à publication.html et                ]-->
+<!--[ Macro rajoutÃ©e le 17/09/03 *********************** ]-->
+<!--[ Macro servant Ã  publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1252,17 +1256,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intÃ©gration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on pré-charge les image */
-	//img1=new Image(82,18); /* on déclare les images */
+	/* on prÃ©-charge les image */
+	//img1=new Image(82,18); /* on dÃ©clare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pré-charge */
+	//img1.src="image1.gif"; /* on les prÃ©-charge */
 	//img2.src="image2.gif";
-	/* on déclare la fonction qui affiche les Rollovers */
+	/* on dÃ©clare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
