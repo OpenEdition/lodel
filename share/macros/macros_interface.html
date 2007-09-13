@@ -1,3 +1,4 @@
+
 <DEFMACRO NAME="INTERTITLE">
 <IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
 </DEFMACRO>
@@ -82,7 +83,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par d√©faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par dÈfaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -162,10 +163,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'√©dition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilis√©e dans les templates g√©n√©r√©s automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien √† cause du nom de la
-	variable qui diff√®re.]-->
+<!--[ Gestion de l'Èdition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisÈe dans les templates gÈnÈrÈs automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien ‡ cause du nom de la
+	variable qui diffËre.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -218,6 +219,7 @@
 
 <DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <!--[ --------------- CONFIRM--------------------------- ]-->
+
 <IF COND="[#CONFIRM]">
 	<LET VAR="eventattr">[#EVENTATTR] onChange="[#CONFIRM]();"</LET>
 </IF>
@@ -380,12 +382,12 @@ cp_[#VARNAME].writeDiv();
 		<input type="text" id="[#VARNAME][title]" value="[#TITLE]" />
 		</DO>
 		<ALTERNATIVE>
-		<input type="text" id="[#VARNAME][title]" />
+		<input type="text" id="[#VARNAME][title]"  />
 		</ALTERNATIVE>
 	</LOOP>
 	<ELSE/>
 	
-	<select id="[#VARNAME]_select" row="3" multiple="multiple" >
+	<select id="[#VARNAME]_select" row="3" multiple="multiple"  >
 	<LOOP NAME="entities_select">
 		<DO>
 		<option value="[#ID]">[#G_TITLE|couper(60)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></option>
@@ -506,8 +508,7 @@ cp_[#VARNAME].writeDiv();
 			<div class="oneItem">
 		</BEFORE>
 		<DO>
-			
-				<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+			<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
 				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 			<br />
 		</DO>
@@ -762,7 +763,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form id="searchform" action="search.php" method="get">
+<form id="searchform" action="search.[#EXTENSIONSCRIPTS]" method="get">
 <fieldset>
 <legend>[@COMMON.SEARCH_ENGINE]</legend>
 <input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
@@ -815,13 +816,9 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 	<IF COND="![#CURRENTURL|strpos('lodel/edition')]">
-		<IF COND="![#CURRENTURL|strpos('lodel/admin')]">
-			<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.php" method="get">
-		<ELSE />
-			<form id="lightSearchForm" action="../edition/search.php" method="get">
-		</IF>
+		<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.[#EXTENSIONSCRIPTS]" method="get">
 	<ELSE />
-		<form id="lightSearchForm" action="search.php" method="get">
+		<form id="lightSearchForm" action="search.[#EXTENSIONSCRIPTS]" method="get">
 	</IF>
 		<fieldset>
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
@@ -939,7 +936,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalis√©.
+Affichage du titre internationalisÈ.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -951,7 +948,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro l√† alors qu'elle est d√©j√† dans macros_admin !!
+C'est ignoble de remettre cette macro l‡ alors qu'elle est dÈj‡ dans macros_admin !!
 
 ]-->
 
@@ -963,20 +960,20 @@ C'est ignoble de remettre cette macro l√† alors qu'elle est d√©j√† dans macros_a
 
 <!--[ 
 
-Macros rapatri√©es de lodel/src/lodel/edition/tpl
+Macros rapatriÈes de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'√©dition. 2002                        ]-->
+<!--[ * Macros de l'Èdition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajout√©e le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutÈe le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ cach√© "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ cachÈ "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -990,7 +987,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajout√©es le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutÈes le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1039,8 +1036,8 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajout√©e le 17/09/03 *********************** ]-->
-<!--[ Macro servant √† publication.html et                ]-->
+<!--[ Macro rajoutÈe le 17/09/03 *********************** ]-->
+<!--[ Macro servant ‡ publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1256,17 +1253,17 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout int√©gration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intÈgration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on pr√©-charge les image */
-	//img1=new Image(82,18); /* on d√©clare les images */
+	/* on prÈ-charge les image */
+	//img1=new Image(82,18); /* on dÈclare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pr√©-charge */
+	//img1.src="image1.gif"; /* on les prÈ-charge */
 	//img2.src="image2.gif";
-	/* on d√©clare la fonction qui affiche les Rollovers */
+	/* on dÈclare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
@@ -1501,7 +1498,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 			<LOOP NAME="entites_de_classe_documents" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
 				<BEFORE>
 					<li>
-					<select onchange="ajouter_entite(this)" class="barInfo add">
+					<select onchange="preserveDatas();ajouter_entite(this);" class="barInfo add">
 						<option selected="selected" class="class"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
 				</BEFORE>
 				<DO>
@@ -1699,7 +1696,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
 			</DO>
 			<ALTERNATIVE>
 				|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
@@ -1711,7 +1708,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
+				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-8">[@EDITION.SET_DRAFT]</a>&nbsp;|&nbsp;
 			</DO>
 			<ALTERNATIVE>
 				|&nbsp;<span class="inactif">[@EDITION.SET_DRAFT]</span>&nbsp;|&nbsp;
@@ -1724,7 +1721,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
 
-				&nbsp;|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
+				&nbsp;|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
 
 			</DO>
 			<ALTERNATIVE>
@@ -1737,7 +1734,7 @@ Macros rapatri√©es de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
+				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
 	
 			</DO>
 			<ALTERNATIVE>
