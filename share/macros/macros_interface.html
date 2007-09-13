@@ -762,7 +762,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form id="searchform" action="search.[#EXTENSIONSCRIPTS]" method="get">
+<form id="searchform" action="search.php" method="get">
 <fieldset>
 <legend>[@COMMON.SEARCH_ENGINE]</legend>
 <input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
