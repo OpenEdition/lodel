@@ -223,8 +223,16 @@ class GenericLogic extends Logic
 			if (!is_array($value)) {
 				$value = trim($value);
 			}
-			if ($value) {
-				$value = lodel_strip_tags($value, $field->allowedtags);
+			if ($value) {			
+  				if(is_array($value))
+ 				{
+ 					foreach($value as &$val)
+ 					{
+ 						$val = lodel_strip_tags($val, $field->allowedtags);
+ 					}
+ 				}
+ 				else
+					$value = lodel_strip_tags($value, $field->allowedtags);
 			}
 
 			// is empty ?
@@ -239,13 +247,12 @@ class GenericLogic extends Logic
 				if ($field->cond != "+") { // the field is not required.
 					unset ($value);
 					continue;
-				}	else {
+				} else {
 					$value = lodel_strip_tags($field->default, $field->allowedtags); // default value
-						$empty = false;
+					$empty = false;
 				}
 			}
-			if ($context['id'] > 0 && (($field->cond == "permanent") ||
-					($field->cond == "defaultnew" && $empty))) {
+			if ($context['id'] > 0 && (($field->cond == "permanent") || ($field->cond == "defaultnew" && $empty))) {
 				// or a permanent field
 				// or field is empty and the default value must not be used
 				unset ($value);
@@ -258,7 +265,7 @@ class GenericLogic extends Logic
 			}
 			if ($field->edition == "none") {
 				unset ($value);
-			}
+			}			
 			if ($empty) {
 				$value = lodel_strip_tags($field->default, $field->allowedtags); // default value
 			}
@@ -266,7 +273,7 @@ class GenericLogic extends Logic
 				$error[$name] = "+"; // required
 				continue;
 			}
-			
+
 			// champ unique
 			if ($field->cond == 'unique' && !$this->_is_unique($class, $name, $value, $context['id'])) {
 				$error[$name] = "1"; // must be unique
@@ -279,7 +286,7 @@ class GenericLogic extends Logic
 			}
 
 			$valid = validfield($value, $type, $field->default, $name, 'data');
-			if ($valid === true)	{
+			if ($valid === true)	{				
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
 					if (preg_match("/\/tmpdir-\d+\/[^\/]+$/", $value)) {
@@ -290,7 +297,7 @@ class GenericLogic extends Logic
 			}	elseif (is_string($valid))	{
 				$error[$name] = $valid; // error
 			}	else	{
-				$name = $name;
+
 				// not validated... let's try other type
 				switch ($type) {
 				case 'persons' :
@@ -359,7 +366,7 @@ class GenericLogic extends Logic
 					die("ERROR: unable to check the validity of the field ".$name." of type ".$type);
 				} // switch
 			} // if valid
-		} // foreach files
+ 		} // foreach files
 		return empty ($error);
 	}
 	/**#@+
@@ -506,8 +513,9 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 		array_walk($text, "lodel_strip_tags", $allowedtags);
 		return $text;
 	}
-	if (is_numeric($allowedtags) && !is_numeric($k)) {
+	if ((is_numeric($allowedtags) && !is_numeric($k)) || (!is_numeric($allowedtags) && !is_numeric($k))) {
 		$allowedtags = $k;
+		$k = -1;
 	} // for call via array_walk
 
 	global $home;
@@ -566,7 +574,7 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 			if (isset ($acceptedtags[$tag]))	{
 				// simple case.
 				if ($acceptedtags[$tag] === true)	{ // simple
-					$keep = true;
+					$keep = true;									
 				}	else	{ // must valid the regexp
 					foreach ($acceptedtags[$tag] as $re)	{
 						#echo $re," ",$arr[$i+2]," ",preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2]),"<br/>";
