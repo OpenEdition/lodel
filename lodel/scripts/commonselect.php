@@ -115,7 +115,7 @@ function makeSelectGuiUserComplexity($value)
 function makeSelectEdition($value)
 {
 	$arr = array(
-		"OPTGROUP-1"=> getlodeltextcontents("edit_in_the_interface", "admin"),
+		'OPTGROUP-1'=> getlodeltextcontents("edit_in_the_interface", "admin"),
 			"editable" => getlodeltextcontents("edit_in_form_field", "admin"),
 			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin"),
 		"ENDOPTGROUP-1"=> "",
@@ -125,7 +125,13 @@ function makeSelectEdition($value)
 		"ENDOPTGROUP-2"=> "",
 		"OPTGROUP-3"=> getlodeltextcontents("no_edit_and_no_import", "admin"),
 			"none" => getlodeltextcontents("no_show_in_interface", "admin"),
-		"ENDOPTGROUP-3"=> "");
+		"ENDOPTGROUP-3"=> "",
+		"OPTGROUP-4"=> getlodeltextcontents('for_list_only', 'admin'),
+			"select" => getlodeltextcontents("edit_select", "admin"),
+			"multipleselect" => getlodeltextcontents("edit_multiple_select", "admin"),
+			"radio" => getlodeltextcontents("edit_radio", "admin"),
+			"checkbox" => getlodeltextcontents("edit_checkbox", "admin"),
+		"ENDOPTGROUP-4"=> "");
 	renderOptions($arr, $value);
 }
 ?>
