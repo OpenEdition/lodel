@@ -317,6 +317,15 @@ function confirmation()
 	}
 }
 
+/* Focus sur page de login */
+
+function focusOnLogin(){
+	var loginS = document.getElementById('loginscreen');
+	if(loginS){
+		document.getElementById('login').focus();
+	}
+}
+
 /************************************************************************/
 /* END Miscellaneous functions
 /************************************************************************/
