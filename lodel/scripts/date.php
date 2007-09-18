@@ -67,13 +67,14 @@ function mysqldate($s)
 	}	elseif (strpos($s, '.') > 0) {
 		$delimiter = '.';
 	}
-
 	if (!$delimiter) {
 		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
 			return $s . '-00-00';
-		} else { return ''; }
-		
-	
+		} elseif(strlen($s) > 0) {
+			die("ERROR : date entered is not a valid value. Please come <a href='javascript:window.history.go(-1);'>back</a> and modify it.");
+		} else { 
+			return ''; 
+		}
 	}
 	list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
 	$d = intval(trim($d));
