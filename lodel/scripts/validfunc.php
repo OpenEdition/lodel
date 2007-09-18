@@ -166,6 +166,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			&& !preg_match("`(.)+[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d`", $text)
 			&& !preg_match("`(19|20)\d\d[- /.](.)+[- /.](0[1-9]|[12][0-9]|3[01])`", $text)
 			&& !preg_match("`(19|20)\d\d`", $text)
+			&& !preg_match("`(.)+[- /.](19|20)\d\d`", $text)
+			&& !preg_match("`(19|20)\d\d[- /.](.)+`", $text)
 			&& !preg_match("`(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])`", $text))
 				die("ERROR : date entered is not a valid value. Please come <a href='javascript:window.history.go(-1);'>back</a> and modify it.");
 			$text = mysqldatetime($text, $type);
