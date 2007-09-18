@@ -375,7 +375,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
 	<LOOP NAME="entities_select">
 		<DO>
@@ -403,7 +403,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<br /><br />
-	<a href="#" onClick="window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 
@@ -449,13 +449,13 @@ cp_[#VARNAME].writeDiv();
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
     <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label> 
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="data[[#VARNAME]][[#LANG]]" VALUE="[#VALUE]" />
-	<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;" class="delete">[@COMMON.DELETE]</a>
+	<a href="#" onclick="preserveDatas;deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;" class="delete">[@COMMON.DELETE]</a>
     </div>
   </LOOP>
   <div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 	<label class="labelmltext">XXX</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="data[[#VARNAME]][__lodel_wildcard]" VALUE="" />
-	<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;" class="delete">[@COMMON.DELETE]</a>
+	<a href="#" onclick="preserveDatas;deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;" class="delete">[@COMMON.DELETE]</a>
   </div>
   <div>
 	  <select onchange="addlanginmltext(this,'[#VARNAME]');"><?php makeselectlangs(); ?></select>
@@ -1392,9 +1392,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LET VAR="noid">TRUE</LET>
 	</IF>
 	<ul class="entitiesPath">
-		<li><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
+		<li><a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+			<li> &gt; <a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 				<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
@@ -1409,7 +1409,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul class="entitiesPath site">
 		<li><a href="index.[#EXTENSIONSCRIPTS]">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
+			<li> &gt; <a onClick="preserveDatas;" href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity2" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 			<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
