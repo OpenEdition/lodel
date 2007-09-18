@@ -385,12 +385,12 @@ function makeurlwithid ($id, $base = 'index')
 		}
 	}
 	
-	$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
+	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
 			dberror();
 		}
 	if($class != 'entities')
-		$uri = '';
+		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
 		return $base. $id. '.'. $GLOBALS['extensionscripts'];
