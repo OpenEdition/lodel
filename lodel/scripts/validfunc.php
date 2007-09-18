@@ -64,6 +64,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
+
 	switch ($type) { //pour chaque type de champ
 	case 'history' :
 	case 'text' :
@@ -158,7 +159,14 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'datetime' :
 	case 'time' : //vérification des champs date, time et datetime
 		require_once 'date.php';
-		if ($text) {
+		if ($text) {//checking if date format is good (french or english like)
+			if(!preg_match("`(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d`", $text)
+			&& !preg_match("`(0[1-9]|[12][0-9]|3[01])[- /.](.)+[- /.](19|20)\d\d`", $text)
+			&& !preg_match("`(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d`", $text)
+			&& !preg_match("`(.)+[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d`", $text)
+			&& !preg_match("`(19|20)\d\d[- /.](.)+[- /.](0[1-9]|[12][0-9]|3[01])`", $text)
+			&& !preg_match("`(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])`", $text))
+				die("ERROR : date entered is not a valid value. Please come <a href='javascript:window.history.go(-1);'>back</a> and modify it.");
 			$text = mysqldatetime($text, $type);
 			if (!$text) {
 				return $type;
