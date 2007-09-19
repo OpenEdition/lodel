@@ -227,7 +227,7 @@ function mysqldatetime($s, $type = 'datetime')
 			return $date;
 		}
 
-		if (preg_match("/(\d+)[:h](?:(\d+)(?:[:](\d+))?)?\s*$/", $s, $result)) { // time
+		if (preg_match("/(\d+)[:hH](?:(\d+)(?:[:](\d+))?)?\s*$/", $s, $result)) { // time
 			$timestamp = mktime($result[1], $result[2], $result[3], $m, $d, $y);
 			if ($timestamp <= 0) { // no algebra	
 				$time = sprintf("%02d:%02d:%02d", $result[1], $result[2], $result[3]);
