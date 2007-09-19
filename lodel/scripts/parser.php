@@ -205,21 +205,22 @@ class Parser
 		return $ret;
 	}
 
-	function parse_variable(& $text, $escape = "php")
+	function parse_variable(& $text, $escape = 'php')
 	{
-		$i = strpos($text, "[");
+		global $context;
+		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
 			$i ++;
 			// parenthesis syntaxe [(
-			if ($text {$i}	== "(") {
+			if ($text {$i}	== '(') {
 				$para = true;
 				$i ++;
 			}	else {
 				$para = false;
 			}
 
-			if ($text {$i} == "#" || strpos($text {$i }, $this->variablechar) !== false) { // 
+			if ($text {$i} == '#' || strpos($text {$i }, $this->variablechar) !== false) { // 
 				$varchar = $text {$i};
 				$i ++;
 				// look for the name of the variable now
@@ -228,33 +229,56 @@ class Parser
 				$varname = $text {$i};
 				$i ++;
 				while (($text {$i}	>= 'A' && $text {$i}	<= 'Z') || ($text {$i}	>= '0' && 
-								$text {$i}	<= '9') || $text {$i}	== "_" || $text {$i}	== ".")	{
+								$text {$i}	<= '9') || $text {$i}	== '_' || $text {$i}	== '.')	{
 					$varname .= $text {$i};
 					$i ++;
 				}
-				$pipefunction = "";
+				$pipefunction = '';
 
-				if ($text {$i}	== ":")	{ // a lang
-					$lang = "";
+				if ($text {$i}	== ':')	{ // a lang
+					$lang = '';
 					$i ++;
-					while ($text {$i}	>= 'A' && $text {$i}	< 'Z')	{
-						$lang .= $text {$i};
-						$i ++;
+					if ($text{$i} == '#') { //pour syntaxe LS [#RESUME:#SITELANG]
+						$i++;
+						$is_var = true; // on a une variable derriere les ':'
+						$is_array = false;
+						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.') {
+							if ($text {$i} == '.') { $is_array = true; }
+							$lang .= $text {$i};
+							$i ++;
+						}
+
+					} else { //pour syntaxe LS [#RESUME:FR]
+						$is_var = false;
+						while (($text{$i} >='A' && $text{$i} < 'Z')) {
+							$lang .= $text {$i};
+							$i ++;
+						}
+					}
+					if ($is_var === true) { 
+						$lang = strtolower($lang);
+						if ($is_array === true) {
+							//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
+							$tab = explode ('.', $lang);
+							$lang = $context[$tab[0]][$tab[1]][$tab[2]];
+						} else {
+							$lang = $context[$lang];
+						}
 					}
 					$pipefunction = '|multilingue("'.$lang.'")';
 				}
 
-				if ($text {$i}	== "|")	{ // have a pipe function
+				if ($text {$i}	== '|')	{ // have a pipe function
 					// look for the end of the variable
 					$bracket = 1;
 					$mustnewparse = false;
 					while ($bracket) {
 						switch ($text {$i})	{
-						case "[" :
+						case '[' :
 							$bracket ++;
 							$mustparse = true; // potentially a new variable
 							break;
-						case "]" :
+						case ']' :
 							$bracket --;
 							break;
 						}
@@ -263,7 +287,7 @@ class Parser
 						$i ++;
 					}
 					$i --; // comes back to the bracket.
-					if ($para && $pipefunction {strlen($pipefunction) - 1 }	== ")")	{
+					if ($para && $pipefunction {strlen($pipefunction) - 1 }	== ')')	{
 						$pipefunction = substr($pipefunction, 0, -1);
 						$i --;
 					}
@@ -272,9 +296,9 @@ class Parser
 					}
 				}
 				// look for a proper end of the variable
-				if ($para && $text {$i}	== ")" && $text {$i +1}	== "]")	{
+				if ($para && $text {$i}	== ')' && $text {$i +1}	== ']')	{
 					$i += 2;
-				}	elseif (!$para && $text {$i} = "]")	{
+				}	elseif (!$para && $text {$i} = ']')	{
 					$i ++;
 				}
 				else
@@ -285,7 +309,7 @@ class Parser
 				$text = substr_replace($text, $varcode, $startvar, $i - $startvar);
 				$i = $startvar +strlen($varcode); // move the counter
 			} // we found a variable
-			$i = strpos($text, "[", $i);
+			$i = strpos($text, '[', $i);
 		} // while there are some variable
 	}
 
