@@ -49,21 +49,24 @@ if ($_GET['insert'] == 'mets') {
 	// authentification avec pour niveau minimum administrateur d'un site
 	authenticate(LEVEL_ADMIN);
 
-	// insertion du METS dans la base
-	require_once ('mets_insert.php');
-	$mets = new mets_insert();
-	$partners = $mets->partners;
-	foreach($partners as $partner) {
-		$dir_revues = $mets->get_revues_dir($partner['import_directory']);
-		foreach ($dir_revues as $dir) {
-			$revue = array();
-			$revue['partner_Lodel_id'] = $partner['Lodel_id'];
-			$revue['directory'] = $dir;
-			$revue['mets'] = $partner['mets_directory'];
-			$revue['dc'] = $partner['dc_directory'];
-			$mets->parse_mets($revue); // insère les données de la revue dans la base, à partir du METS
-			$mets->parse_dc($revue); // mets à jour les données avec le dublin core
-		}
+	 // insertion du METS dans la base
+        require_once ('mets_insert.php');
+        if ($mets = new mets_insert()) {
+        	$partners = $mets->partners;
+        	foreach($partners as $partner) {
+                	$dir_revues = $mets->get_revues_dir($partner['import_directory']);
+                	if(is_array && !empty($dir_revues)) {
+                        	foreach ($dir_revues as $dir) {
+                                	$revue = array();
+                                	$revue['partner_Lodel_id'] = $partner['Lodel_id'];
+                                	$revue['directory'] = $dir;
+                                	$revue['mets'] = $partner['mets_directory'];
+                                	$revue['dc'] = $partner['dc_directory'];
+                                	$mets->parse_mets($revue); // insère les données de la revue dans la base, à partir du METS
+                                	$mets->parse_dc($revue); // mets à jour les données avec le dublin core
+                        	}
+                	}
+        	}
 	}
 } else {
 	authenticate(LEVEL_VISITOR);

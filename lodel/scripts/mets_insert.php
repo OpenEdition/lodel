@@ -40,11 +40,13 @@
 
 require_once ('simpleXML_extented.php');
 require_once ('controler.php');
-
+require_once ('PEAR/Log.php');
 
 class mets_insert {
 
-	private $errors_dir = '';
+	private $error_levels = array (FATAL => PEAR_LOG_ERR,
+					WARN => PEAR_LOG_WARNING,
+					INFO => PEAR_LOG_INFO);
 
 	/**
 	 * Tableau des noms des éléments racines (partenaires)
@@ -70,11 +72,10 @@ class mets_insert {
 	 */
 
 	function __construct() {
-		$this->partners = $this->get_partners();
+		$this->file_log = SITEROOT . '/mets_insert.log';
+		$this->_log_error(__METHOD__ . ' ----> Et zou !', INFO);
+		if (!$this->partners = $this->get_partners()) { return false; }
 		$this->_init_Lodel_request();
-		/*if (!is_writable($this->errors_dir)) { // pour gestion des erreurs
-			$this->errors_dir = SITEROOT . 'CACHE';
-		}*/
 	}
 
 
@@ -88,6 +89,8 @@ class mets_insert {
 
 	public function parse_mets($revue) {
 		$this->revue = $revue;
+
+		//print_r($revue); exit;
 
 		if (is_string($mets = $this->_get_revue_mets())) {
 			
@@ -579,9 +582,18 @@ class mets_insert {
 	}
 
 
-	private function error($txt, $level) {
-
+	private function _log_error($txt, $level) {
+		$conf = array('mode' => 0600);
+		$logfile = &Log::singleton('file', $this->file_log, '', $conf);
+		$logfile->log(utf8_encode($txt), $this->error_levels[$level]);
 	}
+
+	private function _log_dberror($from) {
+		global $db;
+		$this->_log_error($from . ': ' . $db->errormsg(), FATAL);
+		die('Database error');
+	}
+
 
 /******************** Initialisation (Lodel, METS) ********************/
 
@@ -622,20 +634,17 @@ class mets_insert {
 
 /******************** Gestion des fichiers ********************/
 	/**
-	 * Liste des éléments à la racine du site Lodel (partenaires)
-	 * Les partenaires doivent être insérés via l'interface de Lodel
-	 * Retourne la valeur du champ  $this->mets_id_field qui stocke l'identifiant unique METS
-	 * = provisoirement nom du dossier dans lequel sont stockés les fichiers mets
+	 * Liste les partenaires : classe Lodel 'partner' (la seule dont les types peuvent être insérés à la racine)
+	 * Les partenaires doivent être au préalable insérés via l'interface de Lodel, à la racine du site
 	 *
-	 * @todo utiliser un champ pour stocker l'emplacement des fichiers xml
 	 * @todo utiliser une variable pour stocker le nom de la table (partner) OU considérer que c'est le seul type autorisé à la racine
-	 * @return array (idLodel=>idMets)
+	 * @return array info
 	 */
 
 	public function get_partners() {
 		global $db;
 
-		$result = $db->execute(lq("SELECT identity, importdirectory, metsdirectory, dcdirectory FROM #_TP_entities e JOIN #_TP_relations r ON e.id=r.id2 JOIN #_TP_partner p ON e.id=p.identity WHERE r.id1=0 AND r.degree=1"));
+		$result = $db->execute(lq("SELECT identity, importdirectory, metsdirectory, dcdirectory FROM #_TP_entities e JOIN #_TP_relations r ON e.id=r.id2 JOIN #_TP_partner p ON e.id=p.identity WHERE r.id1=0 AND r.degree=1")) or $this->_log_dberror(__METHOD__);
 		$racines = array();
 
 		while (!$result->EOF) {
@@ -646,8 +655,12 @@ class mets_insert {
 			$racines[$identity]['dc_directory'] = $result->fields['dcdirectory'];
 			$result->MoveNext();
 		}
-
-		return $racines;
+		
+		if (!empty($racines)) { return $racines; }
+		else {
+			$this->_log_error(__METHOD__ . 'Aucun partenaire à la racine du site', FATAL);
+			return false;
+			}
 	}
 
 
@@ -655,7 +668,8 @@ class mets_insert {
 	 * Liste les répertoires contenus dans le dossier du partenaire (un répertoire = une revue)
 	 *
 	 * @param string $partner_dir chemin absolu du répertoire du partenaire
-	 * @return array liste des répertoires accessibles en lecture
+	 * @return array liste des répertoires accessibles en lecture s'il y en a
+	 * @return bool false  si aucun répertoire accessible en lecture
 	 */
 
 	public function get_revues_dir($partner_dir) {
@@ -668,18 +682,23 @@ class mets_insert {
 					$revues[] = "$partner_dir/$file";
 				}
 			}
-
+			if (empty($revues)) {
+				$this->_log_error("Aucun répertoire dans $partner_dir : répertoire partenaire ignoré", WARN);
+			}
 			return $revues;
-		} else { echo 'erreur : peut pas scanner le répertoire' . $partner_dir;
-			return $partner_import_directory;
+		} else {
+			$this->_log_error("Impossible de scanner $partner_dir : répertoire partenaire ignoré", WARN);
+			return false;
 		}
 	}
 
 
 	/**
 	 * Retourne la liste des fichiers XML d'une revue, en fonction du format xml demandé
+	 * Chaque répertoire de revue doit contenir un répertoire par format.
+	 * Les noms des répertoires sont renseignés dans Lodel (édition du partenaire), et identiques pour toutes les revues d'un même partenaire
 	 *
-	 * @param string $format format xml (mets, oai, etc.)
+	 * @param string $format format xml (mets, dc, etc.)
 	 * @return array liste des fichiers xml accessibles en lecture
 	 */
 
@@ -698,9 +717,15 @@ class mets_insert {
 			}
 			natsort($files);
 			$list_file = array_values($files);
-			return $list_file;
-		} else { echo 'erreur : peut pas scanner le répertoire' . $revue_dir;
-			return $revue_dir;
+			if (!empty($list_file)) {
+				return $list_file;
+			} else {
+				$this->_log_error("Aucun fichier $format dans $revue_dir : répertoire revue ignoré", WARN);
+				return false;
+			}
+		} else {
+			$this->_log_error("Impossible de scanner $revue_dir : répertoire revue ignoré", WARN);
+			return false;
 		}
 	}
 
@@ -712,7 +737,7 @@ class mets_insert {
 	 * @return string Concaténation du contenu des fichiers
 	 */
 
-	private function _get_revue_mets() {
+	private function _get_revue_mets($oai = true) {
 		
 		if (is_array($files = $this->_get_revue_files('mets')) && !empty($files)) {
 			$files_count = count($files);
@@ -756,7 +781,7 @@ class mets_insert {
 			} else {
 				// todo : traiter les cas où $files_count =< 2
 			}
-		} else {echo 'erreur : aucun fichier dans le répertoire spécifié'.$revue_dir;
+		} else {
 			return false;
 		}
 	}
