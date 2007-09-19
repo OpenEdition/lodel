@@ -263,13 +263,13 @@ function humandate($s)
 			return "";
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
-		$dat = intval($result[3])."-".intval($result[2])."-".intval($result[1]);
+		$dat = intval($result[1])."-".intval($result[2])."-".intval($result[3]);
 		$ret = formateddate($dat, "%d %B %Y");
 	}
 	// time
-	if (preg_match("/(\d\d)(h|H|:)(\d\d)/", $s, $res)) {
+	if (preg_match("/(\d\d)([hH:])(\d\d)/", $s, $res)) {
 		if($res[1] != "00" || $res[3] != "00")
-			$ret .= ", ".$res[1].'H'.$res[3];
+			$ret .= " ".$res[1].'H'.$res[3];
 	}
 	return $ret ? $ret : $s;
 }
@@ -597,6 +597,15 @@ function humanlang($text)
 function today()
 {
 	return date("Y-m-d");
+}
+
+/**
+ * Retourne la date courante sous la forme YYYY-MM-JJ heures:minutes:secondes
+ */
+
+function today_with_hour()
+{
+	return date("Y-m-d H:i:s");
 }
 
 /**
