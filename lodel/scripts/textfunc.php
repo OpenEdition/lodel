@@ -254,7 +254,7 @@ function formatedtime($time, $format)
 }
 
 function humandate($s)
-{ 
+{
 	// date
 	if (preg_match("/(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
 		if ($result[1] > 9000)
@@ -267,9 +267,9 @@ function humandate($s)
 		$ret = formateddate($dat, "%d %B %Y");
 	}
 	// time
-	if (preg_match("/(\d\d)([hH:])(\d\d)/", $s, $res)) {
-		if($res[1] != "00" || $res[3] != "00")
-			$ret .= " ".$res[1].'H'.$res[3];
+	if (preg_match("/(\d\d):(\d\d)/", $s, $res)) {
+		if($res[1] != "00" || $res[2] != "00")
+			$ret .= " ".$res[1].'h'.$res[2];
 	}
 	return $ret ? $ret : $s;
 }
