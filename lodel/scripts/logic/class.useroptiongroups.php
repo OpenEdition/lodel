@@ -87,11 +87,11 @@ class UserOptionGroupsLogic extends Logic {
 			global $db;
 			$result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or dberror();
 			while (!$result->EOF) {
-	$localcontext=array_merge($context,$result->fields);
-	$name=$result->fields['name'];
-	if ($context[$name]) $localcontext['value']=$context[$name];
-	call_user_func("code_do_$funcname",$localcontext);
-	$result->MoveNext();
+				$localcontext=array_merge($context,$result->fields);
+				$name=$result->fields['name'];
+				if ($context[$name]) $localcontext['value']=$context[$name];
+					call_user_func("code_do_$funcname",$localcontext);
+				$result->MoveNext();
 			}
 		}
 		return Logic::viewAction($context,$funcname);
@@ -112,8 +112,8 @@ class UserOptionGroupsLogic extends Logic {
 			$valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
 			if ($valid===false) die("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php");
 			if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context['data'][$option->name]) ) {
-	$dir=dirname($context['data'][$option->name]);
-	rename(SITEROOT.$dir,SITEROOT.preg_replace("/\/tmpdir-\d+$/","/option-".$option->id,$dir));
+				$dir=dirname($context['data'][$option->name]);
+				rename(SITEROOT.$dir,SITEROOT.preg_replace("/\/tmpdir-\d+$/","/option-".$option->id,$dir));
 			}
 			if (is_string($valid)) $error[$option->name]=$valid;
 		}
@@ -159,6 +159,18 @@ class UserOptionGroupsLogic extends Logic {
 	function deleteAction(&$context,&$error)
 	{     
 		die("ERROR: forbidden");
+	}
+
+	/**
+	 * Construction des balises select HTML pour cet objet
+	 *
+	 * @param array &$context le contexte, tableau passé par référence
+	 * @param string $var le nom de la variable du select
+	 */
+	function makeSelect(&$context, $var)
+	{
+			require_once 'lang.php';
+			makeselectlangs($context[$var]);
 	}
 
 	/*---------------------------------------------------------------*/
