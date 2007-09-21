@@ -958,4 +958,24 @@ class siteManage {
 		
 		return true;
 	}
+
+	function maintenance()
+	{
+ 		if($this->id > 0) {
+			$res = mysql_query(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere.""));
+			$row = mysql_fetch_row($res);
+			$status = $row[0] == -64 ? 1 : -64;
+			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE ".$this->critere.""));
+		}
+		elseif($this->id == 0) {
+			$res = mysql_query(lq("SELECT status FROM #_TP_sites"));
+			$row = mysql_fetch_row($res);
+			$status = $row[0] == -64 ? 1 : -64;
+			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status));
+		}
+		if (!headers_sent()) {
+			header("location: index.php?do=list&lo=sites&clearcache=oui");
+			exit;
+		}
+	}
 }

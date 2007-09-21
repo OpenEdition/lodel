@@ -60,11 +60,14 @@ $website->set('singledatabase',$singledatabase);
 $website->set('version',$context['version']);
 $website->set('downloadsiteconfig',$downloadsiteconfig);
 
+if($maintenance)
+	$website->maintenance();
+
 // suppression et restauration
 if ($id>0 && ($delete || $restore)) {
 	if($delete)
 		$website->remove();
-	else
+	elseif($restore)
 		$website->restore();
 }
 
