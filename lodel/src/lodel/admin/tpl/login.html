@@ -45,31 +45,43 @@ body{
 			</LOOP>
 		</legend>
 		<input type="hidden" name="url_retour" value="[#URL_RETOUR]" />
-		<IF COND="[#CHARSET] ne 'utf-8'">
-			<span class="error">
-				[@COMMON.BROWSER_UTF8]<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8]
-			</span>
-			<br /><br />
+		<IF COND="![#SUSPENDED]">
+			<IF COND="[#CHARSET] ne 'utf-8'">
+				<span class="error">
+					[@COMMON.BROWSER_UTF8]<br />[@COMMON.USE_LODEL]<br />[@COMMON.WITH_UTF8]
+				</span>
+				<br /><br />
+			</IF>
+			<IF COND="[#ERROR_LOGIN]">
+				<span class="error">[@COMMON.INVALID_LOGIN_PASSWORD]</span><br /><br />
+			</IF>
+			<IF COND="[#ERROR_OPENSESSION]">
+				<span class="error">[@COMMON.ERROR_OPENSESSION]</span><br /><br />
+			</IF>
+			<IF COND="[#ERROR_SITE_BLOQUE]">
+				<span class="error">[@COMMON.BLOCK_SITE]</span><br /><br />
+			</IF>
+			<IF COND="[#ERROR_TIMEOUT]">
+				<span class="error">[@COMMON.SESSION_TIMEOUT]</span><br /><br />
+			</IF>
+			<IF COND="[#ERROR_PRIVILEGE]">
+				<span class="error">[@COMMON.ERROR_RIGHTS]</span><br /><br />
+			</IF>
+			<label for="login">[@COMMON.LOGIN]</label>
+			<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
+			<label for="passwd">[@COMMON.PASSWD]</label>
+			<input type="password" class="input_formulaire" id="passwd" name="passwd" />
+		<ELSE />
+			<span class="error">[@COMMON.SUSPENDED]</span>
+			<input type="hidden" id="login" name="login" value="[#LOGIN]" />
+			<input type="hidden" id="datab" name="datab" value="[#DATAB]" />
+			<label for="passwd">[@COMMON.OLDPASSWD]</label>
+			<input type="password" class="input_formulaire" id="old_passwd" name="old_passwd" />			
+			<label for="passwd">[@COMMON.NEWPASSWD]</label>
+			<input type="password" class="input_formulaire" id="passwd" name="passwd" />
+			<label for="passwd">[@COMMON.RETYPEPASSWD]</label>
+			<input type="password" class="input_formulaire" id="passwd2" name="passwd2" />			
 		</IF>
-		<IF COND="[#ERROR_LOGIN]">
-			<span class="error">[@COMMON.INVALID_LOGIN_PASSWORD]</span><br /><br />
-		</IF>
-		<IF COND="[#ERROR_OPENSESSION]">
-			<span class="error">[@COMMON.ERROR_OPENSESSION]</span><br /><br />
-		</IF>
-		<IF COND="[#ERROR_SITE_BLOQUE]">
-			<span class="error">[@COMMON.BLOCK_SITE]</span><br /><br />
-		</IF>
-		<IF COND="[#ERROR_TIMEOUT]">
-			<span class="error">[@COMMON.SESSION_TIMEOUT]</span><br /><br />
-		</IF>
-		<IF COND="[#ERROR_PRIVILEGE]">
-			<span class="error">[@COMMON.ERROR_RIGHTS]</span><br /><br />
-		</IF>
-		<label for="login">[@COMMON.LOGIN]</label>
-		<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
-		<label for="passwd">[@COMMON.PASSWD]</label>
-		<input type="password" class="input_formulaire" id="passwd" name="passwd" />
 		<p class="login">
 			<input type="submit" value="Valider" alt="Valider" class="button" />
 		</p>

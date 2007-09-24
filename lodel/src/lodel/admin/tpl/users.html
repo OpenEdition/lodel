@@ -84,8 +84,17 @@
 		        </LOOP>
 					</td>	
 				<td class="actions">
-				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+					<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+					<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+					<LOOP NAME="status" TABLE="users" SELECT="status" WHERE="id='[#ID]'" LIMIT="0,1">
+						<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+							<IF COND="[#STATUS] EQ 10">
+								[@ADMIN.SUSPENDED]
+							<ELSE />
+								<a onClick="return confirm('Suspendre le compte tant que l\'utilisateur n\'a pas modifié son mot de passe ?');" href="index.php?do=suspend&amp;lo=users&amp;id=[#ID]">[@ADMIN.SUSPEND]</a>
+							</IF>
+						</IF>
+					</LOOP>
 				</td>
 			</tr>
 		</DO>

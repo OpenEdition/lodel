@@ -45,8 +45,31 @@
 require 'lodelconfig.php';
 require_once 'auth.php';
 
-
-if ($login) {
+if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
+	require_once 'func.php';
+	extract_post();
+	require_once 'connect.php';
+	require_once 'loginfunc.php';
+	unset($retour);
+	$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
+	if($retour === "error_passwd") {
+		$context['suspended'] = 1;
+	} elseif($retour === false) {	
+		$context['error_login'] = 1;
+	} elseif($retour === true) {
+		// on relance la procédure d'identification
+		if (!check_auth($_POST['login'], $_POST['passwd'], $site)) {
+			$context['error_login'] = 1;
+		} else {
+			// et on ouvre une session
+			$err = open_session($_POST['login']);
+			if ($err)
+				$context[$err] = 1;
+			else
+				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+		}
+	}
+} elseif  ($login) {
 	require_once 'func.php';
 	extract_post();
 	do {
@@ -56,11 +79,18 @@ if ($login) {
 			$context[error_login] = 1; 
 			break;
 		}
-		// ouvre une session
-		$err = open_session($context['login']);
-		if ($err) {
-			$context[$err] = 1;
+		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
+		if(!check_suspended()) {
+			$context['suspended'] = 1;
 			break;
+		}
+		else {
+			// ouvre une session
+			$err = open_session($context['login']);
+			if ($err) {
+				$context[$err] = 1;
+				break;
+			}
 		}
 
 		header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);

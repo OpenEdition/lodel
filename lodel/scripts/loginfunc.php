@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain MIGNOT
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -74,7 +75,17 @@ function open_session($login)
 			break; // ok, it's working fine
 	}
 
-	if ($i == 5)
+	if ($i == 5)/**
+ * Vérifie que le login et le password sont bon pour le site concerné
+ *
+ * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
+ * globales les informations de l'utilisateur
+ *
+ * @param string $login le nom d'utilisateur
+ * @param string &$passwd le mot de passe
+ * @param string &$site le site
+ * @return boolean un booleen indiquant si l'authentification est valide
+ */
 		return "error_opensession";
 	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
 		die("Probleme avec setcookie... probablement du texte avant");
@@ -123,7 +134,7 @@ function check_auth($login, & $passwd, & $site)
 		}	else {
 			break; // on s'ejecte
 		}
-
+		
 		// pass les variables en global
 		$lodeluser['rights'] = $row['userrights'];
 		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
@@ -149,5 +160,77 @@ function check_auth($login, & $passwd, & $site)
 		return true;
 	}	while (0);
 	return false;
+}
+
+/**
+ * Vérifie que le compte d'utilisateur n'a pas été suspendu
+ *
+ * Si le status de l'utilisateur est égale à 10 (utilisateur suspendu) ou à 11 (utilisateur protégé suspendu), on retourne false, sinon true
+ *
+ * @return boolean un booleen indiquant si le compte est suspendu (false) ou pas (true)
+ */
+function check_suspended()
+{
+	global $context, $db;
+	if($context['site'] != '') {
+		$prefixe = "#_TP_";
+		usecurrentdb();
+		$context['datab'] = $db->database;
+	}
+	else {
+		$prefixe = "#_MTP_";
+		usemaindb();
+	}
+	$status = $db->getOne(lq("SELECT status FROM ".$prefixe."users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+	//on a pas de status. Deux possibilités : soit cest pas la bonne base, soit l'utilisateur n'existe pas (deja vérifié avant, donc exclu)
+	if(!$status) {
+		usemaindb();
+ 		$context['datab'] = $db->database;
+		$status = $db->getOne(lq("SELECT status FROM #_MTP_users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+	}
+	usecurrentdb();
+	if($status == 10 || $status == 11)
+		return false;
+
+	return true;
+}
+
+/**
+ * Modifie le mot de passe apres suspension d'un compte
+ *
+ * Permet à l'utilisateur ayant un compte suspendu de le réactiver en modifiant son mot de passe
+ *
+ * @param string $datab base de données à utiliser
+ * @param string $login le nom d'utilisateur
+ * @param string $old_passwd l'ancien mot de passe
+ * @param string $passwd le mot de passe
+ * @param string $passwd2 vérif même mot de passe
+ * @return string 3 retours possibles : true (mot de passe changé et compte réactivé), false (pas d'utilisateur correspondant), 'error_passwd' (le mot de passe n'est pas au bon format)
+ */
+function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
+{
+	global $db, $context;
+
+	$log = addslashes($login);
+	$datab = addslashes($datab);
+	$old_pass = md5($old_passwd . $login);
+	mysql_select_db($datab);
+	$res = $db->getall("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
+
+	if(!$res[0])
+		return false;
+	else {
+		if($passwd == $passwd2 && $passwd != $old_passwd && strlen($passwd) > 3 || strlen($passwd) < 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd)) {
+			$passwd = md5($passwd . $login);
+			if($res[0]['status'] == 10)
+				$status = 1;
+			elseif($res[0]['status'] == 11)
+				$status = 32; 
+			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res[0]['id']."'");
+			return true;
+		}
+		else
+			return "error_passwd";
+	}
 }
 ?>

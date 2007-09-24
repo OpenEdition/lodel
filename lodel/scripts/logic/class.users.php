@@ -381,6 +381,32 @@ class UsersLogic extends Logic
 	}
 	// end{uniquefields} automatic generation  //
 
+	/**
+	 * Bloque un compte utilisateur tant que celui-ci n'a pas modifié son mot de passe
+	 */
+
+	function suspendAction()
+	{
+ 		global $db, $id, $site, $lodeluser;
+
+		//on vérifie qu'on est bien administrateur
+		if($lodeluser['rights'] >= 40) {
+			$prefixe = ($site != '' && $site != "tous les sites") ? "#_TP_" : "#_MTP_";
+	
+			$status = $db->getOne(lq("SELECT status FROM ".$prefixe."users WHERE id = '".$id."'"));
+	
+			if($status != -40 && $status != 32)
+				$stat = 10;
+			else
+				$stat = 11;
+			
+			$db->execute(lq("UPDATE ".$prefixe."users SET status = ".$stat." WHERE id = '".$id."'"));
+		} else
+			die("ERROR : You don't have permissions to suspend this user. Contact your administrator.");
+		
+		return "_back";
+	}
+
 } // class 
 
 
