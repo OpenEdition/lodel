@@ -220,7 +220,7 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 	if(!$res[0])
 		return false;
 	else {
-		if($passwd == $passwd2 && $passwd != $old_passwd && (strlen($passwd) > 3 || strlen($passwd) < 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd))) {
+		if($passwd == $passwd2 && $passwd != $old_passwd && strlen($passwd) > 3 && strlen($passwd) < 12 && !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd)) {
 			$passwd = md5($passwd . $login);
 			if($res[0]['status'] == 10)
 				$status = 1;
