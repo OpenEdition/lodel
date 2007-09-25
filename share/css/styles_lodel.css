@@ -46,6 +46,12 @@ form.entry{
 	margin: 3ex 0 0 0;
 }
 
+div.passwdHelper {
+	clear: both; 
+	color: #6666fa; 
+	font-size: 0.8em;
+}
+
 a:link, a:visited{
 	text-decoration: none;
 	color: #000;
