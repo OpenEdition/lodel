@@ -54,66 +54,85 @@
  * @param string $s la date 'humaine'
  * @return string la date transformée en format mySQL
  */
-function mysqldate($s)
+function mysqldate($s, $type)
 {
 	//what is the delimiting character? (support space, slash, dash, point) 
 	$s = trim($s);
-	if (strpos($s, '/') > 0) {
-		$delimiter = "\/";
-	}	elseif (strpos($s, ' ') > 0) {
-		$delimiter = ' ';
-	}	elseif (strpos($s, '-') > 0) {
-		$delimiter = '-';
-	}	elseif (strpos($s, '.') > 0) {
-		$delimiter = '.';
+	if($type == 'time') {
+		if (strpos($s, ':') > 0) {
+			$delimiter = ':';
+		}	elseif (strpos($s, 'h') > 0) {
+			$delimiter = 'h';
+		}	elseif (strpos($s, 'H') > 0) {
+			$delimiter = 'H';
+		}
+	} else {
+		if (strpos($s, '/') > 0) {
+			$delimiter = "\/";
+		}	elseif (strpos($s, '-') > 0) {
+			$delimiter = '-';
+		}	elseif (strpos($s, '.') > 0) {
+			$delimiter = '.';
+		}	elseif (strpos($s, ' ') > 0) {
+			$delimiter = ' ';
+		}
 	}
 	if (!$delimiter) {
 		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
 			return $s . '-00-00';
 		} elseif(strlen($s) > 0) {
-			die("ERROR : date entered is not a valid value. Please come <a href='javascript:window.history.go(-1);'>back</a> and modify it.");
+			return "bad date";
 		} else { 
 			return ''; 
 		}
 	}
 	list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
 	$d = intval(trim($d));
-	if ($d < 1 || $d > 31) {
-		return '';
+	if ((($d < 1 || $d > 31) && !preg_match("`[:hH]`", $delimiter)) || (($d < 0 || $d > 24) && preg_match("`[:hH]`", $delimiter))) {
+		return 'bad date';
 	}
 	$m = trim($m);
-	if (intval($m) == 0) {
-		$m = mois($m);
-	}
-	if ($m == 0) {
-		return '';
-	}
 
-	if (!isset ($y)) { // la date n'a pas ete mise
-		$today = getdate(time());
-		$y = $today['year']; // cette annee
-		if ($m < $today['mon']) {
-			$y ++; // ou l'annee prochaine
+	if($type != 'time') {
+		if (intval($m) == 0) {
+			$m = mois($m);
 		}
+		if ($m == 0) {
+			return '';
+		}
+	
+		if (!isset ($y)) { // la date n'a pas ete mise
+			$today = getdate(time());
+			$y = $today['year']; // cette annee
+			if ($m < $today['mon']) {
+				$y ++; // ou l'annee prochaine
+			}
+		}
+	
+		$y = intval(trim($y));
+	
+		//the last value is always the year, so check it for 2- to 4-digit convertion 
+		if (intval($y) < 100)	{
+			$y += 2000;
+		}
+	
+		if (!checkdate($m, $d, $y)) {
+			return '';
+		}
+	
+		if ($d < 10 && strlen($d) == 1)	{
+			$d = "0$d";
+		}
+		if ($m < 10 && strlen($m) == 1)	{
+			$m = "0$m";
+		}
+		return "$y-$m-$d";
 	}
-	$y = intval(trim($y));
+	else
+		if(!isset($y))
+			$y = '00';
+		return $d.":".$m.":".$y;
 
-	//the last value is always the year, so check it for 2- to 4-digit convertion 
-	if (intval($y) < 100)	{
-		$y += 2000;
-	}
-
-	if (!checkdate($m, $d, $y)) {
-		return '';
-	}
-
-	if ($d < 10 && strlen($d) == 1)	{
-		$d = "0$d";
-	}
-	if ($m < 10 && strlen($m) == 1)	{
-		$m = "0$m";
-	}
-	return "$y-$m-$d";
 }
 
 
@@ -217,10 +236,17 @@ function mysqldatetime($s, $type = 'datetime')
 		$timestamp = mktime($arr['tm_hour'], $arr['tm_min'], $arr['tm_sec'], $arr['tm_mon'] + 1, $arr['tm_mday'], 1900 + $arr['tm_year']);
 
 	}	else {
-		$date = mysqldate($s);
-		if (!$date) {
+		$date = mysqldate($s, $type);
+
+		if($date == "bad date")
+			return $type;
+		elseif($type == 'time' && $date)
+			return $date;
+		elseif(!$date && $type != 'time')
 			$date = date("Y-m-d");
-		}
+		elseif(!$date)
+			$date = date("H:i:s");
+
 		list ($y, $m, $d) = explode('-', $date);
 
 		if ($type == "date") {
@@ -243,9 +269,6 @@ function mysqldatetime($s, $type = 'datetime')
 	if ($timestamp <= 0 && $time) {
 		if ($type == 'datetime' && $date) {
 			return trim($date.' '.$time);
-		}
-		if ($type == 'time') {
-			return $time;
 		}
 		return '';
 	}

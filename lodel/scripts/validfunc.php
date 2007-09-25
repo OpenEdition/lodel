@@ -156,14 +156,47 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 //fre
 	case 'date' :
-	case 'datetime' :
-	case 'time' : //vérification des champs date, time et datetime
 		require_once 'date.php';
-		if ($text) {//checking if date format is good (french or english like)
-			$text = mysqldatetime($text, $type);
-			if (!$text) {
+		if ($text) {
+			$textx = mysqldatetime($text, $type);
+			if (!$textx || $textx == $type)
 				return $type;
+			else 
+				$text = $textx;
+		}	elseif ($default) {
+			$dt = mysqldatetime($default, $type);
+			if ($dt) {
+				$text = $dt;
+			} else {
+				die("ERROR: default value not a date or time: \"$default\"");
 			}
+		}
+		break;
+	case 'datetime' :
+		require_once 'date.php';
+		if ($text) {
+			$textx = mysqldatetime($text, $type);
+			if (!$textx || $textx == $type)
+				return $type;
+			else 
+				$text = $textx;
+		}	elseif ($default) {
+			$dt = mysqldatetime($default, $type);
+			if ($dt) {
+				$text = $dt;
+			} else {
+				die("ERROR: default value not a date or time: \"$default\"");
+			}
+		}
+		break;
+	case 'time' : 
+		require_once 'date.php';
+		if ($text) {
+			$textx = mysqldatetime($text, $type);
+			if (!$textx || $textx == $type)
+				return $type;
+			else 
+				$text = $textx;
 		}	elseif ($default) {
 			$dt = mysqldatetime($default, $type);
 			if ($dt) {
