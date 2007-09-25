@@ -78,99 +78,97 @@ function authenticate($level = 0, $mode = "")
 	global $context, $lodeluser;
 	global $home, $timeout, $sessionname, $site;
 	global $db;
-	
-	$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
-	do { // block de control
-		$name = addslashes($_COOKIE[$sessionname]);
-		if (!$name) {
-			break;
-		}
-		require_once 'connect.php';
-		usemaindb();
-		
 
-		if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
-			break;
-		}
-	
-		$GLOBALS['idsession'] = $idsession = $row['id'];
-		$GLOBALS['session'] = $name;
-
-		// verifie qu'on est dans le bon site
-		if ($row['site'] != "tous les sites" && $row['site'] != $site) {
-			break;
-		}
-
-		// verifie que la session n'est pas expiree
-		$time = time();
-		if ($row['expire'] < $time || $row['expire2'] < $time) {
-			$login = "";
-			if (file_exists('login.php'))	{
-				$login = 'login.php';
-			}	elseif (file_exists('lodel/edition/login.php'))	{
-				$login = 'lodel/edition/login.php';
-			}	else {
+		$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
+		do { // block de control
+			$name = addslashes($_COOKIE[$sessionname]);
+			if (!$name) {
 				break;
 			}
-			header("location: $login?error_timeout=1&". $retour);
-			exit;
-		}
-
-		// passe les variables en global
-		$lodeluser = unserialize($row['context']);
-		if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
-			header("location: login.php?error_privilege=1&". $retour);
-			exit;
-		}
-
-		// verifie encore une fois au cas ou...
-		if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
-			break;
-		}
-
-		$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
-		$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
-		$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
-		$lodeluser['redactor']   = $lodeluser['rights'] >= LEVEL_REDACTOR;
-		$lodeluser['visitor']    = $lodeluser['rights'] >= LEVEL_VISITOR;
-
-		$context['lodeluser']    = $lodeluser;
-
-		if ($lodeluser['lang']) {
-			$GLOBALS['lang'] = $lodeluser['lang'];
-			$context['sitelang'] = $GLOBALS['lang'];
-		}
-		
-		// clean the url - nettoyage de l'url
-		$url = preg_replace("/[\?&]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
-		if (get_magic_quotes_gpc()) {
-			$url = stripslashes($url);
-		}
-		$myurl = $norecordurl ? "''" : $db->qstr($url);
-		$expire = $timeout + $time;
-		$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die($db->errormsg());
-
-		$context['clearcacheurl'] = mkurl($url, "clearcache=oui");
-		usecurrentdb();
-		return; // ok !!!
-	}	while (0);
+			require_once 'connect.php';
+			usemaindb();
+			
 	
-	if (function_exists("usecurrentdb")) {
-		usecurrentdb();
-	}
-
-	// exception
-	if ($level == 0) {
-		return; // les variables ne sont pas mises... on retourne
-	}
-	elseif ($mode == 'HTTP') {
- 		require_once 'loginHTTP.php';
-		return;
-	}
-	else {
-		header("location: login.php?". $retour);
-		exit;
-	}
+			if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
+				break;
+			}
+		
+			$GLOBALS['idsession'] = $idsession = $row['id'];
+			$GLOBALS['session'] = $name;
+	
+			// verifie qu'on est dans le bon site
+			if ($row['site'] != "tous les sites" && $row['site'] != $site) {
+				break;
+			}
+	
+			// verifie que la session n'est pas expiree
+			$time = time();
+			if ($row['expire'] < $time || $row['expire2'] < $time) {
+				$login = "";
+				if (file_exists('login.php'))	{
+					$login = 'login.php';
+				}	elseif (file_exists('lodel/edition/login.php'))	{
+					$login = 'lodel/edition/login.php';
+				}	else {
+					break;
+				}
+				header("location: $login?error_timeout=1&". $retour);
+				exit;
+			}
+	
+			// passe les variables en global
+			$lodeluser = unserialize($row['context']);
+			if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
+				header("location: login.php?error_privilege=1&". $retour);
+				exit;
+			}
+	
+			// verifie encore une fois au cas ou...
+			if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
+				break;
+			}
+	
+			$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
+			$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
+			$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
+			$lodeluser['redactor']   = $lodeluser['rights'] >= LEVEL_REDACTOR;
+			$lodeluser['visitor']    = $lodeluser['rights'] >= LEVEL_VISITOR;
+	
+			$context['lodeluser']    = $lodeluser;
+	
+			if ($lodeluser['lang']) {
+				$GLOBALS['lang'] = $lodeluser['lang'];
+				$context['sitelang'] = $GLOBALS['lang'];
+			}
+			
+			// clean the url - nettoyage de l'url
+			$url = preg_replace("/[\?&]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
+			if (get_magic_quotes_gpc()) {
+				$url = stripslashes($url);
+			}
+			$myurl = $norecordurl ? "''" : $db->qstr($url);
+			$expire = $timeout + $time;
+			$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die($db->errormsg());
+			$context['clearcacheurl'] = mkurl($url, "clearcache=oui");
+			usecurrentdb();
+			return; // ok !!!
+		}	while (0);
+		if (function_exists("usecurrentdb")) {
+			usecurrentdb();
+		}
+	
+		// exception
+		if ($level == 0) {
+			return; // les variables ne sont pas mises... on retourne
+		}
+		elseif ($mode == 'HTTP') {
+			require_once 'loginHTTP.php';
+			return;
+		}
+		else {
+			header("location: login.php?". $retour);
+			exit;
+		}
 }
 
 /**
@@ -245,6 +243,57 @@ function getacceptedcharset($charset)
 	}
 }
 
+function maintenance()
+{
+	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db;
+	$name = addslashes($_COOKIE[$sessionname]);
+	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
+
+	if ($name) {
+		require_once 'connect.php';
+		usemaindb();
+		$row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'"));
+	
+		// verifie que la session n'est pas expiree
+		$time = time();
+		if ($row['expire'] < $time || $row['expire2'] < $time) {
+			header('Location: '.$path);
+		}
+		
+		// passe les variables en global
+		$lodeluser = unserialize($row['context']);			
+		if($lodeluser['rights'] < 128) {
+			$regex = "`".$urlroot."([^/]*)/`";
+			preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
+		
+			if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
+				mysql_connect($dbhost, $dbusername, $dbpasswd);
+				mysql_select_db($database);
+				$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
+				$res = mysql_query($query);
+				$row = mysql_fetch_row($res);
+				if($row[0] == -64) {
+					header('Location: '.$path);
+				}
+			}
+		}
+	} elseif(!strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
+		$regex = "`".$urlroot."([^/]*)/`";
+		preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
+		
+		if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
+			mysql_connect($dbhost, $dbusername, $dbpasswd);
+			mysql_select_db($database);
+			$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
+			$res = mysql_query($query);
+			$row = mysql_fetch_row($res);
+			if($row[0] == -64) {
+				header('Location: '.$path);
+			}
+		}
+	}
+}
+
 // import Posted variables for the Register Off case.
 // this should be nicely/safely integrated inside the code, but that's
 // a usefull little hack at the moment
@@ -300,7 +349,8 @@ else {
 
 // accès à la langue dans les templates
 $context['sitelang'] = $GLOBALS['lang'];
-
+//sommes nous en maintenance ?
+maintenance();
 //echo $GLOBALS['lang'];
 header("Content-type: text/html; charset=". $context['charset']);
 ?>
