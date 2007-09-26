@@ -39,6 +39,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -243,12 +244,24 @@ function getacceptedcharset($charset)
 	}
 }
 
+/**
+ * Le site est-il en maintenance ?
+ *
+ * Vérifie le status d'un site. Si status == -64 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
+ * administration générale de Lodel alors on redirige vers la page maintenance.html
+ * 
+ */
 function maintenance()
 {
 	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db;
 	$name = addslashes($_COOKIE[$sessionname]);
 	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
 
+	$regex = "`".$urlroot."([^/]*)/`";
+	preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
+	mysql_connect($dbhost, $dbusername, $dbpasswd);
+	mysql_select_db($database);
+	$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
 	if ($name) {
 		require_once 'connect.php';
 		usemaindb();
@@ -263,13 +276,7 @@ function maintenance()
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);			
 		if($lodeluser['rights'] < 128) {
-			$regex = "`".$urlroot."([^/]*)/`";
-			preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
-		
 			if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-				mysql_connect($dbhost, $dbusername, $dbpasswd);
-				mysql_select_db($database);
-				$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
 				$res = mysql_query($query);
 				$row = mysql_fetch_row($res);
 				if($row[0] == -64) {
@@ -278,13 +285,7 @@ function maintenance()
 			}
 		}
 	} elseif(!strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-		$regex = "`".$urlroot."([^/]*)/`";
-		preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
-		
 		if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-			mysql_connect($dbhost, $dbusername, $dbpasswd);
-			mysql_select_db($database);
-			$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
 			$res = mysql_query($query);
 			$row = mysql_fetch_row($res);
 			if($row[0] == -64) {
