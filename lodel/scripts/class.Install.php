@@ -46,55 +46,55 @@ class Install {
 	 * Suffixe de la version de Lodel
 	 * @var string
 	 */
-	private $versionsuffix;
+	var $versionsuffix;
 
 	/**
 	 * Version à installer
 	 * @var string
 	 */	
-	private $versioninstall;
+	var $versioninstall;
 
 	/**
 	 * Fichier de configuration Lodel
 	 * @var string
 	 */
-	private $lodelconfig;
+	var $lodelconfig;
 
 	/**
 	 * Plateforme Lodel
 	 * @var string
 	 */
-	private $plateform;
+	var $plateform;
 
 	/**
 	 * Répertoire de la plateforme
 	 * @var string
 	 */
-	private $plateformdir;
+	var $plateformdir;
 
 	/**
 	 * Plateforme lodelconfig
 	 * @var string
 	 */
-	private $lodelconfigplatform;
+	var $lodelconfigplatform;
 
 	/**
 	 * Tableau des répertoires à protéger avec un htaccess
 	 * @var string
 	 */
-	private $protecteddir;
+	var $protecteddir;
 
 	/**
 	 * Choix de la langue
 	 * @var string
 	 */
-	private $langChoice;
+	var $langChoice;
 
 	/**
 	 * Chmod ?
 	 * @var string
 	 */
-	private $have_chmod;
+	var $have_chmod;
 
 
 	/**
@@ -370,7 +370,7 @@ class Install {
 			return "error_user";
 		}
 		
-		if (strlen($adminpasswd) < 3 || strlen($adminpasswd) > 12 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $adminpasswd)) {
+		if (strlen($adminpasswd) < 3 || strlen($adminpasswd) > 255 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $adminpasswd)) {
 			return "error_passwd";	
 		}
 		
