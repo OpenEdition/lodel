@@ -256,45 +256,49 @@ function maintenance()
 	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db;
 	$name = addslashes($_COOKIE[$sessionname]);
 	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
-
+	$reg = "`/lodeladmin`";
 	$regex = "`".$urlroot."([^/]*)/`";
 	preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
-	mysql_connect($dbhost, $dbusername, $dbpasswd);
-	mysql_select_db($database);
 	$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
 	if ($name) {
 		require_once 'connect.php';
-		usemaindb();
-		$row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'"));
-	
+		$db->selectDB($database);
+		$row = $db->getRow(lq("SELECT context,expire,expire2 FROM #_MTP_session WHERE name='$name'"));
+		usecurrentdb();
 		// verifie que la session n'est pas expiree
 		$time = time();
-		if (($row['expire'] < $time || $row['expire2'] < $time) && strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
+		if (($row['expire'] < $time || $row['expire2'] < $time) && preg_match($reg, $_SERVER['SCRIPT_NAME'])) {		
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			header('Location: '.$path);
+			$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
+			header("Location: ".$path);
 		}
-		
+
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);			
 		if($lodeluser['rights'] < 128) {
-			if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-				$res = mysql_query($query);
-				$row = mysql_fetch_row($res);
-				if($row[0] == -64) {
+			if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
+				$db->selectDB($database);
+				$row = $db->getRow($query);
+				usecurrentdb();
+				if($row['status'] == -64) {
 					header('Location: '.$path);
 				}
 			}
 		}
-	} elseif(!strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-		if($database != '' && $dbusername != '' && !strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
-			$res = mysql_query($query);
-			$row = mysql_fetch_row($res);
-			if($row[0] == -64) {
+	} elseif(!preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
+		require_once 'connect.php';
+		if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
+			$db->selectDB($database);
+			$row = $db->getRow($query);
+			usecurrentdb();
+			if($row['status'] == -64) {
 				header('Location: '.$path);
 			}
 		}
+		
 	}
+	
 }
 
 // import Posted variables for the Register Off case.
