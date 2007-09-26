@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fichier contenant des fontions utilitaires pour le login
  *
@@ -75,17 +74,7 @@ function open_session($login)
 			break; // ok, it's working fine
 	}
 
-	if ($i == 5)/**
- * Vérifie que le login et le password sont bon pour le site concerné
- *
- * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
- * globales les informations de l'utilisateur
- *
- * @param string $login le nom d'utilisateur
- * @param string &$passwd le mot de passe
- * @param string &$site le site
- * @return boolean un booleen indiquant si l'authentification est valide
- */
+	if ($i == 5)
 		return "error_opensession";
 	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
 		die("Probleme avec setcookie... probablement du texte avant");
