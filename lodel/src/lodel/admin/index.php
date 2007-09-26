@@ -51,8 +51,8 @@ if ($_GET['insert'] == 'mets') {
 
 	 // insertion du METS dans la base
         require_once ('mets_insert.php');
-        if ($mets = new mets_insert()) {
-        	$partners = $mets->partners;
+        $mets = new mets_insert();
+        if ($partners = $mets->partners) {
         	foreach($partners as $partner) {
                 	$dir_revues = $mets->get_revues_dir($partner['import_directory']);
                 	if(is_array && !empty($dir_revues)) {
@@ -63,10 +63,12 @@ if ($_GET['insert'] == 'mets') {
                                 	$revue['mets'] = $partner['mets_directory'];
                                 	$revue['dc'] = $partner['dc_directory'];
                                 	$mets->parse_mets($revue); // insère les données de la revue dans la base, à partir du METS
-                                	$mets->parse_dc($revue); // mets à jour les données avec le dublin core
+                                	$mets->parse_dc(); // mets à jour les données avec le dublin core
                         	}
                 	}
         	}
+	} else {
+		die(utf8_encode('Rien à insérer : aucun partenaire à la racine du site.'));
 	}
 } else {
 	authenticate(LEVEL_VISITOR);

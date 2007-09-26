@@ -73,7 +73,7 @@ class mets_insert {
 
 	function __construct() {
 		$this->file_log = SITEROOT . '/mets_insert.log';
-		$this->_log_error(__METHOD__ . ' ----> Et zou !', INFO);
+		$this->_log_error(__METHOD__ . ' ----> Début import METS', INFO);
 		if (!$this->partners = $this->get_partners()) { return false; }
 		$this->_init_Lodel_request();
 	}
@@ -87,15 +87,13 @@ class mets_insert {
 	 * @param array $revue initialisé dans lodel/admin/index.php
 	 */
 
-	public function parse_mets($revue) {
+	public function parse_mets($revue) { // pour chaque revue
 		$this->revue = $revue;
-
-		//print_r($revue); exit;
 
 		if (is_string($mets = $this->_get_revue_mets())) {
 			
 			if ($this->mets = simplexml_load_string($mets, 'SimpleXML_extended')) {
-				$this->_get_namespaces($this->mets);
+				$this->namespaces = $this->_get_namespaces($this->mets);
 
 				// insertion racine mets (init $this->revue)
 				$this->root = $this->mets->ListRecords->record[0]->metadata->children($this->namespaces['mets']);
@@ -122,20 +120,20 @@ class mets_insert {
 								$fileSec = $entity->mets->fileSec;
 								$this->_insert_children($structMap, $fileSec);
 							} else {
-								echo 'Pb avec le record';
+								$this->_log_error(__METHOD__ . ' Pb avec le record', INFO);
 							}
 						}
 					}
 				} else {
-					echo "Impossible d'insérer le record racine. Voir le xml dans le répertoire" . $revue['directory'];
+					$this->_log_error(__METHOD__ . ' Impossible d\'insérer le record racine. Vérifier le xml dans le répertoire ' . $revue['directory'], INFO);
+					return;
 				}
 			} else {
-				echo 'Impossible de charger avec SimpleXml le xml dans le répertoire ' . $revue['directory'];
+				$this->_log_error(__METHOD__ . ' Impossible de charger avec SimpleXml le xml dans le répertoire ' . $revue['directory'], INFO);
+				return;
 			}
 			
-		} else {
-			echo 'Aucun fichier à parser dans le répertoire' . $revue['directory'];
-		}
+		} else { return false; }
 	}
 
 
@@ -145,39 +143,53 @@ class mets_insert {
 	 * Cette fonction met à jour les entités déjà présentes dans Lodel, mais n'en ajoute pas
 	 * Appelé par index.php à la racine du site
 	 * Ne sert que pour Persée (pour l'instant)
-	 * @param string $revue chemin du répertoire où sont stockés les fichiers xml
+	 *
 	 */
 
-	public function parse_dc($revue) {
-		$files = $this->_get_revue_files('dc');
-		foreach ($files as $file) {
-			$xml = simplexml_load_file($file, 'SimpleXML_extended');
-			$this->_get_namespaces($xml);
-			foreach($xml->ListRecords->record as $record) {
-				$mets_id = basename($record->header->identifier);
-				$request = $this->_get_Lodel_entity($mets_id);
-				$entity = $record->metadata->children($this->namespaces['oai_dc']);
-				$this->_insert_data($entity, $request, $root=false, $format='dc');
+	public function parse_dc() {
+		if ($files = $this->_get_revue_files('dc')) {
+			foreach ($files as $file) {
+				if ($xml = simplexml_load_file($file, 'SimpleXML_extended')) {
+					$this->namespaces = $this->_get_namespaces($xml);
+					foreach($xml->ListRecords->record as $record) {
+						$mets_id = basename($record->header->identifier);
+						$request = $this->_get_Lodel_entity($mets_id);
+						$entity = $record->metadata->children($this->namespaces['oai_dc']);
+						$this->_insert_data($entity, $request, $root=false, $format='dc');
 				
+					}
+				} else {
+					$this->_log_error(__METHOD__ . ' Fichier DC ignoré : ' . $file, WARN);
+					continue;
+				}
 			}
+		} else {
+			$this->_log_error(__METHOD__ . ' Pas de fichier DC dans le répertoire ' . $this->revue['directory'] . '/' . $this->revue[$format], WARN);
+			return false;
 		}
 	}
 
-/******************** Insertion des données ********************/
 
-
+	/**
+	 * Cherche dans la table Lodel entities si un record a déjà été inséré
+	 * L'identifiant METS est stocké dans le champ Lodel 'identifier'
+	 * 
+	 * @param string $mets_id identifiant mets
+	 * @return array info concernant l'entité
+	*/
 	private function _get_Lodel_entity($mets_id) {
 		global $db;
 		
-		if ($result = $db->execute(lq("SELECT  id, idparent, idtype, identifier FROM entities WHERE identifier = '$mets_id' LIMIT 1"))) {
-			 if(!empty($result->fields)) {
-				foreach ($result->fields as $key=>$val) {
-					$request[$key] = $val;
-				}
-				$request['class'] = $this->_get_Lodel_class($request['idtype']);
+		$result = $db->execute(lq("SELECT  id, idparent, idtype, identifier FROM entities WHERE identifier = '$mets_id' LIMIT 1")) or $this->_log_dberror(__METHOD__);
+		if(!empty($result->fields)) {
+			foreach ($result->fields as $key=>$val) {
+				$request[$key] = $val;
 			}
+			$request['class'] = $this->_get_Lodel_class($request['idtype']);
+			return $request;
+		} else {		
+			return false;
 		}
-		return $request;
 	}
 
 	/**
@@ -255,12 +267,14 @@ class mets_insert {
 			// dc.identifier (URL)
 			if ($request['mets_file_id']) {
 				//$mets_idparent = $parent['data'][$this->mets_id_field];
-				$Lodel_field_url = $this->_get_Lodel_dc_field("dc.identifier", $request['class']);
-				foreach ($fileSec->fileGrp as $fileGrp) {
-					foreach ($fileGrp->file as $file) {
-						if ($file->getAttribute('ID') == $request['mets_file_id']) {
-							$node = $file->FLocat->attributes($this->namespaces['xlink']);
-							$request['data'][$Lodel_field_url] = $node['href'];
+				if ($Lodel_field = $this->_get_Lodel_dc_field("dc.identifier", $request['class'])) {
+					$Lodel_field_url = $Lodel_field['name'];
+					foreach ($fileSec->fileGrp as $fileGrp) {
+						foreach ($fileGrp->file as $file) {
+							if ($file->getAttribute('ID') == $request['mets_file_id']) {
+								$node = $file->FLocat->attributes($this->namespaces['xlink']);
+								$request['data'][$Lodel_field_url] = $node['href'];
+							}
 						}
 					}
 				}
@@ -268,14 +282,14 @@ class mets_insert {
 
 			// insère les entités enfants, si les types sont compatibles avec le ME
 			if ($this->_check_types_compatibility($request['idtype'], $idtypeparent)) {
-				$request['origine'] = 'structmap ' . $request['idtype'] . " $idtypeparent";
+				$request['origine'] = 'STRUCTMAP : idtype=' . $request['idtype'] . " idtypeparent=$idtypeparent";
 				$this->_execute_Lodel_request($request);
 				// parcours des éventuels div enfants
 				if ($div instanceof SimpleXMLElement && $div->div) {
 					$this->_insert_children($div, $fileSec);
 				}
 			} else {
-				echo "Pb d'imbrication des types, editer le ME. Type parent = $idtypeparent, type enfant = " . $request['idtype'];
+				$this->_log_error(__METHOD__ . "Pb d'imbrication des types, éditer le ME. Type parent = $idtypeparent, type enfant = " . $request['idtype'], WARN);
 			}
 		}
 	}
@@ -304,7 +318,7 @@ class mets_insert {
 		}
 		$request['idtype'] = $this->_get_Lodel_idtype($request['type']);
 		if ($request['idtype'] == 0) {
-			echo 'Petit souci : le type'. $request['type'] . "n'existe pas";
+			$this->_log_error(__METHOD__ . ' Le type' . $request['type'] . 'n\'existe pas', WARN);
 			return 'err_type:' . $request['type'];
 		}
 
@@ -314,7 +328,8 @@ class mets_insert {
 		$request['rank'] = $xml->getAttribute('ORDER');
 
 		// Initialisation du champ dc.title avec le LABEL pour les <div> qui n'ont pas de record
-		$title = $this->_get_Lodel_dc_field('dc.title');
+		$Lodel_field = $this->_get_Lodel_dc_field('dc.title');
+		$title = $Lodel_field['name'];
 		$request['data'][$title] = $xml->getAttribute('LABEL');
 		
 		return ($request);
@@ -327,7 +342,7 @@ class mets_insert {
 	 * @param string $mets_file_id identifiant mets du fichier (ex : FID1)
 	 */
 
-	private function _get_file_location($mets_file_id) {
+	private function _get_file_location($mets_idparent, $mets_file_id) {
 		$record = $this->_find_record($mets_idparent, ''); echo " *$mets_file_id / $mets_idparent* ";
 		if ($record->mets->fileSec instanceof SimpleXMLElement) {
 			foreach ($record->mets->fileSec->fileGrp as $fileGrp) {
@@ -374,7 +389,7 @@ class mets_insert {
 		if (!is_object($record->mets->dmdSec->mdWrap->xmlData)) {
 			// erreur : pas de dc dans la dmdSec
 		}
-		
+
 		switch ($format) {
 			case 'mets' :
 				$dc = $record->mets->dmdSec->mdWrap->xmlData->children($this->namespaces['dc']);
@@ -385,25 +400,46 @@ class mets_insert {
 				$dcterm = $record->children($this->namespaces['dcterms']);
 				break;
 			default :
-				echo "erreur : format $format non reconnu : _insert_data";
+				return false;
 		}
 
 		// cherche les données (définies par les équivalents dc dans Lodel)
 		foreach ($dc as $key=>$val) { // DC
-			if ($Lodel_field_name = $this->_get_Lodel_dc_field("dc.$key", $request['class'])) {
-				$request['data'][$Lodel_field_name] = $val;
-				
+
+			if ($Lodel_field = $this->_get_Lodel_dc_field("dc.$key", $request['class'])) {
+			// trouvé un équivalent DC dans le ME de Lodel
+				$Lodel_field_name = $Lodel_field['name'];
+				$Lodel_field_type = $Lodel_field['type'];
+				if ($Lodel_field_type === 'mltext') { // champs multilingues (mltext)
+					$lang_attr = $val->attributes($this->namespaces['xml'])->lang;
+					if ($lang = $this->_get_lang($lang_attr)) {
+						$request['data'][$Lodel_field_name][$lang] = $val;
+					}
+				} else { // autres champs
+					if (!isset($request['data'][$Lodel_field_name])) {
+						$request['data'][$Lodel_field_name] = $val;
+					} else { // plusieurs fois le même champ dc (pour dc.creator par ex.)
+						$request['data'][$Lodel_field_name] .= ', ' . $val;
+					}
+				}
 			}
 		}
 
 		foreach ($dcterm as $key=>$val) { // DCTERMS
-			if ($Lodel_field_name = $this->_get_Lodel_dc_field("dcterms.$key", $request['class'])) {
-				$request['data'][$Lodel_field_name] = $val;
+			if ($Lodel_field = $this->_get_Lodel_dc_field("dcterms.$key", $request['class'])) {
+				$Lodel_field_name = $Lodel_field['name'];
+				$Lodel_field_type = $Lodel_field['type'];
+				if (!isset($request['data'][$Lodel_field_name])) {
+					$request['data'][$Lodel_field_name] = $val;
+				} else { // plusieurs fois le même champ dcterms
+					$request['data'][$Lodel_field_name] .= ', ' . $val;
+				}
 			}
 		}
 		
 		// champ Lodel dc.identifier
-		$Lodel_field_url = $this->_get_Lodel_dc_field("dc.identifier", $request['class']);
+		$Lodel_field = $this->_get_Lodel_dc_field("dc.identifier", $request['class']);
+		$Lodel_field_url = $Lodel_field['name'];
 		if ($root === true) { //record racine (correspondant à la revue)
 			$request['data'][$Lodel_field_url] = $dc->identifier;
 		} else {
@@ -414,24 +450,59 @@ class mets_insert {
 		}
 
 		// insère le tout dans Lodel
-		//$request['origine'] = 'dmdSec'; //pour debug
+		$request['origine'] = 'dmdSec'; //pour debug
 		$this->_execute_Lodel_request($request);
 	}
 
+	/**
+	 * Retourne le code langue ISO 639-1 (2 caractères) attendu par Lodel pour les champs de type mltext
+	 * 
+	 * @param object $lang attribut xml:lang
+	 * @return string code langue ISO 639-1
+	 */
+	private function _get_lang($lang) {
+		$lang = (string)$lang;
+		$lang = strtolower($lang);
+		$languages = array ('ara'=>'ar', //Arabic
+					'ger'=>'de', 'deu'=>'de', //German
+					'gre'=>'el', 'ell'=>'el', //Greek
+					'eng'=>'en', //English
+					'spa'=>'es', //Spanish
+					'fre'=>'fr', 'fra'=>'fr', //French
+					'ita'=>'it', //Italian
+					'por'=>'pt', //Portuguese
+					'rus'=>'ru', //Russian
+					'tur'=>'tr'); // Turkish
 
+		if (strlen($lang) == 3 && array_key_exists($lang, $languages)) {
+			return $languages[$lang];
+		} elseif (strlen($lang) == 2 && in_array($lang, $languages)) {
+			return $lang;
+		} else {
+			return false;
+		}
+	}
 
 	/**
-	 * Trouve le nom du champ dans la base de Lodel qui correspond à l'équivalent dc de $dc_field
+	 * Trouve le nom et le type du champ dans la base de Lodel qui correspond à l'équivalent dc de $dc_field
 	 * 
 	 * @param string $dc_field nom de l'élément dc
 	 * @param string $class nom de la classe (=la table) dans Lodel
-	 * @return string $Lodel_field s'il est trouvé, false sinon
+	 * @return array $Lodel_field s'il est trouvé, false sinon
 	 */
 
 	private function _get_Lodel_dc_field($dc_field, $class='') {
 		if (empty($class)) $class = $this->Lodel_class;
 		global $db;
-		if ($Lodel_field = $db->getOne(lq("SELECT name FROM tablefields WHERE class='$class' AND g_name='$dc_field'"))) {
+
+		$result = $db->execute(lq("SELECT name, type FROM #_TP_tablefields WHERE class='$class' AND g_name='$dc_field'"));
+		while (!$result->EOF) {
+			$Lodel_field['name'] = $result->fields['name'];
+			$Lodel_field['type'] = $result->fields['type'];
+			$result->MoveNext();
+		}
+		
+		if(is_array($Lodel_field) && !empty($Lodel_field)) {
 			return $Lodel_field;
 		} else {
 			return false;
@@ -451,7 +522,7 @@ class mets_insert {
 	private function _get_Lodel_field_value($field, $id, $class) {
 		if (empty($class)) $class = $this->Lodel_class;
 		global $db;
-		if ($Lodel_field = $db->getOne(lq("SELECT $field FROM $class WHERE identity=$id"))) {
+		if ($Lodel_field = $db->getOne(lq("SELECT $field FROM #_TP_$class WHERE identity=$id"))) {
 			return $Lodel_field;
 		} else {
 			return false;
@@ -468,7 +539,7 @@ class mets_insert {
 
 	private function _get_Lodel_idtype($type) {
 		global $db;
-		if ($Lodel_idtype = $db->getOne(lq("SELECT id FROM types WHERE type='$type'"))) {
+		if ($Lodel_idtype = $db->getOne(lq("SELECT id FROM #_TP_types WHERE type='$type'"))) {
 			return $Lodel_idtype;
 		} else {
 			return 0;
@@ -484,7 +555,7 @@ class mets_insert {
 
 	private function _get_Lodel_class($idtype) {
 		global $db;
-		if ($class = $db->getOne(lq("SELECT class FROM types WHERE id='$idtype'"))) {
+		if ($class = $db->getOne(lq("SELECT class FROM #_TP_types WHERE id='$idtype'"))) {
 			return $class;
 		} else {
 			return 0;
@@ -501,7 +572,7 @@ class mets_insert {
 	private function _get_Lodel_id($identifier, $class) {
 		global $db;
 		//if ($Lodel_id = $db->getOne(lq("SELECT identity FROM $class WHERE " . $this->mets_id_field . "= '$identifier'"))) {
-		if ($Lodel_id = $db->getOne(lq("SELECT id FROM entities WHERE identifier= '$identifier'"))) {
+		if ($Lodel_id = $db->getOne(lq("SELECT id FROM entities WHERE #_TP_identifier= '$identifier'"))) {
 			return $Lodel_id;
 		} else {
 			return 0;
@@ -520,7 +591,7 @@ class mets_insert {
 		global $db;
 
 		//if ($mets_id = $db->getOne(lq("SELECT " . $this->mets_id_field . " FROM $class WHERE identity = '$Lodel_id'"))) {
-			if ($mets_id = $db->getOne(lq("SELECT identifier FROM entities WHERE id = '$Lodel_id'"))) {
+			if ($mets_id = $db->getOne(lq("SELECT identifier FROM #_TP_entities WHERE id = '$Lodel_id'"))) {
 			return $mets_id;
 		} else {
 			return '';
@@ -537,7 +608,7 @@ class mets_insert {
 	private function _get_Lodel_idparent($Lodel_id) {
 		global $db;
 
-		if ($idparent = $db->getOne(lq("SELECT idparent FROM entities WHERE id = $Lodel_id"))) {
+		if ($idparent = $db->getOne(lq("SELECT idparent FROM #_TP_entities WHERE id = $Lodel_id"))) {
 			return $idparent;
 		} else {
 			return '';
@@ -561,7 +632,7 @@ class mets_insert {
 
 	private function _check_types_compatibility($idtype, $idtypeparent) {
 		global $db;
-		$result = $db->getOne(lq("SELECT count(*) FROM entitytypes_entitytypes WHERE identitytype='$idtype' AND identitytype2='$idtypeparent'"));
+		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_entitytypes_entitytypes WHERE identitytype='$idtype' AND identitytype2='$idtypeparent'"));
 		if ($result == 1) {
 			return true;
 		} else {
@@ -569,7 +640,7 @@ class mets_insert {
 		}
 	}
 
-	private function _execute_Lodel_request($request='') {
+	private function _execute_Lodel_request($request = array()) {
 		$request = array_merge($this->request, $request);
 		if ($request['idparent'] > 0) {
 			echo memory_get_usage() .'<p>';
@@ -599,8 +670,6 @@ class mets_insert {
 
 	/**
 	 * Paramètres pour l'insertion d'une entité dans Lodel
-	 *
-	 * @return array 
 	 */
 
 	private function _init_Lodel_request() {
@@ -625,7 +694,15 @@ class mets_insert {
 	 */
 
 	private function _get_namespaces($mets_file) {
-		$this->namespaces = $mets_file->getNamespaces(true);
+echo $mets_file->request;
+		$namespaces = $mets_file->getNamespaces(true);
+		if (is_array($namespaces) && !empty($namespaces)) {
+			$namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace';
+			return $namespaces;
+		} else {
+		$this->_log_error(__METHOD__ . '' . $mets_file->request, WARN);
+		return false;
+		}
 	}
 
 
@@ -638,7 +715,7 @@ class mets_insert {
 	 * Les partenaires doivent être au préalable insérés via l'interface de Lodel, à la racine du site
 	 *
 	 * @todo utiliser une variable pour stocker le nom de la table (partner) OU considérer que c'est le seul type autorisé à la racine
-	 * @return array info
+	 * @return array liste des partenaires avec les infos contenues dans la base Lodel
 	 */
 
 	public function get_partners() {
@@ -656,9 +733,10 @@ class mets_insert {
 			$result->MoveNext();
 		}
 		
-		if (!empty($racines)) { return $racines; }
-		else {
-			$this->_log_error(__METHOD__ . 'Aucun partenaire à la racine du site', FATAL);
+		if (!empty($racines)) {
+			return $racines;
+		} else {
+			$this->_log_error(__METHOD__ . ' Aucun partenaire à la racine du site', FATAL);
 			return false;
 			}
 	}
@@ -666,6 +744,7 @@ class mets_insert {
 
 	/**
 	 * Liste les répertoires contenus dans le dossier du partenaire (un répertoire = une revue)
+	 * Les répertoires doivent exister (un répertoire par revue)
 	 *
 	 * @param string $partner_dir chemin absolu du répertoire du partenaire
 	 * @return array liste des répertoires accessibles en lecture s'il y en a
@@ -757,8 +836,8 @@ class mets_insert {
 							$lenght = $end - $debut;
 							$content = substr($content, $debut, $lenght);
 							$mets .= $content;
-						} else { 
-							echo 'erreur dans le fichier' . $files[$i] . "$debut -- $end<p>";
+						} else {
+							$this->_log_error(__METHOD__ . ' Erreur dans le fichier ' . $files[$i] . "$debut -- $end", WARN);
 							return false;
 						}
 					}
@@ -768,15 +847,17 @@ class mets_insert {
 					if (($debut = stripos($content, '<record>')) != false) {
 						$content = substr($content, $debut);
 						$mets .= $content;
-					} else { echo 'erreur pour tronquer début du dernier fichier :' . $files[$files_count];
+					} else {
+						$this->_log_error(__METHOD__ . ' Erreur pour tronquer début du dernier fichier : ' . $files[$files_count], WARN);
 						return false;
 						
 					}
 				//echo $mets;
 				return $mets;
 
-				} else { echo 'erreur pour tronquer fin du premier fichier';
-					return false; 
+				} else {
+					$this->_log_error(__METHOD__ . ' Erreur pour tronquer fin du premier fichier', WARN);
+					return false;
 				}
 			} else {
 				// todo : traiter les cas où $files_count =< 2
