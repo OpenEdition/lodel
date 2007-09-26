@@ -269,7 +269,9 @@ function maintenance()
 	
 		// verifie que la session n'est pas expiree
 		$time = time();
-		if ($row['expire'] < $time || $row['expire2'] < $time) {
+		if (($row['expire'] < $time || $row['expire2'] < $time) && strpos('lodeladmin', $_SERVER['SCRIPT_NAME'])) {
+			return;
+		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
 			header('Location: '.$path);
 		}
 		
