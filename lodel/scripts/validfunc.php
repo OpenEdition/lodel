@@ -64,7 +64,6 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
-
 	switch ($type) { //pour chaque type de champ
 	case 'history' :
 	case 'text' :
@@ -135,9 +134,16 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 	case 'passwd' :
 		if(!$text) {
-		return $type;
+			return $type;
+		}
+		else {
+			$len = strlen($text);
+			if ($len < 3 || $len > 255 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $text)) {
+				return $type;
+			}
+		}
 		break;
-	}
+	
 	case 'username' :
 		if ($text) {
 			$len = strlen($text);
