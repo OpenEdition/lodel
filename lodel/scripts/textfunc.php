@@ -441,6 +441,15 @@ function replacequotationmark($text)
 	return str_replace("\"", "&quot;", $text);
 }
 
+/**
+ * implemente str_replace
+ */
+  
+function replace($str, $search, $replace){
+        return str_replace($search, $replace, $str);
+}
+	
+
 //
 // fonction utiliser pour les options (dans l'interface uniquement)
 //
