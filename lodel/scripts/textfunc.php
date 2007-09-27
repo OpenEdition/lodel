@@ -721,6 +721,15 @@ function ishtml($text)
 }
 
 /**
+ * implemente str_replace
+ */
+
+function replace($str, $search, $replace){
+	return str_replace($search, $replace, $str);
+}
+
+
+/**
  * Filtre pour l'ajout des notes marginales (doit s'appliquer comme premier filtre)
  *
  * Ajoute un <div class="textandnotes"> et encapsule les notes dans une liste : <ul class="sidenotes"> <li> ... </li> </ul> 
