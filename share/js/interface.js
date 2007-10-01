@@ -292,10 +292,10 @@ function modifymember(members,textfield){
 
 // END POOL
 
-function confirm_delete(id, msg, rootdir)
+function confirm_delete(id, msg, rootdir, idp)
 {
 	window.status='go';
-	if(confirm(msg)) window.location=rootdir+'/index.php?do=delete&id='+id;
+	if(confirm(msg)) window.location=rootdir+'/index.php?do=delete&id='+id+'&idparent='+idp;
 }
 	
 function popup(url) {

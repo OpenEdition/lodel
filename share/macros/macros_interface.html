@@ -1610,13 +1610,12 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</LOOP>
 </DEFFUNC>
 
-
 <DEFMACRO NAME="DESCENDRE_MONTER_ENTITIES">
 	<div class="move">
 	<LOOP NAME="rightonentity" ACTION="changerank">
 	<DO>
-		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=up"><img src="[#SHAREURL]/images/fleche_haut.png" class="haut"  alt="haut" /></a>
-		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=down"><img src="[#SHAREURL]/images/fleche_bas.png" class="bas"  alt="bas" /></a>
+		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=up&amp;idparent=[#IDPARENT]"><img src="[#SHAREURL]/images/fleche_haut.png" class="haut"  alt="haut" /></a>
+		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=down&amp;idparent=[#IDPARENT]"><img src="[#SHAREURL]/images/fleche_bas.png" class="bas"  alt="bas" /></a>
 		
 	</DO>
 	</LOOP>
@@ -1642,7 +1641,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<IF COND="[#STATUS] LT 8">
 			<LOOP NAME="rightonentity" ACTION="delete">
 				<DO>
-				<span class="item"><a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?','<MACRO NAME="SITE_ROOT">/lodel/edition');">[@EDITION.DELETE]</a> </span>
+				<span class="item"><a href="#" onclick="confirm_delete('[#ID]', '[@EDITION.CONFIRMATION_DELETE] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?','<MACRO NAME="SITE_ROOT">/lodel/edition', [#IDPARENT]);">[@EDITION.DELETE]</a> </span>
 				</DO>
 				<ALTERNATIVE>
 				<span class="item inactif">[@EDITION.DELETE]</span>
@@ -1751,7 +1750,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<IF COND="[#STATUS]==1">
                    <LOOP NAME="rightonentity" ACTION="unpublish">
 		   <DO>
-			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=-1" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?')">[@EDITION.UNPUBLISH]</a>
+			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=-1&amp;idparent=[#IDPARENT]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH] : \n&#034;[#G_TITLE|textebrut|nbsp|couper(50)|htmlentities(ENT_COMPAT, 'UTF-8')|addslashes]<IF COND="[#G_TITLE|hasbeencut]">...</IF>&#034; ?')">[@EDITION.UNPUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
@@ -1768,7 +1767,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<IF COND="([#STATUS]==-1)">
                    <LOOP NAME="rightonentity" ACTION="publish">
 		   <DO>
-			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=1">[@EDITION.PUBLISH]</a>
+			<a href="<MACRO NAME="SITE_ROOT" />/lodel/edition/index.php?do=publish&amp;id=[#ID]&amp;status=1&amp;idparent=[#IDPARENT]">[@EDITION.PUBLISH]</a>
 		   </DO>
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.PUBLISH]</span>
