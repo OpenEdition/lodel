@@ -138,55 +138,57 @@ function strengthChecker(outputId)
 	{
 		var color = '#ffffff';
 		var txt = '';
-		
-		if (score < -1 || password.length == 0)
-		{
-			txt = 'Très faible';
-			color = '#a22a2a';
-		}
-		else if (score >= -1 && score < 2.5)
-		{
-			txt = 'Faible';
-			color = '#b86121';
-		}
-		else if (score >= 2.5 && score < 4)
-		{
-			txt = 'Bon';
-			color = '#a1b821';
-		}
-		else if (score >= 4 && score < 6.75)
-		{
-			txt = 'Robuste';
-			color = '#64c451';
-		}
-		else if (score > 6.75)
-		{
-			txt = 'Très robuste';
-			color = '#06ab02';
-		}
-		
 		try {
 			document.getElementById(elementId).removeChild(gaugeNode);
 			document.getElementById(elementId).removeChild(h);
 		} catch (e) {
 			//
 		}
+		if(password.length > 0) {
+			if (score < -1)
+			{
+				txt = 'Très faible';
+				color = '#a22a2a';
+			}
+			else if (score >= -1 && score < 2.5)
+			{
+				txt = 'Faible';
+				color = '#b86121';
+			}
+			else if (score >= 2.5 && score < 4)
+			{
+				txt = 'Bon';
+				color = '#a1b821';
+			}
+			else if (score >= 4 && score < 6.75)
+			{
+				txt = 'Robuste';
+				color = '#64c451';
+			}
+			else if (score > 6.75)
+			{
+				txt = 'Très robuste';
+				color = '#06ab02';
+			}
+			
 
- 		h = document.createElement('h4');
- 		h.innerHTML = 'Niveau de sécurité du mot de passe :';
- 		document.getElementById(elementId).appendChild(h);
-
-		gaugeNode = document.createElement('div');
-		gaugeNode.style.width = '100px';
-		gaugeNode.style.padding= '3px';
-		gaugeNode.style.backgroundColor = color;
-		gaugeNode.style.color = '#000000';
-		gaugeNode.style.border = '1px solid #777777';
-		gaugeNode.style.fontSize = '12px';
-		gaugeNode.style.fontWeight = 'bold';
-		gaugeNode.style.textAlign = 'center';
-		gaugeNode.innerHTML = txt;
-		document.getElementById(elementId).appendChild(gaugeNode);
+	
+			h = document.createElement('h4');
+			h.innerHTML = 'Niveau de sécurité du mot de passe :';
+			document.getElementById(elementId).appendChild(h);
+	
+			gaugeNode = document.createElement('div');
+			gaugeNode.style.width = '100px';
+			gaugeNode.style.padding= '3px';
+			gaugeNode.style.backgroundColor = color;
+			gaugeNode.style.color = '#000000';
+			gaugeNode.style.border = '1px solid #777777';
+			gaugeNode.style.fontSize = '12px';
+			gaugeNode.style.fontWeight = 'bold';
+			gaugeNode.style.textAlign = 'center';
+			gaugeNode.innerHTML = txt;
+			document.getElementById(elementId).appendChild(gaugeNode);
+		}
 	}
 	/**
 	 * Reads a new password and then gives it a score
@@ -302,60 +304,61 @@ function strengthChecker(outputId)
 		} catch(e) {
 			//
 		}
-	
-		p = document.createElement('h3');
-		p.innerHTML = 'Recommandations pour un mot de passe sécurisé :';
-		document.getElementById(helperId).appendChild(p);
-		
-		helperNode = document.createElement('ul');
-		var rows = new Array();
-		var i = 0;
-		if (!len)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe ne doit pas être trop court ('+minLength+' caractères recommandés)';
-			helperNode.appendChild(li);
+		if(password.length > 0) {
+			p = document.createElement('h3');
+			p.innerHTML = 'Recommandations pour un mot de passe sécurisé :';
+			document.getElementById(helperId).appendChild(p);
+			
+			helperNode = document.createElement('ul');
+			var rows = new Array();
+			var i = 0;
+			if (!len)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe ne doit pas être trop court ('+minLength+' caractères recommandés)';
+				helperNode.appendChild(li);
+			}
+			if (!numbers)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe doit contenir des nombres';
+				helperNode.appendChild(li);
+			}
+			if (!letters)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe doit contenir des lettres';
+				helperNode.appendChild(li);
+			}
+			if (!special)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe doit contenir des caractères spéciaux';
+				helperNode.appendChild(li);
+			}
+			if (!caseChange)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe ne doit pas être de la même casse';
+				helperNode.appendChild(li);
+			}
+			if (!duplicates)
+			{
+				i++;
+				li = document.createElement('li');
+				li.innerHTML = 'Votre mot de passe ne doit pas contenir plusieurs fois le même caractère';
+				helperNode.appendChild(li);
+			}
+			if(i == 0)
+				document.getElementById(helperId).removeChild(p);
+			
+			document.getElementById(helperId).appendChild(helperNode);
 		}
-		if (!numbers)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe doit contenir des nombres';
-			helperNode.appendChild(li);
-		}
-		if (!letters)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe doit contenir des lettres';
-			helperNode.appendChild(li);
-		}
-		if (!special)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe doit contenir des caractères spéciaux';
-			helperNode.appendChild(li);
-		}
-		if (!caseChange)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe ne doit pas être de la même casse';
-			helperNode.appendChild(li);
-		}
-		if (!duplicates)
-		{
-			i++;
-			li = document.createElement('li');
-			li.innerHTML = 'Votre mot de passe ne doit pas contenir plusieurs fois le même caractère';
-			helperNode.appendChild(li);
-		}
-		if(i == 0)
-			document.getElementById(helperId).removeChild(p);
-		
-		document.getElementById(helperId).appendChild(helperNode);
 	}
 	/**
 	 * Allow the user to change the points weightings
