@@ -110,34 +110,34 @@ function strengthChecker(outputId)
 		if(password.length > 0) {
 			if (score < -1)
 			{
-				txt = 'Très faible';
+				txt = "[@INSTALL.VERY_WEAK_PASSWD]";
 				color = '#a22a2a';
 			}
 			else if (score >= -1 && score < 2.5)
 			{
-				txt = 'Faible';
+				txt = "[@INSTALL.WEAK_PASSWD]";
 				color = '#b86121';
 			}
 			else if (score >= 2.5 && score < 4)
 			{
-				txt = 'Bon';
+				txt = "[@INSTALL.GOOD_PASSWD]";
 				color = '#a1b821';
 			}
 			else if (score >= 4 && score < 6.75)
 			{
-				txt = 'Robuste';
+				txt = "[@INSTALL.STRONG_PASSWD]";
 				color = '#64c451';
 			}
 			else if (score > 6.75)
 			{
-				txt = 'Très robuste';
+				txt = "[@INSTALL.VERY_STRONG_PASSWD]";
 				color = '#06ab02';
 			}
 			
 
 	
 			h = document.createElement('h4');
-			h.innerHTML = 'Niveau de sécurité du mot de passe :';
+			h.innerHTML = "[@INSTALL.LEVEL_SECURITY_PASSWD]";
 			document.getElementById(elementId).appendChild(h);
 	
 			gaugeNode = document.createElement('div');
@@ -269,7 +269,7 @@ function strengthChecker(outputId)
 		}
 		if(password.length > 0) {
 			p = document.createElement('h3');
-			p.innerHTML = 'Recommandations pour un mot de passe sécurisé :';
+			p.innerHTML = "[@INSTALL.RECOMMANDATIONS_FOR_STRENGHTPASSWD]";
 			document.getElementById(helperId).appendChild(p);
 			
 			helperNode = document.createElement('ul');
@@ -279,42 +279,42 @@ function strengthChecker(outputId)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe ne doit pas être trop court ('+minLength+' caractères recommandés)';
+				li.innerHTML = "[@INSTALL.PASSWD_MIN_CHARS]";
 				helperNode.appendChild(li);
 			}
 			if (!numbers)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe doit contenir des nombres';
+				li.innerHTML = "[@INSTALL.PASSWD_NEEDS_NUMBERS]";
 				helperNode.appendChild(li);
 			}
 			if (!letters)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe doit contenir des lettres';
+				li.innerHTML = "[@INSTALL.PASSWD_NEEDS_CHARS]";
 				helperNode.appendChild(li);
 			}
 			if (!special)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe doit contenir des caractères spéciaux';
+				li.innerHTML = "[@INSTALL.PASSWD_NEEDS_SPECIAL_CHARS]";
 				helperNode.appendChild(li);
 			}
 			if (!caseChange)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe ne doit pas être de la même casse';
+				li.innerHTML = "[@INSTALL.PASSWD_NEED_UPANDLOW_CHARS]";
 				helperNode.appendChild(li);
 			}
 			if (!duplicates)
 			{
 				i++;
 				li = document.createElement('li');
-				li.innerHTML = 'Votre mot de passe ne doit pas contenir plusieurs fois le même caractère';
+				li.innerHTML = "[@INSTALL.PASSWD_NEEDS_OTHER_CHARS]";
 				helperNode.appendChild(li);
 			}
 			if(i == 0)
@@ -374,6 +374,7 @@ function strengthChecker(outputId)
 		}
 	}
 }
+
 var pw = new strengthChecker('pw_gauge');
 pw.setHelperId('helper');
 
