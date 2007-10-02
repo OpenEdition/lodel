@@ -56,7 +56,8 @@ if (file_exists("siteconfig.php")) {
 require_once $home. 'auth.php';
 authenticate();
 require_once $home. 'connect.php';
-
+//on indique qu'on veut pas le desk
+$GLOBALS['nodesk'] = true;
 require $home. 'view.php';
 $view = &View::getView();
 $view->renderCached($context, 'index');
