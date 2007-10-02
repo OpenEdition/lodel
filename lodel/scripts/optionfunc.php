@@ -34,6 +34,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @licence http://www.gnu.org/copyleft/gpl.html
@@ -57,7 +58,7 @@ function cacheOptionsInFile($optionsfile='')
 {
 	global $db;
 	do {
-		$sql = lq("SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent ".sql_in_array($ids)." ORDER BY rank");
+		$sql = lq('SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent '.sql_in_array($ids)." ORDER BY rank");
 		$result = $db->execute($sql) or dberror();
 		$ids = array ();
 		$i = 1;
@@ -79,9 +80,9 @@ function cacheOptionsInFile($optionsfile='')
 	}	while ($ids);
 
 	if (!empty($optionsfile)) {
-		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 ORDER BY rank");
+		$sql = lq('SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 ORDER BY rank');
 	} else { // pas les username et passwd dans le context
-		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options "." WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
+		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
 	}
 
 	$result = $db->execute($sql) or dberror();
@@ -99,9 +100,9 @@ function cacheOptionsInFile($optionsfile='')
 		} else {
 			$optname = $name;
 			clean_request_variable($value);
-			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+			//$txt .= "'".$optname."'=>'".$value."',\n";
 			$papa = $arr[$idgroup];
-			$options_cache[$papa][$optname] = addslashes($value);
+			$options_cache[$papa][$optname] = $value;
 		}
 		$result->MoveNext();
 	}
