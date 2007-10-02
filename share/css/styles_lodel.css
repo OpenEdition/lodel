@@ -1021,3 +1021,94 @@ div.close{
 .selectred { background-color: red; }
 .selectorange { background-color: orange; }
 .selectgreen { background-color: green; }
+
+/************************* Page de listing des sites **********************/
+#sitesLodel {
+	text-align:center;
+}
+
+#sitesLodel h1 {
+	margin:0;
+	padding:0;
+	background:#fff url(../images/bg_top.png) repeat-x 0 0;
+	height:98px;
+	text-align:left;
+}
+
+#sitesLodel h2 {
+	margin:0;
+	padding:0.8em;
+	background:#E5E8E3;
+	font:bold 15px Verdana, sans-serif;
+}
+
+#sitesLodel table {
+	width:auto;
+	margin-left:5em;
+	margin-right:5em;
+	font-size:12px;
+}
+
+#sitesLodel tr {
+	border-bottom:1px solid #DADBDC;
+}
+
+#sitesLodel tr.grey {
+	background-color:#DDDDDD;
+}
+
+#sitesLodel td {
+	padding:1em 0;
+	
+}
+
+#sitesLodel td.site {
+	padding-left:36px;
+	background:url(../images/lien.gif) no-repeat 0 50%;
+	text-align:left;
+}
+
+#sitesLodel td.site a {
+	color:#6B6B6B;
+}
+
+#sitesLodel td.site a:hover {
+	color:#000;
+}
+
+#sitesLodel td.action {
+	width:1%;
+	white-space:nowrap;
+	text-align:left;
+}
+
+#sitesLodel td.action a {
+	color:#0075ab;
+}
+
+#sitesLodel #outils {
+	margin:0;
+	padding:.6em 1em;
+	background:#E18600;
+	text-align:left;
+	font-size:.85em;
+}
+
+#sitesLodel #outils a {
+	color:#fff;
+	margin-right:2em;
+}
+
+#sitesLodel #outils a:hover {
+	color:#ff0;
+}
+
+#sitesLodel #licence {
+	padding:1em;
+	border-top:1px solid #DADBDC;
+	font-size:.8em;
+}
+
+#sitesLodel td.action a:hover {
+	color:#000;
+}

@@ -18,88 +18,49 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-
-
 <USE MACROFILE="macros_accueil.html">
 <html>
 <head>
 <title>LODEL Page d'accueil</title>
 <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
-<link rel="stylesheet" href="styles_lodel.css">
-<script language="javascript"><!--
-
-  triangle = new Image;
-  triangle.src = "[#SHAREURL]/images/triangle3.gif";
-  triangle2 = new Image;
-  triangle2.src = "[#SHAREURL]/images/triangle2.gif";
-
-		//
---></script>
+<link rel="stylesheet" href="[#SHAREURL]/css/styles_lodel.css">
 </head>
-<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin=0 topmargin=0 bottommargin="0"> 
-<br>
-<table width="85%" border="0" align="center" cellspacing="0" cellpadding="0" bordercolor="#FFFFFF">
-  <tr> 
-    <td bgcolor="#FFFFFF" align="center"> 
-	<a href="http://documentation.lodel.org">
-      <div align="center">
-          <strong>LODEL</strong>
-      </div>
-	</a>
-    </td>
-  </tr>
-  <tr> 
-    <td bgcolor="#FFFFFF" align="center"> 
-      <table width="700" border="0" align="center" cellspacing="4" cellpadding="4">
-        <tr>
-          <td>
-<table width="100%">
-<tr>
-<td colspan="2">
-<br>
-<strong>Sélectionnez un site</strong><br>
-</td>
-</tr>
-<tr>
-<td width="60%">
+<body id="sitesLodel">
+	<IF COND="[#LODELUSER.RIGHTS] LT 20">
+		<h1>
+			<img alt="Lodel" src="[#SHAREURL]/images/lodel.png" width="285" height="37" />
+		</h1>
+	</IF>
+	<p id="outils">
+		<a href="lodeladmin-0.8">Administration (accès réservé)</a> 
+		<a href="http://documentation.lodel.org/">Documentation</a>
+	</p>
+	
+	<h2>
+		Liste des sites&#160;:
+	</h2>
+	
+	<table id="sites">
 		<LOOP NAME="selectionne_revue" TABLE="sites" WHERE="status gt 0" ORDER="title">
 		<DO>
-		<div id="[#NAME]" class="texte_petit">
-		<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Autres publications électroniques">
-			<a href="[#URL]" onmouseover="[#NAME].src=triangle.sr" 
-onmouseout="[#NAME].src=triangle2.src"><font color="#000000">[#TITLE]</font></a>
-<br>	</div>
+		<IF COND="[#COUNT] % 2">
+			<tr>
+		<ELSE />
+			<tr class="grey">
+		</IF>
+			<td class="site">
+				<strong>[#TITLE]</strong>
+			</td>
+			<td class="action">
+				<a href="[#URL]" id="title_[#NAME]"><strong>Voir</strong></a>&#160;
+				<a href="[#URL]/lodel/edition/index.php" id="edit_[#NAME]">Editer</a>&#160;
+			</td>
+		</tr>
 		</DO>
 		</LOOP>
-</td>
-<td width="40%">
-		<LOOP NAME="sel_rev" TABLE="sites" WHERE="status gt 0" ORDER="name">
-		<DO>
-		<div id="[#NAME]" class="texte_petit">
-[<a href="[#URL]/lodel/edition/index.php">Editer [#TITLE]</a>]
-<br>	</div>
-		</DO>
-		</LOOP>
-</td>
-</tr>
-</table>
-<blockquote>
-	<a href="http://documentation.lodel.org">
-	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Documentation"> Documentation
-	</a>
-
-	<br>
-	<a href="lodeladmin-0.8">
-	<img src="[#SHAREURL]/images/triangle.gif" border="0" alt="Administration"> Administration
-	</a>
-	 (accès réservé)
-	 <br>
-	 <br>
-	<font size="-2"><strong>Avertissement légal.</strong> Lodel est un logiciel libre sous licence GPL. <a href="COPYING">Lire la licence</a>.</font>
-</blockquote>          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+	</table>
+	
+	<p id="licence">
+		<strong>Avertissement légal.</strong> Lodel est un logiciel libre sous licence GPL. <a href="./COPYING">Lire la licence</a>.
+	</p>
 <MACRO NAME="CLOSE_HTML">
