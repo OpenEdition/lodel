@@ -32,6 +32,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @author Sophie Malafosse
  * @author Pierre-Alain MIGNOT
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
@@ -882,9 +885,12 @@ class Install {
 
 		@include($this->lodelconfig);
 		$table_charset = $this->find_mysql_db_charset($database);
-		$sqlfile=preg_replace("/#_M?TP_/",$tableprefix ,
+		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
+			$filename = str_replace('init-translations.sql', 'init-translations_utf8.sql', $filename);
+		}
+		$sqlfile=preg_replace('/#_M?TP_/',$tableprefix ,
 				file_get_contents($filename));
-		$sqlfile=str_replace("_CHARSET_", $table_charset , $sqlfile);
+		$sqlfile=str_replace('_CHARSET_', $table_charset , $sqlfile);
 		if (!$sqlfile) return;
 		#$sql=preg_split ("/;/",preg_replace("/#.*?$/m","",$sqlfile));
 		#if (!$sql) return;
@@ -911,14 +917,14 @@ class Install {
 				#echo $cmd,"<BR>\n";
 				if ($cmd) {
 					// should we drop tables before create them ?
-					if ($droptables && preg_match("/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?".$tableprefix."(\w+)/",$cmd,$result)) {
-						if (!mysql_query("DROP TABLE IF EXISTS ".$result[1])) {
-							$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+					if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.$tableprefix.'(\w+)/',$cmd,$result)) {
+						if (!mysql_query('DROP TABLE IF EXISTS '.$result[1])) {
+							$err.="$cmd <font COLOR=red>".mysql_error().'</font><br>';
 						}
 					}
 					// execute the command
 					if (!mysql_query($cmd)) {
-						$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+						$err.="$cmd <font COLOR=red>".mysql_error().'</font><br>';
 					}
 				}
 				$ilast=$i+1;
@@ -1069,7 +1075,6 @@ class Install {
 		</td>
 		</table>
 		</body>
-		?>
 		<?php 
 		die();
 	}
