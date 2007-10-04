@@ -232,6 +232,21 @@ input.button{
 	font-size: 90%;
 }
 
+input.button_v{
+	border: 2px outset #333;
+	background: #f1f5fb;
+	font-family: verdana, sans-serif;
+	font-weight: bold;
+	font-size: 100%;
+}
+
+input.button_vp{
+	border: 2px outset #333;
+	background: #f1f5fb;
+	font-family: verdana, sans-serif;
+	font-size: 90%;
+}
+
 input.button:focus{
 	border: 2px outset #e18600;
 }
