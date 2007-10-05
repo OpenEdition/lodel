@@ -918,7 +918,7 @@ function loop_files(&$context, $funcname)
 // Définition de la loop pour les fichier du ME
 function loop_files_model(&$context, $funcname)
 {
-	global $fileregexp, $home;
+	global $fileregexp, $home, $unzipcmd;
 	#print_r($context);
 	foreach ($context['importdirs'] as $dir) {
 		if ( $dh = @opendir($dir)) {
