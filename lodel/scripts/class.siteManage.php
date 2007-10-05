@@ -49,73 +49,73 @@ class siteManage {
 	 * Version lodel du site en cours de traitement
 	 * @var int
 	 */
-	private $version;
+	var $version;
 
 	/**
 	 * Répertoire de la version lodel utilisée
 	 * @var string
 	 */	
-	private $versiondir;
+	var $versiondir;
 
 	/**
 	 * Variable contenant les différentes versions de lodel installées
 	 * @var string
 	 */		
-	private $versions;
+	var $versions;
 
 	/**
 	 * Identifiant du site
 	 * @var int
 	 */
-	private $id;
+	var $id;
 
 	/**
 	 * Critere de sélection du site requete SQL ("id=$id")
 	 * @var string
 	 */
-	private $critere;
+	var $critere;
 
 	/**
 	 * Regex permettant de trouver s'il existe plusieurs versions de lodel installées
 	 * @var string
 	 */	
-	private $lodelhomere;
+	var $lodelhomere;
 
 	/**
 	 * Réinstallation ?
 	 * @var string
 	 */
-	private $reinstall;
+	var $reinstall;
 
 	/**
 	 * Base de donnée unique ?
 	 * @var bool
 	 */
-	private $singledatabase;
+	var $singledatabase;
 
 	/**
 	 * Nom de la base de données principale
 	 * @var string
 	 */
-	private $database;
+	var $database;
 
 	/**
 	 * Un seul site ?
 	 * @var bool
 	 */
-	private $maindefault;
+	var $maindefault;
 
 	/**
 	 * Informations du site
 	 * @var array
 	 */
-	public $context;
+	var $context;
 
 	/**
 	 * Téléchargement du fichier siteconfig.php ?
 	 * @var int
 	 */
-	private $downloadsiteconfig;
+	var $downloadsiteconfig;
 
 
 	/**
