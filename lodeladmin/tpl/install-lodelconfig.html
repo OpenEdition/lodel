@@ -57,34 +57,34 @@ include("tpl/install-openhtml.html");
 <p>
 [@INSTALL.CONFIGURATION_FILE_READY_INSTALL_ON_LODEL_ROOT_DIRECTORY_AND_MAKE_IT_READABLE_BY_WEBSERVER] [@INSTALL.FILE_CONTAINS_CONFIDENTIAL_PASSWORD_NEED_READING_RIGHTS_RESTRICTION]
 </p>
-<dl>
-<dt>
-[@INSTALL.TO_INSTALL_CONFIGURATION_FILE_CHOOSE_ONE_SOLUTION] :
-</dt>
 
-<dd>
+<p>[@INSTALL.TO_INSTALL_CONFIGURATION_FILE_CHOOSE_ONE_SOLUTION] :</p>
+
+
+<ol><li>
 <p>[@INSTALL.DOWNLOAD_FILE_AND_SAVE_TO_LODEL_ROOT] : </p>
 <form method="post" action="install.php" class="install">
 <input type="hidden" name="tache" value="downloadlodelconfig" />
 <p><input type="submit" value="[@INSTALL.DOWNLOAD]" class="button" /></p>
 </form>
-<form method="post" action="install.php" class="install">
-<p>[@INSTALL.CLICK_ON_CONTINUE]</p>
-<input type="hidden" name="tache" value="lodelconfig" />
-<p><input type="submit" value="[@INSTALL.CONTINUE]" class="button" /></p>
-</form>
-</dd>
-<dd>
+</li>
+
+<li>
 <p>[@INSTALL.VISUALIZE_FILE_HOWTO_COPY_FILE_CONTENT_AND_SAVE_CONFIGURATION_FILE_TO_LODEL_ROOT] :</p>
 <form method="post" action="install.php">
 <input type="hidden" name="tache" value="showlodelconfig" />
 <p><input type="submit" value="[@INSTALL.VISUALIZE]" class="button" /></p>
 </form>
-</dd>
-<dd>
+</li>
+
+<li>
 <p>[@INSTALL.COPY_FILE_YOURSELF] lodeladmin/<?=$lodelconfig ?> [@INSTALL.TO_LODEL_ROOT_AND_RENAME_IT_LODELCONFIG]</p>
-<form method="post" action="install.php">
+</li>
+</ol>
+
+<p>&nbsp;</p>
 <p>[@INSTALL.CLICK_ON_CONTINUE]</p>
+<form method="post" action="install.php">
 <input type="hidden" name="tache" value="lodelconfig" />
 <input type="submit" value="[@INSTALL.CONTINUE]" class="button" />
 </form>
