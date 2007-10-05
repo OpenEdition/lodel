@@ -31,6 +31,7 @@ require("siteconfig.php");
 include ($home."auth.php");
 authenticate();
 
+require_once($home."textfunc.php");
 $base="backend";
 include ($home."cache.php");
 ?>
