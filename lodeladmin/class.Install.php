@@ -152,7 +152,7 @@ class Install {
 	 */
 	function testInstallDB()
 	{
-		require_once '../lodel/scripts/auth.php';
+		require_once "../lodel".$this->versionsuffix."/scripts/auth.php";
 		@include($this->lodelconfig);
 		if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
 			@mysql_select_db($database);
@@ -348,9 +348,9 @@ class Install {
 			} else {
 			// check whether the database contains something. If so, we just ask what to do
 // 				@mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-// 				if(@mysql_select_db($newdatabase)){
-// 					return false;
-// 				}
+ //				if(@mysql_select_db($newdatabase)){
+ //					return false;
+ //				}
 			}
 		}
 		return true;
@@ -618,7 +618,7 @@ class Install {
 	 */
 	function checkFunc()
 	{
-		if ((@include("func.php"))!=568) { // on accede au fichier func.php
+		if ((@include("../lodel".$this->versionsuffix."/scripts/func.php"))!=568) { // on accede au fichier func.php
 			die ("ERROR: unable to access the ".$this->home."func.php file. Check the file exists and the rights and/or report the bug.");
 		}
 	}
@@ -689,9 +689,9 @@ class Install {
 						$erreur_createtables.="<br /><br />La commande DROP TABLE IF EXISTS ".$tableprefix."sites n'a pas pu être executée. On ne peut vraiment rien faire !";
 					}
 				}
-
-				$this->include_tpl("install-database.html");
-				return false;
+				preg_match("`<font COLOR=red>(.*)</font>`s", $erreur_createtables, $res);
+				$erreur_createtables = explode('</font>', $res[1]);
+				return $erreur_createtables[0];
 			}
 			
 			// let's deal with the problem of lock table.
@@ -1201,7 +1201,7 @@ class Install {
 		$GLOBALS['dbusername'] = $dbusername;
 		$GLOBALS['dbpasswd'] = $dbpasswd;
 		$GLOBALS['dbhost'] = $dbhost;
- 		@require_once("connect.php");
+ 		@require_once("../lodel".$this->versionsuffix."/scripts/connect.php");
  		$result=$db->execute(lq("SELECT lang,title FROM ".$tpr."translations WHERE status>0 AND textgroups='interface'")) or die("ERROR : error during selecting lang");
  		$lang=$_REQUEST['lang'] ? $_REQUEST['lang'] : $installlang;
  		while(!$result->EOF) {

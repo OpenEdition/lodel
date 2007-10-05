@@ -76,7 +76,7 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 
 <?php  if ($erreur_createtables) { ?>
 <p class="error">
-<strong>[@INSTALL.ERROR]</strong>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo mysql_error(); ?>
+<strong>[@INSTALL.ERROR]</strong>: [@INSTALL.TABLE_CREATION_FAILED_SQL_INSTRUCTION_AND_ERROR_ARE] : <?php echo $erreur_createtables; ?>
 </p>
 <?php } ?>
 

@@ -65,9 +65,12 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 }
 
 
-if($test)
+if($test) {
+	// Version of lodel to be installed.
+	$install->set('versioninstall', $version);
+	$install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
 	$install->testInstallDB();
-else
+} else
 {
 	// import Posted variables for the Register Off case.
 	// this should be nicely/safely integrated inside the code, but that's
@@ -77,12 +80,13 @@ else
 	}
 	
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
+	// Version of lodel to be installed.
+	$install->set('versioninstall', $version);
+	$install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
 }
 header("Content-type: text/html; charset=utf-8");
 
-// Version of lodel to be installed.
-$install->set('versioninstall', $version);
-$install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
+
 
 if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 
@@ -144,7 +148,6 @@ if ($tache=="mysql") {
 //
 
 if ($tache=="database") {
-
 	if ($continue) {
 		$tache="continue";
 		// nothing to do
@@ -159,6 +162,7 @@ if ($tache=="database") {
 		}
 	}
 }
+
 // création de l'admin
 if ($tache=="admin") {
 
@@ -287,8 +291,8 @@ if($install->checkDB() === "error_cnx")
 
 @include($install->get('lodelconfig'));
 // on cherche si on a une database
-if (!$database) {
 
+if (!$database) {
 	$resultshowdatabases = $install->seekDB();
 	$install->include_tpl("install-database.html");
 	return;
@@ -312,7 +316,9 @@ if($t !== true)
 	}
 	else
 	{
-		continue;
+		$erreur_createtables = $t;
+		$install->include_tpl("install-database.html");
+		return;
 	}
 }
 
