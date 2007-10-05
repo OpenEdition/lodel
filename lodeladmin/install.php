@@ -30,11 +30,16 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-// securise l'entree
-@require_once "../lodelconfig-dist.php";
-@require_once "../lodel-$revision/scripts/class.Install.php";
+
+/************************************ !! VERSION !! **************************************/
+$version = "0.8";
+/************************************ !! VERSION !! **************************************/
+
+
+require_once "class.Install.php";
 $test = false;
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
+// securise l'entree
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) 
 {
 	// import Posted variables for the Register Off case.
@@ -60,7 +65,6 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 }
 
 
-
 if($test)
 	$install->testInstallDB();
 else
@@ -77,11 +81,10 @@ else
 header("Content-type: text/html; charset=utf-8");
 
 // Version of lodel to be installed.
-$install->set('versioninstall', '0.8');
+$install->set('versioninstall', $version);
 $install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
 
 if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
-
 
 // does what ./lodelconfig.php does.
 if ( !defined('PATH_SEPARATOR') ) {
@@ -98,6 +101,7 @@ if ($erase_and_option2) { $option2=true; @unlink($install->get('lodelconfig')); 
 
 if ($option1) $installoption = '1';
 if ($option2) $installoption = '2';
+
 
 //
 // Test the PHP version
