@@ -31,8 +31,8 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 // securise l'entree
-require_once '../lodel/scripts/class.Install.php';
-
+@require_once "../lodelconfig-dist.php";
+@require_once "../lodel-$revision/scripts/class.Install.php";
 $test = false;
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) 
@@ -43,7 +43,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	if (!((bool) ini_get("register_globals"))) { 
 		extract($_REQUEST,EXTR_SKIP);
 	}
-
+	
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!(@file_get_contents("../lodelconfig.php"))) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
