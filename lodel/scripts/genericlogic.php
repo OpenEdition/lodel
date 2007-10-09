@@ -229,13 +229,14 @@ class GenericLogic extends Logic
 			if ($value) {			
   				if(is_array($value))
  				{
- 					foreach($value as &$val)
- 					{
- 						$val = lodel_strip_tags($val, $field->allowedtags);
+					$j = sizeof($value);
+ 					for($i=0;$i<$j;$i++) {
+ 						$value[$i] = lodel_strip_tags($value[$i], $field->allowedtags);
  					}
  				}
- 				else
+ 				else {
 					$value = lodel_strip_tags($value, $field->allowedtags);
+				}
 			}
 
 			// is empty ?
