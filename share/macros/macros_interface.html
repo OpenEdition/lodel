@@ -334,7 +334,7 @@
 			<input type="hidden" class="noText" id="uploadType[#VARNAME]" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
 			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
 			<label for="[#VARNAME]upload">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
-			<input size="40" type="file"  id="[#VARNAME]upload" name="[#FULLVARNAME][upload]" onclick="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]', 'upload')" />
+			<input size="40" type="file"  id="[#VARNAME]upload" name="[#FULLVARNAME][upload]" onchange="switchUploadType('uploadType[#VARNAME]', '[#FULLVARNAME][radio]', 'upload')" />
 			<br />
 			<!--<input type="hidden" class="noText" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile" disabled="disabled" />-->
 			<label for="[#VARNAME]localfilename">
