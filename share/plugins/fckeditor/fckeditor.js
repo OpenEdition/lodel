@@ -1,28 +1,24 @@
-/*
- * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2007 Frederico Caldeira Knabben
- *
- * == BEGIN LICENSE ==
- *
- * Licensed under the terms of any of the following licenses at your
- * choice:
- *
- *  - GNU General Public License Version 2 or later (the "GPL")
- *    http://www.gnu.org/licenses/gpl.html
- *
- *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
- *    http://www.gnu.org/licenses/lgpl.html
- *
- *  - Mozilla Public License Version 1.1 or later (the "MPL")
- *    http://www.mozilla.org/MPL/MPL-1.1.html
- *
- * == END LICENSE ==
- *
- * This is the integration file for JavaScript.
- *
- * It defines the FCKeditor class that can be used to create editor
- * instances in a HTML page in the client side. For server side
- * operations, use the specific integration system.
+﻿/*
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fckeditor.js
+ * 	This is the integration file for JavaScript.
+ * 
+ * 	It defines the FCKeditor class that can be used to create editor
+ * 	instances in a HTML page in the client side. For server side
+ * 	operations, use the specific integration system.
+ * 
+ * File Authors:
+ * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
 
 // FCKeditor Class
@@ -46,41 +42,31 @@ var FCKeditor = function( instanceName, width, height, toolbarSet, value )
 	this.OnError		= null ;	// function( source, errorNumber, errorDescription )
 }
 
-FCKeditor.prototype.Version			= '2.4.3' ;
-FCKeditor.prototype.VersionBuild	= '15657' ;
-
 FCKeditor.prototype.Create = function()
-{
-	document.write( this.CreateHtml() ) ;
-}
-
-FCKeditor.prototype.CreateHtml = function()
 {
 	// Check for errors
 	if ( !this.InstanceName || this.InstanceName.length == 0 )
 	{
 		this._ThrowError( 701, 'You must specify an instance name.' ) ;
-		return '' ;
+		return ;
 	}
 
-	var sHtml = '<div>' ;
+	document.write( '<div>' ) ;
 
 	if ( !this.CheckBrowser || this._IsCompatibleBrowser() )
 	{
-		sHtml += '<input type="hidden" id="' + this.InstanceName + '" name="' + this.InstanceName + '" value="' + this._HTMLEncode( this.Value ) + '" style="display:none" />' ;
-		sHtml += this._GetConfigHtml() ;
-		sHtml += this._GetIFrameHtml() ;
+		document.write( '<input type="hidden" id="' + this.InstanceName + '" name="' + this.InstanceName + '" value="' + this._HTMLEncode( this.Value ) + '" style="display:none" />' ) ;
+		document.write( this._GetConfigHtml() ) ;
+		document.write( this._GetIFrameHtml() ) ;
 	}
 	else
 	{
 		var sWidth  = this.Width.toString().indexOf('%')  > 0 ? this.Width  : this.Width  + 'px' ;
 		var sHeight = this.Height.toString().indexOf('%') > 0 ? this.Height : this.Height + 'px' ;
-		sHtml += '<textarea name="' + this.InstanceName + '" rows="4" cols="40" style="width:' + sWidth + ';height:' + sHeight + '">' + this._HTMLEncode( this.Value ) + '<\/textarea>' ;
+		document.write('<textarea name="' + this.InstanceName + '" rows="4" cols="40" style="WIDTH: ' + sWidth + '; HEIGHT: ' + sHeight + '">' + this._HTMLEncode( this.Value ) + '<\/textarea>') ;
 	}
 
-	sHtml += '</div>' ;
-
-	return sHtml ;
+	document.write( '</div>' ) ;
 }
 
 FCKeditor.prototype.ReplaceTextarea = function()
@@ -93,11 +79,11 @@ FCKeditor.prototype.ReplaceTextarea = function()
 		var i = 0;
 		while ( oTextarea || i == 0 )
 		{
-			if ( oTextarea && oTextarea.tagName.toLowerCase() == 'textarea' )
+			if ( oTextarea && oTextarea.tagName == 'TEXTAREA' )
 				break ;
 			oTextarea = colElementsByName[i++] ;
 		}
-
+		
 		if ( !oTextarea )
 		{
 			alert( 'Error: The TEXTAREA with id or name set to "' + this.InstanceName + '" was not found' ) ;
@@ -129,7 +115,7 @@ FCKeditor.prototype._GetConfigHtml = function()
 	for ( var o in this.Config )
 	{
 		if ( sConfig.length > 0 ) sConfig += '&amp;' ;
-		sConfig += encodeURIComponent( o ) + '=' + encodeURIComponent( this.Config[o] ) ;
+		sConfig += escape(o) + '=' + escape( this.Config[o] ) ;
 	}
 
 	return '<input type="hidden" id="' + this.InstanceName + '___Config" value="' + sConfig + '" style="display:none" />' ;
@@ -137,24 +123,42 @@ FCKeditor.prototype._GetConfigHtml = function()
 
 FCKeditor.prototype._GetIFrameHtml = function()
 {
-	var sFile = 'fckeditor.html' ;
+	var sFile = (/fcksource=true/i).test( window.top.location.search ) ? 'fckeditor.original.html' : 'fckeditor.html' ;
 
-	try
-	{
-		if ( (/fcksource=true/i).test( window.top.location.search ) )
-			sFile = 'fckeditor.original.html' ;
-	}
-	catch (e) { /* Ignore it. Much probably we are inside a FRAME where the "top" is in another domain (security error). */ }
+	var sLink = this.BasePath + 'editor/' + sFile + '?InstanceName=' + this.InstanceName ;
+	if (this.ToolbarSet) sLink += '&Toolbar=' + this.ToolbarSet ;
 
-	var sLink = this.BasePath + 'editor/' + sFile + '?InstanceName=' + encodeURIComponent( this.InstanceName ) ;
-	if (this.ToolbarSet) sLink += '&amp;Toolbar=' + this.ToolbarSet ;
-
-	return '<iframe id="' + this.InstanceName + '___Frame" src="' + sLink + '" width="' + this.Width + '" height="' + this.Height + '" frameborder="0" scrolling="no"></iframe>' ;
+	return '<iframe id="' + this.InstanceName + '___Frame" src="' + sLink + '" width="' + this.Width + '" height="' + this.Height + '" frameborder="no" scrolling="no"></iframe>' ;
 }
 
 FCKeditor.prototype._IsCompatibleBrowser = function()
 {
-	return FCKeditor_IsCompatibleBrowser( this.EnableSafari, this.EnableOpera ) ;
+	var sAgent = navigator.userAgent.toLowerCase() ;
+	
+	// Internet Explorer
+	if ( sAgent.indexOf("msie") != -1 && sAgent.indexOf("mac") == -1 && sAgent.indexOf("opera") == -1 )
+	{
+		var sBrowserVersion = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
+		return ( sBrowserVersion >= 5.5 ) ;
+	}
+	
+	// Gecko
+	if ( navigator.product == "Gecko" && navigator.productSub >= 20030210 )
+		return true ;
+	
+	// Opera
+	if ( this.EnableOpera )
+	{
+		var aMatch = sAgent.match( /^opera\/(\d+\.\d+)/ ) ;
+		if ( aMatch && aMatch[1] >= 9.0 )
+			return true ;
+	}
+	
+	// Safari
+	if ( this.EnableSafari && sAgent.indexOf( 'safari' ) != -1 )
+		return ( sAgent.match( /safari\/(\d+)/ )[1] >= 312 ) ;	// Build must be at least 312 (1.3)
+	
+	return false ;
 }
 
 FCKeditor.prototype._ThrowError = function( errorNumber, errorDescription )
@@ -178,37 +182,11 @@ FCKeditor.prototype._HTMLEncode = function( text )
 	if ( typeof( text ) != "string" )
 		text = text.toString() ;
 
-	text = text.replace(
-		/&/g, "&amp;").replace(
-		/"/g, "&quot;").replace(
-		/</g, "&lt;").replace(
-		/>/g, "&gt;") ;
+	text = text.replace(/&/g, "&amp;") ;
+	text = text.replace(/"/g, "&quot;") ;
+	text = text.replace(/</g, "&lt;") ;
+	text = text.replace(/>/g, "&gt;") ;
+	text = text.replace(/'/g, "&#39;") ;
 
 	return text ;
-}
-
-function FCKeditor_IsCompatibleBrowser( enableSafari, enableOpera )
-{
-	var sAgent = navigator.userAgent.toLowerCase() ;
-
-	// Internet Explorer
-	if ( sAgent.indexOf("msie") != -1 && sAgent.indexOf("mac") == -1 && sAgent.indexOf("opera") == -1 )
-	{
-		var sBrowserVersion = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
-		return ( sBrowserVersion >= 5.5 ) ;
-	}
-
-	// Gecko (Opera 9 tries to behave like Gecko at this point).
-	if ( navigator.product == "Gecko" && navigator.productSub >= 20030210 && !( typeof(opera) == 'object' && opera.postError ) )
-		return true ;
-
-	// Opera
-	if ( enableOpera && sAgent.indexOf( 'opera' ) == 0 && parseInt( navigator.appVersion, 10 ) >= 9 )
-			return true ;
-
-	// Safari
-	if ( enableSafari && sAgent.indexOf( 'safari' ) != -1 )
-		return ( sAgent.match( /safari\/(\d+)/ )[1] >= 312 ) ;	// Build must be at least 312 (1.3)
-
-	return false ;
 }
