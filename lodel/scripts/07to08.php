@@ -38,7 +38,14 @@
 
 class exportfor08
 {
-
+	/**
+	 * Équivalences entre tables de la 0.7 et de la 0.8 : tableau utilisé pour transfert des données vers les tables 0.8
+	 * TABLE_08::
+	 *	champ_1, champ_n,
+	 * TABLE_07::
+	 * 	champ_1, champ_n,
+	 * @var array
+	 */
 	private $translations = array(
 		'OBJECTS::
 			id,class'=>
@@ -178,9 +185,6 @@ class exportfor08
 			'id,lang,titre,textgroups,translators,modificationdate,creationdate,ordre,statut,maj'*/
 		);
 
-	private $tables_sites_07 = array(
-		
-		);
 
 	/**
 	 * Constructeur
@@ -217,6 +221,7 @@ class exportfor08
 	 * Crée ensuite les tables de la 0.8, d'après le fichier init-site.sql
 	 *
 	 * @return array
+	 * @todo Ne renommer que les tables de la 0.7
 	 */
 	private function init_db() {
 		// sauvegarde des tables en 0.7 : renommées en $table . __old
@@ -316,6 +321,13 @@ class exportfor08
 		}
 	}
 
+	/**
+	 * Création des classes : en dur en 0.7 (publications, documents, index et index de personnes)
+	 * En mou en 0.8, donc à insérer dans les tables objects et classes
+	 * 
+	 * @return true si insertions dans les tables OK
+	 */
+
 	public function create_classes() {
 		// ENTITÉS : publications et documents
 		$id = $this->__insert_object('classes');
@@ -354,15 +366,31 @@ class exportfor08
 		}
 	}
 
+	/**
+	 * Insertion d'une ligne dans la table objects
+	 * 
+	 * @return l'identifiant inséré (champ auto-incrémenté id)
+	 */
+
 	private function __insert_object($class) {
 		$result = mysql_query('INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class')") or die (mysql_error());
 		return $id = mysql_insert_id();
 	}
 
-	private function __update_entities() {
-		//$query = '';
+	/**
+	 * Mise à jour de la table entities avec les données issues des tables documents et publications
+	 *
+	 * @param string $title nom du champ qui fait office de titre dans le ME de la 0.7, pour les classes documents et publications : vaut 'titre' dans le ME revues.org 0.7
+	 * @todo générer aussi les champs suivants : identifier, creationdate, modificationdate, creationmethod, creationinfo
+	 * @todo demander à l'utilisateur le nom du champ, au cas où il serait différent de 'titre'
+	 *
+	 * @return true si OK
+	 */
+
+	private function __update_entities($title = 'titre') {
+		
 		foreach (array("publications","documents") as $classe) {
-	  		$result = mysql_query('SELECT identity,titre FROM ' . $GLOBALS['tp'] . $classe) or die (mysql_error());
+	  		$result = mysql_query('SELECT identity,' . $title . ' FROM ' . $GLOBALS['tp'] . $classe) or die (mysql_error());
 	  		while (list($id,$titre) = mysql_fetch_row($result)) {
 	    			$titre = strip_tags($titre);
 	    			if (strlen($titre)>255) {
@@ -373,7 +401,8 @@ class exportfor08
 				$query = 'UPDATE ' . $GLOBALS['tp'] . "entities set g_title='$titre' WHERE id=$id;";
 				mysql_query($query) or die (mysql_error());
 	  		}
-		}echo '<h1>__update_entities ok</h1>';
+		}
+		echo '<h1>__update_entities ok</h1>';
 		return true;
 		/*if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
@@ -382,12 +411,22 @@ class exportfor08
 		}*/
 	}
 
-	public function update_fields() {
-		// ENTITÉS : mise à jour de la colonne 'class' seulement
+	/**
+	 * Mise à jour des champs pour les classes
+	 * Pour les entités, reprise des champs des tables publications et documents
+	 * Pour les index et index de personnes, ajout dans table tablefields
+	 *
+	 * @param string $dctitle nom du champ qui fait office de titre dans le ME de la 0.7, pour les classes documents et publications : vaut 'titre' dans le ME revues.org 0.7
+	 * @todo demander à l'utilisateur le nom du champ, au cas où il serait différent de 'titre'
+	 * @return true si insertions dans les tables OK
+	 */
+
+	public function update_fields($dctitle = 'titre') {
+		// ENTITÉS : mise à jour des colonnes 'class' et 'g_name' seulement
 		$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or die(mysql_error());
 		$query = '';
 		while ($row = mysql_fetch_assoc($result)) {
-			$query .= "UPDATE _PREFIXTABLE_tablefields SET class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
+			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = 'dc.title', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
 		}
 
 
@@ -422,6 +461,12 @@ class exportfor08
 		}
 	}
 
+	/**
+	 * Mise à jour des types
+	 * 
+	 * @return true si insertions dans les tables OK
+	 */
+
 	public function update_types() {
 		// ENTITES
 		$query = "UPDATE _PREFIXTABLE_types SET display='';";
@@ -440,6 +485,14 @@ class exportfor08
 			return true;
 		}
 	}
+
+	/**
+	 * Remplissage des tables des index et index de personnes à partir des tables 0.7 (entrees et auteurs)
+	 * Mise à jour des relations : en 0.8, toutes les relations sont stockées dans la table relations,
+	 * en 0.7 dans les tables entites_entrees et entites_personnes
+	 * 
+	 * @return true si insertions dans les tables OK
+	 */
 
 	public function insert_index_data() {
 		// INDEX : tables indexes et relations
@@ -467,6 +520,12 @@ class exportfor08
 		}
 	}
 
+	/**
+	 * Mise à jour du ME pour conformité avec ME revues.org de la 0.8
+	 * 
+	 * @return true si insertions dans les tables OK
+	 */
+
 	public function update_ME() {
 		// classe documents devient textes
 		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';
@@ -477,9 +536,165 @@ class exportfor08
 		UPDATE _PREFIXTABLE_tablefieldgroups SET class = 'textes' WHERE class='documents';
 		";
 
-		// Nom des templates dans l'onglet Édition
+		// Nom des TEMPLATES dans l'onglet Édition
 		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition',tplcreation = 'creation';";
 
+		// CLASSES supplémentaires
+		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` ) VALUES
+		(NULL, 'lodel/icons/doc_annexe.gif', 'fichiers', 'Fichiers', '', 'entities', '', '5', '32', NOW()),
+		(NULL, 'lodel/icons/lien.gif', 'liens', 'Sites', '', 'entities', '', '6', '32', NOW()),
+		(NULL, 'lodel/icons/texte_simple.gif', 'textessimples', 'Textes simples', '', 'entities', '', '3', '32', NOW()),
+		(NULL, 'lodel/icons/individu.gif', 'individus', 'Personnes', '', 'entities', '', '4', '1', NOW()),
+		(NULL, 'lodel/icons/index_avance.gif', 'indexavances', 'Index avancés', '', 'entries', '', '10', '1', NOW());
+		
+		CREATE TABLE _PREFIXTABLE_fichiers (
+  			identity int(10) unsigned default NULL,
+  			titre text,
+  			document tinytext,
+  			description text,
+  			legende tinytext,
+  			credits tinytext,
+  			vignette tinytext,
+  			UNIQUE KEY identity (identity),
+  		KEY index_identity (identity)
+		);
+
+		CREATE TABLE _PREFIXTABLE_liens (
+  			identity int(10) unsigned default NULL,
+  			titre text,
+  			url text,
+  			urlfil text,
+  			texte text,
+  			capturedecran tinytext,
+  			UNIQUE KEY identity (identity),
+  			KEY index_identity (identity)
+		);
+
+		CREATE TABLE _PREFIXTABLE_textessimples (
+  			identity int(10) unsigned default NULL,
+  			titre tinytext,
+  			texte text,
+  			url text,
+  			`date` datetime default NULL,
+  			UNIQUE KEY identity (identity),
+  			KEY index_identity (identity)
+		);
+
+		CREATE TABLE _PREFIXTABLE_individus (
+  			identity int(10) unsigned default NULL,
+  			nom tinytext,
+  			prenom tinytext,
+  			email text,
+  			siteweb text,
+  			description text,
+  			accroche text,
+  			adresse text,
+  			telephone tinytext,
+  			photographie tinytext,
+  			UNIQUE KEY identity (identity),
+  			KEY index_identity (identity)
+		);
+
+		CREATE TABLE _PREFIXTABLE_indexavances (
+			identry int(10) unsigned default NULL,
+  			nom tinytext,
+  			description text,
+  			url text,
+  			icone tinytext,
+  			UNIQUE KEY identry (identry),
+  			KEY index_identry (identry)
+		);
+
+		";
+
+		// CHAMPS des classes
+		/*$query .= "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES
+
+		(NULL, 'licence', '24', 'fichiers', 'Licence', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '118', NOW()),
+		(NULL, 'titre', '7', 'fichiers', 'Titre', '', '', 'text', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '32', '47', NOW()),
+		(NULL, 'document', '8', 'fichiers', 'Document', '', '', 'file', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'description', '8', 'fichiers', 'Description', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '32', '2', NOW()),
+		(NULL, 'auteur', '24', 'fichiers', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '91', NOW()),
+		(NULL, 'vignette', '8', 'fichiers', 'Vignette', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'legende', '8', 'fichiers', 'Légende', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '4', '', '1', '4', NOW()),
+		(NULL, 'credits', '24', 'fichiers', 'Crédits', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '108', NOW()),
+
+		(NULL, 'titre', '5', 'liens', 'Titre du site', '', '', 'text', 'dc.title', '*', 'Site sans titre', '', '', '16', '', 'editable', '', '8', '', '32', '43', NOW()),
+		(NULL, 'url', '6', 'liens', 'URL du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'urlfil', '6', 'liens', 'URL du fil de syndication du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '4', NOW()),
+		(NULL, 'texte', '6', 'liens', 'Description du site', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '2', '', '32', '2', NOW()),
+		(NULL, 'auteur', '25', 'liens', 'Auteur de la notice décrivant ce site', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '92', NOW()),
+		(NULL, 'capturedecran', '6', 'liens', 'Capture d\'écran du site', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
+
+		(NULL, 'date', '19', 'textessimples', 'Date de publication en ligne', '', '', 'datetime', '', '*', 'now', '', '', '16', '', 'editable', '', '0', '', '1', '100', '2006-06-27 23:51:45'),
+		(NULL, 'url', '19', 'textessimples', 'Lien', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '2', '', '1', '99', NOW()),
+		(NULL, 'titre', '18', 'textessimples', 'Titre', '', '', 'tinytext', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '32', '72', NOW()),
+		(NULL, 'texte', '19', 'textessimples', 'Texte', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '73', NOW()),
+		(NULL, 'auteur', '26', 'textessimples', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '93', NOW()),
+
+		(NULL, 'email', '30', 'individus', 'Courriel', '', '', 'email', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '3', NOW()),
+		(NULL, 'siteweb', '30', 'individus', 'Site web', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '4', NOW()),
+		(NULL, 'description', '30', 'individus', 'Description', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '2', NOW()),
+		(NULL, 'nom', '28', 'individus', 'Nom', '', '', 'tinytext', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '1', NOW()),
+		(NULL, 'prenom', '28', 'individus', 'Prénom', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '2', NOW()),
+		(NULL, 'accroche', '28', 'individus', 'Accroche', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '3', NOW()),
+		(NULL, 'adresse', '30', 'individus', 'Adresse', '', '', 'text', '', '*', '', '', '', '16', '', 'editable', '3', '4', '', '1', '102', NOW()),
+		(NULL, 'telephone', '30', 'individus', 'Téléphone', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '103', NOW()),
+		(NULL, 'photographie', '28', 'individus', 'Photographie', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '104', NOW()),
+
+		(NULL, 'nom', '0', 'indexavances', 'Dénomination de l\'entrée d\'index', '', '', 'tinytext', 'index key', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '113', NOW()),
+		(NULL, 'description', '0', 'indexavances', 'Description de l\'entrée d\'index', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '4', '', '1', '114', NOW()),
+		(NULL, 'url', '0', 'indexavances', 'URL', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '115', NOW()),
+		(NULL, 'icone', '0', 'indexavances', 'Icône', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '116', NOW());
+		";
+
+		$query .= "INSERT INTO _PREFIXTABLE_tablefieldgroups (id, name, class, title, altertitle, comment, status, rank, upd) VALUES 
+		(NULL, 'grtitre', 'liens', 'Titre', '', '', '1', '5', NOW()),
+		(NULL, 'grsite', 'liens', 'Définition du site', '', '', '1', '6', NOW()),
+		(NULL, 'grtitre', 'fichiers', 'Titre', '', '', '1', '7', NOW()),
+		(NULL, 'grmultimedia', 'fichiers', 'Définition', '', '', '1', '8', NOW()),
+		(NULL, 'grtitre', 'textessimples', 'Titre', '', '', '1', '10', NOW()),
+		(NULL, 'grtexte', 'textessimples', 'Texte', '', '', '1', '11', NOW()),
+		(NULL, 'grdroits', 'fichiers', 'Droits', '', '', '32', '16', NOW()),
+		(NULL, 'grauteurs', 'liens', 'Auteurs', '', '', '32', '17', NOW()),
+		(NULL, 'grauteurs', 'textessimples', 'Auteurs', '', '', '32', '18', NOW()),
+		(NULL, 'grtitre', 'individus', 'Titre', '', '', '1', '20', NOW()),
+		(NULL, 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());
+		";
+*/
+		// TYPES
+		$query .= "INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
+
+		(NULL, '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
+		(NULL, '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
+		(NULL, 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
+		(NULL, '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
+		(NULL, '', 'annuairedepersonnes', 'Biographies des membres', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', NOW()),
+		(NULL, '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
+		(NULL, '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
+		(NULL, '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
+		(NULL, '', 'individu', 'Notice biographique de membre', '', 'individus', 'individu', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '25', '1', NOW()),
+		(NULL, '', 'billet', 'Billet', '', 'textessimples', 'article', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '1', '1', NOW()),
+		(NULL, '', 'annuairedesites', 'Annuaire de sites', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '7', '32', NOW()),
+		(NULL, 'lodel/icons/rss.gif', 'fluxdesyndication', 'Flux de syndication', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '30', '1', NOW()),
+		(NULL, '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
+		(NULL, '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
+		(NULL, '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
+		(NULL, '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW());
+		";
+
+		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
+		(NULL, '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW());
+		";
+
+		// OPTIONS
+		$query .= "INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
+		('1', '0', 'from07', 'Suite import de données de Lodel 0.7', '', '', '', '1', '1', '32', NOW());
+		UPDATE _PREFIXTABLE_options SET idgroup = 1;
+		UPDATE _PREFIXTABLE_options SET type = 'tinytext' WHERE type = 's';
+		UPDATE _PREFIXTABLE_options SET type = 'passwd' WHERE type = 'pass';
+		UPDATE _PREFIXTABLE_options SET type = 'email' WHERE type = 'mail';
+		";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
