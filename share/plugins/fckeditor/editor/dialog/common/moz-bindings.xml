@@ -7,7 +7,6 @@
 			</constructor>
 			<method name="CheckIsDigit">
 				<body>
-					<![CDATA[
 					var iCode = keyCode ;
 
 					var bAccepted =
@@ -19,8 +18,7 @@
 						) ;
 
 					return bAccepted ;
-					]]>
-				</body>
+			   </body>
 			</method>
 		</implementation>
 		<events>
