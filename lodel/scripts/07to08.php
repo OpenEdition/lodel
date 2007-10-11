@@ -287,7 +287,7 @@ class exportfor08
 		if ($err = $this->__mysql_query_cmds($query)) {
 			die($err);
 		} else {
-			echo '<h1>initdb ok</h1>';
+			echo '<p>initdb ok</p>';
 			return true;
 		}
 	}
@@ -361,7 +361,7 @@ class exportfor08
 			die($err);
 		} else {
 			$this->__update_entities();
-			echo '<h1>create_classes ok</h1>';
+			echo '<p>create_classes ok</p>';
 			return true;
 		}
 	}
@@ -402,7 +402,7 @@ class exportfor08
 				mysql_query($query) or die (mysql_error());
 	  		}
 		}
-		echo '<h1>__update_entities ok</h1>';
+		echo '<p>__update_entities ok</p>';
 		return true;
 		/*if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
@@ -481,7 +481,7 @@ class exportfor08
 		
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<h1>update_types ok</h1>';
+		} else {echo '<p>update_types ok</p>';
 			return true;
 		}
 	}
@@ -515,7 +515,7 @@ class exportfor08
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<h1>insert_index_data ok</h1>';
+		} else {echo '<p>insert_index_data ok</p>';
 			return true;
 		}
 	}
@@ -698,7 +698,7 @@ class exportfor08
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<h1>update_ME ok</h1>';
+		} else {echo '<p>update_ME ok</p>';
 			return true;
 		}
 
@@ -743,7 +743,7 @@ class exportfor08
 			return $err;
 		}
 
-		foreach ($request as $cmd) {echo $cmd . '<p>';
+		foreach ($request as $cmd) {//echo $cmd . '<p>';
 			$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
 			if ($cmd) {
 				if (!mysql_query($cmd)) {
