@@ -36,7 +36,7 @@
 	<ul class="actions">
 		<li class="isolated">
 			<a href="site.php">[@LODELADMIN.ADD_WEBSITE]</a> | 
-<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64" LIMIT="0,1">
+<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64 AND status NE 32" LIMIT="0,1">
 	<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLMAINTENANCE]</a>
 	<ALTERNATIVE>
 		<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLONLINE]</a>
@@ -73,7 +73,7 @@
 	<a href="index.php?lo=sites&amp;do=lock&amp;id=[#ID]">[@LODELADMIN.LOCK]</a> |
 </IF>
 
-<IF COND="[#STATUS] EQ -64">
+<IF COND="[#STATUS] EQ -64 OR [#STATUS] EQ -65">
 	<a href="site.php?maintenance=0&amp;id=[#ID]">[@COMMON.GOONLINE]</a>
 <ELSE/>
 	<a href="site.php?maintenance=1&amp;id=[#ID]">[@COMMON.GOMAINTENANCE]</a>
@@ -98,7 +98,7 @@
 <MACRO NAME="TR_LIST">
 <th><a href="[#URL]">[(#TITLE|nbsp)]</a></th>
 <td class="actions">
-<IF COND="[#STATUS] EQ -64">
+<IF COND="[#STATUS] EQ -64 OR [#STATUS] EQ -65">
 	<a href="site.php?id=[#ID]&amp;maintenance=1">[@COMMON.GOONLINE]</a>
 <ELSE/>
 	<a href="site.php?id=[#ID]&amp;restore=1">[@COMMON.RECOVER]</a> |

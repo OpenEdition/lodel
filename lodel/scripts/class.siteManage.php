@@ -961,19 +961,42 @@ class siteManage {
 		return true;
 	}
 
+	/**
+	 * Maintenance des sites
+	 *
+	 * Cette fonction gère la mise en maintenance des sites
+	 *
+	 * @author Pierre-Alain Mignot
+	 */
 	function maintenance()
 	{
  		if($this->id > 0) {
 			$res = mysql_query(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere.""));
 			$row = mysql_fetch_row($res);
-			$status = $row[0] == -64 ? 1 : -64;
+			if($row[0] == 32) {
+				$status = -65;
+			} elseif($row[0] == -65) {
+				$status = 32;
+			} else {
+				$status = $row[0] == -64 ? 1 : -64;
+			}
 			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE ".$this->critere.""));
 		}
 		elseif($this->id == 0) {
-			$res = mysql_query(lq("SELECT status FROM #_TP_sites"));
-			$row = mysql_fetch_row($res);
-			$status = $row[0] == -64 ? 1 : -64;
-			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status));
+			$req = mysql_query(lq("SELECT status FROM #_TP_sites"));
+			while($res = mysql_fetch_array($req)) {
+				if($res['status'] == 1) {
+					$status = -64;
+					mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE status != 32"));
+
+				} elseif($res['status'] == -64) {
+					$status = 1;
+					mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE status != 32"));
+				} elseif($res['status'] == -65) {
+					$status = 32;
+					mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE status = -65"));
+				}
+			}
 		}
 		if (!headers_sent()) {
 			header("location: index.php?do=list&lo=sites&clearcache=oui");
