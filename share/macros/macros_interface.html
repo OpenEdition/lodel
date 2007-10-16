@@ -1399,6 +1399,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 				<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
 		</LOOP>
+		<li class="this">&gt; [@EDITION.NEW]</li>
 	</ul>
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>
