@@ -1392,9 +1392,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LET VAR="noid">TRUE</LET>
 	</IF>
 	<ul class="entitiesPath">
-		<li><a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
+		<li><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 				<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
@@ -1409,7 +1409,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul class="entitiesPath site">
 		<li><a href="index.[#EXTENSIONSCRIPTS]">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a onClick="preserveDatas;" href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
+			<li> &gt; <a href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity2" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 			<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
