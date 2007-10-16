@@ -1397,9 +1397,13 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-				<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
+				<IF COND="[#G_TITLE]"> 
+					<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
+				<ELSE/>
+					<li class="this">&gt; [@EDITION.NEW]</li>
+				</IF>
 		</LOOP>
-		<li class="this">&gt; [@EDITION.NEW]</li>
+		
 	</ul>
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>
@@ -1833,29 +1837,33 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 	<div class="document">
 	<span class="titre_document">
-	<LOOP NAME="NUMERO" TABLE="publications" SELECT="numero" WHERE="identity = [#ID]">
           <IF COND="[#TPLEDITION]">
-		<IF COND="[#G_TITLE] AND [#NUMERO]">
-                	 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp] - [#NUMERO]</a> "
+                 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]
+          <ELSE/>
+                 " [#G_TITLE|textebrut|nbsp]
+          </IF>
+	<LOOP NAME="NUMERO" TABLE="publications" SELECT="numero" WHERE="identity = [#ID]">
+	  <ALTERNATIVE>
+          <IF COND="[#TPLEDITION]">
+			</a> "
+          <ELSE/>
+			 "
+           </IF>
+	  </ALTERNATIVE>
+          <IF COND="[#TPLEDITION]">
+		<IF COND="[#NUMERO]">
+                	 - [#NUMERO]</a> "
 		<ELSE/>
-			<IF COND="[#G_TITLE]">
-				" <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
-			<ELSE/>
-				" <a href="index.php?id=[#ID]">[#NUMERO]</a> "	
-			</IF>
+			</a> "
 		</IF>
           <ELSE/>
-		<IF COND="[#G_TITLE] AND [#NUMERO]">
-                	 " [#G_TITLE|textebrut|nbsp] - [#NUMERO] "
+		<IF COND="[#NUMERO]">
+			- [#NUMERO] "	
 		<ELSE/>
-			<IF COND="[#G_TITLE]">
-				" [#G_TITLE|textebrut|nbsp] "
-			<ELSE/>
-				" [#NUMERO] "	
-			</IF>	
+			 "
 		</IF>
            </IF>
-	</LOOP>
+ 	</LOOP> 
          </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>
 	<span class="type_document">([#TYPE])</span>
