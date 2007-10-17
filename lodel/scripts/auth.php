@@ -272,8 +272,13 @@ function maintenance()
 		if (($row['expire'] < $time || $row['expire2'] < $time) && preg_match($reg, $_SERVER['SCRIPT_NAME'])) {		
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
-			header("Location: ".$path);
+			$db->selectDB($database);
+			$row = $db->getRow($query);
+			usecurrentdb();
+			if($row['status'] == -64 || $row['status'] == -65) {
+				$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
+				header("Location: ".$path);
+			}
 		}
 
 		// passe les variables en global
@@ -283,7 +288,7 @@ function maintenance()
 				$db->selectDB($database);
 				$row = $db->getRow($query);
 				usecurrentdb();
-				if($row['status'] == -64) {
+				if($row['status'] == -64 || $row['status'] == -65) {
 					header('Location: '.$path);
 				}
 			}
@@ -294,7 +299,7 @@ function maintenance()
 			$db->selectDB($database);
 			$row = $db->getRow($query);
 			usecurrentdb();
-			if($row['status'] == -64) {
+			if($row['status'] == -64 || $row['status'] == -65) {
 				header('Location: '.$path);
 			}
 		}
