@@ -88,9 +88,13 @@ function mysqldate($s, $type)
 			return ''; 
 		}
 	}
-	list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
+	if(preg_match("`^\d\d\d\d.\d\d.\d\d$`", $s)) 
+		list ($y, $m, $d) = preg_split("/s*$delimiter+/", $s);
+	else
+		list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
 	$d = intval(trim($d));
-	if ((($d < 1 || $d > 31) && !preg_match("`[:hH]`", $delimiter)) || (($d < 0 || $d > 24) && preg_match("`[:hH]`", $delimiter))) {
+
+	if ((($d < 1 || $d > 31) && !preg_match("`[:hH-]`", $delimiter)) || (($d < 0 || $d > 24) && preg_match("`[:hH-]`", $delimiter))) {
 		return 'bad date';
 	}
 	$m = trim($m);
@@ -130,11 +134,11 @@ function mysqldate($s, $type)
 		}
 		return "$y-$m-$d";
 	}
-	else
+	else {
 		if(!isset($y))
 			$y = '00';
 		return $d.":".$m.":".$y;
-
+	}
 }
 
 
