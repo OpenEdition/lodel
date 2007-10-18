@@ -667,7 +667,7 @@ class Parser
 			}
 		}
 		if ($this->arr[$this->ind] != '/LOOP') {
-			echo ":::: $this->ind ".$this->arr[$this->ind]."<br>\n";
+			echo ":::: $this->ind ".$this->arr[$this->ind]."<br />\n";
 			print_r($this->arr);
 			$this->errmsg("internal error in parse_loop. Report the bug");
 		}

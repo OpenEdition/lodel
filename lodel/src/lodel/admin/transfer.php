@@ -164,7 +164,7 @@ DROP TABLE #_TP_'.$oldtable.';
 					break;
 				}
 				array_push($todelete, $oldtable);
-				$report.="traduction de la table $oldtable<br>\n";
+				$report.="traduction de la table $oldtable<br />\n";
 			} // foreach }}}
 			$tables = gettables();
 			if ($err) {
@@ -196,7 +196,7 @@ UPDATE #_TP_texts SET textgroup=\'site\'
 					break;
 				}
 			}
-			$report.= "ajouter les champs a la table textes<br>";
+			$report.= "ajouter les champs a la table textes<br />";
 		}
 
 		// Ajout le champ lang a users (au deux niveaux)
@@ -209,7 +209,7 @@ UPDATE #_TP_users SET lang=\'fr\'
 			if ($err) {
 				break;
 			}
-			$report.= "Ajout des lang dans users (local)<br>";
+			$report.= "Ajout des lang dans users (local)<br />";
 		}
 		if (!$fields['rank']) {
 			$err = mysql_query_cmds('
@@ -218,7 +218,7 @@ ALTER TABLE #_TP_users ADD rank INT UNSIGNED DEFAULT '0' NOT NULL
 			if ($err) {
 				break;
 			}
-			$report.= "Ajout de rank a users (local)<br>";
+			$report.= "Ajout de rank a users (local)<br />";
 		}
 		mysql_select_db($GLOBALS['database']);
 		$fields = getfields("users", $GLOBALS['database']);
@@ -230,7 +230,7 @@ UPDATE #_TP_users SET lang=\'fr\'
 			if ($err) {
 				break;
 			}
-			$report.= "Ajout des lang dans users (global)<br>";
+			$report.= "Ajout des lang dans users (global)<br />";
 		}
 		if (!$fields['rank']) {
 			$err = mysql_query_cmds('
@@ -239,7 +239,7 @@ ALTER TABLE #_TP_users ADD rank INT UNSIGNED DEFAULT '0' NOT NULL
 			if ($err) {
 				break;
 			}
-			$report.= "Ajout de rank a users (local)<br>";
+			$report.= "Ajout de rank a users (local)<br />";
 		}
 		mysql_select_db($GLOBALS['currentdb']);
 
@@ -254,7 +254,7 @@ ALTER TABLE #_TP_users ADD rank INT UNSIGNED DEFAULT '0' NOT NULL
 		if ($fields['identite']) {
 			$err=mysql_query_cmds("ALTER TABLE #_TP_$classe CHANGE identite identity	INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE");
 			if ($err) break 2;
-			$report.="changement de identite en identity pour la table $classe<br>";
+			$report.="changement de identite en identity pour la table $classe<br />";
 		}
 		}
 
@@ -271,7 +271,7 @@ ALTER TABLE #_TP_entities ADD creationmethod VARCHAR(16);
 ALTER TABLE #_TP_entities ADD creationinfo TINYTEXT;
 ');
 					if ($err) break;
-					$report.="ajout de creationdate, modificationdate, creationmethod et creationinfo <br>";
+					$report.="ajout de creationdate, modificationdate, creationmethod et creationinfo <br />";
 					$justcreatedate=1;
 				}
 	if (!$fields['g_title']) {
@@ -279,7 +279,7 @@ ALTER TABLE #_TP_entities ADD creationinfo TINYTEXT;
 ALTER TABLE #_TP_entities ADD g_title TINYTEXT NOT NULL;
 ');
 		if ($err) break;
-		$report.="ajout de g_title<br>";
+		$report.="ajout de g_title<br />";
 		$justcreatedate=1;
 	}
 
@@ -378,7 +378,7 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
 //ALTER TABLE #_TP_tablefieldgroups ADD  INDEX index_idclass (idclass);
 // ');
 //      if ($err) break;
-//      $report.="Creation de la table classe<br>\n";
+//      $report.="Creation de la table classe<br />\n";
 //    }
 		$classes=array("publications"=>array("Publications","entities","identity"),
 			"documents"=>array("Documents","entities","identity"),
@@ -388,7 +388,7 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
 		if ($entryclasses) $classes+=$entryclasses;
 		foreach ($classes as $class=>$arr) {
 			list ($title,$classtype,$idfield)=$arr;
-			##echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br>";
+			##echo "SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'<br />";
 			$result=mysql_query("SELECT id FROM $GLOBALS[tp]classes WHERE class='$class'") or trigger_error(mysql_error(),E_USER_ERROR);
 			if (mysql_num_rows($result)>0) { 
 	if ($classtype=="entries") unset($entryclasses[$class]); 
@@ -402,7 +402,7 @@ ALTER TABLE #_TP_usergroups ADD rank INT UNSIGNED DEFAULT \'0\' NOT NULL;
 
 			$db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_$class ( $idfield INTEGER UNSIGNED UNIQUE, KEY index_$idfield ($idfield))")) or dberror();
 
-			$report.="Creation de la classe $classe <br>\n";
+			$report.="Creation de la classe $classe <br />\n";
 		}
 
 		/////////////////////
@@ -567,7 +567,7 @@ UPDATE #_TP_types SET class='documentsannexes' WHERE type LIKE 'documentannexe-%
 			$ids=array();
 			while(list($id)=mysql_fetch_row($result)) $ids[]=$id;
 			if (!$ids) {
-	$rep.="aucun document a transferer<br>\n"; 
+	$rep.="aucun document a transferer<br />\n"; 
 			} else {
 	$ids=join(",",$ids);
 	// transfert the documents
@@ -576,7 +576,7 @@ REPLACE INTO #_TP_documentsannexes (identity,titre,texte".$haslien.")  SELECT id
 DELETE FROM #_TP_documents WHERE identity IN ($ids);
 ");
 	if ($err) break;
-	$rep.="documents transferés<br>\n"; 
+	$rep.="documents transferés<br />\n"; 
 			}
 			//}
 
@@ -963,7 +963,7 @@ UPDATE #_TP_objects SET class=\'persontypes\' WHERE class=\'typepersonnes\';
 			if ($class=="relations") continue;
 			$count=$db->getOne(lq("SELECT count(*) FROM #_TP_".$class." WHERE id ".sql_in_array($id)));
 			if ($db->errorno()) dberror();
-			if ($count!=count($id)) { $err.="Objects n'est pas a jour. Probleme avec la class $class $count!=".count($id)."<br>"; }
+			if ($count!=count($id)) { $err.="Objects n'est pas a jour. Probleme avec la class $class $count!=".count($id)."<br />"; }
 		}
 	}
 	
@@ -991,7 +991,7 @@ function mysql_query_cmd($cmd)
 {
 	$cmd=str_replace("#_TP_","$GLOBALS[tp]",$cmd);
 	if (!mysql_query($cmd)) { 
-		$err="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+		$err="$cmd <font COLOR=red>".mysql_error()."</font><br />";
 		return $err;
 	}
 	return FALSE;
@@ -1014,7 +1014,7 @@ function mysql_query_cmds($cmds,$table="")
 		$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
 		if ($cmd) {
 			if (!mysql_query($cmd)) { 
-	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br>";
+	$err.="$cmd <font COLOR=red>".mysql_error()."</font><br />";
 	break; // sort, ca sert a rien de continuer
 			}
 		}
@@ -1063,7 +1063,7 @@ function getfields($table,$database="")
 #  }
 #  $err=mysql_query_cmds(utf8_encode(join("",file($file))),$table);
 #  if ($err) return $err;
-#  $report.="Import des insert dans la table $table<br>";
+#  $report.="Import des insert dans la table $table<br />";
 #  return FALSE;
 #}
 
@@ -1077,11 +1077,11 @@ function create($table)
 		return "Le fichier $file n'existe pas !";
 	}
 	
-	if (!preg_match ("/CREATE TABLE[\s\w]+#_TP_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br>";
+	if (!preg_match ("/CREATE TABLE[\s\w]+#_TP_$table\s*\(.*?;/s",join('',file($file)),$result)) return "impossible de creer la table $table car elle n'existe pas dans le fichier init-site.sql<br />";
 	
 	$err=mysql_query_cmds($result[0]);
 	if ($err) return $err;
-	$report.="Cr&eacute;ation de la table $table<br>";
+	$report.="Cr&eacute;ation de la table $table<br />";
 	return FALSE;
 }
 
@@ -1102,7 +1102,7 @@ function addfield($classe)
 		#echo "ici:$tablefield $type<br/>";
 		if ($fields[$tablefield]) continue;
 		#echo "ici:$tablefield - create<br/>";
-		#echo 'ALTER TABLE #_TP_'.$classe.' ADD     '.$tablefield.' '.$GLOBALS[sqltype][$type].'<br>';
+		#echo 'ALTER TABLE #_TP_'.$classe.' ADD     '.$tablefield.' '.$GLOBALS[sqltype][$type].'<br />';
 		$sqltype=$GLOBALS['lodelfieldtypes'][$type]['sql'];
 		if (!$sqltype) continue;
 		$err=mysql_query_cmds('

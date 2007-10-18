@@ -336,7 +336,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#echo "ici $res";
 
 		if (!$res)
-			die("ERROR: unable to extract $archive.<br>".$archive->error_string);
+			die("ERROR: unable to extract $archive.<br />".$archive->error_string);
 		unset($archive);
 		if (filesize($sqlfile) <= 0)
 			return false;

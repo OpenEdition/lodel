@@ -358,7 +358,7 @@ class siteManage {
 			}
 			if (is_dir(LODELROOT.$file) && preg_match($this->lodelhomere,$file) && is_dir(LODELROOT. $file. '/src')) {
 				if (!(@include(LODELROOT. "$file/src/siteconfig.php"))) {
-					echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br>";
+					echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br />";
 				} else {
 					$this->versions[$file]=$this->version ? $this->version : "devel";
 				}
@@ -523,7 +523,7 @@ class siteManage {
 			symlink($src, $dest);
 		}
 		if (!file_exists($dest)) {
-			echo ("Warning: impossible d'acceder au fichier $src via le lien symbolique $dest<br>");
+			echo ("Warning: impossible d'acceder au fichier $src via le lien symbolique $dest<br />");
 		}
 	}
 
