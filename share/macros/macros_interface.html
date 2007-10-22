@@ -248,25 +248,6 @@
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
 	<IF COND="[#EDITION] EQ 'fckeditor'">
 		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
-		<MACRO NAME="FCK_EDITOR_PARAMETERS">
-		<?php
-			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
-			$context["value"] = str_replace("\n","",$context["value"]);
-			$context["value"] = str_replace("\r","",$context["value"]);
-			$urlFck = "../../../share-0.8/plugins/fckeditor/";
-			include_once($urlFck."fckeditor.php") ;
-			$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
-			$oFCKeditor->ToolbarSet = $context['fck_mode'];
-			$oFCKeditor->BasePath = $urlFck;
-			$oFCKeditor->Config['SkinPath'] = "../skins/".$context['fck_skin']."/";
-			$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-			$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
-			$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
-			
-			$oFCKeditor->Value = addslashes(html_entity_decode($context['value']));
-			$oFCKeditor->Create();
-		?>
-<!--		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
  		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 		<?php
 			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
@@ -282,15 +263,9 @@
     			fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
     			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
     			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-     			<?php if(!preg_match("`for_copy`", $context['fullvarname'])) { ?>
-				fck_[#FCKVARNAME]_editor.Create();
-			<?php } ?>
-    		</script>-->
-		<script type="text/javascript">
-			if(document.getElementById("persons_[#NOM]_for_copy")) {
-				document.getElementById("persons_[#NOM]_for_copy").style.display = "none";
-			}
-		</script>
+    			fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
+    			fck_[#FCKVARNAME]_editor.Create();
+    		</script>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
