@@ -83,7 +83,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par dï¿½faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -163,10 +163,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
-	variable qui diffère.]-->
+<!--[ Gestion de l'ï¿½dition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisï¿½e dans les templates gï¿½nï¿½rï¿½s automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien ï¿½ cause du nom de la
+	variable qui diffï¿½re.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -217,7 +217,7 @@
       Widget pour l'edition des differents types de champs
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
+<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm,nom">
 <!--[ --------------- CONFIRM--------------------------- ]-->
 
 <IF COND="[#CONFIRM]">
@@ -248,6 +248,25 @@
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
 	<IF COND="[#EDITION] EQ 'fckeditor'">
 		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
+		<MACRO NAME="FCK_EDITOR_PARAMETERS">
+		<?php
+			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+			$context["value"] = str_replace("\n","",$context["value"]);
+			$context["value"] = str_replace("\r","",$context["value"]);
+			$urlFck = "../../../share-0.8/plugins/fckeditor/";
+			include_once($urlFck."fckeditor.php") ;
+			$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
+			$oFCKeditor->ToolbarSet = $context['fck_mode'];
+			$oFCKeditor->BasePath = $urlFck;
+			$oFCKeditor->Config['SkinPath'] = "../skins/".$context['fck_skin']."/";
+			$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+			$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
+			$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
+			
+			$oFCKeditor->Value = addslashes(html_entity_decode($context['value']));
+			$oFCKeditor->Create();
+		?>
+<!--		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
  		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 		<?php
 			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
@@ -263,9 +282,15 @@
     			fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
     			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
     			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    			fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    			fck_[#FCKVARNAME]_editor.Create();
-    		</script>
+     			<?php if(!preg_match("`for_copy`", $context['fullvarname'])) { ?>
+				fck_[#FCKVARNAME]_editor.Create();
+			<?php } ?>
+    		</script>-->
+		<script type="text/javascript">
+			if(document.getElementById("persons_[#NOM]_for_copy")) {
+				document.getElementById("persons_[#NOM]_for_copy").style.display = "none";
+			}
+		</script>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
@@ -504,12 +529,12 @@ cp_[#VARNAME].writeDiv();
         <!--[ widget available for adding new persons of this type ]-->
  	<LOOP NAME="edition_fields">
 		<BEFORE>
-	       		<div id="persons_[#VARNAME]_for_copy" style="display:none">
+	       		<div id="persons_[#VARNAME]_for_copy" style="display:block">
 			<div class="oneItem">
 		</BEFORE>
 		<DO>
 			<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
-				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 			<br />
 		</DO>
         	<AFTER>
@@ -936,7 +961,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisé.
+Affichage du titre internationalisï¿½.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -948,7 +973,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
+C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macros_admin !!
 
 ]-->
 
@@ -960,20 +985,20 @@ C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admi
 
 <!--[ 
 
-Macros rapatriées de lodel/src/lodel/edition/tpl
+Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'édition. 2002                        ]-->
+<!--[ * Macros de l'ï¿½dition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutï¿½e le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ cachï¿½ "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -987,7 +1012,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutï¿½es le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1036,8 +1061,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
-<!--[ Macro servant à publication.html et                ]-->
+<!--[ Macro rajoutï¿½e le 17/09/03 *********************** ]-->
+<!--[ Macro servant ï¿½ publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1253,17 +1278,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intï¿½gration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on pré-charge les image */
-	//img1=new Image(82,18); /* on déclare les images */
+	/* on prï¿½-charge les image */
+	//img1=new Image(82,18); /* on dï¿½clare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pré-charge */
+	//img1.src="image1.gif"; /* on les prï¿½-charge */
 	//img2.src="image2.gif";
-	/* on déclare la fonction qui affiche les Rollovers */
+	/* on dï¿½clare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
@@ -1838,32 +1863,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<div class="document">
 	<span class="titre_document">
           <IF COND="[#TPLEDITION]">
-                 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]
+                 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
           <ELSE/>
-                 " [#G_TITLE|textebrut|nbsp]
-          </IF>
-	<LOOP NAME="NUMERO" TABLE="publications" SELECT="numero" WHERE="identity = [#ID]">
-	  <ALTERNATIVE>
-          <IF COND="[#TPLEDITION]">
-			</a> "
-          <ELSE/>
-			 "
+                 " [#G_TITLE|textebrut|nbsp] "
            </IF>
-	  </ALTERNATIVE>
-          <IF COND="[#TPLEDITION]">
-		<IF COND="[#NUMERO]">
-                	 - [#NUMERO]</a> "
-		<ELSE/>
-			</a> "
-		</IF>
-          <ELSE/>
-		<IF COND="[#NUMERO]">
-			- [#NUMERO] "	
-		<ELSE/>
-			 "
-		</IF>
-           </IF>
- 	</LOOP> 
          </span>&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>
 	<span class="type_document">([#TYPE])</span>
