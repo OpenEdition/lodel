@@ -83,7 +83,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par dï¿½faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -163,10 +163,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'ï¿½dition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisï¿½e dans les templates gï¿½nï¿½rï¿½s automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien ï¿½ cause du nom de la
-	variable qui diffï¿½re.]-->
+<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien é cause du nom de la
+	variable qui différe.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -247,25 +247,40 @@
 <!--[ --------------- TEXT, LONGTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
 	<IF COND="[#EDITION] EQ 'fckeditor'">
-		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
- 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
-		<?php
+		<MACRO NAME="FCK_EDITOR_PARAMETERS">
+<?php 		// modified by Pierre-Alain Mignot
 			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
-		?>	
-    		<script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
-    		<script type="text/javascript">
-    			var fck_[#FCKVARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    			fck_[#FCKVARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 			fck_[#FCKVARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
-    			fck_[#FCKVARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
-    			fck_[#FCKVARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
-    			fck_[#FCKVARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
-    			fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
-    			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
-    			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    			fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    			fck_[#FCKVARNAME]_editor.Create();
-    		</script>
+			$context["value"] = str_replace("\n","",$context["value"]);
+			$context["value"] = str_replace("\r","",$context["value"]);
+			$urlFck = SITEROOT . $GLOBALS['sharedir'] . "/plugins/fckeditor/";
+			require_once($urlFck."fckeditor.php");
+			$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
+			$oFCKeditor->ToolbarSet = $context['fck_mode'];
+			$oFCKeditor->BasePath = $urlFck;
+			$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
+			$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+			$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
+			$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
+			
+			$oFCKeditor->Value = html_entity_decode(stripslashes($context['value']));
+ 			$oFCKeditor->Create();
+			/* le javascript sert à  débugger FCKEditor qui charge à l'infini
+			on avait la div qui sert à générer les champs auteur/directeur de publication etc ..
+			qui par défaut avait comme display 'none' ce qui créait le bug. 
+			Maintenant on a une div en display block qui se met en display none 
+			3s apres le début de chargement de la page
+			=> Largement suffisant, mais pas trop quand meme, sachant que FCKEditor est tres lourd */
+			if($context['nom']) {	?>
+				<script type="text/javascript">
+					if(document.getElementById("persons_[#NOM]_for_copy")) {
+						function cacher_copie(nom_elmt) {
+							var elmt = "persons_"+nom_elmt+"_for_copy";	
+							document.getElementById(elmt).style.display = "none";
+						}
+						setTimeout("cacher_copie('[#NOM]')", 3000);
+					}
+				</script>
+		<?php 	} ?>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
@@ -936,7 +951,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisï¿½.
+Affichage du titre internationalisé.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -948,7 +963,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macros_admin !!
+C'est ignoble de remettre cette macro lé alors qu'elle est déjé dans macros_admin !!
 
 ]-->
 
@@ -960,20 +975,20 @@ C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macro
 
 <!--[ 
 
-Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
+Macros rapatriées de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'ï¿½dition. 2002                        ]-->
+<!--[ * Macros de l'édition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutï¿½e le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ cachï¿½ "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -987,7 +1002,7 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutï¿½es le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1036,8 +1051,8 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutï¿½e le 17/09/03 *********************** ]-->
-<!--[ Macro servant ï¿½ publication.html et                ]-->
+<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
+<!--[ Macro servant é publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1253,17 +1268,17 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intï¿½gration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on prï¿½-charge les image */
-	//img1=new Image(82,18); /* on dï¿½clare les images */
+	/* on pré-charge les image */
+	//img1=new Image(82,18); /* on déclare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les prï¿½-charge */
+	//img1.src="image1.gif"; /* on les pré-charge */
 	//img2.src="image2.gif";
-	/* on dï¿½clare la fonction qui affiche les Rollovers */
+	/* on déclare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
