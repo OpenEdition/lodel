@@ -264,6 +264,15 @@
 			
 			$oFCKeditor->Value = html_entity_decode(stripslashes($context['value']));
  			$oFCKeditor->Create();
+?>
+    	<ELSE/>
+		<IF COND="[#EDITIONPARAMS] gt 1">
+			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
+		<ELSE/>
+			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
+        	</IF>
+      </IF>
+	<?php // add by Pierre-Alain Mignot
 			/* le javascript sert à  débugger FCKEditor qui charge à l'infini
 			on avait la div qui sert à générer les champs auteur/directeur de publication etc ..
 			qui par défaut avait comme display 'none' ce qui créait le bug. 
@@ -280,14 +289,7 @@
 						setTimeout("cacher_copie('[#NOM]')", 3000);
 					}
 				</script>
-		<?php 	} ?>
-    	<ELSE/>
-		<IF COND="[#EDITIONPARAMS] gt 1">
-			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
-		<ELSE/>
-			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
-        	</IF>
-      </IF>
+	<?php 	} ?>
 
 <ELSE/>
 <!--[ --------------- USERNAME, EMAIL, URL, HISTORY-------------- ]-->
