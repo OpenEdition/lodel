@@ -342,7 +342,7 @@ function vignette($text, $width)
 		return $vignettefile;
 	list($widt, $height, $type, $attr) = getImageSize($text);
 	if($widt <= $width)
-		return;
+		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	require_once ("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
