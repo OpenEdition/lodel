@@ -62,8 +62,8 @@ $website->set('singledatabase',$singledatabase);
 $website->set('version',$context['version']);
 $website->set('downloadsiteconfig',$downloadsiteconfig);
 
-if($maintenance)
-	$website->maintenance();
+if($maintenance > 0)
+	$website->maintenance($maintenance);
 
 // suppression et restauration
 if ($id>0 && ($delete || $restore)) {
