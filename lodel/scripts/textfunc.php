@@ -728,6 +728,14 @@ function replace($str, $search, $replace){
 	return str_replace($search, $replace, $str);
 }
 
+/**
+ * implemente preg_replace
+ */
+    
+function reg_replace($str, $search, $replace){
+	return preg_replace($search, $replace, $str);
+}
+
 
 /**
  * Filtre pour l'ajout des notes marginales (doit s'appliquer comme premier filtre)
