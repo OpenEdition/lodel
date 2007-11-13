@@ -249,19 +249,17 @@ function getacceptedcharset($charset)
 /**
  * Le site est-il en maintenance ?
  *
- * Vérifie le status d'un site. Si status == -64 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
+ * Vérifie le status d'un site. Si status == -64 ou -65 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
  * administration générale de Lodel alors on redirige vers la page maintenance.html
  * 
  */
 function maintenance()
 {
-	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db;
+	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db, $site;
 	$name = addslashes($_COOKIE[$sessionname]);
 	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
 	$reg = "`/lodeladmin`";
-	$regex = "`".$urlroot."([^/]*)/`";
-	preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
-	$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
+	$query = "SELECT status FROM ".$tableprefix."sites where name = '".$site."' LIMIT 1";
 	if ($name) {
 		require_once 'connect.php';
 		$db->selectDB($database);
