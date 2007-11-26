@@ -273,10 +273,18 @@ class View
 		//}
 
 		include_once 'func.php';
-		if (defined('SITEROOT')) {
+		if (defined('SITEROOT') && file_exists(SITEROOT. 'CACHE/maj')) {
+			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
+		} elseif(defined('SITEROOT')) {
+			touch(SITEROOT. 'CACHE/maj');
 			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
 		} else {
-			$maj = myfilemtime('CACHE/maj');
+			if(file_exists('CACHE/maj'))
+				$maj = myfilemtime('CACHE/maj');
+			else { 
+				touch('CACHE/maj');
+				$maj = myfilemtime('CACHE/maj');
+			}
 		}
 
 		// Calcul du nom du fichier en cache

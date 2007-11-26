@@ -99,5 +99,7 @@ function removefilesincache()
 		}
 		closedir($fd);
 	}
+	require_once 'func.php';
+	update();
 }
 ?>
