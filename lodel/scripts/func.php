@@ -110,6 +110,8 @@ function clean_request_variable(&$var)
 		if(preg_match("`&#160;`me", $var))
 			$var = str_replace("&#160;", "&nbsp;", $var);
 		$var = $filter->process(trim($var));
+		// le process nettoie un peu trop : remplace les br fermés par des br ouverts : document plus valide..
+		$var = str_replace("<br>", "<br />", $var);
 		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);
   	}
 }
