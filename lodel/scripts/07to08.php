@@ -26,6 +26,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -70,7 +71,7 @@ class exportfor08
 		'TABLEFIELDS::
 			id,name,idgroup,title,style,type,cond,defaultvalue,processing,allowedtags,filtering,edition,comment,status,rank,upd'=>
 		'CHAMPS::
-			id,nom,idgroupe,titre,style,type,condition,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj',
+			id,nom,idgroupe,titre,style,type,`condition`,defaut,traitement,balises,filtrage,edition,commentaire,statut,ordre,maj',
 
 		'TABLEFIELDGROUPS::
 			id,name,class,title,comment,status,rank,upd'=>
@@ -152,7 +153,7 @@ class exportfor08
 		'ENTITYTYPES_ENTITYTYPES::
 			identitytype,identitytype2,cond'=>
 		'TYPEENTITES_TYPEENTITES::
-			idtypeentite,idtypeentite2,condition',
+			idtypeentite,idtypeentite2,`condition`',
 
 		/*
 		TABLES À SUPPRIMER : en 0.8, données à transférer dans la table entitytypes_entitytypes ???)
@@ -184,7 +185,6 @@ class exportfor08
 		'TRANSLATIONS::
 			'id,lang,titre,textgroups,translators,modificationdate,creationdate,ordre,statut,maj'*/
 		);
-
 
 	/**
 	 * Constructeur
@@ -252,7 +252,8 @@ class exportfor08
 		$query = "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications AS SELECT * FROM _PREFIXTABLE_publications__old;
 			ALTER TABLE _PREFIXTABLE_publications CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
 			CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents AS SELECT * FROM _PREFIXTABLE_documents__old;
-			ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;";
+			ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
+			ALTER TABLE _PREFIXTABLE_documents ADD alterfichier tinytext;";
 
 		// INDEX : indexes
 		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexes (
@@ -280,8 +281,33 @@ class exportfor08
   				description text,
   				courriel text,
   				role text,
+				site text,
   				UNIQUE KEY idrelation (idrelation),
   				KEY index_idrelation (idrelation)
+				);";
+
+		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fichiers (
+				identity int(10) unsigned default NULL,
+				titre text,
+				document tinytext,
+				description text,
+				legende text,
+				credits tinytext,
+				vignette tinytext,
+				UNIQUE KEY identity (identity),
+				KEY index_identity (identity)
+				);";
+
+		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_liens (
+  			identity int(10) unsigned default NULL,
+  			titre text,
+  			url text,
+  			urlfil text,
+  			texte text,
+  			capturedecran tinytext,
+			nombremaxitems int(11) default NULL,
+  			UNIQUE KEY identity (identity),
+  			KEY index_identity (identity)
 				);";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
@@ -404,11 +430,6 @@ class exportfor08
 		}
 		echo '<p>__update_entities ok</p>';
 		return true;
-		/*if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
-		} else {
-			return true;
-		}*/
 	}
 
 	/**
@@ -427,6 +448,10 @@ class exportfor08
 		$query = '';
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = 'dc.title', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
+		}
+		$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)") or die(mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			$query .= "UPDATE _PREFIXTABLE_entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = '".$row['fichiersource']."' WHERE id = " . $row['id'] . ';';
 		}
 
 
@@ -537,7 +562,7 @@ class exportfor08
 		";
 
 		// Nom des TEMPLATES dans l'onglet Édition
-		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition',tplcreation = 'creation';";
+		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition',tplcreation = 'entities';";
 
 		// CLASSES supplémentaires
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` ) VALUES
@@ -547,29 +572,6 @@ class exportfor08
 		(NULL, 'lodel/icons/individu.gif', 'individus', 'Personnes', '', 'entities', '', '4', '1', NOW()),
 		(NULL, 'lodel/icons/index_avance.gif', 'indexavances', 'Index avancés', '', 'entries', '', '10', '1', NOW());
 		
-		CREATE TABLE _PREFIXTABLE_fichiers (
-  			identity int(10) unsigned default NULL,
-  			titre text,
-  			document tinytext,
-  			description text,
-  			legende tinytext,
-  			credits tinytext,
-  			vignette tinytext,
-  			UNIQUE KEY identity (identity),
-  		KEY index_identity (identity)
-		);
-
-		CREATE TABLE _PREFIXTABLE_liens (
-  			identity int(10) unsigned default NULL,
-  			titre text,
-  			url text,
-  			urlfil text,
-  			texte text,
-  			capturedecran tinytext,
-  			UNIQUE KEY identity (identity),
-  			KEY index_identity (identity)
-		);
-
 		CREATE TABLE _PREFIXTABLE_textessimples (
   			identity int(10) unsigned default NULL,
   			titre tinytext,
@@ -607,64 +609,10 @@ class exportfor08
 
 		";
 
-		// CHAMPS des classes
-		/*$query .= "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES
-
-		(NULL, 'licence', '24', 'fichiers', 'Licence', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '118', NOW()),
-		(NULL, 'titre', '7', 'fichiers', 'Titre', '', '', 'text', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '32', '47', NOW()),
-		(NULL, 'document', '8', 'fichiers', 'Document', '', '', 'file', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
-		(NULL, 'description', '8', 'fichiers', 'Description', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '32', '2', NOW()),
-		(NULL, 'auteur', '24', 'fichiers', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '91', NOW()),
-		(NULL, 'vignette', '8', 'fichiers', 'Vignette', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
-		(NULL, 'legende', '8', 'fichiers', 'Légende', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '4', '', '1', '4', NOW()),
-		(NULL, 'credits', '24', 'fichiers', 'Crédits', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '108', NOW()),
-
-		(NULL, 'titre', '5', 'liens', 'Titre du site', '', '', 'text', 'dc.title', '*', 'Site sans titre', '', '', '16', '', 'editable', '', '8', '', '32', '43', NOW()),
-		(NULL, 'url', '6', 'liens', 'URL du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
-		(NULL, 'urlfil', '6', 'liens', 'URL du fil de syndication du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '4', NOW()),
-		(NULL, 'texte', '6', 'liens', 'Description du site', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '2', '', '32', '2', NOW()),
-		(NULL, 'auteur', '25', 'liens', 'Auteur de la notice décrivant ce site', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '92', NOW()),
-		(NULL, 'capturedecran', '6', 'liens', 'Capture d\'écran du site', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
-
-		(NULL, 'date', '19', 'textessimples', 'Date de publication en ligne', '', '', 'datetime', '', '*', 'now', '', '', '16', '', 'editable', '', '0', '', '1', '100', '2006-06-27 23:51:45'),
-		(NULL, 'url', '19', 'textessimples', 'Lien', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '2', '', '1', '99', NOW()),
-		(NULL, 'titre', '18', 'textessimples', 'Titre', '', '', 'tinytext', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '32', '72', NOW()),
-		(NULL, 'texte', '19', 'textessimples', 'Texte', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '73', NOW()),
-		(NULL, 'auteur', '26', 'textessimples', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '93', NOW()),
-
-		(NULL, 'email', '30', 'individus', 'Courriel', '', '', 'email', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '3', NOW()),
-		(NULL, 'siteweb', '30', 'individus', 'Site web', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '4', NOW()),
-		(NULL, 'description', '30', 'individus', 'Description', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '2', NOW()),
-		(NULL, 'nom', '28', 'individus', 'Nom', '', '', 'tinytext', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '1', NOW()),
-		(NULL, 'prenom', '28', 'individus', 'Prénom', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '2', NOW()),
-		(NULL, 'accroche', '28', 'individus', 'Accroche', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Simple', '4', '', '1', '3', NOW()),
-		(NULL, 'adresse', '30', 'individus', 'Adresse', '', '', 'text', '', '*', '', '', '', '16', '', 'editable', '3', '4', '', '1', '102', NOW()),
-		(NULL, 'telephone', '30', 'individus', 'Téléphone', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '103', NOW()),
-		(NULL, 'photographie', '28', 'individus', 'Photographie', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '104', NOW()),
-
-		(NULL, 'nom', '0', 'indexavances', 'Dénomination de l\'entrée d\'index', '', '', 'tinytext', 'index key', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '113', NOW()),
-		(NULL, 'description', '0', 'indexavances', 'Description de l\'entrée d\'index', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '4', '', '1', '114', NOW()),
-		(NULL, 'url', '0', 'indexavances', 'URL', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '115', NOW()),
-		(NULL, 'icone', '0', 'indexavances', 'Icône', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '116', NOW());
-		";
-
-		$query .= "INSERT INTO _PREFIXTABLE_tablefieldgroups (id, name, class, title, altertitle, comment, status, rank, upd) VALUES 
-		(NULL, 'grtitre', 'liens', 'Titre', '', '', '1', '5', NOW()),
-		(NULL, 'grsite', 'liens', 'Définition du site', '', '', '1', '6', NOW()),
-		(NULL, 'grtitre', 'fichiers', 'Titre', '', '', '1', '7', NOW()),
-		(NULL, 'grmultimedia', 'fichiers', 'Définition', '', '', '1', '8', NOW()),
-		(NULL, 'grtitre', 'textessimples', 'Titre', '', '', '1', '10', NOW()),
-		(NULL, 'grtexte', 'textessimples', 'Texte', '', '', '1', '11', NOW()),
-		(NULL, 'grdroits', 'fichiers', 'Droits', '', '', '32', '16', NOW()),
-		(NULL, 'grauteurs', 'liens', 'Auteurs', '', '', '32', '17', NOW()),
-		(NULL, 'grauteurs', 'textessimples', 'Auteurs', '', '', '32', '18', NOW()),
-		(NULL, 'grtitre', 'individus', 'Titre', '', '', '1', '20', NOW()),
-		(NULL, 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());
-		";
-*/
 		// TYPES
 		$query .= "INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
+		(NULL, 'lodel/icons/rubrique_plat.gif', 'rubriqueaplat', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
 		(NULL, '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
 		(NULL, '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
 		(NULL, 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
@@ -680,21 +628,262 @@ class exportfor08
 		(NULL, '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
 		(NULL, '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
 		(NULL, '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
-		(NULL, '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW());
+		(NULL, '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW()),
+		(NULL, '', 'imageaccroche', 'Image d\'accroche', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '16', '0', '31', '32', NOW()),
+		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
+		(NULL, '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
+		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
+		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());
 		";
+		$query .= "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';";
+		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';";
+		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';";
+		$query .= "UPDATE _PREFIXTABLE_types SET display = 'unfolded' WHERE type = 'regroupement';";
+		$query .= "UPDATE _PREFIXTABLE_types set tpledition = '' WHERE class = 'textes';";
+		$query .= "UPDATE _PREFIXTABLE_types set tpl = '' WHERE class = 'textessimples';";
+		$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';";
 
+		// entrytypes
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET tpl = 'entree', tplindex = 'entrees', edition = 'pool';";
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(NULL, '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW());
+		(NULL, '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(NULL, '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
+		(NULL, '', 'motsclede', 'indexes', 'Schlusselwortindex', '', 'schlusselworter, .schlusselworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(NULL, '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
 		";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie' WHERE type = 'geographie';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', rank = 5 WHERE type = 'periode';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Index de mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';";
 
 		// OPTIONS
 		$query .= "INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
-		('1', '0', 'from07', 'Suite import de données de Lodel 0.7', '', '', '', '1', '1', '32', NOW());
-		UPDATE _PREFIXTABLE_options SET idgroup = 1;
+			('4', '0', 'from07', 'Suite import de données de Lodel 0.7', '', '', '', '1', '1', '32', NOW()),
+			('1', '0', 'servoo', 'Servoo', '', '', 'servooconf', '1', '1', '32', NOW()),
+			('2', '0', 'metadonneessite', 'Métadonnées du site', '', '', '', '1', '2', '1', NOW()),
+			('3', '0', 'oai', 'OAI', '', '', '', '1', '5', '1', NOW());
+		UPDATE _PREFIXTABLE_options SET idgroup = 4, title = 'Signaler par mail' WHERE name = 'signaler_mail';
+		UPDATE _PREFIXTABLE_options SET idgroup = 3, userrights = 40 WHERE name LIKE 'oai_%';
+		UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'ISSN électronique', name = 'ISSN_electronique', userrights = 30, rank = 7, status = 32 WHERE name = 'issn_electronique';
 		UPDATE _PREFIXTABLE_options SET type = 'tinytext' WHERE type = 's';
 		UPDATE _PREFIXTABLE_options SET type = 'passwd' WHERE type = 'pass';
 		UPDATE _PREFIXTABLE_options SET type = 'email' WHERE type = 'mail';
+		UPDATE _PREFIXTABLE_options SET title = 'oai_allow' WHERE name = 'oai_allow';
+		UPDATE _PREFIXTABLE_options SET title = 'oai_deny' WHERE name = 'oai_deny';
+		UPDATE _PREFIXTABLE_options SET title = 'Email de l\'administrateur du dépôt' WHERE name = 'oai_email';
+		INSERT INTO _PREFIXTABLE_options (id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams) VALUES 
+			(NULL, '1', 'url', 'url', 'tinytext', '', '', '40', '1', '32', NOW(), 'editable', ''),
+			(NULL, '1', 'username', 'username', 'username', '', '', '40', '2', '32', NOW(), 'editable', ''),
+			(NULL, '1', 'passwd', 'password', 'passwd', '', '', '40', '3', '32', NOW(), '', ''),
+			(NULL, '2', 'titresite', 'Titre du site', 'tinytext', 'Titresite', '', '40', '1', '1', NOW(), '', ''),
+			(NULL, '2', 'titresiteabrege', 'Titre abrégé du site', 'tinytext', 'Titre abrégé du site', '', '40', '3', '1', NOW(), '', ''),
+			(NULL, '2', 'descriptionsite', 'Description du site', 'text', '', '', '40', '4', '1', NOW(), 'textarea', ''),
+			(NULL, '2', 'urldusite', 'URL officielle du site', 'url', '', '', '40', '5', '1', NOW(), 'editable', ''),
+			(NULL, '2', 'issn', 'ISSN', 'tinytext', '', '', '30', '6', '1', NOW(), 'editable', ''),
+			(NULL, '2', 'editeur', 'Nom de l\'éditeur du site', 'tinytext', '', '', '30', '8', '1', NOW(), '', ''),
+			(NULL, '2', 'adresseediteur', 'Adresse postale de l\'éditeur', 'text', '', '', '30', '9', '1', NOW(), '', ''),
+			(NULL, '2', 'producteursite', 'Nom du producteur du site', 'tinytext', '', '', '30', '10', '1', NOW(), '', ''),
+			(NULL, '2', 'diffuseursite', 'Nom du diffuseur du site', 'tinytext', '', '', '30', '11', '1', NOW(), '', ''),
+			(NULL, '2', 'droitsauteur', 'Droits d\'auteur par défaut', 'tinytext', '', '', '30', '12', '1', NOW(), '', ''),
+			(NULL, '2', 'directeurpublication', 'Nom du directeur de la publication', 'tinytext', '', '', '30', '13', '1', NOW(), '', ''),
+			(NULL, '2', 'redacteurenchef', 'Nom du Rédacteur en chef', 'tinytext', '', '', '30', '14', '1', NOW(), '', ''),
+			(NULL, '2', 'courrielwebmaster', 'Courriel du webmaster', 'email', '', '', '30', '15', '1', NOW(), '', ''),
+			(NULL, '2', 'courrielabuse', 'Courriel abuse', 'tinytext', '', '', '40', '16', '1', NOW(), 'editable', ''),
+			(NULL, '2', 'motsclesdusite', 'Mots clés décrivant le site (entre virgules)', 'text', '', '', '30', '17', '1', NOW(), '', ''),
+			(NULL, '2', 'langueprincipale', 'Langue principale du site', 'lang', 'fr', '', '40', '18', '1', NOW(), 'editable', ''),
+			(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');
 		";
+
+		// persontypes
+		$query .= "INSERT INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
+		(NULL, '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
+		(NULL, '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
+		(NULL, '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW());
+		";
+		$query .= "UPDATE _PREFIXTABLE_persontypes SET icon = 'lodel/icons/auteur.gif', g_type = 'dc.creator', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Auteur';";
+		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication', style = 'directeur', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Directeur de la publication';";
+
+
+		// styles internes
+		$query .= "INSERT INTO _PREFIXTABLE_internalstyles (id, style, surrounding, conversion, greedy, rank, status, upd) VALUES 
+			(NULL, 'citation', '*-', '<blockquote>', '0', '1', '1', NOW()),
+			(NULL, 'quotations', '*-', '<blockquote>', '0', '2', '1', NOW()),
+			(NULL, 'citationbis', '*-', '<blockquote class=\"citationbis\">', '0', '3', '1', NOW()),
+			(NULL, 'citationter', '*-', '<blockquote class=\"citationter\">', '0', '4', '1', NOW()),
+			(NULL, 'titreillustration', '*-', '', '0', '5', '1', NOW()),
+			(NULL, 'legendeillustration', '*-', '', '0', '6', '1', NOW()),
+			(NULL, 'titredoc', '*-', '', '0', '7', '1', NOW()),
+			(NULL, 'legendedoc', '*-', '', '0', '8', '1', NOW()),
+			(NULL, 'puces', '*-', '<ul><li>', '0', '9', '1', NOW()),
+			(NULL, 'code', '*-', '', '0', '10', '1', NOW()),
+			(NULL, 'question', '*-', '', '0', '11', '1', NOW()),
+			(NULL, 'reponse', '*-', '', '0', '12', '1', NOW()),
+			(NULL, 'separateur', '*-', '<hr style=\"style\">', '0', '19', '1', NOW()),
+			(NULL, 'section1', '-*', '<h1>', '0', '13', '1', NOW()),
+			(NULL, 'section3', '*-', '<h3>', '0', '15', '1', NOW()),
+			(NULL, 'section4', '*-', '<h4>', '0', '16', '1', NOW()),
+			(NULL, 'section5', '*-', '<h5>', '0', '17', '1', NOW()),
+			(NULL, 'section6', '*-', '<h6>', '0', '18', '1', NOW()),
+			(NULL, 'paragraphesansretrait', '*-', '', '0', '20', '1', NOW()),
+			(NULL, 'epigraphe', '*-', '', '0', '21', '1', NOW()),
+			(NULL, 'section2', '-*', '<h2>', '0', '14', '1', NOW()),
+			(NULL, 'pigraphe', '-*', '', '0', '22', '1', NOW()),
+			(NULL, 'sparateur', '-*', '', '0', '23', '1', NOW()),
+			(NULL, 'quotation', '-*', '<blockquote>', '0', '24', '1', NOW()),
+			(NULL, 'terme', '-*', '', '0', '25', '1', NOW()),
+			(NULL, 'definitiondeterme', '-*', '', '0', '26', '1', NOW()),
+			(NULL, 'bibliographieannee', '-*', '', '0', '27', '1', NOW()),
+			(NULL, 'bibliographieauteur', 'bibliographie', '', '0', '28', '1', NOW()),
+			(NULL, 'bibliographiereference', 'bibliographie', '', '0', '29', '1', NOW()),
+			(NULL, 'creditillustration,crditillustration,creditsillustration,crditsillustration', '-*', '', '0', '30', '1', NOW()),
+			(NULL, 'remerciements', '-*', '', '0', '31', '1', NOW());";
+
+		// textes
+		$query .= "ALTER TABLE _PREFIXTABLE_textes CHANGE notebaspage notesbaspage text, ADD addendum text, ADD dedicace text, ADD ocr tinyint(4) default NULL, ADD documentcliquable tinyint(4) default NULL, ADD altertitre text, ADD titreoeuvre text, ADD noticebibliooeuvre text, ADD datepublicationoeuvre tinytext, ADD ndla text, ADD numerodocument double default NULL;";
+
+		// publications
+		$query .= "ALTER TABLE _PREFIXTABLE_publications ADD periode tinytext, ADD isbn tinytext, ADD paraitre tinyint(4) default NULL, ADD numero tinytext, ADD langue varchar(5) default NULL, ADD altertitre text, ADD urlpublicationediteur text, ADD descriptionouvrage text;";
+
+		// tablefieldgroups
+		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;
+		INSERT INTO _PREFIXTABLE_tablefieldgroups (id, name, class, title, altertitle, comment, status, rank, upd) VALUES 
+			('1', 'grtitre', 'textes', 'Titres', '', '', '1', '1', NOW()),
+			('2', 'grtexte', 'textes', 'Texte', '', '', '1', '3', NOW()),
+			('3', 'grmeta', 'textes', 'Métadonnées', '', '', '1', '4', NOW()),
+			('4', 'graddenda', 'textes', 'Addenda', '', '', '1', '5', NOW()),
+			('5', 'grtitre', 'liens', 'Titre', '', '', '1', '5', NOW()),
+			('6', 'grsite', 'liens', 'Définition du site', '', '', '1', '6', NOW()),
+			('7', 'grtitre', 'fichiers', 'Titre', '', '', '1', '7', NOW()),
+			('8', 'grmultimedia', 'fichiers', 'Définition', '', '', '1', '8', NOW()),
+			('9', 'grresumes', 'textes', 'Résumés', '', '', '1', '2', NOW()),
+			('10', 'grtitre', 'publications', 'Groupe de titre', '', '', '32', '1', NOW()),
+			('11', 'grgestion', 'publications', 'Gestion des publications', '', '', '1', '4', NOW()),
+			('12', 'grmetadonnees', 'publications', 'Groupe des métadonnées', '', '', '32', '3', NOW()),
+			('13', 'graddenda', 'publications', 'Groupe des addenda', '', '', '32', '2', NOW()),
+			('14', 'grpersonnes', 'textes', 'Auteurs', '', '', '1', '7', NOW()),
+			('15', 'grindex', 'textes', 'Index', '', '', '1', '6', NOW()),
+			('16', 'grgestion', 'textes', 'Gestion du document', '', '', '1', '9', NOW()),
+			('17', 'grrecension', 'textes', 'Oeuvre commentée (si ce document est un compte-rendu d\'oeuvre ou d\'ouvrage...)', '', '', '1', '8', NOW()),
+			('18', 'grtitre', 'textessimples', 'Titre', '', '', '1', '10', NOW()),
+			('19', 'grtexte', 'textessimples', 'Texte', '', '', '1', '11', NOW()),
+			('24', 'grdroits', 'fichiers', 'Droits', '', '', '32', '16', NOW()),
+			('25', 'grauteurs', 'liens', 'Auteurs', '', '', '32', '17', NOW()),
+			('26', 'grauteurs', 'textessimples', 'Auteurs', '', '', '32', '18', NOW()),
+			('28', 'grtitre', 'individus', 'Titre', '', '', '1', '20', NOW()),
+			('30', 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());";
+
+		// tablefields
+		mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;") or die(mysql_error());
+		mysql_query(utf8_encode("INSERT INTO ".$GLOBALS['tp']."tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
+		(NULL, 'titre', '1', 'textes', 'Titre du document', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '+', 'Document sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
+		(NULL, 'surtitre', '1', 'textes', 'Surtitre du document', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'importable', '', '8', '', '32', '2', NOW()),
+		(NULL, 'soustitre', '1', 'textes', 'Sous-titre du document', '', 'subtitle, soustitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'editable', '', '8', '', '32', '5', NOW()),
+		(NULL, 'texte', '2', 'textes', 'Texte du document', '', 'texte, standard, normal, textbody', 'longtext', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'display', '', '4', '', '32', '1', NOW()),
+		(NULL, 'notesbaspage', '2', 'textes', 'Notes de bas de page', '', 'notebaspage, footnote, footnotetext', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '32', '', 'importable', '', '4', '', '32', '2', NOW()),
+		(NULL, 'annexe', '2', 'textes', 'Annexes du document', '', 'annexe', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '32', '', 'importable', '', '4', '', '32', '4', NOW()),
+		(NULL, 'bibliographie', '2', 'textes', 'Bibliographie du document', '', 'bibliographie', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '32', '', 'importable', '', '4', '', '32', '5', NOW()),
+		(NULL, 'datepubli', '3', 'textes', 'Date de la publication électronique', '', 'datepubli', 'date', 'dc.date', '*', 'today', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'datepublipapier', '3', 'textes', 'Date de la publication sur papier', '', 'datepublipapier', 'date', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '32', '2', NOW()),
+		(NULL, 'noticebiblio', '3', 'textes', 'Notice bibliographique du document', '', 'noticebiblio', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special', '64', '', 'importable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'pagination', '3', 'textes', 'Pagination du document sur le papier', '', 'pagination', 'tinytext', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '4', NOW()),
+		(NULL, 'editeurscientifique', '14', 'textes', 'Éditeur scientifique', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '109', NOW()),
+		(NULL, 'langue', '3', 'textes', 'Langue du document', '', 'langue', 'lang', 'dc.language', '*', 'fr', '', '', '32', '', 'editable', '', '0', '', '1', '6', NOW()),
+		(NULL, 'prioritaire', '16', 'textes', 'Document prioritaire', '', '', 'boolean', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '7', NOW()),
+		(NULL, 'addendum', '4', 'textes', 'Addendum', '', 'erratum, addendum', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'importable', '', '2', '', '32', '3', NOW()),
+		(NULL, 'ndlr', '4', 'textes', 'Note de la rédaction', '', 'ndlr', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'importable', '', '2', '', '32', '1', NOW()),
+		(NULL, 'commentaireinterne', '16', 'textes', 'Commentaire interne sur le document', '', 'commentaire', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '64', '', 'importable', '', '0', '', '32', '4', NOW()),
+		(NULL, 'dedicace', '4', 'textes', 'Dédicace', '', 'dedicace', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'importable', '', '2', '', '32', '4', NOW()),
+		(NULL, 'ocr', '16', 'textes', 'Document issu d\'une numérisation dite OCR', '', '', 'boolean', '', '*', '', '', '', '64', '', 'importable', '', '0', '', '32', '9', NOW()),
+		(NULL, 'documentcliquable', '16', 'textes', 'Document cliquable dans les sommaires', '', '', 'boolean', '', '*', 'true', '', '', '64', '', 'editable', '', '0', '', '32', '10', NOW()),
+		(NULL, 'nom', '0', 'indexes', 'Dénomination de l\'entrée d\'index', '', '', 'text', 'index key', '*', 'Tous droits réservés', '', '', '16', '', 'editable', '', '4', '', '32', '25', NOW()),
+		(NULL, 'motcle', '15', 'textes', 'Index de mots-clés', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '2', NOW()),
+		(NULL, 'definition', '0', 'indexes', 'Définition', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '16', '', 'fckeditor', 'Basic', '1', '', '32', '27', NOW()),
+		(NULL, 'nomfamille', '0', 'auteurs', 'Nom de famille', '', '', 'tinytext', 'familyname', '*', '', '', '', '32', '', 'editable', '', '4', '', '32', '28', NOW()),
+		(NULL, 'prenom', '0', 'auteurs', 'Prénom', '', '', 'tinytext', 'firstname', '*', '', '', '', '32', '', 'editable', '', '4', '', '32', '29', NOW()),
+		(NULL, 'prefix', '0', 'entities_auteurs', 'Préfixe', '', 'prefixe, .prefixe', 'tinytext', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '1', '2', NOW()),
+		(NULL, 'affiliation', '0', 'entities_auteurs', 'Affiliation', '', 'affiliation, .affiliation', 'tinytext', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '3', NOW()),
+		(NULL, 'fonction', '0', 'entities_auteurs', 'Fonction', '', 'fonction, .fonction', 'tinytext', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '4', NOW()),
+		(NULL, 'description', '0', 'entities_auteurs', 'Description de l\'auteur', '', 'descriptionauteur', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien', '16', '', 'fckeditor', '5', '4', '', '1', '1', NOW()),
+		(NULL, 'courriel', '0', 'entities_auteurs', 'Courriel', '', 'courriel, .courriel', 'email', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '5', NOW()),
+		(NULL, 'auteur', '14', 'textes', 'Auteur du document', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '11', NOW()),
+		(NULL, 'traducteur', '14', 'textes', 'Traducteur du document', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '12', NOW()),
+		(NULL, 'alias', '16', 'textes', 'Alias', '', '', 'entities', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '1', '119', NOW()),
+		(NULL, 'date', '19', 'textessimples', 'Date de publication en ligne', '', '', 'datetime', '', '*', 'now', '', '', '16', '', 'editable', '', '0', '', '1', '100', NOW()),
+		(NULL, 'url', '19', 'textessimples', 'Lien', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '2', '', '1', '99', NOW()),
+		(NULL, 'licence', '24', 'fichiers', 'Licence', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '118', NOW()),
+		(NULL, 'titre', '5', 'liens', 'Titre du site', '', '', 'text', 'dc.title', '*', 'Site sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '16', '', 'editable', '', '8', '', '32', '43', NOW()),
+		(NULL, 'url', '6', 'liens', 'URL du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'urlfil', '6', 'liens', 'URL du fil de syndication du site', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '4', NOW()),
+		(NULL, 'texte', '6', 'liens', 'Description du site', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple', '2', '', '32', '2', NOW()),
+		(NULL, 'titre', '7', 'fichiers', 'Titre', '', '', 'text', 'dc.title', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '16', '', 'editable', '', '4', '', '32', '47', NOW()),
+		(NULL, 'document', '8', 'fichiers', 'Document', '', '', 'file', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'altertitre', '1', 'textes', 'Titre alternatif du document (dans une autre langue)', '', 'titretraduitfr:fr,titretraduiten:en,titretraduites:es,titretraduitpt:pt,titretraduitit:it,titretraduitde:de,titretraduitru:ru,titleen:en,titoloit:it,titelde:de,tituloes:es', 'mltext', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '4', NOW()),
+		(NULL, 'resume', '9', 'textes', 'Résumé', '', 'rsum,resume:fr,resumefr:fr,abstract:en,resumeen:en,extracto:es,resumen:es, resumees:es,resumo:pt,resumept:pt,riassunto:it,resumeit:it,zusammenfassung:de,resumede:de,resumeru:ru', 'mltext', 'dc.description', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'display', '5', '8', '', '32', '50', NOW()),
+		(NULL, 'titre', '10', 'publications', 'Titre de la publication', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '16', '', 'editable', '', '8', '', '32', '2', NOW()),
+		(NULL, 'surtitre', '10', 'publications', 'Surtitre de la publication', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '16', '', 'importable', '', '8', '', '32', '1', NOW()),
+		(NULL, 'soustitre', '10', 'publications', 'Sous-titre de la publication', '', 'soustitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
+		(NULL, 'commentaireinterne', '11', 'publications', 'Commentaire interne sur la publication', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '64', '', 'editable', '4', '0', '', '32', '54', NOW()),
+		(NULL, 'prioritaire', '11', 'publications', 'Cette publication est-elle prioritaire ?', '', '', 'boolean', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '55', NOW()),
+		(NULL, 'datepubli', '12', 'publications', 'Date de publication électronique', '', '', 'date', 'dc.date', '*', 'today', '', '', '16', '', 'editable', '', '0', '', '32', '2', NOW()),
+		(NULL, 'datepublipapier', '12', 'publications', 'Date de publication papier', '', '', 'date', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'noticebiblio', '12', 'publications', 'Notice bibliographique décrivant la publication', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special', '64', '', 'importable', '', '0', '', '32', '4', NOW()),
+		(NULL, 'introduction', '13', 'publications', 'Introduction de la publication', '<r2r:ml lang=\"fr\">Introduction de la publication</r2r:ml>', 'texte, standard, normal', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple,550,400', '8', '', '32', '60', NOW()),
+		(NULL, 'geographie', '15', 'textes', 'Index géographique', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '110', NOW()),
+		(NULL, 'chrono', '15', 'textes', 'Index chronologique', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '111', NOW()),
+		(NULL, 'ndlr', '13', 'publications', 'Note de la rédaction au sujet de la publication', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'fckeditor', '', '2', '', '32', '62', NOW()),
+		(NULL, 'historique', '13', 'publications', 'Historique de la publication', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'importable', '', '0', '', '32', '63', NOW()),
+		(NULL, 'periode', '12', 'publications', 'Période de publication', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'importable', '', '0', '', '1', '5', NOW()),
+		(NULL, 'isbn', '12', 'publications', 'ISBN', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '7', NOW()),
+		(NULL, 'paraitre', '11', 'publications', 'Cette publication est-elle Ã  paraitre ?', '', '', 'boolean', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '32', '66', NOW()),
+		(NULL, 'integralite', '11', 'publications', 'Cette publication en ligne est-elle intégrale ?', '', '', 'boolean', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '32', '67', NOW()),
+		(NULL, 'numero', '12', 'publications', 'Numéro de la publication', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '6', NOW()),
+		(NULL, 'motsclesen', '15', 'textes', 'Keywords index', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'role', '0', 'entities_auteurs', 'Role dans l\'élaboration du document', '', 'role,.role', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special', '64', '', 'editable', '', '0', '', '1', '7', NOW()),
+		(NULL, 'email', '30', 'individus', 'Courriel', '', '', 'email', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '3', NOW()),
+		(NULL, 'siteweb', '30', 'individus', 'Site web', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '4', NOW()),
+		(NULL, 'description', '30', 'individus', 'Description', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple', '4', '', '1', '2', NOW()),
+		(NULL, 'titreoeuvre', '17', 'textes', 'Titre de l\'oeuvre commentée', '', 'titreoeuvre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Appel de Note', '64', '', 'display', '', '4', '', '32', '2', NOW()),
+		(NULL, 'noticebibliooeuvre', '17', 'textes', 'Notice bibliographique de l\'oeuvre commentée', '', 'noticebibliooeuvre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Appel de Note', '64', '', 'display', '', '4', '', '32', '1', NOW()),
+		(NULL, 'datepublicationoeuvre', '17', 'textes', 'Date de publication de l\'oeuvre commentée', '', 'datepublioeuvre', 'tinytext', '', '*', '', '', '', '64', '', 'display', '', '4', '', '32', '70', NOW()),
+		(NULL, 'auteuroeuvre', '17', 'textes', 'Auteur de l\'oeuvre commentée', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '71', NOW()),
+		(NULL, 'titre', '18', 'textessimples', 'Titre', '', '', 'tinytext', 'dc.title', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'editable', '', '4', '', '32', '72', NOW()),
+		(NULL, 'texte', '19', 'textessimples', 'Texte', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple', '4', '', '1', '73', NOW()),
+		(NULL, 'ndla', '4', 'textes', 'Note de l\'auteur', '', 'ndla', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '64', '', 'importable', '', '2', '', '32', '2', NOW()),
+		(NULL, 'icone', '12', 'publications', 'Icône de la publication', '', '', 'image', '', '*', '', '', '', '16', '', 'none', '', '0', '', '32', '1', NOW()),
+		(NULL, 'icone', '3', 'textes', 'Icône du document', '', '', 'image', '', '*', '', '', '', '64', '', 'none', '', '0', '', '32', '88', NOW()),
+		(NULL, 'description', '8', 'fichiers', 'Description', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple', '4', '', '32', '2', NOW()),
+		(NULL, 'alterfichier', '2', 'textes', 'Texte au format PDF', '', '', 'file', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '32', '6', NOW()),
+		(NULL, 'langue', '12', 'publications', 'Langue de la publication', '', '', 'lang', 'dc.language', '*', 'fr', '', '', '64', '', 'editable', '', '0', '', '32', '8', NOW()),
+		(NULL, 'auteur', '24', 'fichiers', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '91', NOW()),
+		(NULL, 'auteur', '25', 'liens', 'Auteur de la notice décrivant ce site', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '92', NOW()),
+		(NULL, 'capturedecran', '6', 'liens', 'Capture d\'écran du site', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'auteur', '26', 'textessimples', 'Auteur', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '93', NOW()),
+		(NULL, 'numerodocument', '1', 'textes', 'Numéro du document', '', 'numerodocument,numrodudocument', 'number', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '1', NOW()),
+		(NULL, 'nom', '28', 'individus', 'Nom', '', '', 'tinytext', 'dc.title', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '1', NOW()),
+		(NULL, 'prenom', '28', 'individus', 'Prénom', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '2', NOW()),
+		(NULL, 'accroche', '28', 'individus', 'Accroche', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Simple', '4', '', '1', '3', NOW()),
+		(NULL, 'adresse', '30', 'individus', 'Adresse', '', '', 'text', '', '*', '', '', '', '16', '', 'editable', '3', '4', '', '1', '102', NOW()),
+		(NULL, 'telephone', '30', 'individus', 'Téléphone', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '103', NOW()),
+		(NULL, 'photographie', '28', 'individus', 'Photographie', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '104', NOW()),
+		(NULL, 'vignette', '8', 'fichiers', 'Vignette', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '3', NOW()),
+		(NULL, 'directeurdelapublication', '12', 'publications', 'Directeur de la publication', '', '', 'persons', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '10', NOW()),
+		(NULL, 'legende', '8', 'fichiers', 'Légende', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '16', '', 'fckeditor', 'Basic', '4', '', '1', '4', NOW()),
+		(NULL, 'credits', '24', 'fichiers', 'Crédits', '', '', 'tinytext', '', '*', '', '', '', '16', '', 'editable', '', '4', '', '1', '108', NOW()),
+		(NULL, 'theme', '15', 'textes', 'Index thématique', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '112', NOW()),
+		(NULL, 'licence', '12', 'publications', 'Licence portant sur la publication', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '9', NOW()),
+		(NULL, 'nom', '0', 'indexavances', 'Dénomination de l\'entrée d\'index', '', '', 'tinytext', 'index key', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block', '16', '', 'editable', '', '4', '', '1', '113', NOW()),
+		(NULL, 'description', '0', 'indexavances', 'Description de l\'entrée d\'index', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien;Appel de Note', '16', '', 'fckeditor', 'Basic', '4', '', '1', '114', NOW()),
+		(NULL, 'url', '0', 'indexavances', 'URL', '', '', 'url', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '115', NOW()),
+		(NULL, 'icone', '0', 'indexavances', 'Icône', '', '', 'image', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '1', '116', NOW()),
+		(NULL, 'licence', '3', 'textes', 'Licence portant sur le document', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '117', NOW()),
+		(NULL, 'notefin', '2', 'textes', 'Notes de fin de document', '', 'notefin', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '32', '', 'importable', '', '4', '', '32', '3', NOW()),
+		(NULL, 'altertitre', '10', 'publications', 'Titre alternatif de la publication (dans une autre langue)', '', 'titretraduitfr:fr,titretraduiten:en,titretraduites:es,titretraduitpt:pt,titretraduitit:it,titretraduitde:de,titretraduitru:ru,titleen:en', 'mltext', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Appel de Note', '32', '', 'editable', '', '4', '', '1', '120', NOW()),
+		(NULL, 'motscleses', '15', 'textes', 'Palabras claves', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '121', NOW()),
+		(NULL, 'motsclede', '15', 'textes', 'Schlusselworter', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '122', NOW()),
+		(NULL, 'urlpublicationediteur', '13', 'publications', 'Voir sur le site de l\'éditeur', '', '', 'url', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '123', NOW()),
+		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
+		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
+		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())")) or die(mysql_error());
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
@@ -704,19 +893,6 @@ class exportfor08
 
 	}
 
-	/*private function __getfields($table,$database="") {
-		if (!$database) $database=$GLOBALS['currentdb'];
-  		$fields = mysql_list_fields($database,$GLOBALS[tp].$table) or die (mysql_error());
-  		$columns = mysql_num_fields($fields);
-  		$arr=array();
-  		for ($i = 0; $i < $columns; $i++) {
-    			$fieldname=mysql_field_name($fields, $i);
-    			$arr[$fieldname]=1;
-  		}
-  		return $arr;
-	}*/
-
-	
 
 	/**
 	 * Execute une ou plusieurs commandes Mysql
@@ -745,7 +921,9 @@ class exportfor08
 
 		foreach ($request as $cmd) {//echo $cmd . '<p>';
 			$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
-			if ($cmd) {
+			if ($cmd) {	
+				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd)) 
+					$cmd = utf8_encode($cmd);
 				if (!mysql_query($cmd)) {
 					$err = '<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>';
 					return $err; // sort, ca sert a rien de continuer
@@ -755,7 +933,32 @@ class exportfor08
 		return false;
 	}
 
-
+	public function cp_docs07_to_08()
+	{
+		$query_select = "SELECT ".$GLOBALS['tp']."entites__old.*,
+				".$GLOBALS['tp']."documents__old.*,
+				".$GLOBALS['tp']."types__old.type,
+				".$GLOBALS['tp']."types__old.classe
+			FROM ".$GLOBALS['tp']."types__old, ".$GLOBALS['tp']."entites__old, ".$GLOBALS['tp']."documents__old 
+			WHERE type LIKE 'documentannexe-%'
+			AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
+			AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
+		$req = mysql_query($query_select) or die(mysql_error());
+		while($res = mysql_fetch_array($req)) {
+			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
+				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (titre, url) VALUES (\"".$res['titre']."\", \"".$res['lien']."\");";
+			} elseif($res['type'] == "documentannexe-lienfacsimile") {
+				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
+			} elseif($res['type'] == "documentannexe-lienfichier") {
+				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (titre, document) VALUES (\"".$res['titre']."\", \"".$res['lien']."\");";
+			}
+		}
+		if ($err = $this->__mysql_query_cmds($query)) {
+				die($err);
+		} else {echo '<p>update_docannexes ok</p>';
+			return true;
+		}
+	}
 
 }
 
