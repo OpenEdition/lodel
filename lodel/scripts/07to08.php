@@ -454,7 +454,6 @@ class exportfor08
 			$query .= "UPDATE _PREFIXTABLE_entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = '".$row['fichiersource']."' WHERE id = " . $row['id'] . ';';
 		}
 
-
 		// INDEX : ajout des champs dans tablefields
 		$query .= "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES
 			(NULL, 'nom', '0', 'indexes', 'Dénomination de l\'entrée d\'index', '', '', 'text', 'index key', '*', 'Tous droits réservés', '', '', '16', '', 'editable', '', '4', '', '32', '', NOW( )),
@@ -885,10 +884,31 @@ class exportfor08
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
 		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())")) or die(mysql_error());
 
+		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
+		$query .= "DELETE FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier';";
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<p>update_ME ok</p>';
+		} else {
+			$i = 1;
+			$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;") or die(mysql_error());
+			while ($row = mysql_fetch_assoc($result)) {
+				unset($q);
+				if($row['langue'] == 'fr') {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
+				} elseif($row['langue'] == 'en') {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesen';";
+				} else {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
+				}
+				$resu = mysql_query($q) or die(mysql_error());
+				while ($rows = mysql_fetch_array($resu)) {
+					mysql_query("UPDATE ".$GLOBALS['tp']."entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ';') or die(mysql_error());
+				}
+				$i++;
+			}
+			echo '<p>update_ME ok</p>';
 			return true;
+
 		}
 
 	}
@@ -946,13 +966,14 @@ class exportfor08
 		$req = mysql_query($query_select) or die(mysql_error());
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (titre, url) VALUES (\"".$res['titre']."\", \"".$res['lien']."\");";
+				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".$res['titre']."\", \"".$res['lien']."\");";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
 				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (titre, document) VALUES (\"".$res['titre']."\", \"".$res['lien']."\");";
+				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".$res['titre']."\", \"".$res['lien']."\");";
 			}
 		}
+
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
 		} else {echo '<p>update_docannexes ok</p>';
