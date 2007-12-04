@@ -35,7 +35,7 @@
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  */
-
+require_once 'func.php';
 
 class exportfor08
 {
@@ -444,12 +444,12 @@ class exportfor08
 
 	public function update_fields($dctitle = 'titre') {
 		// ENTITÉS : mise à jour des colonnes 'class' et 'g_name' seulement
-		$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or die(mysql_error());
+		$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		$query = '';
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = 'dc.title', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
 		}
-		$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)") or die(mysql_error());
+		$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE _PREFIXTABLE_entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = '".$row['fichiersource']."' WHERE id = " . $row['id'] . ';';
 		}
@@ -520,26 +520,41 @@ class exportfor08
 
 	public function insert_index_data() {
 		// INDEX : tables indexes et relations
-		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations');
+		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations') or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		$max_id = mysql_result($result, 0);
-		$query = "INSERT IGNORE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
+		$query = "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;
 		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
 		";
 
 		// INDEX DE PERSONNES : tables auteurs, entities_auteurs et relations
-		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations');
+		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations') or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		$max_id = mysql_result($result, 0);
-		$query .= "INSERT IGNORE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
+		$query .= "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT idpersonne, identite from _PREFIXTABLE_entites_personnes__old;
 		UPDATE _PREFIXTABLE_relations SET nature='G', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
-		INSERT INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1
+		INSERT INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;
 		";
-
+		mysql_free_result($result);
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<p>insert_index_data ok</p>';
+		} else {
+			$nature = array('1'=>'G', '2'=>'E');
+			$j = 1;
+			while($j < 3) {
+				$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='".$nature[$j]."' AND id1 != 0 ORDER BY id1, id2") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+				while($res = mysql_fetch_array($result)) {
+					$i = 1;
+					$re = mysql_query("SELECT id2 FROM " . $GLOBALS['tp'] . "relations WHERE id1 = '".$res['id1']."' AND nature = '".$nature[$j]."' ORDER BY id2") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+					while($resu = mysql_fetch_array($re)) {
+						mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."'") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+						$i++;
+					}
+				}
+				$j++;
+			}
+			echo '<p>insert_index_data ok</p>';
 			return true;
 		}
 	}
@@ -634,7 +649,7 @@ class exportfor08
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
 		(NULL, '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
-		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());")) or die(mysql_error());
+		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());")) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 
 		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
 				('11', '11', '*'),
@@ -1007,7 +1022,7 @@ class exportfor08
 			('30', 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());";
 
 		// tablefields
-		mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;") or die(mysql_error());
+		mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		mysql_query(utf8_encode("INSERT INTO ".$GLOBALS['tp']."tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
 		(NULL, 'titre', '1', 'textes', 'Titre du document', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '+', 'Document sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
 		(NULL, 'surtitre', '1', 'textes', 'Surtitre du document', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'importable', '', '8', '', '32', '2', NOW()),
@@ -1117,7 +1132,7 @@ class exportfor08
 		(NULL, 'urlpublicationediteur', '13', 'publications', 'Voir sur le site de l\'éditeur', '', '', 'url', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '123', NOW()),
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
-		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())")) or die(mysql_error());
+		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())")) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 
 		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
 		$query .= "DELETE FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier';";
@@ -1128,7 +1143,7 @@ class exportfor08
 		} else {
 			// index
 			$i = 1;
-			$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;") or die(mysql_error());
+			$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 			while ($row = mysql_fetch_assoc($result)) {
 				unset($q);
 				if($row['langue'] == 'fr') {
@@ -1142,17 +1157,22 @@ class exportfor08
 				} else {
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
 				}
-				$resu = mysql_query($q) or die(mysql_error());
+				$resu = mysql_query($q) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 				while ($rows = mysql_fetch_array($resu)) {
-					mysql_query("UPDATE ".$GLOBALS['tp']."entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ';') or die(mysql_error());
+					mysql_query("UPDATE ".$GLOBALS['tp']."entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ';') or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 				}
 				$i++;
 			}
-			// maj table entitytypes_entitytypes
-			$result = mysql_query("SELECT id FROM $GLOBALS[tp]types;") or die(mysql_error());
-			while ($row = mysql_fetch_array($result)) {
-				
+			mysql_free_result($result);
+
+			// maj identifier pour affichage correct des champs auteur lors de l'édition d'une entité
+			// sans ça, seul les champs nom/prénom sont affichés
+			$result = mysql_query("SELECT id, g_title FROM $GLOBALS[tp]entities") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+			while($res = mysql_fetch_array($result)) {
+				$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
+				mysql_query("UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."'") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 			}
+			mysql_free_result($result);
 			echo '<p>update_ME ok</p>';
 			return true;
 		}
@@ -1214,7 +1234,7 @@ class exportfor08
 					type LIKE 'documentannexe-%'
 					AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
 					AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
-		$req = mysql_query($query_select) or die(mysql_error());
+		$req = mysql_query($query_select) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".$res['titre']."\", \"".$res['lien']."\");";
