@@ -26,6 +26,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -38,8 +39,6 @@
 
 require_once ('siteconfig.php');
 require_once($home . 'auth.php');
-#authenticate(LEVEL_ADMINLODEL,NORECORDURL);
-#authenticate();
 require_once($home . 'func.php');
 require_once($home . 'champfunc.php');
 require_once($home . 'connect.php');
@@ -48,11 +47,11 @@ authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 
 $exportfor08 = new exportfor08();
 
-//$exportfor08->init_db;
 $exportfor08->cp_07_to_08();
 $exportfor08->create_classes();
 $exportfor08->update_fields();
 $exportfor08->update_types();
-$exportfor08->insert_index_data();
+$exportfor08->cp_docs07_to_08();
 $exportfor08->update_ME();
+$exportfor08->insert_index_data();
 ?>
