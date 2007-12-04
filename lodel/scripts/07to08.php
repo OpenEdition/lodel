@@ -451,7 +451,7 @@ class exportfor08
 		}
 		$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		while ($row = mysql_fetch_assoc($result)) {
-			$query .= "UPDATE _PREFIXTABLE_entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = '".$row['fichiersource']."' WHERE id = " . $row['id'] . ';';
+			mysql_query("UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';') or die(mysql_error());
 		}
 
 		// INDEX : ajout des champs dans tablefields
@@ -533,7 +533,7 @@ class exportfor08
 		$query .= "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT idpersonne, identite from _PREFIXTABLE_entites_personnes__old;
 		UPDATE _PREFIXTABLE_relations SET nature='G', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
-		INSERT INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;
+		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;
 		";
 		mysql_free_result($result);
 
@@ -567,8 +567,8 @@ class exportfor08
 
 	public function update_ME() {
 		// classe documents devient textes
+		mysql_query("RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes") or die(mysql_error());
 		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';
-		RENAME TABLE _PREFIXTABLE_documents TO _PREFIXTABLE_textes;
 		UPDATE _PREFIXTABLE_objects SET class = 'textes' WHERE class='documents';
 		UPDATE _PREFIXTABLE_types SET class = 'textes' WHERE class='documents';
 		UPDATE _PREFIXTABLE_tablefields SET class = 'textes' WHERE class='documents';
@@ -944,13 +944,15 @@ class exportfor08
 		";
 
 		// persontypes
-		$query .= "INSERT INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
-		(NULL, '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
-		(NULL, '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
-		(NULL, '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW());
+		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
+		('', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
+		('', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
+		('', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW()),
+		('lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
+		('', 'directeurdelapublication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());
 		";
-		$query .= "UPDATE _PREFIXTABLE_persontypes SET icon = 'lodel/icons/auteur.gif', g_type = 'dc.creator', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Auteur';";
-		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication', style = 'directeur', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Directeur de la publication';";
+// 		$query .= "UPDATE _PREFIXTABLE_persontypes SET icon = 'lodel/icons/auteur.gif', g_type = 'dc.creator', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Auteur';";
+// 		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication', style = 'directeur', tpl = 'personne', tplindex = 'personnes', gui_user_complexity = 32 WHERE title = 'Directeur de la publication';";
 
 
 		// styles internes
@@ -988,10 +990,79 @@ class exportfor08
 			(NULL, 'remerciements', '-*', '', '0', '31', '1', NOW());";
 
 		// textes
-		$query .= "ALTER TABLE _PREFIXTABLE_textes CHANGE notebaspage notesbaspage text, ADD addendum text, ADD dedicace text, ADD ocr tinyint(4) default NULL, ADD documentcliquable tinyint(4) default NULL, ADD altertitre text, ADD titreoeuvre text, ADD noticebibliooeuvre text, ADD datepublicationoeuvre tinytext, ADD ndla text, ADD numerodocument double default NULL;";
+		mysql_query("RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+
+		mysql_query("CREATE TABLE ".$GLOBALS[tp]."textes (
+				identity int(10) unsigned default NULL,
+				titre text,
+				surtitre text,
+				soustitre text,
+				texte longtext,
+				notesbaspage text,
+				annexe text,
+				bibliographie text,
+				datepubli date default NULL,
+				datepublipapier date default NULL,
+				noticebiblio text,
+				pagination tinytext,
+				langue char(5) default NULL,
+				prioritaire tinyint(4) default NULL,
+				addendum text,
+				ndlr text,
+				commentaireinterne text,
+				dedicace text,
+				ocr tinyint(4) default NULL,
+				documentcliquable tinyint(4) default NULL,
+				`resume` text,
+				altertitre text,
+				titreoeuvre text,
+				noticebibliooeuvre text,
+				datepublicationoeuvre tinytext,
+				ndla text,
+				icone tinytext,
+				alterfichier tinytext,
+				numerodocument double default NULL,
+				notefin text,
+				UNIQUE KEY identity (identity),
+				KEY index_identity (identity)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+		mysql_query("INSERT INTO ".$GLOBALS[tp]."textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM ".$GLOBALS[tp]."textes__oldME;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+
+// 		$query .= "ALTER TABLE _PREFIXTABLE_textes CHANGE notebaspage notesbaspage text, ADD addendum text, ADD dedicace text, ADD ocr tinyint(4) default NULL, ADD documentcliquable tinyint(4) default NULL, ADD altertitre text, ADD titreoeuvre text, ADD noticebibliooeuvre text, ADD datepublicationoeuvre tinytext, ADD ndla text, ADD numerodocument double default NULL;";
 
 		// publications
-		$query .= "ALTER TABLE _PREFIXTABLE_publications ADD periode tinytext, ADD isbn tinytext, ADD paraitre tinyint(4) default NULL, ADD numero tinytext, ADD langue varchar(5) default NULL, ADD altertitre text, ADD urlpublicationediteur text, ADD descriptionouvrage text;";
+// 		$query .= "ALTER TABLE _PREFIXTABLE_publications ADD periode tinytext, ADD isbn tinytext, ADD paraitre tinyint(4) default NULL, ADD numero tinytext, ADD langue varchar(5) default NULL, ADD altertitre text, ADD urlpublicationediteur text, ADD descriptionouvrage text;";
+
+		mysql_query("RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');;
+		
+		mysql_query("CREATE TABLE ".$GLOBALS[tp]."publications (
+				identity int(10) unsigned default NULL,
+				titre text,
+				surtitre text,
+				soustitre text,
+				commentaireinterne text,
+				prioritaire tinyint(4) default NULL,
+				datepubli date default NULL,
+				datepublipapier date default NULL,
+				noticebiblio text,
+				introduction text,
+				ndlr text,
+				historique text,
+				periode tinytext,
+				isbn tinytext,
+				paraitre tinyint(4) default NULL,
+				integralite tinyint(4) default NULL,
+				numero tinytext,
+				icone tinytext,
+				langue varchar(5) default NULL,
+				altertitre text,
+				urlpublicationediteur text,
+				descriptionouvrage text,
+				erratum text,
+				UNIQUE KEY identity (identity),
+				KEY index_identity (identity)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
+		mysql_query("INSERT INTO ".$GLOBALS[tp]."publications (identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum) SELECT identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum FROM ".$GLOBALS[tp]."publications__oldME;") or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 
 		// tablefieldgroups
 		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;
@@ -1132,6 +1203,7 @@ class exportfor08
 		(NULL, 'urlpublicationediteur', '13', 'publications', 'Voir sur le site de l\'éditeur', '', '', 'url', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '123', NOW()),
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
+		(NULL, 'erratum', '11', 'publications', 'Erratum', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '126', NOW()),
 		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())")) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 
 		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
@@ -1208,8 +1280,8 @@ class exportfor08
 		foreach ($request as $cmd) {//echo $cmd . '<p>';
 			$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
 			if ($cmd) {	
-				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd)) 
-					$cmd = utf8_encode($cmd);
+ 				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd)) 
+ 					$cmd = utf8_encode($cmd);
 				if (!mysql_query($cmd)) {
 					$err = '<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>';
 					return $err; // sort, ca sert a rien de continuer
@@ -1237,11 +1309,11 @@ class exportfor08
 		$req = mysql_query($query_select) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>');
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".$res['titre']."\", \"".$res['lien']."\");";
+				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".str_replace('"', "'", $res['titre'])."\", \"".$res['lien']."\");";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
 				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".$res['titre']."\", \"".$res['lien']."\");";
+				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".str_replace('"', "'", $res['titre'])."\", \"".$res['lien']."\");";
 			}
 		}
 
