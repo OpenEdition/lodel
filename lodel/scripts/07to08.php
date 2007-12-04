@@ -609,7 +609,9 @@ class exportfor08
 		";
 
 		// TYPES
-		$query .= "INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
+		$result = mysql_query('SELECT MAX(id) FROM ' . $GLOBALS['tp'] . 'types');
+		$max_id = mysql_result($result, 0);
+		mysql_query(utf8_encode("INSERT INTO " . $GLOBALS['tp'] . "types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
 		(NULL, 'lodel/icons/rubrique_plat.gif', 'rubriqueaplat', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
 		(NULL, '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
@@ -632,8 +634,241 @@ class exportfor08
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
 		(NULL, '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
-		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());
-		";
+		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());")) or die(mysql_error());
+
+		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
+				('11', '11', '*'),
+				('11', '9', '*'),
+				('1', '10', '*'),
+				('2', '327', '*'),
+				('2', '10', '*'),
+				('3', '328', '*'),
+				('20', '8', '*'),
+				('3', '11', '*'),
+				('3', '327', '*'),
+				('3', '81', '*'),
+				('3', '10', '*'),
+				('21', '10', '*'),
+				('4', '9', '*'),
+				('4', '8', '*'),
+				('4', '21', '*'),
+				('5', '328', '*'),
+				('6', '8', '*'),
+				('6', '21', '*'),
+				('6', '19', '*'),
+				('6', '20', '*'),
+				('7', '9', '*'),
+				('7', '8', '*'),
+				('7', '21', '*'),
+				('7', '19', '*'),
+				('26', '6', '*'),
+				('14', '5', '*'),
+				('13', '11', '*'),
+				('13', '327', '*'),
+				('13', '10', '*'),
+				('20', '0', '*'),
+				('14', '6', '*'),
+				('14', '1', '*'),
+				('14', '4', '*'),
+				('14', '7', '*'),
+				('26', '1', '*'),
+				('1', '9', '*'),
+				('9', '8', '*'),
+				('1', '8', '*'),
+				('1', '21', '*'),
+				('2', '9', '*'),
+				('14', '2', '*'),
+				('14', '3', '*'),
+				('14', '13', '*'),
+				('12', '11', '*'),
+				('12', '10', '*'),
+				('19', '10', '*'),
+				('19', '8', '*'),
+				('14', '12', '*'),
+				('26', '4', '*'),
+				('25', '18', '*'),
+				('25', '6', '*'),
+				('25', '5', '*'),
+				('25', '1', '*'),
+				('25', '4', '*'),
+				('25', '7', '*'),
+				('25', '2', '*'),
+				('25', '3', '*'),
+				('2', '8', '*'),
+				('5', '11', '*'),
+				('19', '0', '*'),
+				('12', '9', '*'),
+				('13', '9', '*'),
+				('15', '5', '*'),
+				('15', '6', '*'),
+				('15', '1', '*'),
+				('15', '4', '*'),
+				('15', '7', '*'),
+				('15', '2', '*'),
+				('15', '3', '*'),
+				('16', '1', '*'),
+				('16', '4', '*'),
+				('16', '7', '*'),
+				('16', '2', '*'),
+				('16', '3', '*'),
+				('16', '10', '*'),
+				('16', '9', '*'),
+				('21', '8', '*'),
+				('18', '327', '*'),
+				('21', '0', '*'),
+				('22', '11', '*'),
+				('22', '327', '*'),
+				('22', '10', '*'),
+				('22', '9', '*'),
+				('22', '8', '*'),
+				('17', '10', '*'),
+				('23', '11', '*'),
+				('23', '10', '*'),
+				('24', '11', '*'),
+				('24', '10', '*'),
+				('24', '9', '*'),
+				('26', '7', '*'),
+				('26', '2', '*'),
+				('26', '3', '*'),
+				('26', '10', '*'),
+				('26', '9', '*'),
+				('27', '18', '*'),
+				('27', '5', '*'),
+				('27', '6', '*'),
+				('27', '1', '*'),
+				('27', '4', '*'),
+				('27', '7', '*'),
+				('27', '2', '*'),
+				('27', '3', '*'),
+				('17', '20', '*'),
+				('22', '328', '*'),
+				('13', '328', '*'),
+				('24', '328', '*'),
+				('10', '10', '*'),
+				('10', '8', '*'),
+				('18', '10', '*'),
+				('23', '9', '*'),
+				('23', '21', '*'),
+				('24', '21', '*'),
+				('12', '8', '*'),
+				('12', '21', '*'),
+				('18', '9', '*'),
+				('18', '8', '*'),
+				('13', '8', '*'),
+				('13', '21', '*'),
+				('22', '21', '*'),
+				('22', '19', '*'),
+				('18', '21', '*'),
+				('18', '19', '*'),
+				('18', '20', '*'),
+				('4', '19', '*'),
+				('5', '327', '*'),
+				('16', '6', '*'),
+				('16', '5', '*'),
+				('26', '5', '*'),
+				('26', '18', '*'),
+				('326', '6', '*'),
+				('326', '1', '*'),
+				('326', '4', '*'),
+				('326', '7', '*'),
+				('326', '2', '*'),
+				('326', '3', '*'),
+				('326', '328', '*'),
+				('326', '329', '*'),
+				('326', '11', '*'),
+				('326', '327', '*'),
+				('326', '10', '*'),
+				('326', '9', '*'),
+				('326', '8', '*'),
+				('326', '21', '*'),
+				('326', '19', '*'),
+				('326', '20', '*'),
+				('326', '13', '*'),
+				('326', '22', '*'),
+				('22', '20', '*'),
+				('327', '19', '*'),
+				('327', '327', '*'),
+				('328', '328', '*'),
+				('328', '21', '*'),
+				('329', '20', '*'),
+				('329', '329', '*'),
+				('13', '19', '*'),
+				('22', '0', '*'),
+				('1', '19', '*'),
+				('2', '21', '*'),
+				('2', '19', '*'),
+				('3', '9', '*'),
+				('3', '8', '*'),
+				('3', '21', '*'),
+				('3', '19', '*'),
+				('1', '327', '*'),
+				('1', '11', '*'),
+				('1', '328', '*'),
+				('2', '11', '*'),
+				('2', '328', '*'),
+				('4', '10', '*'),
+				('4', '327', '*'),
+				('4', '11', '*'),
+				('4', '328', '*'),
+				('5', '10', '*'),
+				('5', '9', '*'),
+				('5', '8', '*'),
+				('5', '21', '*'),
+				('5', '19', '*'),
+				('7', '10', '*'),
+				('7', '327', '*'),
+				('7', '11', '*'),
+				('7', '328', '*'),
+				('12', '328', '*'),
+				('23', '328', '*'),
+				('18', '11', '*'),
+				('18', '328', '*'),
+				('17', '329', '*'),
+				('326', '5', '*'),
+				('326', '18', '*'),
+				('326', '14', '*'),
+				('81', '8', '*');";
+
+		$correspondances = array('editorial'=>'1', 
+					'article'=>'2',
+					'actualite'=>'3',
+					'compte rendu'=>'4',
+					'note de lecture'=>'5',
+					'informations'=>'6',
+					'chronique'=>'7',
+					'collection'=>'8',
+					'numero'=>'9',
+					'rubrique'=>'10',
+					'rubriqueaplat'=>'11',
+					'image'=>'12',
+					'noticedesite'=>'13',
+					'commentaire'=>'14',
+					'image_annexe'=>'15',
+					'lienannexe'=>'16',
+					'individu'=>'17',
+					'billet'=>'18',
+					'annuairedesites'=>'19',
+					'annuairedequipe'=>'20',
+					'annuairemedias'=>'21',
+					'fluxdesyndication'=>'22',
+					'video'=>'23',
+					'son'=>'24',
+					'videoannexe'=>'25',
+					'fichierannexe'=>'26',
+					'sonannexe'=>'27',
+					'rubriqueactualites'=>'81',
+					'imageaccroche'=>'326',
+					'rubriqueannuaire'=>'327',
+					'rubriquemediatheque'=>'328',
+					'rubriqueequipe'=>'329');
+
+		mysql_free_result($result);
+		$result = mysql_query("SELECT id, type FROM " . $GLOBALS['tp'] . "types WHERE id > ".$max_id.";");
+		while($res = mysql_fetch_array($result)) {
+			$prerequete = str_replace("'".$correspondances[$res['type']]."'", "'".$res['id']."'", $prerequete);
+		}
+
+		$query .= $prerequete;
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';";
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';";
 		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';";
@@ -886,9 +1121,12 @@ class exportfor08
 
 		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
 		$query .= "DELETE FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier';";
+
+
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
 		} else {
+			// index
 			$i = 1;
 			$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;") or die(mysql_error());
 			while ($row = mysql_fetch_assoc($result)) {
@@ -897,6 +1135,10 @@ class exportfor08
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
 				} elseif($row['langue'] == 'en') {
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesen';";
+				} elseif($row['langue'] == 'de') {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclede';";
+				} elseif($row['langue'] == 'es') {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscleses';";
 				} else {
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
 				}
@@ -906,9 +1148,13 @@ class exportfor08
 				}
 				$i++;
 			}
+			// maj table entitytypes_entitytypes
+			$result = mysql_query("SELECT id FROM $GLOBALS[tp]types;") or die(mysql_error());
+			while ($row = mysql_fetch_array($result)) {
+				
+			}
 			echo '<p>update_ME ok</p>';
 			return true;
-
 		}
 
 	}
@@ -955,14 +1201,19 @@ class exportfor08
 
 	public function cp_docs07_to_08()
 	{
-		$query_select = "SELECT ".$GLOBALS['tp']."entites__old.*,
-				".$GLOBALS['tp']."documents__old.*,
-				".$GLOBALS['tp']."types__old.type,
-				".$GLOBALS['tp']."types__old.classe
-			FROM ".$GLOBALS['tp']."types__old, ".$GLOBALS['tp']."entites__old, ".$GLOBALS['tp']."documents__old 
-			WHERE type LIKE 'documentannexe-%'
-			AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
-			AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
+		$query_select = "SELECT 
+					".$GLOBALS['tp']."entites__old.*,
+					".$GLOBALS['tp']."documents__old.*,
+					".$GLOBALS['tp']."types__old.type,
+					".$GLOBALS['tp']."types__old.classe
+				FROM 
+					".$GLOBALS['tp']."types__old,
+					".$GLOBALS['tp']."entites__old, 
+					".$GLOBALS['tp']."documents__old 
+				WHERE 
+					type LIKE 'documentannexe-%'
+					AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
+					AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
 		$req = mysql_query($query_select) or die(mysql_error());
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
@@ -976,7 +1227,8 @@ class exportfor08
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				die($err);
-		} else {echo '<p>update_docannexes ok</p>';
+		} else {
+			echo '<p>update_docannexes ok</p>';
 			return true;
 		}
 	}
