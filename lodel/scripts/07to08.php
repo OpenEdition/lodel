@@ -197,10 +197,6 @@ class exportfor08
 	 */
 	function __construct() {
 		$this->old_tables = $this->get_tables();
-		if (!in_array($GLOBALS['tp'] . 'objets__old', $this->old_tables)) {
-			$this->init_db();
-		}
-		
 	}
 
 	/**
@@ -218,7 +214,7 @@ class exportfor08
 		if (!empty($tables)) {
 			return $tables;
 		} else {
-			die('Pas de tables à traiter');
+			return 'Pas de tables à traiter';
 		}
 	}
 
@@ -229,98 +225,103 @@ class exportfor08
 	 * @return array
 	 * @todo Ne renommer que les tables de la 0.7
 	 */
-	private function init_db() {
-		// sauvegarde des tables en 0.7 : renommées en $table . __old
-		$query = '';
-		foreach ($this->old_tables as $table07) {
-			if (substr($table07, -5) != '__old') {
-				$query .= "RENAME TABLE _PREFIXTABLE_$table07 TO _PREFIXTABLE_$table07" . '__old;';
+	public function init_db() {
+		if (!in_array($GLOBALS['tp'] . 'objets__old', $this->old_tables)) {
+	
+			// sauvegarde des tables en 0.7 : renommées en $table . __old
+			$query = '';
+			foreach ($this->old_tables as $table07) {
+				if (substr($table07, -5) != '__old') {
+					$query .= "RENAME TABLE _PREFIXTABLE_$table07 TO _PREFIXTABLE_$table07" . '__old;';
+				}
 			}
-		}
-		if ($err = $this->__mysql_query_cmds($query)) {
-			die($err);
-		}
-		
-		// import de la structure des tables en 0.8
-		$query = '';
-		$sqlfile = SITEROOT . 'init-site.sql';
-		if (is_readable($sqlfile)) {
-			$query = join('', file($sqlfile));
-		} else {
-			die('Impossible de lire le fichier init-site.sql pour la 0.8');
-		}
-		if ($err = $this->__mysql_query_cmds($query)) {
-			die($err);
-		}
-
-		// créations tables qui dépendent du ME en 0.8 (et qui sont en dur en 0.7)
-		// ENTITÉS : publications, documents
-		$query = "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications AS SELECT * FROM _PREFIXTABLE_publications__old;
-			ALTER TABLE _PREFIXTABLE_publications CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
-			CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents AS SELECT * FROM _PREFIXTABLE_documents__old;
-			ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
-			ALTER TABLE _PREFIXTABLE_documents ADD alterfichier tinytext;";
-
-		// INDEX : indexes
-		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexes (
-  				identry int(10) unsigned default NULL,
-  				nom text,
-  				definition text,
-  				UNIQUE KEY identry (identry),
-  				KEY index_identry (identry)
-				);";
-
-		// INDEX DE PERSONNES : auteurs et entities_auteurs
-		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_auteurs(
-  				idperson int(10) unsigned default NULL,
-  				nomfamille tinytext,
-  				prenom tinytext,
-  				UNIQUE KEY idperson (idperson),
-  				KEY index_idperson (idperson)
-				);";
-
-		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_auteurs(
-  				idrelation int(10) unsigned default NULL,
-  				prefix tinytext,
-  				affiliation tinytext,
-  				fonction tinytext,
-  				description text,
-  				courriel text,
-  				role text,
-				site text,
-  				UNIQUE KEY idrelation (idrelation),
-  				KEY index_idrelation (idrelation)
-				);";
-
-		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fichiers (
+			if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+			}
+			
+			// import de la structure des tables en 0.8
+			$query = '';
+			$sqlfile = SITEROOT . 'init-site.sql';
+			if (is_readable($sqlfile)) {
+				$query = join('', file($sqlfile));
+			} else {
+				return 'Impossible de lire le fichier init-site.sql pour la 0.8';
+			}
+			if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+			}
+	
+			// créations tables qui dépendent du ME en 0.8 (et qui sont en dur en 0.7)
+			// ENTITÉS : publications, documents
+			$query = "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications AS SELECT * FROM _PREFIXTABLE_publications__old;
+				ALTER TABLE _PREFIXTABLE_publications CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
+				CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents AS SELECT * FROM _PREFIXTABLE_documents__old;
+				ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
+				ALTER TABLE _PREFIXTABLE_documents ADD alterfichier tinytext;";
+	
+			// INDEX : indexes
+			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexes (
+					identry int(10) unsigned default NULL,
+					nom text,
+					definition text,
+					UNIQUE KEY identry (identry),
+					KEY index_identry (identry)
+					);";
+	
+			// INDEX DE PERSONNES : auteurs et entities_auteurs
+			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_auteurs(
+					idperson int(10) unsigned default NULL,
+					nomfamille tinytext,
+					prenom tinytext,
+					UNIQUE KEY idperson (idperson),
+					KEY index_idperson (idperson)
+					);";
+	
+			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_auteurs(
+					idrelation int(10) unsigned default NULL,
+					prefix tinytext,
+					affiliation tinytext,
+					fonction tinytext,
+					description text,
+					courriel text,
+					role text,
+					site text,
+					UNIQUE KEY idrelation (idrelation),
+					KEY index_idrelation (idrelation)
+					);";
+	
+			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fichiers (
+					identity int(10) unsigned default NULL,
+					titre text,
+					document tinytext,
+					description text,
+					legende text,
+					credits tinytext,
+					vignette tinytext,
+					UNIQUE KEY identity (identity),
+					KEY index_identity (identity)
+					);";
+	
+			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_liens (
 				identity int(10) unsigned default NULL,
 				titre text,
-				document tinytext,
-				description text,
-				legende text,
-				credits tinytext,
-				vignette tinytext,
+				url text,
+				urlfil text,
+				texte text,
+				capturedecran tinytext,
+				nombremaxitems int(11) default NULL,
 				UNIQUE KEY identity (identity),
 				KEY index_identity (identity)
-				);";
-
-		$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_liens (
-  			identity int(10) unsigned default NULL,
-  			titre text,
-  			url text,
-  			urlfil text,
-  			texte text,
-  			capturedecran tinytext,
-			nombremaxitems int(11) default NULL,
-  			UNIQUE KEY identity (identity),
-  			KEY index_identity (identity)
-				);";
-
-		if ($err = $this->__mysql_query_cmds($query)) {
-			die($err);
+					);";
+	
+			if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+			} else {
+	// 			echo '<p>initdb ok</p>';
+				return "Ok";
+			}
 		} else {
-			echo '<p>initdb ok</p>';
-			return true;
+			return 'Aucune table détectée.';
 		}
 	}
 
@@ -332,7 +333,9 @@ class exportfor08
 	 */
 	public function cp_07_to_08() {
 		
-		$result = mysql_query('select * from ' . $GLOBALS['tp'] . 'objects');
+		if(!$result = mysql_query('select * from ' . $GLOBALS['tp'] . 'objects')) {
+			return mysql_error();
+		}
 		$num_rows = mysql_num_rows($result);
 		if ($num_rows == 0) {
 
@@ -344,13 +347,11 @@ class exportfor08
 				$oldtable .= '__old';
 
 				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable")) {
-					die($err);
+					return $err;
 				}
 			}
-			return true;
-		} else {
-			// probablemnt déjà fait
 		}
+		return "Ok";
 	}
 
 	/**
@@ -363,6 +364,8 @@ class exportfor08
 	public function create_classes() {
 		// ENTITÉS : publications et documents
 		$id = $this->__insert_object('classes');
+		if(!is_int($id))
+			return $id;
 		$query = 
 		"INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
 		VALUES ($id , 'lodel/icons/collection.gif', 'publications', 'Publications', '', 'entities', '', '1', '1', NOW( ));
@@ -390,12 +393,13 @@ class exportfor08
 		";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
-			die($err);
+			return $err;
 		} else {
-			$this->__update_entities();
-			echo '<p>create_classes ok</p>';
-			return true;
+			$ret = $this->__update_entities();
+			if($ret !== true)
+				return $ret;
 		}
+		return "Ok";
 	}
 
 	/**
@@ -405,9 +409,11 @@ class exportfor08
 	 */
 
 	private function __insert_object($class) {
-		$this->requetes .= 'INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class')";
-		$result = mysql_query('INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class')") or die (mysql_error());
-		return $id = mysql_insert_id();
+		$this->requetes .= 'INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class');";
+		if(!$result = mysql_query('INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class')")) {
+			return mysql_error();
+		}
+		return mysql_insert_id();
 	}
 
 	/**
@@ -423,7 +429,9 @@ class exportfor08
 	private function __update_entities($title = 'titre') {
 		
 		foreach (array("publications","documents") as $classe) {
-	  		$result = mysql_query('SELECT identity,' . $title . ' FROM ' . $GLOBALS['tp'] . $classe) or die (mysql_error());
+	  		if(!$result = mysql_query('SELECT identity,' . $title . ' FROM ' . $GLOBALS['tp'] . $classe)) {
+				return mysql_error();
+			}
 	  		while (list($id,$titre) = mysql_fetch_row($result)) {
 	    			$titre = strip_tags($titre);
 	    			if (strlen($titre)>255) {
@@ -433,10 +441,10 @@ class exportfor08
 	    			$titre = addslashes($titre);
 				$query = 'UPDATE ' . $GLOBALS['tp'] . "entities set g_title='$titre' WHERE id=$id;";
 				$this->requetes .= $query;
-				mysql_query($query) or die (mysql_error());
+				if(!mysql_query($query))
+					return mysql_error();
 	  		}
 		}
-		echo '<p>__update_entities ok</p>';
 		return true;
 	}
 
@@ -452,15 +460,21 @@ class exportfor08
 
 	public function update_fields($dctitle = 'titre') {
 		// ENTITÉS : mise à jour des colonnes 'class' et 'g_name' seulement
-		$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0") or die(mysql_error());
+		if(!$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0")) {
+			return mysql_error();
+		}
 		$query = '';
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = 'dc.title', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
 		}
-		$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)") or die(mysql_error());
+		if(!$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)")) {
+			return mysql_error();
+		}
 		while ($row = mysql_fetch_assoc($result)) {
 			$this->requetes .= "UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';';
-			mysql_query("UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';') or die(mysql_error());
+			if(!mysql_query("UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';')) {
+				return mysql_error();
+			}
 		}
 
 		// INDEX : ajout des champs dans tablefields
@@ -488,9 +502,9 @@ class exportfor08
 			(NULL, 'role', '0', 'entities_auteurs', 'Role dans l\'élaboration du document', '', 'role,.role', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '1', '', NOW( ));";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
+				return $err;
 		} else {
-			return true;
+			return "Ok";
 		}
 	}
 
@@ -513,9 +527,10 @@ class exportfor08
 		";
 		
 		if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
-		} else {echo '<p>update_types ok</p>';
-			return true;
+				return $err;
+		} else {
+// echo '<p>update_types ok</p>';
+			return "Ok";
 		}
 	}
 
@@ -529,15 +544,19 @@ class exportfor08
 
 	public function insert_index_data() {
 		// INDEX : tables indexes et relations
-		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations') or die(mysql_error());
+		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
+			return mysql_error();
+		}
 		$max_id = mysql_result($result, 0);
 		$query = "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;
 		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
 		";
-
+		mysql_free_result($result);
 		// INDEX DE PERSONNES : tables auteurs, entities_auteurs et relations
-		$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations') or die(mysql_error());
+		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
+			return mysql_error();
+		}
 		$max_id = mysql_result($result, 0);
 		$query .= "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT idpersonne, identite from _PREFIXTABLE_entites_personnes__old;
@@ -547,25 +566,31 @@ class exportfor08
 		mysql_free_result($result);
 
 		if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
+				return $err;
 		} else {
 			$nature = array('1'=>'G', '2'=>'E');
 			$j = 1;
 			while($j < 3) {
-				$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='".$nature[$j]."' AND id1 != 0 ORDER BY id1, id2") or die(mysql_error());
+				if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='".$nature[$j]."' AND id1 != 0 ORDER BY id1, id2")) {
+					return mysql_error();
+				}
 				while($res = mysql_fetch_array($result)) {
 					$i = 1;
-					$re = mysql_query("SELECT id2 FROM " . $GLOBALS['tp'] . "relations WHERE id1 = '".$res['id1']."' AND nature = '".$nature[$j]."' ORDER BY id2") or die(mysql_error());
+					if(!$re = mysql_query("SELECT id2 FROM " . $GLOBALS['tp'] . "relations WHERE id1 = '".$res['id1']."' AND nature = '".$nature[$j]."' ORDER BY id2")) {
+						return mysql_error();
+					}
 					while($resu = mysql_fetch_array($re)) {
-						$this->requetes .= "UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."'";
-						mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."'") or die(mysql_error());
+						$this->requetes .= "UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."';";
+						if(!mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."'")) {
+							return mysql_error();
+						}
 						$i++;
 					}
 				}
 				$j++;
 			}
-			echo '<p>insert_index_data ok</p>';
-			return true;
+// 			echo '<p>insert_index_data ok</p>';
+			return "Ok";
 		}
 	}
 
@@ -577,8 +602,10 @@ class exportfor08
 
 	public function update_ME() {
 		// classe documents devient textes
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes";
-		mysql_query("RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes") or die(mysql_error());
+		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes;";
+		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes")) {
+			return mysql_error();
+		}
 		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';
 		UPDATE _PREFIXTABLE_objects SET class = 'textes' WHERE class='documents';
 		UPDATE _PREFIXTABLE_types SET class = 'textes' WHERE class='documents';
@@ -635,7 +662,9 @@ class exportfor08
 		";
 
 		// TYPES
-		$result = mysql_query('SELECT MAX(id) FROM ' . $GLOBALS['tp'] . 'types') or die(mysql_error());
+		if(!$result = mysql_query('SELECT MAX(id) FROM ' . $GLOBALS['tp'] . 'types')) {
+			return mysql_error();
+		}
 		$max_id = mysql_result($result, 0);
 		$q = utf8_encode("INSERT INTO " . $GLOBALS['tp'] . "types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
@@ -662,7 +691,9 @@ class exportfor08
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
 		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());");
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
+		if(!mysql_query($q)) {
+			return mysql_error();
+		}
 
 		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
 				('11', '11', '*'),
@@ -891,7 +922,9 @@ class exportfor08
 					'rubriqueequipe'=>'329');
 
 		mysql_free_result($result);
-		$result = mysql_query("SELECT id, type FROM " . $GLOBALS['tp'] . "types WHERE id > ".$max_id.";") or die(mysql_error());
+		if(!$result = mysql_query("SELECT id, type FROM " . $GLOBALS['tp'] . "types WHERE id > ".$max_id.";")) {
+			return mysql_error();
+		}
 		while($res = mysql_fetch_array($result)) {
 			$prerequete = str_replace("'".$correspondances[$res['type']]."'", "'".$res['id']."'", $prerequete);
 		}
@@ -1002,8 +1035,10 @@ class exportfor08
 			(NULL, 'remerciements', '-*', '', '0', '31', '1', NOW());";
 
 		// textes
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME";
-		mysql_query("RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME") or die(mysql_error());
+		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME;";
+		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME")) {
+			return mysql_error();
+		}
 
 		$q = "CREATE TABLE ".$GLOBALS[tp]."textes (
 				identity int(10) unsigned default NULL,
@@ -1040,15 +1075,20 @@ class exportfor08
 				KEY index_identity (identity)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
+		if(!mysql_query($q)) {
+			return mysql_error();
+		}
 		$q = "INSERT INTO ".$GLOBALS[tp]."textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM ".$GLOBALS[tp]."textes__oldME;";
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
-
+		if(!mysql_query($q)) {
+			return mysql_error();
+		}
 
 		// publications
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME";
-		mysql_query("RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME") or die(mysql_error());
+		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME;";
+		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME")) {
+			return mysql_error();
+		}
 		
 		$q = "CREATE TABLE ".$GLOBALS[tp]."publications (
 				identity int(10) unsigned default NULL,
@@ -1078,10 +1118,14 @@ class exportfor08
 				KEY index_identity (identity)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
+		if(!mysql_query($q)) {
+			mysql_error();
+		}
 		$q = "INSERT INTO ".$GLOBALS[tp]."publications (identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum) SELECT identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum FROM ".$GLOBALS[tp]."publications__oldME;";
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
+		if(!mysql_query($q)) {
+			return mysql_error();
+		}
 
 		// tablefieldgroups
 		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;
@@ -1113,7 +1157,9 @@ class exportfor08
 
 		// tablefields
 		$this->requetes .= "DELETE FROM ".$GLOBALS['tp']."tablefields;";
-		mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;") or die(mysql_error());
+		if(!mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;")) {
+			return mysql_error();
+		}
 		$q = utf8_encode("INSERT INTO ".$GLOBALS['tp']."tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
 		(NULL, 'titre', '1', 'textes', 'Titre du document', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '+', 'Document sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
 		(NULL, 'surtitre', '1', 'textes', 'Surtitre du document', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'importable', '', '8', '', '32', '2', NOW()),
@@ -1224,20 +1270,23 @@ class exportfor08
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
 		(NULL, 'erratum', '11', 'publications', 'Erratum', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '126', NOW()),
-		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW())");
+		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW());");
 		$this->requetes .= $q;
-		mysql_query($q) or die(mysql_error());
-
+		if(!mysql_query($q)) {
+			return mysql_error();
+		}
 		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
 		$query .= "DELETE FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier';";
 
 
 		if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
+				return $err;
 		} else {
 			// index
 			$i = 1;
-			$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;") or die(mysql_error());
+			if(!$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;")) {
+				return mysql_error();
+			}
 			while ($row = mysql_fetch_assoc($result)) {
 				unset($q);
 				if($row['langue'] == 'fr') {
@@ -1252,11 +1301,15 @@ class exportfor08
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
 				}
 				$this->requetes .= $q;
-				$resu = mysql_query($q) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $q . '</font><br>');
+				if(!$resu = mysql_query($q)) {
+					return mysql_error();
+				}
 				while ($rows = mysql_fetch_array($resu)) {
 					$q = "UPDATE ".$GLOBALS['tp']."entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ';';
 					$this->requetes .= $q;
-					mysql_query($q) or die(mysql_error());
+					if(!mysql_query($q)) {
+						return mysql_error();
+					}
 				}
 				$i++;
 			}
@@ -1264,16 +1317,20 @@ class exportfor08
 
 			// maj identifier pour affichage correct des champs auteur lors de l'édition d'une entité
 			// sans ça, seul les champs nom/prénom sont affichés
-			$result = mysql_query("SELECT id, g_title FROM $GLOBALS[tp]entities") or die(mysql_error());
+			if(!$result = mysql_query("SELECT id, g_title FROM $GLOBALS[tp]entities")) {
+				return mysql_error();
+			}
 			while($res = mysql_fetch_array($result)) {
 				$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
-				$q = "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."'";
-				$this->requetes .= "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."'";
-				mysql_query($q) or die(mysql_error());
+				$q = "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
+				$this->requetes .= $q;
+				if(!mysql_query($q)) {
+					return mysql_error();
+				}
 			}
 			mysql_free_result($result);
-			echo '<p>update_ME ok</p>';
-			return true;
+// 			echo '<p>update_ME ok</p>';
+			return "Ok";
 		}
 
 	}
@@ -1338,7 +1395,9 @@ class exportfor08
 					type LIKE 'documentannexe-%'
 					AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
 					AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
-		$req = mysql_query($query_select) or die('<font COLOR=red>' . mysql_error() . '<p>requete : ' . $query_select . '</font><br>');
+		if(!$req = mysql_query($query_select)) {
+			return mysql_error();
+		}
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".str_replace('"', "'", $res['titre'])."\", \"".$res['lien']."\");";
@@ -1350,13 +1409,145 @@ class exportfor08
 		}
 
 		if ($err = $this->__mysql_query_cmds($query)) {
-				die($err);
+				return $err;
 		} else {
-			echo '<p>update_docannexes ok</p>';
-			return true;
+// 			echo '<p>update_docannexes ok</p>';
+			return "Ok";
 		}
 	}
 
+	/**
+	 * Dump de la base avant modifs
+	 */	
+	public function dump_before_changes()
+	{
+		global $home, $site, $zipcmd; 
+		require($home."backupfunc.php");
+		
+		$outfile="site-$site.sql";
+		$tmpdir=tmpdir();
+		mysql_dump($GLOBALS['currentdb'],$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
+		# verifie que le fichier n'est pas vide
+		if (filesize($tmpdir."/".$outfile)<=0) return "ERROR: mysql_dump failed";
+		
+		// tar les sites et ajoute la base
+		$archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
+		$archivefilename="site-$site-".date("dmy").".zip";
+		if ($zipcmd && $zipcmd!="pclzip") {
+			system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
+		} else { // pclzip
+			require($home."pclzip.lib.php");
+			$archive=new PclZip ($archivetmp);
+			$archive->create($tmpdir."/".$outfile,PCLZIP_OPT_REMOVE_ALL_PATH);
+		} // end of pclzip option
+		
+		if (!file_exists($archivetmp)) return "ERROR: the zip command or library does not produce any output";
+		@unlink($tmpdir."/".$outfile); // delete the sql file
+
+		if (operation("download",$archivetmp,$archivefilename,$context)) 
+			return "Ok";		
+	}
+
+	/**
+	 * Dump de la base avant modifs
+	 */	
+	public function dump_after_changes_to08()
+	{
+		global $home, $site, $zipcmd; 
+		require($home."backupfunc.php");
+		
+		$outfile="site-$site.sql";
+		$tmpdir=tmpdir();
+		mysql_dump($GLOBALS['currentdb'],$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
+		# verifie que le fichier n'est pas vide
+		if (filesize($tmpdir."/".$outfile)<=0) return "ERROR: mysql_dump failed";
+		
+		// tar les sites et ajoute la base
+		$archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
+		$archivefilename="site08-$site-".date("dmy").".zip";
+		if ($zipcmd && $zipcmd!="pclzip") {
+			system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
+		} else { // pclzip
+			require($home."pclzip.lib.php");
+			$archive=new PclZip ($archivetmp);
+			$archive->create($tmpdir."/".$outfile,PCLZIP_OPT_REMOVE_ALL_PATH);
+		} // end of pclzip option
+		
+		if (!file_exists($archivetmp)) return "ERROR: the zip command or library does not produce any output";
+		@unlink($tmpdir."/".$outfile); // delete the sql file
+
+		if (operation("download",$archivetmp,$archivefilename,$context)) 
+			return "Ok";		
+	}
+
+	/**
+	 * Dump des modifs effectuées sur la base
+	 */	
+	public function dump_changes_to08()
+	{
+		global $home, $site, $zipcmd; 
+		require($home."backupfunc.php");
+		
+		$outfile="site-$site-changesto08.sql";
+		$tmpdir=tmpdir();
+		$f = fopen($tmpdir."/".$outfile, "w");
+		fwrite($f, $this->requetes);
+		fclose($f);
+		# verifie que le fichier n'est pas vide
+		if (filesize($tmpdir."/".$outfile)<=0) return "ERROR: dumping changes failed";
+		
+		// tar les sites et ajoute la base
+		$archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
+		$archivefilename="siteto08-$site-".date("dmy").".zip";
+		if ($zipcmd && $zipcmd!="pclzip") {
+			system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
+		} else { // pclzip
+			require($home."pclzip.lib.php");
+			$archive=new PclZip ($archivetmp);
+			$archive->create($tmpdir."/".$outfile,PCLZIP_OPT_REMOVE_ALL_PATH);
+		} // end of pclzip option
+		
+		if (!file_exists($archivetmp)) return "ERROR: the zip command or library does not produce any output";
+
+		if (operation("download",$archivetmp,$archivefilename,$context)) 
+			return "Ok";		
+	}
+
+	/**
+	* Copie les fichiers contenus dans $source vers $target
+	* @param string $source 
+	* @param string $target 
+	*/	
+	public function datas_copy( $source, $target )
+	{
+		if ( is_dir( $source ) )
+		{
+			@mkdir( $target );
+			
+			$d = dir( $source );
+			
+			while ( FALSE !== ( $entry = $d->read() ) )
+			{
+				if ( $entry == '.' || $entry == '..' )
+				{
+					continue;
+				}
+			
+				$Entry = $source . '/' . $entry;           
+				if ( is_dir( $Entry ) )
+				{
+					datas_copy( $Entry, $target . '/' . $entry );
+					continue;
+				}
+				copy( $Entry, $target . '/' . $entry );
+			}
+			
+			$d->close();
+		} else {
+			copy( $source, $target );
+		}
+		return "Ok";
+	}
 }
 
 
