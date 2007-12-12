@@ -990,6 +990,11 @@ class exportfor08
 		";
 
 		// persontypes
+		$q = "SELECT id, type FROM ".$GLOBALS['tp']."persontypes;";
+		$this->requetes .= $q;
+		if(!$req = mysql_query($q)) {
+			return mysql_error();
+		}
 		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
 		('', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
 		('', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
@@ -997,7 +1002,11 @@ class exportfor08
 		('lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
 		('', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());
 		";
+		while($res = mysql_fetch_array($req)) {
+			$query .= "UPDATE _PREFIXTABLE_persontypes SET id = ".$res['id']." WHERE type = \"".$res['type']."\";";
+		}
  		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication' WHERE title = 'Directeur de la publication';";
+
 
 
 		// styles internes
@@ -1317,15 +1326,17 @@ class exportfor08
 
 			// maj identifier pour affichage correct des champs auteur lors de l'édition d'une entité
 			// sans ça, seul les champs nom/prénom sont affichés
-			if(!$result = mysql_query("SELECT id, g_title FROM $GLOBALS[tp]entities")) {
+			if(!$result = mysql_query("SELECT id, g_title, identifier FROM $GLOBALS[tp]entities")) {
 				return mysql_error();
 			}
 			while($res = mysql_fetch_array($result)) {
-				$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
-				$q = "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
-				$this->requetes .= $q;
-				if(!mysql_query($q)) {
-					return mysql_error();
+				if($res['identifier'] == "") {
+					$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
+					$q = "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
+					$this->requetes .= $q;
+					if(!mysql_query($q)) {
+						return mysql_error();
+					}
 				}
 			}
 			mysql_free_result($result);
@@ -1536,9 +1547,10 @@ class exportfor08
 				$Entry = $source . '/' . $entry;           
 				if ( is_dir( $Entry ) )
 				{
-					datas_copy( $Entry, $target . '/' . $entry );
+					$this->datas_copy( $Entry, $target . '/' . $entry );
 					continue;
 				}
+
 				copy( $Entry, $target . '/' . $entry );
 			}
 			
@@ -1548,6 +1560,156 @@ class exportfor08
 		}
 		return "Ok";
 	}
+
+	public function update_tpl($target)
+	{
+		global $site;
+		$query = "INSERT INTO ".$GLOBALS['tp']."translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
+	
+		$query .= "UPDATE ".$GLOBALS['tp']."texts SET lang = 'FR', textgroup = 'site';";
+/*		if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+		}*/	
+
+		// ce qu'on cherche à remplacer
+		$lookfor = array("#NOTEBASPAGE",
+				 "textes",
+				 "documents",
+				 "objets",
+				 "entites.ordre",
+				 "entites",
+				 "champs",
+				 "groupesdechamps",
+				 "personnes",
+				 "groupes",
+				 "users_groupes",
+				 "typespersonnes",
+				 "typeentrees",
+				 "taches",
+				 "typeentites_typeentites",
+				 "typeentites_typepersonnes",
+				 "typeentites_typeentrees",
+				 "entites_personnes",
+				 "entites_entrees",
+				 "WHERE=\"rep='",
+				 "statut",
+				 "identifiant",
+				 "ordre",
+				 "degres",
+				 "identite",
+				 "auteurs\.",
+				 "entrees",
+				 "directeur de publication"
+				 );
+		// et ce qu'on met à remplacer
+		$replace = array("#NOTESBASPAGE",
+				"texts",
+				"textes",
+				"objects",
+				"entities.rank",
+				"entities",
+				"tablefields",
+				"tablefieldgroups",
+				"auteurs",
+				"usergroups",
+				"users_usergroups",
+				"persontypes",
+				"entrytypes",
+				"tasks",
+				"entitytypes_entitytypes",
+				"entitytypes_persontypes",
+				"entitytypes_entrytypes",
+				"entities_persons",
+				"entities_entries",
+				"WHERE=\"name='",
+				"status",
+				"identifier",
+				"'order'",
+				"degree",
+				"identity",
+				"personnes.",
+				"entries",
+				"directeurdelapublication"
+				);
+		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source
+		// le second pour travailler :)
+		$i = 0; 
+		// tableau des noms de macros/fonctions
+		$funclist = array();
+		// c'est parti on traite tous les templates et fichiers de macros contenus dans le répertoire tpl
+		if (is_dir("tpl")) {
+			while($i < 2) {
+				if($i === 0) {
+					if ($dh = opendir("tpl")) {
+						while (($file = readdir($dh)) !== false) {
+							// est-ce bien un fichier de macros ? extension html obligatoire et 'macros' dans le nom
+							if("html" === substr($file, -4, 4)) {
+								if(file_exists("tpl/".$file) && preg_match("`macros`i", $file)) {	
+									$tmp = file_get_contents("tpl/".$file);
+									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp, $defs);
+									// on récupère le nom des macros/fonctions
+									$funclist = array_merge($funclist, $defs[2]);
+								}
+							}
+						}
+						closedir($dh);
+					} else {
+						return "ERROR : cannot open directory 'tpl'.";
+					}				
+				} elseif($i === 1) {
+					if ($dh = opendir("tpl")) {
+						while (($file = readdir($dh)) !== false) {
+							// est-ce bien un template ou un fichier de macros ? extension html obligatoire
+							if("html" === substr($file, -4, 4)) {
+								$tmpFile = file_get_contents("tpl/".$file);
+		
+								if(file_exists($target."/tpl/".$file) && preg_match("`macros`i", $file)) {
+								// cas spécial des macros
+								// il faut avoir la possibilité d'utiliser les macros présentes en 0.8
+								// ET celles utilisées auparavant dans la 0.7
+								// on merge les deux fichiers
+									$tmp2 = file_get_contents($target."/tpl/".$file);
+									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp2, $defs);
+									foreach($defs[2] as $k=>$def) {
+										if(!preg_match("`<(DEFMACRO|DEFFUNC) NAME=\"".$def."\"`iUs", $tmpFile) && !in_array($def, $funclist)) {
+											$tmpFile .= "\n\n".$defs[0][$k];
+										}
+									}
+								}
+		
+								// on cherche dans chaque tpl et on remplace par l'équivalent 0.8
+								foreach($lookfor as $k=>$look) {
+									$tmpFile = preg_replace("`".$look."`i", $replace[$k], $tmpFile);
+								}
+								// on met en majuscule ce qui doit l'être
+								$tmpFile = preg_replace_callback("`\[\#[^\]]*\]`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
+								$tmpFile = preg_replace_callback("`MACRO NAME=\"([^\"]*)\"`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
+								// on écrit le fichier
+								$f = fopen($target."/tpl/".$file, "w");
+								fwrite($f, $tmpFile);
+								fclose($f);
+							}
+						}
+						closedir($dh);
+					} else {
+						return "ERROR : cannot open directory 'tpl'.";
+					}
+				}
+				$i++;
+			}
+			// on crée des liens symboliques pointant vers index.php pour simuler les scripts document.php, sommaire.php, etc ..
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/document.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/sommaire.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/personnes.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/entrees.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/entree.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/docannexe.".$GLOBALS['extensionscripts']);
+		} else {
+			return "ERROR : directory 'tpl' is missing.";
+		}
+		return "Ok";
+	}
+
 }
 
 
