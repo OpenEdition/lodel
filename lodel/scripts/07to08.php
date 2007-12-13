@@ -1723,8 +1723,8 @@ class exportfor08
 // 									}
 // 								}
 								if(!file_exists("tpl/".$file)) {
-									$tmp = str_replace("\n<USE MACROFILE=\"macros_site.html\" />\n", $upMacroFile, $tmp);
-									$tmp = str_replace("<MACRO NAME=\"FERMER_HTML\" />", "<MACRO NAME=\"FERMER_HTML08\" />", $tmp);
+									$tmp = strtr($tmp, array("\n<USE MACROFILE=\"macros_site.html\">\n"=>$upMacroFile,"\n<USE MACROFILE=\"macros_site.html\" />\n"=>$upMacroFile));
+									$tmp = strtr($tmp, array("<MACRO NAME=\"FERMER_HTML\" />"=>"<MACRO NAME=\"FERMER_HTML08\" />", "<MACRO NAME=\"FERMER_HTML\">"=>"<MACRO NAME=\"FERMER_HTML08\" />"));
 								}
 								$f = fopen($target."/tpl/".$file, "w");
 								fwrite($f, $tmp);
@@ -1783,8 +1783,7 @@ class exportfor08
 
 								// ajustement précis
 								if($file == "barre.html" || $file == "macros_presentation.html") {
-									$replace = array("[#TITRE]"=>"[#TITLE]", "[#NOM]"=>"[#TITLE]");
-									$tmpFile = strtr($replace, $tmpFile);	
+									$tmpFile = strtr($tmpFile, array("[#TITRE]"=>"[#TITLE]", "[#NOM]"=>"[#TITLE]"));	
 								} elseif($file == "macros_site.html") {
 									$tmpFile = strtr($tmpFile, array("entriesALPHABETIQUES"=>"ENTREESALPHABETIQUES", "entriesRECURSIF"=>"ENTREESRECURSIF", "entriesauteurs"=>"ENTREESPERSONNES"));
 									$tmpFile .= '\n\n<DEFMACRO NAME="FERMER_HTML08">
