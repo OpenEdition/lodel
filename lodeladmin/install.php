@@ -98,9 +98,9 @@ if ($option2) $installoption="2";
 //
 // Test the PHP version
 //
-preg_match("/^\d+\.\d+/",phpversion(),$result);
-if (doubleval($result[0]<4.1)) {
-  probleme_version();
+$result=phpversion();
+if (doubleval($result<4.1)) {
+  probleme_version($result);
   exit;
 }
 
@@ -846,6 +846,15 @@ function problem($msg)
   die();
 }
 
+function probleme_version($version)
+{
+?>
+<h2>Version de PHP</h2>
+<p align="center">
+   <strong>La version de PHP utilis&eacute;e n'est pas une version suffisamment r&eacute;cente(<?php echo $version; ?>). Elle doit &ecirc;tre sup&eacute;rieure à la version 4.1.</strong>
+</p>
+<?php
+}
 
 function probleme_droits_debut()
 
