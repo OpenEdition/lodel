@@ -346,10 +346,18 @@ class exportfor08
 				$newfields = trim($newfields);
 				$oldtable .= '__old';
 
-				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable")) {
+				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;")) {
 					return $err;
 				}
 			}
+		}
+		if(!$req = mysql_query("SELECT id, g_familyname, g_firstname FROM ".$GLOBALS['tp']."persons;")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_array($req)) {
+			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = '".strtolower($res['g_familyname'].' '.$res['g_firstname'])."' WHERE id = '".$res['id']."';")) {
+				return $err;
+			}			
 		}
 		return "Ok";
 	}
@@ -366,8 +374,7 @@ class exportfor08
 		$id = $this->__insert_object('classes');
 		if(!is_int($id))
 			return $id;
-		$query = 
-		"INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
+		$query = "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
 		VALUES ($id , 'lodel/icons/collection.gif', 'publications', 'Publications', '', 'entities', '', '1', '1', NOW( ));
 		UPDATE _PREFIXTABLE_objects SET class='entities' WHERE class='publications';
 		";
@@ -383,6 +390,7 @@ class exportfor08
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` ( `id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
 		VALUES ($id , 'lodel/icons/index.gif', 'indexes', 'Index', '', 'entries', '', '3', '1', NOW( ));
 		UPDATE _PREFIXTABLE_objects SET class='entries' WHERE class='entrees';
+		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
 		";
 
 		// INDEX DE PERSONNES
@@ -390,6 +398,7 @@ class exportfor08
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` ( `id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
 		VALUES ($id , 'lodel/icons/personne.gif', 'auteurs', 'Auteurs', '', 'persons', '', '4', '1', NOW( ));
 		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
+		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';
 		";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
@@ -940,11 +949,14 @@ class exportfor08
 
 		// entrytypes
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET tpl = 'entree', tplindex = 'entrees', edition = 'pool';";
+		for($i=0;$i<4;$i++) {
+			$id[] = $this->__insert_object('entrytypes');
+		}
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(NULL, '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
-		(NULL, '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(NULL, '', 'motsclede', 'indexes', 'Schlusselwortindex', '', 'schlusselworter, .schlusselworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
-		(NULL, '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
+		(".$id[0].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
+		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagwortindex', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(".$id[3].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords, motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
 		";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie' WHERE type = 'geographie';";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
@@ -995,19 +1007,21 @@ class exportfor08
 		if(!$req = mysql_query($q)) {
 			return mysql_error();
 		}
-		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
-		('', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
-		('', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
-		('', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW()),
-		('lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
-		('', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());
+		unset($id);
+		for($i=0;$i<5;$i++) {
+			$id[] = $this->__insert_object('persontypes');
+		}
+		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
+		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
+		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
+		(".$id[2].", '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW()),
+		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
+		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());
 		";
 		while($res = mysql_fetch_array($req)) {
 			$query .= "UPDATE _PREFIXTABLE_persontypes SET id = ".$res['id']." WHERE type = \"".$res['type']."\";";
 		}
  		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication' WHERE title = 'Directeur de la publication';";
-
-
 
 		// styles internes
 		$query .= "INSERT INTO _PREFIXTABLE_internalstyles (id, style, surrounding, conversion, greedy, rank, status, upd) VALUES 
@@ -1055,7 +1069,7 @@ class exportfor08
 				surtitre text,
 				soustitre text,
 				texte longtext,
-				notesbaspage text,
+				notesbaspage longtext,
 				annexe text,
 				bibliographie text,
 				datepubli date default NULL,
@@ -1079,7 +1093,7 @@ class exportfor08
 				icone tinytext,
 				alterfichier tinytext,
 				numerodocument double default NULL,
-				notefin text,
+				notefin longtext,
 				UNIQUE KEY identity (identity),
 				KEY index_identity (identity)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
@@ -1274,7 +1288,7 @@ class exportfor08
 		(NULL, 'notefin', '2', 'textes', 'Notes de fin de document', '', 'notefin', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '32', '', 'importable', '', '4', '', '32', '3', NOW()),
 		(NULL, 'altertitre', '10', 'publications', 'Titre alternatif de la publication (dans une autre langue)', '', 'titretraduitfr:fr,titretraduiten:en,titretraduites:es,titretraduitpt:pt,titretraduitit:it,titretraduitde:de,titretraduitru:ru,titleen:en', 'mltext', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Appel de Note', '32', '', 'editable', '', '4', '', '1', '120', NOW()),
 		(NULL, 'motscleses', '15', 'textes', 'Palabras claves', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '121', NOW()),
-		(NULL, 'motsclede', '15', 'textes', 'Schlusselworter', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '122', NOW()),
+		(NULL, 'motsclede', '15', 'textes', 'Schlagworter', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '122', NOW()),
 		(NULL, 'urlpublicationediteur', '13', 'publications', 'Voir sur le site de l\'éditeur', '', '', 'url', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '123', NOW()),
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
@@ -1569,8 +1583,8 @@ class exportfor08
 		$query .= "UPDATE ".$GLOBALS['tp']."texts SET lang = 'FR', textgroup = 'site';";
 /*		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
-		}*/	
-
+		}	
+*/
 		// ce qu'on cherche à remplacer
 		$lookfor = array("#NOTEBASPAGE",
 				 "textes",
@@ -1599,6 +1613,8 @@ class exportfor08
 				 "identite",
 				 "auteurs\.",
 				 "entrees",
+				 "entries\.",
+				 "entrees\.id",
 				 "directeur de publication"
 				 );
 		// et ce qu'on met à remplacer
@@ -1629,59 +1645,155 @@ class exportfor08
 				"identity",
 				"personnes.",
 				"entries",
+				"entrees.",
+				"entries.id",
 				"directeurdelapublication"
 				);
-		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source
+		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source et target
 		// le second pour travailler :)
 		$i = 0; 
-		// tableau des noms de macros/fonctions
+		// tableau des noms de macros/fonctions 0.7
 		$funclist = array();
-		// c'est parti on traite tous les templates et fichiers de macros contenus dans le répertoire tpl
+		// tableau des noms des macros/fonctions ayant un nom identique en 0.7/0.8
+		$funcNamesToChange = array();
+		// tableau des macros en double
+		$funcToAdd = array();	
+		// liste des fichiers macros de la 0.7 à ajouter dans les tpl de la 0.8
+		$upMacroFile = '<USE MACROFILE="macros.html" />
+				<USE MACROFILE="macros_admin.html" />
+				<USE MACROFILE="macros_affichage.html" />
+				<USE MACROFILE="macros_technique.html" />
+				<USE MACROFILE="macros_images.html" />
+				<USE MACROFILE="macros_navigation.html" />
+				<USE MACROFILE="macros_presentation.html" />
+				<USE MACROFILE="macros_site.html" />';
+
+		// c'est parti on traite tous les templates et fichiers de macros contenus dans les répertoires tpl
 		if (is_dir("tpl")) {
 			while($i < 2) {
 				if($i === 0) {
+					$i++;
 					if ($dh = opendir("tpl")) {
 						while (($file = readdir($dh)) !== false) {
+							unset($tmp);
+							unset($defins);
 							// est-ce bien un fichier de macros ? extension html obligatoire et 'macros' dans le nom
-							if("html" === substr($file, -4, 4)) {
-								if(file_exists("tpl/".$file) && preg_match("`macros`i", $file)) {	
+							if("html" === substr($file, -4, 4) && !is_link("tpl/".$file) && !preg_match("/oai/", $file)) {
+								if(preg_match("`macros`i", $file)) {	
 									$tmp = file_get_contents("tpl/".$file);
-									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp, $defs);
-									// on récupère le nom des macros/fonctions
-									$funclist = array_merge($funclist, $defs[2]);
+									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp, $defins);
+									// on récupère le nom des macros/fonctions de la 0.7
+									$funclist = array_merge($funclist, $defins[2]);
 								}
 							}
 						}
 						closedir($dh);
 					} else {
 						return "ERROR : cannot open directory 'tpl'.";
-					}				
-				} elseif($i === 1) {
-					if ($dh = opendir("tpl")) {
+					}
+
+					$funclist = array_unique($funclist);
+
+					if ($dh = opendir($target."/tpl")) {
 						while (($file = readdir($dh)) !== false) {
-							// est-ce bien un template ou un fichier de macros ? extension html obligatoire
-							if("html" === substr($file, -4, 4)) {
-								$tmpFile = file_get_contents("tpl/".$file);
-		
-								if(file_exists($target."/tpl/".$file) && preg_match("`macros`i", $file)) {
-								// cas spécial des macros
-								// il faut avoir la possibilité d'utiliser les macros présentes en 0.8
-								// ET celles utilisées auparavant dans la 0.7
-								// on merge les deux fichiers
-									$tmp2 = file_get_contents($target."/tpl/".$file);
-									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp2, $defs);
-									foreach($defs[2] as $k=>$def) {
-										if(!preg_match("`<(DEFMACRO|DEFFUNC) NAME=\"".$def."\"`iUs", $tmpFile) && !in_array($def, $funclist)) {
-											$tmpFile .= "\n\n".$defs[0][$k];
+							unset($tmp);
+							unset($defins);
+							unset($defin);
+							unset($def);
+							// est-ce bien un fichier de tpl/macros ? extension html obligatoire et/ou 'macros' dans le nom
+							if("html" === substr($file, -4, 4) && !is_link($target."/tpl/".$file) && !preg_match("/oai/", $file)) {
+								$tmp = file_get_contents($target."/tpl/".$file);
+								if(preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp, $defins)) {
+									$defins[2] = array_unique($defins[2]);
+									// on récupère les macros/fonctions en double
+									foreach($defins[2] as $k=>$def) {
+										if(!in_array($def, $funclist)) {
+											//$funcNamesToChange[] = $def;
+											$funcToAdd[$file][] = $defins[0][$k];
 										}
 									}
 								}
-		
+// 								unset($def);
+// 								// on récupère les noms des macros 0.7 utilisées en 0.8 et on les renomme
+// 								preg_match_all("`<(MACRO|FUNC) NAME=\"([^\"]*)\"`iU", $tmp, $defin);
+// 								$defin[2] = array_unique($defin[2]);
+// 								foreach($defin[2] as $k=>$def) {
+// 									if(in_array($def, $funclist)) {
+// 										$tmp = str_replace('"'.$def.'"', '"'.$def.'07"', $tmp);
+// 									}
+// 								}
+								if(!file_exists("tpl/".$file)) {
+									$tmp = str_replace("\n<USE MACROFILE=\"macros_site.html\" />\n", $upMacroFile, $tmp);
+									$tmp = str_replace("<MACRO NAME=\"FERMER_HTML\" />", "<MACRO NAME=\"FERMER_HTML08\" />", $tmp);
+								}
+								$f = fopen($target."/tpl/".$file, "w");
+								fwrite($f, $tmp);
+								fclose($f);
+							}
+						}
+						closedir($dh);
+						//$funcNamesToChange = array_unique($funcNamesToChange);
+					} else {
+						return "ERROR : cannot open directory 'tpl'.";
+					}
+				} elseif($i === 1) {
+					$i++;
+					if ($dh = opendir("tpl")) {
+						while (($file = readdir($dh)) !== false) {
+							unset($tmpFile);
+							unset($tmp2);
+							unset($defs);
+							unset($def);
+							unset($fntc);
+							// est-ce bien un template ou un fichier de macros ? extension html obligatoire
+							if("html" === substr($file, -4, 4) && !is_link("tpl/".$file) && !preg_match("/oai/", $file)) {
+								$tmpFile = file_get_contents("tpl/".$file);
+// 								if(file_exists($target."/tpl/".$file)) {
+// 								// cas spécial des macros
+// 								// il faut avoir la possibilité d'utiliser les macros présentes en 0.8
+// 								// ET celles utilisées auparavant dans la 0.7
+// 								// on merge les deux fichiers
+// 									$tmp2 = file_get_contents($target."/tpl/".$file);
+// 									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp2, $defs);
+// 									$defs[2] = array_unique($defs[2]);
+// 									foreach($defs[2] as $k=>$def) {
+// 										// on vérifie que la macro en cours n'existe pas déjà sinon on l'ajoute
+// 										// si elle existe on va renommer la macro 0.7 avec le suffixe 07
+// 										if(!in_array($def, $funclist)) {
+// 											$tmpFile .= "\n\n".$defs[0][$k];
+// 										}
+// 									}
+// 								}
+//  								// on renomme les macros existantes en 0.7 et ayant un double en 0.8 avec un suffixe '07'
+// 								foreach($funcNamesToChange as $fntc) {
+// 									$tmpFile = str_ireplace("\"".$fntc."\"", "\"".$fntc.'07"', $tmpFile);
+// 								}
+
+								// on ajoute les macros de la 0.8 dans les tpl de la 0.7
+								if(!empty($funcToAdd[$file])) {
+									foreach($funcToAdd[$file] as $fcta) {
+										$tmpFile .= "\n\n".$fcta;
+									}
+								}	
+			
 								// on cherche dans chaque tpl et on remplace par l'équivalent 0.8
-								foreach($lookfor as $k=>$look) {
-									$tmpFile = preg_replace("`".$look."`i", $replace[$k], $tmpFile);
+ 								foreach($lookfor as $k=>$look) {
+ 									$tmpFile = str_ireplace($look, $replace[$k], $tmpFile);
+ 								}
+
+								// ajustement précis
+								if($file == "barre.html" || $file == "macros_presentation.html") {
+									$replace = array("[#TITRE]"=>"[#TITLE]", "[#NOM]"=>"[#TITLE]");
+									$tmpFile = strtr($replace, $tmpFile);	
+								} elseif($file == "macros_site.html") {
+									$tmpFile = strtr($tmpFile, array("entriesALPHABETIQUES"=>"ENTREESALPHABETIQUES", "entriesRECURSIF"=>"ENTREESRECURSIF", "entriesauteurs"=>"ENTREESPERSONNES"));
+									$tmpFile .= '\n\n<DEFMACRO NAME="FERMER_HTML08">
+													</body>
+												</html>
+											</DEFMACRO>';
 								}
 								// on met en majuscule ce qui doit l'être
+								// cad variables lodel et nom des macros
 								$tmpFile = preg_replace_callback("`\[\#[^\]]*\]`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
 								$tmpFile = preg_replace_callback("`MACRO NAME=\"([^\"]*)\"`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
 								// on écrit le fichier
@@ -1695,8 +1807,8 @@ class exportfor08
 						return "ERROR : cannot open directory 'tpl'.";
 					}
 				}
-				$i++;
 			}
+
 			// on crée des liens symboliques pointant vers index.php pour simuler les scripts document.php, sommaire.php, etc ..
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/document.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/sommaire.".$GLOBALS['extensionscripts']);
