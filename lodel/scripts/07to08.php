@@ -355,7 +355,7 @@ class exportfor08
 			return mysql_error();
 		}
 		while($res = mysql_fetch_array($req)) {
-			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = '".strtolower($res['g_familyname'].' '.$res['g_firstname'])."' WHERE id = '".$res['id']."';")) {
+			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower($res['g_familyname']." ".$res['g_firstname'])."\" WHERE id = '".$res['id']."';")) {
 				return $err;
 			}			
 		}
@@ -1578,9 +1578,12 @@ class exportfor08
 	public function update_tpl($target)
 	{
 		global $site;
-		$query = "INSERT INTO ".$GLOBALS['tp']."translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
+		$query = "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
 	
-		$query .= "UPDATE ".$GLOBALS['tp']."texts SET lang = 'FR', textgroup = 'site';";
+		$query .= "UPDATE _PREFIXTABLE_texts SET lang = 'FR', textgroup = 'site';
+		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
+		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
+		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';";
 /*		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		}	
