@@ -46,6 +46,26 @@
 if (file_exists($home."textfunc_local.php"))
 	require_once ("textfunc_local.php");
 
+
+function getParentByType($id,$type){
+        $q = "SELECT idparent FROM $GLOBALS[tp]entites WHERE id = '$id'";
+        $r = mysql_query($q);
+        if($idparent = @mysql_result($r, 0)){
+                $q = "SELECT t.type FROM $GLOBALS[tp]entites e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
+                AND e.idtype = t.id";
+                $r2 = mysql_query($q);
+                $ltype = mysql_result($r2, 0);
+                //echo mysql_error();
+                if($ltype == $type){
+                        echo $idparent;
+                }else{
+                        getParentByType($idparent, $type);
+                }
+        }else{
+                return(FALSE);
+        }
+}
+
 # fonction largement reprises de SPIP
 
 #include_once 'func.php';
