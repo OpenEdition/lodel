@@ -36,7 +36,6 @@
  * @since Fichier ajouté depuis la version 0.8
  */
 
-
 require_once ('siteconfig.php');
 require_once($home . 'auth.php');
 require_once($home . 'func.php');
@@ -44,14 +43,129 @@ require_once($home . 'champfunc.php');
 require_once($home . 'connect.php');
 require_once ($home . '07to08.php');
 authenticate(LEVEL_ADMINLODEL, NORECORDURL);
+require_once ($home."calcul-page.php");
 
-$exportfor08 = new exportfor08();
+$context['actions'] = &$_POST;
+$context['error'] = 0;
 
-$exportfor08->cp_07_to_08();
-$exportfor08->create_classes();
-$exportfor08->update_fields();
-$exportfor08->update_types();
-$exportfor08->cp_docs07_to_08();
-$exportfor08->update_ME();
-$exportfor08->insert_index_data();
+
+if($context['actions']['valid'] === "Valider") {
+	$exportfor08 = new exportfor08();
+	$context['action'] = 1;
+		if($context['actions']['save_and_dump'] && !$context['error']) {
+			$context['dump_before'] = $exportfor08->dump_before_changes();
+			if($context['dump_before'] != "Ok") {
+				$context['error'] = 1;
+				$context['msg_error'] = $context['dump_before'];
+			}
+			$context['action'] = 2;
+			calcul_page($context,"index_migration");
+			exit;
+		}
+		$context['init_db'] = $exportfor08->init_db();
+		if($context['init_db'] != "Ok") {
+			$context['error'] = 2;
+			$context['msg_error'] = $context['init_db'];
+		}
+
+		if(!$context['error']) {
+			$context['cp_datas'] = $exportfor08->cp_07_to_08();
+			if($context['cp_datas'] != "Ok") {
+				$context['error'] = 3;
+				$context['msg_error'] = $context['cp_datas'];
+			}
+		}
+		if(!$context['error']) {
+			$context['create_classes'] = $exportfor08->create_classes();
+			if($context['create_classes'] != "Ok") {
+				$context['error'] = 4;
+				$context['msg_error'] = $context['create_classes'];
+			}
+		}
+		if(!$context['error']) {
+			$context['up_fields'] = $exportfor08->update_fields($context['actions']['default_field']);
+			if($context['up_fields'] != "Ok") {
+				$context['error'] = 5;
+				$context['msg_error'] = $context['up_fields'];
+			}
+		}
+		if(!$context['error']) {
+			$context['up_types'] = $exportfor08->update_types();
+			if($context['up_types'] != "Ok") {
+				$context['error'] = 6;
+				$context['msg_error'] = $context['up_fields'];
+			}
+		}
+		if(!$context['error']) {
+			$context['up_docannexes'] = $exportfor08->cp_docs07_to_08();
+			if($context['up_docannexes'] != "Ok") {
+				$context['error'] = 7;
+				$context['msg_error'] = $context['up_fields'];
+			}
+		}
+		if($context['actions']['update_me'] && !$context['error']) {
+			$context['up_me'] = $exportfor08->update_ME();
+			if($context['up_me'] != "Ok") {
+				$context['error'] = 8;
+				$context['msg_error'] = $context['up_me'];
+			}
+		}
+		if(!$context['error']) {
+			$context['cp_index'] = $exportfor08->insert_index_data();
+			if($context['cp_index'] != "Ok") {
+				$context['error'] = 9;
+				$context['msg_error'] = $context['cp_index'];
+			}
+		}
+		if(!$context['error']) {
+			$context['cp_docannexes'] = $exportfor08->datas_copy("docannexe", $context['actions']['new_dir']."/docannexe");
+			if($context['cp_docannexes'] != "Ok") {
+				$context['error'] = 10;
+				$context['msg_error'] = $context['cp_docannexes'];
+			}
+		}
+		if(!$context['error']) {
+			$context['cp_sources'] = $exportfor08->datas_copy("lodel/sources", $context['actions']['new_dir']."/lodel/sources");
+			if($context['cp_sources'] != "Ok") {
+				$context['error'] = 11;
+				$context['msg_error'] = $context['cp_sources'];
+			}
+		}
+		if(!$context['error']) {
+			$context['cp_images'] = $exportfor08->datas_copy("images", $context['actions']['new_dir']."/images");
+			if($context['cp_images'] != "Ok") {
+				$context['error'] = 12;
+				$context['msg_error'] = $context['cp_images'];
+			}
+		}
+		if(!$context['error']) {
+			$context['cp_css'] = $exportfor08->datas_copy("css", $context['actions']['new_dir']."/css");
+			if($context['cp_css'] != "Ok") {
+				$context['error'] = 13;
+				$context['msg_error'] = $context['cp_css'];
+			}
+		}
+		if(!$context['error']) {
+			$context['up_tpl'] = $exportfor08->update_tpl($context['actions']['new_dir']);
+			if($context['up_tpl'] != "Ok") {
+				$context['error'] = 14;
+				$context['msg_error'] = $context['up_tpl'];
+			}
+		}
+		if($context['actions']['do_and_dump'] && !$context['error']) {
+			$context['dump_after'] = $exportfor08->dump_changes_to08();
+			if($context['dump_after'] != "Ok") {
+				$context['error'] = 15;
+				$context['msg_error'] = $context['dump_after'];
+			}
+		}
+		if($context['actions']['dump_after'] && !$context['error']) {
+			$context['dump_after_changes'] = $exportfor08->dump_after_changes_to08();
+			if($context['dump_after_changes'] != "Ok") {
+				$context['error'] = 16;
+				$context['msg_error'] = $context['dump_after_changes'];
+			}
+		}
+}
+calcul_page($context,"index_migration");
 ?>
