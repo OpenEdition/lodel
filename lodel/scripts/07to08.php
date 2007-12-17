@@ -611,8 +611,8 @@ class exportfor08
 
 	public function update_ME() {
 		// classe documents devient textes
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes;";
-		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."documents TO ".$GLOBALS[tp]."textes")) {
+		$this->requetes .= "RENAME TABLE ".$GLOBALS['tp']."documents TO ".$GLOBALS['tp']."textes;";
+		if(!mysql_query("RENAME TABLE ".$GLOBALS['tp']."documents TO ".$GLOBALS['tp']."textes")) {
 			return mysql_error();
 		}
 		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';
@@ -671,37 +671,63 @@ class exportfor08
 		";
 
 		// TYPES
+		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'types ORDER BY id')) {
+			return mysql_error();
+		}
+		$nb = mysql_num_rows($result);
+		for($i=0;$i<$nb;$i++) {
+			$id[] = $this->__insert_object('types');
+		}
+		$i = 0;		
+		while($r = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_types SET id = '".$id[$i]."' WHERE id = '".$r['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$id[$i]."' WHERE idtype = '".$r['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '".$id[$i]."' WHERE identitytype = '".$r['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '".$id[$i]."' WHERE identitytype2 = '".$r['id']."';";
+			$i++;
+		}
+		if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+		} else {
+			unset($query);
+		}
+		mysql_free_result($result);
 		if(!$result = mysql_query('SELECT MAX(id) FROM ' . $GLOBALS['tp'] . 'types')) {
 			return mysql_error();
 		}
 		$max_id = mysql_result($result, 0);
+		unset($id);
+		for($i=0;$i<23;$i++) {
+			$id[] = $this->__insert_object('types');
+		}
 		$q = utf8_encode("INSERT INTO " . $GLOBALS['tp'] . "types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
-		(NULL, 'lodel/icons/rubrique_plat.gif', 'rubriqueaplat', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
-		(NULL, '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
-		(NULL, '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
-		(NULL, 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
-		(NULL, '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
-		(NULL, '', 'annuairedepersonnes', 'Biographies des membres', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', NOW()),
-		(NULL, '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
-		(NULL, '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
-		(NULL, '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
-		(NULL, '', 'individu', 'Notice biographique de membre', '', 'individus', 'individu', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '25', '1', NOW()),
-		(NULL, '', 'billet', 'Billet', '', 'textessimples', 'article', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '1', '1', NOW()),
-		(NULL, '', 'annuairedesites', 'Annuaire de sites', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '7', '32', NOW()),
-		(NULL, 'lodel/icons/rss.gif', 'fluxdesyndication', 'Flux de syndication', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '30', '1', NOW()),
-		(NULL, '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
-		(NULL, '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
-		(NULL, '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
-		(NULL, '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW()),
-		(NULL, '', 'imageaccroche', 'Image d\'accroche', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '16', '0', '31', '32', NOW()),
-		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
-		(NULL, '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
-		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
-		(NULL, 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());");
+		(".$id[0].", 'lodel/icons/rubrique_plat.gif', 'rubriqueaplat', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
+		(".$id[1].", '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
+		(".$id[2].", '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
+		(".$id[3].", 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
+		(".$id[4].", '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
+		(".$id[5].", '', 'annuairedequipe', 'Equipe', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', '2007-10-11 12:01:56'),
+		(".$id[6].", '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
+		(".$id[7].", '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
+		(".$id[8].", '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
+		(".$id[9].", '', 'individu', 'Notice biographique de membre', '', 'individus', 'individu', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '25', '1', NOW()),
+		(".$id[10].", '', 'billet', 'Billet', '', 'textessimples', 'article', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '1', '1', NOW()),
+		(".$id[11].", '', 'annuairedesites', 'Annuaire de sites', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '7', '32', NOW()),
+		(".$id[12].", 'lodel/icons/rss.gif', 'fluxdesyndication', 'Flux de syndication', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '30', '1', NOW()),
+		(".$id[13].", '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
+		(".$id[14].", '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
+		(".$id[15].", '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
+		(".$id[16].", '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW()),
+		(".$id[17].", '', 'imageaccroche', 'Image d\'accroche', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '16', '0', '31', '32', NOW()),
+		(".$id[18].", 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
+		(".$id[19].", '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
+		(".$id[20].", 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
+		(".$id[21].", 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW()),
+		(".$id[22].", '', 'informations', 'Informations pratiques', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '7', '32', '2006-09-28 11:40:39');");
 		$this->requetes .= $q;
 		if(!mysql_query($q)) {
-			return mysql_error();
+			return $q. " : ".mysql_error();
 		}
 
 		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
@@ -931,7 +957,7 @@ class exportfor08
 					'rubriqueequipe'=>'329');
 
 		mysql_free_result($result);
-		if(!$result = mysql_query("SELECT id, type FROM " . $GLOBALS['tp'] . "types WHERE id > ".$max_id.";")) {
+		if(!$result = mysql_query("SELECT id, type FROM " . $GLOBALS['tp'] . "types ORDER BY id;")) {
 			return mysql_error();
 		}
 		while($res = mysql_fetch_array($result)) {
@@ -939,6 +965,9 @@ class exportfor08
 		}
 
 		$query .= $prerequete;
+		if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+		}
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';";
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';";
 		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';";
@@ -948,15 +977,31 @@ class exportfor08
 		$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';";
 
 		// entrytypes
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET tpl = 'entree', tplindex = 'entrees', edition = 'pool';";
+		unset($id);
+		mysql_free_result($result);
+		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'entrytypes ORDER BY id')) {
+			return mysql_error();
+		}
+		$nb = mysql_num_rows($result);
+		for($i=0;$i<$nb;$i++) {
+			$id[] = $this->__insert_object('entrytypes');
+		}
+		$i = 0;		
+		while($r = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_entrytypes SET id = '".$id[$i]."' WHERE id = '".$r['id']."';";
+			$i++;
+		}
+		unset($id);
+		mysql_free_result($result);
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET edition = 'pool';";
 		for($i=0;$i<4;$i++) {
 			$id[] = $this->__insert_object('entrytypes');
 		}
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(".$id[0].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[0].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'mot', 'mots', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagwortindex', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
-		(".$id[3].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords, motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
+		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagwortindex', '', 'schlagworter, .schlagworter, motsclesde', '', 'mot', 'mots', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(".$id[3].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords, motclesen', '', 'mot', 'mots', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
 		";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie' WHERE type = 'geographie';";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
@@ -1002,24 +1047,22 @@ class exportfor08
 		";
 
 		// persontypes
-		$q = "SELECT id, type FROM ".$GLOBALS['tp']."persontypes;";
-		$this->requetes .= $q;
-		if(!$req = mysql_query($q)) {
-			return mysql_error();
-		}
 		unset($id);
 		for($i=0;$i<5;$i++) {
 			$id[] = $this->__insert_object('persontypes');
 		}
+		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'persontypes ORDER BY id')) {
+			return mysql_error();
+		}		
 		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
-		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
-		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
-		(".$id[2].", '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW()),
-		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
-		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());
+		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'auteur', 'auteurs', '64', '2', '1', NOW()),
+		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'auteur', 'auteurs', '64', '4', '32', NOW()),
+		(".$id[2].", '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'auteur', 'auteurs', '64', '5', '1', NOW()),
+		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'auteur', 'auteurs', '32', '1', '1', NOW()),
+		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'auteur', 'auteurs', '32', '3', '32', NOW());
 		";
-		while($res = mysql_fetch_array($req)) {
-			$query .= "UPDATE _PREFIXTABLE_persontypes SET id = ".$res['id']." WHERE type = \"".$res['type']."\";";
+		while($res = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_persons SET idtype = (SELECT id FROM _PREFIXTABLE_persontypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';";
 		}
  		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication' WHERE title = 'Directeur de la publication';";
 
@@ -1425,11 +1468,18 @@ class exportfor08
 		}
 		while($res = mysql_fetch_array($req)) {
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".str_replace('"', "'", $res['titre'])."\", \"".$res['lien']."\");";
+				$q = "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
-				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
+				$q = "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
-				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".str_replace('"', "'", $res['titre'])."\", \"".$res['lien']."\");";
+				$q = "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");";
+			}
+			if(strpos($res['titre'], ';')) {
+				if(!mysql_query($q)) {
+					return mysql_error();
+				}
+			} else {
+				$query .= $q;
 			}
 		}
 
@@ -1584,10 +1634,10 @@ class exportfor08
 		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
 		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
 		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';";
-/*		if ($err = $this->__mysql_query_cmds($query)) {
+		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		}	
-*/
+
 		// ce qu'on cherche à remplacer
 		$lookfor = array("#NOTEBASPAGE",
 				 "textes",
@@ -1618,7 +1668,13 @@ class exportfor08
 				 "entrees",
 				 "entries\.",
 				 "entrees\.id",
-				 "directeur de publication"
+				 "directeur de publication",
+				 "WHERE=\"ok\"",
+				 "nomfamille",
+				 "prenom",
+				 "nom",
+				 "identree",
+				 "idpersonne"
 				 );
 		// et ce qu'on met à remplacer
 		$replace = array("#NOTESBASPAGE",
@@ -1643,14 +1699,20 @@ class exportfor08
 				"WHERE=\"name='",
 				"status",
 				"identifier",
-				"'order'",
+				"rank",
 				"degree",
 				"identity",
 				"personnes.",
 				"entries",
 				"entrees.",
 				"entries.id",
-				"directeurdelapublication"
+				"directeurdelapublication",
+				"WHERE=\"status GT 0\"",
+				"g_familyname",
+				"g_firstname",
+				"g_name",
+				"identry",
+				"idperson"
 				);
 		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source et target
 		// le second pour travailler :)
@@ -1796,7 +1858,7 @@ class exportfor08
 								}
 								// on met en majuscule ce qui doit l'être
 								// cad variables lodel et nom des macros
-								$tmpFile = preg_replace_callback("`\[\#[^\]]*\]`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
+								$tmpFile = preg_replace_callback("`\[\(?\#[^\]]*\)?\]`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
 								$tmpFile = preg_replace_callback("`MACRO NAME=\"([^\"]*)\"`", create_function('$matches','return strtoupper($matches[0]);'), $tmpFile);
 								// on écrit le fichier
 								$f = fopen($target."/tpl/".$file, "w");
