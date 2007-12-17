@@ -1,0 +1,93 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+<USE MACROFILE="macros_technique.html">
+<MACRO NAME="OUVRIR_HTML">
+<title>LODEL 0.7 - Page de migration vers Lodel 0.8</title>
+<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
+<link rel="stylesheet" href="styles_lodel.css">
+</head>
+<body> 
+	<div>
+		<div id="logo1"><img src="[#SHAREURL]/images/logo_login.png" alt="" /></div>
+		<div id="logo2"><img src="[#SHAREURL]/images/logo_login_droite.png" alt="" /></div>
+	</div>
+	<div id="formulaire">
+			<IF COND="[#ACTION] EQ 1">
+				<IF COND="[#ERROR] GT 0">
+					<p class="message_erreur">Une erreur s'est produite durant l'exécution du script à l'étape [#ERROR] : [#MSG_ERROR].<br />
+					Le script ne peut être repris.</p>
+				</IF>
+				<table border="1">
+					<IF COND="[#DUMP_BEFORE]">
+						<TR><TD>Dump de la base avant modification</TD><TD>[#DUMP_BEFORE]</TD></TR>
+					</IF>
+					<TR><TD>Initialisation de la base de données</TD><TD>[#INIT_DB]</TD></TR>
+					<TR><TD>Copie des données</TD><TD>[#CP_DATAS]</TD></TR>
+					<TR><TD>Création des classes</TD><TD>[#CREATE_CLASSES]</TD></TR>
+					<TR><TD>Mise à jour des champs</TD><TD>[#UP_FIELDS]</TD></TR>
+					<TR><TD>Mise à jour des types</TD><TD>[#UP_TYPES]</TD></TR>
+					<TR><TD>Mise à jour des documents annexes</TD><TD>[#UP_DOCANNEXES]</TD></TR>
+					<IF COND="[#UP_ME]">
+						<TR><TD>Upgrade du ME Revues.org</TD><TD>[#UP_ME]</TD></TR>
+					</IF>
+					<TR><TD>Copie des index</TD><TD>[#CP_INDEX]</TD></TR>
+					<TR><TD>Copie des fichiers annexes</TD><TD>[#CP_DOCANNEXES]</TD></TR>
+					<TR><TD>Copie des fichiers sources</TD><TD>[#CP_SOURCES]</TD></TR>
+					<TR><TD>Copie des images</TD><TD>[#CP_IMAGES]</TD></TR>
+					<TR><TD>Copie des fichiers CSS</TD><TD>[#CP_CSS]</TD></TR>
+					<TR><TD>Upgrade des templates</TD><TD>[#UP_TPL]</TD></TR>
+					<IF COND="[#DUMP_AFTER]">
+						<TR><TD>Dump des requêtes effectuées sur la base</TD><TD>[#DUMP_AFTER]</TD></TR>
+					</IF>
+				</table>
+				<IF COND="[#ERROR] EQ 0">
+					<h2>Migration des données effectuée avec succès !</h2>
+				</IF>
+			<ELSE/>
+				<h2>Migration des données vers une installation Lodel 0.8</h2>
+				<form action="export_to_08.php" method="POST">
+					<FIELDSET>
+						<LEGEND>
+						Choix des actions
+						</LEGEND>
+						<br />
+						<p>Sélectionnez les actions à effectuer : </p>
+						<IF COND="[#ACTION] NE 2">
+						<input type="checkbox" name="save_and_dump" checked="checked"/>&nbsp;Sauvegarde et téléchargement de la base AVANT modifications des données (vivement conseillé !)<br /><br />
+						</IF>
+						<input type="checkbox" name="do_and_dump" />&nbsp;Téléchargement des requêtes SQL modifiant la base<br /><br />
+						<input type="checkbox" name="dump_after" />&nbsp;Téléchargement de la base après modifications<br /><br />
+						<input type="checkbox" name="update_me" />&nbsp;Mise à jour du ME Revues.org (uniquement)<br /><br />
+						<input type="text" name="default_field" value="titre"  size="15"/>&nbsp;Nom du champ qui fait office de titre dans votre ME (par défaut 'titre' pour le ME Revues.org)<br /><br />
+						<input type="text" name="new_dir" value="" size="15" />&nbsp;Chemin relatif de la nouvelle installation (exemple : vous avez installé Lodel 0.7 dans /var/www/lodel07/ et Lodel 0.8 dans /var/www/lodel08/, alors le chemin relatif sera : "../lodel08")<br /><br />
+						<input type="submit" name="valid" value="Valider" />
+					</FIELDSET>
+				</form>
+			</IF>
+	</div>
+
+</body>
+</html>
