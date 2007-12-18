@@ -826,7 +826,7 @@ function paranumber(&$texte, $styles='texte')
 	 */
 
 	//$regexp = "/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=(\"texte\"|\"citation\"|\"annexe\") [^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie";
-
+	preg_match_all("`<td( (colspan|rowspan)=\"[^\"]*\")[^>]*>(.*)</td>`iuUs", $texte, $r);
 
 	if ($length_tab_classes != 1) {
 		$regexp = '/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
@@ -847,10 +847,11 @@ function paranumber(&$texte, $styles='texte')
 	
 	$texte = preg_replace($regex, $replacer, $texte);
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
-
+	foreach($r[3] as $k=>$result) {
+		$texte = str_replace("<td>".$result."</td>", "<td".$r[1][$k].">".$result."</td>", $texte);
+	}
 	return $texte;
 }
-
 
 /**
  * Filtre pour l'ajout des notes marginales
