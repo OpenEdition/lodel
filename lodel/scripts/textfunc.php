@@ -46,26 +46,6 @@
 if (file_exists($home."textfunc_local.php"))
 	require_once ("textfunc_local.php");
 
-
-function getParentByType($id,$type){
-        $q = "SELECT idparent FROM $GLOBALS[tp]entites WHERE id = '$id'";
-        $r = mysql_query($q);
-        if($idparent = @mysql_result($r, 0)){
-                $q = "SELECT t.type FROM $GLOBALS[tp]entites e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
-                AND e.idtype = t.id";
-                $r2 = mysql_query($q);
-                $ltype = mysql_result($r2, 0);
-                //echo mysql_error();
-                if($ltype == $type){
-                        echo $idparent;
-                }else{
-                        getParentByType($idparent, $type);
-                }
-        }else{
-                return(FALSE);
-        }
-}
-
 # fonction largement reprises de SPIP
 
 #include_once 'func.php';
@@ -473,7 +453,15 @@ function replacequotationmark($text)
 function replace($str, $search, $replace){
         return str_replace($search, $replace, $str);
 }
-	
+
+/**
+ * implemente preg_replace
+ */
+ 
+function reg_replace($str, $search, $replace){
+   return preg_replace($search, $replace, $str);
+}
+
 
 //
 // fonction utiliser pour les options (dans l'interface uniquement)
@@ -826,7 +814,7 @@ function paranumber(&$texte, $styles='texte')
 	 */
 
 	//$regexp = "/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=(\"texte\"|\"citation\"|\"annexe\") [^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie";
-	preg_match_all("`<td( (colspan|rowspan)=\"[^\"]*\")[^>]*>(.*)</td>`iuUs", $texte, $r);
+
 
 	if ($length_tab_classes != 1) {
 		$regexp = '/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
@@ -847,11 +835,10 @@ function paranumber(&$texte, $styles='texte')
 	
 	$texte = preg_replace($regex, $replacer, $texte);
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
-	foreach($r[3] as $k=>$result) {
-		$texte = str_replace("<td>".$result."</td>", "<td".$r[1][$k].">".$result."</td>", $texte);
-	}
+
 	return $texte;
 }
+
 
 /**
  * Filtre pour l'ajout des notes marginales
