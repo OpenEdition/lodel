@@ -320,7 +320,7 @@ class mets_insert {
 		}
 		$request['idtype'] = $this->_get_Lodel_idtype($request['type']);
 		if ($request['idtype'] == 0) {
-			$this->_log_error(__METHOD__ . ' Le type' . $request['type'] . 'n\'existe pas', WARN);
+			$this->_log_error(__METHOD__ . ' Le type *' . $request['type'] . '* n\'existe pas', WARN);
 			return 'err_type:' . $request['type'];
 		}
 
@@ -645,7 +645,7 @@ class mets_insert {
 	private function _execute_Lodel_request($request = array()) {
 		$request = array_merge($this->request, $request);
 		if ($request['idparent'] > 0) {
-			echo memory_get_usage() .'<p>';
+			//echo memory_get_usage() .'<p>';
 			//print_r($request);
 			$controleur = new controler (array('entities_edition'), 'entities_edition', $request);
 			unset($request);
@@ -696,7 +696,7 @@ class mets_insert {
 	 */
 
 	private function _get_namespaces($mets_file) {
-echo $mets_file->request;
+//echo $mets_file->request;
 		$namespaces = $mets_file->getNamespaces(true);
 		if (is_array($namespaces) && !empty($namespaces)) {
 			$namespaces['xml'] = 'http://www.w3.org/XML/1998/namespace';
