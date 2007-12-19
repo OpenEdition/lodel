@@ -226,7 +226,7 @@ class exportfor08
 	 * @todo Ne renommer que les tables de la 0.7
 	 */
 	public function init_db() {
-		if (!in_array($GLOBALS['tp'] . 'objets__old', $this->old_tables)) {
+		if (!in_array($GLOBALS['tp'] . 'objets__old', $this->old_tables) && is_readable(SITEROOT . 'init-site.sql')) {
 	
 			// sauvegarde des tables en 0.7 : renommées en $table . __old
 			$query = '';
@@ -321,7 +321,7 @@ class exportfor08
 				return "Ok";
 			}
 		} else {
-			return 'Aucune table détectée.';
+			return 'Erreur : soit votre base ne contient pas de tables Lodel, soit le fichier init-site.sql n\'est pas présent dans le répertoire racine de votre site.';
 		}
 	}
 
@@ -345,12 +345,13 @@ class exportfor08
 				$oldfields = trim($oldfields);
 				$newfields = trim($newfields);
 				$oldtable .= '__old';
-
+				
 				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;")) {
 					return $err;
 				}
 			}
 		}
+
 		if(!$req = mysql_query("SELECT id, g_familyname, g_firstname FROM ".$GLOBALS['tp']."persons;")) {
 			return mysql_error();
 		}
@@ -534,6 +535,13 @@ class exportfor08
 		$query .= "UPDATE _PREFIXTABLE_persontypes SET class = 'auteurs';
 		UPDATE _PREFIXTABLE_persons JOIN _PREFIXTABLE_entites_personnes__old ON id = idpersonne SET _PREFIXTABLE_persons.idtype = _PREFIXTABLE_entites_personnes__old.idtype;
 		";
+
+		$query .= "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
+	
+		$query .= "UPDATE _PREFIXTABLE_texts SET lang = 'FR', textgroup = 'site';
+		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
+		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
+		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';";
 		
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
@@ -552,12 +560,43 @@ class exportfor08
 	 */
 
 	public function insert_index_data() {
+
+		// id unique pour les entrées d'index
+		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."entries;")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_row($req)) {
+			$id = $this->__insert_object('entries');
+			$query .= "UPDATE _PREFIXTABLE_entries SET id = '".$id."' WHERE id = '".$res[0]."';";
+			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'E';";
+		}
+		// id unique pour les entrées de personnes
+		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."persons;")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_row($req)) {
+			$id = $this->__insert_object('persons');
+			$query .= "UPDATE _PREFIXTABLE_persons SET id = '".$id."' WHERE id = '".$res[0]."';";
+			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'G';";
+		}
+		if ($err = $this->__mysql_query_cmds($query)) {
+			return $err;
+		} else {
+			unset($query);
+		}
+		// MAJ classe des objets entité
+		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."entities;")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_row($req)) {
+			$query .= "UPDATE _PREFIXTABLE_objects SET class = 'entities' WHERE id = '".$res[0]."';";
+		}
 		// INDEX : tables indexes et relations
 		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
 			return mysql_error();
 		}
 		$max_id = mysql_result($result, 0);
-		$query = "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
+		$query .= "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
 		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;
 		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
 		";
@@ -574,7 +613,7 @@ class exportfor08
 		";
 		mysql_free_result($result);
 
-		if ($err = $this->__mysql_query_cmds($query)) {
+		if ($err = $this->__mysql_query_cmds($query) || $err = $this->__mysql_query_cmds($q)) {
 				return $err;
 		} else {
 			$nature = array('1'=>'G', '2'=>'E');
@@ -1628,15 +1667,7 @@ class exportfor08
 	public function update_tpl($target)
 	{
 		global $site;
-		$query = "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
 	
-		$query .= "UPDATE _PREFIXTABLE_texts SET lang = 'FR', textgroup = 'site';
-		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
-		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
-		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';";
-		if ($err = $this->__mysql_query_cmds($query)) {
-				return $err;
-		}	
 
 		// ce qu'on cherche à remplacer
 		$lookfor = array("#NOTEBASPAGE",
@@ -1674,7 +1705,9 @@ class exportfor08
 				 "prenom",
 				 "nom",
 				 "identree",
-				 "idpersonne"
+				 "idpersonne",
+				 "date",
+				 "maj"
 				 );
 		// et ce qu'on met à remplacer
 		$replace = array("#NOTESBASPAGE",
@@ -1712,7 +1745,9 @@ class exportfor08
 				"g_firstname",
 				"g_name",
 				"identry",
-				"idperson"
+				"idperson",
+				"datepubli",
+				"upd"
 				);
 		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source et target
 		// le second pour travailler :)
@@ -1877,6 +1912,7 @@ class exportfor08
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/document.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/sommaire.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/personnes.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/personne.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/entrees.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/entree.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/docannexe.".$GLOBALS['extensionscripts']);
