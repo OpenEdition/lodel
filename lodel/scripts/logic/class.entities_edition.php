@@ -333,7 +333,9 @@ class Entities_EditionLogic extends GenericLogic
 		if (!$vo->identifier && trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
-
+			if(empty($context['identifier'])) {
+				$context['identifier'] = $vo->identifier;
+			}
 			/*if (is_null ($context['identifier'])) {//identifier desactivated
 				$vo->identifier = $this->_calculateIdentifier ($id, $vo->identifier);
 			} else {// else that means that we have modified it*/
