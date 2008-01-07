@@ -211,11 +211,11 @@ class Parser
 	{
 		global $context;
 		// add by Pierre-Alain Mignot
-		// special parse : [#TEXTE:#LANG.#VALUE] for lang usability
+		// special parse : [#TEXTE:#DEFAULTLANG.#VALUE] for lang usability
 		// ex : [#RESUME:#LANG.#KEY] in a foreach loop which display resume in several language :
 		/*
-			<LOOP NAME="foreach" ARRAY="[#LANG]">
-				[#RESUME:#LANG.#KEY] 
+			<LOOP NAME="foreach" ARRAY="[#DEFAULTLANG]">
+				[#RESUME:#DEFAULTLANG.#KEY] 
 			</LOOP>
 		This will display all resume for each language available
 		*/
@@ -223,7 +223,7 @@ class Parser
 			$var = $this->_make_variable_code('', $res[2], '', false);
 			$lang = $this->_make_variable_code('', $res[3], '', false);
 			$value = $this->_make_variable_code('', $res[4], '', false);
-			$lang = '$context[\'lang\']['.$value.']';
+			$lang = '$context[\'defaultlang\']['.$value.']';
 			$mavar = "<"."?php echo multilingue(".$var.", ".$lang."); ?>";
 			$text = str_replace($res[1], $mavar, $text);
 		}
@@ -343,6 +343,7 @@ class Parser
 		# parse the filter
 		if ($pipefunction) { // traitement particulier ?
 			//echo $pipefunction."<br />";
+
 			$array = preg_split('/(?=\|[a-z]*[^\'|^\"]+)/',$pipefunction);
 
 			foreach($array as $fct) {
