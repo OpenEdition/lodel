@@ -84,6 +84,11 @@ class exportfor08
 		'GROUPESDECHAMPS::
 			id,nom,classe,titre,commentaire,statut,ordre,maj',
 
+		'AUTEURS::
+			idperson,nomfamille, prenom'=>
+		'PERSONNES::
+			id,nomfamille,prenom',
+
 		'PERSONS::
 			id,g_familyname,g_firstname,status,upd'=>
 		'PERSONNES::
@@ -356,7 +361,7 @@ class exportfor08
 			return mysql_error();
 		}
 		while($res = mysql_fetch_array($req)) {
-			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower($res['g_familyname']." ".$res['g_firstname'])."\" WHERE id = '".$res['id']."';")) {
+			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower(utf8_decode($res['g_familyname'])." ".utf8_decode($res['g_firstname']))."\" WHERE id = '".$res['id']."';")) {
 				return $err;
 			}			
 		}
@@ -470,7 +475,7 @@ class exportfor08
 
 	public function update_fields($dctitle = 'titre') {
 		// ENTITÉS : mise à jour des colonnes 'class' et 'g_name' seulement
-		if(!$result = mysql_query("SELECT id,class FROM $GLOBALS[tp]tablefieldgroups WHERE status>0")) {
+		if(!$result = mysql_query("SELECT id,class FROM ".$GLOBALS['tp']."tablefieldgroups WHERE status>0")) {
 			return mysql_error();
 		}
 		$query = '';
@@ -532,9 +537,14 @@ class exportfor08
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET class = 'indexes', sort = 'sortkey';";
 		
 		// INDEX DE PERSONNES
-		$query .= "UPDATE _PREFIXTABLE_persontypes SET class = 'auteurs';
-		UPDATE _PREFIXTABLE_persons JOIN _PREFIXTABLE_entites_personnes__old ON id = idpersonne SET _PREFIXTABLE_persons.idtype = _PREFIXTABLE_entites_personnes__old.idtype;
-		";
+		$query .= "UPDATE _PREFIXTABLE_persontypes SET class = 'auteurs';";
+		if(!mysql_query("UPDATE ".$GLOBALS['tp']."persons JOIN ".$GLOBALS['tp']."entites_personnes__old ON id = idpersonne SET ".$GLOBALS['tp']."persons.idtype = ".$GLOBALS['tp']."entites_personnes__old.idtype;")) {
+			return mysql_error();
+		} else {
+			$this->requetes .= "UPDATE _PREFIXTABLE_persons JOIN _PREFIXTABLE_entites_personnes__old ON id = idpersonne SET _PREFIXTABLE_persons.idtype = _PREFIXTABLE_entites_personnes__old.idtype;";
+		}
+
+
 
 		$query .= "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
 	
@@ -546,7 +556,6 @@ class exportfor08
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
-// echo '<p>update_types ok</p>';
 			return "Ok";
 		}
 	}
@@ -562,7 +571,7 @@ class exportfor08
 	public function insert_index_data() {
 
 		// id unique pour les entrées d'index
-		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."entries;")) {
+		if(!$req = mysql_query("SELECT ".$GLOBALS['tp']."entries.id FROM ".$GLOBALS['tp']."entries JOIN ".$GLOBALS['tp']."objects ON ".$GLOBALS['tp']."entries.id = ".$GLOBALS['tp']."objects.id WHERE ".$GLOBALS['tp']."objects.class != 'entries';")) {
 			return mysql_error();
 		}
 		while($res = mysql_fetch_row($req)) {
@@ -571,15 +580,16 @@ class exportfor08
 			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'E';";
 		}
 		// id unique pour les entrées de personnes
-		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."persons;")) {
+		if(!$req = mysql_query("SELECT ".$GLOBALS['tp']."persons.id FROM ".$GLOBALS['tp']."persons JOIN ".$GLOBALS['tp']."objects ON ".$GLOBALS['tp']."persons.id = ".$GLOBALS['tp']."objects.id WHERE ".$GLOBALS['tp']."objects.class != 'persons';")) {
 			return mysql_error();
 		}
 		while($res = mysql_fetch_row($req)) {
 			$id = $this->__insert_object('persons');
 			$query .= "UPDATE _PREFIXTABLE_persons SET id = '".$id."' WHERE id = '".$res[0]."';";
+			$query .= "UPDATE _PREFIXTABLE_auteurs SET idperson = '".$id."' WHERE idperson = '".$res[0]."';";
 			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'G';";
 		}
-		if ($err = $this->__mysql_query_cmds($query)) {
+		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 			return $err;
 		} else {
 			unset($query);
@@ -607,39 +617,88 @@ class exportfor08
 		}
 		$max_id = mysql_result($result, 0);
 		$query .= "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
-		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT idpersonne, identite from _PREFIXTABLE_entites_personnes__old;
-		UPDATE _PREFIXTABLE_relations SET nature='G', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
+		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree) SELECT DISTINCT idpersonne, identite, ordre from _PREFIXTABLE_entites_personnes__old;
+		UPDATE _PREFIXTABLE_relations SET nature='G' WHERE idrelation > $max_id;
 		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;
 		";
 		mysql_free_result($result);
 
-		if ($err = $this->__mysql_query_cmds($query) || $err = $this->__mysql_query_cmds($q)) {
+		if ($err = $this->__mysql_query_cmds($query) || (!empty($q) && $err = $this->__mysql_query_cmds($q))) {
 				return $err;
 		} else {
-			$nature = array('1'=>'G', '2'=>'E');
-			$j = 1;
-			while($j < 3) {
-				if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='".$nature[$j]."' AND id1 != 0 ORDER BY id1, id2")) {
+			unset($query);
+			unset($q);
+			if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='E' AND id1 != 0 ORDER BY id1, id2")) {
+				return mysql_error();
+			}
+			while($res = mysql_fetch_array($result)) {
+				$i = 1;
+				if(!$re = mysql_query("SELECT id2 FROM " . $GLOBALS['tp'] . "relations WHERE id1 = '".$res['id1']."' AND nature = 'E' ORDER BY id2")) {
 					return mysql_error();
 				}
-				while($res = mysql_fetch_array($result)) {
-					$i = 1;
-					if(!$re = mysql_query("SELECT id2 FROM " . $GLOBALS['tp'] . "relations WHERE id1 = '".$res['id1']."' AND nature = '".$nature[$j]."' ORDER BY id2")) {
+				while($resu = mysql_fetch_array($re)) {
+					$this->requetes .= "UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = 'E';";
+					if(!mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = 'E'")) {
 						return mysql_error();
 					}
-					while($resu = mysql_fetch_array($re)) {
-						$this->requetes .= "UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."';";
-						if(!mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = '".$nature[$j]."'")) {
-							return mysql_error();
+					$i++;
+				}
+			}
+//
+					if(!$resultat = mysql_query("SELECT t.id, t.titre, tp.id as tid, tp.title as title FROM ".$GLOBALS['tp']."typepersonnes__old as t JOIN ".$GLOBALS['tp']."persontypes as tp ON titre = title")) {
+						return mysql_error();
+					}
+					while($rtypes = mysql_fetch_array($resultat)) { 
+						$type07[] = $rtypes['id'];
+						$type08[] = $rtypes['tid'];
+						$titre[] = $rtypes['titre'];
+					}
+//
+			if(!$result = mysql_query("SELECT * FROM ".$GLOBALS['tp']."personnes__old")) {
+				return mysql_error();
+			} else {
+				while($res = mysql_fetch_array($result)) {
+					if(!$resu = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "entites_personnes__old WHERE idpersonne = '".$res['id']."'")) {
+						return mysql_error();
+					}
+					if(mysql_num_rows($resu) > 1) {
+						while($r = mysql_fetch_array($resu)) {
+							if(!$resulta = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "persons WHERE g_familyname = \"".$res['nomfamille']."\" OR g_familyname = \"".utf8_encode($res['nomfamille'])."\"")) {
+								return mysql_error();
+							}
+							unset($idtype);
+							while($resr = mysql_fetch_array($resulta)) {
+								$idtype[] = $resr['idtype'];
+							}
+							if(mb_detect_encoding($res['nomfamille']) != "UTF-8") {
+								$res['nomfamille'] = utf8_encode($res['nomfamille']);
+							}
+							if(mb_detect_encoding($res['prenom']) != "UTF-8")  {
+								$res['prenom'] = utf8_encode($res['prenom']);
+							}
+							foreach($type07 as $k=>$t) {
+								if(!in_array($type08[$k], $idtype)) { 
+									$id = $this->__insert_object('persons');
+									mysql_query("INSERT INTO ".$GLOBALS['tp']."persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$k]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');") or die(mysql_error());
+									mysql_query("INSERT INTO ".$GLOBALS['tp']."auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\")") or die(mysql_error());
+									if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$t."'")) {
+										return mysql_error();
+									}
+									while($rr = mysql_fetch_array($resul)) {
+										$query .= "UPDATE ".$GLOBALS['tp']."relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';";
+									}
+
+								}
+							}
 						}
-						$i++;
 					}
 				}
-				$j++;
+				if ($err = $this->__mysql_query_cmds($query)) {
+					return $err;
+				}
 			}
-// 			echo '<p>insert_index_data ok</p>';
-			return "Ok";
 		}
+		return "Ok";
 	}
 
 	/**
@@ -662,7 +721,7 @@ class exportfor08
 		";
 
 		// Nom des TEMPLATES dans l'onglet Édition
-		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition',tplcreation = 'entities';";
+		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition', tplcreation = 'entities';";
 
 		// CLASSES supplémentaires
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` ) VALUES
@@ -1183,7 +1242,7 @@ class exportfor08
 		if(!mysql_query($q)) {
 			return mysql_error();
 		}
-		$q = "INSERT INTO ".$GLOBALS[tp]."textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM ".$GLOBALS[tp]."textes__oldME;";
+		$q = "INSERT INTO ".$GLOBALS['tp']."textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM ".$GLOBALS['tp']."textes__oldME;";
 		$this->requetes .= $q;
 		if(!mysql_query($q)) {
 			return mysql_error();
@@ -1405,7 +1464,6 @@ class exportfor08
 				} else {
 					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
 				}
-				$this->requetes .= $q;
 				if(!$resu = mysql_query($q)) {
 					return mysql_error();
 				}
@@ -1428,7 +1486,7 @@ class exportfor08
 			while($res = mysql_fetch_array($result)) {
 				if($res['identifier'] == "") {
 					$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
-					$q = "UPDATE $GLOBALS[tp]entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
+					$q = "UPDATE ".$GLOBALS['tp']."entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
 					$this->requetes .= $q;
 					if(!mysql_query($q)) {
 						return mysql_error();
@@ -1436,7 +1494,6 @@ class exportfor08
 				}
 			}
 			mysql_free_result($result);
-// 			echo '<p>update_ME ok</p>';
 			return "Ok";
 		}
 
@@ -1647,7 +1704,7 @@ class exportfor08
 					continue;
 				}
 			
-				$Entry = $source . '/' . $entry;           
+				$Entry = $source . '/' . $entry;
 				if ( is_dir( $Entry ) )
 				{
 					$this->datas_copy( $Entry, $target . '/' . $entry );
