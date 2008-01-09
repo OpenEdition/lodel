@@ -23,8 +23,8 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-<USE MACROFILE="macros_technique.html">
-<MACRO NAME="OUVRIR_HTML">
+<USE MACROFILE="macros_0.4.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
 <title>LODEL 0.7 - Page de migration vers Lodel 0.8</title>
 <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
 <link rel="stylesheet" href="styles_lodel.css">
@@ -81,11 +81,15 @@
 						<input type="checkbox" name="do_and_dump" />&nbsp;Téléchargement des requêtes SQL modifiant la base<br /><br />
 						<input type="checkbox" name="dump_after" />&nbsp;Téléchargement de la base après modifications<br /><br />
 						<input type="checkbox" name="update_me" />&nbsp;Mise à jour du ME Revues.org (uniquement)<br /><br />
-						<input type="text" name="default_field" value="titre"  size="15"/>&nbsp;Nom du champ qui fait office de titre dans votre ME (par défaut 'titre' pour le ME Revues.org)<br /><br />
+						<input type="text" name="defaultgtitle" value="titre"  size="15"/>&nbsp;g_title<br /><br />
+						<input type="text" name="defaultgname" value="dc.title"  size="15"/>&nbsp;g_name<br /><br />
 						<input type="text" name="new_dir" value="" size="15" />&nbsp;Chemin relatif de la nouvelle installation (exemple : vous avez installé Lodel 0.7 dans /var/www/lodel07/ et Lodel 0.8 dans /var/www/lodel08/, alors le chemin relatif sera : "../lodel08")<br /><br />
 						<input type="submit" name="valid" value="Valider" />
 					</FIELDSET>
 				</form>
+				<IF COND="[#ERROR] EQ 1">
+					<p class="message_erreur">Erreur : Vous devez obligatoirement remplir les champs g_title ET g_name.</p>
+				</IF>
 			</IF>
 	</div>
 
