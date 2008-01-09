@@ -49,8 +49,8 @@ $context['actions'] = &$_POST;
 $context['error'] = 0;
 
 
-if($context['actions']['valid'] === "Valider") {
-	$exportfor08 = new exportfor08();
+if($context['actions']['valid'] === "Valider" && !empty($context['actions']['defaultgtitle']) && !empty($context['actions']['defaultgname'])) {
+	$exportfor08 = new exportfor08($context['actions']['defaultgtitle'], $context['actions']['defaultgname']);
 	$context['action'] = 1;
 		if($context['actions']['save_and_dump'] && !$context['error']) {
 			$context['dump_before'] = $exportfor08->dump_before_changes();
@@ -166,6 +166,8 @@ if($context['actions']['valid'] === "Valider") {
 				$context['msg_error'] = $context['dump_after_changes'];
 			}
 		}
+} elseif($context['actions']['valid'] === "Valider") {
+	$context['error'] = 1;
 }
 calcul_page($context,"index_migration");
 ?>
