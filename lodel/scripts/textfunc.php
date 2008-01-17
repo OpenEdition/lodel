@@ -910,15 +910,15 @@ function notesmarginales(&$texte, $coupe) {
 
 		$titre_modif = $titre;
 		
-		$titre_modif .= "\n<ul class=\"sidenotes\"><li><a ".$hreftitre.">".cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe);
+		$titre_modif .= "\n<ul class=\"sidenotes\"><li>".cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe);
 		
 		if(strlen($matchesnotebaspages[3][0]) > $coupe) {
-			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'(...)';
+			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'<a ".$hreftitre.">(...)</a>';
 		} else {
 			$titre_modif .= strip_tags($matchesnotebaspages[3][0]);
 		}
 
-		$titre_modif .= "</a></li></ul>";
+		$titre_modif .= "</li></ul>";
 
 		$condition = 1;
 
@@ -958,12 +958,12 @@ function notesmarginales(&$texte, $coupe) {
 
 				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
 
-				$r = '<a '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
+				$r = $matchesnotebaspages[2][$cptendpage];
 
 				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
-					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'(...)</a>';
+					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'<a '.$matchesnotebaspages[1][$cptendpage].'>(...)</a>';
 				} else {
-					$r .= strip_tags($matchesnotebaspages[3][$cptendpage]).'</a>';
+					$r .= strip_tags($matchesnotebaspages[3][$cptendpage]);
 				}
 
 				$buffer .= '<li>'.$r.'</li>';
