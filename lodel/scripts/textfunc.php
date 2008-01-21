@@ -865,13 +865,17 @@ function notesmarginales(&$texte, $coupe) {
 	$compteur = 0;
 	$titre = $GLOBALS['context']['titre'];
 
+	// filtre très capricieux : on va réorganiser les attributs des balises 'a' et 'p' pour correspondre aux regexp
+	$texte = preg_replace('`<a(.*)class="(.*)"(.*)>(.*)</a>`U', "<a class=\"$2\" $1 $3>$4</a>", $texte);
+	$texte = preg_replace('`<p(.*)class="(.*)"(.*)>(.*)</p>`U', "<p class=\"$2\" $1 $3>$4</p>", $texte);
+
 	//on récupère toutes les notes du texte
-	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
+	$regexp = '/<a class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
 	preg_match_all($regexp,$texte,$matches);
 
-	$regexpnote = '/<p\s+class="notebaspage"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/p>/s';	
+	$regexpnote = '/<p class="notebaspage"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/p>/s';	
 
-	$search = '/<p\s+class="notebaspage"[^>](.*?)>/';
+	$search = '/<p class="notebaspage"[^>](.*?)>/';
 	$replace = '<br /><p class="notebaspage" \\1>';
 
 	$notesformatees = preg_replace($search, $replace, $GLOBALS['context']['notesbaspage']);
@@ -889,10 +893,20 @@ function notesmarginales(&$texte, $coupe) {
 	}
 
 	//on recupére chaque note du bloc de notes
-	preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
-
-	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
-
+	if(preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin) == 0 && preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages) == 0) {
+		// compatibilité 0.7 :
+		$regexpnote = '/<div\s+class="footnotebody"[^>]*>\s*<a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/div>/s';
+		preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
+		preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
+		foreach($matchesnotebaspages[1] as &$nbp) {
+			$nbp = preg_match('`(.*)href="(.*)"(.*)`U', str_replace("bodyftn", "ftn", $nbp), $temp);
+			$nbp = $temp[0];
+		}
+		foreach($matchesnotefin[1] as &$nbp) {
+			$nbp = preg_match('`(.*)href="(.*)"(.*)`U', str_replace("bodyftn", "ftn", $nbp), $temp);
+			$nbp = $temp[0];
+		}
+	}
 
 	//pour traiter les cas d'une note dans le titre principal
 	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
@@ -913,7 +927,7 @@ function notesmarginales(&$texte, $coupe) {
 		$titre_modif .= "\n<ul class=\"sidenotes\"><li>".cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe);
 		
 		if(strlen($matchesnotebaspages[3][0]) > $coupe) {
-			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'<a ".$hreftitre.">(...)</a>';
+			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'<a '.$hreftitre.'>(...)</a>';
 		} else {
 			$titre_modif .= strip_tags($matchesnotebaspages[3][0]);
 		}
@@ -928,7 +942,7 @@ function notesmarginales(&$texte, $coupe) {
 	
 
 	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
-	$regexppar = '/(((<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>))|(<h[0-9] dir=[^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>.*<\/table>)/';
+	$regexppar = '/(((<h[0-9][^>]*>.*?<\/h[0-9]>)?<p class="(.*?)"[^>]*>(.*?)<\/p>))|(<h[0-9]><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>.*<\/table>)/';
 	
 
 	preg_match_all($regexppar,$texte,$paragraphes);
@@ -953,22 +967,22 @@ function notesmarginales(&$texte, $coupe) {
 
 				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$cptendpage],$m)) || (preg_match('/[a-zA-Z]+/',$matchesnotebaspages[2][$cptendpage],$m))) {
 
-				$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
-				$replace = array ('href="#\\1"');
-
-				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
-
-				$r = $matchesnotebaspages[2][$cptendpage];
-
-				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
-					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'<a '.$matchesnotebaspages[1][$cptendpage].'>(...)</a>';
-				} else {
-					$r .= strip_tags($matchesnotebaspages[3][$cptendpage]);
-				}
-
-				$buffer .= '<li>'.$r.'</li>';
-			
-				$cpt++;
+					$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
+					$replace = array ('href="#\\1"');
+	
+					$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
+	
+					$r = $matchesnotebaspages[2][$cptendpage];
+	
+					if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
+						$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'<a '.$matchesnotebaspages[1][$cptendpage].'>(...)</a>';
+					} else {
+						$r .= strip_tags($matchesnotebaspages[3][$cptendpage]);
+					}
+	
+					$buffer .= '<li>'.$r.'</li>';
+				
+					$cpt++;
 				} else {
 					$cptendpage++;
 				}
@@ -982,7 +996,8 @@ function notesmarginales(&$texte, $coupe) {
 	}
 
 	$condition = 0;
-
+	// sécurité : pas de notes = pas de retour = pas de texte affiché !!! on corrige ça
+	$retour = empty($retour) ? $texte : $retour;
 	return $retour;
 }
 
