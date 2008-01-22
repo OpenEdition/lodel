@@ -212,7 +212,7 @@ class exportfor08
 	/**
 	 * Constructeur
 	 */
-	function __construct($defaultgTitle = 'title', $defaultgName = 'dc.title') {
+	function __construct($defaultgTitle = 'titre', $defaultgName = 'dc.title') {
 		$this->old_tables = $this->get_tables();
 		$this->defaultgTitle = $defaultgTitle;
 		$this->defaultgName = $defaultgName;
@@ -241,7 +241,7 @@ class exportfor08
 	 * Renomme les tables de la 0.7 : ajoute le suffixe __old au nom de la table
 	 * Crée ensuite les tables de la 0.8, d'après le fichier init-site.sql
 	 *
-	 * @return array
+	 * @return string Ok
 	 * @todo Ne renommer que les tables de la 0.7
 	 */
 	public function init_db() {
@@ -261,11 +261,8 @@ class exportfor08
 			// import de la structure des tables en 0.8
 			$query = '';
 			$sqlfile = SITEROOT . 'init-site.sql';
-			if (is_readable($sqlfile)) {
-				$query = join('', file($sqlfile));
-			} else {
-				return 'Impossible de lire le fichier init-site.sql pour la 0.8';
-			}
+			$query = join('', file($sqlfile));
+
 			if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
 			}
@@ -339,7 +336,7 @@ class exportfor08
 				return "Ok";
 			}
 		} else {
-			return 'Erreur : soit votre base ne contient pas de tables Lodel, soit le fichier init-site.sql n\'est pas présent dans le répertoire racine de votre site.';
+			return 'Erreur : soit votre base ne contient pas de tables Lodel, soit le fichier init-site.sql n\'est pas présent dans le répertoire racine de votre site, soit vous avez deja executer le script de migration.';
 		}
 	}
 
@@ -347,7 +344,7 @@ class exportfor08
 	/**
 	 *  Copie les données de la 0.7 dans les tables de la 0.8
 	 *
-	 * @return true si la copie est ok
+	 * @return Ok si la copie est ok
 	 */
 	public function cp_07_to_08() {
 		
@@ -386,7 +383,7 @@ class exportfor08
 	 * Création des classes : en dur en 0.7 (publications, documents, index et index de personnes)
 	 * En mou en 0.8, donc à insérer dans les tables objects et classes
 	 * 
-	 * @return true si insertions dans les tables OK
+	 * @return Ok si insertions dans les tables OK
 	 */
 
 	public function create_classes() {
@@ -452,10 +449,9 @@ class exportfor08
 	 */
 
 	private function __update_entities() {
-		
 		foreach (array("publications","documents") as $classe) {
-	  		if(!$result = mysql_query('SELECT identity,' . $this->defaultgTitle . ' FROM ' . $GLOBALS['tp'] . $classe)) {
-				return mysql_error();
+	  		if(!$result = mysql_query("SELECT identity, " . $this->defaultgTitle . " FROM " . $GLOBALS['tp'] . $classe)) {
+				return "SELECT identity, " . $this->defaultgTitle . " FROM " . $GLOBALS['tp'] . $classe." / ".mysql_error();
 			}
 	  		while (list($id,$titre) = mysql_fetch_row($result)) {
 	    			$titre = strip_tags($titre);
@@ -464,7 +460,7 @@ class exportfor08
 	      				$titre=preg_replace("/\S+$/","",$titre);
 	    			}
 	    			$titre = addslashes($titre);
-				$query = 'UPDATE ' . $GLOBALS['tp'] . "entities set g_title='".$this->defaultgTitle."' WHERE id=$id;";
+				$query = 'UPDATE ' . $GLOBALS['tp'] . "entities set g_title='".$titre."' WHERE id=$id;";
 				$this->requetes .= $query;
 				if(!mysql_query($query))
 					return mysql_error();
@@ -478,8 +474,7 @@ class exportfor08
 	 * Pour les entités, reprise des champs des tables publications et documents
 	 * Pour les index et index de personnes, ajout dans table tablefields
 	 *
-	 * @param string $dctitle nom du champ qui fait office de titre dans le ME de la 0.7, pour les classes documents et publications : vaut 'titre' dans le ME revues.org 0.7
-	 * @return true si insertions dans les tables OK
+	 * @return Ok si insertions dans les tables OK
 	 */
 
 	public function update_fields() {
@@ -535,7 +530,7 @@ class exportfor08
 	/**
 	 * Mise à jour des types
 	 * 
-	 * @return true si insertions dans les tables OK
+	 * @return Ok si insertions dans les tables OK
 	 */
 
 	public function update_types() {
@@ -572,7 +567,7 @@ class exportfor08
 	 * Mise à jour des relations : en 0.8, toutes les relations sont stockées dans la table relations,
 	 * en 0.7 dans les tables entites_entrees et entites_personnes
 	 * 
-	 * @return true si insertions dans les tables OK
+	 * @return Ok si insertions dans les tables OK
 	 */
 
 	public function insert_index_data() {
@@ -602,7 +597,7 @@ class exportfor08
 		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 			return $err;
 		} else {
-			unset($query);
+			unset($query, $id);
 		}
 		// MAJ classe des objets entité
 		if(!$req = mysql_query("SELECT id FROM ".$GLOBALS['tp']."entities;")) {
@@ -621,6 +616,40 @@ class exportfor08
 		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
 		";
 		mysql_free_result($result);
+	
+		// licence
+		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
+			return mysql_error();
+		}
+		unset($max_id);
+		$max_id = mysql_result($result, 0);
+		if(!$result = mysql_query("SELECT distinct droitsauteur from documents__old;")) {
+			return mysql_error();
+		}
+		$i = 1;
+		while($res = mysql_fetch_array($result)) {
+			if($res['droitsauteur'] != "") {
+				$id = $this->__insert_object('entries');
+				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".utf8_decode($res['droitsauteur'])."\", \"".strtolower(utf8_decode($res['droitsauteur']))."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());";
+				$query .= "INSERT INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';";
+	
+				if(!$req = mysql_query("SELECT identite FROM documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
+					return mysql_error();
+				}
+				while($re = mysql_fetch_array($req)) {
+					$query .= "INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) VALUES ('".$id."', '".$re['identite']."', 'E', 1);";	
+				}
+				$i++;	
+			}	
+		}
+		mysql_free_result($result);
+		mysql_free_result($req);
+		// besoin d'executer certaines requetes avant de continuer
+		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+			return $err;
+		} else {
+			unset($query, $max_id);
+		}
 		// INDEX DE PERSONNES : tables auteurs, entities_auteurs et relations
 		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
 			return mysql_error();
@@ -636,8 +665,7 @@ class exportfor08
 		if ($err = $this->__mysql_query_cmds($query) || (!empty($q) && $err = $this->__mysql_query_cmds($q))) {
 				return $err;
 		} else {
-			unset($query);
-			unset($q);
+			unset($query, $q, $i, $max_id);
 			// mise à jour des degrés entre les entrées d'index
 			if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "relations WHERE nature='E' AND id1 != 0 ORDER BY id1, id2")) {
 				return mysql_error();
@@ -724,7 +752,7 @@ class exportfor08
 	/**
 	 * Mise à jour du ME pour conformité avec ME revues.org de la 0.8
 	 * 
-	 * @return true si insertions dans les tables OK
+	 * @return Ok si insertions dans les tables OK
 	 */
 
 	public function update_ME() {
@@ -820,12 +848,12 @@ class exportfor08
 		}
 		$q = utf8_encode("INSERT INTO " . $GLOBALS['tp'] . "types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
-		(".$id[0].", 'lodel/icons/rubrique_plat.gif', 'rubriqueaplat', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
+		(".$id[0].", 'lodel/icons/rubrique_plat.gif', 'souspartie', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
 		(".$id[1].", '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
 		(".$id[2].", '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
 		(".$id[3].", 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
 		(".$id[4].", '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
-		(".$id[5].", '', 'annuairedequipe', 'Equipe', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', '2007-10-11 12:01:56'),
+		(".$id[5].", '', 'annuairedequipe', 'Équipe', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', '2007-10-11 12:01:56'),
 		(".$id[6].", '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
 		(".$id[7].", '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
 		(".$id[8].", '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
@@ -1051,7 +1079,7 @@ class exportfor08
 					'collection'=>'8',
 					'numero'=>'9',
 					'rubrique'=>'10',
-					'rubriqueaplat'=>'11',
+					'souspartie'=>'11',
 					'image'=>'12',
 					'noticedesite'=>'13',
 					'commentaire'=>'14',
@@ -1085,6 +1113,8 @@ class exportfor08
 		$query .= $prerequete;
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
+		} else {
+			unset($query);
 		}
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';";
 		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';";
@@ -1116,25 +1146,25 @@ class exportfor08
 			$id[] = $this->__insert_object('entrytypes');
 		}
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(".$id[0].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'mot', 'mots', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[0].", '', 'motscleses', 'indexes', 'Palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'mot', 'mots', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagwortindex', '', 'schlagworter, .schlagworter, motsclesde', '', 'mot', 'mots', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
-		(".$id[3].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords, motclesen', '', 'mot', 'mots', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
+		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'mot', 'mots', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(".$id[3].", '', 'motsclesen', 'indexes', 'Keywords', '', 'keywords, motclesen', '', 'mot', 'mots', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
 		";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie' WHERE type = 'geographie';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', rank = 5 WHERE type = 'periode';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Index de mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie', title = 'Géographique' WHERE type = 'geographie';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', title = 'Thématique', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', title = 'Chronologique', rank = 5 WHERE type = 'periode';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';";
 
 		// OPTIONGROUPS & OPTIONS
-		$query .= "INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
+		$query .= utf8_encode("INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
 				('4', '0', 'from07', 'Suite import de données de Lodel 0.7', '', '', '', '1', '1', '32', NOW()),
 				('1', '0', 'servoo', 'Servoo', '', '', 'servooconf', '1', '1', '32', NOW()),
 				('2', '0', 'metadonneessite', 'Métadonnées du site', '', '', '', '1', '2', '1', NOW()),
 				('3', '0', 'oai', 'OAI', '', '', '', '1', '5', '1', NOW());
 			UPDATE _PREFIXTABLE_options SET idgroup = 4, title = 'Signaler par mail' WHERE name = 'signaler_mail';
 			UPDATE _PREFIXTABLE_options SET idgroup = 3, userrights = 40 WHERE name LIKE 'oai_%';
-			UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'ISSN électronique', name = 'ISSN_electronique', userrights = 30, rank = 7, status = 32 WHERE name = 'issn_electronique';
+			UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'ISSN électronique', name = 'issn_electronique', userrights = 30, rank = 7, status = 32 WHERE name = 'issn_electronique';
 			UPDATE _PREFIXTABLE_options SET type = 'tinytext' WHERE type = 's';
 			UPDATE _PREFIXTABLE_options SET type = 'passwd' WHERE type = 'pass';
 			UPDATE _PREFIXTABLE_options SET type = 'email' WHERE type = 'mail';
@@ -1149,7 +1179,7 @@ class exportfor08
 				(NULL, '2', 'titresiteabrege', 'Titre abrégé du site', 'tinytext', 'Titre abrégé du site', '', '40', '3', '1', NOW(), '', ''),
 				(NULL, '2', 'descriptionsite', 'Description du site', 'text', '', '', '40', '4', '1', NOW(), 'textarea', ''),
 				(NULL, '2', 'urldusite', 'URL officielle du site', 'url', '', '', '40', '5', '1', NOW(), 'editable', ''),
-				(NULL, '2', 'issn', 'ISSN', 'tinytext', '', '', '30', '6', '1', NOW(), 'editable', ''),
+				(NULL, '2', 'issn', 'issn', 'tinytext', '', '', '30', '6', '1', NOW(), 'editable', ''),
 				(NULL, '2', 'editeur', 'Nom de l\'éditeur du site', 'tinytext', '', '', '30', '8', '1', NOW(), '', ''),
 				(NULL, '2', 'adresseediteur', 'Adresse postale de l\'éditeur', 'text', '', '', '30', '9', '1', NOW(), '', ''),
 				(NULL, '2', 'producteursite', 'Nom du producteur du site', 'tinytext', '', '', '30', '10', '1', NOW(), '', ''),
@@ -1161,7 +1191,7 @@ class exportfor08
 				(NULL, '2', 'courrielabuse', 'Courriel abuse', 'tinytext', '', '', '40', '16', '1', NOW(), 'editable', ''),
 				(NULL, '2', 'motsclesdusite', 'Mots clés décrivant le site (entre virgules)', 'text', '', '', '30', '17', '1', NOW(), '', ''),
 				(NULL, '2', 'langueprincipale', 'Langue principale du site', 'lang', 'fr', '', '40', '18', '1', NOW(), 'editable', ''),
-				(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');";
+				(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');");
 
 		// persontypes
 		unset($id);
@@ -1174,7 +1204,7 @@ class exportfor08
 		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
 		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'auteur', 'auteurs', '64', '2', '1', NOW()),
 		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'auteur', 'auteurs', '64', '4', '32', NOW()),
-		(".$id[2].", '', 'editeurscientifique', 'Editeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'auteur', 'auteurs', '64', '5', '1', NOW()),
+		(".$id[2].", '', 'editeurscientifique', 'Éditeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'auteur', 'auteurs', '64', '5', '1', NOW()),
 		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'auteur', 'auteurs', '32', '1', '1', NOW()),
 		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'auteur', 'auteurs', '32', '3', '32', NOW());
 		";
@@ -1243,7 +1273,7 @@ class exportfor08
 				commentaireinterne text,
 				dedicace text,
 				ocr tinyint(4) default NULL,
-				documentcliquable tinyint(4) default NULL,
+				documentcliquable tinyint(4) default TRUE,
 				`resume` text,
 				altertitre text,
 				titreoeuvre text,
@@ -1548,7 +1578,7 @@ class exportfor08
 		foreach ($request as $cmd) {//echo $cmd . '<p>';
 			$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
 			if ($cmd) {	
- 				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd)) 
+ 				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd) && mb_detect_encoding($cmd) != "UTF-8") 
  					$cmd = utf8_encode($cmd);
 
 				$this->requetes .= $cmd;
@@ -1596,7 +1626,10 @@ class exportfor08
 			} elseif($res['type'] == "documentannexe-lienfichier") {
 				$q = "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");";
 			}
-			if(strpos($res['titre'], ';')) {
+			if(mb_detect_encoding($q) != "UTF-8") {
+				$q = utf8_encode($q);
+			}
+			if(strpos($res['titre'], ';') !== false) {
 				if(!mysql_query($q)) {
 					return mysql_error();
 				}
@@ -1749,7 +1782,6 @@ class exportfor08
 	public function update_tpl($target)
 	{
 		global $site;
-	
 
 		// ce qu'on cherche à remplacer
 		$lookfor = array("#NOTEBASPAGE",
@@ -1836,8 +1868,6 @@ class exportfor08
 		$i = 0; 
 		// tableau des noms de macros/fonctions 0.7
 		$funclist = array();
-		// tableau des noms des macros/fonctions ayant un nom identique en 0.7/0.8
-		$funcNamesToChange = array();
 		// tableau des macros en double
 		$funcToAdd = array();	
 		// liste des fichiers macros de la 0.7 à ajouter dans les tpl de la 0.8
@@ -1857,8 +1887,7 @@ class exportfor08
 					$i++;
 					if ($dh = opendir("tpl")) {
 						while (($file = readdir($dh)) !== false) {
-							unset($tmp);
-							unset($defins);
+							unset($tmp, $defins);
 							// est-ce bien un fichier de macros ? extension html obligatoire et 'macros' dans le nom
 							if("html" === substr($file, -4, 4) && !is_link("tpl/".$file) && !preg_match("/oai/", $file)) {
 								if(preg_match("`macros`i", $file)) {	
@@ -1873,15 +1902,12 @@ class exportfor08
 					} else {
 						return "ERROR : cannot open directory 'tpl'.";
 					}
-
+					
 					$funclist = array_unique($funclist);
 
 					if ($dh = opendir($target."/tpl")) {
 						while (($file = readdir($dh)) !== false) {
-							unset($tmp);
-							unset($defins);
-							unset($defin);
-							unset($def);
+							unset($tmp, $defins, $defin, $def);
 							// est-ce bien un fichier de tpl/macros ? extension html obligatoire et/ou 'macros' dans le nom
 							if("html" === substr($file, -4, 4) && !is_link($target."/tpl/".$file) && !preg_match("/oai/", $file)) {
 								$tmp = file_get_contents($target."/tpl/".$file);
@@ -1890,20 +1916,11 @@ class exportfor08
 									// on récupère les macros/fonctions en double
 									foreach($defins[2] as $k=>$def) {
 										if(!in_array($def, $funclist)) {
-											//$funcNamesToChange[] = $def;
 											$funcToAdd[$file][] = $defins[0][$k];
 										}
 									}
 								}
-// 								unset($def);
-// 								// on récupère les noms des macros 0.7 utilisées en 0.8 et on les renomme
-// 								preg_match_all("`<(MACRO|FUNC) NAME=\"([^\"]*)\"`iU", $tmp, $defin);
-// 								$defin[2] = array_unique($defin[2]);
-// 								foreach($defin[2] as $k=>$def) {
-// 									if(in_array($def, $funclist)) {
-// 										$tmp = str_replace('"'.$def.'"', '"'.$def.'07"', $tmp);
-// 									}
-// 								}
+
 								if(!file_exists("tpl/".$file)) {
 									$tmp = strtr($tmp, array("\n<USE MACROFILE=\"macros_site.html\">\n"=>$upMacroFile,"\n<USE MACROFILE=\"macros_site.html\" />\n"=>$upMacroFile));
 									$tmp = strtr($tmp, array("<MACRO NAME=\"FERMER_HTML\" />"=>"<MACRO NAME=\"FERMER_HTML08\" />", "<MACRO NAME=\"FERMER_HTML\">"=>"<MACRO NAME=\"FERMER_HTML08\" />"));
@@ -1914,7 +1931,6 @@ class exportfor08
 							}
 						}
 						closedir($dh);
-						//$funcNamesToChange = array_unique($funcNamesToChange);
 					} else {
 						return "ERROR : cannot open directory 'tpl'.";
 					}
@@ -1922,34 +1938,10 @@ class exportfor08
 					$i++;
 					if ($dh = opendir("tpl")) {
 						while (($file = readdir($dh)) !== false) {
-							unset($tmpFile);
-							unset($tmp2);
-							unset($defs);
-							unset($def);
-							unset($fntc);
+							unset($tmpFile, $tmp2, $defs, $def, $fntc);
 							// est-ce bien un template ou un fichier de macros ? extension html obligatoire
 							if("html" === substr($file, -4, 4) && !is_link("tpl/".$file) && !preg_match("/oai/", $file)) {
 								$tmpFile = file_get_contents("tpl/".$file);
-// 								if(file_exists($target."/tpl/".$file)) {
-// 								// cas spécial des macros
-// 								// il faut avoir la possibilité d'utiliser les macros présentes en 0.8
-// 								// ET celles utilisées auparavant dans la 0.7
-// 								// on merge les deux fichiers
-// 									$tmp2 = file_get_contents($target."/tpl/".$file);
-// 									preg_match_all("`<(DEFMACRO|DEFFUNC) NAME=\"([^\"]*)\"[^>]*>(.*)</(DEFMACRO|DEFFUNC)>`iUs", $tmp2, $defs);
-// 									$defs[2] = array_unique($defs[2]);
-// 									foreach($defs[2] as $k=>$def) {
-// 										// on vérifie que la macro en cours n'existe pas déjà sinon on l'ajoute
-// 										// si elle existe on va renommer la macro 0.7 avec le suffixe 07
-// 										if(!in_array($def, $funclist)) {
-// 											$tmpFile .= "\n\n".$defs[0][$k];
-// 										}
-// 									}
-// 								}
-//  								// on renomme les macros existantes en 0.7 et ayant un double en 0.8 avec un suffixe '07'
-// 								foreach($funcNamesToChange as $fntc) {
-// 									$tmpFile = str_ireplace("\"".$fntc."\"", "\"".$fntc.'07"', $tmpFile);
-// 								}
 
 								// on ajoute les macros de la 0.8 dans les tpl de la 0.7
 								if(!empty($funcToAdd[$file])) {
