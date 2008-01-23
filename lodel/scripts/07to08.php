@@ -631,7 +631,7 @@ class exportfor08
 			if($res['droitsauteur'] != "") {
 				$id = $this->__insert_object('entries');
 				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".utf8_decode($res['droitsauteur'])."\", \"".strtolower(utf8_decode($res['droitsauteur']))."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());";
-				$query .= "INSERT INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';";
+				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';";
 	
 				if(!$req = mysql_query("SELECT identite FROM documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
 					return mysql_error();
