@@ -292,7 +292,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#if (!chdir("lodel/admin"))
 		#  die("ERROR: chdir 2 fails");
 		if ($sqlfile)	{
-			system($unzipcmd." -qp $archive  *.sql >$sqlfile");
+			system($unzipcmd." -qp $archive  \*.sql > $sqlfile");
 			if (filesize($sqlfile) <= 0)
 				return false;
 		}
