@@ -1,0 +1,43 @@
+[aaa|aaa|aaa|aaa]
+
+[bbb|bbb|bbb|bbb]
+
+je test du __gras__
+
+| mais | aussi | un tableau
+| hÈ hÈ | c'est | marrant
+
+* number 1
+* number 2
+
+====
+
+- number 3
+- number 4
+
+test
+
+!!!titre 1
+!!titre 2
+!titre 3
+
+ $this->code;
+ echo "rulez !!!";
+
+> citation !
+
+;terme : dÈfinition
+
+''italique''%%%c'est pratique !
+
+@@maintenant un peu de code@@
+
+^^phrase|lien source^^
+
+{{ma rÈfÈrence ‡‡‡‡‡‡ moiiii !}}
+
+??acronyme|signification??
+
+~~monancre~~
+
+((http://www.google.fr/logos/6th_birthday.gif|google|g|ceci est le logo de chez google :p))
