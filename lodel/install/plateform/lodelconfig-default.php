@@ -120,6 +120,8 @@ define("URI","id");        # position de l'id dans l'URL, a gauche signifie du g
 $servoourl="";
 $servoousername="";
 $servoopasswd="";
+# repertoire temporaire d'extraction ServOO
+$tmpoutdir = "";
 
 # configuration du proxy pour atteindre le ServOO
 
