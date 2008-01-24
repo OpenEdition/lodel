@@ -203,7 +203,7 @@ class ServOO_Client {
    * @return array list of file fullname. False on error message if any error
    */
 
-  function convertUnpack($infilename,$informat,$outformat, $outdir
+  function convertUnpack($infilename,$informat,$outformat, $outdir,
 			 $options=array(),
 			 $zipoptions=array()) {
 
