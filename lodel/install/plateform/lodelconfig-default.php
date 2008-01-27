@@ -133,6 +133,12 @@ $proxyport="8080";
 
 define("DONTUSELOCKTABLES",false);
 
+# recaptcha pour la partie signaler
+# par défaut désactivé
+$signaler_recaptcha = false;
+$recaptcha_privatekey = ""; // clé privée recaptcha
+$recaptcha_publickey = ""; // clé publique recaptcha
+
 
 ############################################
 # config reserve au systeme de config automatique
