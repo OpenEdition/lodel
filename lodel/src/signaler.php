@@ -77,8 +77,15 @@ if (mysql_num_rows($result) < 1) {
 	header ("Location: not-found.html");
 	return;
 }
-require_once 'recaptchalib.php';
+
 $context = array_merge($context, filtered_mysql_fetch_assoc($context, $result));
+
+require_once 'recaptchalib.php';
+# recaptcha pour la partie signaler
+# par défaut désactivé
+$context['signaler_recaptcha'] = false;
+$context['recaptcha_privatekey'] = ""; // clé privée recaptcha
+$context['recaptcha_publickey'] = ""; // clé publique recaptcha
 
 
 // send
@@ -86,7 +93,7 @@ if ($envoi) {
 	extract_post();
 	if($GLOBALS['signaler_recaptcha'] === true) {
 		// recaptcha
-		$resp = recaptcha_check_answer ($GLOBALS['recaptcha_privatekey'],
+		$resp = recaptcha_check_answer ($context['recaptcha_privatekey'],
 						$_SERVER["REMOTE_ADDR"],
 						$_POST["recaptcha_challenge_field"],
 						$_POST["recaptcha_response_field"]);
@@ -142,6 +149,8 @@ if ($envoi) {
 		return;
 	} while (0);
 }
+
+
 
 require_once 'calcul-page.php';
 calcul_page($context, 'signaler');
