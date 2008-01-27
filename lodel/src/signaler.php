@@ -100,10 +100,11 @@ if ($envoi) {
 	}
 	// validation
 	do {
-		if (!$context['to']) {
+		// on vérifie que les mails fournies sont correctes
+		if (empty($context['to']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to']) === 0) {
 			$err = $context['error_to'] = 1;
 		}
-		if (!$context['from']) {
+		if (empty($context['from']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from']) === 0) {
 			$err = $context['error_from'] = 1;
 		}
 
