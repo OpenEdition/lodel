@@ -3,11 +3,7 @@
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2003-2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -24,26 +20,19 @@
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 
-<USE MACROFILE="macros_admin.html">
-<USE MACROFILE="macros_affichage.html">
-<USE MACROFILE="macros_technique.html">
-<USE MACROFILE="macros_images.html">
-<USE MACROFILE="macros_navigation.html">
-<USE MACROFILE="macros_presentation.html">
-<USE MACROFILE="macros_site.html">
+<USE MACROFILE="macros_base.html" />
+<USE MACROFILE="macros_site.html" />
 
-
-<LET VAR="subject">Un article de <MACRO NAME="NOM_SITE"> sur [(#CURRENTURL|dirname)] signalé par <IF COND="[#NOM_EXPEDITEUR]">[#NOM_EXPEDITEUR] <ELSE/> un ami</IF></LET>
 <html>
 	<head>
-		<title><MACRO NAME="NOM_SITE"></title>
+		<title>[#OPTIONS.METADONNEESSITE.TITRESITE]</title>
 	</head>
 	<body>
-		Bonjour [#NOM_DESTINATAIRE] <[#TO]>,
+		Bonjour [#NOM_DESTINATAIRE] < [#TO] >,
 		<blockquote>
-			[#NOM_EXPEDITEUR] &lt;[#FROM]&gt; a visité le site "<MACRO NAME="NOM_SITE">" sur [(#CURRENTURL|dirname)] et vous conseille de visiter la page :
+			[#NOM_EXPEDITEUR] (&lt;[#FROM]&gt;) a visité le site <em>[#OPTIONS.METADONNEESSITE.TITRESITE]</em> sur [#CURRENTURL|DIRNAME] et vous conseille de visiter la page :
 			<br />
-			<a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]">[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]</a>
+			<a href="[#CURRENTURL|DIRNAME]/[#ID|MAKEURLWITHID]">[(#CURRENTURL|DIRNAME)]/[#ID|MAKEURLWITHID]</a>
 			<br />
 			Voici son commentaire :
 			[#MESSAGE]
@@ -54,20 +43,23 @@
 			<strong>Voici le document signalé :</strong>
 			<blockquote>
 				<MACRO NAME="PARU_DANS"><br />
-				<strong>Auteur(s) :</strong> <MACRO NAME="LISTER_AUTEURS">
+				<strong>Auteur(s) :</strong>
+				<strong>
+					<FUNC NAME="LISTER_PERSONNES" TYPE="auteur" WRAP_ID="docAuthor" />
+				</strong>
 				<br />
-				<strong>Titre :</strong>  <IF COND="[#TITRE]">	[#TITRE]</IF>
+				<strong>Titre :</strong>  <IF COND="[#TITRE]">[#TITRE]</IF>
 				<IF COND="[#SOUSTITRE]">
 					<br />
-					<strong>Sous-titre :</strong>						[#SOUSTITRE]
+					<strong>Sous-titre :</strong>[#SOUSTITRE]
 				</IF>
 				<br />
 				<IF COND="[#RESUME:FR]">
 					<br />		<strong>Résumé :</strong><br />
 					 [#RESUME:FR]
 				<ELSE/>
-					<strong>Le début de l'article :</strong>
-					[(#TEXTE|couper(1000))] (...)
+					<br />	<strong>Le début de l'article :</strong><br />
+					[#TEXTE|COUPER(1000)|reg_replace('`<a[^>]*class="footnotecall"[^>]*>.*?</a>`', '')]
 				</IF>
 		
 				<IF COND="[#RESUME:EN]">
@@ -76,9 +68,9 @@
 					[#RESUME:EN]
 				</IF>
 	    
-				<IF COND="[#TEXTE] and ([#DATEPUBLI] ge today())">
+				<IF COND="[#TEXTE] and ([#DATEPUBLIPUBLI] ge today())">
 					<br />
-                                        <a href="[(#CURRENTURL|dirname)]/[(#ID|makeurlwithid('index'))]">Le texte intégral</a> se trouve en ligne.
+                                        <a href="[(#CURRENTURL|DIRNAME)]/[#ID|MAKEURLWITHID]">Le texte intégral</a> se trouve en ligne.
 				</IF>
 				<br />
 			</blockquote>
