@@ -91,7 +91,7 @@ $context['recaptcha_publickey'] = ""; // clé publique recaptcha
 // send
 if ($envoi) {
 	extract_post();
-	if($GLOBALS['signaler_recaptcha'] === true) {
+	if($context['signaler_recaptcha'] === true) {
 		// recaptcha
 		$resp = recaptcha_check_answer ($context['recaptcha_privatekey'],
 						$_SERVER["REMOTE_ADDR"],
