@@ -58,6 +58,13 @@ class exportfor08
 	public $defaultgName;
 
 	/**
+	 * Variable récupérant les éventuelles erreurs MySQL
+	 * @var string
+	 */
+
+	public $mysql_errors;
+
+	/**
 	 * Équivalences entre tables de la 0.7 et de la 0.8 : tableau utilisé pour transfert des données vers les tables 0.8
 	 * TABLE_08::
 	 *	champ_1, champ_n,
@@ -251,7 +258,7 @@ class exportfor08
 			$query = '';
 			foreach ($this->old_tables as $table07) {
 				if (substr($table07, -5) != '__old') {
-					$query .= "RENAME TABLE _PREFIXTABLE_$table07 TO _PREFIXTABLE_$table07" . '__old;';
+					$query .= "RENAME TABLE _PREFIXTABLE_$table07 TO _PREFIXTABLE_$table07" . "__old;\n";
 				}
 			}
 			if ($err = $this->__mysql_query_cmds($query)) {
@@ -262,6 +269,8 @@ class exportfor08
 			$query = '';
 			$sqlfile = SITEROOT . 'init-site.sql';
 			$query = join('', file($sqlfile));
+			// nettoyage du fichier : on enleve les commentaires
+			$query = trim(preg_replace("`(^#.*$)`m", "", $query));
 
 			if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
@@ -269,11 +278,11 @@ class exportfor08
 	
 			// créations tables qui dépendent du ME en 0.8 (et qui sont en dur en 0.7)
 			// ENTITÉS : publications, documents
-			$query = "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications AS SELECT * FROM _PREFIXTABLE_publications__old;
-				ALTER TABLE _PREFIXTABLE_publications CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
-				CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents AS SELECT * FROM _PREFIXTABLE_documents__old;
-				ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;
-				ALTER TABLE _PREFIXTABLE_documents ADD alterfichier tinytext;";
+			$query = "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_publications AS SELECT * FROM _PREFIXTABLE_publications__old;\n
+				ALTER TABLE _PREFIXTABLE_publications CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;\n
+				CREATE TABLE IF NOT EXISTS _PREFIXTABLE_documents AS SELECT * FROM _PREFIXTABLE_documents__old;\n
+				ALTER TABLE _PREFIXTABLE_documents CHANGE identite identity INT UNSIGNED DEFAULT '0' NOT NULL UNIQUE;\n
+				ALTER TABLE _PREFIXTABLE_documents ADD alterfichier tinytext;\n";
 	
 			// INDEX : indexes
 			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_indexes (
@@ -282,7 +291,7 @@ class exportfor08
 					definition text,
 					UNIQUE KEY identry (identry),
 					KEY index_identry (identry)
-					);";
+					) _CHARSET_;\n";
 	
 			// INDEX DE PERSONNES : auteurs et entities_auteurs
 			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_auteurs(
@@ -291,7 +300,7 @@ class exportfor08
 					prenom tinytext,
 					UNIQUE KEY idperson (idperson),
 					KEY index_idperson (idperson)
-					);";
+					) _CHARSET_;\n";
 	
 			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_entities_auteurs(
 					idrelation int(10) unsigned default NULL,
@@ -304,7 +313,7 @@ class exportfor08
 					site text,
 					UNIQUE KEY idrelation (idrelation),
 					KEY index_idrelation (idrelation)
-					);";
+					) _CHARSET_;\n";
 			// Fichiers
 			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_fichiers (
 					identity int(10) unsigned default NULL,
@@ -316,7 +325,7 @@ class exportfor08
 					vignette tinytext,
 					UNIQUE KEY identity (identity),
 					KEY index_identity (identity)
-					);";
+					) _CHARSET_;\n";
 			// Liens
 			$query .= "CREATE TABLE IF NOT EXISTS _PREFIXTABLE_liens (
 				identity int(10) unsigned default NULL,
@@ -328,7 +337,7 @@ class exportfor08
 				nombremaxitems int(11) default NULL,
 				UNIQUE KEY identity (identity),
 				KEY index_identity (identity)
-					);";
+				) _CHARSET_;\n";
 	
 			if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
@@ -336,7 +345,7 @@ class exportfor08
 				return "Ok";
 			}
 		} else {
-			return 'Erreur : soit votre base ne contient pas de tables Lodel, soit le fichier init-site.sql n\'est pas présent dans le répertoire racine de votre site, soit vous avez deja executer le script de migration.';
+			return 'Erreur : soit votre base ne contient pas de tables Lodel, soit le fichier init-site.sql n\'est pas pr&eacute;sent dans le r&eacute;pertoire racine de votre site, soit vous avez deja executer le script de migration.';
 		}
 	}
 
@@ -361,7 +370,7 @@ class exportfor08
 				$newfields = trim($newfields);
 				$oldtable .= '__old';
 				
-				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;")) {
+				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;\n")) {
 					return $err;
 				}
 			}
@@ -372,7 +381,8 @@ class exportfor08
 			return mysql_error();
 		}
 		while($res = mysql_fetch_array($req)) {
-			if ($err = $this->__mysql_query_cmds("UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower(utf8_decode($res['g_familyname'])." ".utf8_decode($res['g_firstname']))."\" WHERE id = '".$res['id']."';")) {
+			$q .= "UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower(utf8_decode($res['g_familyname'])." ".utf8_decode($res['g_firstname']))."\" WHERE id = '".$res['id']."';\n";
+			if (!empty($q) && $err = $this->__mysql_query_cmds($q)) {
 				return $err;
 			}			
 		}
@@ -392,30 +402,30 @@ class exportfor08
 		if(!is_int($id))
 			return $id;
 		$query = "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
-		VALUES ($id , 'lodel/icons/collection.gif', 'publications', 'Publications', '', 'entities', '', '1', '1', NOW( ));
-		UPDATE _PREFIXTABLE_objects SET class='entities' WHERE class='publications';
+		VALUES ($id , 'lodel/icons/collection.gif', 'publications', 'Publications', '', 'entities', '', '1', '1', NOW( ));\n
+		UPDATE _PREFIXTABLE_objects SET class='entities' WHERE class='publications';\n
 		";
 	
 		$id = $this->__insert_object('classes');
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` ( `id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
-		VALUES ($id , 'lodel/icons/texte.gif', 'documents', 'Documents', '', 'entities', '', '2', '1', NOW( ));
-		UPDATE _PREFIXTABLE_objects SET class='entities' WHERE class='documents';
+		VALUES ($id , 'lodel/icons/texte.gif', 'documents', 'Documents', '', 'entities', '', '2', '1', NOW( ));\n
+		UPDATE _PREFIXTABLE_objects SET class='entities' WHERE class='documents';\n
 		";
 
 		// INDEX
 		$id = $this->__insert_object('classes');
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` ( `id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
-		VALUES ($id , 'lodel/icons/index.gif', 'indexes', 'Index', '', 'entries', '', '3', '1', NOW( ));
-		UPDATE _PREFIXTABLE_objects SET class='entries' WHERE class='entrees';
-		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
+		VALUES ($id , 'lodel/icons/index.gif', 'indexes', 'Index', '', 'entries', '', '3', '1', NOW( ));\n
+		UPDATE _PREFIXTABLE_objects SET class='entries' WHERE class='entrees';\n
+		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';\n
 		";
 
 		// INDEX DE PERSONNES
 		$id = $this->__insert_object('classes');
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` ( `id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` )
-		VALUES ($id , 'lodel/icons/personne.gif', 'auteurs', 'Auteurs', '', 'persons', '', '4', '1', NOW( ));
-		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
-		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';
+		VALUES ($id , 'lodel/icons/personne.gif', 'auteurs', 'Auteurs', '', 'persons', '', '4', '1', NOW( ));\n
+		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';\n
+		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';\n
 		";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
@@ -435,7 +445,7 @@ class exportfor08
 	 */
 
 	private function __insert_object($class) {
-		$this->requetes .= 'INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class');";
+		$this->requetes .= 'INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class');\n";
 		if(!$result = mysql_query('INSERT INTO ' . $GLOBALS['tp'] . "objects (class) VALUES ('$class')")) {
 			return mysql_error();
 		}
@@ -451,7 +461,7 @@ class exportfor08
 	private function __update_entities() {
 		foreach (array("publications","documents") as $classe) {
 	  		if(!$result = mysql_query("SELECT identity, " . $this->defaultgTitle . " FROM " . $GLOBALS['tp'] . $classe)) {
-				return "SELECT identity, " . $this->defaultgTitle . " FROM " . $GLOBALS['tp'] . $classe." / ".mysql_error();
+				return mysql_error();
 			}
 	  		while (list($id,$titre) = mysql_fetch_row($result)) {
 	    			$titre = strip_tags($titre);
@@ -459,12 +469,12 @@ class exportfor08
 	      				$titre=substr($titre,0,256);
 	      				$titre=preg_replace("/\S+$/","",$titre);
 	    			}
-	    			$titre = addslashes($titre);
-				$query = 'UPDATE ' . $GLOBALS['tp'] . "entities set g_title='".$titre."' WHERE id=$id;";
-				$this->requetes .= $query;
-				if(!mysql_query($query))
-					return mysql_error();
+				$titre = str_replace("'", "\\'", $titre);
+				$query .= "UPDATE _PREFIXTABLE_entities set g_title='".$titre."' WHERE id=$id;\n";
 	  		}
+		}
+		if ($err = $this->__mysql_query_cmds($query)) {
+			return $err;
 		}
 		return true;
 	}
@@ -484,23 +494,20 @@ class exportfor08
 		}
 		$query = '';
 		while ($row = mysql_fetch_assoc($result)) {
-			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = '".$this->defaultgName."', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ';';
+			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = '".$this->defaultgName."', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ";\n";
 		}
 		if(!$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)")) {
 			return mysql_error();
 		}
 		while ($row = mysql_fetch_assoc($result)) {
-			$this->requetes .= "UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';';
-			if(!mysql_query("UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ';')) {
-				return mysql_error();
-			}
+			$query .= "UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ";\n";
 		}
-
+		
 		// INDEX : ajout des champs dans tablefields
 		$query .= "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES
 			(NULL, 'nom', '0', 'indexes', 'Dénomination de l\'entrée d\'index', '', '', 'text', 'index key', '*', 'Tous droits réservés', '', '', '16', '', 'editable', '', '4', '', '32', '', NOW( )),
 
-			(NULL, 'definition', '0', 'indexes', 'Définition', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '1', '', '32', '', NOW( ));";
+			(NULL, 'definition', '0', 'indexes', 'Définition', '', '', 'text', '', '*', '', '', '', '16', '', 'fckeditor', 'Basic', '1', '', '32', '', NOW( ));\n";
 
 		// INDEX DE PERSONNES : ajout des champs dans tablefields
 		$query .= "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES
@@ -518,7 +525,7 @@ class exportfor08
 
 			(NULL, 'courriel', '0', 'entities_auteurs', 'Courriel', '', 'courriel, .courriel', 'email', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '', NOW( )),
 
-			(NULL, 'role', '0', 'entities_auteurs', 'Role dans l\'élaboration du document', '', 'role,.role', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '1', '', NOW( ));";
+			(NULL, 'role', '0', 'entities_auteurs', 'Role dans l\'élaboration du document', '', 'role,.role', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '1', '', NOW( ));\n";
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
@@ -535,25 +542,24 @@ class exportfor08
 
 	public function update_types() {
 		// ENTITES
-		$query = "UPDATE _PREFIXTABLE_types SET display='';";
+		$query = "UPDATE _PREFIXTABLE_types SET display='';\n";
 
 		// INDEX
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET class = 'indexes', sort = 'sortkey';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET class = 'indexes', sort = 'sortkey';\n";
 		
 		// INDEX DE PERSONNES
-		$query .= "UPDATE _PREFIXTABLE_persontypes SET class = 'auteurs';";
-		if(!mysql_query("UPDATE ".$GLOBALS['tp']."persons JOIN ".$GLOBALS['tp']."entites_personnes__old ON id = idpersonne SET ".$GLOBALS['tp']."persons.idtype = ".$GLOBALS['tp']."entites_personnes__old.idtype;")) {
-			return mysql_error();
-		} else {
-			$this->requetes .= "UPDATE _PREFIXTABLE_persons JOIN _PREFIXTABLE_entites_personnes__old ON id = idpersonne SET _PREFIXTABLE_persons.idtype = _PREFIXTABLE_entites_personnes__old.idtype;";
-		}
+		$query .= "UPDATE _PREFIXTABLE_persontypes SET class = 'auteurs';\n";
+
+		// type personne
+		$query .= "UPDATE _PREFIXTABLE_persons JOIN _PREFIXTABLE_entites_personnes__old ON id = idpersonne SET _PREFIXTABLE_persons.idtype = _PREFIXTABLE_entites_personnes__old.idtype;\n";
+
 		
-		$query .= "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());";
+		$query .= "INSERT INTO _PREFIXTABLE_translations (id, lang, title, textgroups, translators, modificationdate, creationdate, rank, status, upd) VALUES ('1', 'FR', 'Français', 'site', '', '', NOW(), '1', '1', NOW());\n";
 	
-		$query .= "UPDATE _PREFIXTABLE_texts SET lang = 'FR', textgroup = 'site';
-		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';
-		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';
-		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';";
+		$query .= "UPDATE _PREFIXTABLE_texts SET lang = 'FR', textgroup = 'site';\n
+		UPDATE _PREFIXTABLE_objects SET class='persons' WHERE class='personnes';\n
+		UPDATE _PREFIXTABLE_objects SET class='entrytypes' WHERE class='typeentrees';\n
+		UPDATE _PREFIXTABLE_objects SET class='persontypes' WHERE class='typepersonnes';\n";
 		
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
@@ -578,8 +584,8 @@ class exportfor08
 		}
 		while($res = mysql_fetch_row($req)) {
 			$id = $this->__insert_object('entries');
-			$query .= "UPDATE _PREFIXTABLE_entries SET id = '".$id."' WHERE id = '".$res[0]."';";
-			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'E';";
+			$query .= "UPDATE _PREFIXTABLE_entries SET id = '".$id."' WHERE id = '".$res[0]."';\n";
+			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'E';\n";
 		}
 		mysql_free_result($req);
 		// id unique pour les entrées de personnes
@@ -588,9 +594,9 @@ class exportfor08
 		}
 		while($res = mysql_fetch_row($req)) {
 			$id = $this->__insert_object('persons');
-			$query .= "UPDATE _PREFIXTABLE_persons SET id = '".$id."' WHERE id = '".$res[0]."';";
-			$query .= "UPDATE _PREFIXTABLE_auteurs SET idperson = '".$id."' WHERE idperson = '".$res[0]."';";
-			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'G';";
+			$query .= "UPDATE _PREFIXTABLE_persons SET id = '".$id."' WHERE id = '".$res[0]."';\n";
+			$query .= "UPDATE _PREFIXTABLE_auteurs SET idperson = '".$id."' WHERE idperson = '".$res[0]."';\n";
+			$q .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id2 = '".$res[0]."' AND nature = 'G';\n";
 		}
 		mysql_free_result($req);
 		// besoin d'executer certaines requetes avant de continuer
@@ -604,16 +610,16 @@ class exportfor08
 			return mysql_error();
 		}
 		while($res = mysql_fetch_row($req)) {
-			$query .= "UPDATE _PREFIXTABLE_objects SET class = 'entities' WHERE id = '".$res[0]."';";
+			$query .= "UPDATE _PREFIXTABLE_objects SET class = 'entities' WHERE id = '".$res[0]."';\n";
 		}
 		// INDEX : tables indexes et relations
 		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
 			return mysql_error();
 		}
 		$max_id = mysql_result($result, 0);
-		$query .= "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;
-		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;
-		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;
+		$query .= "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;\n
+		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;\n
+		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;\n
 		";
 		mysql_free_result($result);
 	
@@ -630,14 +636,14 @@ class exportfor08
 		while($res = mysql_fetch_array($result)) {
 			if($res['droitsauteur'] != "") {
 				$id = $this->__insert_object('entries');
-				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".utf8_decode($res['droitsauteur'])."\", \"".strtolower(utf8_decode($res['droitsauteur']))."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());";
-				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';";
+				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".utf8_decode($res['droitsauteur'])."\", \"".strtolower(utf8_decode($res['droitsauteur']))."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
+				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
 	
 				if(!$req = mysql_query("SELECT identite FROM documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
 					return mysql_error();
 				}
 				while($re = mysql_fetch_array($req)) {
-					$query .= "INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) VALUES ('".$id."', '".$re['identite']."', 'E', 1);";	
+					$query .= "INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) VALUES ('".$id."', '".$re['identite']."', 'E', 1);\n";	
 				}
 				$i++;	
 			}	
@@ -655,10 +661,10 @@ class exportfor08
 			return mysql_error();
 		}
 		$max_id = mysql_result($result, 0);
-		$query .= "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;
-		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree) SELECT DISTINCT idpersonne, identite, ordre from _PREFIXTABLE_entites_personnes__old;
-		UPDATE _PREFIXTABLE_relations SET nature='G' WHERE idrelation > $max_id;
-		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;
+		$query = "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;\n
+		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree) SELECT DISTINCT idpersonne, identite, ordre from _PREFIXTABLE_entites_personnes__old;\n
+		UPDATE _PREFIXTABLE_relations SET nature='G' WHERE idrelation > $max_id;\n
+		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;\n
 		";
 		mysql_free_result($result);
 		
@@ -676,13 +682,15 @@ class exportfor08
 					return mysql_error();
 				}
 				while($resu = mysql_fetch_array($re)) {
-					$this->requetes .= "UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = 'E';";
-					if(!mysql_query("UPDATE " . $GLOBALS['tp'] . "relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = 'E'")) {
-						return mysql_error();
-					}
+					$query .= "UPDATE _PREFIXTABLE_relations SET degree = ".$i." WHERE id1 = '".$res['id1']."' AND id2 = '".$resu['id2']."' AND nature = 'E';\n";
 					$i++;
 				}
 			}
+			if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+					return $err;
+			} else {
+				unset($query);
+			}			
 			// on récupère les équivalences entre les IDs 0.7 et 0.8
 			if(!$resultat = mysql_query("SELECT t.id, t.titre, tp.id as tid, tp.title as title FROM ".$GLOBALS['tp']."typepersonnes__old as t JOIN ".$GLOBALS['tp']."persontypes as tp ON titre = title")) {
 				return mysql_error();
@@ -715,25 +723,23 @@ class exportfor08
 							while($resr = mysql_fetch_array($resulta)) {
 								$idtype[] = $resr['idtype'];
 							}
-							// utf-8 ?
-							if(mb_detect_encoding($res['nomfamille']) != "UTF-8") {
-								$res['nomfamille'] = utf8_encode($res['nomfamille']);
-							}
-							if(mb_detect_encoding($res['prenom']) != "UTF-8")  {
-								$res['prenom'] = utf8_encode($res['prenom']);
-							}
 							
 							foreach($type07 as $k=>$t) {// c'est parti pour chaque type on va tester si une entrée correspond
 								if(!in_array($type08[$k], $idtype)) { // n'existe pas encore .. on la crée
+
 									$id = $this->__insert_object('persons');
-									if(!mysql_query("INSERT INTO ".$GLOBALS['tp']."persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$k]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');")) return mysql_error();
-									if(!mysql_query("INSERT INTO ".$GLOBALS['tp']."auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\")")) return mysql_error();
+
+									$query .= "INSERT INTO _PREFIXTABLE_persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$k]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');\n";
+
+									$query .= "INSERT INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\");\n";
+
 									// puis on met à jour la table relations pour indiquer l'ID de l'entrée créée!
 									if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$t."'")) {
 										return mysql_error();
 									}
+
 									while($rr = mysql_fetch_array($resul)) {
-										$query .= "UPDATE ".$GLOBALS['tp']."relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';";
+										$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';\n";
 									}
 
 								}
@@ -757,19 +763,18 @@ class exportfor08
 
 	public function update_ME() {
 		// classe documents devient textes
-		$this->requetes .= "RENAME TABLE ".$GLOBALS['tp']."documents TO ".$GLOBALS['tp']."textes;";
-		if(!mysql_query("RENAME TABLE ".$GLOBALS['tp']."documents TO ".$GLOBALS['tp']."textes")) {
-			return mysql_error();
+		if($err = $this->__mysql_query_cmds("RENAME TABLE _PREFIXTABLE_documents TO _PREFIXTABLE_textes;\n")) {
+			return $err;
 		}
-		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';
-		UPDATE _PREFIXTABLE_objects SET class = 'textes' WHERE class='documents';
-		UPDATE _PREFIXTABLE_types SET class = 'textes' WHERE class='documents';
-		UPDATE _PREFIXTABLE_tablefields SET class = 'textes' WHERE class='documents';
-		UPDATE _PREFIXTABLE_tablefieldgroups SET class = 'textes' WHERE class='documents';
+		$query = "UPDATE _PREFIXTABLE_classes SET class = 'textes',title = 'Textes' WHERE class = 'documents';\n
+		UPDATE _PREFIXTABLE_objects SET class = 'textes' WHERE class='documents';\n
+		UPDATE _PREFIXTABLE_types SET class = 'textes' WHERE class='documents';\n
+		UPDATE _PREFIXTABLE_tablefields SET class = 'textes' WHERE class='documents';\n
+		UPDATE _PREFIXTABLE_tablefieldgroups SET class = 'textes' WHERE class='documents';\n
 		";
 
 		// Nom des TEMPLATES dans l'onglet Édition
-		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition', tplcreation = 'entities';";
+		$query .= "UPDATE _PREFIXTABLE_types SET tpledition = 'edition', tplcreation = 'entities';\n";
 
 		// CLASSES supplémentaires
 		$query .= "INSERT IGNORE INTO `_PREFIXTABLE_classes` (`id` , `icon` , `class` , `title` , `altertitle` , `classtype` , `comment` , `rank` , `status` , `upd` ) VALUES
@@ -777,7 +782,7 @@ class exportfor08
 		(NULL, 'lodel/icons/lien.gif', 'liens', 'Sites', '', 'entities', '', '6', '32', NOW()),
 		(NULL, 'lodel/icons/texte_simple.gif', 'textessimples', 'Textes simples', '', 'entities', '', '3', '32', NOW()),
 		(NULL, 'lodel/icons/individu.gif', 'individus', 'Personnes', '', 'entities', '', '4', '1', NOW()),
-		(NULL, 'lodel/icons/index_avance.gif', 'indexavances', 'Index avancés', '', 'entries', '', '10', '1', NOW());
+		(NULL, 'lodel/icons/index_avance.gif', 'indexavances', 'Index avancés', '', 'entries', '', '10', '1', NOW());\n
 		
 		CREATE TABLE _PREFIXTABLE_textessimples (
   			identity int(10) unsigned default NULL,
@@ -787,7 +792,7 @@ class exportfor08
   			`date` datetime default NULL,
   			UNIQUE KEY identity (identity),
   			KEY index_identity (identity)
-		);
+		) _CHARSET_;\n
 
 		CREATE TABLE _PREFIXTABLE_individus (
   			identity int(10) unsigned default NULL,
@@ -802,7 +807,7 @@ class exportfor08
   			photographie tinytext,
   			UNIQUE KEY identity (identity),
   			KEY index_identity (identity)
-		);
+		) _CHARSET_;\n
 
 		CREATE TABLE _PREFIXTABLE_indexavances (
 			identry int(10) unsigned default NULL,
@@ -812,7 +817,7 @@ class exportfor08
   			icone tinytext,
   			UNIQUE KEY identry (identry),
   			KEY index_identry (identry)
-		);
+		) _CHARSET_;\n
 
 		";
 
@@ -826,10 +831,10 @@ class exportfor08
 		}
 		$i = 0;		
 		while($r = mysql_fetch_array($result)) {
-			$query .= "UPDATE _PREFIXTABLE_types SET id = '".$id[$i]."' WHERE id = '".$r['id']."';";
-			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$id[$i]."' WHERE idtype = '".$r['id']."';";
-			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '".$id[$i]."' WHERE identitytype = '".$r['id']."';";
-			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '".$id[$i]."' WHERE identitytype2 = '".$r['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_types SET id = '".$id[$i]."' WHERE id = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$id[$i]."' WHERE idtype = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '".$id[$i]."' WHERE identitytype = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '".$id[$i]."' WHERE identitytype2 = '".$r['id']."';\n";
 			$i++;
 		}
 		if ($err = $this->__mysql_query_cmds($query)) {
@@ -846,7 +851,7 @@ class exportfor08
 		for($i=0;$i<23;$i++) {
 			$id[] = $this->__insert_object('types');
 		}
-		$q = utf8_encode("INSERT INTO " . $GLOBALS['tp'] . "types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
+		$q = "INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
 		(".$id[0].", 'lodel/icons/rubrique_plat.gif', 'souspartie', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
 		(".$id[1].", '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
@@ -870,10 +875,12 @@ class exportfor08
 		(".$id[19].", '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
 		(".$id[20].", 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
 		(".$id[21].", 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW()),
-		(".$id[22].", '', 'informations', 'Informations pratiques', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '7', '32', '2006-09-28 11:40:39');");
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			return $q. " : ".mysql_error();
+		(".$id[22].", '', 'informations', 'Informations pratiques', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '7', '32', '2006-09-28 11:40:39');\n";
+
+		if ($err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
 		}
 		// MAJ des relations entres les types d'entité
 		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
@@ -1067,7 +1074,7 @@ class exportfor08
 				('326', '5', '*'),
 				('326', '18', '*'),
 				('326', '14', '*'),
-				('81', '8', '*');";
+				('81', '8', '*');\n";
 
 		$correspondances = array('editorial'=>'1', 
 					'article'=>'2',
@@ -1111,18 +1118,34 @@ class exportfor08
 		}
 
 		$query .= $prerequete;
-		if ($err = $this->__mysql_query_cmds($query)) {
+		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
 			unset($query);
 		}
-		$query .= "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';";
-		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';";
-		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';";
-		$query .= "UPDATE _PREFIXTABLE_types SET display = 'unfolded' WHERE type = 'regroupement';";
-		$query .= "UPDATE _PREFIXTABLE_types set tpledition = '' WHERE class = 'textes';";
-		$query .= "UPDATE _PREFIXTABLE_types set tpl = '' WHERE class = 'textessimples';";
-		$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';";
+	
+		// nettoyage table entitytypes_entitytypes
+		if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "entitytypes_entitytypes ORDER BY identitytype, identitytype2;")) {
+			return mysql_error();
+		}		
+		while($res = mysql_fetch_array($result)) {
+			$idtype1 = $res['identitytype'];
+			$idtype2 = $res['identitytype2'];
+			$q .= "DELETE FROM " . $GLOBALS['tp'] . "entitytypes_entitytypes WHERE identitytype = ".$res['identitytype']." && identitytype2 = ".$res['identitytype2'].";\n";
+			$q .= "INSERT INTO " . $GLOBALS['tp'] . "entitytypes_entitytypes(identitytype, identitytype2, cond) VALUES ('".$res['identitytype']."', '".$res['identitytype2']."', '*');\n";
+		}
+		if (!empty($q) && $err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
+		}		
+		$query = "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';\n";
+		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';\n";
+		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';\n";
+		$query .= "UPDATE _PREFIXTABLE_types SET display = 'unfolded' WHERE type = 'regroupement';\n";
+		$query .= "UPDATE _PREFIXTABLE_types set tpledition = '' WHERE class = 'textes';\n";
+		$query .= "UPDATE _PREFIXTABLE_types set tpl = '' WHERE class = 'textessimples';\n";
+		$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';\n";
 
 		// entrytypes
 		unset($id);
@@ -1136,41 +1159,41 @@ class exportfor08
 		}
 		$i = 0;		
 		while($r = mysql_fetch_array($result)) {
-			$query .= "UPDATE _PREFIXTABLE_entrytypes SET id = '".$id[$i]."' WHERE id = '".$r['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_entrytypes SET id = '".$id[$i]."' WHERE id = '".$r['id']."';\n";
 			$i++;
 		}
 		unset($id);
 		mysql_free_result($result);
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET edition = 'pool';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET edition = 'pool';\n";
 		for($i=0;$i<4;$i++) {
 			$id[] = $this->__insert_object('entrytypes');
 		}
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(".$id[0].", '', 'motscleses', 'indexes', 'Palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'mot', 'mots', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[0].", '', 'motscleses', 'indexes', 'Palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'mot', 'mots', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
-		(".$id[3].", '', 'motsclesen', 'indexes', 'Keywords', '', 'keywords, motclesen', '', 'mot', 'mots', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());
+		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(".$id[3].", '', 'motsclesen', 'indexes', 'Keywords', '', 'keywords, motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());\n
 		";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie', title = 'Géographique' WHERE type = 'geographie';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', title = 'Thématique', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', title = 'Chronologique', rank = 5 WHERE type = 'periode';";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie', title = 'Géographique' WHERE type = 'geographie';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', title = 'Thématique', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', title = 'Chronologique', rank = 5 WHERE type = 'periode';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';\n";
 
 		// OPTIONGROUPS & OPTIONS
-		$query .= utf8_encode("INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
+		$query .= "INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
 				('4', '0', 'from07', 'Suite import de données de Lodel 0.7', '', '', '', '1', '1', '32', NOW()),
 				('1', '0', 'servoo', 'Servoo', '', '', 'servooconf', '1', '1', '32', NOW()),
 				('2', '0', 'metadonneessite', 'Métadonnées du site', '', '', '', '1', '2', '1', NOW()),
-				('3', '0', 'oai', 'OAI', '', '', '', '1', '5', '1', NOW());
-			UPDATE _PREFIXTABLE_options SET idgroup = 4, title = 'Signaler par mail' WHERE name = 'signaler_mail';
-			UPDATE _PREFIXTABLE_options SET idgroup = 3, userrights = 40 WHERE name LIKE 'oai_%';
-			UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'ISSN électronique', name = 'issn_electronique', userrights = 30, rank = 7, status = 32 WHERE name = 'issn_electronique';
-			UPDATE _PREFIXTABLE_options SET type = 'tinytext' WHERE type = 's';
-			UPDATE _PREFIXTABLE_options SET type = 'passwd' WHERE type = 'pass';
-			UPDATE _PREFIXTABLE_options SET type = 'email' WHERE type = 'mail';
-			UPDATE _PREFIXTABLE_options SET title = 'oai_allow' WHERE name = 'oai_allow';
-			UPDATE _PREFIXTABLE_options SET title = 'oai_deny' WHERE name = 'oai_deny';
-			UPDATE _PREFIXTABLE_options SET title = 'Email de l\'administrateur du dépôt' WHERE name = 'oai_email';
+				('3', '0', 'oai', 'OAI', '', '', '', '1', '5', '1', NOW())\n;
+			UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'Signaler par mail' WHERE name = 'signaler_mail';\n
+			UPDATE _PREFIXTABLE_options SET idgroup = 3, userrights = 40 WHERE name LIKE 'oai_%';\n
+			UPDATE _PREFIXTABLE_options SET idgroup = 2, title = 'ISSN électronique', userrights = 30, rank = 7, status = 32 WHERE name = 'issn_electronique';\n
+			UPDATE _PREFIXTABLE_options SET type = 'tinytext' WHERE type = 's';\n
+			UPDATE _PREFIXTABLE_options SET type = 'passwd' WHERE type = 'pass';\n
+			UPDATE _PREFIXTABLE_options SET type = 'email' WHERE type = 'mail';\n
+			UPDATE _PREFIXTABLE_options SET title = 'oai_allow' WHERE name = 'oai_allow';\n
+			UPDATE _PREFIXTABLE_options SET title = 'oai_deny' WHERE name = 'oai_deny';\n
+			UPDATE _PREFIXTABLE_options SET title = 'Email de l\'administrateur du dépôt' WHERE name = 'oai_email';\n
 			INSERT INTO _PREFIXTABLE_options (id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams) VALUES 
 				(NULL, '1', 'url', 'url', 'tinytext', '', '', '40', '1', '32', NOW(), 'editable', ''),
 				(NULL, '1', 'username', 'username', 'username', '', '', '40', '2', '32', NOW(), 'editable', ''),
@@ -1191,7 +1214,7 @@ class exportfor08
 				(NULL, '2', 'courrielabuse', 'Courriel abuse', 'tinytext', '', '', '40', '16', '1', NOW(), 'editable', ''),
 				(NULL, '2', 'motsclesdusite', 'Mots clés décrivant le site (entre virgules)', 'text', '', '', '30', '17', '1', NOW(), '', ''),
 				(NULL, '2', 'langueprincipale', 'Langue principale du site', 'lang', 'fr', '', '40', '18', '1', NOW(), 'editable', ''),
-				(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');");
+				(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');\n";
 
 		// persontypes
 		unset($id);
@@ -1206,12 +1229,12 @@ class exportfor08
 		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'auteur', 'auteurs', '64', '4', '32', NOW()),
 		(".$id[2].", '', 'editeurscientifique', 'Éditeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'auteur', 'auteurs', '64', '5', '1', NOW()),
 		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'auteur', 'auteurs', '32', '1', '1', NOW()),
-		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'auteur', 'auteurs', '32', '3', '32', NOW());
+		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'auteur', 'auteurs', '32', '3', '32', NOW());\n
 		";
 		while($res = mysql_fetch_array($result)) {
-			$query .= "UPDATE _PREFIXTABLE_persons SET idtype = (SELECT id FROM _PREFIXTABLE_persontypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';";
+			$query .= "UPDATE _PREFIXTABLE_persons SET idtype = (SELECT id FROM _PREFIXTABLE_persontypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';\n";
 		}
- 		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication' WHERE title = 'Directeur de la publication';";
+ 		$query .= "UPDATE _PREFIXTABLE_persontypes SET type = 'directeurdelapublication' WHERE title = 'Directeur de la publication';\n";
 
 		// styles internes
 		$query .= "INSERT INTO _PREFIXTABLE_internalstyles (id, style, surrounding, conversion, greedy, rank, status, upd) VALUES 
@@ -1245,15 +1268,14 @@ class exportfor08
 			(NULL, 'bibliographieauteur', 'bibliographie', '', '0', '28', '1', NOW()),
 			(NULL, 'bibliographiereference', 'bibliographie', '', '0', '29', '1', NOW()),
 			(NULL, 'creditillustration,crditillustration,creditsillustration,crditsillustration', '-*', '', '0', '30', '1', NOW()),
-			(NULL, 'remerciements', '-*', '', '0', '31', '1', NOW());";
+			(NULL, 'remerciements', '-*', '', '0', '31', '1', NOW());\n";
 
 		// textes
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME;";
-		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."textes TO ".$GLOBALS[tp]."textes__oldME")) {
-			return mysql_error();
-		}
 
-		$q = "CREATE TABLE ".$GLOBALS['tp']."textes (
+		if ($err = $this->__mysql_query_cmds("RENAME TABLE _PREFIXTABLE_textes TO _PREFIXTABLE_textes__oldME;\n")) {
+				return $err;
+		}
+		$q = "CREATE TABLE _PREFIXTABLE_textes (
 				identity int(10) unsigned default NULL,
 				titre text,
 				surtitre text,
@@ -1286,24 +1308,21 @@ class exportfor08
 				notefin longtext,
 				UNIQUE KEY identity (identity),
 				KEY index_identity (identity)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			return mysql_error();
-		}
-		$q = "INSERT INTO ".$GLOBALS['tp']."textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM ".$GLOBALS['tp']."textes__oldME;";
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			return mysql_error();
+			) _CHARSET_;\n";
+
+		$q .= "INSERT INTO _PREFIXTABLE_textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM _PREFIXTABLE_textes__oldME;\n";
+		if ($err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
 		}
 
 		// publications
-		$this->requetes .= "RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME;";
-		if(!mysql_query("RENAME TABLE ".$GLOBALS[tp]."publications TO ".$GLOBALS[tp]."publications__oldME")) {
-			return mysql_error();
+		if ($err = $this->__mysql_query_cmds("RENAME TABLE _PREFIXTABLE_publications TO _PREFIXTABLE_publications__oldME;\n")) {
+				return $err;
 		}
 		
-		$q = "CREATE TABLE ".$GLOBALS[tp]."publications (
+		$q = "CREATE TABLE _PREFIXTABLE_publications (
 				identity int(10) unsigned default NULL,
 				titre text,
 				surtitre text,
@@ -1329,19 +1348,18 @@ class exportfor08
 				erratum text,
 				UNIQUE KEY identity (identity),
 				KEY index_identity (identity)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			mysql_error();
-		}
-		$q = "INSERT INTO ".$GLOBALS[tp]."publications (identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum) SELECT identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum FROM ".$GLOBALS[tp]."publications__oldME;";
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			return mysql_error();
+			) _CHARSET_;\n";
+
+		$q .= "INSERT INTO _PREFIXTABLE_publications (identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum) SELECT identity, titre, surtitre, soustitre, commentaireinterne, prioritaire, datepubli, datepublipapier, noticebiblio, introduction, ndlr, historique, icone, erratum FROM _PREFIXTABLE_publications__oldME;\n";
+
+		if ($err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
 		}
 
 		// tablefieldgroups
-		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;
+		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;\n
 			INSERT INTO _PREFIXTABLE_tablefieldgroups (id, name, class, title, altertitle, comment, status, rank, upd) VALUES 
 				('1', 'grtitre', 'textes', 'Titres', '', '', '1', '1', NOW()),
 				('2', 'grtexte', 'textes', 'Texte', '', '', '1', '3', NOW()),
@@ -1366,14 +1384,13 @@ class exportfor08
 				('25', 'grauteurs', 'liens', 'Auteurs', '', '', '32', '17', NOW()),
 				('26', 'grauteurs', 'textessimples', 'Auteurs', '', '', '32', '18', NOW()),
 				('28', 'grtitre', 'individus', 'Titre', '', '', '1', '20', NOW()),
-				('30', 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());";
+				('30', 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());\n";
 
 		// tablefields
-		$this->requetes .= "DELETE FROM ".$GLOBALS['tp']."tablefields;";
-		if(!mysql_query("DELETE FROM ".$GLOBALS['tp']."tablefields;")) {
-			return mysql_error();
+		if ($err = $this->__mysql_query_cmds("DELETE FROM _PREFIXTABLE_tablefieldgroups;\n")) {
+				return $err;
 		}
-		$q = utf8_encode("INSERT INTO ".$GLOBALS['tp']."tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
+		$q = "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
 		(NULL, 'titre', '1', 'textes', 'Titre du document', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '+', 'Document sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
 		(NULL, 'surtitre', '1', 'textes', 'Surtitre du document', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'importable', '', '8', '', '32', '2', NOW()),
 		(NULL, 'soustitre', '1', 'textes', 'Sous-titre du document', '', 'subtitle, soustitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'editable', '', '8', '', '32', '5', NOW()),
@@ -1483,19 +1500,22 @@ class exportfor08
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
 		(NULL, 'erratum', '11', 'publications', 'Erratum', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '126', NOW()),
-		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW());");
-		$this->requetes .= $q;
-		if(!mysql_query($q)) {
-			return mysql_error();
+		(NULL, 'site', '0', 'entities_auteurs', 'Site', '', 'site, .site', 'url', '', '*', '', '', '', '32', '', 'editable', '', '4', '', '1', '6', NOW());\n";
+
+		if ($err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
 		}
 		// suppression du type 'documentannexe-lienfichier' : on maj dans la table entities le type de l'entrée et on supprime le type
-		$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier');";
-		$query .= "DELETE FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier';";
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = (SELECT id FROM _PREFIXTABLE_types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier');\n";
+		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier';\n";
 
 
 		if ($err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
+			unset($query);
 			// index
 			$i = 1;
 			if(!$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;")) {
@@ -1518,13 +1538,14 @@ class exportfor08
 					return mysql_error();
 				}
 				while ($rows = mysql_fetch_array($resu)) {
-					$q = "UPDATE ".$GLOBALS['tp']."entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ';';
-					$this->requetes .= $q;
-					if(!mysql_query($q)) {
-						return mysql_error();
-					}
+					$query .= "UPDATE _PREFIXTABLE_entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ";\n";
 				}
 				$i++;
+			}
+			if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+					return $err;
+			} else {
+				unset($query, $q);
 			}
 			mysql_free_result($result);
 
@@ -1536,12 +1557,13 @@ class exportfor08
 			while($res = mysql_fetch_array($result)) {
 				if($res['identifier'] == "") {
 					$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($res['g_title'])));
-					$q = "UPDATE ".$GLOBALS['tp']."entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';";
-					$this->requetes .= $q;
-					if(!mysql_query($q)) {
-						return mysql_error();
-					}
+					$q .= "UPDATE _PREFIXTABLE_entities SET identifier = '".$identifier."' WHERE id = '".$res['id']."';\n";
 				}
+			}
+			if (!empty($q) && $err = $this->__mysql_query_cmds($q)) {
+				return $err;
+			} else {
+				unset($q);
 			}
 			mysql_free_result($result);
 			return "Ok";
@@ -1562,32 +1584,36 @@ class exportfor08
 		$sql = str_replace('_CHARSET_', '', $sql);
 		
 		if (!$sql) {
-			$err = 'Pb pour exécuter la commande suivante : ' . $cmds;
+			$err = 'Pb pour executer la commande suivante : ' . $cmds;
 			return $err;
 		}
-	
-		$request = preg_split ("/;/", preg_replace("/#.*?$/m","",$sql));
+
+		$request = preg_split ("/;(\n|$)/", $sql);
+
 		if ($table) { // select the commands operating on the table  $table
 			$request = preg_grep("/(REPLACE|INSERT)\s+INTO\s+$GLOBALS[tp]$table\s/i",$request);
 		}
 		if (!$request) {
-			$err = 'Pb pour executer la commande suivante : ' . $request;
+			$err = 'Pb pour executer la commande suivante : ' . $cmds;
 			return $err;
 		}
 
-		foreach ($request as $cmd) {//echo $cmd . '<p>';
-			$cmd=trim(preg_replace ("/^#.*?$/m","",$cmd));
-			if ($cmd) {	
- 				if(preg_match("/(REPLACE|INSERT|UPDATE)/i", $cmd) && mb_detect_encoding($cmd) != "UTF-8") 
- 					$cmd = utf8_encode($cmd);
-
-				$this->requetes .= $cmd;
+		foreach ($request as $cmd) {
+			// on vérifie bien que la commande a executer ne soit pas nul ni contenant que des caracteres d'espacement
+			if (!empty($cmd) && $cmd != "" && preg_match("`^\s*$`", $cmd) == 0) {
+				// détection stricte de l'utf8 dans la requete via le 'true'
+				if(mb_detect_encoding($cmd, "auto", TRUE) != "UTF-8") {	
+					$cmd = mb_convert_encoding($cmd, "UTF-8");
+				}
+				$this->requetes .= "\n".$cmd."\n";
 				if (!mysql_query($cmd)) {
-					$err = '<font COLOR=red>' . mysql_error() . '<p>requete : ' . $cmd . '</font><br>';
-					return $err; // sort, ca sert a rien de continuer
+					$this->mysql_errors = $cmd."\nL'erreur retournee est : ".mysql_error()."\n";
       				}
     			}
   		}
+		if(!empty($this->mysql_errors)) {//die(var_dump($request));
+			return $this->mysql_errors;
+		}
 		return false;
 	}
 
@@ -1620,25 +1646,14 @@ class exportfor08
 			* - Le reste on le considère comme des liens normaux
 			*/
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
-				$q = "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");";
+				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
-				$q = "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';";
+				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';\n";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
-				$q = "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");";
-			}
-			if(mb_detect_encoding($q) != "UTF-8") {
-				$q = utf8_encode($q);
-			}
-			if(strpos($res['titre'], ';') !== false) {
-				if(!mysql_query($q)) {
-					return mysql_error();
-				}
-			} else {
-				$query .= $q;
+				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
 			}
 		}
-
-		if ($err = $this->__mysql_query_cmds($query)) {
+		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
 			return "Ok";
