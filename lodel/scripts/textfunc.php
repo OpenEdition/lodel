@@ -843,6 +843,7 @@ function paranumber(&$texte, $styles='texte')
 		}
   	}
 
+	global $attrs;
 	$attrs = array();
 	// on modifie les attributs contenus dans les table td pour faciliter la regexp
 	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`iuUs", 
@@ -876,7 +877,23 @@ function paranumber(&$texte, $styles='texte')
 
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
 
-	// on remplace les id="xxxxx" par les attributs des balises <td>
+	// formatage des styles des cellules
+	foreach($attrs as &$attr) {
+		unset( $tmpattr );
+		// background
+		preg_match("`background(-color)?:[^;]*;`", $attr, $r);
+		if(!empty($r[0]))
+			$tmpattr = ' style="'.$r[0].'" ';
+		// fusion
+		preg_match("`colspan=\"[^\"]*\"`", $attr, $r2);
+		if(!empty($r2[0]))
+			$tmpattr .= " ".$r2[0];
+		preg_match("`rowspan=\"[^\"]*\"`", $attr, $r3);
+		if(!empty($r3[0]))
+			$tmpattr .= " ".$r3[0];
+		$attr = $tmpattr;
+	}
+	// on remplace les id="xxxxx" par les attributs des balises <td> préformaté juste au dessus
 	$texte = preg_replace_callback("`<td id=\"(\d\d\d\d\d)\">(.*)</td>`iuUs", 
 									create_function(
 									// Les guillemets simples sont très importants ici
