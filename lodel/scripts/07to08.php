@@ -612,23 +612,13 @@ class exportfor08
 		while($res = mysql_fetch_row($req)) {
 			$query .= "UPDATE _PREFIXTABLE_objects SET class = 'entities' WHERE id = '".$res[0]."';\n";
 		}
-		// INDEX : tables indexes et relations
-		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
-			return mysql_error();
-		}
-		$max_id = mysql_result($result, 0);
+
+
 		$query .= "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;\n
-		INSERT INTO _PREFIXTABLE_relations (id2, id1) SELECT DISTINCT identree, identite from _PREFIXTABLE_entites_entrees__old;\n
-		UPDATE _PREFIXTABLE_relations SET nature='E', degree=1 WHERE degree IS NULL AND idrelation > $max_id;\n
+		INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) SELECT DISTINCT identree, identite, 'E' as nat, '1' as deg from _PREFIXTABLE_entites_entrees__old;\n
 		";
-		mysql_free_result($result);
 	
 		// licence
-		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
-			return mysql_error();
-		}
-		unset($max_id);
-		$max_id = mysql_result($result, 0);
 		if(!$result = mysql_query("SELECT distinct droitsauteur from documents__old;")) {
 			return mysql_error();
 		}
@@ -657,16 +647,10 @@ class exportfor08
 			unset($query, $max_id);
 		}
 		// INDEX DE PERSONNES : tables auteurs, entities_auteurs et relations
-		if(!$result = mysql_query('SELECT MAX(idrelation) FROM ' . $GLOBALS['tp'] . 'relations')) {
-			return mysql_error();
-		}
-		$max_id = mysql_result($result, 0);
 		$query = "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;\n
-		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree) SELECT DISTINCT idpersonne, identite, ordre from _PREFIXTABLE_entites_personnes__old;\n
-		UPDATE _PREFIXTABLE_relations SET nature='G' WHERE idrelation > $max_id;\n
+		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree, nature) SELECT DISTINCT idpersonne, identite, ordre, 'G' as nat from _PREFIXTABLE_entites_personnes__old;\n
 		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;\n
 		";
-		mysql_free_result($result);
 		
 		if ($err = $this->__mysql_query_cmds($query) || (!empty($q) && $err = $this->__mysql_query_cmds($q))) {
 				return $err;
@@ -1225,11 +1209,11 @@ class exportfor08
 			return mysql_error();
 		}		
 		$query .= "REPLACE INTO _PREFIXTABLE_persontypes (id, icon, type, title, altertitle, class, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, upd) VALUES 
-		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'auteur', 'auteurs', '64', '2', '1', NOW()),
-		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'auteur', 'auteurs', '64', '4', '32', NOW()),
-		(".$id[2].", '', 'editeurscientifique', 'Éditeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'auteur', 'auteurs', '64', '5', '1', NOW()),
-		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'auteur', 'auteurs', '32', '1', '1', NOW()),
-		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'auteur', 'auteurs', '32', '3', '32', NOW());\n
+		(".$id[0].", '', 'traducteur', 'Traducteur', '', 'auteurs', 'traducteur', 'dc.contributor', 'personne', 'personnes', '64', '2', '1', NOW()),
+		(".$id[1].", '', 'auteuroeuvre', 'Auteur d\'une oeuvre commentée', '', 'auteurs', 'auteuroeuvre', '', 'personne', 'personnes', '64', '4', '32', NOW()),
+		(".$id[2].", '', 'editeurscientifique', 'Éditeur scientifique', '', 'auteurs', 'editeurscientifique', '', 'personne', 'personnes', '64', '5', '1', NOW()),
+		(".$id[3].", 'lodel/icons/auteur.gif', 'auteur', 'Auteur', '', 'auteurs', 'auteur', 'dc.creator', 'personne', 'personnes', '32', '1', '1', NOW()),
+		(".$id[4].", '', 'directeur de publication', 'Directeur de la publication', '', 'auteurs', 'directeur', '', 'personne', 'personnes', '32', '3', '32', NOW());\n
 		";
 		while($res = mysql_fetch_array($result)) {
 			$query .= "UPDATE _PREFIXTABLE_persons SET idtype = (SELECT id FROM _PREFIXTABLE_persontypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';\n";
@@ -1387,10 +1371,8 @@ class exportfor08
 				('30', 'grdescription', 'individus', 'Description', '', '', '1', '21', NOW());\n";
 
 		// tablefields
-		if ($err = $this->__mysql_query_cmds("DELETE FROM _PREFIXTABLE_tablefieldgroups;\n")) {
-				return $err;
-		}
-		$q = "INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
+		$q = "DELETE FROM _PREFIXTABLE_tablefields;\n
+			INSERT INTO _PREFIXTABLE_tablefields (id, name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) VALUES 
 		(NULL, 'titre', '1', 'textes', 'Titre du document', '', 'title, titre, titleuser, heading', 'text', 'dc.title', '+', 'Document sans titre', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '16', '', 'editable', '', '8', '', '32', '3', NOW()),
 		(NULL, 'surtitre', '1', 'textes', 'Surtitre du document', '', 'surtitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'importable', '', '8', '', '32', '2', NOW()),
 		(NULL, 'soustitre', '1', 'textes', 'Sous-titre du document', '', 'subtitle, soustitre', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;Lien;Appel de Note', '32', '', 'editable', '', '8', '', '32', '5', NOW()),
