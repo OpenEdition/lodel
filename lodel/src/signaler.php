@@ -66,15 +66,18 @@ require 'textfunc.php';
 $context['id'] = $id = intval($id);
 
 require_once 'connect.php';
-// get the  document
-$critere = $user['visitor'] ? '' : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+
+// identifié ? accès à tous les documents
+$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once('CACHE/filterfunc.php'))) {
 	require_once 'filterfunc.php';
 }
 
 $result = mysql_query(lq("SELECT $GLOBALS[tp]publications.*, $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity LEFT JOIN $GLOBALS[tp]publications on $GLOBALS[tp]publications.identity = $GLOBALS[tp]entities.id WHERE $GLOBALS[tp]entities.id='$id' $critere")) or dberror();
 if (mysql_num_rows($result) < 1) {
-	header ("Location: not-found.html");
+	$context['notfound'] = 1;
+	require_once 'calcul-page.php';
+	calcul_page($context, 'signaler');
 	return;
 }
 
@@ -131,7 +134,7 @@ if ($envoi) {
 		require_once 'view.php';
 
 		ob_start();
-		$GLOBALS['nodesk'] = true;
+		$GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
 		if($GLOBALS['signaler_recaptcha'] === true) {
 			require_once 'recaptchalib.php';
 		}
