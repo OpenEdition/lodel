@@ -169,5 +169,6 @@ if($context['actions']['valid'] === "Valider" && !empty($context['actions']['def
 } elseif($context['actions']['valid'] === "Valider") {
 	$context['error'] = 1;
 }
+$context['mysql_errors'] = $exportfor08->mysql_errors;
 calcul_page($context,"index_migration");
 ?>
