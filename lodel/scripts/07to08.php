@@ -577,7 +577,6 @@ class exportfor08
 	 */
 
 	public function insert_index_data() {
-
 		// id unique pour les entrées d'index
 		if(!$req = mysql_query("SELECT ".$GLOBALS['tp']."entries.id FROM ".$GLOBALS['tp']."entries JOIN ".$GLOBALS['tp']."objects ON ".$GLOBALS['tp']."entries.id = ".$GLOBALS['tp']."objects.id WHERE ".$GLOBALS['tp']."objects.class != 'entries';")) {
 			return mysql_error();
@@ -626,7 +625,7 @@ class exportfor08
 		while($res = mysql_fetch_array($result)) {
 			if($res['droitsauteur'] != "") {
 				$id = $this->__insert_object('entries');
-				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".utf8_decode($res['droitsauteur'])."\", \"".strtolower(utf8_decode($res['droitsauteur']))."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
+				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".strtolower($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
 				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
 	
 				if(!$req = mysql_query("SELECT identite FROM documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
@@ -725,14 +724,14 @@ class exportfor08
 									while($rr = mysql_fetch_array($resul)) {
 										$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';\n";
 									}
-
+									if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+										return $err;
+									}
+									unset($query);
 								}
 							}
 						}
 					}
-				}
-				if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
-					return $err;
 				}
 			}
 		}
@@ -1134,34 +1133,35 @@ class exportfor08
 		// entrytypes
 		unset($id);
 		mysql_free_result($result);
+		for($i=0;$i<8;$i++) {
+			$id[$i] = $this->__insert_object('entrytypes');
+		}
 		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'entrytypes ORDER BY id')) {
 			return mysql_error();
+		}			
+		if(!$resu = mysql_query('SELECT id, g_name FROM ' . $GLOBALS['tp'] . 'entries ORDER BY g_name')) {
+			return mysql_error();
+		}	
+
+		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES 
+		(".$id[0].", '', 'motcle', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW()),
+		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW()),
+		(".$id[2].", '', 'periode', 'indexes', 'Index chronologique', '', 'periode, .periode, priode', '', 'entree', 'entrees', '64', '5', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[3].", '', 'theme', 'indexes', 'Index thématique', '', 'themes,thmes,.themes', '', 'entree', 'entrees', '16', '6', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[4].", '', 'geographie', 'indexes', 'Index géographique', '', 'geographie, gographie,.geographie', '', 'entree', 'entrees', '64', '4', '1', '0', '1', 'pool', 'sortkey', NOW()),
+		(".$id[5].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '1', '1', 'pool', 'sortkey', NOW()),
+		(".$id[6].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
+		(".$id[7].", '', 'motsclesde', 'indexes', 'Schlagwortindex', '', 'schlusselworter, .schlusselworter, motsclesde, schlagworter, .schlagworter', '', 'entree', 'entrees', '32', '8', '1', '1', '1', 'pool', 'sortkey', NOW());\n";
+
+		while($res = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_entries SET idtype = (SELECT id FROM _PREFIXTABLE_entrytypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';\n";
 		}
-		$nb = mysql_num_rows($result);
-		for($i=0;$i<$nb;$i++) {
-			$id[] = $this->__insert_object('entrytypes');
+		$i = 1;
+		while($re = mysql_fetch_array($resu)) {
+			$query .= "UPDATE _PREFIXTABLE_entries SET sortkey = \"".strtolower(str_replace('"', '\"', $re['g_name']))."\", rank = '".$i++."' WHERE id = '".$re['id']."';\n";
 		}
-		$i = 0;		
-		while($r = mysql_fetch_array($result)) {
-			$query .= "UPDATE _PREFIXTABLE_entrytypes SET id = '".$id[$i]."' WHERE id = '".$r['id']."';\n";
-			$i++;
-		}
-		unset($id);
-		mysql_free_result($result);
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET edition = 'pool';\n";
-		for($i=0;$i<4;$i++) {
-			$id[] = $this->__insert_object('entrytypes');
-		}
-		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
-		(".$id[0].", '', 'motscleses', 'indexes', 'Palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
-		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[2].", '', 'motsclesde', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
-		(".$id[3].", '', 'motsclesen', 'indexes', 'Keywords', '', 'keywords, motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());\n
-		";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie', title = 'Géographique' WHERE type = 'geographie';\n";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'themes,thmes,.themes', title = 'Thématique', gui_user_complexity = 16, rank = 6 WHERE type = 'theme';\n";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono', style = 'periode, .periode, priode', title = 'Chronologique', rank = 5 WHERE type = 'periode';\n";
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET title = 'Mots-clés', style = 'motscles, .motcles,motscls,motsclesfr', g_type = 'dc.subject', gui_user_complexity = 32 WHERE type = 'motcle';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'motscles' where id = '".$id[0]."';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono' where id = '".$id[2]."';\n";
 
 		// OPTIONGROUPS & OPTIONS
 		$query .= "INSERT INTO _PREFIXTABLE_optiongroups (id, idparent, name, title, altertitle, comment, logic, exportpolicy, rank, status, upd) VALUES
@@ -1201,9 +1201,9 @@ class exportfor08
 				(NULL, '2', 'soustitresite', 'Sous titre du site', 'tinytext', '', '', '40', '2', '1', NOW(), 'editable', '');\n";
 
 		// persontypes
-		unset($id);
+		unset($id, $i);
 		for($i=0;$i<5;$i++) {
-			$id[] = $this->__insert_object('persontypes');
+			$id[$i] = $this->__insert_object('persontypes');
 		}
 		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'persontypes ORDER BY id')) {
 			return mysql_error();
@@ -1499,28 +1499,33 @@ class exportfor08
 		} else {
 			unset($query);
 			// index
+			// langue
 			$i = 1;
-			if(!$result = mysql_query("SELECT id, langue, nom FROM $GLOBALS[tp]entrees__old;")) {
+			if(!$result = mysql_query("SELECT id, langue, nom, idtype FROM $GLOBALS[tp]entrees__old;")) {
 				return mysql_error();
 			}
 			while ($row = mysql_fetch_assoc($result)) {
 				unset($q);
-				if($row['langue'] == 'fr') {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
-				} elseif($row['langue'] == 'en') {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesen';";
-				} elseif($row['langue'] == 'de') {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclede';";
-				} elseif($row['langue'] == 'es') {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscleses';";
-				} else {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motcle';";
-				}
-				if(!$resu = mysql_query($q)) {
-					return mysql_error();
+				if(!empty($row['langue'])) {
+					if($row['langue'] == 'fr') {
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscles'";
+					} elseif($row['langue'] == 'en') {
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesen'";
+					} elseif($row['langue'] == 'de') {
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesde'";
+					} elseif($row['langue'] == 'es') {
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscleses'";
+					} else {
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscles'";
+					}
+				}/* else {
+					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE tpl = '".$row['tpl']."' && tplindex = '".$row['tplindex']."'";
+				}*/
+				if(!empty($q) && !$resu = mysql_query($q)) {
+					return $q."<br>".mysql_error();
 				}
 				while ($rows = mysql_fetch_array($resu)) {
-					$query .= "UPDATE _PREFIXTABLE_entries SET idtype = '".$rows['id']."', rank = '".$i."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ";\n";
+					$query .= "UPDATE _PREFIXTABLE_entries SET idtype = '".$rows['id']."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ";\n";
 				}
 				$i++;
 			}
