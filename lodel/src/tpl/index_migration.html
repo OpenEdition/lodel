@@ -23,8 +23,8 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-<USE MACROFILE="macros_0.4.html">
-<MACRO NAME="HEADER_HEAD_OPEN">
+<USE MACROFILE="macros_techniques.html">
+<MACRO NAME="OUVRIR_HTML">
 <title>LODEL 0.7 - Page de migration vers Lodel 0.8</title>
 <meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
 <link rel="stylesheet" href="styles_lodel.css">
@@ -38,6 +38,10 @@
 			<IF COND="[#ACTION] EQ 1">
 				<IF COND="[#ERROR] GT 0">
 					<p class="message_erreur">Une erreur s'est produite durant l'exécution du script à l'étape [#ERROR] : [#MSG_ERROR].<br />
+					Le script ne peut être repris.</p>
+				</IF>
+				<IF COND="[#MYSQL_ERRORS]">
+					<p class="message_erreur">Une erreur s'est produite durant l'exécution des requetes SQL : <br />[#MYSQL_ERRORS]
 					Le script ne peut être repris.</p>
 				</IF>
 				<table border="1">
