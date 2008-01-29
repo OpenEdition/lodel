@@ -1026,7 +1026,7 @@ function notesmarginales($texte, $coupe) {
 	
 					$matchesnotebaspages[1][$condition] = preg_replace($search, $replace, $matchesnotebaspages[1][$condition]);
 	
-					$r = "<span class=\"num\">".$matchesnotebaspages[2][$condition]."</span>";
+					$r = "<span class=\"num\">".$matchesnotebaspages[2][$condition]."</span> ";
 	
 					if(strlen($matchesnotebaspages[3][$condition]) > $coupe) {
 						$r .= cuttext($matchesnotebaspages[3][$condition], $coupe).'<a '.$matchesnotebaspages[1][$condition].'>(...)</a>';
