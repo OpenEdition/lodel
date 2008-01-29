@@ -1171,7 +1171,7 @@ class exportfor08
 		$query .= "INSERT INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES
 		(".$id[0].", '', 'motscleses', 'indexes', 'Palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '0', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[2].", '', 'motsclede', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
+		(".$id[2].", '', 'motsclesde', 'indexes', 'Schlagworter', '', 'schlagworter, .schlagworter, motsclesde', '', 'entree', 'entrees', '32', '8', '1', '0', '0', 'pool', 'sortkey', NOW()),
 		(".$id[3].", '', 'motsclesen', 'indexes', 'Keywords', '', 'keywords, motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW());\n
 		";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET style = 'geographie, gographie,.geographie', title = 'Géographique' WHERE type = 'geographie';\n";
