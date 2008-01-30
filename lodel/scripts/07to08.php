@@ -61,7 +61,6 @@ class exportfor08
 	 * Variable récupérant les éventuelles erreurs MySQL
 	 * @var string
 	 */
-
 	public $mysql_errors;
 
 	/**
@@ -733,6 +732,45 @@ class exportfor08
 						}
 					}
 				}
+			}
+			// on s'attaque à l'ordre d'affichage des entités
+			// articles en premiers, regroupements et autres rubriques après
+			
+			// on récupère chaque partie du site
+			if(!$result = mysql_query("SELECT DISTINCT idparent FROM ".$GLOBALS['tp']."entities;")) {
+				return mysql_error();
+			}
+			unset($query);
+			// pour chaque partie on va vérifier le template utilisé. Si tpl = article alors l'entité passe avant le reste
+			while($res = mysql_fetch_array($result)) {
+				if(!$results = mysql_query("SELECT ".$GLOBALS['tp']."entities.id as id,
+								idtype,
+								idparent,
+								tpl,
+								".$GLOBALS['tp']."entities.rank,
+								(SELECT COUNT(".$GLOBALS['tp']."entities.id) 
+									FROM ".$GLOBALS['tp']."entities JOIN ".$GLOBALS['tp']."types ON ".$GLOBALS['tp']."entities.idtype = ".$GLOBALS['tp']."types.id
+									WHERE tpl != 'article' AND ".$GLOBALS['tp']."entities.idparent = '".$res['idparent']."') as nb 
+								FROM ".$GLOBALS['tp']."entities JOIN ".$GLOBALS['tp']."types on ".$GLOBALS['tp']."types.id = idtype 
+								WHERE idparent = '".$res['idparent']."' 
+								ORDER BY ".$GLOBALS['tp']."entities.rank DESC;")) {
+					return mysql_error();
+
+				}
+				$nb = mysql_num_rows($results)+1;
+				$i = $j = 0;
+				while($resu = mysql_fetch_array($results)) {
+					$rank = 0;
+					if($resu['tpl'] != "article") {
+						$rank = intval($nb - $resu['rank']);
+					} else {
+						$rank = $resu['rank'] - $resu['nb'];
+					}
+					$query .= "UPDATE _PREFIXTABLE_entities SET rank = '".$rank."' WHERE id = '".$resu['id']."';\n";
+				}	
+			}
+			if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+				return $err;
 			}
 		}
 		return "Ok";
@@ -1518,9 +1556,7 @@ class exportfor08
 					} else {
 						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscles'";
 					}
-				}/* else {
-					$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE tpl = '".$row['tpl']."' && tplindex = '".$row['tplindex']."'";
-				}*/
+				}
 				if(!empty($q) && !$resu = mysql_query($q)) {
 					return $q."<br>".mysql_error();
 				}
@@ -1598,7 +1634,7 @@ class exportfor08
       				}
     			}
   		}
-		if(!empty($this->mysql_errors)) {//die(var_dump($request));
+		if(!empty($this->mysql_errors)) {
 			return $this->mysql_errors;
 		}
 		return false;
