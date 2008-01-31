@@ -982,27 +982,35 @@ function notesmarginales($texte, $coupe) {
 			$nbp = $temp[0];
 		}
 	}
-	
-	if($texte == $GLOBALS['context']['titre']) { // notesmarginales sur le titre ?
+
+	if($texte == $GLOBALS['context']['titre'] || $texte == $GLOBALS['context']['surtitre'] || $texte == $GLOBALS['context']['soustitre']) { // notesmarginales sur les champs de titre ?
 		$search = array ('/id="(.*?)" href="#(.*?)"/');
 
 		$replace = array ('href="#\\2"');
 		if(preg_match_all($regexp,$texte,$matches) != 0) {
 			$nbparagraphes = count($matches[0]);
 		}
+		if($nbparagraphes == 0)
+			return $texte;
 	} else {
 		if(preg_match($regexp,$GLOBALS['context']['titre']) == 1 && $condition == 0) {
-			$notedanstitre = 1;
+			$notedanstitre++;
 		}
+		if(preg_match($regexp,$GLOBALS['context']['surtitre']) == 1 && $condition <= 1) {
+			$notedanstitre++;
+		}
+		if(preg_match($regexp,$GLOBALS['context']['soustitre']) == 1 && $condition <= 2) {
+			$notedanstitre++;
+		}		
 		// on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
 		$regexppar = '/((<h[0-9][^>]*>.*?<\/h[0-9]>)?\s?<p[^>]*class="([^"]*)"[^>]*>(.*?)<\/p>)|(<h[0-9][^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>(.*?)<\/table>)/';
 		preg_match_all($regexppar,$texte,$paragraphes);
 		$nbparagraphes = sizeof($paragraphes[0]);
 	}	
 
-	// on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
-   	if($notedanstitre == 1)
-   		$condition++;
+ 	// on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
+    	if($notedanstitre > 0)
+		$condition = $notedanstitre;
 
 	$retour = "";
 
