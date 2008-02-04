@@ -26,14 +26,26 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'">
-					<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-					<IF COND="[#INTERTITLE] EQ ''">
-						<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
-					<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
-				</LOOP>
+				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
+					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
+					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
+						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
+						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">
+							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+						<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
+						<a href="#[#VARNAME]_[#TYPE]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
+					</LOOP>
+				<ELSE />
+					<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'">
+						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">
+							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+						<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
+					</LOOP>
+					<a href="#[#VARNAME]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
+				</IF>
 			</IF>
-				<a href="#[#VARNAME]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
 			</span>
 		</li>
 	</DO>
