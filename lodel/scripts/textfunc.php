@@ -836,7 +836,7 @@ function paranumber(&$texte, $styles='texte')
 	}
 
 	// filtre très capricieux : on va réorganiser les attributs des balises 'p' pour correspondre aux regexp. attribut class en premier
- 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)<\/p>`U', $texte, $match);
+ 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)</p>`Us', $texte, $match);
   	foreach($match[0] as $k=>$m) {
 		if(!empty($match[1][$k])) {
    			$texte = str_replace($m, "<p ".$match[2][$k]." ".$match[1][$k]." ".$match[3][$k].">".$match[4][$k]."</p>", $texte);
@@ -846,7 +846,7 @@ function paranumber(&$texte, $styles='texte')
 	global $attrs;
 	$attrs = array();
 	// on modifie les attributs contenus dans les table td pour faciliter la regexp
-	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`iuUs", 
+	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`Us", 
 									create_function(
 									// Les guillemets simples sont très importants ici
 									// ou bien il faut protéger les caractères $ avec \$
