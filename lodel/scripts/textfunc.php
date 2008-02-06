@@ -1029,7 +1029,7 @@ function notesmarginales($texte, $coupe) {
 
 				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$condition],$m)) || (preg_match('/[a-zA-Z*]+/',$matchesnotebaspages[2][$condition],$m))) {
 
-					$search = array ('/[^>]*href="#(.*?)"[^>]*/');
+					$search = array ('/[^>]*id="(.*?)"[^>]*/');
 					$replace = array ('href="#$1"');
 	
 					$matchesnotebaspages[1][$condition] = preg_replace($search, $replace, $matchesnotebaspages[1][$condition]);
