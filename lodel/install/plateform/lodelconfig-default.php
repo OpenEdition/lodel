@@ -133,7 +133,6 @@ $proxyport="8080";
 
 define("DONTUSELOCKTABLES",false);
 
-
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration

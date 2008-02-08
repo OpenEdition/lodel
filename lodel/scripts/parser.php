@@ -833,7 +833,7 @@ class Parser
 	if(!function_exists("loop_'.$name.'")) {
 		function loop_'.$name.' ($context)
 		{'.$preprocesslimit.'
-			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults] ;'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
+			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults];$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
 			$query ; $result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
 		'.$postmysqlquery.'
 			//$context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'], '$result').';

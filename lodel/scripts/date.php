@@ -94,7 +94,7 @@ function mysqldate($s, $type)
 		list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
 	$d = intval(trim($d));
 
-	if ((($d < 1 || $d > 31) && !preg_match("`[:hH-]`", $delimiter)) || (($d < 0 || $d > 24) && preg_match("`[:hH-]`", $delimiter))) {
+	if ((($d < 1 || $d > 31) && !preg_match("`[:hH-]`", $delimiter))) {
 		return 'bad date';
 	}
 	$m = trim($m);

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Fichier de la classe XMLImport
  *

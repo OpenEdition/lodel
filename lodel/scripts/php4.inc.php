@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Fichier utilisé si la version de PHP est inférieure à 5, pour assurer la compatibilité PHP4/PHP5
  * Ce fichier doit être inclus ssi la version de PHP est inférieure à 5

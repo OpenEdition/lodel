@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Siteconfig de lodel/edition
  *

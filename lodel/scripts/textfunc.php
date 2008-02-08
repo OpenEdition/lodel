@@ -836,16 +836,17 @@ function paranumber(&$texte, $styles='texte')
 	}
 
 	// filtre très capricieux : on va réorganiser les attributs des balises 'p' pour correspondre aux regexp. attribut class en premier
- 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)<\/p>`U', $texte, $match);
+ 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)</p>`Us', $texte, $match);
   	foreach($match[0] as $k=>$m) {
 		if(!empty($match[1][$k])) {
    			$texte = str_replace($m, "<p ".$match[2][$k]." ".$match[1][$k]." ".$match[3][$k].">".$match[4][$k]."</p>", $texte);
 		}
   	}
 
+	global $attrs;
 	$attrs = array();
 	// on modifie les attributs contenus dans les table td pour faciliter la regexp
-	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`iuUs", 
+	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`Us", 
 									create_function(
 									// Les guillemets simples sont très importants ici
 									// ou bien il faut protéger les caractères $ avec \$
@@ -860,23 +861,39 @@ function paranumber(&$texte, $styles='texte')
 	 */
 
 	if ($length_tab_classes != 1) {
-		$regexp = '/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
+		$regexp = '/(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
 	} else {
 		$regexp = '`(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class='.$chaine_classes.'[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)`ie';
 	}
 
 	// on formate les balises de tableau et <li> pour faciliter la reconnaissance de la balise dans la regex
-	$search = array ('/<table\b[^>]*>/', '/<tr\b[^>]*>/', '/<li\b[^>]*>/');
+	$search = array ('/<table[^>]*>/', '/<tr[^>]*>/', '/<li[^>]*>/');
 	$replace = array ('<table>', '<tr>', '<li>');
-
+	$texte = preg_replace($search, $replace, $texte);
 	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
-	$regex = '`(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)|(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)`U';
-	$replacer = '<td><p class="texte" dir="[^"]*">\\2\\3\\5\\6\\7</p></td>';
+	$regex = '`(<td id="(\d\d\d\d\d)">\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)|(<td id="(\d\d\d\d\d)">\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)`U';
+	$replacer = '<td id="\\2\\6"><p class="texte" dir="[^"]*">\\3\\4\\7\\8\\9</p></td>';
 	$texte = preg_replace($regex, $replacer, $texte);
 
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
 
-	// on remplace les id="xxxxx" par les attributs des balises <td>
+	// formatage des styles des cellules
+	foreach($attrs as &$attr) {
+		unset( $tmpattr );
+		// background
+		preg_match("`background(-color)?:[^;]*;`", $attr, $r);
+		if(!empty($r[0]))
+			$tmpattr = ' style="'.$r[0].'" ';
+		// fusion
+		preg_match("`colspan=\"[^\"]*\"`", $attr, $r2);
+		if(!empty($r2[0]))
+			$tmpattr .= " ".$r2[0];
+		preg_match("`rowspan=\"[^\"]*\"`", $attr, $r3);
+		if(!empty($r3[0]))
+			$tmpattr .= " ".$r3[0];
+		$attr = $tmpattr;
+	}
+	// on remplace les id="xxxxx" par les attributs des balises <td> préformaté juste au dessus
 	$texte = preg_replace_callback("`<td id=\"(\d\d\d\d\d)\">(.*)</td>`iuUs", 
 									create_function(
 									// Les guillemets simples sont très importants ici
@@ -965,27 +982,35 @@ function notesmarginales($texte, $coupe) {
 			$nbp = $temp[0];
 		}
 	}
-	
-	if($texte == $GLOBALS['context']['titre']) { // notesmarginales sur le titre ?
+
+	if($texte == $GLOBALS['context']['titre'] || $texte == $GLOBALS['context']['surtitre'] || $texte == $GLOBALS['context']['soustitre']) { // notesmarginales sur les champs de titre ?
 		$search = array ('/id="(.*?)" href="#(.*?)"/');
 
 		$replace = array ('href="#\\2"');
 		if(preg_match_all($regexp,$texte,$matches) != 0) {
 			$nbparagraphes = count($matches[0]);
 		}
+		if($nbparagraphes == 0)
+			return $texte;
 	} else {
 		if(preg_match($regexp,$GLOBALS['context']['titre']) == 1 && $condition == 0) {
-			$notedanstitre = 1;
+			$notedanstitre++;
 		}
+		if(preg_match($regexp,$GLOBALS['context']['surtitre']) == 1 && $condition <= 1) {
+			$notedanstitre++;
+		}
+		if(preg_match($regexp,$GLOBALS['context']['soustitre']) == 1 && $condition <= 2) {
+			$notedanstitre++;
+		}		
 		// on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
 		$regexppar = '/((<h[0-9][^>]*>.*?<\/h[0-9]>)?\s?<p[^>]*class="([^"]*)"[^>]*>(.*?)<\/p>)|(<h[0-9][^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>(.*?)<\/table>)/';
 		preg_match_all($regexppar,$texte,$paragraphes);
 		$nbparagraphes = sizeof($paragraphes[0]);
 	}	
 
-	// on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
-   	if($notedanstitre == 1)
-   		$condition++;
+ 	// on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
+    	if($notedanstitre > 0)
+		$condition = $notedanstitre;
 
 	$retour = "";
 
@@ -1004,12 +1029,12 @@ function notesmarginales($texte, $coupe) {
 
 				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$condition],$m)) || (preg_match('/[a-zA-Z*]+/',$matchesnotebaspages[2][$condition],$m))) {
 
-					$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
-					$replace = array ('href="#\\1"');
+					$search = array ('/[^>]*id="(.*?)"[^>]*/');
+					$replace = array ('href="#$1"');
 	
 					$matchesnotebaspages[1][$condition] = preg_replace($search, $replace, $matchesnotebaspages[1][$condition]);
 	
-					$r = $matchesnotebaspages[2][$condition];
+					$r = "<span class=\"num\">".$matchesnotebaspages[2][$condition]."</span> ";
 	
 					if(strlen($matchesnotebaspages[3][$condition]) > $coupe) {
 						$r .= cuttext($matchesnotebaspages[3][$condition], $coupe).'<a '.$matchesnotebaspages[1][$condition].'>(...)</a>';
