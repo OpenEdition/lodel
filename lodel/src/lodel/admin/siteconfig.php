@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Siteconfig de la partie lodel/admin
  *
