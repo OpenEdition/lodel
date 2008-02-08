@@ -43,7 +43,7 @@ include("tpl/install-openhtml.html");
 
 <?php if ($message) { ?>
 [@INSTALL.QUERY_TO_SERVOO_SUCCESSFUL|sprintf($servoohost)] :<br/>
-<table cellpadding="10" border="1" ><tr><td><? echo htmlentities($message); ?></td></td></table>
+<table cellpadding="10" border="1" ><tr><td><?php echo htmlentities($message); ?></td></td></table>
 <input type="submit" name="skip" value="Poursuivre">
 <br/>
 <hr style="width: 100%; height: 2px;">
