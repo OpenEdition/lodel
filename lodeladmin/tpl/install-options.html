@@ -96,10 +96,10 @@ include 'tpl/install-openhtml.html';
 		<legend>[@INSTALL.SCRIPTS_EXTENSIONS]</legend>
 		<p>[@INSTALL.HOWTO_ON_SCRIPTS_EXTENSIONS_CHOOSE_PHP_OR_HTML_EXTENSIONS]</p>
 		<label for="newextensionscriptsphp" class="boolean">.php :</label>
-		<input type="radio" name="newextensionscripts" id="newextensionscriptsphp" value="php" <? if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?>  />
+		<input type="radio" name="newextensionscripts" id="newextensionscriptsphp" value="php" <?php if(!$extensionscripts || $extensionscripts=="php") echo "checked"; ?>  />
 		<br />
 		<label for="newextensionscriptshtml" class="boolean">.html :</label>
-		<input type="radio" name="newextensionscripts" id="newextensionscriptshtml" value="html"  <? if($extensionscripts=="html") echo "checked";?>
+		<input type="radio" name="newextensionscripts" id="newextensionscriptshtml" value="html"  <?php if($extensionscripts=="html") echo "checked";?>
 	</fieldset>
 
 	<fieldset class="install">
@@ -112,10 +112,10 @@ include 'tpl/install-openhtml.html';
 		<legend>[@INSTALL.USE_SYMBOLIC_LINKS]</legend>
 		<p>[@INSTALL.HOWTO_SYMBOLIC_LINKS_IN_LODEL]</p>
 		<label for="newusesymlinkoui" class="boolean">[@INSTALL.YES] :</label>
-		<input type="radio" name="newusesymlink" id="newusesymlinkoui" value="oui" <? if($usesymlink=="oui") echo "checked";?> />
+		<input type="radio" name="newusesymlink" id="newusesymlinkoui" value="oui" <?php if($usesymlink=="oui") echo "checked";?> />
 		<br />
 		<label for="newusesymlinknon" class="boolean">[@INSTALL.NO] :</label>
-		<input type="radio" name="newusesymlink" id="newusesymlinknon" value="non"  <? if($usesymlink!="oui") echo "checked";?>  />
+		<input type="radio" name="newusesymlink" id="newusesymlinknon" value="non"  <?php if($usesymlink!="oui") echo "checked";?>  />
 	</fieldset>
 
 	<fieldset class="install">
@@ -132,13 +132,13 @@ include 'tpl/install-openhtml.html';
 		<p>
 			[@INSTALL.SPECIFY_URL_FORMAT_YOU_CAN_CHOOSE_ONE_BETWEEN_PATH_FORMAT_LEFTID_FORMAT_RIGHTID_FORMAT_SEE_BELOW] :
 		</p>
-		<input type="radio" name="newuri" id="newuripath" value="path" <? if(URI=="path") echo "checked";?> />
+		<input type="radio" name="newuri" id="newuripath" value="path" <?php if(URI=="path") echo "checked";?> />
 		<label for="newuripath" class="boolean">[@INSTALL.PATH_FORMAT]</label>
 		<code>http://monsite.com/index.php?/rubrique/1-mon-titre</code><br />
-		<input type="radio" name="newuri" id="newurileftid" value="leftid" <? if(URI=="leftid") echo "checked";?> />
+		<input type="radio" name="newuri" id="newurileftid" value="leftid" <?php if(URI=="leftid") echo "checked";?> />
 		<label for="newurileftid" class="boolean">[@INSTALL.LEFTID_FORMAT]</label>
 		<code>http://monsite.com/index1.php</code><br />
-		<input type="radio" name="newuri" id="newurirightid" value="rightid" <? if(URI=="rightid" || (URI!="leftid" && URI!="path")) echo "checked";?> />
+		<input type="radio" name="newuri" id="newurirightid" value="rightid" <?php if(URI=="rightid" || (URI!="leftid" && URI!="path")) echo "checked";?> />
 		<label for="newurirightid" class="boolean">[@INSTALL.RIGHTID_FORMAT]</label>
 		<code>http://monsite.com/index.php?id=1</code>
 	</fieldset>

@@ -56,7 +56,7 @@ Auteur : Marin Dacos. 2002. ]-->
 	utilisateurs logués, comme l'admin, l'éditeur, les rédacteurs, etc. ]-->
 
 	<IF COND="[#VISITEUR]">
-		<? insert_template ("desk");?>
+		<?php insert_template ("desk");?>
 	</IF>
 </DEFMACRO>
 
@@ -87,7 +87,7 @@ Auteur : Marin Dacos. 2002. ]-->
 
 <!--[ Certaines publication souhaitent insérer une barre de navigation, la voici ]-->
 <DEFMACRO NAME="BARRE_VERTICALE">
-	<? insert_template ("barre");?> 
+	<?php insert_template ("barre");?> 
 </DEFMACRO>
 
 <!--[ Ferme la page HTML ]-->
