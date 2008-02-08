@@ -1104,7 +1104,7 @@ class Parser
 
 		for ($i = $escapeind; $i < $this->ind; $i += 3)	{
 			if (trim($this->arr[$i +2]))
-				$this->arr[$i +2] = '<? if ($GLOBALS[\'cachedfile\']) { echo \''.quote_code($this->arr[$i +2]).'\'; } else {?>'.$this->arr[$i +2].'<?php } ?>';
+				$this->arr[$i +2] = '<?php if ($GLOBALS[\'cachedfile\']) { echo \''.quote_code($this->arr[$i +2]).'\'; } else {?>'.$this->arr[$i +2].'<?php } ?>';
 		}
 		$this->_clearposition();
 	}
