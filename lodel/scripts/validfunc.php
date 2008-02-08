@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Fichier utilitaire pour gérer la validation des champs
  *

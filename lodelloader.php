@@ -1993,12 +1993,12 @@ function msg_chmod($chmod,$reducedchmod)
   if ($reducedchmod) echo "<p>".$text['chmod_reducedchmod']."</p>";
 
 ?>
-    <p><? echo $text['chmod_continue'];?></p>
+    <p><?php echo $text['chmod_continue'];?></p>
 <form  method="post" action="<?php echo basename(__FILE__);?>">
 <input type="hidden" name="chmod" value="<?php echo $chmod; ?>">
 <input type="submit" name="install" value="<?php echo $text['chmod_download'];?>">
 </form>
-<p><? echo $text['chmod_nodownload'];?></p>
+<p><?php echo $text['chmod_nodownload'];?></p>
 
 
 <?php

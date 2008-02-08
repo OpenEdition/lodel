@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Fichier utilitaire pour la gestion du cache
  *
