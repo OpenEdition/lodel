@@ -40,7 +40,9 @@ $GLOBALS['langues']=array("fr"=>"fran\303\247ais",
 			  "it"=>"italien",
 			  "ru"=>"russe",
 			  "el"=>"grec",
-			  "pt"=>"portugais");
+			  "pt"=>"portugais",
+			  "la"=>"latin",
+			  "eu"=>"basque");
 
 //
 // ne rien modifier ici
