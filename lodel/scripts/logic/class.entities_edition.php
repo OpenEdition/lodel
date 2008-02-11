@@ -301,6 +301,13 @@ class Entities_EditionLogic extends GenericLogic
 			if ($vo->status >= 16) {
 				die("ERROR: entity is locked. No operation is allowed");
 			}
+			// let's deal with document reloading problem : PDF file disapeared, now resolved :
+			$gdaoaf = &getGenericDAO ($class, "identity");
+			$alterfichier = $gdaoaf->getById($id, 'alterfichier');
+			if(!empty($alterfichier)) {
+				$context['data']['alterfichier'] = (string)$alterfichier->alterfichier;
+			}
+			
 			// change the usergroup of the entity ?
 			if ($lodeluser['admin'] && $context['usergroup']) {
 				$vo->usergroup = intval ($context['usergroup']);
