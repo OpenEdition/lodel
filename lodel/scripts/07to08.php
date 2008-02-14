@@ -1469,6 +1469,19 @@ class exportfor08
 			unset($q);
 		}
 
+		// ajustement spécifique : champ icone de publication en 0.7 = image d'accroche document annexe en 0.8
+		if(!$result = mysql_query('SELECT id, icone, titre, identifier, g_title, status FROM ' . $GLOBALS['tp'] . 'publications JOIN  ' . $GLOBALS['tp'] . 'entities ON (' . $GLOBALS['tp'] . 'entities.id = ' . $GLOBALS['tp'] . 'publications.identity) where icone != ""')) {
+			return mysql_error();
+		}			
+		while($res = mysql_fetch_array($result)) {
+			$id = $this->__insert_object('entities');
+			$titre = str_replace("'", "\\'", $res['titre']);
+			$identifier = str_replace("'", "\\'", $res['identifier']);
+			$g_title = str_replace("'", "\\'", $res['g_title']);
+			$query .= "INSERT INTO _PREFIXTABLE_fichiers (identity, titre, document) VALUES ('".$id."', '".$titre."', '".$res['icone']."');\n";
+			$query .= "INSERT INTO _PREFIXTABLE_entities (id, idparent, idtype, identifier, g_title, rank, status) VALUES ('".$id."', '".$res['id']."', (select id from types where type = 'imageaccroche'), '".$identifier."', '".$g_title."', 1, '".$res['status']."');\n";
+		}
+
 		// tablefieldgroups
 		$query .= "DELETE FROM _PREFIXTABLE_tablefieldgroups;\n
 			INSERT INTO _PREFIXTABLE_tablefieldgroups (id, name, class, title, altertitle, comment, status, rank, upd) VALUES 
