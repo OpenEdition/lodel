@@ -750,7 +750,10 @@ class exportfor08
 								".$GLOBALS['tp']."entities.rank,
 								(SELECT COUNT(".$GLOBALS['tp']."entities.id) 
 									FROM ".$GLOBALS['tp']."entities JOIN ".$GLOBALS['tp']."types ON ".$GLOBALS['tp']."entities.idtype = ".$GLOBALS['tp']."types.id
-									WHERE tpl != 'article' AND ".$GLOBALS['tp']."entities.idparent = '".$res['idparent']."') as nb 
+									WHERE tpl != 'article' AND ".$GLOBALS['tp']."entities.idparent = '".$res['idparent']."') as nb,
+								(SELECT COUNT(".$GLOBALS['tp']."entities.id) 
+									FROM ".$GLOBALS['tp']."entities JOIN ".$GLOBALS['tp']."types ON ".$GLOBALS['tp']."entities.idtype = ".$GLOBALS['tp']."types.id
+									WHERE tpl = 'article' AND ".$GLOBALS['tp']."entities.idparent = '".$res['idparent']."') as nbart 
 								FROM ".$GLOBALS['tp']."entities JOIN ".$GLOBALS['tp']."types on ".$GLOBALS['tp']."types.id = idtype 
 								WHERE idparent = '".$res['idparent']."' 
 								ORDER BY ".$GLOBALS['tp']."entities.rank DESC;")) {
@@ -760,13 +763,15 @@ class exportfor08
 				$nb = mysql_num_rows($results)+1;
 				$i = $j = 0;
 				while($resu = mysql_fetch_array($results)) {
-					$rank = 0;
-					if($resu['tpl'] != "article") {
-						$rank = intval($nb - $resu['rank']);
-					} else {
-						$rank = $resu['rank'] - $resu['nb'];
+					if($resu['nbart'] > 0) {
+						$rank = 0;
+						if($resu['tpl'] != "article") {
+							$rank = intval($nb - $resu['rank']);
+						} else {
+							$rank = $resu['rank'] - $resu['nb'];
+						}
+						$query .= "UPDATE _PREFIXTABLE_entities SET rank = '".$rank."' WHERE id = '".$resu['id']."';\n";
 					}
-					$query .= "UPDATE _PREFIXTABLE_entities SET rank = '".$rank."' WHERE id = '".$resu['id']."';\n";
 				}	
 			}
 			if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
@@ -843,68 +848,124 @@ class exportfor08
 		";
 
 		// TYPES
-		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'types ORDER BY id')) {
-			return mysql_error();
-		}
-		$nb = mysql_num_rows($result);
-		for($i=0;$i<$nb;$i++) {
-			$id[] = $this->__insert_object('types');
-		}
-		$i = 0;		
-		while($r = mysql_fetch_array($result)) {
-			$query .= "UPDATE _PREFIXTABLE_types SET id = '".$id[$i]."' WHERE id = '".$r['id']."';\n";
-			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$id[$i]."' WHERE idtype = '".$r['id']."';\n";
-			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '".$id[$i]."' WHERE identitytype = '".$r['id']."';\n";
-			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '".$id[$i]."' WHERE identitytype2 = '".$r['id']."';\n";
-			$i++;
-		}
-		if ($err = $this->__mysql_query_cmds($query)) {
-				return $err;
-		} else {
-			unset($query);
-		}
-		mysql_free_result($result);
-		if(!$result = mysql_query('SELECT MAX(id) FROM ' . $GLOBALS['tp'] . 'types')) {
-			return mysql_error();
-		}
-		$max_id = mysql_result($result, 0);
-		unset($id);
-		for($i=0;$i<23;$i++) {
-			$id[] = $this->__insert_object('types');
-		}
-		$q = "INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
 
-		(".$id[0].", 'lodel/icons/rubrique_plat.gif', 'souspartie', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
-		(".$id[1].", '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
-		(".$id[2].", '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
-		(".$id[3].", 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
-		(".$id[4].", '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
-		(".$id[5].", '', 'annuairedequipe', 'Équipe', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', '2007-10-11 12:01:56'),
-		(".$id[6].", '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
-		(".$id[7].", '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
-		(".$id[8].", '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
-		(".$id[9].", '', 'individu', 'Notice biographique de membre', '', 'individus', 'individu', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '25', '1', NOW()),
-		(".$id[10].", '', 'billet', 'Billet', '', 'textessimples', 'article', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '1', '1', NOW()),
-		(".$id[11].", '', 'annuairedesites', 'Annuaire de sites', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '7', '32', NOW()),
-		(".$id[12].", 'lodel/icons/rss.gif', 'fluxdesyndication', 'Flux de syndication', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '30', '1', NOW()),
-		(".$id[13].", '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
-		(".$id[14].", '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
-		(".$id[15].", '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
-		(".$id[16].", '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW()),
-		(".$id[17].", '', 'imageaccroche', 'Image d\'accroche', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '16', '0', '31', '32', NOW()),
-		(".$id[18].", 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
-		(".$id[19].", '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
-		(".$id[20].", 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
-		(".$id[21].", 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW()),
-		(".$id[22].", '', 'informations', 'Informations pratiques', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '7', '32', '2006-09-28 11:40:39');\n";
+		// articlevide convertis en article non cliquable
+		if(!$result = mysql_query("SELECT id FROM " . $GLOBALS['tp'] . "entities WHERE idtype = (SELECT id FROM " . $GLOBALS['tp'] . "types WHERE type = 'articlevide')")) {
+			return mysql_error();
+		}
+		while($r = mysql_fetch_array($result)) {
+			$iddc[] = $r['id'];
+		}
+		$nb = count($iddc);
+		$ids = $iddc[0];
+		for($i=1; $i<$nb; $i++) {
+			$ids .= ", ".$iddc[$i];
+		}
+		/*for($i=0;$i<23;$i++) {
+			$id[] = $this->__insert_object('types');
+		}	
+*/
+		$q .= "DELETE FROM _PREFIXTABLE_types;\n
+		INSERT INTO _PREFIXTABLE_types (id, icon, type, title, altertitle, class, tpl, tplcreation, tpledition, import, display, creationstatus, search, public, gui_user_complexity, oaireferenced, rank, status, upd) VALUES 
+
+		('1', '', 'editorial', 'Editorial', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '1', '1', '32', NOW()),
+		('2', '', 'article', 'Article', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '16', '1', '2', '1', NOW()),
+		('3', '', 'actualite', 'Annonce et actualité', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '3', '32', NOW()),
+		('4', '', 'compte rendu', 'Compte-rendu', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '1', '5', '32', NOW()),
+		('5', '', 'note de lecture', 'Note de lecture', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '64', '1', '6', '32', NOW()),
+		('6', '', 'informations', 'Informations pratiques', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '32', '0', '7', '32', NOW()),
+		('7', '', 'chronique', 'Chronique', '', 'textes', 'article', 'entities', '', '1', '', '-1', '1', '0', '64', '0', '8', '32', NOW()),
+		('8', '', 'collection', 'Collection', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '1', '32', NOW()),
+		('9', 'lodel/icons/volume.gif', 'numero', 'Numéro de revue', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '32', '0', '3', '32', NOW()),
+		('10', 'lodel/icons/rubrique.gif', 'rubrique', 'Rubrique', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '5', '32', NOW()),
+		('11', 'lodel/icons/rubrique_plat.gif', 'souspartie', 'Sous-partie', '', 'publications', '', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '6', '32', NOW()),
+		('12', '', 'image', 'Image', '', 'fichiers', 'image', 'entities', '', '0', '', '-1', '1', '0', '64', '1', '1', '1', NOW()),
+		('13', '', 'noticedesite', 'Notice de site', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '16', '1', NOW()),
+		('14', 'lodel/icons/commentaire.gif', 'commentaire', 'Commentaire du document', '', 'textessimples', '', 'entities', '', '0', 'advanced', '-1', '1', '1', '16', '0', '2', '1', NOW()),
+		('25', '', 'videoannexe', 'Vidéo placée en annexe', '', 'fichiers', '', 'entities', 'edition', '0', 'advanced', '-1', '1', '0', '64', '0', '4', '1', NOW()),
+		('20', '', 'annuairedequipe', 'Équipe', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '8', '32', NOW()),
+		('21', '', 'annuairemedias', 'Médiathèque', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '9', '32', NOW()),
+		('15', '', 'image_annexe', 'Image placée en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '2', '1', NOW()),
+		('16', '', 'lienannexe', 'Lien placé en annexe', '', 'liens', 'lien', 'entities', '', '0', 'advanced', '-1', '1', '0', '64', '0', '24', '1', NOW()),
+		('17', '', 'individu', 'Notice biographique de membre', '', 'individus', 'individu', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '25', '1', NOW()),
+		('18', '', 'billet', 'Billet', '', 'textessimples', 'article', 'entities', '', '0', '', '-1', '1', '0', '16', '0', '1', '1', NOW()),
+		('19', '', 'annuairedesites', 'Annuaire de sites', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '7', '32', NOW()),
+		('22', 'lodel/icons/rss.gif', 'fluxdesyndication', 'Flux de syndication', '', 'liens', 'lien', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '30', '1', NOW()),
+		('23', '', 'video', 'Vidéo', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '64', '0', '3', '1', NOW()),
+		('24', '', 'son', 'Document sonore', '', 'fichiers', '', 'entities', '', '0', '', '-1', '1', '0', '32', '0', '5', '1', NOW()),
+		('26', '', 'fichierannexe', 'Fichier placé en annexe', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '7', '1', NOW()),
+		('27', '', 'sonannexe', 'Document sonore placé en annexe', '', 'fichiers', '', 'entities', '', '0', 'advanced', '-1', '1', '0', '32', '0', '6', '1', NOW()),
+		('326', '', 'imageaccroche', 'Image d\'accroche', '', 'fichiers', 'image', 'entities', '', '0', 'advanced', '-1', '1', '0', '16', '0', '31', '32', NOW()),
+		('327', 'lodel/icons/rubrique.gif', 'rubriqueannuaire', 'Rubrique (d\'annuaire de site)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '32', '32', NOW()),
+		('328', '', 'rubriquemediatheque', 'Rubrique (de médiathèque)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '33', '32', NOW()),
+		('329', 'lodel/icons/rubrique.gif', 'rubriqueequipe', 'Rubrique (d\'équipe)', '', 'publications', 'sommaire', 'entities', 'edition', '0', 'unfolded', '-1', '1', '0', '16', '0', '34', '32', NOW()),
+		('81', 'lodel/icons/rubrique.gif', 'rubriqueactualites', 'Rubrique (d\'actualités)', '', 'publications', 'sommaire', 'entities', 'edition', '0', '', '-1', '1', '0', '16', '0', '35', '32', NOW());\n";
 
 		if ($err = $this->__mysql_query_cmds($q)) {
 				return $err;
 		} else {
 			unset($q);
 		}
+		if(!$result = mysql_query("SELECT " . $GLOBALS['tp'] . "types__old.id as toid, " . $GLOBALS['tp'] . "types__old.type tot, " . $GLOBALS['tp'] . "types.id, " . $GLOBALS['tp'] . "types.type FROM " . $GLOBALS['tp'] . "types__old LEFT JOIN " . $GLOBALS['tp'] . "types ON (" . $GLOBALS['tp'] . "types__old.type = " . $GLOBALS['tp'] . "types.type)")) {
+			return mysql_error();
+		}
+		$types07to08 = array	(
+					"volume"=>"rubrique",
+					"colloque"=>"rubrique",
+					"objetdelarecension"=>"compte rendu",
+					"regroupement"=>"souspartie",
+					"presentation"=>"informations",
+					"breve"=>"billet",
+					"articlevide"=>"article"
+					);
+		while($res = mysql_fetch_array($result)) {
+			if($res['id'] != NULL) {
+				$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$res['id']."' WHERE idtype = '".$res['toid']."';\n";
+			} else {
+				$corr[$res['toid']] = $res['tot'];
+			}
+		}
+		$idsToUpdate = join(', ', array_keys($corr));
+		if(!$result = mysql_query("SELECT id, idtype FROM " . $GLOBALS['tp'] . "entities WHERE idtype IN (".$idsToUpdate.")")) {
+			return mysql_error();
+		}
+		while($r = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = (SELECT id FROM _PREFIXTABLE_types WHERE type = '".$types07to08[$corr[$r['idtype']]]."') WHERE id = '".$r['id']."';\n";
+		}
+		// 7 types à adapter 
+/*		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '10' WHERE idtype IN ('".$corr['volume']."', '".$corr['colloque']."');\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '10' WHERE identitytype IN ('".$corr['volume']."', '".$corr['colloque']."');\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '10' WHERE identitytype2 IN ('".$corr['volume']."', '".$corr['colloque']."');\n";	
+
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '4' WHERE idtype = '".$corr['objetdelarecension']."';\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '4' WHERE identitytype = '".$corr['objetdelarecension']."';\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '4' WHERE identitytype2 = '".$corr['objetdelarecension']."';\n";
+
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '11' WHERE idtype = '".$corr['regroupement']."';\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '11' WHERE identitytype = '".$corr['regroupement']."';\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '11' WHERE identitytype2 = '".$corr['regroupement']."';\n";
+
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '6' WHERE idtype = '".$corr['presentation']."';\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '6' WHERE identitytype = '".$corr['presentation']."';\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '6' WHERE identitytype2 = '".$corr['presentation']."';\n";
+
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '18' WHERE idtype = '".$corr['breve']."';\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '18' WHERE identitytype = '".$corr['breve']."';\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '18' WHERE identitytype2 = '".$corr['breve']."';\n";
+
+		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '2' WHERE idtype = '".$corr['articlevide']."';\n";
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '2' WHERE identitytype = '".$corr['articlevide']."';\n
+		//	  UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '2' WHERE identitytype2 = '".$corr['articlevide']."';\n";
+*/
+		
+		if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+		} else {
+			unset($query);
+		}
 		// MAJ des relations entres les types d'entité
-		$prerequete = "INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
+		$query = "DELETE FROM _PREFIXTABLE_entitytypes_entitytypes;\n
+			INSERT INTO _PREFIXTABLE_entitytypes_entitytypes (identitytype, identitytype2, cond) VALUES ('8', '0', '*'),
 				('11', '11', '*'),
 				('11', '9', '*'),
 				('1', '10', '*'),
@@ -982,7 +1043,7 @@ class exportfor08
 				('16', '10', '*'),
 				('16', '9', '*'),
 				('21', '8', '*'),
-				('18', '327', '*'),
+				('18', '328', '*'),
 				('21', '0', '*'),
 				('22', '11', '*'),
 				('22', '327', '*'),
@@ -1014,21 +1075,21 @@ class exportfor08
 				('24', '328', '*'),
 				('10', '10', '*'),
 				('10', '8', '*'),
-				('18', '10', '*'),
+				('18', '327', '*'),
 				('23', '9', '*'),
 				('23', '21', '*'),
 				('24', '21', '*'),
 				('12', '8', '*'),
 				('12', '21', '*'),
+				('18', '10', '*'),
 				('18', '9', '*'),
-				('18', '8', '*'),
 				('13', '8', '*'),
 				('13', '21', '*'),
 				('22', '21', '*'),
 				('22', '19', '*'),
+				('18', '8', '*'),
 				('18', '21', '*'),
 				('18', '19', '*'),
-				('18', '20', '*'),
 				('4', '19', '*'),
 				('5', '327', '*'),
 				('16', '6', '*'),
@@ -1089,15 +1150,16 @@ class exportfor08
 				('7', '328', '*'),
 				('12', '328', '*'),
 				('23', '328', '*'),
-				('18', '11', '*'),
-				('18', '328', '*'),
+				('18', '20', '*'),
+				('18', '0', '*'),
 				('17', '329', '*'),
 				('326', '5', '*'),
 				('326', '18', '*'),
 				('326', '14', '*'),
-				('81', '8', '*');\n";
+				('81', '8', '*'),
+				('18', '11', '*');\n";
 
-		$correspondances = array('editorial'=>'1', 
+		/*$correspondances = array('editorial'=>'1', 
 					'article'=>'2',
 					'actualite'=>'3',
 					'compte rendu'=>'4',
@@ -1138,12 +1200,36 @@ class exportfor08
 			$prerequete = str_replace("'".$correspondances[$res['type']]."'", "'".$res['id']."'", $prerequete);
 		}
 
-		$query .= $prerequete;
+		$query .= $prerequete;*/
 		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
 			unset($query);
 		}
+/*
+		if(!$result = mysql_query('SELECT * FROM ' . $GLOBALS['tp'] . 'types ORDER BY id')) {
+			return mysql_error();
+		}
+		$nb = mysql_num_rows($result);
+		unset($id);
+		for($i=0;$i<$nb;$i++) {
+			$id[] = $this->__insert_object('types');
+		}
+		$i = 0;		
+		while($r = mysql_fetch_array($result)) {
+			$query .= "UPDATE _PREFIXTABLE_types SET id = '".$id[$i]."' WHERE id = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entities SET idtype = '".$id[$i]."' WHERE idtype = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype = '".$id[$i]."' WHERE identitytype = '".$r['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entitytypes_entitytypes SET identitytype2 = '".$id[$i]."' WHERE identitytype2 = '".$r['id']."';\n";
+			$i++;
+		}
+		if ($err = $this->__mysql_query_cmds($query)) {
+				return $err;
+		} else {
+			unset($query);
+		}
+		mysql_free_result($result);
+		unset($id);
 	
 		// nettoyage table entitytypes_entitytypes
 		if(!$result = mysql_query("SELECT * FROM " . $GLOBALS['tp'] . "entitytypes_entitytypes ORDER BY identitytype, identitytype2;")) {
@@ -1160,14 +1246,14 @@ class exportfor08
 		} else {
 			unset($q);
 		}		
-		$query = "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';\n";
-		$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';\n";
-		$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';\n";
+		//$query = "UPDATE _PREFIXTABLE_types SET class = 'liens', tpl = 'lien', tplcreation = 'entities', tpledition = '', display = 'advanced' WHERE type = 'documentannexe-liendocument' OR type = 'documentannexe-lienpublication' OR type = 'documentannexe-lienexterne';\n";
+		//$query .= "UPDATE _PREFIXTABLE_types SET class = 'fichiers', tpl = 'image', tplcreation = 'entities', display = 'advanced', tpledition = '' WHERE type = 'documentannexe-lienfichier';\n";
+		//$query .= "UPDATE _PREFIXTABLE_types SET display = 'advanced' WHERE type = 'documentannexe-lienfichier';\n";
 		$query .= "UPDATE _PREFIXTABLE_types SET display = 'unfolded' WHERE type = 'regroupement';\n";
 		$query .= "UPDATE _PREFIXTABLE_types set tpledition = '' WHERE class = 'textes';\n";
 		$query .= "UPDATE _PREFIXTABLE_types set tpl = '' WHERE class = 'textessimples';\n";
-		$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';\n";
-
+		//$query .= "DELETE FROM _PREFIXTABLE_types where type = 'documentannexe-lienfacsimile';\n";
+*/
 		// entrytypes
 		unset($id);
 		mysql_free_result($result);
@@ -1333,6 +1419,9 @@ class exportfor08
 			) _CHARSET_;\n";
 
 		$q .= "INSERT INTO _PREFIXTABLE_textes (identity, titre, surtitre, soustitre, texte, notesbaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin) SELECT identity, titre, surtitre, soustitre, texte, notebaspage, annexe, bibliographie, datepubli, datepublipapier, noticebiblio, pagination, langue, prioritaire, ndlr, commentaireinterne, resume, icone, alterfichier, notefin FROM _PREFIXTABLE_textes__oldME;\n";
+		if(!empty($ids)) {
+			$q .= "UPDATE _PREFIXTABLE_textes SET documentcliquable = 0 WHERE identity IN (".$ids.");\n";
+		}
 		if ($err = $this->__mysql_query_cmds($q)) {
 				return $err;
 		} else {
@@ -1360,7 +1449,7 @@ class exportfor08
 				periode tinytext,
 				isbn tinytext,
 				paraitre tinyint(4) default NULL,
-				integralite tinyint(4) default NULL,
+				integralite tinyint(4) default 1,
 				numero tinytext,
 				icone tinytext,
 				langue varchar(5) default NULL,
@@ -1515,7 +1604,7 @@ class exportfor08
 		(NULL, 'notefin', '2', 'textes', 'Notes de fin de document', '', 'notefin', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '32', '', 'importable', '', '4', '', '32', '3', NOW()),
 		(NULL, 'altertitre', '10', 'publications', 'Titre alternatif de la publication (dans une autre langue)', '', 'titretraduitfr:fr,titretraduiten:en,titretraduites:es,titretraduitpt:pt,titretraduitit:it,titretraduitde:de,titretraduitru:ru,titleen:en', 'mltext', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Appel de Note', '32', '', 'editable', '', '4', '', '1', '120', NOW()),
 		(NULL, 'motscleses', '15', 'textes', 'Palabras claves', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '121', NOW()),
-		(NULL, 'motsclede', '15', 'textes', 'Schlagworter', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '122', NOW()),
+		(NULL, 'motsclesde', '15', 'textes', 'Schlagworter', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '1', '122', NOW()),
 		(NULL, 'urlpublicationediteur', '13', 'publications', 'Voir sur le site de l\'éditeur', '', '', 'url', '', '*', '', '', '', '32', '', 'editable', '', '0', '', '1', '123', NOW()),
 		(NULL, 'nombremaxitems', '6', 'liens', 'Nombre maximum d\'items du flux', '', '', 'int', '', '*', '', '', '', '16', '', 'editable', '', '0', '', '32', '124', NOW()),
 		(NULL, 'descriptionouvrage', '12', 'publications', 'Description physique de l\'ouvrage', '', '', 'text', '', '*', '', '', '', '64', '', 'editable', '', '0', '', '32', '125', NOW()),
@@ -1528,8 +1617,8 @@ class exportfor08
 			unset($q);
 		}
 		// suppression du type 'documentannexe-lienfichier' : on maj dans la table entities le type de l'entrée et on supprime le type
-		$query .= "UPDATE _PREFIXTABLE_entities SET idtype = (SELECT id FROM _PREFIXTABLE_types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier');\n";
-		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier';\n";
+		//$query .= "UPDATE _PREFIXTABLE_entities SET idtype = (SELECT id FROM _PREFIXTABLE_types WHERE type = 'fichierannexe') WHERE idtype = (SELECT id from _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier');\n";
+		//$query .= "DELETE FROM _PREFIXTABLE_types WHERE type = 'documentannexe-lienfichier';\n";
 
 
 		if ($err = $this->__mysql_query_cmds($query)) {
@@ -1676,6 +1765,7 @@ class exportfor08
 				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
 			}
 		}
+		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type LIKE 'documentannexe-%';\n";
 		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
