@@ -435,7 +435,7 @@ function removelinks($text)
  */
 function isadate($text)
 {
-	return $text != "0000-00-00";
+	return ($text != "0000-00-00" && $text != NULL);
 }
 
 /**
