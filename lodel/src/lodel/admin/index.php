@@ -64,6 +64,7 @@ if ($_GET['insert'] == 'mets') {
                                 	$revue['directory'] = $dir;
                                 	$revue['mets'] = $partner['mets_directory'];
                                 	$revue['dc'] = $partner['dc_directory'];
+					$revue['nom'] = $partner['nom'];
                                 	$mets->parse_mets($revue); // insère les données de la revue dans la base, à partir du METS
                                 	$mets->parse_dc(); // mets à jour les données avec le dublin core
                         	}
