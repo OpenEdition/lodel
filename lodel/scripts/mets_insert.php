@@ -72,7 +72,6 @@ class mets_insert {
 	/**
 	 * Constructeur
 	 */
-
 	function __construct() {
 		$this->file_log = SITEROOT . '/mets_insert.log';
 		$this->_log_error(__METHOD__ . ' ----> Début import METS', INFO);
@@ -80,6 +79,12 @@ class mets_insert {
 		$this->_init_Lodel_request();
 	}
 
+	/**
+	 * Destructeur
+	 */
+	function __destruct() {
+		$this->_log_error('Execution du script terminée.', INFO);
+	}
 
 	/**
 	 * Insère les données issues du METS dans la base Lodel, pour une revue
@@ -93,17 +98,17 @@ class mets_insert {
 		$this->revue = $revue;
 
 		if (is_string($mets = $this->_get_revue_mets())) {
-			
+
 			if ($this->mets = simplexml_load_string($mets, 'SimpleXML_extended')) {
 				$this->namespaces = $this->_get_namespaces($this->mets);
-
+				
 				// insertion racine mets (init $this->revue)
 				$this->root = $this->mets->ListRecords->record[0]->metadata->children($this->namespaces['mets']);
 				if ($this->_init_record($this->root, true)) {
 					// insère dc et dcterms
 					$this->_insert_data($this->root, $this->revue, true);
 
-					// insère enfants
+					// insère enfants, si présents
 					$structMap = $this->root->mets->structMap->div;
 					$fileSec = $this->root->mets->fileSec;
 					$this->_insert_children($structMap, $fileSec, $this->revue['id'], $this->revue['idtype']);
@@ -132,6 +137,7 @@ class mets_insert {
 				}
 			} else {
 				$this->_log_error(__METHOD__ . ' Impossible de charger avec SimpleXml le xml dans le répertoire ' . $revue['directory'], INFO);
+				die('erreur chargement simpleXML');
 				return;
 			}
 			
@@ -182,7 +188,7 @@ class mets_insert {
 	private function _get_Lodel_entity($mets_id) {
 		global $db;
 		
-		$result = $db->execute(lq("SELECT  id, idparent, idtype, identifier FROM entities WHERE identifier = '$mets_id' LIMIT 1")) or $this->_log_dberror(__METHOD__);
+		$result = $db->execute(lq("SELECT id, idparent, idtype, identifier FROM entities WHERE identifier = '$mets_id' LIMIT 1")) or $this->_log_dberror(__METHOD__);
 		if(!empty($result->fields)) {
 			foreach ($result->fields as $key=>$val) {
 				$request[$key] = $val;
@@ -227,11 +233,13 @@ class mets_insert {
 			foreach($this->record as $key=>$val) {
 				if (empty($val) && $val !='id') {
 					echo "Pb avec $key"; print_r($this->record);
+					$this->_log_error(__METHOD__ . " Erreur : la valeur de $key est vide.", WARN);
 				}
 			}
 			return true;
 		} else {
 			// erreur, pas un record : enregistrer l'id OAI pour debug
+			$this->_log_error(__METHOD__ . ' Erreur : pas un record !', WARN);
 			return false;
 		}
 	}
@@ -723,7 +731,7 @@ class mets_insert {
 	public function get_partners() {
 		global $db;
 
-		$result = $db->execute(lq("SELECT identity, importdirectory, metsdirectory, dcdirectory FROM #_TP_entities e JOIN #_TP_relations r ON e.id=r.id2 JOIN #_TP_partner p ON e.id=p.identity WHERE r.id1=0 AND r.degree=1")) or $this->_log_dberror(__METHOD__);
+		$result = $db->execute(lq("SELECT identity, importdirectory, metsdirectory, dcdirectory, nom FROM #_TP_entities e JOIN #_TP_relations r ON e.id=r.id2 JOIN #_TP_partner p ON e.id=p.identity WHERE r.id1=0 AND r.degree=1")) or $this->_log_dberror(__METHOD__);
 		$racines = array();
 
 		while (!$result->EOF) {
@@ -732,6 +740,7 @@ class mets_insert {
 			$racines[$identity]['import_directory'] = $result->fields['importdirectory'];
 			$racines[$identity]['mets_directory'] = $result->fields['metsdirectory'];
 			$racines[$identity]['dc_directory'] = $result->fields['dcdirectory'];
+			$racines[$identity]['nom'] = $result->fields['nom'];
 			$result->MoveNext();
 		}
 		
@@ -862,7 +871,22 @@ class mets_insert {
 					return false;
 				}
 			} else {
-				// todo : traiter les cas où $files_count =< 2
+				if($files_count == 1) {
+					return file_get_contents($files[0]);
+				} else {
+					$mets = file_get_contents($files[0]);
+					if (($end = stripos($mets, '<resumptionToken')) != false) {
+						$mets = substr($mets, 0, $end);
+						$content = file_get_contents($files[1]);
+						if (($debut = stripos($content, '<record>')) != false) {
+							$content = substr($content, $debut);
+							$mets .= $content;
+						} else {
+								$this->_log_error(__METHOD__ . ' Erreur pour tronquer début du dernier fichier : ' . $files[1], WARN);
+								return false;
+						}
+					}
+				}
 			}
 		} else {
 			return false;
