@@ -1221,7 +1221,7 @@ function getFileMime($filename){
 		$finfo = finfo_open(FILEINFO_MIME, "/usr/share/misc/file/magic");
 		return finfo_file($finfo, $filename);
 	}else{
-		system("file -i -b $filename");
+		system('file -i -b "'.$filename.'"');
 	}
 }
 
