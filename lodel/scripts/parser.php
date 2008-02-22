@@ -210,23 +210,6 @@ class Parser
 	function parse_variable(& $text, $escape = 'php')
 	{
 		global $context;
-		// add by Pierre-Alain Mignot
-		// special parse : [#TEXTE:#DEFAULTLANG.#VALUE] for lang usability
-		// ex : [#RESUME:#LANG.#KEY] in a foreach loop which display resume in several language :
-		/*
-			<LOOP NAME="foreach" ARRAY="[#DEFAULTLANG]">
-				[#RESUME:#DEFAULTLANG.#KEY] 
-			</LOOP>
-		This will display all resume for each language available
-		*/
-		if(preg_match("`(\[#([^\:]*):#([^\.]*)\.#([^\]]*)\])`", $text, $res)) {
-			$var = $this->_make_variable_code('', $res[2], '', false);
-			$lang = $this->_make_variable_code('', $res[3], '', false);
-			$value = $this->_make_variable_code('', $res[4], '', false);
-			$lang = '$context[\'defaultlang\']['.$value.']';
-			$mavar = "<"."?php echo multilingue(".$var.", ".$lang."); ?>";
-			$text = str_replace($res[1], $mavar, $text);
-		}
 		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
@@ -257,16 +240,15 @@ class Parser
 				if ($text {$i}	== ':')	{ // a lang
 					$lang = '';
 					$i ++;
-					if ($text{$i} == '#') { //pour syntaxe LS [#RESUME:#SITELANG]
+					if ($text{$i} == '#') { // pour syntaxe LS [#RESUME:#SITELANG] et [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
 						$i++;
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
-						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.') {
+						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#') {
 							if ($text {$i} == '.') { $is_array = true; }
 							$lang .= $text {$i};
 							$i ++;
 						}
-
 					} else { //pour syntaxe LS [#RESUME:FR]
 						$is_var = false;
 						while (($text{$i} >='A' && $text{$i} < 'Z')) {
@@ -274,17 +256,25 @@ class Parser
 							$i ++;
 						}
 					}
-					if ($is_var === true) { 
+					if ($is_var === true) {
 						$lang = strtolower($lang);
 						if ($is_array === true) {
-							//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
 							$tab = explode ('.', $lang);
-							$lang = $context[$tab[0]][$tab[1]][$tab[2]];
+							if(strpos($lang, '#') !== false) {
+								// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
+								$val = str_replace('#', '', $tab[1]);
+								$lang = '$context['.$tab[0].'][$context['.$val.']]';
+								$pipefunction = '|multilingue('.$lang.')';
+							} else {
+								//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
+								$tab = explode ('.', $lang);
+								$lang = $context[$tab[0]][$tab[1]][$tab[2]];
+							}
 						} else {
 							$lang = $context[$lang];
 						}
 					}
-					$pipefunction = '|multilingue("'.$lang.'")';
+					$pipefunction = empty($pipefunction) ? '|multilingue("'.$lang.'")' : $pipefunction;
 				}
 
 				if ($text {$i}	== '|')	{ // have a pipe function
