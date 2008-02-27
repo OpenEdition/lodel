@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -352,6 +353,23 @@ function makeselectlangs_nevernil($selectedlang = "")
 	foreach ($languages as $l=>$lang) {
 		$l = strtolower($l);
 		$selected = $selectedlang == $l ? " selected=\"selected\"" : "";
+		echo "<option value=\"$l\"$selected>$lang</option>\n";
+	}
+}
+
+/**
+ * Affichage choix langue
+ *
+ * Cette fonction affiche une liste déroulante permettant de choisir une langue (utilisée par entrytypes)
+ *
+ */	
+function makeSelectLang()
+{
+	global $languages, $context;
+	echo "<option value=\"\">--</option>\n";
+	foreach ($languages as $l=>$lang) {
+		$l = strtolower($l);
+		$selected = $context['lang'] == $l ? " selected=\"selected\"" : "";
 		echo "<option value=\"$l\"$selected>$lang</option>\n";
 	}
 }

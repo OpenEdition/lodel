@@ -76,6 +76,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		return true; // always true
 		break;
+	case 'select_lang':
+		if (!preg_match("/^[a-zA-Z]{2}$/", $text)) {
+			return $type;
+		}
+		break;
 	case 'type' :
 		if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/", $text)) {
 			return $type;
