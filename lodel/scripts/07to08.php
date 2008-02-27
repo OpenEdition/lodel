@@ -1268,7 +1268,7 @@ class exportfor08
 		}	
 
 		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES 
-		(".$id[0].", '', 'motcle', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW()),
+		(".$id[0].", '', 'motsclesfr', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW()),
 		(".$id[2].", '', 'periode', 'indexes', 'Index chronologique', '', 'periode, .periode, priode', '', 'entree', 'entrees', '64', '5', '1', '0', '1', 'pool', 'sortkey', NOW()),
 		(".$id[3].", '', 'theme', 'indexes', 'Index thématique', '', 'themes,thmes,.themes', '', 'entree', 'entrees', '16', '6', '1', '0', '1', 'pool', 'sortkey', NOW()),
@@ -1534,7 +1534,7 @@ class exportfor08
 		(NULL, 'ocr', '16', 'textes', 'Document issu d\'une numérisation dite OCR', '', '', 'boolean', '', '*', '', '', '', '64', '', 'importable', '', '0', '', '32', '9', NOW()),
 		(NULL, 'documentcliquable', '16', 'textes', 'Document cliquable dans les sommaires', '', '', 'boolean', '', '*', 'true', '', '', '64', '', 'editable', '', '0', '', '32', '10', NOW()),
 		(NULL, 'nom', '0', 'indexes', 'Dénomination de l\'entrée d\'index', '', '', 'text', 'index key', '*', 'Tous droits réservés', '', '', '16', '', 'editable', '', '4', '', '32', '25', NOW()),
-		(NULL, 'motcle', '15', 'textes', 'Index de mots-clés', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '2', NOW()),
+		(NULL, 'motsclesfr', '15', 'textes', 'Index de mots-clés', '', '', 'entries', '', '', '', '', '', '64', '', 'editable', '', '0', '', '32', '2', NOW()),
 		(NULL, 'definition', '0', 'indexes', 'Définition', '', '', 'text', '', '*', '', '', 'xhtml:fontstyle;xhtml:phrase;xhtml:special;xhtml:block;Lien', '16', '', 'fckeditor', 'Basic', '1', '', '32', '27', NOW()),
 		(NULL, 'nomfamille', '0', 'auteurs', 'Nom de famille', '', '', 'tinytext', 'familyname', '*', '', '', '', '32', '', 'editable', '', '4', '', '32', '28', NOW()),
 		(NULL, 'prenom', '0', 'auteurs', 'Prénom', '', '', 'tinytext', 'firstname', '*', '', '', '', '32', '', 'editable', '', '4', '', '32', '29', NOW()),
@@ -1648,7 +1648,7 @@ class exportfor08
 				unset($q);
 				if(!empty($row['langue'])) {
 					if($row['langue'] == 'fr') {
-						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscles'";
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesfr'";
 					} elseif($row['langue'] == 'en') {
 						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesen'";
 					} elseif($row['langue'] == 'de') {
@@ -1656,7 +1656,7 @@ class exportfor08
 					} elseif($row['langue'] == 'es') {
 						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscleses'";
 					} else {
-						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motscles'";
+						$q = "SELECT id FROM ".$GLOBALS['tp']."entrytypes WHERE type = 'motsclesfr'";
 					}
 				}
 				if(!empty($q) && !$resu = mysql_query($q)) {
