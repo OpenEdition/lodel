@@ -1332,7 +1332,14 @@
 			type="LONGVARCHAR"
 			description="nom multilingue"
 			label="[@ADMIN.MULTILINGUAL_TITLE]"
-			edittype="mltext"/>
+			edittype="mltext" />
+		<column name="lang"
+			type="VARCHAR"
+			size="10"
+			required="true"
+			description="langue du type d'entrées"
+			label="[@COMMON.LANG]"
+			edittype="select_lang" />
 	</vgroup>
 	<vgroup name="grprotected"
 		label="[@ADMIN.FIELDSET_PROTECTED]">

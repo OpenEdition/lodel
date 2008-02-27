@@ -362,6 +362,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	sort			VARCHAR(64) NOT NULL DEFAULT 'rank' NOT NULL, # 
 
 	upd		TIMESTAMP,
+	lang		VARCHAR(10) NOT NULL DEFAULT 'fr',
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
