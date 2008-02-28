@@ -307,7 +307,7 @@ class Entities_EditionLogic extends GenericLogic
 			foreach($Filefields as $ffield) {
 				$gdaoaf = &getGenericDAO ($class, "identity");
 				$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
-				if(empty($context['data'][$ffield->name]) && !empty($tmpfile)) {
+				if(empty($context['data'][$ffield->name]) && !empty($tmpfile->$ffield->name)) {
 					$name = (string)$ffield->name;
 					$context['data'][$ffield->name] = $tmpfile->$name;
 				}
