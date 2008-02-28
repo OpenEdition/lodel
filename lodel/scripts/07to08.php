@@ -617,7 +617,7 @@ class exportfor08
 		";
 	
 		// licence
-		if(!$result = mysql_query("SELECT distinct droitsauteur from documents__old;")) {
+		if(!$result = mysql_query("SELECT distinct droitsauteur from ".$GLOBALS['tp']."documents__old;")) {
 			return mysql_error();
 		}
 		$i = 1;
@@ -627,7 +627,7 @@ class exportfor08
 				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".strtolower($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
 				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
 	
-				if(!$req = mysql_query("SELECT identite FROM documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
+				if(!$req = mysql_query("SELECT identite FROM ".$GLOBALS['tp']."documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
 					return mysql_error();
 				}
 				while($re = mysql_fetch_array($req)) {
@@ -647,7 +647,7 @@ class exportfor08
 		// INDEX DE PERSONNES : tables auteurs, entities_auteurs et relations
 		$query = "REPLACE INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) SELECT id, g_familyname, g_firstname from _PREFIXTABLE_persons;\n
 		INSERT INTO _PREFIXTABLE_relations (id2, id1, degree, nature) SELECT DISTINCT idpersonne, identite, ordre, 'G' as nat from _PREFIXTABLE_entites_personnes__old;\n
-		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from relations, entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;\n
+		REPLACE INTO _PREFIXTABLE_entities_auteurs (idrelation, prefix, affiliation, fonction, description, courriel) SELECT DISTINCT idrelation, prefix, affiliation, fonction, description, courriel from _PREFIXTABLE_relations, _PREFIXTABLE_entites_personnes__old where nature='G' and idpersonne=id2 and identite=id1;\n
 		";
 		
 		if ($err = $this->__mysql_query_cmds($query) || (!empty($q) && $err = $this->__mysql_query_cmds($q))) {
@@ -1759,8 +1759,8 @@ class exportfor08
 					".$GLOBALS['tp']."documents__old 
 				WHERE 
 					type LIKE 'documentannexe-%'
-					AND ".$GLOBALS['tp']."documents__old.identite=entites__old.id 
-					AND ".$GLOBALS['tp']."entites__old.idtype=types__old.id;";
+					AND ".$GLOBALS['tp']."documents__old.identite=".$GLOBALS['tp']."entites__old.id 
+					AND ".$GLOBALS['tp']."entites__old.idtype=".$GLOBALS['tp']."types__old.id;";
 		if(!$req = mysql_query($query_select)) {
 			return mysql_error();
 		}
