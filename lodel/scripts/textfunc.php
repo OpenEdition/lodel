@@ -1048,7 +1048,7 @@ function notesmarginales($texte, $coupe) {
 				$condition++;
 			}
 		} 
-		$retour = (($cptendpage > 0 && empty($matches)) || (!empty($buffer) && empty($matches))) ? $retour."<div class=\"textandnotes\">\n".$paragraphes[0][$i]."\n<ul class=\"sidenotes\">".$buffer."\n</ul></div>\n" : $retour.$paragraphes[0][$i];
+		$retour = (!empty($buffer) && (($cptendpage > 0 && empty($matches)) || empty($matches))) ? $retour."<div class=\"textandnotes\">\n".$paragraphes[0][$i]."\n<ul class=\"sidenotes\">".$buffer."\n</ul></div>\n" : $retour.$paragraphes[0][$i];
 		if(empty($matches)) $buffer = "";
 	}
 	
