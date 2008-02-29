@@ -258,25 +258,36 @@
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
-	<IF COND="[#EDITION] EQ 'fckeditor'">
+	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
-<?php 		// modified by Pierre-Alain Mignot
-			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
-			$context["value"] = str_replace("\n","",$context["value"]);
-			$context["value"] = str_replace("\r","",$context["value"]);
-			$urlFck = SITEROOT . $GLOBALS['sharedir'] . "/plugins/fckeditor/";
-			require_once($urlFck."fckeditor.php");
-			$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
-			$oFCKeditor->ToolbarSet = $context['fck_mode'];
-			$oFCKeditor->BasePath = $urlFck;
-			$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
-			$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-			$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
-			$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
-			
-			$oFCKeditor->Value = html_entity_decode(stripslashes($context['value']));
- 			$oFCKeditor->Create();
+<?php
+				$context["value"] = str_replace("\n","",$context["value"]);
+				$context["value"] = str_replace("\r","",$context["value"]);
+				$context['value'] = html_entity_decode(stripslashes($context['value']));
+				$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
 ?>
+		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
+<?php
+				$urlFck = SITEROOT . $GLOBALS['sharedir'] . "/plugins/fckeditor/";
+				require_once($urlFck."fckeditor.php");
+				$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
+				$oFCKeditor->ToolbarSet = $context['fck_mode'];
+				$oFCKeditor->BasePath = $urlFck;
+				$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
+				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+				$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
+				$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
+				$oFCKeditor->Value = $context['value'];
+				$oFCKeditor->Create();
+?>
+		</IF>
+		<IF COND="[#EDITION] EQ 'wysiwyg_spaw'">
+<?php
+ 			include_once(SITEROOT . $GLOBALS['sharedir'] . "/plugins/spaw2/spaw.inc.php");
+			$spaw = new SpawEditor($context['fullvarname'], $context['value']);
+			$spaw->show();
+?>
+		</IF>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
@@ -284,8 +295,8 @@
 			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
         	</IF>
       </IF>
-	<?php // add by Pierre-Alain Mignot
-			/* le javascript sert à  débugger FCKEditor qui charge à l'infini
+	<?php 
+			/* le javascript sert à débugger FCKEditor qui charge à l'infini
 			on avait la div qui sert à générer les champs auteur/directeur de publication etc ..
 			qui par défaut avait comme display 'none' ce qui créait le bug. 
 			Maintenant on a une div en display block qui se met en display none 
