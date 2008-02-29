@@ -1215,7 +1215,7 @@ class Parser
 
 function replace_conditions($text, $style)
 {
-	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||"), $text);
+	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i", "/([\w'\[\]\$]*) like (\/[^\/]*\/)/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||", 'preg_match("$2i", $1)'), $text);
 }
 
 function stripcommentandcr(& $text)
