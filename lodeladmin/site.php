@@ -49,6 +49,9 @@ require_once 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 require_once 'func.php';
+// pas de paramètres ? rien à faire ici. redirige vers la liste des sites
+if(empty($_GET))
+	header('Location:index.php?do=list&lo=sites');
 
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
