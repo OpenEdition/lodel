@@ -70,6 +70,14 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	$format = ''; // en cas de nouvel appel a calcul_page
 
 	$template_cache = $cache_rep. "CACHE/tpl_$base.php";
+	
+	if(!file_exists($template_cache)) { // existe pas ? on le génère
+		if (!defined("TOINCLUDE")) {
+			define("TOINCLUDE", $home);
+		}
+		require_once 'lodelparser.php';
+		parse($base_rep. $base. '.html', "CACHE/tpl_$base.php");
+	}
 	$base = $base_rep. $base. '.html';
 	if (!file_exists($base)) {
 		die("<code><strong>Error!</strong>  The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist.</code>");
@@ -89,8 +97,7 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		$parser->parse($base, $template_cache);
 
 	}
-	
-	#include 'connect.php';
+
 	// execute le template php
 	include_once 'textfunc.php';
 		
@@ -106,15 +113,12 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	include_once 'loops.php';
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
-		#$start = microtime();
 		ob_start();
 		if(is_readable($template_cache))
 			require $template_cache;
 		$contents = ob_get_contents();
 		ob_end_clean();
 		echo _indent($contents);
-		#$end = microtime();
-		#echo "temps : ". ($end - $start);
 	}
 	else
 	{

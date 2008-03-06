@@ -122,7 +122,6 @@ class Parser
 	function parse($in, $out)
 	{
 		global $sharedir;
-
 		$this->infilename = $in;
 		if (!file_exists($in))
 			$this->errmsg("Unable to read file $in");
@@ -197,7 +196,8 @@ class Parser
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
-		@unlink($out); // detruit avant d'ecrire.
+		if(file_exists($out))
+			@unlink($out); // detruit avant d'ecrire.
 		$fp = fopen($out, "w") or $this->errmsg("cannot write file $out");
 		fputs($fp, $contents);
 		fclose($fp);

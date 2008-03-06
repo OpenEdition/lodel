@@ -219,17 +219,16 @@ class View
 	function renderIfCacheIsValid()
 	{
 		if (!$this->_iscachevalid()) {
-			//echo '<h1>!$this->_iscachevalid</h1>';
 			return false;
 		}
-			//echo '<h1>$this->_extcachedfile = '.$this->_extcachedfile .'</h1>' . 
-			//	'<h1>$this->_cachedfile' . $this->_cachedfile .'</h1>';
-		if ($this->_extcachedfile == 'php') {
+		if ($this->_extcachedfile == 'php' && file_exists($this->_cachedfile. '.php')) {
 			$ret = include $this->_cachedfile. '.php';
 			if ($ret == 'refresh') return false; // does php say we must refresh ?
-		} else { // no, we have a proper html, let read it.
+		} elseif(file_exists($this->_cachedfile. '.html')) { // no, we have a proper html, let read it.
 			// sinon affiche le cache.
 			readfile($this->_cachedfile. '.html');
+		} else {
+			return false; // pas de fichier trouvé dans le cache
 		}
 		return true;
 	}
@@ -267,10 +266,6 @@ class View
 	function _iscachevalid()
 	{
 		global $lodeluser;
-		//if ($GLOBALS['right']['visitor']) {
-		//  $this->_iscachevalid=false;
-		//  return false;
-		//}
 
 		include_once 'func.php';
 		if (defined('SITEROOT') && file_exists(SITEROOT. 'CACHE/maj')) {
@@ -347,7 +342,8 @@ class View
 		if ($this->_extcachedfile == 'html') {
 			echo $content; // send right now the html. Do other thing later. 
 			flush(); // That may save few milliseconde !
-			@unlink($this->_cachedfile. '.php'); // remove if the php file exists because it has the precedence above.
+			if(file_exists($this->_cachedfile. '.php'))
+				@unlink($this->_cachedfile. '.php'); // remove if the php file exists because it has the precedence above.
 		}
 		// write the file in the cache
 		if($f = @fopen($this->_cachedfile. '.'. $this->_extcachedfile, 'w')){
