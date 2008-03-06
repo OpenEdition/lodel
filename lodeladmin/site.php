@@ -50,7 +50,7 @@ require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 require_once 'func.php';
 // pas de paramètres ? rien à faire ici. redirige vers la liste des sites
-if(empty($_GET))
+if(empty($_GET) && empty($_POST))
 	header('Location:index.php?do=list&lo=sites');
 
 $context['installoption'] = intval($installoption);
