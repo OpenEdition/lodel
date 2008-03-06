@@ -1403,7 +1403,7 @@ class exportfor08
 				commentaireinterne text,
 				dedicace text,
 				ocr tinyint(4) default NULL,
-				documentcliquable tinyint(4) default TRUE,
+				documentcliquable tinyint(4) default 1,
 				`resume` text,
 				altertitre text,
 				titreoeuvre text,
