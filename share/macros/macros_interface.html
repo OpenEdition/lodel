@@ -1837,7 +1837,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<img src="[#IMGDIR][#ICON]" alt="" class="associatedIcon" />
 		<ELSE />
 			<LOOP SELECT="classes.icon AS classicon" NAME="getClassIcon" TABLE="[#TABLE], classes" WHERE="[#TABLE].class = classes.class AND [#TABLE].id = '[#IDTYPE]'">
-				<img src="[#IMGDIR][#CLASSICON]" alt=""  class="associatedIcon" />
+				<IF COND="[#CLASSICON]">
+					<img src="[#IMGDIR][#CLASSICON]" alt=""  class="associatedIcon" />
+				</IF>
 			</LOOP>
 		</IF>
 	</LOOP>
