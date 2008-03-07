@@ -44,7 +44,7 @@
  * @version CVS:$Id$
  */
 include_once 'func.php';
-
+include_once 'cachefunc.php';
 // {{{ class
 /**
  * Classe gérant la partie 'vue' du modèle MVC. Cette classe est un singleton.
@@ -83,13 +83,13 @@ class View
 	 * L'extension du fichier de cache
 	 * @var string 
 	 */
-   var $_extcachedfile;
+   	var $_extcachedfile;
 
 	/** 
 	 * Un booléen qui indique si le cache est valide ou non
 	 * @var boolean 
 	 */
-   var $_iscachevalid;
+   	var $_iscachevalid;
 		
 	/**#@-*/
 	// }}}
@@ -109,7 +109,7 @@ class View
 	 *
 	 * @return object l'instance de la classe view
 	 */
-	function &getView()
+	static function &getView()
 	{
 		static $instance;
 		if(!$instance)
@@ -131,18 +131,15 @@ class View
 	 */
 	function back($back = 1)
 	{
-		#echo "back=$back";
 		global $db, $idsession;
-		#     $url=preg_replace("/[\?&]clearcache=[^&]*/","",$_SERVER['REQUEST_URI']);
-		#     if (get_magic_quotes_gpc()) $url=stripslashes($url);
-		#     $myurl=$db->qstr($url);
+
 		$offset = $back-1;
 		usemaindb();
 		// selectionne les urls dans la pile grâce à l'idsession et suivant la
 		// la profondeur indiquée (offset)
 		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"), 1, $offset) or dberror();
 		$row = $result->fetchRow();
-		#print_r($row);
+
 		$id = $row['id'];	$newurl = $row['url'];
 		
 		if ($id) {
@@ -151,7 +148,7 @@ class View
 		} else {
 				$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
 		}
-		#echo "newurl=$newurl";exit;
+
 		if (!headers_sent()) {
 			header("location: ".$newurl);
 			exit;
@@ -159,7 +156,6 @@ class View
 			echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
 			exit;
 		}
-	//usecurrentdb();
 	}//end of back function
 
 	/**
@@ -177,11 +173,10 @@ class View
 	 */
 	function render(&$context, $tpl, $cache = false)
 	{
-
 		global $home;
+		
+		include_once 'calcul-page.php';
 		if (!$cache) { // calcul la page si le cache n'existe pas
-
-			include_once 'calcul-page.php';
 			calcul_page($context, $tpl);
 			return;
 		}
@@ -190,20 +185,21 @@ class View
 			$this->_iscachevalid();
 		}
 		if (!$this->_iscachevalid) {
-			include_once 'calcul-page.php';
 			$this->_calculateCacheAndOutput($context, $tpl);
 			// the cache is valid... do we have a php file ?
 		} else {
-			if ($this->_extcachedfile == 'php') {
+			if ($this->_extcachedfile == 'php' && myfileexists($this->_cachedfile. '.php')) {
 				$ret = include $this->_cachedfile. '.php';
 				// c'est etrange ici, un require ne marche pas. Ca provoque des plantages lourds !
 				if ($ret == 'refresh') { // does php say we must refresh ?
-					include_once 'calcul-page.php';
 					$this->_calculateCacheAndOutput($context, $tpl);
 				}
-			} else { // no, we have a proper html, let read it.
+			} elseif(myfileexists($this->_cachedfile. '.html')) { // no, we have a proper html, let read it.
 				// sinon affiche le cache.
 				readfile($this->_cachedfile. '.html');
+			} else { // le fichier cache a été supprimé entre temps ? on recalcule et on affiche
+				calcul_page($context, $tpl);
+				return;	
 			}
 		}
 	}
@@ -221,10 +217,10 @@ class View
 		if (!$this->_iscachevalid()) {
 			return false;
 		}
-		if ($this->_extcachedfile == 'php' && file_exists($this->_cachedfile. '.php')) {
+		if ($this->_extcachedfile == 'php' && myfileexists($this->_cachedfile. '.php')) {
 			$ret = include $this->_cachedfile. '.php';
 			if ($ret == 'refresh') return false; // does php say we must refresh ?
-		} elseif(file_exists($this->_cachedfile. '.html')) { // no, we have a proper html, let read it.
+		} elseif(myfileexists($this->_cachedfile. '.html')) { // no, we have a proper html, let read it.
 			// sinon affiche le cache.
 			readfile($this->_cachedfile. '.html');
 		} else {
@@ -267,7 +263,7 @@ class View
 	{
 		global $lodeluser;
 
-		include_once 'func.php';
+		clearstatcache(); // supprime le cache des stats fichier
 		if (defined('SITEROOT') && file_exists(SITEROOT. 'CACHE/maj')) {
 			$maj = myfilemtime(SITEROOT. 'CACHE/maj');
 		} elseif(defined('SITEROOT')) {
@@ -299,7 +295,7 @@ class View
 			mkdir("CACHE/$cachedir", 0777 & octdec($GLOBALS['filemask']));
 		}
 		$this->_cachedfile = "CACHE/$cachedir/". $this->_cachedfile;
-		$this->_extcachedfile = file_exists($this->_cachedfile. '.php') ? 'php' : 'html';
+		$this->_extcachedfile = myfileexists($this->_cachedfile. '.php') ? 'php' : 'html';
 
 		// The variable $cachedfile must exist and be visible in the global scope
 		// The compiled file need it to know if it must produce cacheable output or direct output.
@@ -334,15 +330,13 @@ class View
 	{
 		global $home;
 		ob_start();
-		$this->_extcachedfile = calcul_page($context, $tpl);
-		$content = ob_get_contents();
-		ob_end_clean();
-
+		calcul_page($context, $tpl);
+		$content = ob_get_clean();
 		$this->_extcachedfile = substr($content, 0, 5)=='<'. '?php' ? 'php' : 'html';
 		if ($this->_extcachedfile == 'html') {
 			echo $content; // send right now the html. Do other thing later. 
 			flush(); // That may save few milliseconde !
-			if(file_exists($this->_cachedfile. '.php'))
+			if(myfileexists($this->_cachedfile. '.php'))
 				@unlink($this->_cachedfile. '.php'); // remove if the php file exists because it has the precedence above.
 		}
 		// write the file in the cache
@@ -350,7 +344,6 @@ class View
 			fputs($f, $content);
 			fclose($f);
 		}
-		@chmod($dir, 0666 & octdec($GLOBALS['filemask']));
 		if ($this->_extcachedfile == 'php') { 
 			$dontcheckrefresh = 1;
 			include $this->_cachedfile. '.php'; 
@@ -429,7 +422,7 @@ function generateLangCache($lang, $file, $tags)
 		@mkdir($dir, 0777 & octdec($GLOBALS['filemask']));
 		@chmod($dir, 0777 & octdec($GLOBALS['filemask']));
 	}
-	#include_once 'func.php'; //ce require n'est pas forcément utile mais on sait jamais
+
 	writefile($file, '<'.'?php if (!$GLOBALS[\'langcache\'][\''. $lang. '\']) $GLOBALS[\'langcache\'][\''. $lang. '\']=array(); $GLOBALS[\'langcache\'][\''. $lang. '\']+=array('. $txt. '); ?'. '>');
 }
 ?>

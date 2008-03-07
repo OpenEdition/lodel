@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -88,12 +89,12 @@ function removefilesincache()
 					if (substr($file, 0, 1) == ".")
 						continue;
 					$file = $rep2."/".$file;
-					if (is_file($file) && is_writable($file))	{
+					if (myfileexists($file) && is_file($file) && is_writable($file))	{
 						@unlink($file);
 					}
 				}
 				closedir($fd2);
-			}	elseif (is_file($file)&& is_writable($file))	{
+			} elseif (myfileexists($file) && is_file($file)&& is_writable($file))	{
 				@unlink($file);
 			}
 		}
@@ -101,5 +102,16 @@ function removefilesincache()
 	}
 	require_once 'func.php';
 	update();
+}
+
+/**
+ * Fonction permettant de vérifier l'existence d'un fichier correctement !
+ *
+ * @param string $file fichier à tester
+*/
+function myfileexists($file) {
+	// plus important : on supprime  le cache généré par les fonctions de stat de fichier !
+	clearstatcache();
+	return file_exists($file); // on retourne le test du fichier
 }
 ?>

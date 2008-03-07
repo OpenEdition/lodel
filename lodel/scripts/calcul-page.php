@@ -43,7 +43,7 @@
  * @package lodel
  */
 
-#require_once 'func.php';
+require_once 'cachefunc.php';
 
 /**
  * Fonction de calcul d'une page
@@ -59,7 +59,6 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 {
 	global $home, $format;
 	if ($_REQUEST['clearcache'])	{
-		include_once 'cachefunc.php';
 		clearcache();
 		$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	}
@@ -71,7 +70,7 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 
 	$template_cache = $cache_rep. "CACHE/tpl_$base.php";
 	
-	if(!file_exists($template_cache)) { // existe pas ? on le génère
+	if(!myfileexists($template_cache)) { // existe pas ? on le génère
 		if (!defined("TOINCLUDE")) {
 			define("TOINCLUDE", $home);
 		}
@@ -101,11 +100,10 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	// execute le template php
 	include_once 'textfunc.php';
 		
-	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'])	{
+	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'] && myfileexists($template_cache) && is_readable($template_cache))	{
 		ob_start();
 		require $template_cache;
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = ob_get_clean();
 		require_once 'showhtml.php';
 		echo _indent(show_html($content));
 		return;
@@ -114,20 +112,18 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
 		ob_start();
-		if(is_readable($template_cache))
+		if(myfileexists($template_cache) && is_readable($template_cache))
 			require $template_cache;
-		$contents = ob_get_contents();
-		ob_end_clean();
+		$contents = ob_get_clean();
 		echo _indent($contents);
 	}
 	else
 	{
 		// isolatin est l'autre charset par defaut
 		ob_start();
-		if(is_readable($template_cache))
+		if(myfileexists($template_cache) && is_readable($template_cache))
 			require $template_cache;
-		$contents = ob_get_contents();
-		ob_end_clean();
+		$contents = ob_get_clean();
 		echo _indent(utf8_decode($contents));
 	}
 		
