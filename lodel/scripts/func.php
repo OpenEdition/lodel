@@ -1071,6 +1071,7 @@ function _indent($source, $indenter = '  ')
 function fix_newlines_for_clean_html($fixthistext)
 {
 	$fixthistext_array = explode("\n", $fixthistext);
+
 	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
 
  		// Exception for fckeditor
@@ -1082,7 +1083,7 @@ function fix_newlines_for_clean_html($fixthistext)
 		//Makes sure empty lines are ignores
 		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
 		{
-			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
+			$fixedtextvalue = preg_replace("/[^[em|sup|sub|span]]>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
 			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
 		}
 		
@@ -1110,6 +1111,7 @@ function _indent_xhtml ($uncleanhtml, $indent = "  ")
 	//$indent = "    ";
 	//Uses previous function to seperate tags
 	if ($fixed_uncleanhtml = fix_newlines_for_clean_html($uncleanhtml)) {
+
 		$uncleanhtml_array = explode("\n", $fixed_uncleanhtml);
 	
 		//Sets no indentation
