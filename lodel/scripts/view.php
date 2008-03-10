@@ -291,7 +291,7 @@ class View
 	
 		if (!empty($_COOKIE['language'])) $cachedir = 'i18n-' . $GLOBALS['lang'] . '.' . $cachedir;
 
-		if (!file_exists("CACHE/$cachedir")) {
+		if (!myfileexists("CACHE/$cachedir")) {
 			mkdir("CACHE/$cachedir", 0777 & octdec($GLOBALS['filemask']));
 		}
 		$this->_cachedfile = "CACHE/$cachedir/". $this->_cachedfile;
