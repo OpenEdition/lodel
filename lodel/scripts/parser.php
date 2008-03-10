@@ -196,12 +196,13 @@ class Parser
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
-		if(file_exists($out))
+		require_once 'cachefunc.php';
+		if(myfileexists($out))
 			@unlink($out); // detruit avant d'ecrire.
 		$fp = fopen($out, "w") or $this->errmsg("cannot write file $out");
 		fputs($fp, $contents);
 		fclose($fp);
-		if ($GLOBALS['filemask'])
+		if ($GLOBALS['filemask'] && myfileexists($out))
 			chmod($out, 0666 & octdec($GLOBALS['filemask']));
 
 		return $ret;
