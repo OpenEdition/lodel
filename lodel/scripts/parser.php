@@ -1022,28 +1022,24 @@ class Parser
 			$this->ind += 3;
 
 			$this->parse_main();
-
 			if ($this->arr[$this->ind] == 'DO') {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if ($attrs['CASE'])	{
 					$this->parse_variable($attrs['CASE'], false); // parse the attributs
-
 					$this->_clearposition();
-					$this->arr[$this->ind + 1] = 'case '.$attrs['CASE'].': ?>';
+					$this->arr[$this->ind + 1] = 'case "'.$attrs['CASE'].'": ?>';
 				}	else {
 					die("ERROR: multiple choice case not implemented yet");
 					// multiple case
 				}
+			} elseif ($this->arr[$this->ind] == "/DO") {
 				$this->_clearposition();
-				$this->arr[$this->ind + 1] = 'case :';
-			}	elseif ($this->arr[$this->ind] == "/DO") {
-				$this->_clearposition();
-				$this->arr[$this->ind + 1] = "break;\n";
-			}	elseif ($this->arr[$this->ind] == "/SWITCH") {
+				$this->arr[$this->ind + 1] = "<?php break; ?>\n";
+			} elseif ($this->arr[$this->ind] == "/SWITCH") {
 				$endswitch = true;
-			}	else
+			} else
 				$this->errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in SWITCH condition", $this->ind);
-		}	while (!$endswitch && $this->ind < $this->countarr);
+		} while (!$endswitch && $this->ind < $this->countarr);
 
 		if (!$endswitch)
 			$this->errmsg("SWITCH block is not closed", $this->ind);
