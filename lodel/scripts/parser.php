@@ -1005,7 +1005,6 @@ class Parser
 	 */
 	function parse_SWITCH()
 	{
-		// decode attributs
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 		if (!$attrs['TEST'])
 			$this->errmsg("Expecting a TEST attribut in the SWITCH tag");
@@ -1014,10 +1013,12 @@ class Parser
 		$test = replace_conditions($test, 'php');
 
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '<?php switch ('.$test.') { ';
+		$toput = $this->ind + 1;
+
 		if (trim($this->arr[$this->ind + 2]))
 			$this->errmsg("Expecting a CASE tag after the SWITCH tag");
-
+		// PHP ne veut aucun espace entre le switch et le premier case !
+		$begin = true;
 		do {
 			$this->ind += 3;
 
@@ -1027,14 +1028,18 @@ class Parser
 				if ($attrs['CASE'])	{
 					$this->parse_variable($attrs['CASE'], false); // parse the attributs
 					$this->_clearposition();
-					$this->arr[$this->ind + 1] = 'case "'.$attrs['CASE'].'": ?>';
+					if($begin) {
+						$this->arr[$toput] = '<?php switch ('.$test.') { case "'.$attrs['CASE'].'": { ?>';
+						$begin = false;
+					} else
+						$this->arr[$this->ind + 1] = '<?php case "'.$attrs['CASE'].'": { ?>';
 				}	else {
 					die("ERROR: multiple choice case not implemented yet");
 					// multiple case
 				}
 			} elseif ($this->arr[$this->ind] == "/DO") {
 				$this->_clearposition();
-				$this->arr[$this->ind + 1] = "<?php break; ?>\n";
+				$this->arr[$this->ind + 1] = "<?php break; } ?>\n";
 			} elseif ($this->arr[$this->ind] == "/SWITCH") {
 				$endswitch = true;
 			} else
