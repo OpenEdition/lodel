@@ -114,7 +114,7 @@ class Parser
 
 	function Parser()
 	{ // constructor
-		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
+		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
 
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
 	}
@@ -432,6 +432,7 @@ class Parser
 				break;
 					// returns
 			case 'ELSE' :
+			case 'ELSEIF':
 			case 'DO' :
 			case 'DOFIRST' :
 			case 'DOLAST' :
@@ -979,7 +980,6 @@ class Parser
 
 		do {
 			$this->ind += 3;
-			#$this->parse_main2();
 			$this->parse_main();
 			if ($this->arr[$this->ind] == "ELSE") {
 				if ($elsefound)
@@ -987,6 +987,15 @@ class Parser
 				$elsefound = 1;
 				$this->_clearposition();
 				$this->arr[$this->ind + 1] = '<?php } else { ?>';
+			}	elseif ($this->arr[$this->ind] == "ELSEIF") {
+				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+				if (!$attrs['COND'])
+					$this->errmsg("Expecting a COND attribut in the ELSEIF tag");
+				$cond = $attrs['COND'];
+				$this->parse_variable($cond, false); // parse the attributs
+				$cond = replace_conditions($cond, "php");
+				$this->_clearposition();
+				$this->arr[$this->ind + 1] = '<?php } elseif ('.$cond.') { ?>';
 			}	elseif ($this->arr[$this->ind] == "/IF") {
 				$isendif = 1;
 			}	else
