@@ -1065,7 +1065,7 @@ div.close{
 	font-size:12px;
 }
 
-#sitesLodel tr {
+#sitesLodel tr, #sitesLodel td {
 	border-bottom:1px solid #DADBDC;
 }
 
