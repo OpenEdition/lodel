@@ -466,7 +466,7 @@ class exportfor08
 	    			$titre = strip_tags($titre);
 	    			if (strlen($titre)>255) {
 	      				$titre=substr($titre,0,256);
-	      				$titre=preg_replace("/\S+$/","",$titre);
+	      				$titre=trim($titre);
 	    			}
 				$titre = str_replace("'", "\\'", $titre);
 				$query .= "UPDATE _PREFIXTABLE_entities set g_title='".$titre."' WHERE id=$id;\n";

@@ -32,32 +32,59 @@ require_once 'unset_globals.php';
 
 
 function contact_servoo ($cmds,$uploadedfiles,$destfile="") 
-
 {
-
-  $options=getoption(array("servoourl","servoousername","servoopasswd"),"");
-
-  if (!$options || !$options['servoourl']) { // get form the lodelconfig file
-    $options['servoourl']=$GLOBALS['servoourl'];
-    $options['servoousername']=$GLOBALS['servoousername'];
-    $options['servoopasswd']=$GLOBALS['servoopasswd'];
-  }
-  if (!$options['servoourl'] || !$options['servoousername'] || !$options['servoopasswd']) return array("noservoo","");
-
-  if (!is_array($uploadedfiles)) $uploadedfiles=array($uploadedfiles);
-
-  $ret=upload($options['servoourl'],
-	      array("username"=>$options['servoousername'],
-		    "passwd"=>$options['servoopasswd'],
-		    "commands"=>$cmds,
-		    "lodelversion"=>$GLOBALS['version']),
-	      $uploadedfiles, # fichier a uploaded
-	      0, # cookies
-	      $destfile
-	      );
-  if ($ret) { # erreur
-    return $ret;
-  }
+	$options=getoption(array("servoourl","servoousername","servoopasswd"),"");
+	
+	if (!$options || !$options['servoourl']) { // get form the lodelconfig file
+	$options['servoourl']=$GLOBALS['servoourl'];
+	$options['servoousername']=$GLOBALS['servoousername'];
+	$options['servoopasswd']=$GLOBALS['servoopasswd'];
+	}
+	if (!$options['servoourl'] || !$options['servoousername'] || !$options['servoopasswd']) return array("noservoo","");
+	
+	if (!is_array($uploadedfiles)) $uploadedfiles=array($uploadedfiles);
+	
+	$ret=upload($options['servoourl'],
+		array("username"=>$options['servoousername'],
+			"passwd"=>$options['servoopasswd'],
+			"commands"=>$cmds,
+			"lodelversion"=>$GLOBALS['version']),
+		$uploadedfiles, # fichier a uploaded
+		0, # cookies
+		$destfile
+		);
+	if ($ret) { # erreur : on va essayer de contacter les autres servoo si présents
+		$ret[0] = "1er ServOO : \"".$ret[0];
+		$i=2;
+		do {
+			$options=getoption(array("servoourl$i","servoousername$i","servoopasswd$i"),"");
+			if ((!$options || !$options['servoourl'.$i]) && !empty($GLOBALS['servoourl'.$i])) {
+				$options['servoourl'.$i]=$GLOBALS['servoourl'.$i];
+				$options['servoousername'.$i]=$GLOBALS['servoousername'.$i];
+				$options['servoopasswd'.$i]=$GLOBALS['servoopasswd'.$i];
+			}
+			if(!empty($options['servoourl'.$i]) && !empty($options['servoousername'.$i]) && !empty($options['servoopasswd'.$i])) {
+				unset($retour);
+				$retour = upload(	$options['servoourl'.$i], array("username"=>$options['servoousername'.$i],
+										"passwd"=>$options['servoopasswd'.$i],
+										"commands"=>$cmds,
+										"lodelversion"=>$GLOBALS['version']),
+						$uploadedfiles, # fichier a uploaded
+						0, # cookies
+						$destfile
+						);
+				if($retour) {
+					$ret[0] .= "\"<br /> ".$i."ème ServOO : \"".$retour[0]."\"";
+				} else {
+					unset($ret);
+					return;
+				}
+			} else {
+				return $ret;
+			}
+			$i++;
+		} while($ret);
+	}
 }
 
 
@@ -85,9 +112,8 @@ array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss',
 
 
 function upload($url,$vars,$files=0,$cookies=0,$outfile="")
-
 {
-  require($home."Snoopy.class.php");
+  require_once($home."Snoopy.class.php");
   $client = new Snoopy();
   $client->agent = "Lodel";
   $client->read_timeout = 60;
