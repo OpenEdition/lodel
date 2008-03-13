@@ -1069,18 +1069,19 @@ div.close{
 	border-bottom:1px solid #DADBDC;
 }
 
-#sitesLodel tr.grey {
+#sitesLodel .grey {
 	background-color:#DDDDDD;
 }
 
 #sitesLodel td {
-	padding:1em 0;
+	padding:1em;
 	
 }
 
 #sitesLodel td.site {
 	padding-left:36px;
-	background:url(../images/lien.gif) no-repeat 0 50%;
+	background:  url(../images/lien.gif) no-repeat .5em 50%;
+	background-color: transparent;
 	text-align:left;
 }
 
