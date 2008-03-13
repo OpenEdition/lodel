@@ -65,7 +65,7 @@ if ($_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_na
       if ($ret=="noservoo") {
 	$context['erreur']="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
       } else {
-	$context['erreur']=utf8_encode("Erreur renvoyée par le ServOO: \"$ret\"");
+	$context['erreur']=utf8_encode("Erreur renvoyée :<br /> $ret");
       }
       break;
     }
