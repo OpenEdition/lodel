@@ -355,7 +355,7 @@
 <!--[ ---------------FILE, IMAGE ------------- ]-->	    
 <IF COND="[#TYPE] eq 'image' OR [#TYPE] eq 'file'">
 	<div class="oneItem">
-		<IF COND="[#VALUE]">
+		<IF COND="[#VALUE] AND [#VALUE] NE 'Array'">
 			<div class="imageKeepDelete">
 			<IF COND="[#TYPE] eq 'file'">
 				[@COMMON.FILE] : <strong><a href="<MACRO NAME="SITE_ROOT" />/[#VALUE]">[#VALUE]</a></strong> ([#VALUE|nicefilesize])<br />&nbsp;<br />
