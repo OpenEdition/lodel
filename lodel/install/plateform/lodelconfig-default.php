@@ -124,9 +124,11 @@ $servoopasswd="";
 $tmpoutdir = "";
 
 # configuration du proxy pour atteindre le ServOO
-
 $proxyhost="";
 $proxyport="8080";
+
+# tableau des types de fichiers acceptés à l'upload
+$authorizedFiles = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg');
 
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK

@@ -167,7 +167,6 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 		}
 		break;
-//fre
 	case 'date' :
 		require_once 'date.php';
 		if ($text) {
@@ -303,6 +302,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		if (!$name) {
 			trigger_error("ERROR: \$name is not set in validfunc.php", E_USER_ERROR);
+		}
+		global $authorizedFiles; // white list dispo dans le lodelconfig.php
+		// on évite la possibilité d'uploader des fichiers non désirés
+		if(!empty($text['radio']) && !in_array(substr($_FILES['data']['name'][$name][$text['radio']], -4), $authorizedFiles)) {
+			return $text['radio'];
 		}
 		switch ($text['radio']) {
 		case 'upload' :
