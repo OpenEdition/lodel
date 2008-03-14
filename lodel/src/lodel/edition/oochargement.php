@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -109,7 +110,7 @@ if ($client->error_message) {
 													$options, array('allowextensions' => 'xhtml|jpg|png|gif'),
 													'imagesnaming', // callback
 													SITEROOT. 'docannexe/tmp'. rand()); // base name for the images
-			if ($xhtml === false) {
+			if ($xhtml === FALSE) {
 				if (strpos($client->error_message, 'Not well-formed XML') !== false) {
 					$arr = preg_split("/\n/", $client->error_message);
 					$l = -3;
@@ -117,10 +118,26 @@ if ($client->error_message) {
 						echo $l++," ",$t,"\n";
 					}
 					return;
+				} else {
+					$erreur = "<br />1er ServOO : ".$client->error_message;
+					$i=2;
+					while(TRUE === $client->status && FALSE === $xhtml) {
+						$client = new ServOO($i);
+						if(empty($client->error_message)) {
+							$xhtml = $client->convertToXHTML($source, $ext, $outformat, $tmpdir, '',
+													$options, array('allowextensions' => 'xhtml|jpg|png|gif'),
+													'imagesnaming', // callback
+													SITEROOT. 'docannexe/tmp'. rand()); // base name for the images
+							if(FALSE === $xhtml)
+								$erreur .= "<br /> ".$i."ème ServOO : ".$client->error_message;
+						}
+						$i++;
+					}
+					if(FALSE === $xhtml) {
+						$context['error'] = utf8_encode("Erreur renvoyée par le ServOO: ". $erreur. "");
+						break;
+					}
 				}
-
-				$context['error'] = utf8_encode("Erreur renvoyée par le ServOO: \"". $client->error_message. "\"");
-				break;
 			}
 		if ($sortieoo || $sortiexhtml) {
 			die(htmlentities($xhtml));
