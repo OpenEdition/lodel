@@ -1637,10 +1637,22 @@ function getParentByType($id,$type){
  * 
  * @author Pierre-Alain Mignot
  * @param string $texte le texte à modifier
+ * @param bool $codeInclude inclut directement le JS dans la page. défaut à false (fichier JS séparé)
  * @return $texte le texte avec les emails cryptés
  */
-function cryptEmails($texte)
+function cryptEmails($texte, $codeInclude = FALSE)
 {
+	if(TRUE === $codeInclude) {
+		$javascript = "<script type=\"text/javascript\">
+				function recomposeMail(obj, region, nom, domaine)
+				{
+					obj.href = 'mailto:' + nom + '@' + domaine + '.' + region;
+					obj.onclick = (function() {});
+				}
+				</script>\n";
+		$texte = $javascript . $texte;
+	}
+
 	// on récupère tous les liens mail contenus dans le texte
 	preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches);
 
