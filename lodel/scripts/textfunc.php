@@ -1632,5 +1632,42 @@ function getParentByType($id,$type){
         }
 }
 
+/** 
+ * Crypte les emails pour qu'ils ne soient pas reconnaissable par les robots spam
+ * 
+ * @author Pierre-Alain Mignot
+ * @param string $texte le texte à modifier
+ * @return $texte le texte avec les emails cryptés
+ */
+function cryptEmails($texte)
+{
+	// on récupère tous les liens mail contenus dans le texte
+	preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches);
 
+	foreach($matches[0] as $k=>$mail) {
+		$name = explode("@", $matches[1][$k]);
+		$extension = substr(strrchr($name[1], '.'), 1);
+		$domain = substr($name[1], 0, strrpos($name[1], '.'));
+
+		// email dans le contenu du lien ?
+		if(array(0=>$matches[2][$k]) != $content = explode("@", $matches[2][$k])) { 
+			/* 
+			on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
+			résultat dans le code source de la page avec test@domaine.com : 
+			test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
+			*/
+			$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
+			$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
+		}
+
+		// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
+		$newLink = "<a href=\"#\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
+		$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
+		$newLink .= "</a>";
+
+		// on remplace
+		$texte = str_replace($mail, $newLink, $texte);
+	}
+	return $texte;
+}
 ?>
