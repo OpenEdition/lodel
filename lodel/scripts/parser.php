@@ -211,6 +211,7 @@ class Parser
 	function parse_variable(& $text, $escape = 'php')
 	{
 		global $context;
+		$text = trim($text);
 		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
@@ -264,18 +265,16 @@ class Parser
 							if(strpos($lang, '#') !== false) {
 								// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
 								$val = str_replace('#', '', $tab[1]);
-								$lang = '$context['.$tab[0].'][$context['.$val.']]';
-								$pipefunction = '|multilingue('.$lang.')';
+								$lang = '$context[\''.$tab[0].'\'][\'$context['.$val.']\']';
 							} else {
 								//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
-								$tab = explode ('.', $lang);
-								$lang = $context[$tab[0]][$tab[1]][$tab[2]];
+								$lang = '$context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\']';
 							}
 						} else {
-							$lang = $context[$lang];
+							$lang = '$context[\''.$lang.'\']';
 						}
 					}
-					$pipefunction = empty($pipefunction) ? '|multilingue("'.$lang.'")' : $pipefunction;
+					$pipefunction = '|multilingue('.$lang.')';
 				}
 
 				if ($text {$i}	== '|')	{ // have a pipe function
