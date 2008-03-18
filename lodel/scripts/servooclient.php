@@ -215,7 +215,10 @@ class ServOO_Client {
     $ret=$this->convertToFile($infilename,$informat,
 			      $outformat,$outfilename,
 			      $options);
-    if (!$ret) return $ret;
+    if (!$ret) {
+	@unlink($outfilename);
+	return $ret;
+    }
     require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
@@ -289,7 +292,10 @@ class ServOO_Client {
     $ret=$this->convertToFile($infilename,$informat,
 			      $outformat,$outfilename,
 			      $options);
-    if (!$ret) return $ret;
+    if (!$ret) {
+	@unlink($outfilename);
+	return $ret;
+    }
     require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
@@ -297,6 +303,7 @@ class ServOO_Client {
     // 
 
     if (($list = $zip->listContent()) == 0) {
+	@unlink($outfilename);
       $this->error_message=$zip->errorInfo(true);
       return false;
     }
@@ -311,6 +318,7 @@ class ServOO_Client {
 	$ret=$zip->extract(PCLZIP_OPT_BY_INDEX, array ($entry['index']),
 			   PCLZIP_OPT_EXTRACT_AS_STRING);
 	if (!$ret) {
+	  @unlink($outfilename);
 	  $this->error_message=$zip->errorInfo(true);
 	  return false;
 	}
@@ -357,6 +365,7 @@ class ServOO_Client {
       $ret=$zip->extract(PCLZIP_OPT_REMOVE_ALL_PATH,
 			 PCLZIP_CB_PRE_EXTRACT,"_convertToXML_Pre_Extract_CB");
       if ($ret==0) {
+	@unlink($outfilename);
 	$this->error_message=$zip->errorInfo(true);
 	return false;
       }
