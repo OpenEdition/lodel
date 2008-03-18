@@ -211,7 +211,6 @@ class Parser
 	function parse_variable(& $text, $escape = 'php')
 	{
 		global $context;
-		$text = trim($text);
 		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
