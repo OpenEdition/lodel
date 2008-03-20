@@ -97,7 +97,7 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
       }
     }
   }
