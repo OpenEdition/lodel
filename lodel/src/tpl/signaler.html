@@ -28,10 +28,7 @@
 
 <USE MACROFILE="macros_base.html" />
 <USE MACROFILE="macros_site.html" />
-
 <MACRO NAME="OUVRIR_HTML" />
-<title><MACRO NAME="TITRE_HTML" /></title>
-<MACRO NAME="METADONNEES_POUR_ACCUEIL" />
 <MACRO NAME="INSERER_SYNDICATION" />
 <MACRO NAME="INSERER_FEUILLE_DE_STYLES" />
 <MACRO NAME="INSERER_JAVASCRIPT" />
@@ -39,7 +36,7 @@
 	<div id="contenu">	
 		<div id="inside">
 			<IF COND="[#OPTIONS.METADONNEESSITE.SIGNALER_MAIL] eq 'actif'">
-				<h1 class="accueil">Signalement du document en ligne :</h1>
+				<h1 class="accueil">Signalement du document en ligne :</h1><br />
 				<IF COND="[#NOTFOUND] EQ 1">
 					<p>Erreur sur l'identifiant. Aucun document à signaler.</p>
 				<ELSE />					

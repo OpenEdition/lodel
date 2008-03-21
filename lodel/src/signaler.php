@@ -123,7 +123,7 @@ if ($envoi) {
 		}
 		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . ' sur ' . "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '') . $urlroot . ' signalé par ';
 		$context['subject'] .= !empty($context['nom_expediteur']) ? $context['nom_expediteur'] : "un ami (<" . $context['from'] . ">).";
-
+		$context['subject'] = utf8_decode($context['subject']);
 		// calcul le mail
 		$headers = array('to', 'from', 'message', 'nom_expediteur', 'nom_destinataire', 'subject');
 		foreach ($headers as &$bal) {
