@@ -1772,10 +1772,13 @@ class exportfor08
 			*/
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
+				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'lienannexe') WHERE id = '".$res['id']."';\n";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
 				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';\n";
+				$query .= "DELETE FROM ".$GLOBALS['tp']."entities WHERE id = '".$res['id']."';\n";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
+				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE id = '".$res['id']."';\n";
 			}
 		}
 		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type LIKE 'documentannexe-%';\n";
