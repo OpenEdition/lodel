@@ -836,6 +836,85 @@
 	</unique>
 </table>
 
+<table name="restricted_users"
+       description="[@ADMIN.USER_INFORMATIONS]"
+       writeright="admin"
+       protectright="adminlodel">
+	<vgroup name="general"
+		label="[@ADMIN.USER_GENERAL_INFORMATIONS]">
+		<column name="id"
+			type="INTEGER"
+			required="true"
+			primaryKey="true"
+			autoIncrement="true" />
+		<column name="username"
+			type="VARCHAR"
+			size="64"
+			required="true"
+			label="[@COMMON.LOGIN]"
+			edittype="username"  />
+		<column name="passwd"
+			type="VARCHAR"
+			size="64"
+			label="[@COMMON.NEW_PASSWD]"
+			edittype="passwd" />
+		<vcolumn name="confirmpasswd"
+			 label="[@ADMIN.CONFIRM_NEW_PASSWORD]"
+			 edittype="passwd"/>
+		<column name="lastname"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.LASTNAME]"
+			edittype="text"/>
+		<column name="firstname"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.FIRSTNAME]"
+			edittype="text" />
+		<column name="email"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.EMAIL]"
+			edittype="email" />
+		<column name="expiration"
+			type="DATE"
+			required="true"
+			label="[@ADMIN.RESTRICTEDUSER_EXPIRATIONDATE]"
+			edittype="date"/>
+	</vgroup>
+	<vgroup name="lodel_informations"
+		label="[@ADMIN.USER_LODEL_INFORMATIONS]">
+		<column name="lang"
+			type="CHAR"
+			size="5"
+			required="true"
+			description="user lang"
+			label="[@ADMIN.USER_LANG]"
+			edittype="lang" />
+		<column name="userrights"
+			type="TINYINT"
+			default="5"
+			required="true"
+			label="[@ADMIN.USER_RIGHTS]"
+			visibility="hidden" />
+	</vgroup>
+	<column name="status"
+		type="TINYINT"
+		default="1"
+		required="true" />
+	<column name="rank"
+		type="INTEGER"
+		default="0"
+		required="true" />
+	<column name="upd"
+		type="TIMESTAMP" />
+	<index name="index_username">
+		<index-column name="username" />
+	</index>
+	<unique name="unique_username">
+		<unique-column name="username" />
+	</unique>
+</table>
 
 <table name="usergroups"
         description="Table des groupes d'utilisateurs de lodel"

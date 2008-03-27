@@ -170,7 +170,9 @@ $tables=array("persontypes",
 	      "optiongroups",
 	      "characterstyles",
 	      "internalstyles",
-	      "translations","texts"
+	      "translations",
+		"texts",
+		"restricted_users"
 				);
 foreach ($tables as $table) {
   echo "table=$table\n";
