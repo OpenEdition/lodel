@@ -109,7 +109,8 @@ if ($_POST['login']) {
 		}
 		$context['passwd'] = $passwd = 0;
 	} while (0);
-} elseif ($id || $identifier) {
+} 
+if ($id || $identifier) {
 	require_once 'connect.php';
 	do { // exception block
 		require_once 'func.php';
