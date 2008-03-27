@@ -50,6 +50,7 @@
  */
 
 // les niveaux de droits
+define("LEVEL_RESTRICTEDUSER", 5);
 define("LEVEL_VISITOR", 10);
 define("LEVEL_REDACTOR", 20);
 define("LEVEL_EDITOR", 30);
@@ -71,7 +72,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  *
  * Cette fonction gère l'authentification suivant le niveau de l'utilisateur.
  * Le niveau de l'utilsateur est un entier parmis :
- * LEVEL_VISITOR : 10, LEVEL_REDACTOR : 20, LEVEL_EDITOR : 30, LEVEL_ADMIN : 40,
+ * LEVEL_RESTRICTEDUSER : 5, LEVEL_VISITOR : 10, LEVEL_REDACTOR : 20, LEVEL_EDITOR : 30, LEVEL_ADMIN : 40,
  * LEVEL_ADMINLODEL : 128.
  *
  * @param integer $level Le niveau de l'utilisateur. Par défaut 0
@@ -108,12 +109,16 @@ function authenticate($level = 0, $mode = "")
 			$time = time();
 			if ($row['expire'] < $time || $row['expire2'] < $time) {
 				$login = "";
-				if (file_exists('login.php'))	{
-					$login = 'login.php';
-				}	elseif (file_exists('lodel/edition/login.php'))	{
-					$login = 'lodel/edition/login.php';
-				}	else {
-					break;
+				if($level == LEVEL_RESTRICTEDUSER) {
+					$login = 'index.'.$GLOBALS['extensionscripts'];
+				} else {
+					if (file_exists('login.php'))	{
+						$login = 'login.php';
+					}	elseif (file_exists('lodel/edition/login.php'))	{
+						$login = 'lodel/edition/login.php';
+					}	else {
+						break;
+					}
 				}
 				header("location: $login?error_timeout=1&". $retour);
 				exit;
@@ -122,15 +127,27 @@ function authenticate($level = 0, $mode = "")
 			// passe les variables en global
 			$lodeluser = unserialize($row['context']);
 			if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
-				header("location: login.php?error_privilege=1&". $retour);
+				if($level == LEVEL_RESTRICTEDUSER) {
+					$login = 'index.'.$GLOBALS['extensionscripts'];
+				} else {
+					$login = 'login.php';
+				}
+				header("location: $login?error_privilege=1&". $retour);
 				exit;
 			}
 	
 			// verifie encore une fois au cas ou...
-			if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
-				break;
+			if($level == LEVEL_RESTRICTEDUSER) {
+				if ($lodeluser['rights'] < LEVEL_RESTRICTEDUSER && !$site) {
+					break;
+				}
+			} else {
+				if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
+					break;
+				}
 			}
-	
+			
+			$lodeluser['restricted_user'] = $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER;
 			$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
 			$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
 			$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
@@ -167,6 +184,10 @@ function authenticate($level = 0, $mode = "")
 		elseif ($mode == 'HTTP') {
 			require_once 'loginHTTP.php';
 			return;
+		}
+		elseif($level == LEVEL_RESTRICTEDUSER) {
+			header("Location: index.".$GLOBALS['extensionscripts']);
+			exit;
 		}
 		else {
 			header("location: login.php?". $retour);
@@ -267,6 +288,7 @@ function maintenance()
 		usecurrentdb();
 		// verifie que la session n'est pas expiree
 		$time = time();
+
 		if (($row['expire'] < $time || $row['expire2'] < $time) && preg_match($reg, $_SERVER['SCRIPT_NAME'])) {		
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
@@ -274,6 +296,9 @@ function maintenance()
 			$row = $db->getRow($query);
 			usecurrentdb();
 			if($row['status'] == -64 || $row['status'] == -65) {
+				if($lodeluser['rights'] <= LEVEL_RESTRICTEDUSER ) {
+					header("Location: $path?error_timeout=1");
+				}
 				$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
 				header("Location: ".$path);
 			}
