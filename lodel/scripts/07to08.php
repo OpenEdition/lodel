@@ -495,11 +495,19 @@ class exportfor08
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE _PREFIXTABLE_tablefields SET g_name = '".$this->defaultgName."', class='" . $row['class'] . "' WHERE idgroup = " . $row['id'] . ";\n";
 		}
+
+		$query .= "UPDATE $GLOBALS[tp]entities SET status = 8 WHERE status = 32;\n";
 		if(!$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj, $GLOBALS[tp]documents__old.fichiersource FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]documents__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]documents__old.identite)")) {
 			return mysql_error();
 		}
 		while ($row = mysql_fetch_assoc($result)) {
 			$query .= "UPDATE $GLOBALS[tp]entities SET creationmethod = 'servoo', creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."', creationinfo = \"".$row['fichiersource']."\" WHERE id = " . $row['id'] . ";\n";
+		}
+		if(!$result = mysql_query("SELECT $GLOBALS[tp]entites__old.id, $GLOBALS[tp]entites__old.maj FROM $GLOBALS[tp]entites__old JOIN $GLOBALS[tp]publications__old ON ($GLOBALS[tp]entites__old.id = $GLOBALS[tp]publications__old.identite)")) {
+			return mysql_error();
+		}
+		while ($row = mysql_fetch_assoc($result)) {
+			$query .= "UPDATE $GLOBALS[tp]entities SET creationdate = '".$row['maj']."', modificationdate = '".$row['maj']."' WHERE id = " . $row['id'] . ";\n";
 		}
 		
 		// INDEX : ajout des champs dans tablefields
@@ -1266,7 +1274,7 @@ class exportfor08
 		if(!$resu = mysql_query('SELECT id, g_name FROM ' . $GLOBALS['tp'] . 'entries ORDER BY g_name')) {
 			return mysql_error();
 		}	
-		$query .= "ALTER TABLE _PREFIXTABLE_entrytypes ADD lang varchar(10) NOT NULL default 'fr';\n"
+		$query .= "ALTER TABLE _PREFIXTABLE_entrytypes ADD lang varchar(10) NOT NULL default 'fr';\n";
 		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES 
 		(".$id[0].", '', 'motsclesfr', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW()),
 		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW()),
