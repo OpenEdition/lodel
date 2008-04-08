@@ -304,8 +304,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			trigger_error("ERROR: \$name is not set in validfunc.php", E_USER_ERROR);
 		}
 		global $authorizedFiles; // white list dispo dans le lodelconfig.php
+		// on récupère l'extension du fichier	
+   		$extension = explode(".", $_FILES['data']['name'][$name][$text['radio']]);
+		$extension = ".".$extension[count($extension)-1];
 		// on évite la possibilité d'uploader des fichiers non désirés
-		if($text['radio'] == 'upload' && !in_array(substr($_FILES['data']['name'][$name][$text['radio']], -4), $authorizedFiles)) {
+		if($text['radio'] == 'upload' && !in_array($extension, $authorizedFiles)) {
 			return $text['radio'];
 		}
 		switch ($text['radio']) {
