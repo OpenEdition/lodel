@@ -396,7 +396,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 			if ($filetodelete) {
 				unlink(SITEROOT.$text);
-				$text = "";
+				$text = "deleted";
 				unset ($filetodelete);
 			}
 			return true;
