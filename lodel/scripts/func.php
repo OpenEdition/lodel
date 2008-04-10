@@ -45,36 +45,6 @@
  * @package lodel
  */
 
-/**
- * Fonction permettant d'envoyer correctement un mail en html
- *
-*/
-function send_mail($to, $body, $subject, $fromaddress, $fromname)
-{
-	$heads = func_get_args();
-	// sécurité anti injection en-tete mail
-	foreach ($heads as $key => $value) {
-		$$value = preg_replace('`((<CR>|<LF>|0x0A/%0A|0x0D/%0D|\\n|\\r)\S).*`i', null, $value);
-        }
-
-	$eol="\r\n";
-
-	# Common Headers
-	$headers  = 'MIME-Version: 1.0' . $eol;
-     	$headers .= 'Content-type: text/html; charset=utf-8' . $eol;
-	$headers .= "Content-Transfer-Encoding: 8bit".$eol;
-	$headers .= "From: ".$fromname."<".$fromaddress.">".$eol;
-	$headers .= "Reply-To: ".$fromname."<".$fromaddress.">".$eol;
-	$headers .= "Return-Path: ".$fromname."<".$fromaddress.">".$eol.$eol;    // these two to set reply address
-	$headers .= "Message-ID: <".time()."-".$fromaddress.">".$eol;
-	$headers .= "X-Mailer: PHP v".phpversion().$eol.$eol;          // These two to help avoid spam-filters
-	
-	# corps du mail
-	$msg = $eol.$body.$eol.$eol;
-	
-	# SEND THE EMAIL
-	return mail($to, $subject, $msg, $headers);
-}
 
 function writefile ($filename,$text)
 {
@@ -1349,6 +1319,38 @@ function rewriteFilename($string) {
      	
      }
      return $string;
+}
+
+/**
+ * Fonction permettant d'envoyer correctement un mail en html (utf8)
+ *
+ * @author Pierre-Alain Mignot
+ * @param string $to destinataire
+ * @param string $body corps du message
+ * @param string $subject sujet du mail
+ * @param string $fromaddress adresse de l'expéditeur
+ * @param string $fromname nom de l'expediteur
+ * @return boolean
+ */
+function send_mail($to, $body, $subject, $fromaddress, $fromname)
+{
+	require_once 'Mail/Mail.php';
+	require_once 'Mail/mime.php';
+	$message = new Mail_mime();
+	$message->setHTMLBody($body);
+	$aParam = array(
+		"text_charset" => "UTF-8",
+		"html_charset" => "UTF-8",
+		"head_charset" => "UTF-8"
+	);
+	$body = $message->get($aParam);
+	if(mb_detect_encoding($subject, "auto", TRUE) != "UTF-8") {	
+		$subject = mb_convert_encoding($subject, "UTF-8");
+	}
+	$extraheaders = array("From"=>$fromname."<".$fromaddress.">", "Subject"=>$subject);
+	$headers = $message->headers($extraheaders);
+	$mail = Mail::factory('mail');
+	return $mail->send($to, $headers, $body);
 }
 
 // valeur de retour identifier ce script
