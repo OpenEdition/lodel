@@ -84,12 +84,6 @@ if (mysql_num_rows($result) < 1) {
 $context = array_merge($context, filtered_mysql_fetch_assoc($context, $result));
 
 require_once 'recaptchalib.php';
-# recaptcha pour la partie signaler
-# par défaut désactivé
-$context['signaler_recaptcha'] = false;
-$context['recaptcha_privatekey'] = ""; // clé privée recaptcha
-$context['recaptcha_publickey'] = ""; // clé publique recaptcha
-
 
 // send
 if ($envoi) {
