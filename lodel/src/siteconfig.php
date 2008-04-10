@@ -67,9 +67,9 @@ if (!defined("SITEROOT")) {
 
 # recaptcha pour la partie signaler
 # par défaut désactivé
-$context['signaler_recaptcha'] = false;
-$context['recaptcha_privatekey'] = ""; // clé privée recaptcha
-$context['recaptcha_publickey'] = ""; // clé publique recaptcha
+$signaler_recaptcha = false;
+$recaptcha_privatekey = ""; // clé privée recaptcha
+$recaptcha_publickey = ""; // clé publique recaptcha
 
 ini_set('include_path', SITEROOT. $home. PATH_SEPARATOR. ini_get('include_path'));
 ?>
