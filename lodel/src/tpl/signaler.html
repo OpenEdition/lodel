@@ -50,12 +50,12 @@
 					</strong>
 					<!--[ Titre du document ]-->
 					<h1 id="docTitle">
-						[#TITRE|notesmarginales('100')]
+						[#TITRE|reg_replace('`<a class="footnotecall"[^>]*>.*?</a>`', '')]
 					</h1>
 					<!--[ Sous-titre du document]-->
 					<IF COND="[#SOUSTITRE]">
 						<p id="docSubtitle">
-							<strong>[#SOUSTITRE]</strong>
+							<strong>[#SOUSTITRE|reg_replace('`<a class="footnotecall"[^>]*>.*?</a>`', '')]</strong>
 						</p>
 					</IF>
 					<!--[ Pagination ]-->
@@ -73,7 +73,7 @@
 							<label for="to">Courrier électronique* :</label>
 							<span class="formw"><input size="30" type="text" name="to" id="to" value="[#TO]" />
 							<IF COND="[#ERREUR_TO]">
-								<SPAN><BR />Veuillez préciser une adresse mail valide pour le destinateur.</SPAN>
+								<SPAN><BR />Veuillez préciser une adresse mail valide pour le destinataire.</SPAN>
 							</IF>
 						</div>				
 						<div class="row">
@@ -108,7 +108,7 @@
 								<!-- recaptcha -->
 								<?php echo recaptcha_get_html($context['recaptcha_publickey']); ?>
 								<SPAN>
-								Le formulaire ci-dessus permet d'éviter le signalement abusif effectués sous la forme de spam ou pourriels (http://fr.wikipedia.org/wiki/Pourriel) et envoyés par des logiciels robots. Ce dispositif, dénommé captcha, permet de nous assurer que la suggestion a bien été réalisée par un être humain.
+								Le formulaire ci-dessus permet d'éviter le signalement abusif effectué sous la forme de spams ou pourriels (http://fr.wikipedia.org/wiki/Pourriel) envoyés par des logiciels robots. Ce dispositif, dénommé captcha, permet de nous assurer que la suggestion a bien été réalisée par un être humain.
 								</SPAN>
 							</div>
 						</IF>	

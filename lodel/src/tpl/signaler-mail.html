@@ -29,17 +29,18 @@
 	</head>
 	<body>
 		<blockquote>
-			Bonjour [#NOM_DESTINATAIRE] < [#TO] >,<br />
+			Bonjour <IF COND="[#NOM_DESTINATAIRE]">[#NOM_DESTINATAIRE]<ELSE/>[#TO]</IF> ,<br />
 		</blockquote>
 		<blockquote>
 			[#NOM_EXPEDITEUR] (&lt;[#FROM]&gt;) a visité le site <em>[#OPTIONS.METADONNEESSITE.TITRESITE]</em> sur [#CURRENTURL|DIRNAME] et vous conseille de visiter la page :
 			<br />
 			<a href="[#CURRENTURL|DIRNAME]/[#ID|MAKEURLWITHID]">[(#CURRENTURL|DIRNAME)]/[#ID|MAKEURLWITHID]</a>
-			<br />
+			<br /><br />
 			Voici son commentaire :
-			[#MESSAGE]
+			<p>[#MESSAGE]</p>
+			<br />Merci de votre attention.
 		</blockquote>
-		Merci pour votre attention.<br />
+		
 		<br />
 		<blockquote>
 			<strong>Voici le document signalé :</strong>
@@ -53,7 +54,7 @@
 				<strong>Titre :</strong>  [#TITRE|reg_replace('`<a[^>]*class="footnotecall"[^>]*>.*?</a>`', '')]
 				<IF COND="[#SOUSTITRE]">
 					<br />
-					<strong>Sous-titre :</strong>[#SOUSTITRE|reg_replace('`<a[^>]*class="footnotecall"[^>]*>.*?</a>`', '')]
+					<strong>Sous-titre :</strong> [#SOUSTITRE|reg_replace('`<a[^>]*class="footnotecall"[^>]*>.*?</a>`', '')]
 				</IF>
 				<br />
 				<IF COND="[#RESUME:FR]">
@@ -81,6 +82,6 @@
 		<br />
 		<strong>Limites de l'usage de ce service de signalement par courriel</strong><br />
 		<em>En cas d'abus</em><br />
-		Le signalement d'articles par courrier électronique peut être détournée de sa vocation première. Si vous jugez être victime d'un abus de ce service par un internaute mal intentionné, n'hésitez pas à nous signaler le problème à l'adresse abuse@revues.org.
+		Le signalement d'articles par courrier électronique peut être détourné de sa vocation première. Si vous jugez être victime d'un abus de ce service par un internaute mal intentionné, n'hésitez pas à nous signaler le problème à l'adresse <MACRO NAME="ABUSE">.
 	</body>
 </html>

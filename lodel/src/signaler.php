@@ -121,14 +121,11 @@ if ($envoi) {
 		if ($err) {
 			break;
 		}
-		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . ' sur ' . "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '') . $urlroot . ' signalé par ';
-		$context['subject'] .= !empty($context['nom_expediteur']) ? $context['nom_expediteur'] : "un ami (<" . $context['from'] . ">).";
-		$context['subject'] = utf8_decode($context['subject']);
-		// calcul le mail
-		$headers = array('to', 'from', 'message', 'nom_expediteur', 'nom_destinataire', 'subject');
-		foreach ($headers as &$bal) {
-			$bal = htmlspecialchars(stripslashes($bal));
-		}
+		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . ' sur ' . "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '') . $urlroot.$site . ' signalé par ';
+		if(!empty($context['nom_expediteur']))
+			$context['subject'] .= $context['nom_expediteur'];
+		else
+			$context['subject'] .= "un ami (" . $context['from'] . ").";
 
 		require_once 'calcul-page.php';
 		require_once 'view.php';
@@ -139,8 +136,7 @@ if ($envoi) {
 			require_once 'recaptchalib.php';
 		}
 		calcul_page($context, 'signaler-mail');
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = ob_get_clean();
 
 		// envoie le mail
 		require_once 'func.php';
