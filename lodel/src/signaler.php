@@ -88,9 +88,9 @@ require_once 'recaptchalib.php';
 // send
 if ($envoi) {
 	extract_post();
-	if($context['signaler_recaptcha'] === true) {
+	if($signaler_recaptcha === true) {
 		// recaptcha
-		$resp = recaptcha_check_answer ($context['recaptcha_privatekey'],
+		$resp = recaptcha_check_answer ($recaptcha_privatekey,
 						$_SERVER["REMOTE_ADDR"],
 						$_POST["recaptcha_challenge_field"],
 						$_POST["recaptcha_response_field"]);
@@ -143,8 +143,8 @@ if ($envoi) {
 	} while (0);
 }
 
-
-
+$context['signaler_recaptcha'] = $signaler_recaptcha;
+$context['recaptcha_publickey'] = $recaptcha_publickey;
 require_once 'calcul-page.php';
 calcul_page($context, 'signaler');
 
