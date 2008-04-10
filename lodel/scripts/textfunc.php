@@ -870,11 +870,24 @@ function paranumber(&$texte, $styles='texte')
 	$search = array ('/<table[^>]*>/', '/<tr[^>]*>/', '/<li[^>]*>/');
 	$replace = array ('<table>', '<tr>', '<li>');
 	$texte = preg_replace($search, $replace, $texte);
-	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
-	$regex = '`(<td id="(\d\d\d\d\d)">\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)|(<td id="(\d\d\d\d\d)">\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)`U';
-	$replacer = '<td id="\\2\\6"><p class="texte" dir="[^"]*">\\3\\4\\7\\8\\9</p></td>';
-	$texte = preg_replace($regex, $replacer, $texte);
 
+	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
+	$regex = '`(<td id="\d\d\d\d\d">)((<p[^>]*>)(.*)(</p>))+(</td>)`Uis';
+	preg_match_all($regex, $texte, $m);
+	foreach($m[0] as $k=>$match) {
+		preg_match_all("/(<p[^>]*>(.*)<\/p>)+/iUs", $match, $mm);
+		if(($nb = count($mm[0])) > 1) {
+			$i=0;
+			$t .= $mm[2][$i++];
+			while($i<$nb) 
+				$t .= " ".$mm[2][$i++];
+			
+			$texte = str_replace($match, $m[1][$k].$m[3][$k].$t.$m[5][$k].$m[6][$k], $texte);
+			unset($t);
+		}
+	}
+
+	// on numérote les paragraphes
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
 
 	// formatage des styles des cellules
