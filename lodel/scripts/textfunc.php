@@ -1150,7 +1150,7 @@ function getImageTitle($text, $source, $titlePos='up', $posi='0')
 			// pour obtenir seulement la portion du texte qui nous interesse
 			$text = !$posi ? $text : substr($text, 0 , $posi);
 			// on prepare notre regex
-			$regex = "`(<p class=\"titreillustration\"[^>]*>.+</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
+			$regex = "`(<p class=\"titreillustration\"[^>]*>.+</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`eU";
 			// on l'execute
 			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
 			// on met dans $titre un tableau contenant : 1. le titre 2. l'img 3.une deuxieme image ? pas normal
@@ -1167,10 +1167,12 @@ function getImageTitle($text, $source, $titlePos='up', $posi='0')
 		{// on connait la position de l'image suivante, on coupe le texte
 			$text = substr($text, 0 , $posi);
 			// on prepare la regex et on l'execute
-			$regex = "`(<p class=\"titreillustration\"[^>]*>.*</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
+			$regex = "`(<p class=\"titreillustration\"[^>]*>.*</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`eU";
 			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
 			// on recupere le titre
 			$titre = explode('<img', array_pop($regs[1]));
+			if(count($titre)>2)
+				$titre[0] = getImageTitle(join('', $titre), $source);
 		}
 		return($titre[0]);
 	}elseif($titlePos == 'down'){
