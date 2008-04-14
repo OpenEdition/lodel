@@ -415,7 +415,7 @@ function generateLangCache($lang, $file, $tags)
 		$group  = substr($tag, 0, $dotpos);
 		$name   = substr($tag, $dotpos+1);
 
-		$txt.= "'". $tag. "'=>'". addslashes(getlodeltextcontents($name, $group, $lang)). "',";
+		$txt.= "'". $tag. "'=>'". str_replace("'", "\'",(getlodeltextcontents($name, $group, $lang))). "',";
 	}
 	$dir = dirname($file);
 	if (!is_dir($dir)) {
