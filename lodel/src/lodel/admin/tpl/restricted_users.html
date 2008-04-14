@@ -28,18 +28,18 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@ADMIN.TITLE_MANAGE_USERS]</title>
+<title>[@ADMIN.TITLE_MANAGE_RESTRICTEDUSERS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 <ul id="actionsOnEntitiesPath">
-<li><span class="intit">[@ADMIN.TITLE_MANAGE_USERS]</span></li>
+<li><span class="intit">[@ADMIN.TITLE_MANAGE_RESTRICTEDUSERS]</span></li>
 <li>
 	<ul class="actions">
 		<li class="isolated">
 		<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('write')]">
-			<a href="index.php?do=view&amp;lo=restricted_users">[@ADMIN.ADD_USER]</a>
+			<a href="index.php?do=view&amp;lo=restricted_users">[@ADMIN.ADD_RESTRICTEDUSER]</a>
 		<ELSE />
-			<span class="inactif">[@ADMIN.ADD_USER]</span>
+			<span class="inactif">[@ADMIN.ADD_RESTRICTEDUSER]</span>
 		</IF>
 		</li>
 	</ul>

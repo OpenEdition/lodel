@@ -255,7 +255,7 @@ function check_auth_restricted($login, & $passwd)
 		$lodeluser['rights'] = $row['userrights'];
 		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
 		$lodeluser['id'] = $row['id'];
-
+ 		$lodeluser['name'] = $row['username'];
 		$lodeluser['groups'] = '';
 		$context['lodeluser'] = $lodeluser; // export info into the context
 
