@@ -462,6 +462,12 @@ pw.setHelperId('helper');
 	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
 
+<script type="text/javascript">
+	function cleanPassword() {
+		document.getElementById('passwd').value = '';
+	}
+	setTimeout('cleanPassword()', 1000);
+</script>
 
 
 <MACRO NAME="CLOSE_HTML">

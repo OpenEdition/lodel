@@ -423,294 +423,49 @@ pw.setHelperId('helper');
 <br />&nbsp;<br />					
 <form method="post" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off" onsubmit="return checkpasswd();">
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
-<input type="hidden" name="do" value="edit">
-<input type="hidden" name="lo" value="users">
-<fieldset>
-  <legend>[@ADMIN.USER_GENERAL_INFORMATIONS]</legend>
-  <input type="hidden" name="id" value="[#ID]">
-  <LOOP NAME="fielderror" FIELD="id">
-    <a id="id"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC>
-    </span>
-  </LOOP>
-  <label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span> : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]">
-  <LOOP NAME="fielderror" FIELD="username">
-    <a id="username"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIN]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="passwd">[@COMMON.NEW_PASSWD] : 
-		</label>
-  <br class="nobr">
-  <input type="password" size="30" name="passwd" id="passwd" onkeyup="pw.check(this.value);"> 
-  <div>
-	<div id="pw_gauge"></div>
-  </div>
-  
-  <div class="passwdHelper" id="helper"></div>
-  <LOOP NAME="fielderror" FIELD="passwd">
-    <a id="passwd"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.PASSWD]"></FUNC>
-    </span>
-  </LOOP>
-<!--  <br />-->
-  <label for="confirmpasswd">[@ADMIN.CONFIRM_NEW_PASSWORD] : 
-		</label>
-  <br class="nobr">
-  <input type="password" size="30" name="confirmpasswd" id="confirmpasswd">
-  <LOOP NAME="fielderror" FIELD="confirmpasswd">
-    <a id="confirmpasswd"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONFIRM_NEW_PASSWORD]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="lastname">[@ADMIN.LASTNAME] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="lastname" id="lastname" class="text" value="[#LASTNAME]">
-  <LOOP NAME="fielderror" FIELD="lastname">
-    <a id="lastname"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LASTNAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="firstname">[@ADMIN.FIRSTNAME] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="firstname" id="firstname" class="text" value="[#FIRSTNAME]">
-  <LOOP NAME="fielderror" FIELD="firstname">
-    <a id="firstname"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FIRSTNAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="email">[@ADMIN.EMAIL] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]">
-  <LOOP NAME="fielderror" FIELD="email">
-    <a id="email"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EMAIL]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
-<fieldset>
-  <legend>[@ADMIN.USER_LODEL_INFORMATIONS]</legend>
-  <label for="lang">[@ADMIN.USER_LANG] : 
-		</label>
-  <br class="nobr">
-  <select name="lang" id="lang">
-    <?php 
+<input type="hidden" name="do" value="edit"><input type="hidden" name="lo" value="users"><fieldset>
+<legend>[@ADMIN.USER_GENERAL_INFORMATIONS]</legend>
+<input type="hidden" name="id" value="[#ID]"><LOOP NAME="fielderror" FIELD="id"><a id="id"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC></span></LOOP><label for="username">[@COMMON.LOGIN]<span class="optional">(*)</span> : 
+		</label><br class="nobr"><input type="text" size="30" name="username" id="username" class="text" value="[#USERNAME]"><LOOP NAME="fielderror" FIELD="username"><a id="username"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LOGIN]"></FUNC></span></LOOP><br /><label for="passwd">[@COMMON.NEW_PASSWD] : 
+		</label><br class="nobr"><input type="password" size="30" name="passwd" id="passwd"><LOOP NAME="fielderror" FIELD="passwd"><a id="passwd"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.NEW_PASSWD]"></FUNC></span></LOOP><br /><label for="confirmpasswd">[@ADMIN.CONFIRM_NEW_PASSWORD] : 
+		</label><br class="nobr"><input type="password" size="30" name="confirmpasswd" id="confirmpasswd"><LOOP NAME="fielderror" FIELD="confirmpasswd"><a id="confirmpasswd"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.CONFIRM_NEW_PASSWORD]"></FUNC></span></LOOP><br /><label for="lastname">[@ADMIN.LASTNAME] : 
+		</label><br class="nobr"><input type="text" size="30" name="lastname" id="lastname" class="text" value="[#LASTNAME]"><LOOP NAME="fielderror" FIELD="lastname"><a id="lastname"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.LASTNAME]"></FUNC></span></LOOP><br /><label for="firstname">[@ADMIN.FIRSTNAME] : 
+		</label><br class="nobr"><input type="text" size="30" name="firstname" id="firstname" class="text" value="[#FIRSTNAME]"><LOOP NAME="fielderror" FIELD="firstname"><a id="firstname"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FIRSTNAME]"></FUNC></span></LOOP><br /><label for="email">[@ADMIN.EMAIL] : 
+		</label><br class="nobr"><input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]"><LOOP NAME="fielderror" FIELD="email"><a id="email"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EMAIL]"></FUNC></span></LOOP><br />
+</fieldset><fieldset>
+<legend>[@ADMIN.USER_LODEL_INFORMATIONS]</legend>
+<label for="lang">[@ADMIN.USER_LANG] : 
+		</label><br class="nobr"><select name="lang" id="lang"><?php 
 						makeSelect($context,"lang","users","lang");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="lang">
-    <a id="lang"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_LANG]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="userrights">[@ADMIN.USER_RIGHTS] : 
-		</label>
-  <br class="nobr">
-  <select name="userrights" id="userrights">
-    <?php 
+					?></select><LOOP NAME="fielderror" FIELD="lang"><a id="lang"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_LANG]"></FUNC></span></LOOP><br /><label for="userrights">[@ADMIN.USER_RIGHTS] : 
+		</label><br class="nobr"><select name="userrights" id="userrights"><?php 
 						makeSelect($context,"userrights","users","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="userrights">
-    <a id="userrights"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_RIGHTS]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="gui_user_complexity">[@ADMIN.GUI_USER_COMPLEXITY] : 
-		</label>
-  <br class="nobr">
-  <select name="gui_user_complexity" id="gui_user_complexity">
-    <?php 
+					?></select><LOOP NAME="fielderror" FIELD="userrights"><a id="userrights"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USER_RIGHTS]"></FUNC></span></LOOP><br /><label for="gui_user_complexity">[@ADMIN.GUI_USER_COMPLEXITY] : 
+		</label><br class="nobr"><select name="gui_user_complexity" id="gui_user_complexity"><?php 
 						makeSelect($context,"gui_user_complexity","users","select");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="gui_user_complexity">
-    <a id="gui_user_complexity"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GUI_USER_COMPLEXITY]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="protected">[@ADMIN.PROTECTED_USER] : 
-		</label>
-  <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
-    <input type="checkbox" name="protected" id="protected" checked>
-    <ELSE/>
-    <input type="checkbox" name="protected" id="protected">
-  </IF>
-  <LOOP NAME="fielderror" FIELD="protected">
-    <a id="protected"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
-<fieldset>
-  <legend>[@ADMIN.USER_OPTIONAL_INFORMATION]</legend>
-  <label for="nickname">[@ADMIN.NICKNAME] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="nickname" id="nickname" class="text" value="[#NICKNAME]">
-  <LOOP NAME="fielderror" FIELD="nickname">
-    <a id="nickname"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NICKNAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="biography">[@ADMIN.BIOGRAPHY : 
-		</label>
-  <br class="nobr">
-  <textarea size="30" name="biography" id="biography" class="text" row="10" cols="60">[#BIOGRAPHY]</textarea>
-  <LOOP NAME="fielderror" FIELD="biography">
-    <a id="biography"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.BIOGRAPHY"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="photo">[@ADMIN.PHOTO] : 
-		</label>
-  <br class="nobr">
-  <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="photo" TYPE="image" VALUE="[#PHOTO]" FULLVARNAME="photo"></FUNC>
-  <label for="professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_TITLE : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="professional_website" id="professional_website" class="text" value="[#PROFESSIONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="professional_website">
-    <a id="professional_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="url_professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_URL : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="url_professional_website" id="url_professional_website" class="text" value="[#URL_PROFESSIONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="url_professional_website">
-    <a id="url_professional_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_URL"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="rss_professional_website">[@ADMIN.RSS_PROFESSIONAL_WEBSITE : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="rss_professional_website" id="rss_professional_website" class="text" value="[#RSS_PROFESSIONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="rss_professional_website">
-    <a id="rss_professional_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="personal_website">[@ADMIN.PERSONNAL_WEBSITE] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="personal_website" id="personal_website" class="text" value="[#PERSONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="personal_website">
-    <a id="personal_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="url_personal_website">[@ADMIN.PERSONNAL_WEBSITE_URL] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="url_personal_website" id="url_personal_website" class="text" value="[#URL_PERSONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="url_personal_website">
-    <a id="url_personal_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE_URL]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="rss_personal_website">[@ADMIN.RSS_PERSONNAL_WEBSITE : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="rss_personal_website" id="rss_personal_website" class="text" value="[#RSS_PERSONAL_WEBSITE]">
-  <LOOP NAME="fielderror" FIELD="rss_personal_website">
-    <a id="rss_personal_website"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PERSONNAL_WEBSITE"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="pgp_key">[@ADMIN.PGP_KEY] : 
-		</label>
-  <br class="nobr">
-  <textarea size="30" name="pgp_key" id="pgp_key" class="text" row="10" cols="60">[#PGP_KEY]</textarea>
-  <LOOP NAME="fielderror" FIELD="pgp_key">
-    <a id="pgp_key"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PGP_KEY]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="alternate_email">[@ADMIN.ALTERNATIVE_EMAIL] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="alternate_email" id="alternate_email" class="text" value="[#ALTERNATE_EMAIL]">
-  <LOOP NAME="fielderror" FIELD="alternate_email">
-    <a id="alternate_email"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ALTERNATIVE_EMAIL]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="phonenumber">[@ADMIN.PHONE_NUMBER] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="15" name="phonenumber" id="phonenumber" class="text" value="[#PHONENUMBER]">
-  <LOOP NAME="fielderror" FIELD="phonenumber">
-    <a id="phonenumber"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PHONE_NUMBER]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="im_identifier">[@ADMIN.INSTANT_MESSAGING_IDENTIFIER] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="im_identifier" id="im_identifier" class="text" value="[#IM_IDENTIFIER]">
-  <LOOP NAME="fielderror" FIELD="im_identifier">
-    <a id="im_identifier"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-  <label for="im_name">[@ADMIN.INSTANT_MESSAGING_NAME] : 
-		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="im_name" id="im_name" class="text" value="[#IM_NAME]">
-  <LOOP NAME="fielderror" FIELD="im_name">
-    <a id="im_name"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_NAME]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</fieldset>
-<IF COND="[#SITE] and ![#LODELUSER.ADMIN]">
-  <label for="usergroups">[@ADMIN.USERGROUPS] : 
-		</label>
-  <br class="nobr">
-  <select multiple name="usergroups[]" id="usergroups">
-    <?php 
+					?></select><LOOP NAME="fielderror" FIELD="gui_user_complexity"><a id="gui_user_complexity"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GUI_USER_COMPLEXITY]"></FUNC></span></LOOP><br /><label for="protected">[@ADMIN.PROTECTED_USER] : 
+		</label><br class="nobr"><IF COND="abs([#STATUS]) ge 32"><input type="checkbox" name="protected" id="protected" checked><ELSE/><input type="checkbox" name="protected" id="protected"></IF><LOOP NAME="fielderror" FIELD="protected"><a id="protected"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER]"></FUNC></span></LOOP><br />
+</fieldset><fieldset>
+<legend>[@ADMIN.USER_OPTIONAL_INFORMATION]</legend>
+<label for="nickname">[@ADMIN.NICKNAME] : 
+		</label><br class="nobr"><input type="text" size="30" name="nickname" id="nickname" class="text" value="[#NICKNAME]"><LOOP NAME="fielderror" FIELD="nickname"><a id="nickname"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NICKNAME]"></FUNC></span></LOOP><br /><label for="biography">[@ADMIN.BIOGRAPHY : 
+		</label><br class="nobr"><textarea size="30" name="biography" id="biography" class="text" row="10" cols="60">[#BIOGRAPHY]</textarea><LOOP NAME="fielderror" FIELD="biography"><a id="biography"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.BIOGRAPHY"></FUNC></span></LOOP><br /><label for="photo">[@ADMIN.PHOTO] : 
+		</label><br class="nobr"><FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="photo" TYPE="image" VALUE="[#PHOTO]" FULLVARNAME="photo"></FUNC><label for="professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_TITLE : 
+		</label><br class="nobr"><input type="text" size="30" name="professional_website" id="professional_website" class="text" value="[#PROFESSIONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="professional_website"><a id="professional_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_TITLE"></FUNC></span></LOOP><br /><label for="url_professional_website">[@ADMIN.PROFESSIONAL_WEBSITE_URL : 
+		</label><br class="nobr"><input type="text" size="30" name="url_professional_website" id="url_professional_website" class="text" value="[#URL_PROFESSIONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="url_professional_website"><a id="url_professional_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROFESSIONAL_WEBSITE_URL"></FUNC></span></LOOP><br /><label for="rss_professional_website">[@ADMIN.RSS_PROFESSIONAL_WEBSITE : 
+		</label><br class="nobr"><input type="text" size="30" name="rss_professional_website" id="rss_professional_website" class="text" value="[#RSS_PROFESSIONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="rss_professional_website"><a id="rss_professional_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PROFESSIONAL_WEBSITE"></FUNC></span></LOOP><br /><label for="personal_website">[@ADMIN.PERSONNAL_WEBSITE] : 
+		</label><br class="nobr"><input type="text" size="30" name="personal_website" id="personal_website" class="text" value="[#PERSONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="personal_website"><a id="personal_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE]"></FUNC></span></LOOP><br /><label for="url_personal_website">[@ADMIN.PERSONNAL_WEBSITE_URL] : 
+		</label><br class="nobr"><input type="text" size="30" name="url_personal_website" id="url_personal_website" class="text" value="[#URL_PERSONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="url_personal_website"><a id="url_personal_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PERSONNAL_WEBSITE_URL]"></FUNC></span></LOOP><br /><label for="rss_personal_website">[@ADMIN.RSS_PERSONNAL_WEBSITE : 
+		</label><br class="nobr"><input type="text" size="30" name="rss_personal_website" id="rss_personal_website" class="text" value="[#RSS_PERSONAL_WEBSITE]"><LOOP NAME="fielderror" FIELD="rss_personal_website"><a id="rss_personal_website"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RSS_PERSONNAL_WEBSITE"></FUNC></span></LOOP><br /><label for="pgp_key">[@ADMIN.PGP_KEY] : 
+		</label><br class="nobr"><textarea size="30" name="pgp_key" id="pgp_key" class="text" row="10" cols="60">[#PGP_KEY]</textarea><LOOP NAME="fielderror" FIELD="pgp_key"><a id="pgp_key"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PGP_KEY]"></FUNC></span></LOOP><br /><label for="alternate_email">[@ADMIN.ALTERNATIVE_EMAIL] : 
+		</label><br class="nobr"><input type="text" size="30" name="alternate_email" id="alternate_email" class="text" value="[#ALTERNATE_EMAIL]"><LOOP NAME="fielderror" FIELD="alternate_email"><a id="alternate_email"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.ALTERNATIVE_EMAIL]"></FUNC></span></LOOP><br /><label for="phonenumber">[@ADMIN.PHONE_NUMBER] : 
+		</label><br class="nobr"><input type="text" size="15" name="phonenumber" id="phonenumber" class="text" value="[#PHONENUMBER]"><LOOP NAME="fielderror" FIELD="phonenumber"><a id="phonenumber"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PHONE_NUMBER]"></FUNC></span></LOOP><br /><label for="im_identifier">[@ADMIN.INSTANT_MESSAGING_IDENTIFIER] : 
+		</label><br class="nobr"><input type="text" size="30" name="im_identifier" id="im_identifier" class="text" value="[#IM_IDENTIFIER]"><LOOP NAME="fielderror" FIELD="im_identifier"><a id="im_identifier"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_IDENTIFIER]"></FUNC></span></LOOP><br /><label for="im_name">[@ADMIN.INSTANT_MESSAGING_NAME] : 
+		</label><br class="nobr"><input type="text" size="30" name="im_name" id="im_name" class="text" value="[#IM_NAME]"><LOOP NAME="fielderror" FIELD="im_name"><a id="im_name"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INSTANT_MESSAGING_NAME]"></FUNC></span></LOOP><br />
+</fieldset><IF COND="[#SITE] and ![#LODELUSER.ADMIN]"><label for="usergroups">[@ADMIN.USERGROUPS] : 
+		</label><br class="nobr"><select multiple name="usergroups[]" id="usergroups"><?php 
 						makeSelect($context,"usergroups","users","multipleselect");
-					?>
-  </select>
-  <LOOP NAME="fielderror" FIELD="usergroups">
-    <a id="usergroups"></a><span class="error">
-      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USERGROUPS]"></FUNC>
-    </span>
-  </LOOP>
-  <br />
-</IF>
+					?></select><LOOP NAME="fielderror" FIELD="usergroups"><a id="usergroups"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.USERGROUPS]"></FUNC></span></LOOP><br /></IF>
 
 <!--[ end{form} Automatic generated. Don't edit ]-->		    
 	<fieldset>
@@ -728,6 +483,11 @@ pw.setHelperId('helper');
 	<MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
 
-
+<script type="text/javascript">
+	function cleanPassword() {
+		document.getElementById('passwd').value = '';
+	}
+	setTimeout('cleanPassword()', 1000);
+</script>
 
 <MACRO NAME="CLOSE_HTML">
