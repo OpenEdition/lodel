@@ -682,12 +682,25 @@ function childCanBeInThisType($type,$id)
 	//pour chaque entité on teste si elle peut être contenu dans $type
 	foreach($entities as $entity) {
 		$query = lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='".$entity['idtype']."' AND identitytype2='".$type."'");
-		#echo "query=$query";
 		$condition = $db->getOne($query);
 		if(!$condition) {
 			return false;
 		}
 	}
 	return true;
+}
+
+/**
+ * Boucle Lodelscript qui affiche l'alphabet
+ *
+ * @param array $context le contexte
+ * @param string $funcname le nom de la fonction
+ */
+function loop_alphabet($context, $funcname)
+{
+	for ($l = 'A'; $l != 'AA'; $l++) {
+		$context['lettre'] = $l;
+		call_user_func("code_do_$funcname", $context);
+	}
 }
 ?>
