@@ -1697,4 +1697,16 @@ function cryptEmails($texte, $codeInclude = FALSE)
 	}
 	return $texte;
 }
+
+/** 
+ * Nettoie les mises en forme locales sur les appels de notes
+ * 
+ * @author Pierre-Alain Mignot
+ * @param string $text le texte à modifier
+ * @return $text le texte filtré
+ */
+function cleanCallNotes($text)
+{
+	return preg_replace("/(<(span|sup|sub|em)[^>]*>)*(\s*<a class=\"(end|foot)notecall\"[^>]*>.*<\/a>)\s*(<\/\\1>)*/Us", '\\3', $text);
+}
 ?>
