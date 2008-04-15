@@ -338,17 +338,4 @@ function printIndex($id, $classtype, &$context)
 	exit;
 }
 
-/**
- * Boucle Lodelscript qui affiche l'alphabet
- *
- * @param array $context le contexte
- * @param string $funcname le nom de la fonction
- */
-function loop_alphabet($context, $funcname)
-{
-	for ($l = 'A'; $l != 'AA'; $l++) {
-		$context['lettre'] = $l;
-		call_user_func("code_do_$funcname", $context);
-	}
-}
 ?>
