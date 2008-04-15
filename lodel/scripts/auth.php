@@ -379,7 +379,8 @@ if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])
 else {
 	$GLOBALS['lang'] = $_GET['lang'] ? $_GET['lang'] : $_POST['lang'];
 	if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['lang'])) {
-		$GLOBALS['lang'] = '';
+		// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
+		$GLOBALS['lang'] = empty($context['options']['metadonneessite']['langueprincipale']) ? '' : $context['options']['metadonneessite']['langueprincipale'];
 	}
 	else {	setcookie('language', $GLOBALS['lang']); }
 }
