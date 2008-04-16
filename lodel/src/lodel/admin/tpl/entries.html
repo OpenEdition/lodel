@@ -63,7 +63,12 @@
 </ul>
 
 <div id="entries">
-	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]">
+	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
+		<div id="alphabet">
+			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]">
+		</div>	
+	</IF>
+	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]">
 </div>
 <MACRO NAME="OK_TOINDEX_ADMIN">
 

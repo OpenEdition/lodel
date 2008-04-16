@@ -703,4 +703,40 @@ function loop_alphabet($context, $funcname)
 		call_user_func("code_do_$funcname", $context);
 	}
 }
+
+/**
+ * Boucle Lodelscript qui affiche la première lettre (distincte) de tous les tuples d'un champ
+ *
+ * @param array $context le contexte
+ * @param string $funcname le nom de la fonction
+ */
+function loop_alphabetSpec($context, $funcname)
+{
+	global $db;
+	if(empty($context['table']) || empty($context['field']))
+		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
+	$lettres = $db->getArray(lq("SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] ORDER BY l"));
+
+	foreach ($lettres as &$lettre) {
+		$lettre['l'] = strtr(utf8_decode($lettre['l']), "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ", 
+								"AAAAAAACEEEEIIIIDNOOOOOOUUUUYbsaaaaaaaceeeeiiiidnoooooouuuyyby"
+								);
+		if(preg_match("/[A-Z]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
+	foreach ($lettres as $lettre) {
+		if(preg_match("/[0-9]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
+	foreach ($lettres as $lettre) {
+		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
+}
 ?>
