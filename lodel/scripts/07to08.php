@@ -1273,17 +1273,17 @@ class exportfor08
 		}			
 		if(!$resu = mysql_query('SELECT id, g_name FROM ' . $GLOBALS['tp'] . 'entries ORDER BY g_name')) {
 			return mysql_error();
-		}	
-		$query .= "ALTER TABLE _PREFIXTABLE_entrytypes ADD lang varchar(10) NOT NULL default 'fr';\n";
+		}
+		$query .= "ALTER TABLE _PREFIXTABLE_entrytypes ADD lang VARCHAR(10) NOT NULL DEFAULT 'fr';\n";	
 		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES 
-		(".$id[0].", '', 'motsclesfr', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW()),
-		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW()),
-		(".$id[2].", '', 'periode', 'indexes', 'Index chronologique', '', 'periode, .periode, priode', '', 'entree', 'entrees', '64', '5', '1', '0', '1', 'pool', 'sortkey', NOW()),
-		(".$id[3].", '', 'theme', 'indexes', 'Index thématique', '', 'themes,thmes,.themes', '', 'entree', 'entrees', '16', '6', '1', '0', '1', 'pool', 'sortkey', NOW()),
-		(".$id[4].", '', 'geographie', 'indexes', 'Index géographique', '', 'geographie, gographie,.geographie', '', 'entree', 'entrees', '64', '4', '1', '0', '1', 'pool', 'sortkey', NOW()),
-		(".$id[5].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '1', '1', 'pool', 'sortkey', NOW()),
-		(".$id[6].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW()),
-		(".$id[7].", '', 'motsclesde', 'indexes', 'Schlagwortindex', '', 'schlusselworter, .schlusselworter, motsclesde, schlagworter, .schlagworter', '', 'entree', 'entrees', '32', '8', '1', '1', '1', 'pool', 'sortkey', NOW());\n";
+		(".$id[0].", '', 'motcle', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW(), 'fr'),
+		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW(), 'en'),
+		(".$id[2].", '', 'periode', 'indexes', 'Index chronologique', '', 'periode, .periode, priode', '', 'entree', 'entrees', '64', '5', '1', '0', '1', 'pool', 'sortkey', NOW(), 'fr'),
+		(".$id[3].", '', 'theme', 'indexes', 'Index thématique', '', 'themes,thmes,.themes', '', 'entree', 'entrees', '16', '6', '1', '0', '1', 'pool', 'sortkey', NOW(), 'fr'),
+		(".$id[4].", '', 'geographie', 'indexes', 'Index géographique', '', 'geographie, gographie,.geographie', '', 'entree', 'entrees', '64', '4', '1', '0', '1', 'pool', 'sortkey', NOW(), 'fr'),
+		(".$id[5].", '', 'motscleses', 'indexes', 'Indice de palabras clave', '', 'palabrasclaves, .palabrasclaves, motscleses', '', 'entree', 'entrees', '64', '9', '1', '1', '1', 'pool', 'sortkey', NOW(), 'es'),
+		(".$id[6].", '', 'licence', 'indexavances', 'Licence portant sur le document', '', 'licence, droitsauteur', 'dc.rights', 'entree', 'entrees', '16', '7', '1', '1', '1', 'select', 'rank', NOW(), 'fr'),
+		(".$id[7].", '', 'motsclesde', 'indexes', 'Schlagwortindex', '', 'schlusselworter, .schlusselworter, motsclesde, schlagworter, .schlagworter', '', 'entree', 'entrees', '32', '8', '1', '1', '1', 'pool', 'sortkey', NOW(), 'de');\n";
 
 		while($res = mysql_fetch_array($result)) {
 			$query .= "UPDATE _PREFIXTABLE_entries SET idtype = (SELECT id FROM _PREFIXTABLE_entrytypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';\n";
@@ -1292,7 +1292,7 @@ class exportfor08
 		while($re = mysql_fetch_array($resu)) {
 			$query .= "UPDATE _PREFIXTABLE_entries SET sortkey = \"".strtolower(str_replace('"', '\"', $re['g_name']))."\", rank = '".$i++."' WHERE id = '".$re['id']."';\n";
 		}
-		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'motscles' where id = '".$id[0]."';\n";
+		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'motsclesfr' where id = '".$id[0]."';\n";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono' where id = '".$id[2]."';\n";
 
 		// OPTIONGROUPS & OPTIONS
@@ -1456,7 +1456,7 @@ class exportfor08
 				historique text,
 				periode tinytext,
 				isbn tinytext,
-				paraitre tinyint(4) default NULL,
+				paraitre tinyint(4) default 0,
 				integralite tinyint(4) default 1,
 				numero tinytext,
 				icone tinytext,
