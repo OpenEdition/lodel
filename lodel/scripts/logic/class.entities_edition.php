@@ -301,6 +301,20 @@ class Entities_EditionLogic extends GenericLogic
 			if ($vo->status >= 16) {
 				die("ERROR: entity is locked. No operation is allowed");
 			}
+			// let's deal with document reloading problem : PDF file disapeared, now resolved :
+			$daotablefields = &getDAO("tablefields");
+			$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND type='file'", "",	"name");			
+			foreach($Filefields as $ffield) {
+				$gdaoaf = &getGenericDAO ($class, "identity");
+				$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
+				$fieldname = $ffield->name;
+				if($context['data'][$ffield->name] == 'deleted')
+					$context['data'][$ffield->name] = '';
+				elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
+					$name = (string)$ffield->name;
+					$context['data'][$ffield->name] = $tmpfile->$name;
+				}
+			}
 			// change the usergroup of the entity ?
 			if ($lodeluser['admin'] && $context['usergroup']) {
 				$vo->usergroup = intval ($context['usergroup']);
@@ -333,7 +347,9 @@ class Entities_EditionLogic extends GenericLogic
 		if (!$vo->identifier && trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
-
+			if(empty($context['identifier'])) {
+				$context['identifier'] = $vo->identifier;
+			}
 			/*if (is_null ($context['identifier'])) {//identifier desactivated
 				$vo->identifier = $this->_calculateIdentifier ($id, $vo->identifier);
 			} else {// else that means that we have modified it*/

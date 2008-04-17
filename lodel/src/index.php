@@ -63,10 +63,10 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
 
+require 'view.php';
+$view = &View::getView();
 if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
 	// get the view and check the cache.
-	require 'view.php';
-	$view = &View::getView();
 	if ($view->renderIfCacheIsValid()) {
 		return;
 	}
@@ -80,6 +80,36 @@ $tpl        = 'index'; // template by default.
 
 
 // ID ou IDENTIFIER
+$url_retour = strip_tags($url_retour);
+
+if ($_POST['login']) {
+	require_once 'func.php';
+	extract_post();
+	require_once 'connect.php';
+	require_once 'loginfunc.php';
+	do {
+		if (!check_auth_restricted($context['login'], $context['passwd'], $site)) {
+			$context['error_login'] = 1;
+			break;
+		}
+
+		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
+		if(!check_expiration()) {
+			$context['error_expiration'] = 1;
+			unset($context['lodeluser']);
+			break;
+		}
+		else {
+			// ouvre une session
+			$err = open_session($context['login']);
+			if ($err) {
+				$context[$err] = 1;
+				break;
+			}
+		}
+		$context['passwd'] = $passwd = 0;
+	} while (0);
+} 
 if ($id || $identifier) {
 	require_once 'connect.php';
 	do { // exception block
@@ -308,17 +338,4 @@ function printIndex($id, $classtype, &$context)
 	exit;
 }
 
-/**
- * Boucle Lodelscript qui affiche l'alphabet
- *
- * @param array $context le contexte
- * @param string $funcname le nom de la fonction
- */
-function loop_alphabet($context, $funcname)
-{
-	for ($l = 'A'; $l != 'AA'; $l++) {
-		$context['lettre'] = $l;
-		call_user_func("code_do_$funcname", $context);
-	}
-}
 ?>

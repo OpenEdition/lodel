@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -44,73 +45,106 @@
  */
 
 require 'siteconfig.php';
-require_once $home. 'auth.php';
+//gestion de l'authentification
+require_once 'auth.php';
 authenticate();
-require_once $home.'func.php';
+// record the url if logged
+if ($lodeluser['rights'] >= LEVEL_VISITOR) {
+	recordurl();
+}
 
-$context[id] = $id = intval($id);
+if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
+	// get the view and check the cache.
+	require 'view.php';
+	$view = &View::getView();
+	if ($view->renderIfCacheIsValid()) {
+		return;
+	}
+}
+require 'textfunc.php';
+
+$context['id'] = $id = intval($id);
 
 require_once 'connect.php';
 
-
-// get the  document
-$critere = $user['visitor'] ? '' : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
+// identifié ? accès à tous les documents
+$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once('CACHE/filterfunc.php'))) {
 	require_once 'filterfunc.php';
 }
 
-$result = mysql_query("SELECT $GLOBALS[tp]documents.*,$GLOBALS[tp]entities.*,type FROM $GLOBALS[documentstypesjoin] WHERE $GLOBALS[tp]entities.id='$id' $critere") or dberror();
+$result = mysql_query(lq("SELECT $GLOBALS[tp]publications.*, $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity LEFT JOIN $GLOBALS[tp]publications on $GLOBALS[tp]publications.identity = $GLOBALS[tp]entities.id WHERE $GLOBALS[tp]entities.id='$id' $critere")) or dberror();
 if (mysql_num_rows($result) < 1) {
-	header ("Location: not-found.html");
+	$context['notfound'] = 1;
+	require_once 'calcul-page.php';
+	calcul_page($context, 'signaler');
 	return;
 }
-require_once 'textfunc.php';
+
 $context = array_merge($context, filtered_mysql_fetch_assoc($context, $result));
+
+require_once 'recaptchalib.php';
 
 // send
 if ($envoi) {
 	extract_post();
+	if($signaler_recaptcha === true) {
+		// recaptcha
+		$resp = recaptcha_check_answer ($recaptcha_privatekey,
+						$_SERVER["REMOTE_ADDR"],
+						$_POST["recaptcha_challenge_field"],
+						$_POST["recaptcha_response_field"]);
+		
+		if (!$resp->is_valid) {
+			$context['recaptcha_error'] = $resp->error;
+			require_once 'calcul-page.php';
+			calcul_page($context, 'signaler');
+			exit;
+		}
+	}
 	// validation
 	do {
-		if (!$context['to']) {
+		// on vérifie que les mails fournies sont correctes
+		if (empty($context['to']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to']) === 0) {
 			$err = $context['error_to'] = 1;
 		}
-		if (!$context[from]) {
+		if (empty($context['from']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from']) === 0) {
 			$err = $context['error_from'] = 1;
 		}
 
 		if ($err) {
 			break;
 		}
+		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . ' sur ' . "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '') . $urlroot.$site . ' signalé par ';
+		if(!empty($context['nom_expediteur']))
+			$context['subject'] .= $context['nom_expediteur'];
+		else
+			$context['subject'] .= "un ami (" . $context['from'] . ").";
 
-		// calcul le mail
-		foreach (array('to', 'from', 'message') as $bal) {
-			$context[$bal] = htmlspecialchars(stripslashes($context[$bal]));
-		}
-		$context['subject'] = ''; // securite
-		require_once ($home. 'calcul-page.php');
+		require_once 'calcul-page.php';
+		require_once 'view.php';
+
 		ob_start();
+		$GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
+		if($GLOBALS['signaler_recaptcha'] === true) {
+			require_once 'recaptchalib.php';
+		}
 		calcul_page($context, 'signaler-mail');
-		$content = ob_get_contents();
-		ob_end_clean();
-		$headers  = "MIME-Version: 1.0\r\n";
-		$headers .= "Content-type: text/html; charset=utf-8\r\n";    
-		$headers .= "From: $context[from]\r\n";
+		$content = ob_get_clean();
+
 		// envoie le mail
-		if (!mail ($context['to'], $context['subject'], $content, $headers)) {
+		require_once 'func.php';
+		if (false === send_mail ($context['to'], $content, $context['subject'], $context['from'], $context['nom_expediteur'])) {
 			$context['error_mail']=1;
 			break;
 		}
-		header ('location: '. makeurlwithid($id, 'document'));
+		header ('location: '. makeurlwithid($id, 'index'));
 		return;
 	} while (0);
 }
 
-// post-traitement
-foreach (array('to', 'from', 'message') as $bal) {
-	$context[$bal] = htmlspecialchars(stripslashes($context[$bal]));
-}
-
+$context['signaler_recaptcha'] = $signaler_recaptcha;
+$context['recaptcha_publickey'] = $recaptcha_publickey;
 require_once 'calcul-page.php';
 calcul_page($context, 'signaler');
 

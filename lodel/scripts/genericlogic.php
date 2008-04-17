@@ -175,7 +175,9 @@ class GenericLogic extends Logic
 			$this->_populateContext($gvo, $context['data']);
 			$ret = $this->_populateContextRelatedTables($vo, $context);
 		}
-
+		// nettoyage avant affichage
+		require_once('func.php');
+		postprocessing($context);
 		return $ret ? $ret : "_ok";
 	}
 
@@ -214,7 +216,7 @@ class GenericLogic extends Logic
 		$this->_publicfields = array ();
 		require_once "fieldfunc.php";
 
-		foreach ($fields as $field)	{
+		foreach ($fields as $field) {
 			if ($field->g_name) {
 				$this->addGenericEquivalent($class, $field->g_name, $field->name); // save the generic field
 			}
@@ -223,15 +225,17 @@ class GenericLogic extends Logic
 
 			// check if the field is required or not, and rise an error if any problem.
 			$value = &$context['data'][$name];
+
 			if (!is_array($value)) {
 				$value = trim($value);
 			}
-			if ($value) {			
+			if ($value) {
   				if(is_array($value))
  				{
+					$keys = array_keys($value);
 					$j = sizeof($value);
  					for($i=0;$i<$j;$i++) {
- 						$value[$i] = lodel_strip_tags($value[$i], $field->allowedtags);
+ 						$value[$keys[$i]] = lodel_strip_tags($value[$keys[$i]], $field->allowedtags);
  					}
  				}
  				else {

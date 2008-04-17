@@ -27,8 +27,6 @@ htaccess docannexe/file
 dirdestination .
 dirsource $homelodel
 
-#ln styles_lodel.css
-
 dirsource $homesite
 
 # lie tous les fichiers du repertoire
@@ -42,13 +40,6 @@ ln oai.php
 #Sitemap
 dirsource $homelodel/lodel-0.8
 ln tpl/sitemap.html
-
-#ln tpl/oai20_getrecord.html
-#ln tpl/oai20_identify.html
-#ln tpl/oai20_listidentifiers.html
-#ln tpl/oai20_listmetadataformats.html
-#ln tpl/oai20_listrecords.html
-#ln tpl/oai20_listsets.html
 
 ### desuet. cp tpl
 
@@ -101,7 +92,6 @@ dirsource $homesite/lodel/admin
 ln tpl/login.html
 ln login.php
 ln logout.php
-#ln usersettings.php
 
 # tous les fichier de src/lodel/edition
 dirsource $homesite/lodel/edition
@@ -134,14 +124,12 @@ ln index.php
 ln tpl/edition.html
 
 # le dashboard
-#ln tpl/dashboard.html
 ln tpl/dashboard_queue.html
 ln tpl/dashboard_statistics.html
 ln tpl/dashboard_history.html
 ln tpl/dashboard_public_history.html
 ln tpl/dashboard_information.html
 ln tpl/dashboard_me.html
-#ln tpl/dashboard_rssreader.html
 
 
 # suppression et fonctions avancees des documents et publications
@@ -152,7 +140,6 @@ ln tpl/unpublish_confirm.html
 ln tpl/edit_entities_edition.html
 
 # xml
-#desuet : ln xml.php
 ln tpl/xml-classe.html
 ln tpl/xml-valid.html
 ln tpl/edit_xml.html
@@ -232,26 +219,14 @@ ln tpl/edit_tablefields.html
 ln tpl/edit_indextablefields.html
 
 
-#ln backup.php
 ln tpl/backup.html
-#ln import.php
 ln tpl/import.html
 
 ln tpl/edit_users.html
 ln tpl/users.html
-#ln usersettings.php
 
-ln transfer.php
-ln tpl/transfer.html
-
-#ln importmodel.php
 ln tpl/importmodel.html
-#ln tpl/importmodel-frominstall.html
-#ln backupmodel.php
 ln tpl/backupmodel.html
 
-#ln session.php
-
 # xml schema
-#ln schema.php
 ln tpl/schema-xsd.html

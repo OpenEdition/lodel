@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: es.js
- * 	Spanish language file.
- * 
- * File Authors:
- * 		Gabriel Schillaci (internetbug@users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Spanish language file.
  */
 
 var FCKLang =
@@ -41,6 +45,7 @@ InsertLinkLbl		: "Vínculo",
 InsertLink			: "Insertar/Editar Vínculo",
 RemoveLink			: "Eliminar Vínculo",
 Anchor				: "Referencia",
+AnchorDelete		: "Remove Anchor",	//MISSING
 InsertImageLbl		: "Imagen",
 InsertImage			: "Insertar/Editar Imagen",
 InsertFlashLbl		: "Flash",
@@ -66,6 +71,7 @@ RightJustify		: "Alinear a Derecha",
 BlockJustify		: "Justificado",
 DecreaseIndent		: "Disminuir Sangría",
 IncreaseIndent		: "Aumentar Sangría",
+Blockquote			: "Blockquote",	//MISSING
 Undo				: "Deshacer",
 Redo				: "Rehacer",
 NumberedListLbl		: "Numeración",
@@ -98,16 +104,28 @@ Button			: "Botón",
 SelectionField	: "Campo de Selección",
 ImageButton		: "Botón Imagen",
 
+FitWindow		: "Maximizar el tamaño del editor",
+ShowBlocks		: "Show Blocks",	//MISSING
+
 // Context Menu
 EditLink			: "Editar Vínculo",
-InsertRow			: "Insertar Fila",
+CellCM				: "Celda",
+RowCM				: "Fila",
+ColumnCM			: "Columna",
+InsertRowAfter		: "Insert Row After",	//MISSING
+InsertRowBefore		: "Insert Row Before",	//MISSING
 DeleteRows			: "Eliminar Filas",
-InsertColumn		: "Insertar Columna",
+InsertColumnAfter	: "Insert Column After",	//MISSING
+InsertColumnBefore	: "Insert Column Before",	//MISSING
 DeleteColumns		: "Eliminar Columnas",
-InsertCell			: "Insertar Celda",
+InsertCellAfter		: "Insert Cell After",	//MISSING
+InsertCellBefore	: "Insert Cell Before",	//MISSING
 DeleteCells			: "Eliminar Celdas",
 MergeCells			: "Combinar Celdas",
-SplitCell			: "Dividir Celda",
+MergeRight			: "Merge Right",	//MISSING
+MergeDown			: "Merge Down",	//MISSING
+HorizontalSplitCell	: "Split Cell Horizontally",	//MISSING
+VerticalSplitCell	: "Split Cell Vertically",	//MISSING
 TableDelete			: "Eliminar Tabla",
 CellProperties		: "Propiedades de Celda",
 TableProperties		: "Propiedades de Tabla",
@@ -146,12 +164,12 @@ DlgBtnCancel		: "Cancelar",
 DlgBtnClose			: "Cerrar",
 DlgBtnBrowseServer	: "Ver Servidor",
 DlgAdvancedTag		: "Avanzado",
-DlgOpOther			: "&lt;Otro&gt;",
+DlgOpOther			: "<Otro>",
 DlgInfoTab			: "Información",
 DlgAlertUrl			: "Inserte el URL",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;No definido&gt;",
+DlgGenNotSet		: "<No definido>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Orientación de idioma",
 DlgGenLangDirLtr	: "Izquierda a Derecha (LTR)",
@@ -215,12 +233,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Referencia en esta página",
 DlgLnkTypeEMail		: "E-Mail",
 DlgLnkProto			: "Protocolo",
-DlgLnkProtoOther	: "&lt;otro&gt;",
+DlgLnkProtoOther	: "<otro>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Seleccionar una referencia",
 DlgLnkAnchorByName	: "Por Nombre de Referencia",
 DlgLnkAnchorById	: "Por ID de elemento",
-DlgLnkNoAnchors		: "&lt;No hay referencias disponibles en el documento&gt;",
+DlgLnkNoAnchors		: "(No hay referencias disponibles en el documento)",
 DlgLnkEMail			: "Dirección de E-Mail",
 DlgLnkEMailSubject	: "Título del Mensaje",
 DlgLnkEMailBody		: "Cuerpo del Mensaje",
@@ -228,8 +246,8 @@ DlgLnkUpload		: "Cargar",
 DlgLnkBtnUpload		: "Enviar al Servidor",
 
 DlgLnkTarget		: "Destino",
-DlgLnkTargetFrame	: "&lt;marco&gt;",
-DlgLnkTargetPopup	: "&lt;ventana emergente&gt;",
+DlgLnkTargetFrame	: "<marco>",
+DlgLnkTargetPopup	: "<ventana emergente>",
 DlgLnkTargetBlank	: "Nueva Ventana(_blank)",
 DlgLnkTargetParent	: "Ventana Padre (_parent)",
 DlgLnkTargetSelf	: "Misma Ventana (_self)",
@@ -253,6 +271,7 @@ DlgLnkPopTop		: "Posición Derecha",
 DlnLnkMsgNoUrl		: "Por favor tipee el vínculo URL",
 DlnLnkMsgNoEMail	: "Por favor tipee la dirección de e-mail",
 DlnLnkMsgNoAnchor	: "Por favor seleccione una referencia",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Seleccionar Color",
@@ -312,6 +331,9 @@ DlgCellBackColor	: "Color de Fondo",
 DlgCellBorderColor	: "Color de Borde",
 DlgCellBtnSelect	: "Seleccione...",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "Find and Replace",	//MISSING
+
 // Find Dialog
 DlgFindTitle		: "Buscar",
 DlgFindFindBtn		: "Buscar",
@@ -327,7 +349,6 @@ DlgReplaceReplAllBtn	: "Reemplazar Todo",
 DlgReplaceWordChk		: "Coincidir toda la palabra",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de pegado. Por favor use el teclado (Ctrl+V).",
 PasteErrorCut	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de cortado. Por favor use el teclado (Ctrl+X).",
 PasteErrorCopy	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de copiado. Por favor use el teclado (Ctrl+C).",
 
@@ -335,10 +356,10 @@ PasteAsText		: "Pegar como Texto Plano",
 PasteFromWord	: "Pegar desde Word",
 
 DlgPasteMsg2	: "Por favor pegue dentro del cuadro utilizando el teclado (<STRONG>Ctrl+V</STRONG>); luego presione <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignorar definiciones de fuentes",
 DlgPasteRemoveStyles	: "Remover definiciones de estilo",
-DlgPasteCleanBox		: "Clean Up Box",
-
+DlgPasteCleanBox		: "Borrar el contenido del cuadro",
 
 // Color Picker
 ColorAutomatic	: "Automático",
@@ -370,8 +391,11 @@ DlgSpellManyChanges		: "Control finalizado: se ha cambiado %1 palabras",
 IeSpellDownload			: "Módulo de Control de Ortografía no instalado. ¿Desea descargarlo ahora?",
 
 // Button Dialog
-DlgButtonText	: "Texto (Valor)",
-DlgButtonType	: "Tipo",
+DlgButtonText		: "Texto (Valor)",
+DlgButtonType		: "Tipo",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nombre",
@@ -420,6 +444,7 @@ DlgHiddenValue	: "Valor",
 // Bulleted List Dialog
 BulletedListProp	: "Propiedades de Viñetas",
 NumberedListProp	: "Propiedades de Numeraciones",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Círculo",
 DlgLstTypeDisc		: "Disco",
@@ -442,6 +467,15 @@ DlgDocLangDirLTR	: "Izq. a Derecha (LTR)",
 DlgDocLangDirRTL	: "Der. a Izquierda (RTL)",
 DlgDocLangCode		: "Código de Idioma",
 DlgDocCharSet		: "Codif. de Conjunto de Caracteres",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Otra Codificación",
 
 DlgDocDocType		: "Encabezado de Tipo de Documento",
@@ -471,11 +505,12 @@ DlgTemplatesTitle	: "Contenido de Plantillas",
 DlgTemplatesSelMsg	: "Por favor selecciona la plantilla a abrir en el editor<br>(el contenido actual se perderá):",
 DlgTemplatesLoading	: "Cargando lista de Plantillas. Por favor, aguarde...",
 DlgTemplatesNoTpl	: "(No hay plantillas definidas)",
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Acerca de",
 DlgAboutBrowserInfoTab	: "Información de Navegador",
+DlgAboutLicenseTab	: "Licencia",
 DlgAboutVersion		: "versión",
-DlgAboutLicense		: "Licenciado bajo los términos de GNU Lesser General Public License",
 DlgAboutInfo		: "Para mayor información por favor dirigirse a"
-}
+};

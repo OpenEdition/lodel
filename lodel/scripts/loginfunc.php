@@ -224,4 +224,67 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 			return "error_passwd";
 	}
 }
+
+/**
+ * Vérifie que le login et le password sont bon pour le site concerné
+ * Concerne uniquement les accès restreints côté site
+ * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
+ * globales les informations de l'utilisateur
+ *
+ * @param string $login le nom d'utilisateur
+ * @param string &$passwd le mot de passe
+ * @param string &$site le site
+ * @return boolean un booleen indiquant si l'authentification est valide
+ */
+function check_auth_restricted($login, & $passwd)
+{
+	global $db, $context, $lodeluser, $home;
+	do { // block de control
+		if (!$login || !$passwd)
+			break;
+
+		$lodelusername = addslashes($login);
+		$pass = md5($passwd. $login);
+
+		usecurrentdb();
+		$result = $db->execute(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
+		if (!($row = $result->fields))	{
+			break;
+		}
+		// pass les variables en global
+		$lodeluser['rights'] = $row['userrights'];
+		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
+		$lodeluser['id'] = $row['id'];
+ 		$lodeluser['name'] = $row['username'];
+		$lodeluser['groups'] = '';
+		$context['lodeluser'] = $lodeluser; // export info into the context
+
+		// efface les donnees de la memoire et protege pour la suite
+		$passwd = 0;
+		return true;
+	}	while (0);
+	return false;
+}
+
+/**
+ * Vérifie que le compte d'utilisateur restreint n'a pas expiré
+ *
+ * @return boolean un booleen indiquant si le compte est suspendu (false) ou pas (true)
+ */
+function check_expiration()
+{
+	global $context, $db;
+
+	usecurrentdb();
+	$context['datab'] = $db->database;
+	$status = $db->getOne(lq("SELECT expiration FROM #_TP_restricted_users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+	$status = explode('-', $status);
+	$time = time();
+	$status = mktime(23, 59, 0, $status[1], $status[2], $status[0]);
+
+	if($status <= $time)
+		return false;
+	return true;
+}
+
 ?>

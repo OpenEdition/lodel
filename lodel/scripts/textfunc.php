@@ -204,9 +204,9 @@ function spip($letexte)
 	/* 10 */
 	"/\}/",
 	/* 11 */
-	"/(<br>){2,}/",
+	"/(<br />){2,}/",
 	/* 12 */
-	"/<p>([\n]*)(<br>)+/",
+	"/<p>([\n]*)(<br />)+/",
 	/* 13 */
 	"/<p>/");
 	$remplace1 = array (
@@ -215,7 +215,7 @@ function spip($letexte)
 	/* 2 */
 	"$puce ",
 	/* 3 */
-	"\n<br>$puce ",
+	"\n<br />$puce ",
 	/* 4 */
 	"\n<p>",
 	/* 5 */
@@ -279,13 +279,13 @@ function humandate($s)
 /**
  * Transform headings into toc relative links
  *
+ * @author Pierre-Alain Mignot
  * @param string $text the text to transform
  * @param int $level an integer representing the max level which will be transformed
  * @return string the transformed text
  */
 function tocable($text, $level = 10)
 {
-
 	static $tocind = 0;
 	$sect = "1";
 	for ($i = 2; $i <= $level; $i ++)
@@ -293,14 +293,13 @@ function tocable($text, $level = 10)
 	if (!function_exists("tocable_callback"))	{
 		function tocable_callback($result)
 		{
-
 			static $tocid = array ();
-			$level = intval($result[2][1]);
+			$level = intval($result[5]);
 			$sig = $level."n". (++ $tocid[$level]);
 			$aopen = '<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
 			$aclose = '</a>';
 			// split the result in order not to contains any a tag
-			$arr = preg_split("/(<a\b[^>]*>.*?<\/a>)/", $result[3], -1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
+			$arr = preg_split("/(<a\b[^>]*>.*?<\/a>)/", $result[6], -1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
 			$ret = $result[1];
 
 			$c = count($arr);
@@ -310,12 +309,13 @@ function tocable($text, $level = 10)
 				if ($i +1 < $c)
 					$ret .= $arr[$i +1];
 			}
-			return $ret.$result[4];
+			return $ret.$result[7];
 		}
 	}
-	return preg_replace_callback("/(<(r2r:section|h(?:$sect))\b(?:[^>]*)>)(.*?)(<\/\\2>)/s", "tocable_callback", $text);
+
+	return preg_replace_callback("/(<((r2r:)?(section|h)($sect))\b(?:[^>]*)>)(.*?)(<\/(r2r:)?(section|h)(?:$sect)\b(?:[^>]*)>)/s", "tocable_callback", $text);
 	//Nota : the r2r:section is conserved for compatibility with the old ServOO
-}
+} 
 
 function multilingue($text, $lang)
 {
@@ -340,6 +340,9 @@ function vignette($text, $width)
 	$vignettefile = $result[1]."-small$width.".$result[2];
 	if (file_exists($vignettefile) && filemtime($vignettefile) >= filemtime($text))
 		return $vignettefile;
+	list($widt, $height, $type, $attr) = getImageSize($text);
+	if($widt <= $width)
+		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	require_once ("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
@@ -432,7 +435,7 @@ function removelinks($text)
  */
 function isadate($text)
 {
-	return $text != "0000-00-00";
+	return ($text != "0000-00-00" && $text != NULL);
 }
 
 /**
@@ -450,7 +453,15 @@ function replacequotationmark($text)
 function replace($str, $search, $replace){
         return str_replace($search, $replace, $str);
 }
-	
+
+/**
+ * implemente preg_replace
+ */
+ 
+function reg_replace($str, $search, $replace){
+   return preg_replace($search, $replace, $str);
+}
+
 
 //
 // fonction utiliser pour les options (dans l'interface uniquement)
@@ -472,34 +483,62 @@ function eq($str, $texte)
 }
 
 /**
- * fonction pour les notes
+ * Fonction permettant de récupérer les notes du texte
+ *
+ * @author Pierre-Alain Mignot
+ * @param string $texte le texte à parser
+ * @param var $type type des notes présentes dans le texte
  */
 
 function notes($texte, $type)
 {
-	#  preg_match_all('/<div id="sd[^>]+>.*?<\/div>/',$texte,$results,PREG_PATTERN_ORDER);
-	#  return $texte;
-	//  preg_match_all('/<(div|p) class="(?:foot|end)note(?:body|text)"[^>]*>.*?<\/\\1>/',$texte,$results,PREG_PATTERN_ORDER);
-
 	// be cool... just select the paragraph or division.
-	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results, PREG_PATTERN_ORDER);
+	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
 	$notere = '<a\s+[^>]*\bclass="(foot|end)note(definition|symbol)[^>]*>';
-	switch ($type) {
-	case 'nombre' :
-	case 'number' :
-		$notes = preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i', $results[0]);
-		break;
-	case 'lettre' :
-	case 'letter' :
-		$notes = preg_grep('/'.$notere.'\[?[a-zA-Z]+\]?<\/a>/i', $results[0]);
-		break;
-	case 'asterisque' :
-	case 'star' :
-		$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
-		break;
-	default :
-		die("unknown note type \"$type\"");
+	if(is_int($type)) {
+		switch($type) {
+			case 1: // seulement les astérisques
+				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
+				break;
+			case 2: // astérisques et lettres
+				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[a-zA-Z]+\]?)<\/a>/i', $results[0]);
+				break;
+			case 3: // seulement les lettres
+				$notes = preg_grep('/'.$notere.'\[?[a-zA-Z]+\]?<\/a>/i', $results[0]);
+				break;
+			case 4: // toutes les notes
+				$notes = preg_grep('/'.$notere.'(\[?[0-9]+\]?)|(\[?[a-zA-Z]+\]?)|(\[?\*+\]?)<\/a>/i', $results[0]);
+				break;
+			case 5: // lettre et nombres
+				$notes = preg_grep('/'.$notere.'(\[?[0-9]+\]?)|(\[?[a-zA-Z]+\]?)<\/a>/i', $results[0]);
+				break;
+			case 6: // seulement les nombres
+				$notes = preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i', $results[0]);
+				break;
+			case 7: // nombres et astérisques
+				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[0-9]+\]?)<\/a>/i', $results[0]);
+				break;
+			default:
+				die("unknown note type of tag num : \"$type\"");
+		}
+	} else {
+		switch ($type) {
+			case 'nombre' :
+			case 'number' :
+				$notes = preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i', $results[0]);
+				break;
+			case 'lettre' :
+			case 'letter' :
+				$notes = preg_grep('/'.$notere.'\[?[a-zA-Z]+\]?<\/a>/i', $results[0]);
+				break;
+			case 'asterisque' :
+			case 'star' :
+				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
+				break;
+			default :
+				die("unknown note type \"$type\"");
+		}
 	}
 	return join("", $notes);
 }
@@ -778,7 +817,7 @@ function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
  * Les paramètres sont modifiables dans le template et écrasent les paramètres par défaut.
  *
  * @author Mickael Sellapin
- *
+ * @author Pierre-Alain Mignot
  * @param string $texte le texte à numéroter passé par référence
  * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
  */
@@ -795,339 +834,91 @@ function paranumber(&$texte, $styles='texte')
 	for($i=1; $i < $length_tab_classes; $i++) {
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
-	
+
+	// filtre très capricieux : on va réorganiser les attributs des balises 'p' pour correspondre aux regexp. attribut class en premier
+ 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)</p>`Us', $texte, $match);
+  	foreach($match[0] as $k=>$m) {
+		if(!empty($match[1][$k])) {
+   			$texte = str_replace($m, "<p ".$match[2][$k]." ".$match[1][$k]." ".$match[3][$k].">".$match[4][$k]."</p>", $texte);
+		}
+  	}
+
+	global $attrs;
+	$attrs = array();
+	// on modifie les attributs contenus dans les table td pour faciliter la regexp
+	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`Us", 
+									create_function(
+									// Les guillemets simples sont très importants ici
+									// ou bien il faut protéger les caractères $ avec \$
+									'$matches',
+									'static $cpt=10000;$cpt++;global $attrs;$attrs[$cpt] = $matches[1]; return "<td id=\"$cpt\">$matches[2]</td>";'
+									), $texte);
+
 	/* Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
 	 *  ignore aussi les cellules d'un tableau
 	 * ignore tous les styles attribués à la balise <p> sauf "texte" ; on peut rajouter un style à <p> comme l'exemple suivant : (<p\b class=(\"texte\"|\"citation\"). On a ajouté le style "citation" avec un "|" (OU exclusif).
 	 * ignore les puces
 	 */
 
-	//$regexp = "/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=(\"texte\"|\"citation\"|\"annexe\") [^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie";
-
-
 	if ($length_tab_classes != 1) {
-		$regexp = '/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
+		$regexp = '/(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
 	} else {
-		$regexp = '/(?:(?<!(<td>)))(?:(?<!(<li>)))(<p\b class='.$chaine_classes.' [^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
+		$regexp = '`(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class='.$chaine_classes.'[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)`ie';
 	}
 
-
 	// on formate les balises de tableau et <li> pour faciliter la reconnaissance de la balise dans la regex
-	
-	$search = array ('/<table\b[^>]*>/', '/<tr\b[^>]*>/', '/<td\b[^>]*>/', '/<li\b[^>]*>/');
-	$replace = array ('<table>', '<tr>', '<td>', '<li>');
-	
+	$search = array ('/<table[^>]*>/', '/<tr[^>]*>/', '/<li[^>]*>/');
+	$replace = array ('<table>', '<tr>', '<li>');
 	$texte = preg_replace($search, $replace, $texte);
+
 	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
-	$regex = '`(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)|(<td>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*<p class="texte" dir="[^"]*">([^<]*)</p>\s*</td>)`U';
-	$replacer = '<td><p class="texte" dir="[^"]*">\\2\\3\\5\\6\\7</p></td>';
-	
-	$texte = preg_replace($regex, $replacer, $texte);
+	$regex = '`(<td id="\d\d\d\d\d">)((<p[^>]*>)(.*)(</p>))+(</td>)`Uis';
+	preg_match_all($regex, $texte, $m);
+	foreach($m[0] as $k=>$match) {
+		preg_match_all("/(<p[^>]*>(.*)<\/p>)+/iUs", $match, $mm);
+		if(($nb = count($mm[0])) > 1) {
+			$i=0;
+			$t .= $mm[2][$i++];
+			while($i<$nb) 
+				$t .= " ".$mm[2][$i++];
+			
+			$texte = str_replace($match, $m[1][$k].$m[3][$k].$t.$m[5][$k].$m[6][$k], $texte);
+			unset($t);
+		}
+	}
+
+	// on numérote les paragraphes
 	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
+
+	// formatage des styles des cellules
+	foreach($attrs as &$attr) {
+		unset( $tmpattr );
+		// background
+		preg_match("`background(-color)?:[^;]*;`", $attr, $r);
+		if(!empty($r[0]))
+			$tmpattr = ' style="'.$r[0].'" ';
+		// fusion
+		preg_match("`colspan=\"[^\"]*\"`", $attr, $r2);
+		if(!empty($r2[0]))
+			$tmpattr .= " ".$r2[0];
+		preg_match("`rowspan=\"[^\"]*\"`", $attr, $r3);
+		if(!empty($r3[0]))
+			$tmpattr .= " ".$r3[0];
+		$attr = $tmpattr;
+	}
+	// on remplace les id="xxxxx" par les attributs des balises <td> préformaté juste au dessus
+	$texte = preg_replace_callback("`<td id=\"(\d\d\d\d\d)\">(.*)</td>`iuUs", 
+									create_function(
+									// Les guillemets simples sont très importants ici
+									// ou bien il faut protéger les caractères $ avec \$
+									'$matches',
+									'global $attrs;return "<td ".$attrs[$matches[1]].">".$matches[2]."</td>";'
+									), $texte);
 
 	return $texte;
 }
 
 
-/**
- * Filtre pour l'ajout des notes marginales
- *
- * Ajoute un <div class="textandnotes"> et encapsule les notes dans une liste : <ul class="sidenotes"> <li> ... </li> </ul> 
- * contient le numéro de la note et celle-ci tronquée 
- * (si trop longue) à 100 caractères.
- * 
- * Le seul paramètre sera le seuil d'affichage des notes
- *
- * @author Mickael Sellapin
- *
- * @param string $texte le texte à numéroter passé par référence
- * @param string $coupe un entier (définit dans le template)
- *
- */
-
-function notesmarginales(&$texte, $coupe) {
-
-	static $condition = 0;
-
-	$cptendnote = 0;
-        $cptendpage = 0;
-	$compteur = 0;
-	$titre = $GLOBALS['context']['titre'];
-
-	//on récupère toutes les notes du texte
-	$regexp = '/<a\s+class="(foot|end)notecall"[^>](.*?)>(.*?)<\/a>/s';
-	preg_match_all($regexp,$texte,$matches);
-
-	$regexpnote = '/<p\s+class="notebaspage"[^>]*><a\b[^>](.*?)>(.*?)<\/a>(.*?)<\/p>/s';	
-
-	$search = '/<p\s+class="notebaspage"[^>](.*?)>/';
-	$replace = '<br /><p class="notebaspage" \\1>';
-
-	$notesformatees = preg_replace($search, $replace, $GLOBALS['context']['notesbaspage']);
-
-	if(notes($GLOBALS['context']['notesbaspage'], "asterisque")) {
-		$notesmodif = notes($GLOBALS['context']['notesbaspage'], "asterisque");
-	}
-
-	if(notes($GLOBALS['context']['notesbaspage'], "lettre")) {
-		$notesmodif .= notes($GLOBALS['context']['notesbaspage'], "lettre");
-	}
-
-	if(notes($notesformatees, "nombre")) {
-		$notesmodif .= notes($GLOBALS['context']['notesbaspage'], "nombre");
-	}
-
-	//on recupére chaque note du bloc de notes
-	preg_match_all($regexpnote, $GLOBALS['context']['notefin'], $matchesnotefin);
-
-	preg_match_all($regexpnote, $notesmodif, $matchesnotebaspages);
-
-
-	//pour traiter les cas d'une note dans le titre principal
-	if(!preg_match($regexp,$titre,$matchestitre) && $condition == 0) {
-
-		$condition = 2;
-		return $titre;
-
-	} elseif($condition == 0) {
-
-		$search = array ('/id="(.*?)" href="#(.*?)"/');
-
-		$replace = array ('href="#\\2"');
-
-		$hreftitre = preg_replace($search, $replace, $matches[2][0]);
-
-		$titre_modif = $titre;
-		
-		$titre_modif .= "\n<ul class=\"sidenotes\"><li><a ".$hreftitre.">".cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe);
-		
-		if(strlen($matchesnotebaspages[3][0]) > $coupe) {
-			$titre_modif .= cuttext(strip_tags($matchesnotebaspages[3][0]), $coupe).'(...)';
-		} else {
-			$titre_modif .= strip_tags($matchesnotebaspages[3][0]);
-		}
-
-		$titre_modif .= "</a></li></ul>";
-
-		$condition = 1;
-
-		return $titre_modif;
-	} 
-	
-	
-
-	//on recupere chaque paragraphe du texte mais pas seulement le texte, les <p class="citation", etc ... pour les afficher ensuite
-	$regexppar = '/(((<h[0-9] dir=[^>]*>.*?<\/h[0-9]>)?<p\b class="(.*?)" * dir=[^>]*>(.*?)<\/p>))|(<h[0-9] dir=[^>]*><a [^>]*>[^<]*<\/a><\/h[0-9]>)|(<table[^>]*>.*<\/table>)/';
-	
-
-	preg_match_all($regexppar,$texte,$paragraphes);
-
-	//on incrémente cette variable pour palier l'affichage de la note asterisque et afficher la toute première note
-	if($condition == 1)
-		$cptendpage++;
-
-	$retour = "";
-	$nbparagraphes = sizeof($paragraphes[0]);
-
-	// on affiche à la suite de chaque paragraphe les notes correspondantes que l'on met dans la variable "buffer"
-	for($i = 0; $i < $nbparagraphes; $i++) {
-		$buffer = "";
-		preg_match_all($regexp, $paragraphes[0][$i], $tmp);
-
-		$tailletmp = sizeof($tmp[0]);
-		
-		for($j = 0; $j < $tailletmp; $j++) {
-
-			if(strlen($matchesnotebaspages[3][$cptendpage]) > 0) {
-
-				if((preg_match('/[0-9]+/',$matchesnotebaspages[2][$cptendpage],$m)) || (preg_match('/[a-zA-Z]+/',$matchesnotebaspages[2][$cptendpage],$m))) {
-
-				$search = array ('/id="(.*?)" class=".*" href="#(.*?)"/');
-				$replace = array ('href="#\\1"');
-
-				$matchesnotebaspages[1][$cptendpage] = preg_replace($search, $replace, $matchesnotebaspages[1][$cptendpage]);
-
-				$r = '<a '.$matchesnotebaspages[1][$cptendpage].'>'.$matchesnotebaspages[2][$cptendpage];
-
-				if(strlen($matchesnotebaspages[3][$cptendpage]) > $coupe) {
-					$r .= cuttext(strip_tags($matchesnotebaspages[3][$cptendpage]), $coupe).'(...)</a>';
-				} else {
-					$r .= strip_tags($matchesnotebaspages[3][$cptendpage]).'</a>';
-				}
-
-				$buffer .= '<li>'.$r.'</li>';
-			
-				$cpt++;
-				} else {
-					$cptendpage++;
-				}
-			}
-			$cptendpage++;			
-		}
-
-		$retour = $cpt > 0 ? $retour."<div class=\"textandnotes\">\n".$paragraphes[0][$i]."\n<ul class=\"sidenotes\">".$buffer."\n</ul></div>\n" : $retour.$paragraphes[0][$i];
-        	$cpt = 0;
-
-	}
-
-	$condition = 0;
-
-	return $retour;
-}
-
-/** Extrait les images au sein du texte pour en faire une version petite taille et fournir un lien vers une version haute résolution dans un popup 
-* @author Bruno Cénou
-* @author Pierre-Alain Mignot
-* @param  string $text le texte à parser
-* @param  integer $width la largeur souhaitée pour les images dans le texte
-* @param  string $titlePos la position du titre de l'image dans le doc stylé
-* @param  integer $max la largeur maximale du popup
-* @param  integer $min la largeur minimale du popup
-*/
-
-function iconifier($text, $width=150, $titlePos='up', $max=640, $min=400){
-	if(!$text) return;
-	preg_match_all("|(<a[^>]+href=\"[^>]+\"[^>]*>)?<img[^>]+src=\"([^\">]+)\" alt=\"[^\">]+\" ([^>]*)/>|U", $text, $result, PREG_PATTERN_ORDER);
-	preg_match_all("`<p class=\"titreillustration\"[^>]*>.*</p>`U", $text, $regs, PREG_PATTERN_ORDER);
-	foreach($result[2] as $k=>$v){
-		$info = getimagesize($v);
-		$w = $info[0];
-		$h = $info[1];
-		if($w > $width){
-			$vign = $w > $width ? vignette($v, $width) : $v;
-			if($w > $max){
-				$full = vignette($v, $max);
-				$info = getimagesize($full);
-				$w = $info[0];
-				$h = $info[1];
-			}else{
-				$full = $v;
-			}
-			$w = $w < $min ? $min : $w;
-			$w += 100;
-			$h += 300;
-			$stop = !$regs[0][$k+1] ? strlen($text) : strpos($text, $regs[0][$k+1]);
-			$title = getImageTitle($text, $v, $titlePos, $stop);
-			$desc = getImageDesc($text, $v);
-			$credits = getImageCredits($text, $v);
-			$link = "<div class=\"textIcon\">";
- 			if($titlePos == 'up') $link .= "\n".$title;
-			
-			$link .= "<a href=\"image.php?source=$full&amp;titlepos=$titlePos\" rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\">".str_replace($v, $vign, $result[0][$k])."</a>";
-			$link .= "<a class=\"fullSize\" href=\"image.php?source=$full&amp;titlepos=$titlePos\"  rel=\"nofollow\" onclick=\"window.open(this.href, '', 'top=0, left=0, width=".$w.", height=".$h.", resizable=yes, scrollbars=yes'); return false;\"><img src=\"images/magnify.png\" alt=\"Agrandir\" /></a>";
- 			if($titlePos == 'down') $link .= "\n".$title;
- 			$link .= "\n".$desc."\n".$credits."\n";
-			$link .= "</div>";
- 			$text = str_replace(array($title, $desc, $credits), '', $text);
-			$link = str_replace($result[3][$k], '', $link);
-			$text = str_replace($result[0][$k], $link, $text);
-			$text = str_replace($result[1][$k], '', $text);
-		}
-	}
-	$text = str_replace("</a></a>", "</a>", $text);
-	return($text);
-}
-
-/** Récupère le titre d'une image lorsque celui-là se trouve au dessus ou au dessous de celle-ci
-* @author Bruno Cénou
-* @author Pierre-Alain Mignot
-* @param  string $text le texte à parser
-* @param  mixed $source le nom du fichier image ou sa position dans le texte
-* @param  string $titlePos la position du titre de l'image dans le doc stylé
-* @param  integer $posi position de l'image suivante
-*/
-
-function getImageTitle($text, $source, $titlePos='up', $posi='0')
-{	
-	if(!$text) return;
-	if($titlePos == 'up'){
-		if(!is_numeric($source) && $posi == '0')
-		{ // ici on a pas la position de l'image suivante pour delimiter la recherche regex
-		// on le calcule
-			$test = explode('-', $source);
-			$nb = substr($test[1], 0, 1);
-			$nb++; //chose faite
-			//on cree maintenant le nom de l'image
-			$testing = $test[0]."-".$nb.".jpg";
-			//on recherche sa position dans le texte
-			$posi = strpos($text, $testing);
-			// si on ne trouve pas d'image suivante, $text reste inchange, sinon on le coupe
-			// pour obtenir seulement la portion du texte qui nous interesse
-			$text = !$posi ? $text : substr($text, 0 , $posi);
-			// on prepare notre regex
-			$regex = "`(<p class=\"titreillustration\"[^>]*>.+</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
-			// on l'execute
-			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
-			// on met dans $titre un tableau contenant : 1. le titre 2. l'img 3.une deuxieme image ? pas normal
-			$titre = split('<p class="titreillustration"[^>]*>', array_pop($regs[1]));
-			$titre = explode('<img', array_pop($titre));
-			if(sizeof($titre) > 2)
-			{ // tiens il y a une autre image .. notre image n'a donc pas de titre, hop on sort
-				return;
-			}
-			// on renvoit le titre
-			return $titre[0];
-		}
-		else
-		{// on connait la position de l'image suivante, on coupe le texte
-			$text = substr($text, 0 , $posi);
-			// on prepare la regex et on l'execute
-			$regex = "`(<p class=\"titreillustration\"[^>]*>.*</p>[^<]*<p class=\"texte\"[^>]*>[^<]*<img src=\"".$source."\"[^>]*/>)`U";
-			preg_match_all($regex, $text, $regs, PREG_PATTERN_ORDER);
-			// on recupere le titre
-			$titre = explode('<img', array_pop($regs[1]));
-		}
-		return($titre[0]);
-	}elseif($titlePos == 'down'){
-		$text = str_replace($source, '', strstr($text, $source));
-		if(FALSE !== strpos($text, '<img')){
-			$text = substr($text, 0, strpos($text, '<img'));
-		}
-		if(FALSE !== strpos($text, '<table')){
-			$text = substr($text, 0, strpos($text, '<table'));
-		}
-		preg_match("|(<p class=\"titreillustration\"[^>]*>.*</p>)|U", $text, $regs);
-		return($regs[1]);
-	}
-}
-
-/** Récupère la légende d'une image lorsque celle-là se trouve au dessous de celle-ci 
-* @author Bruno Cénou
-* @param  string $text le texte à parser
-* @param  string $source le nom du fichier image
-*/
-
-function getImageDesc($text, $source){
-	if(!$text) return;
-	$text = str_replace($source, '', strstr($text, $source));
-	if(FALSE !== strpos($text, '<img')){
-		$text = substr($text, 0, strpos($text, '<img'));
-	}
-	if(FALSE !== strpos($text, '<table')){
-		$text = substr($text, 0, strpos($text, '<table'));
-	}
-	preg_match("|(<p class=\"legendeillustration\"[^>]*>.*</p>)|U", $text, $regs);
-	return($regs[1]);
-}
-
-/** Récupère les crédits d'une image lorsque ceux-là se trouvent au dessous de celle-ci
-* @author Bruno Cénou
-* @param  string $text le texte à parser
-* @param  string $source le nom du fichier image
-*/
-
-function getImageCredits($text, $source){
-	if(!$text) return;
-	$text = str_replace($source, '', strstr($text, $source));
-	if(FALSE !== strpos($text, '<img')){
-		$text = substr($text, 0, strpos($text, '<img'));
-	}
-	if(FALSE !== strpos($text, '<table')){
-		$text = substr($text, 0, strpos($text, '<table'));
-	}
-	preg_match("|(<p class=\"creditillustration\"[^>]*>.*</p>)|U", $text, $regs);
-	return($regs[1]);
-}
 
 /** renvoie le type mime d'un fichier, soit par l'extension PEAR fileinfo, soit par le système 
 * @author Bruno Cénou
@@ -1139,8 +930,477 @@ function getFileMime($filename){
 		$finfo = finfo_open(FILEINFO_MIME, "/usr/share/misc/file/magic");
 		return finfo_file($finfo, $filename);
 	}else{
-		system("file -i -b $filename");
+		system('file -i -b "'.$filename.'"');
 	}
 }
 
+/** renvoie le type seul d'un fichier 
+* @author Bruno Cénou
+* @param  string $filename le nom du fichier
+*/
+
+function getFileType($filename){
+	ob_start();
+	getFileMime($filename);
+	$str = ob_get_contents();
+	ob_end_clean();
+	$tmp = explode('/', $str);
+	return trim($tmp[1]) ? trim($tmp[1]) : 'unknown';
+}
+
+
+/** Transforme une date MySql en timestamp UNIX 
+* @author Bruno Cénou
+* @param string $date 
+*/
+
+function mysql2TS($date){
+	$date = str_replace(array(' ', '-', ':'), '', $date);
+	return mktime(substr($date, 8, 2), substr($date, 10, 2), substr($date, 12, 2), substr($date, 4, 2), substr($date, 6, 2), substr($date, 0, 4));
+}
+
+/** Transforme une date MySql en timestamp UNIX 
+* @author Bruno Cénou
+* @param string $time 
+*/
+
+function time2Date($time){
+	return substr($time, 0, 4)."-".substr($time, 4, 2)."-".substr($time, 6, 2);
+}
+
+/** Transforme un timestamp MySql en date MySql 
+* @author Bruno Cénou
+* @param string $date 
+*/
+
+function date2Time($date){
+	$time = mktime(substr($date, 11, 2), substr($date, 14, 2), substr($date, 17, 2), substr($date, 5, 2), substr($date, 8, 2), substr($date, 0, 4));
+	return strftime('%Y%m%d%H%M%S', $time);
+}
+
+/** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
+* @author Bruno Cénou
+* @param string $time 
+*/
+
+function LSgmstrftime($time){
+	return strftime('%Y-%m-%dT%TZ', $time);
+}
+
+/** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
+* @author Bruno Cénou
+* @param string $time 
+*/
+
+function formatIdentifier($str) {
+		require_once 'func.php';
+		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
+}
+
+/** Nettoyage des caractères windows illegaux + nettoyage pour flux XML
+* @author Bruno Cénou
+* @param string $str 
+*/
+
+function cleanBadChars($str){
+	$replace = array(
+			129 => "",
+			130 => "#8218",
+			131 => "#402",
+			132 => "#8222",
+			133 => "#8230",
+			134 => "#8224",
+			135 => "#8225",
+			136 => "#710",
+			137 => "#8240",
+			138 => "#352",
+			139 => "#8249",
+			140 => "#338",
+			141 => "",
+			142 => "#381",
+			143 => "",
+			144 => "",
+			145 => "#8216",
+			146 => "#8217",
+			147 => "#8220",
+			148 => "#8221",
+			149 => "#8226",
+			150 => "#8211",
+			151 => "#8212",
+			152 => "#732",
+			153 => "#8482",
+			154 => "#353",
+			155 => "#8250",
+			156 => "#339",
+			157 => "",
+			158 => "#382",
+			159 => "#376"
+	);
+	$str = HTML2XML($str);
+	$str = str_replace(array('&#39;', utf8_encode(chr(146))) ,"'", $str);
+	//$str = ereg_replace('&([A-Za-z0-9]|[:punct:]| )+', '&amp;', $str);
+	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
+	//$str = htmlspecialchars($str);
+        foreach($replace as $k=>$v){
+                $replace_str = $v != '' ? '&'.$v.';' : '';
+                $str = preg_replace("/".utf8_encode(chr($k))."/", $replace_str, $str);
+                //echo "$k = $replace_str\n";
+        }
+
+
+return $str;
+}
+
+/** convertit entités html en entités xml 
+* @author Bruno Cénou
+* @param string $str 
+*/
+
+function HTML2XML($str){
+	$replace = array(
+		"&quot;" => "&#34;",
+		"&amp;" => "&#38;",
+		"&apos;" => "&#39;",
+		"&lt;" => "&#60;",
+		"&gt;" => "&#62;",
+		"&nbsp;" => "&#160;",
+		"&iexcl;" => "&#161;",
+		"&cent;" => "&#162;",
+		"&pound;" => "&#163;",
+		"&curren;" => "&#164;",
+		"&yen;" => "&#165;",
+		"&brvbar;" => "&#166;",
+		"&sect;" => "&#167;",
+		"&uml;" => "&#168;",
+		"&copy;" => "&#169;",
+		"&ordf;" => "&#170;",
+		"&laquo;" => "&#171;",
+		"&not;" => "&#172;",
+		"&shy;" => "&#173;",
+		"&reg;" => "&#174;",
+		"&macr;" => "&#175;",
+		"&deg;" => "&#176;",
+		"&plusmn;" => "&#177;",
+		"&sup2;" => "&#178;",
+		"&sup3;" => "&#179;",
+		"&acute;" => "&#180;",
+		"&micro;" => "&#181;",
+		"&para;" => "&#182;",
+		"&middot;" => "&#183;",
+		"&cedil;" => "&#184;",
+		"&sup1;" => "&#185;",
+		"&ordm;" => "&#186;",
+		"&raquo;" => "&#187;",
+		"&frac14;" => "&#188;",
+		"&frac12;" => "&#189;",
+		"&frac34;" => "&#190;",
+		"&iquest;" => "&#191;",
+		"&Agrave;" => "&#192;",
+		"&Aacute;" => "&#193;",
+		"&Acirc;" => "&#194;",
+		"&Atilde;" => "&#195;",
+		"&Auml;" => "&#196;",
+		"&Aring;" => "&#197;",
+		"&AElig;" => "&#198;",
+		"&Ccedil;" => "&#199;",
+		"&Egrave;" => "&#200;",
+		"&Eacute;" => "&#201;",
+		"&Ecirc;" => "&#202;",
+		"&Euml;" => "&#203;",
+		"&Igrave;" => "&#204;",
+		"&Iacute;" => "&#205;",
+		"&Icirc;" => "&#206;",
+		"&Iuml;" => "&#207;",
+		"&ETH;" => "&#208;",
+		"&Ntilde;" => "&#209;",
+		"&Ograve;" => "&#210;",
+		"&Oacute;" => "&#211;",
+		"&Ocirc;" => "&#212;",
+		"&Otilde;" => "&#213;",
+		"&Ouml;" => "&#214;",
+		"&times;" => "&#215;",
+		"&Oslash;" => "&#216;",
+		"&Ugrave;" => "&#217;",
+		"&Uacute;" => "&#218;",
+		"&Ucirc;" => "&#219;",
+		"&Uuml;" => "&#220;",
+		"&Yacute;" => "&#221;",
+		"&THORN;" => "&#222;",
+		"&szlig;" => "&#223;",
+		"&agrave;" => "&#224;",
+		"&aacute;" => "&#225;",
+		"&acirc;" => "&#226;",
+		"&atilde;" => "&#227;",
+		"&auml;" => "&#228;",
+		"&aring;" => "&#229;",
+		"&aelig;" => "&#230;",
+		"&ccedil;" => "&#231;",
+		"&egrave;" => "&#232;",
+		"&eacute;" => "&#233;",
+		"&ecirc;" => "&#234;",
+		"&euml;" => "&#235;",
+		"&igrave;" => "&#236;",
+		"&iacute;" => "&#237;",
+		"&icirc;" => "&#238;",
+		"&iuml;" => "&#239;",
+		"&eth;" => "&#240;",
+		"&ntilde;" => "&#241;",
+		"&ograve;" => "&#242;",
+		"&oacute;" => "&#243;",
+		"&ocirc;" => "&#244;",
+		"&otilde;" => "&#245;",
+		"&ouml;" => "&#246;",
+		"&divide;" => "&#247;",
+		"&oslash;" => "&#248;",
+		"&ugrave;" => "&#249;",
+		"&uacute;" => "&#250;",
+		"&ucirc;" => "&#251;",
+		"&uuml;" => "&#252;",
+		"&yacute;" => "&#253;",
+		"&thorn;" => "&#254;",
+		"&yuml;" => "&#255;",
+		"&OElig;" => "&#338;",
+		"&oelig;" => "&#339;",
+		"&Scaron;" => "&#352;",
+		"&scaron;" => "&#353;",
+		"&Yuml;" => "&#376;",
+		"&fnof;" => "&#402;",
+		"&circ;" => "&#710;",
+		"&tilde;" => "&#732;",
+		"&Alpha;" => "&#913;",
+		"&Beta;" => "&#914;",
+		"&Gamma;" => "&#915;",
+		"&Delta;" => "&#916;",
+		"&Epsilon;" => "&#917;",
+		"&Zeta;" => "&#918;",
+		"&Eta;" => "&#919;",
+		"&Theta;" => "&#920;",
+		"&Iota;" => "&#921;",
+		"&Kappa;" => "&#922;",
+		"&Lambda;" => "&#923;",
+		"&Mu;" => "&#924;",
+		"&Nu;" => "&#925;",
+		"&Xi;" => "&#926;",
+		"&Omicron;" => "&#927;",
+		"&Pi;" => "&#928;",
+		"&Rho;" => "&#929;",
+		"&Sigma;" => "&#931;",
+		"&Tau;" => "&#932;",
+		"&Upsilon;" => "&#933;",
+		"&Phi;" => "&#934;",
+		"&Chi;" => "&#935;",
+		"&Psi;" => "&#936;",
+		"&Omega;" => "&#937;",
+		"&alpha;" => "&#945;",
+		"&beta;" => "&#946;",
+		"&gamma;" => "&#947;",
+		"&delta;" => "&#948;",
+		"&epsilon;" => "&#949;",
+		"&zeta;" => "&#950;",
+		"&eta;" => "&#951;",
+		"&theta;" => "&#952;",
+		"&iota;" => "&#953;",
+		"&kappa;" => "&#954;",
+		"&lambda;" => "&#955;",
+		"&mu;" => "&#956;",
+		"&nu;" => "&#957;",
+		"&xi;" => "&#958;",
+		"&omicron;" => "&#959;",
+		"&pi;" => "&#960;",
+		"&rho;" => "&#961;",
+		"&sigmaf;" => "&#962;",
+		"&sigma;" => "&#963;",
+		"&tau;" => "&#964;",
+		"&upsilon;" => "&#965;",
+		"&phi;" => "&#966;",
+		"&chi;" => "&#967;",
+		"&psi;" => "&#968;",
+		"&omega;" => "&#969;",
+		"&thetasym;" => "&#977;",
+		"&upsih;" => "&#978;",
+		"&piv;" => "&#982;",
+		"&ensp;" => "&#8194;",
+		"&emsp;" => "&#8195;",
+		"&thinsp;" => "&#8201;",
+		"&zwnj;" => "&#8204;",
+		"&zwj;" => "&#8205;",
+		"&lrm;" => "&#8206;",
+		"&rlm;" => "&#8207;",
+		"&ndash;" => "&#8211;",
+		"&mdash;" => "&#8212;",
+		"&lsquo;" => "&#8216;",
+		"&rsquo;" => "&#8217;",
+		"&sbquo;" => "&#8218;",
+		"&ldquo;" => "&#8220;",
+		"&rdquo;" => "&#8221;",
+		"&bdquo;" => "&#8222;",
+		"&dagger;" => "&#8224;",
+		"&Dagger;" => "&#8225;",
+		"&bull;" => "&#8226;",
+		"&hellip;" => "&#8230;",
+		"&permil;" => "&#8240;",
+		"&prime;" => "&#8242;",
+		"&Prime;" => "&#8243;",
+		"&lsaquo;" => "&#8249;",
+		"&rsaquo;" => "&#8250;",
+		"&oline;" => "&#8254;",
+		"&frasl;" => "&#8260;",
+		"&euro;" => "&#8364;",
+		"&image;" => "&#8465;",
+		"&weierp;" => "&#8472;",
+		"&real;" => "&#8476;",
+		"&trade;" => "&#8482;",
+		"&alefsym;" => "&#8501;",
+		"&larr;" => "&#8592;",
+		"&uarr;" => "&#8593;",
+		"&rarr;" => "&#8594;",
+		"&darr;" => "&#8595;",
+		"&harr;" => "&#8596;",
+		"&crarr;" => "&#8629;",
+		"&lArr;" => "&#8656;",
+		"&uArr;" => "&#8657;",
+		"&rArr;" => "&#8658;",
+		"&dArr;" => "&#8659;",
+		"&hArr;" => "&#8660;",
+		"&forall;" => "&#8704;",
+		"&part;" => "&#8706;",
+		"&exist;" => "&#8707;",
+		"&empty;" => "&#8709;",
+		"&nabla;" => "&#8711;",
+		"&isin;" => "&#8712;",
+		"&notin;" => "&#8713;",
+		"&ni;" => "&#8715;",
+		"&prod;" => "&#8719;",
+		"&sum;" => "&#8721;",
+		"&minus;" => "&#8722;",
+		"&lowast;" => "&#8727;",
+		"&radic;" => "&#8730;",
+		"&prop;" => "&#8733;",
+		"&infin;" => "&#8734;",
+		"&ang;" => "&#8736;",
+		"&and;" => "&#8743;",
+		"&or;" => "&#8744;",
+		"&cap;" => "&#8745;",
+		"&cup;" => "&#8746;",
+		"&int;" => "&#8747;",
+		"&there4;" => "&#8756;",
+		"&sim;" => "&#8764;",
+		"&cong;" => "&#8773;",
+		"&asymp;" => "&#8776;",
+		"&ne;" => "&#8800;",
+		"&equiv;" => "&#8801;",
+		"&le;" => "&#8804;",
+		"&ge;" => "&#8805;",
+		"&sub;" => "&#8834;",
+		"&sup;" => "&#8835;",
+		"&nsub;" => "&#8836;",
+		"&sube;" => "&#8838;",
+		"&supe;" => "&#8839;",
+		"&oplus;" => "&#8853;",
+		"&otimes;" => "&#8855;",
+		"&perp;" => "&#8869;",
+		"&sdot;" => "&#8901;",
+		"&lceil;" => "&#8968;",
+		"&rceil;" => "&#8969;",
+		"&lfloor;" => "&#8970;",
+		"&rfloor;" => "&#8971;",
+		"&lang;" => "&#9001;",
+		"&rang;" => "&#9002;",
+		"&loz;" => "&#9674;",
+		"&spades;" => "&#9824;",
+		"&clubs;" => "&#9827;",
+		"&hearts;" => "&#9829;",
+		"&diams;" => "&#9830;"
+		);
+	return str_replace(array_keys($replace),array_values($replace),$str);
+}
+
+
+/** récupère l'ID du parent d'une entité en fonction de son type
+* @author Bruno Cénou
+* @param int $id 
+* @param string $type 
+*/
+
+function getParentByType($id,$type){
+        $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
+        $r = mysql_query($q);
+        if($idparent = @mysql_result($r, 0)){
+                $q = "SELECT t.type FROM $GLOBALS[tp]entities e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
+                AND e.idtype = t.id";
+                $r2 = mysql_query($q);
+                $ltype = mysql_result($r2, 0);
+                //echo mysql_error();
+                if($ltype == $type){
+                        echo $idparent;
+                }else{
+                        getParentByType($idparent, $type);
+                }
+        }else{
+                return(FALSE);
+        }
+}
+
+/** 
+ * Crypte les emails pour qu'ils ne soient pas reconnaissable par les robots spam
+ * 
+ * @author Pierre-Alain Mignot
+ * @param string $texte le texte à modifier
+ * @param bool $codeInclude inclut directement le JS dans la page. défaut à false (fichier JS séparé)
+ * @return $texte le texte avec les emails cryptés
+ */
+function cryptEmails($texte, $codeInclude = FALSE)
+{
+	if(TRUE === $codeInclude) {
+		$javascript = "<script type=\"text/javascript\">
+				function recomposeMail(obj, region, nom, domaine)
+				{
+					obj.href = 'mailto:' + nom + '@' + domaine + '.' + region;
+					obj.onclick = (function() {});
+				}
+				</script>\n";
+		$texte = $javascript . $texte;
+	}
+
+	// on récupère tous les liens mail contenus dans le texte
+	preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches);
+
+	foreach($matches[0] as $k=>$mail) {
+		$name = explode("@", $matches[1][$k]);
+		$extension = substr(strrchr($name[1], '.'), 1);
+		$domain = substr($name[1], 0, strrpos($name[1], '.'));
+
+		// email dans le contenu du lien ?
+		if(array(0=>$matches[2][$k]) != $content = explode("@", $matches[2][$k])) { 
+			/* 
+			on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
+			résultat dans le code source de la page avec test@domaine.com : 
+			test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
+			*/
+			$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
+			$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
+		}
+
+		// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
+		$newLink = "<a href=\"#\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
+		$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
+		$newLink .= "</a>";
+
+		// on remplace
+		$texte = str_replace($mail, $newLink, $texte);
+	}
+	return $texte;
+}
+
+/** 
+ * Nettoie les mises en forme locales sur les appels de notes
+ * 
+ * @author Pierre-Alain Mignot
+ * @param string $text le texte à modifier
+ * @return $text le texte filtré
+ */
+function cleanCallNotes($text)
+{
+	return preg_replace("/(<(span|sup|sub|em)[^>]*>)*(\s*<a class=\"(end|foot)notecall\"[^>]*>.*<\/a>)\s*(<\/\\1>)*/Us", '\\3', $text);
+}
 ?>

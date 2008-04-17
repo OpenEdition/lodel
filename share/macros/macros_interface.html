@@ -26,14 +26,26 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'">
-					<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-					<IF COND="[#INTERTITLE] EQ ''">
-						<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
-					<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
-				</LOOP>
+				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
+					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
+					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
+						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
+						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">
+							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+						<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
+						<a href="#[#VARNAME]_[#TYPE]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
+					</LOOP>
+				<ELSE />
+					<LOOP NAME="gettitle" TABLE="tablefields" WHERE="name='[#VARNAME]' AND class='[#CLASS]'">
+						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">
+							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
+						<ELSE/><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#INTERTITLE]" /></IF>
+					</LOOP>
+					<a href="#[#VARNAME]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
+				</IF>
 			</IF>
-				<a href="#[#VARNAME]">&nbsp;&nbsp;<strong>[@COMMON.CORRECT]</strong>	&nbsp;&nbsp;</a>
 			</span>
 		</li>
 	</DO>
@@ -165,8 +177,8 @@
 <!--[ *********************************************************** ]-->
 <!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
 	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
-	variable qui diffère.]-->
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien é cause du nom de la
+	variable qui différe.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -217,7 +229,7 @@
       Widget pour l'edition des differents types de champs
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
+<DEFFUNC NAME="PRINT_EDIT_FIELD" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm,nom">
 <!--[ --------------- CONFIRM--------------------------- ]-->
 
 <IF COND="[#CONFIRM]">
@@ -246,26 +258,36 @@
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
-	<IF COND="[#EDITION] EQ 'fckeditor'">
-		<LET VAR="FCKEDITOR_DIR">[#SHAREURL]/plugins/fckeditor/</LET>
- 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
-		<?php
-			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
-		?>	
-    		<script type="text/javascript" src="[#FCKEDITOR_DIR]fckeditor.js"></script>
-    		<script type="text/javascript">
-    			var fck_[#FCKVARNAME]_editor = new FCKeditor('[#FULLVARNAME]','[#FCK_WIDTH]','[#FCK_HEIGHT]');
-    			fck_[#FCKVARNAME]_editor.ToolbarSet = "[#FCK_MODE]";
- 			fck_[#FCKVARNAME]_editor.BasePath = '[#FCKEDITOR_DIR]';
-    			fck_[#FCKVARNAME]_editor.Config["AutoDetectLanguage"] = [#FCK_AUTODETECTLANGUAGE];
-    			fck_[#FCKVARNAME]_editor.Config["DefaultLanguage"] = "[#FCK_LANGUAGE]";
-    			fck_[#FCKVARNAME]_editor.Config["SkinPath"] = "../skins/[#FCK_SKIN]/";
-    			fck_[#FCKVARNAME]_editor.Config["EditorAreaCSS"] = "../css/fck_editorarea.css";
-    			<?$context["value"] = str_replace("\n","",$context["value"]) ?>
-    			<?$context["value"] = str_replace("\r","",$context["value"]); ?>
-    			fck_[#FCKVARNAME]_editor.Value = "[#VALUE|html_entity_decode|addslashes]";
-    			fck_[#FCKVARNAME]_editor.Create();
-    		</script>
+	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
+		<MACRO NAME="FCK_EDITOR_PARAMETERS">
+<?php
+				$context["value"] = str_replace("\n","",$context["value"]);
+				$context["value"] = str_replace("\r","",$context["value"]);
+				$context['value'] = html_entity_decode(stripslashes($context['value']));
+				$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+?>
+		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
+<?php
+				$urlFck = SITEROOT . $GLOBALS['sharedir'] . "/plugins/fckeditor/";
+				require_once($urlFck."fckeditor.php");
+				$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
+				$oFCKeditor->ToolbarSet = $context['fck_mode'];
+				$oFCKeditor->BasePath = $urlFck;
+				$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
+				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
+				$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
+				$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
+				$oFCKeditor->Value = $context['value'];
+				$oFCKeditor->Create();
+?>
+		</IF>
+		<IF COND="[#EDITION] EQ 'wysiwyg_spaw'">
+<?php
+ 			include_once(SITEROOT . $GLOBALS['sharedir'] . "/plugins/spaw2/spaw.inc.php");
+			$spaw = new SpawEditor($context['fullvarname'], $context['value']);
+			$spaw->show();
+?>
+		</IF>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
 			<textarea rows="[#EDITIONPARAMS]" cols="50" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>[#VALUE]</textarea>
@@ -273,6 +295,24 @@
 			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
         	</IF>
       </IF>
+	<?php 
+			/* le javascript sert à débugger FCKEditor qui charge à l'infini
+			on avait la div qui sert à générer les champs auteur/directeur de publication etc ..
+			qui par défaut avait comme display 'none' ce qui créait le bug. 
+			Maintenant on a une div en display block qui se met en display none 
+			3s apres le début de chargement de la page
+			=> Largement suffisant, mais pas trop quand meme, sachant que FCKEditor est tres lourd */
+			if($context['nom']) {	?>
+				<script type="text/javascript">
+					if(document.getElementById("persons_[#NOM]_for_copy")) {
+						function cacher_copie(nom_elmt) {
+							var elmt = "persons_"+nom_elmt+"_for_copy";	
+							document.getElementById(elmt).style.display = "none";
+						}
+						setTimeout("cacher_copie('[#NOM]')", 3000);
+					}
+				</script>
+	<?php 	} ?>
 
 <ELSE/>
 <!--[ --------------- USERNAME, EMAIL, URL, HISTORY-------------- ]-->
@@ -315,7 +355,7 @@
 <!--[ ---------------FILE, IMAGE ------------- ]-->	    
 <IF COND="[#TYPE] eq 'image' OR [#TYPE] eq 'file'">
 	<div class="oneItem">
-		<IF COND="[#VALUE]">
+		<IF COND="[#VALUE] AND [#VALUE] NE 'Array'">
 			<div class="imageKeepDelete">
 			<IF COND="[#TYPE] eq 'file'">
 				[@COMMON.FILE] : <strong><a href="<MACRO NAME="SITE_ROOT" />/[#VALUE]">[#VALUE]</a></strong> ([#VALUE|nicefilesize])<br />&nbsp;<br />
@@ -504,12 +544,12 @@ cp_[#VARNAME].writeDiv();
         <!--[ widget available for adding new persons of this type ]-->
  	<LOOP NAME="edition_fields">
 		<BEFORE>
-	       		<div id="persons_[#VARNAME]_for_copy" style="display:none">
+	       		<div id="persons_[#VARNAME]_for_copy" style="display:block">
 			<div class="oneItem">
 		</BEFORE>
 		<DO>
 			<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
-				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 			<br />
 		</DO>
         	<AFTER>
@@ -948,7 +988,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
+C'est ignoble de remettre cette macro lé alors qu'elle est déjé dans macros_admin !!
 
 ]-->
 
@@ -1037,7 +1077,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 <!--[ Macro rajoutée le 17/09/03 *********************** ]-->
-<!--[ Macro servant à publication.html et                ]-->
+<!--[ Macro servant é publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1392,13 +1432,18 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LET VAR="noid">TRUE</LET>
 	</IF>
 	<ul class="entitiesPath">
-		<li><a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
+		<li><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a onClick="preserveDatas;" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
+			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-				<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
+				<IF COND="[#G_TITLE]"> 
+					<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
+				<ELSE/>
+					<li class="this">&gt; [@EDITION.NEW]</li>
+				</IF>
 		</LOOP>
+		
 	</ul>
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>
@@ -1409,7 +1454,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<ul class="entitiesPath site">
 		<li><a href="index.[#EXTENSIONSCRIPTS]">[@EDITION.BASE]</a></li>
 		<LOOP NAME="parentsentities">
-			<li> &gt; <a onClick="preserveDatas;" href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
+			<li> &gt; <a href="[#ID|makeurlwithid]">[#G_TITLE|textebrut|nbsp]</a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity2" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
 			<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
@@ -1792,7 +1837,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<img src="[#IMGDIR][#ICON]" alt="" class="associatedIcon" />
 		<ELSE />
 			<LOOP SELECT="classes.icon AS classicon" NAME="getClassIcon" TABLE="[#TABLE], classes" WHERE="[#TABLE].class = classes.class AND [#TABLE].id = '[#IDTYPE]'">
-				<img src="[#IMGDIR][#CLASSICON]" alt=""  class="associatedIcon" />
+				<IF COND="[#CLASSICON]">
+					<img src="[#IMGDIR][#CLASSICON]" alt=""  class="associatedIcon" />
+				</IF>
 			</LOOP>
 		</IF>
 	</LOOP>

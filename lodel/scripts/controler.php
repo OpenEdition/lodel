@@ -168,17 +168,6 @@ class Controler
 					} else {
 						// call the logic action
 						$ret = $logic->$do($context, $error);
-						// on résoud le bug des url inattendues
-						if($ret == '_back') {
-							if($GLOBALS['idparent'])
-								$id = '?id='.$GLOBALS['idparent'];
-							else
-								break;
-							$url = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['SCRIPT_NAME'].$id;
-							
-							header("location: ".$url);
-							exit;
-						}
 					}
 			}
 			if (!$ret) {

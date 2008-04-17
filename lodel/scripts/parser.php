@@ -114,7 +114,7 @@ class Parser
 
 	function Parser()
 	{ // constructor
-		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
+		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
 
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
 	}
@@ -122,7 +122,6 @@ class Parser
 	function parse($in, $out)
 	{
 		global $sharedir;
-
 		$this->infilename = $in;
 		if (!file_exists($in))
 			$this->errmsg("Unable to read file $in");
@@ -197,11 +196,13 @@ class Parser
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
-		@unlink($out); // detruit avant d'ecrire.
+		require_once 'cachefunc.php';
+		if(myfileexists($out))
+			@unlink($out); // detruit avant d'ecrire.
 		$fp = fopen($out, "w") or $this->errmsg("cannot write file $out");
 		fputs($fp, $contents);
 		fclose($fp);
-		if ($GLOBALS['filemask'])
+		if ($GLOBALS['filemask'] && myfileexists($out))
 			chmod($out, 0666 & octdec($GLOBALS['filemask']));
 
 		return $ret;
@@ -240,16 +241,15 @@ class Parser
 				if ($text {$i}	== ':')	{ // a lang
 					$lang = '';
 					$i ++;
-					if ($text{$i} == '#') { //pour syntaxe LS [#RESUME:#SITELANG]
+					if ($text{$i} == '#') { // pour syntaxe LS [#RESUME:#SITELANG] et [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
 						$i++;
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
-						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.') {
+						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#') {
 							if ($text {$i} == '.') { $is_array = true; }
 							$lang .= $text {$i};
 							$i ++;
 						}
-
 					} else { //pour syntaxe LS [#RESUME:FR]
 						$is_var = false;
 						while (($text{$i} >='A' && $text{$i} < 'Z')) {
@@ -257,17 +257,23 @@ class Parser
 							$i ++;
 						}
 					}
-					if ($is_var === true) { 
+					if ($is_var === true) {
 						$lang = strtolower($lang);
 						if ($is_array === true) {
-							//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
 							$tab = explode ('.', $lang);
-							$lang = $context[$tab[0]][$tab[1]][$tab[2]];
+							if(strpos($lang, '#') !== false) {
+								// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
+								$val = str_replace('#', '', $tab[1]);
+								$lang = '$context[\''.$tab[0].'\'][\'$context['.$val.']\']';
+							} else {
+								//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
+								$lang = '$context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\']';
+							}
 						} else {
-							$lang = $context[$lang];
+							$lang = '$context[\''.$lang.'\']';
 						}
 					}
-					$pipefunction = '|multilingue("'.$lang.'")';
+					$pipefunction = '|multilingue('.$lang.')';
 				}
 
 				if ($text {$i}	== '|')	{ // have a pipe function
@@ -297,16 +303,17 @@ class Parser
 						$this->parse_variable($pipefunction, false);
 					}
 				}
+
 				// look for a proper end of the variable
 				if ($para && $text {$i}	== ')' && $text {$i +1}	== ']')	{
-					$i += 2;
+						$i += 2;
 				}	elseif (!$para && $text {$i} = ']')	{
 					$i ++;
 				}
 				else
 					continue; // not a variable
-
 				// build the variable code
+				
 				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape);
 				$text = substr_replace($text, $varcode, $startvar, $i - $startvar);
 				$i = $startvar +strlen($varcode); // move the counter
@@ -325,6 +332,7 @@ class Parser
 		# parse the filter
 		if ($pipefunction) { // traitement particulier ?
 			//echo $pipefunction."<br />";
+
 			$array = preg_split('/(?=\|[a-z]*[^\'|^\"]+)/',$pipefunction);
 
 			foreach($array as $fct) {
@@ -372,7 +380,6 @@ class Parser
 		default :
 			$code = $variable;
 		}
-
 		// unable to test the code.... 
 		// must use the PEAR::PHP_Parser
 
@@ -423,6 +430,7 @@ class Parser
 				break;
 					// returns
 			case 'ELSE' :
+			case 'ELSEIF':
 			case 'DO' :
 			case 'DOFIRST' :
 			case 'DOLAST' :
@@ -667,7 +675,7 @@ class Parser
 			}
 		}
 		if ($this->arr[$this->ind] != '/LOOP') {
-			echo ":::: $this->ind ".$this->arr[$this->ind]."<br>\n";
+			echo ":::: $this->ind ".$this->arr[$this->ind]."<br />\n";
 			print_r($this->arr);
 			$this->errmsg("internal error in parse_loop. Report the bug");
 		}
@@ -815,10 +823,9 @@ class Parser
 	if(!function_exists("loop_'.$name.'")) {
 		function loop_'.$name.' ($context)
 		{'.$preprocesslimit.'
-			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults] ;'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
-			$query ; $result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
+			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults];$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
+			$result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
 		'.$postmysqlquery.'
-			//$context[nbresultats]=$context[nbresults]='.sprintf($options['sqlnumrows'], '$result').';
 		 '.$processlimit.' 
 			$generalcontext=$context;
 			$count=0;
@@ -971,7 +978,6 @@ class Parser
 
 		do {
 			$this->ind += 3;
-			#$this->parse_main2();
 			$this->parse_main();
 			if ($this->arr[$this->ind] == "ELSE") {
 				if ($elsefound)
@@ -979,6 +985,15 @@ class Parser
 				$elsefound = 1;
 				$this->_clearposition();
 				$this->arr[$this->ind + 1] = '<?php } else { ?>';
+			}	elseif ($this->arr[$this->ind] == "ELSEIF") {
+				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+				if (!$attrs['COND'])
+					$this->errmsg("Expecting a COND attribut in the ELSEIF tag");
+				$cond = $attrs['COND'];
+				$this->parse_variable($cond, false); // parse the attributs
+				$cond = replace_conditions($cond, "php");
+				$this->_clearposition();
+				$this->arr[$this->ind + 1] = '<?php } elseif ('.$cond.') { ?>';
 			}	elseif ($this->arr[$this->ind] == "/IF") {
 				$isendif = 1;
 			}	else
@@ -997,7 +1012,6 @@ class Parser
 	 */
 	function parse_SWITCH()
 	{
-		// decode attributs
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 		if (!$attrs['TEST'])
 			$this->errmsg("Expecting a TEST attribut in the SWITCH tag");
@@ -1006,36 +1020,38 @@ class Parser
 		$test = replace_conditions($test, 'php');
 
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '<?php switch ('.$test.') { ';
+		$toput = $this->ind + 1;
+
 		if (trim($this->arr[$this->ind + 2]))
 			$this->errmsg("Expecting a CASE tag after the SWITCH tag");
-
+		// PHP ne veut aucun espace entre le switch et le premier case !
+		$begin = true;
 		do {
 			$this->ind += 3;
 
 			$this->parse_main();
-
 			if ($this->arr[$this->ind] == 'DO') {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if ($attrs['CASE'])	{
 					$this->parse_variable($attrs['CASE'], false); // parse the attributs
-
 					$this->_clearposition();
-					$this->arr[$this->ind + 1] = 'case '.$attrs['CASE'].': ?>';
+					if($begin) {
+						$this->arr[$toput] = '<?php switch ('.$test.') { case "'.$attrs['CASE'].'": { ?>';
+						$begin = false;
+					} else
+						$this->arr[$this->ind + 1] = '<?php case "'.$attrs['CASE'].'": { ?>';
 				}	else {
 					die("ERROR: multiple choice case not implemented yet");
 					// multiple case
 				}
+			} elseif ($this->arr[$this->ind] == "/DO") {
 				$this->_clearposition();
-				$this->arr[$this->ind + 1] = 'case :';
-			}	elseif ($this->arr[$this->ind] == "/DO") {
-				$this->_clearposition();
-				$this->arr[$this->ind + 1] = "break;\n";
-			}	elseif ($this->arr[$this->ind] == "/SWITCH") {
+				$this->arr[$this->ind + 1] = "<?php break; } ?>\n";
+			} elseif ($this->arr[$this->ind] == "/SWITCH") {
 				$endswitch = true;
-			}	else
+			} else
 				$this->errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in SWITCH condition", $this->ind);
-		}	while (!$endswitch && $this->ind < $this->countarr);
+		} while (!$endswitch && $this->ind < $this->countarr);
 
 		if (!$endswitch)
 			$this->errmsg("SWITCH block is not closed", $this->ind);
@@ -1086,7 +1102,7 @@ class Parser
 
 		for ($i = $escapeind; $i < $this->ind; $i += 3)	{
 			if (trim($this->arr[$i +2]))
-				$this->arr[$i +2] = '<? if ($GLOBALS[\'cachedfile\']) { echo \''.quote_code($this->arr[$i +2]).'\'; } else {?>'.$this->arr[$i +2].'<?php } ?>';
+				$this->arr[$i +2] = '<?php if ($GLOBALS[\'cachedfile\']) { echo \''.quote_code($this->arr[$i +2]).'\'; } else {?>'.$this->arr[$i +2].'<?php } ?>';
 		}
 		$this->_clearposition();
 	}
@@ -1207,7 +1223,7 @@ class Parser
 
 function replace_conditions($text, $style)
 {
-	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||"), $text);
+	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i", "/([\w'\[\]\$]*) like (\/[^\/]*\/)/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||", 'preg_match("$2i", $1)'), $text);
 }
 
 function stripcommentandcr(& $text)

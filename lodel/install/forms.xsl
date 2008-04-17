@@ -188,6 +188,21 @@
 				<br />
 			</xsl:when>
 
+			<!-- champ langue -->
+			<xsl:when test="@edittype='select_lang'">
+				<xsl:call-template name="label" />
+				<xsl:element name="select">
+					<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+					<xsl:attribute name="id"><xsl:value-of select="@name"/></xsl:attribute>
+					<xsl:call-template name="javacheck" />
+					<phptag>
+						makeSelectLang();
+					</phptag>
+				</xsl:element>
+				<xsl:call-template name="error" />
+				<br />
+			</xsl:when>
+
 			<!-- champ special -->
 			<xsl:when test="@edittype='special'">
 				<phptag>

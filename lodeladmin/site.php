@@ -49,6 +49,9 @@ require_once 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 require_once 'func.php';
+// pas de paramètres ? rien à faire ici. redirige vers la liste des sites
+if(empty($_GET) && empty($_POST))
+	header('Location:index.php?do=list&lo=sites');
 
 $context['installoption'] = intval($installoption);
 $context['version']       = '0.8';
@@ -62,8 +65,8 @@ $website->set('singledatabase',$singledatabase);
 $website->set('version',$context['version']);
 $website->set('downloadsiteconfig',$downloadsiteconfig);
 
-if($maintenance)
-	$website->maintenance();
+if($maintenance > 0)
+	$website->maintenance($maintenance);
 
 // suppression et restauration
 if ($id>0 && ($delete || $restore)) {

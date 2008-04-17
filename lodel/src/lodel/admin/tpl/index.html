@@ -39,6 +39,7 @@
 		<h4>[@ADMIN.CONFIGURATION]</h4>
 		<ul>
 			<li><a href="index.php?do=list&amp;lo=users">[@ADMIN.ADMIN_USER_AND_RIGHTS]</a></li>
+			<li><a href="index.php?do=list&amp;lo=restricted_users">[@ADMIN.RESTRICTED_USERS]</a></li>
 			<li>[@ADMIN.OPTIONS] : <select onchange="select_url(this)" class="barInfo"><option>--</option>
 				<LET VAR="ID">0</LET>
 				<LOOP NAME="options" TABLE="optiongroups" WHERE="idparent='[#ID]' AND status gt 0" ORDER="rank">

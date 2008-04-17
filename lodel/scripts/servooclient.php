@@ -192,7 +192,7 @@ class ServOO_Client {
    * @param string $outfilename output filename
    * @param string $informat MIME format or filename extension of the input file
    * @param string $outformat MIME format, filename extension, or especial type of the output file
-   * @param string $outdir directory where files in the archive are extracted.
+   * @param string $tmpdir directory where files in the archive are extracted.
    * @param array $options options to send to ServOO. Available options depend on outformat.
    * @param array $zipoptions options to pass to PclZip lib. Two additional options
    * are provided: denyextensions and allowextensions to select the files to extract. These
@@ -203,15 +203,22 @@ class ServOO_Client {
    * @return array list of file fullname. False on error message if any error
    */
 
-  function convertUnpack($infilename,$informat,$outformat,$outdir,
+  function convertUnpack($infilename,$informat,$outformat, $outdir,
 			 $options=array(),
 			 $zipoptions=array()) {
 
-    $outfilename=tempnam($outdir,"servooclient");
+    global $tmpoutdir;
+    if(empty($tmpoutdir) && !empty($outdir)) {
+	$tmpoutdir = $outdir;
+    }
+    $outfilename=tempnam($tmpoutdir,"servooclient");
     $ret=$this->convertToFile($infilename,$informat,
 			      $outformat,$outfilename,
 			      $options);
-    if (!$ret) return $ret;
+    if (!$ret) {
+	@unlink($outfilename);
+	return $ret;
+    }
     require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
@@ -226,7 +233,7 @@ class ServOO_Client {
     }
     
 
-    $ret=$zip->extract(PCLZIP_OPT_PATH,$outdir,
+    $ret=$zip->extract(PCLZIP_OPT_PATH,$tmpoutdir,
 		       PCLZIP_OPT_REMOVE_ALL_PATH,
 		       PCLZIP_CB_PRE_EXTRACT,"_convertUnpack_Pre_Extract_CB");
 
@@ -276,11 +283,19 @@ class ServOO_Client {
 			  $user_vars="") 
   {
 
-    $outfilename=tempnam($outdir,"servooclient");
+    global $tmpoutdir;
+    if(empty($tmpoutdir) && !empty($outdir)) {
+	$tmpoutdir = $outdir;
+    }
+
+    $outfilename=tempnam($tmpoutdir,"servooclient");
     $ret=$this->convertToFile($infilename,$informat,
 			      $outformat,$outfilename,
 			      $options);
-    if (!$ret) return $ret;
+    if (!$ret) {
+	@unlink($outfilename);
+	return $ret;
+    }
     require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
@@ -288,6 +303,7 @@ class ServOO_Client {
     // 
 
     if (($list = $zip->listContent()) == 0) {
+	@unlink($outfilename);
       $this->error_message=$zip->errorInfo(true);
       return false;
     }
@@ -302,6 +318,7 @@ class ServOO_Client {
 	$ret=$zip->extract(PCLZIP_OPT_BY_INDEX, array ($entry['index']),
 			   PCLZIP_OPT_EXTRACT_AS_STRING);
 	if (!$ret) {
+	  @unlink($outfilename);
 	  $this->error_message=$zip->errorInfo(true);
 	  return false;
 	}
@@ -348,6 +365,7 @@ class ServOO_Client {
       $ret=$zip->extract(PCLZIP_OPT_REMOVE_ALL_PATH,
 			 PCLZIP_CB_PRE_EXTRACT,"_convertToXML_Pre_Extract_CB");
       if ($ret==0) {
+	@unlink($outfilename);
 	$this->error_message=$zip->errorInfo(true);
 	return false;
       }

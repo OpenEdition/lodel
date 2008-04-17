@@ -220,6 +220,7 @@ class EntryTypesLogic extends Logic
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
+									'lang' => array('select_lang', '+'),
 									'icon' => array('image', ''),
 									'gui_user_complexity' => array('select', '+'),
 									'edition' => array('select', ''),

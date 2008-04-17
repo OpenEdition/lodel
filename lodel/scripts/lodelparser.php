@@ -480,9 +480,9 @@ class LodelParser extends Parser
 			<input type="hidden" name="lo" value="texts" />
 			<fieldset id="translationforms">
 				<legend>'.getlodeltextcontents('TRANSLATIONS_FOR_THIS_PAGE','lodeladmin') .'</legend>
-			<input type="submit" class="button" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			<input type="submit" class="button" value="<?php echo getlodeltextcontents(\'update\', \'common\');?>" />
 			<dl id="translation"><a id="top" href="#bottom"> --bottom -- </a>'.join("", $this->translationform).'<a id="bottom" href="#top"> --top-- </a></dl>
-			<input type="submit" class="button" value="<?=getlodeltextcontents(\'update\', \'common\');?>" />
+			<input type="submit" class="button" value="<?php echo getlodeltextcontents(\'update\', \'common\');?>" />
 			</fieldset>
 			</form>
 			<?php } ?>';
@@ -510,10 +510,22 @@ class LodelParser extends Parser
 			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert end of the desk
 	?'.'></div><'.'?php  } ?'.'>';
 
-			$bodystarttag = strpos($text, "<body");
+
+			/* modifs par Pierre-Alain Mignot */
+			$bodystarttag = strpos($text, "<body>");
 			if ($bodystarttag !== false) {
-				$bodyendtag = strpos($text, ">", $bodystarttag);
-				$text = substr_replace($text, $deskbegin, $bodyendtag +1, 0);
+				// pas d'attributs dans le body, pas de pbs
+				$bodyendtag = $bodystarttag + 6;
+			} else {
+				// on a des attributs dans la balise body.
+				// si c'est du LS ca va faire planter le desk
+				// on traite ce cas séparément
+				preg_match("`<body(.*)[^?]>`", $text, $res);
+				$bodystarttag = strpos($text, "<body");
+				$bodyendtag = $bodystarttag + strlen($res[0]);
+			}
+			if($bodyendtag) {
+				$text = substr_replace($text, $deskbegin, $bodyendtag, 0);
 				unset($desk);
 				$len = strlen($text) - 30; // optimise a little bit the search
 				if ($len < 0)
@@ -523,8 +535,9 @@ class LodelParser extends Parser
 					$endbody = strpos($text, "</body", 0);
 				$text = substr_replace($text, $deskend, $endbody, 0);
 			}
-		}
-	}
+
+ 		}
+ 	}
 
 	#function prefixTableNameRef(&$table) { 
 	#  $table2=$this->prefixTableName($table); $table=$table2; // necessaire de passer par table2... sinon ca crash PHP

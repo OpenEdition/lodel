@@ -64,26 +64,38 @@
 </ul>
 
 <div id="entries">
-<LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64">
-	<BEFORE><ul class="listEntities"></BEFORE>
-	<DO>
-		<IF COND="[#COUNT] % 2">
-			<li class="line1">
-		<ELSE/>
-			<li class="line2">
-		</IF>
-		<div class="entityIcons">
-		<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-		<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="persontypes">
-		</div>
-		<div class="document">
-		<span class="titre_document">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span></span>
-		 <span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="G" />)</span>
-		</div>
-		<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
-	</DO>
-	<AFTER></ul></AFTER>
-</LOOP>
+	<div id="alphabet">
+		<FUNC NAME="ALPHABETSPECIFIC" TABLE="persons" FIELD="sortkey">
+	</div>	
+	<LET VAR="table">persons</LET>
+	<LET VAR="field">sortkey</LET>
+	<LOOP NAME="alphabetSpec">
+		<LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64 AND upper(substring(sortkey,1,1)) = '[#LETTRE]'">
+			<BEFORE>
+				<h2 id="[#LETTRE]">
+					<a href="#alphabet">[#LETTRE]</a>
+				</h2>
+				<ul class="listEntities">
+			</BEFORE>
+			<DO>
+				<IF COND="[#COUNT] % 2">
+					<li class="line1">
+				<ELSE/>
+					<li class="line2">
+				</IF>
+				<div class="entityIcons">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="persontypes">
+				</div>
+				<div class="document">
+				<span class="titre_document">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span></span>
+				<span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="G" />)</span>
+				</div>
+				<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
+			</DO>
+			<AFTER></ul></AFTER>
+		</LOOP>
+	</LOOP>
 </div>
 
 <MACRO NAME="OK_TOINDEX_ADMIN">

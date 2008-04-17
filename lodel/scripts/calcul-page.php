@@ -43,7 +43,7 @@
  * @package lodel
  */
 
-#require_once 'func.php';
+require_once 'cachefunc.php';
 
 /**
  * Fonction de calcul d'une page
@@ -59,7 +59,6 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 {
 	global $home, $format;
 	if ($_REQUEST['clearcache'])	{
-		include_once 'cachefunc.php';
 		clearcache();
 		$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	}
@@ -70,6 +69,14 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	$format = ''; // en cas de nouvel appel a calcul_page
 
 	$template_cache = $cache_rep. "CACHE/tpl_$base.php";
+	
+	if(!myfileexists($template_cache)) { // existe pas ? on le génère
+		if (!defined("TOINCLUDE")) {
+			define("TOINCLUDE", $home);
+		}
+		require_once 'lodelparser.php';
+		parse($base_rep. $base. '.html', "CACHE/tpl_$base.php");
+	}
 	$base = $base_rep. $base. '.html';
 	if (!file_exists($base)) {
 		die("<code><strong>Error!</strong>  The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist.</code>");
@@ -89,16 +96,14 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 		$parser->parse($base, $template_cache);
 
 	}
-	
-	#include 'connect.php';
+
 	// execute le template php
 	include_once 'textfunc.php';
 		
-	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'])	{
+	if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor'] && myfileexists($template_cache) && is_readable($template_cache))	{
 		ob_start();
 		require $template_cache;
-		$content = ob_get_contents();
-		ob_end_clean();
+		$content = ob_get_clean();
 		require_once 'showhtml.php';
 		echo _indent(show_html($content));
 		return;
@@ -106,24 +111,19 @@ function calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	include_once 'loops.php';
 
 	if ($context['charset'] == 'utf-8')	{ // utf-8 c'est le charset natif, donc on sort directement la chaine.
-		#$start = microtime();
 		ob_start();
-		if(is_readable($template_cache))
+		if(myfileexists($template_cache) && is_readable($template_cache))
 			require $template_cache;
-		$contents = ob_get_contents();
-		ob_end_clean();
+		$contents = ob_get_clean();
 		echo _indent($contents);
-		#$end = microtime();
-		#echo "temps : ". ($end - $start);
 	}
 	else
 	{
 		// isolatin est l'autre charset par defaut
 		ob_start();
-		if(is_readable($template_cache))
+		if(myfileexists($template_cache) && is_readable($template_cache))
 			require $template_cache;
-		$contents = ob_get_contents();
-		ob_end_clean();
+		$contents = ob_get_clean();
 		echo _indent(utf8_decode($contents));
 	}
 		
@@ -158,10 +158,10 @@ function mymysql_error($query, $tablename = '')
 		if ($tablename) {
 			$tablename = "LOOP: $tablename ";
 		}
-		die("</body>".$tablename."QUERY: ". htmlentities($query)."<br><br>".mysql_error());
+		die("</body>".$tablename."QUERY: ". htmlentities($query)."<br /><br />".mysql_error());
 	}	else {
 		if ($GLOBALS['contactbug']) {
-			@mail($GLOBALS['contactbug'], "[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br>". htmlentities($query). "<br /><br />".mysql_error());
+			@mail($GLOBALS['contactbug'], "[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br />". htmlentities($query). "<br /><br />".mysql_error());
 		}
 		die("<code><strong>Error!</strong> An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>");
 	}

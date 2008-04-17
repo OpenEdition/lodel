@@ -1,0 +1,100 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_MANAGE_RESTRICTEDUSERS]</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<ul id="actionsOnEntitiesPath">
+<li><span class="intit">[@ADMIN.TITLE_MANAGE_RESTRICTEDUSERS]</span></li>
+<li>
+	<ul class="actions">
+		<li class="isolated">
+		<IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('write')]">
+			<a href="index.php?do=view&amp;lo=restricted_users">[@ADMIN.ADD_RESTRICTEDUSER]</a>
+		<ELSE />
+			<span class="inactif">[@ADMIN.ADD_RESTRICTEDUSER]</span>
+		</IF>
+		</li>
+	</ul>
+</li>
+</ul>
+	
+<br /><br />
+<table class="statistics users">
+	<tr>
+		<th class="status">[@COMMON.LOGIN]</th>
+		<th class="status">[@ADMIN.RESTRICTEDUSER_EXPIRATIONDATE]</th>
+		<th class="status">[@ADMIN.NAME_AND_SURNAME]</th>
+		<th class="status">[@COMMON.EMAIL]</th>
+		<th class="status">[@ADMIN.SESSIONS]</th>
+		<td class="empty">&nbsp;</td>
+	</tr>
+	<LOOP NAME="restricted_users" TABLE="restricted_users" ORDER="rank,username" WHERE="status gt 0">
+		<DO>
+			<MACRO NAME="TR_LIST">
+			<td><strong>[(#USERNAME|nbsp)]</strong></td>
+			<td>[#EXPIRATION|nbsp|humandate]</td>
+			<td>[(#LASTNAME|nbsp)] [(#FIRSTNAME|nbsp)]</td>
+			<td>[(#EMAIL|nbsp)]</td>
+			<td>
+				<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'" LIMIT="0,1" SELECT="1"> 
+				<DOFIRST>
+				<div class="texte_info">
+				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
+				<a href="index.php?do=deletesession&amp;lo=restricted_users&amp;id=[#ID]" class="action">[@ADMIN.DELETE_SESSION_LOG]</a>
+				<ELSE />
+				<span class="inactif">[@ADMIN.DELETE_SESSION_LOG]</span>
+				</IF>
+				</div>
+				
+				</DOFIRST>
+				<ALTERNATIVE>
+					<div class="texte_info">
+					[@ADMIN.NO_SAVED_SESSION]
+					</div>					
+				</ALTERNATIVE>
+		        </LOOP>
+					</td>	
+				<td class="actions">
+					<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+					<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				</td>
+			</tr>
+		</DO>
+		<ALTERNATIVE>
+			<tr><td colspan="4"><span class="texte_info">[@ADMIN.NO_USERS]</span></td></tr>
+		</ALTERNATIVE>
+	</LOOP>
+</table>
+
+
+<MACRO NAME="OK_TOINDEX_ADMIN">
+
+<MACRO NAME="CLOSE_HTML">

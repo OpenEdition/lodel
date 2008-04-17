@@ -67,9 +67,15 @@ $GLOBALS['g_entities_fields'] = array(
 					'DC.Rights',
 					'DC.Creator',
 					'DCTERMS.accessRights',
+					'DCTERMS.issued',
+					'DCTERMS.available',
 					'DCTERMS.bibliographicCitation',
+					'DCTERMS.bibliographicCitation.volume',
+					'DCTERMS.bibliographicCitation.issue',
+					'DCTERMS.extent',
 					'DCTERMS.isPartOf',
 					'DCTERMS.alternative',
+					'DCTERMS.abstract',
 					'generic_icon');
 //Champs génériques pour les entrées d'index
 $GLOBALS['g_entries_fields'] = array('Index key');

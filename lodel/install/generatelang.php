@@ -78,7 +78,7 @@ foreach($files as $file) {
 	preg_match_all("/\[@(\w+\.\w+)(|sprintf\(([^\]]+)\))?\]/", $text, $results, PREG_PATTERN_ORDER);
 	foreach($results[1] as $tag) {
 		list($group,$name)=explode(".", strtolower($tag));
-		getlodeltext($name, $group, &$id, &$contents, &$status, $lang = '--');
+		getlodeltext($name, $group, $id, $contents, $status, $lang = '--');
 	}
 }
 

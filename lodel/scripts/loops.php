@@ -682,12 +682,61 @@ function childCanBeInThisType($type,$id)
 	//pour chaque entité on teste si elle peut être contenu dans $type
 	foreach($entities as $entity) {
 		$query = lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='".$entity['idtype']."' AND identitytype2='".$type."'");
-		#echo "query=$query";
 		$condition = $db->getOne($query);
 		if(!$condition) {
 			return false;
 		}
 	}
 	return true;
+}
+
+/**
+ * Boucle Lodelscript qui affiche l'alphabet
+ *
+ * @param array $context le contexte
+ * @param string $funcname le nom de la fonction
+ */
+function loop_alphabet($context, $funcname)
+{
+	for ($l = 'A'; $l != 'AA'; $l++) {
+		$context['lettre'] = $l;
+		call_user_func("code_do_$funcname", $context);
+	}
+}
+
+/**
+ * Boucle Lodelscript qui affiche la première lettre (distincte) de tous les tuples d'un champ
+ *
+ * @param array $context le contexte
+ * @param string $funcname le nom de la fonction
+ */
+function loop_alphabetSpec($context, $funcname)
+{
+	global $db;
+	if(empty($context['table']) || empty($context['field']))
+		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
+	$lettres = $db->getArray(lq("SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] ORDER BY l"));
+
+	foreach ($lettres as &$lettre) {
+		$lettre['l'] = strtr(utf8_decode($lettre['l']), "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûýýþÿ", 
+								"AAAAAAACEEEEIIIIDNOOOOOOUUUUYbsaaaaaaaceeeeiiiidnoooooouuuyyby"
+								);
+		if(preg_match("/[A-Z]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
+	foreach ($lettres as $lettre) {
+		if(preg_match("/[0-9]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
+	foreach ($lettres as $lettre) {
+		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
+			$context['lettre'] = $lettre['l'];
+			call_user_func("code_do_$funcname", $context);
+		}
+	}
 }
 ?>

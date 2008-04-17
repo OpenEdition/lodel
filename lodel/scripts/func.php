@@ -36,6 +36,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -66,7 +67,7 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&amp;nbsp;"),htmlspecialchars(stripslashes($val)));
+	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
       }
     }
   }
@@ -110,6 +111,8 @@ function clean_request_variable(&$var)
 		if(preg_match("`&#160;`me", $var))
 			$var = str_replace("&#160;", "&nbsp;", $var);
 		$var = $filter->process(trim($var));
+		// le process nettoie un peu trop : remplace les br fermés par des br ouverts : document plus valide..
+		$var = str_replace("<br>", "<br />", $var);
 		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);
   	}
 }
@@ -1038,6 +1041,7 @@ function _indent($source, $indenter = '  ')
 function fix_newlines_for_clean_html($fixthistext)
 {
 	$fixthistext_array = explode("\n", $fixthistext);
+
 	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
 
  		// Exception for fckeditor
@@ -1049,7 +1053,7 @@ function fix_newlines_for_clean_html($fixthistext)
 		//Makes sure empty lines are ignores
 		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
 		{
-			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
+			$fixedtextvalue = preg_replace("/[^[em|sup|sub|span]]>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
 			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
 		}
 		
@@ -1077,6 +1081,7 @@ function _indent_xhtml ($uncleanhtml, $indent = "  ")
 	//$indent = "    ";
 	//Uses previous function to seperate tags
 	if ($fixed_uncleanhtml = fix_newlines_for_clean_html($uncleanhtml)) {
+
 		$uncleanhtml_array = explode("\n", $fixed_uncleanhtml);
 	
 		//Sets no indentation
@@ -1314,6 +1319,38 @@ function rewriteFilename($string) {
      	
      }
      return $string;
+}
+
+/**
+ * Fonction permettant d'envoyer correctement un mail en html (utf8)
+ *
+ * @author Pierre-Alain Mignot
+ * @param string $to destinataire
+ * @param string $body corps du message
+ * @param string $subject sujet du mail
+ * @param string $fromaddress adresse de l'expéditeur
+ * @param string $fromname nom de l'expediteur
+ * @return boolean
+ */
+function send_mail($to, $body, $subject, $fromaddress, $fromname)
+{
+	require_once 'Mail/Mail.php';
+	require_once 'Mail/mime.php';
+	$message = new Mail_mime();
+	$message->setHTMLBody($body);
+	$aParam = array(
+		"text_charset" => "UTF-8",
+		"html_charset" => "UTF-8",
+		"head_charset" => "UTF-8"
+	);
+	$body = $message->get($aParam);
+	if(mb_detect_encoding($subject, "auto", TRUE) != "UTF-8") {	
+		$subject = mb_convert_encoding($subject, "UTF-8");
+	}
+	$extraheaders = array("From"=>$fromname."<".$fromaddress.">", "Subject"=>$subject);
+	$headers = $message->headers($extraheaders);
+	$mail = Mail::factory('mail');
+	return $mail->send($to, $headers, $body);
 }
 
 // valeur de retour identifier ce script

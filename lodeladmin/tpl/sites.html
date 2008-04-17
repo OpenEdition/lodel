@@ -4,10 +4,10 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -35,9 +35,9 @@
 	<li><span class="intit">[@ADMIN.TITLE_MANAGE_SITE]</span></li>
 	<ul class="actions">
 		<li class="isolated">
-			<a href="site.php">[@LODELADMIN.ADD_WEBSITE]</a> | 
-<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64" LIMIT="0,1">
-	<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLMAINTENANCE]</a>
+			<a href="site.php?new=1">[@LODELADMIN.ADD_WEBSITE]</a> | 
+<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64 AND status NE -65 AND status NE -1" LIMIT="0,1">
+	<a href="site.php?id=0&amp;maintenance=2">[@COMMON.GOALLMAINTENANCE]</a>
 	<ALTERNATIVE>
 		<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLONLINE]</a>
 	</ALTERNATIVE>		
@@ -73,7 +73,7 @@
 	<a href="index.php?lo=sites&amp;do=lock&amp;id=[#ID]">[@LODELADMIN.LOCK]</a> |
 </IF>
 
-<IF COND="[#STATUS] EQ -64">
+<IF COND="[#STATUS] EQ -64 OR [#STATUS] EQ -65">
 	<a href="site.php?maintenance=0&amp;id=[#ID]">[@COMMON.GOONLINE]</a>
 <ELSE/>
 	<a href="site.php?maintenance=1&amp;id=[#ID]">[@COMMON.GOMAINTENANCE]</a>
@@ -98,7 +98,7 @@
 <MACRO NAME="TR_LIST">
 <th><a href="[#URL]">[(#TITLE|nbsp)]</a></th>
 <td class="actions">
-<IF COND="[#STATUS] EQ -64">
+<IF COND="[#STATUS] EQ -64 OR [#STATUS] EQ -65">
 	<a href="site.php?id=[#ID]&amp;maintenance=1">[@COMMON.GOONLINE]</a>
 <ELSE/>
 	<a href="site.php?id=[#ID]&amp;restore=1">[@COMMON.RECOVER]</a> |

@@ -50,6 +50,7 @@
  */
 
 // les niveaux de droits
+define("LEVEL_RESTRICTEDUSER", 5);
 define("LEVEL_VISITOR", 10);
 define("LEVEL_REDACTOR", 20);
 define("LEVEL_EDITOR", 30);
@@ -71,7 +72,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  *
  * Cette fonction gère l'authentification suivant le niveau de l'utilisateur.
  * Le niveau de l'utilsateur est un entier parmis :
- * LEVEL_VISITOR : 10, LEVEL_REDACTOR : 20, LEVEL_EDITOR : 30, LEVEL_ADMIN : 40,
+ * LEVEL_RESTRICTEDUSER : 5, LEVEL_VISITOR : 10, LEVEL_REDACTOR : 20, LEVEL_EDITOR : 30, LEVEL_ADMIN : 40,
  * LEVEL_ADMINLODEL : 128.
  *
  * @param integer $level Le niveau de l'utilisateur. Par défaut 0
@@ -108,12 +109,16 @@ function authenticate($level = 0, $mode = "")
 			$time = time();
 			if ($row['expire'] < $time || $row['expire2'] < $time) {
 				$login = "";
-				if (file_exists('login.php'))	{
-					$login = 'login.php';
-				}	elseif (file_exists('lodel/edition/login.php'))	{
-					$login = 'lodel/edition/login.php';
-				}	else {
-					break;
+				if($level == LEVEL_RESTRICTEDUSER) {
+					$login = 'index.'.$GLOBALS['extensionscripts'];
+				} else {
+					if (file_exists('login.php'))	{
+						$login = 'login.php';
+					}	elseif (file_exists('lodel/edition/login.php'))	{
+						$login = 'lodel/edition/login.php';
+					}	else {
+						break;
+					}
 				}
 				header("location: $login?error_timeout=1&". $retour);
 				exit;
@@ -122,15 +127,27 @@ function authenticate($level = 0, $mode = "")
 			// passe les variables en global
 			$lodeluser = unserialize($row['context']);
 			if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
-				header("location: login.php?error_privilege=1&". $retour);
+				if($level == LEVEL_RESTRICTEDUSER) {
+					$login = 'index.'.$GLOBALS['extensionscripts'];
+				} else {
+					$login = 'login.php';
+				}
+				header("location: $login?error_privilege=1&". $retour);
 				exit;
 			}
 	
 			// verifie encore une fois au cas ou...
-			if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
-				break;
+			if($level == LEVEL_RESTRICTEDUSER) {
+				if ($lodeluser['rights'] < LEVEL_RESTRICTEDUSER && !$site) {
+					break;
+				}
+			} else {
+				if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
+					break;
+				}
 			}
-	
+			
+			$lodeluser['restricted_user'] = $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER;
 			$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
 			$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
 			$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
@@ -167,6 +184,10 @@ function authenticate($level = 0, $mode = "")
 		elseif ($mode == 'HTTP') {
 			require_once 'loginHTTP.php';
 			return;
+		}
+		elseif($level == LEVEL_RESTRICTEDUSER) {
+			header("Location: index.".$GLOBALS['extensionscripts']);
+			exit;
 		}
 		else {
 			header("location: login.php?". $retour);
@@ -249,19 +270,17 @@ function getacceptedcharset($charset)
 /**
  * Le site est-il en maintenance ?
  *
- * Vérifie le status d'un site. Si status == -64 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
+ * Vérifie le status d'un site. Si status == -64 ou -65 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
  * administration générale de Lodel alors on redirige vers la page maintenance.html
  * 
  */
 function maintenance()
 {
-	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db;
+	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db, $site;
 	$name = addslashes($_COOKIE[$sessionname]);
 	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
 	$reg = "`/lodeladmin`";
-	$regex = "`".$urlroot."([^/]*)/`";
-	preg_match($regex, $_SERVER['SCRIPT_NAME'] , $result);
-	$query = "SELECT status FROM ".$tableprefix."sites where path = '/".$result[1]."' LIMIT 1";
+	$query = "SELECT status FROM ".$tableprefix."sites where name = '".$site."' LIMIT 1";
 	if ($name) {
 		require_once 'connect.php';
 		$db->selectDB($database);
@@ -269,11 +288,20 @@ function maintenance()
 		usecurrentdb();
 		// verifie que la session n'est pas expiree
 		$time = time();
+
 		if (($row['expire'] < $time || $row['expire2'] < $time) && preg_match($reg, $_SERVER['SCRIPT_NAME'])) {		
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
-			header("Location: ".$path);
+			$db->selectDB($database);
+			$row = $db->getRow($query);
+			usecurrentdb();
+			if($row['status'] == -64 || $row['status'] == -65) {
+				if($lodeluser['rights'] <= LEVEL_RESTRICTEDUSER ) {
+					header("Location: $path?error_timeout=1");
+				}
+				$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
+				header("Location: ".$path);
+			}
 		}
 
 		// passe les variables en global
@@ -283,7 +311,7 @@ function maintenance()
 				$db->selectDB($database);
 				$row = $db->getRow($query);
 				usecurrentdb();
-				if($row['status'] == -64) {
+				if($row['status'] == -64 || $row['status'] == -65) {
 					header('Location: '.$path);
 				}
 			}
@@ -294,7 +322,7 @@ function maintenance()
 			$db->selectDB($database);
 			$row = $db->getRow($query);
 			usecurrentdb();
-			if($row['status'] == -64) {
+			if($row['status'] == -64 || $row['status'] == -65) {
 				header('Location: '.$path);
 			}
 		}
@@ -351,11 +379,13 @@ if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])
 else {
 	$GLOBALS['lang'] = $_GET['lang'] ? $_GET['lang'] : $_POST['lang'];
 	if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['lang'])) {
-		$GLOBALS['lang'] = '';
+		// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
+		$GLOBALS['lang'] = empty($context['options']['metadonneessite']['langueprincipale']) ? '' : $context['options']['metadonneessite']['langueprincipale'];
 	}
 	else {	setcookie('language', $GLOBALS['lang']); }
 }
-
+// tableaux des langues disponibles
+$context['defaultlang'] = array(0=>'FR', 1=>'EN', 2=>'ES', 3=>'DE', 4=>'IT', 5=>'PT');
 // accès à la langue dans les templates
 $context['sitelang'] = $GLOBALS['lang'];
 //sommes nous en maintenance ?

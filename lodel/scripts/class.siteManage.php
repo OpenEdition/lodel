@@ -358,7 +358,7 @@ class siteManage {
 			}
 			if (is_dir(LODELROOT.$file) && preg_match($this->lodelhomere,$file) && is_dir(LODELROOT. $file. '/src')) {
 				if (!(@include(LODELROOT. "$file/src/siteconfig.php"))) {
-					echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br>";
+					echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br />";
 				} else {
 					$this->versions[$file]=$this->version ? $this->version : "devel";
 				}
@@ -523,7 +523,7 @@ class siteManage {
 			symlink($src, $dest);
 		}
 		if (!file_exists($dest)) {
-			echo ("Warning: impossible d'acceder au fichier $src via le lien symbolique $dest<br>");
+			echo ("Warning: impossible d'acceder au fichier $src via le lien symbolique $dest<br />");
 		}
 	}
 
@@ -954,29 +954,49 @@ class siteManage {
 			header("location: $go");
 			exit;
 		} else {
-			echo "<h2>Warnings seem to appear on this page. Since Lodel may be correctly  installed anyway, you may go on by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
+			echo "<h2>Warnings seem to appear on this page. Since Lodel may be correctly installed anyway, you may go on by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
 			exit;
 		}
 		
 		return true;
 	}
 
-	function maintenance()
+	/**
+	 * Maintenance des sites
+	 *
+	 * Cette fonction gère la mise en maintenance des sites
+	 *
+	 * @param int type application de la maintenance : 1 = tous en ligne, 2 = tous en maintenance
+	 * @author Pierre-Alain Mignot
+	 */
+	function maintenance($type)
 	{
  		if($this->id > 0) {
 			$res = mysql_query(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere.""));
 			$row = mysql_fetch_row($res);
-			$status = $row[0] == -64 ? 1 : -64;
+			if($row[0] == 32) {
+				$status = -65;
+			} elseif($row[0] == -65) {
+				$status = 32;
+			} else {
+				$status = $row[0] == -64 ? 1 : -64;
+			}
 			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status." WHERE ".$this->critere.""));
 		}
 		elseif($this->id == 0) {
-			$res = mysql_query(lq("SELECT status FROM #_TP_sites"));
-			$row = mysql_fetch_row($res);
-			$status = $row[0] == -64 ? 1 : -64;
-			mysql_query(lq("UPDATE #_TP_sites SET status = ".$status));
+			if(intval($type) === 1) {
+				mysql_query(lq("UPDATE #_TP_sites SET status = 1 WHERE status = -64"));
+				mysql_query(lq("UPDATE #_TP_sites SET status = 32 WHERE status = -65"));
+			} elseif(intval($type) === 2) {
+				mysql_query(lq("UPDATE #_TP_sites SET status = -64 WHERE status = 1"));
+				mysql_query(lq("UPDATE #_TP_sites SET status = -65 WHERE status = 32"));
+			}
 		}
 		if (!headers_sent()) {
 			header("location: index.php?do=list&lo=sites&clearcache=oui");
+			exit;
+		} else {
+			echo "<h2>Warnings seem to appear on this page. You may go on by following <a href=\"index.php?do=list&lo=sites&clearcache=oui\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
 			exit;
 		}
 	}

@@ -83,7 +83,7 @@ function xml_parse_into_struct_ns(& $text, & $values, & $index)
 	$GLOBALS['into_struct_ns_values'] = array ();
 
 	if (!xml_parse($parser, $text)) {
-		echo sprintf("<br>XML error: %s at line %d <br><br>", xml_error_string(xml_get_error_code($parser)), xml_get_current_line_number($parser));
+		echo sprintf("<br />XML error: %s at line %d <br /><br />", xml_error_string(xml_get_error_code($parser)), xml_get_current_line_number($parser));
 		global $home;
 		include $home."checkxml.php";
 		checkstring($text);

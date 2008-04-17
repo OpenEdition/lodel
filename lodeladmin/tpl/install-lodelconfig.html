@@ -78,7 +78,7 @@ include("tpl/install-openhtml.html");
 </li>
 
 <li>
-<p>[@INSTALL.COPY_FILE_YOURSELF] lodeladmin/<?=$lodelconfig ?> [@INSTALL.TO_LODEL_ROOT_AND_RENAME_IT_LODELCONFIG]</p>
+<p>[@INSTALL.COPY_FILE_YOURSELF] lodeladmin/<?php echo $lodelconfig; ?> [@INSTALL.TO_LODEL_ROOT_AND_RENAME_IT_LODELCONFIG]</p>
 </li>
 </ol>
 
@@ -95,4 +95,4 @@ include("tpl/install-openhtml.html");
 
 <p>
 
-<? include("tpl/install-closehtml.html"); ?>
+<?php include("tpl/install-closehtml.html"); ?>

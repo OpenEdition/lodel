@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * Fichier utilitaire pour gérer la validation des champs
  *
@@ -75,6 +75,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$text = $default;
 		}
 		return true; // always true
+		break;
+	case 'select_lang':
+		if (!preg_match("/^[a-zA-Z]{2}$/", $text)) {
+			return $type;
+		}
 		break;
 	case 'type' :
 		if ($text && !preg_match("/^[a-zA-Z0-9_][a-zA-Z0-9_ -]*$/", $text)) {
@@ -162,7 +167,6 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 		}
 		break;
-//fre
 	case 'date' :
 		require_once 'date.php';
 		if ($text) {
@@ -299,6 +303,14 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!$name) {
 			trigger_error("ERROR: \$name is not set in validfunc.php", E_USER_ERROR);
 		}
+		global $authorizedFiles; // white list dispo dans le lodelconfig.php
+		// on récupère l'extension du fichier	
+   		$extension = explode(".", $_FILES['data']['name'][$name][$text['radio']]);
+		$extension = ".".$extension[count($extension)-1];
+		// on évite la possibilité d'uploader des fichiers non désirés
+		if($text['radio'] == 'upload' && !in_array($extension, $authorizedFiles)) {
+			return $text['radio'];
+		}
 		switch ($text['radio']) {
 		case 'upload' :
 			// let's upload
@@ -378,13 +390,13 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 					die("ERROR: invalid filename of type $type");
 				}
 			} else {
-				if (!preg_match("/^docannexe\/(image|file)\/[^\.\/]+\/[^\/]+$/", $text)) {
+				if (!preg_match("/^docannexe\/(image|file|fichier)\/[^\.\/]+\/[^\/]+$/", $text)) {
 					die("ERROR: invalid filename of type $type");
 				}
 			}
 			if ($filetodelete) {
 				unlink(SITEROOT.$text);
-				$text = "";
+				$text = "deleted";
 				unset ($filetodelete);
 			}
 			return true;

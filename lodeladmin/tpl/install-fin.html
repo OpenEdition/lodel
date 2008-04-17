@@ -41,11 +41,11 @@ include("tpl/install-openhtml.html");
 <h4>[@INSTALL.CONGRATULATIONS_LODEL_INSTALLATION_COMPLETED] !</h4>
 <p>[@INSTALL.NOW_CREATE_WEBSITE_SO_CLICK_TO_CONTINUE]</p>
 
-<form method="post" action="site.php">
+<form method="post" action="site.php?new=1">
 <fieldset class="install">
 <input type="submit"  class="button" value="[@INSTALL.CONTINUE]" />
 <input class="button" type="button" value="[@INSTALL.CANCEL]" onClick="javascript:window.location='index.php';" />
 </fieldset>
 </form>
 
-<? include("tpl/install-closehtml.html"); ?>
+<?php include("tpl/install-closehtml.html"); ?>

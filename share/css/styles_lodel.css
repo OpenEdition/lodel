@@ -441,6 +441,17 @@ div.advancedFunc #addEntity select{
 	margin-top: 4em;
 }
 
+#entries #alphabet a{
+	font-weight: bold;
+        padding:  .2ex .5em;
+        margin: 0 .5em 0 0;
+        background: #9D9D9D;
+        color: #fff;
+}
+
+#entries #alphabet a:hover{
+        color: #000;
+}
 
 
 ul.listEntities, ul.listEntities li{
@@ -1065,22 +1076,23 @@ div.close{
 	font-size:12px;
 }
 
-#sitesLodel tr {
+#sitesLodel tr, #sitesLodel td {
 	border-bottom:1px solid #DADBDC;
 }
 
-#sitesLodel tr.grey {
+#sitesLodel .grey {
 	background-color:#DDDDDD;
 }
 
 #sitesLodel td {
-	padding:1em 0;
+	padding:1em;
 	
 }
 
 #sitesLodel td.site {
 	padding-left:36px;
-	background:url(../images/lien.gif) no-repeat 0 50%;
+	background:  url(../images/lien.gif) no-repeat .5em 50%;
+	background-color: transparent;
 	text-align:left;
 }
 

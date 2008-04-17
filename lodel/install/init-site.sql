@@ -362,6 +362,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	sort			VARCHAR(64) NOT NULL DEFAULT 'rank' NOT NULL, # 
 
 	upd		TIMESTAMP,
+	lang		VARCHAR(10) NOT NULL DEFAULT 'fr',
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
@@ -528,3 +529,21 @@ CREATE TABLE IF NOT EXISTS #_TP_oailogs (
   denied tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id)
 ) TYPE=MyISAM AUTO_INCREMENT=566  _CHARSET_;
+
+CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
+  id int(10) unsigned NOT NULL auto_increment,
+  username varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  passwd varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  lastname varchar(255) default NULL,
+  firstname varchar(255) default NULL,
+  email varchar(255) default NULL,
+  lang char(5) NOT NULL,
+  userrights tinyint(3) unsigned NOT NULL default '5',
+  rank int(10) unsigned NOT NULL default '0',
+  status tinyint(4) NOT NULL default '1',
+  expiration date default NULL,
+  upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`id`), 
+  UNIQUE KEY `username` (`username`),
+  KEY `index_username` (`username`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
