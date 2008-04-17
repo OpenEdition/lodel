@@ -381,7 +381,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entries (
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
-
+	lang 		VARCHAR(10) NOT NULL DEFAULT 'fr';
 	PRIMARY KEY (id),
 	KEY index_g_name (g_name),
 	KEY index_idparent (idparent),
@@ -543,7 +543,7 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   status tinyint(4) NOT NULL default '1',
   expiration date default NULL,
   upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`), 
+  PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `index_username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 
