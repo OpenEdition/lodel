@@ -381,7 +381,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entries (
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
-	lang 		VARCHAR(10) NOT NULL DEFAULT 'fr';
+
 	PRIMARY KEY (id),
 	KEY index_g_name (g_name),
 	KEY index_idparent (idparent),
