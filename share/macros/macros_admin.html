@@ -80,46 +80,140 @@
 		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
 </DEFMACRO>
 
-<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder">
-	
-	<LOOP NAME="series" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="[#TYPE.SORT]">
-		<BEFORE>
-			<IF COND="[#FOLDER]">
-				<li class="unfoldedentities"><ul class="listEntities">
-			<ELSE />
-				<ul class="listEntities">
-			</IF>
-		</BEFORE>
-		<DO>
-		<IF COND="[#COUNT] % 2">
-			<li class="line1">
-		<ELSE/>
-			<li class="line2">
-		</IF>
-			<div class="entityIcons">
-			<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-			<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
-			</div>
-			<div class="document">
-				<span class="titre_document">[#G_NAME|nbsp]</span>
-				<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
-			</div>
-			<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-			<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
-			</li>
-		
-		</DO>
-		<AFTER>
-			<IF COND="[#FOLDER]">
-				</ul></li>
-			<ELSE />
-				</ul>
-			</IF>			
-		</AFTER>
-		<ALTERNATIVE>
-			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
-		</ALTERNATIVE>
+<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field">
+	<LET VAR="field">[#FIELD]</LET>
+	<LET VAR="table">[#TABLE]</LET>
+	<LOOP NAME="alphabetSpec">
+		<a href="#[#LETTRE]">[#LETTRE]</a>
 	</LOOP>
+</DEFFUNC>
+
+<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort">
+	<IF COND="[#SORT] EQ 'sortkey'">
+		<LET VAR="field">[#SORT]</LET>
+		<LET VAR="table">entries</LET>
+		<LOOP NAME="alphabetSpec">
+			<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRE]'" ORDER="[#TYPE.SORT]">
+				<BEFORE>
+					<h2 id="[#LETTRE]">
+						<a href="#alphabet">[#LETTRE]</a>
+					</h2>
+					<IF COND="[#FOLDER]">
+						<li class="unfoldedentities"><ul class="listEntities">
+					<ELSE />
+						<ul class="listEntities">
+					</IF>
+				</BEFORE>
+				<DO>
+				<IF COND="[#COUNT] % 2">
+					<li class="line1">
+				<ELSE/>
+					<li class="line2">
+				</IF>
+					<div class="entityIcons">
+					<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+					</div>
+					<div class="document">
+						<span class="titre_document">[#G_NAME|nbsp]</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+					</div>
+					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+					</li>
+				
+				</DO>
+				<AFTER>
+					<IF COND="[#FOLDER]">
+						</ul></li>
+					<ELSE />
+						</ul>
+					</IF>			
+				</AFTER>
+				<ALTERNATIVE>
+					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+				</ALTERNATIVE>
+			</LOOP>
+		</LOOP>
+	<ELSEIF COND="[#SORT] EQ 'id'" />
+			<LOOP NAME="series_id" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id">
+				<BEFORE>
+					<IF COND="[#FOLDER]">
+						<li class="unfoldedentities"><ul class="listEntities">
+					<ELSE />
+						<ul class="listEntities">
+					</IF>
+				</BEFORE>
+				<DO>
+				<IF COND="[#COUNT] % 2">
+					<li class="line1">
+				<ELSE/>
+					<li class="line2">
+				</IF>
+					<div class="entityIcons">
+					<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+					</div>
+					<div class="document">
+						<span class="titre_document">[#G_NAME|nbsp]</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+					</div>
+					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+					</li>
+				
+				</DO>
+				<AFTER>
+					<IF COND="[#FOLDER]">
+						</ul></li>
+					<ELSE />
+						</ul>
+					</IF>			
+				</AFTER>
+				<ALTERNATIVE>
+					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+				</ALTERNATIVE>
+			</LOOP>
+	<ELSEIF COND="[#SORT] EQ 'rank'" />
+			<LOOP NAME="series_rank" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank">
+				<BEFORE>
+					<IF COND="[#FOLDER]">
+						<li class="unfoldedentities"><ul class="listEntities">
+					<ELSE />
+						<ul class="listEntities">
+					</IF>
+				</BEFORE>
+				<DO>
+				<IF COND="[#COUNT] % 2">
+					<li class="line1">
+				<ELSE/>
+					<li class="line2">
+				</IF>
+					<div class="entityIcons">
+					<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+					</div>
+					<div class="document">
+						<span class="titre_document">[#G_NAME|nbsp]</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+					</div>
+					<div class="action"><FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+					</li>
+				
+				</DO>
+				<AFTER>
+					<IF COND="[#FOLDER]">
+						</ul></li>
+					<ELSE />
+						</ul>
+					</IF>			
+				</AFTER>
+				<ALTERNATIVE>
+					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+				</ALTERNATIVE>
+			</LOOP>
+	</IF>
 </DEFFUNC>
 
 <!--[ -----------------------------------------------------------
@@ -141,7 +235,7 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONTAL="[#TITLE]">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONAL="[#TITLE]">
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
