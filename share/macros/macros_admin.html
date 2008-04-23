@@ -80,7 +80,7 @@
 		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
 </DEFMACRO>
 
-<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field">
+<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype">
 	<LET VAR="field">[#FIELD]</LET>
 	<LET VAR="table">[#TABLE]</LET>
 	<LOOP NAME="alphabetSpec">

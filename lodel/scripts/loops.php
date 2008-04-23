@@ -715,7 +715,12 @@ function loop_alphabetSpec($context, $funcname)
 	global $db;
 	if(empty($context['table']) || empty($context['field']))
 		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
-	$lettres = $db->getArray(lq("SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] ORDER BY l"));
+	if(!empty($context['idtype']))
+		$sql = "SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] WHERE idtype = '$context[idtype]' ORDER BY l";
+	else
+		$sql = "SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] ORDER BY l";
+	
+	$lettres = $db->getArray(lq($sql));
 
 	foreach ($lettres as &$lettre) {
 		$lettre['l'] = strtr(utf8_decode($lettre['l']), "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûıışÿ", 

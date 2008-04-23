@@ -65,7 +65,7 @@
 <div id="entries">
 	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
 		<div id="alphabet">
-			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]">
+			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]">
 		</div>	
 	</IF>
 	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]">
