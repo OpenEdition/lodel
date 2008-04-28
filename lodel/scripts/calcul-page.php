@@ -154,7 +154,7 @@ function insert_template($context, $filename)
  */
 function mymysql_error($query, $tablename = '')
 {
-	if ($GLOBALS['context']['lodeluser']['rights'] >= LEVEL_EDITOR) {
+	if ($GLOBALS['context']['lodeluser']['rights'] == LEVEL_ADMINLODEL) {
 		if ($tablename) {
 			$tablename = "LOOP: $tablename ";
 		}
