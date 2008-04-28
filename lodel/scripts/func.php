@@ -92,18 +92,18 @@ function extract_post($arr=-1)
 }
 
 
-function clean_request_variable(&$var)
+function clean_request_variable(&$var, $personalsTags=array(), $personalsAttr=array())
 {
 	static $filter;
 	if (!$filter) {
 		require_once 'class.inputfilter.php';
-		$filter = new InputFilter(array(), array(), 1, 1);
+		$filter = new InputFilter($personalsTags, $personalsAttr);
   	}
 
 	if (is_array($var)) {
 	#print_r($var);
 	foreach(array_keys($var) as $k) {
-		clean_request_variable($var[$k]);
+		clean_request_variable($var[$k], $personalsTags, $personalsAttr);
 	}
 	} else {
 		$var = magic_stripslashes($var);
