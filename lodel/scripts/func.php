@@ -92,19 +92,19 @@ function extract_post($arr=-1)
 }
 
 
-function clean_request_variable(&$var, $personalsTags=array(), $personalsAttr=array())
+function clean_request_variable(&$var)
 {
 	static $filter;
 	if (!$filter) {
 		require_once 'class.inputfilter.php';
-		$filter = new InputFilter($personalsTags, $personalsAttr);
+		$filter = new InputFilter(array(), array(), 1, 1);
   	}
 
 	if (is_array($var)) {
-	#print_r($var);
-	foreach(array_keys($var) as $k) {
-		clean_request_variable($var[$k], $personalsTags, $personalsAttr);
-	}
+		#print_r($var);
+		foreach(array_keys($var) as $k) {
+			clean_request_variable($var[$k]);
+		}
 	} else {
 		$var = magic_stripslashes($var);
 		//ici on regle un bug : lors qu'on insere un espace insécable, l'appel à la fonction PHP 'chr' plante sur le &#160; dans la fonction $filter->decode
