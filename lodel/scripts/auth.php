@@ -385,7 +385,8 @@ else {
 	else {	setcookie('language', $GLOBALS['lang']); }
 }
 // tableaux des langues disponibles
-$context['defaultlang'] = array(0=>'FR', 1=>'EN', 2=>'ES', 3=>'DE', 4=>'IT', 5=>'PT');
+require_once 'lang.php';
+$context['defaultlang'] = $GLOBALS['languages'];
 // accès à la langue dans les templates
 $context['sitelang'] = $GLOBALS['lang'];
 //sommes nous en maintenance ?
