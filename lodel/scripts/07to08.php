@@ -1436,6 +1436,34 @@ class exportfor08
 			unset($q);
 		}
 
+		// champ historique : transformé en ndlr
+		if(!$result = mysql_query("select identite, historique from " . $GLOBALS['tp'] . "documents__old where historique != ''")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_array($result)) {
+			$ids[] = $res['identite'];
+			$historique[$res['identite']] = $res['historique'];
+		}
+		
+		$id=join(",",$ids);
+		unset($result, $res, $ids);
+		if(!$result = mysql_query("select identity, ndlr from " . $GLOBALS['tp'] . "textes where identity in ($id)")) {
+			return mysql_error();
+		}
+		while($res = mysql_fetch_array($req)) {
+			$ndlr = "";
+			$ndlr = $historique[$res['identity']].$res['ndlr'];
+			$ndlr = str_replace("'", "\'", $ndlr);
+		
+			$q .= "update " . $GLOBALS['tp'] . "textes set ndlr = '$ndlr' WHERE identity = '".$res['identity']."';\n";
+		}
+
+		if ($err = $this->__mysql_query_cmds($q)) {
+				return $err;
+		} else {
+			unset($q);
+		}
+
 		// publications
 		if ($err = $this->__mysql_query_cmds("RENAME TABLE _PREFIXTABLE_publications TO _PREFIXTABLE_publications__oldME;\n")) {
 				return $err;
