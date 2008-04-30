@@ -93,7 +93,8 @@
 		<LET VAR="field">[#SORT]</LET>
 		<LET VAR="table">entries</LET>
 		<LOOP NAME="alphabetSpec">
-			<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRE]'" ORDER="[#TYPE.SORT]">
+			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
+			<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#TYPE.SORT]">
 				<BEFORE>
 					<h2 id="[#LETTRE]">
 						<a href="#alphabet">[#LETTRE]</a>
