@@ -97,29 +97,33 @@ function enregistre_entite_from_xml($context,$text,$classe)
       } // if found style found in the text
       else {
 	// compatibilité PHP 5.2 et pcre.backtrack_limit
-      	if(PREG_BACKTRACK_LIMIT_ERROR == preg_last_error() && preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)>0) {
-			$value=$result2[1];
-	
-			if ($traitement) { // processing ?
-				$traitements=preg_split("/\|/",$traitement);
-				foreach ($traitements as $traitement) {
-					if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*)\))?$/",$traitement,$result3)) { 
-						if ($result3[2]) $result3[2]=",".$result3[2]; // arguments
-						$func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
-						$value=$func($value);
+	if(version_compare("5.2", PHP_VERSION, "<")) {
+		if(PREG_BACKTRACK_LIMIT_ERROR == preg_last_error()) {
+			if(preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)>0) {
+				$value=$result2[1];
+		
+				if ($traitement) { // processing ?
+					$traitements=preg_split("/\|/",$traitement);
+					foreach ($traitements as $traitement) {
+						if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*)\))?$/",$traitement,$result3)) { 
+							if ($result3[2]) $result3[2]=",".$result3[2]; // arguments
+							$func=create_function('$x','return '.$result3[1].'($x'.$result3[2].');');
+							$value=$func($value);
+						}
 					}
-				}
-			} // processing
-		
-			// enleve les styles de caracteres
-			$value=addslashes(trim(preg_replace("/<\/?r2rc:[^>]+>/","",$value)));
-		
-			// now record the $value
-			if ($type=="mltext") {
-				$localcontext[entite][$nom][$lang]=$value;
-			} else {
-				$localcontext[entite][$nom]=$value;
+				} // processing
+			
+				// enleve les styles de caracteres
+				$value=addslashes(trim(preg_replace("/<\/?r2rc:[^>]+>/","",$value)));
+			
+				// now record the $value
+				if ($type=="mltext") {
+					$localcontext[entite][$nom][$lang]=$value;
+				} else {
+					$localcontext[entite][$nom]=$value;
+				}	
 			}
+		}
 	}
       }
     } // foreach styles for mltext
