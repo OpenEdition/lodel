@@ -1964,8 +1964,7 @@ class exportfor08
 
 	public function update_tpl($target)
 	{
-		global $site;
-
+/*
 		// ce qu'on cherche à remplacer
 		$lookfor = array("#NOTEBASPAGE",
 				 "textes",
@@ -2048,7 +2047,7 @@ class exportfor08
 				);
 		// variable de travail : on fait deux tours : le premier pour récupérer le nom de toutes les macros/fonctions présentes dans le répertoire source et target
 		// le second pour travailler :)
-		$i = 0; 
+/*		$i = 0; 
 		// tableau des noms de macros/fonctions 0.7
 		$funclist = array();
 		// tableau des macros en double
@@ -2177,6 +2176,178 @@ class exportfor08
 			return "ERROR : directory 'tpl' is missing.";
 		}
 		return "Ok";
+	*/
+		function _decode_attributs($text, $options = '')
+		{
+				// decode attributs
+			$arr = explode('"', $text);
+			$n = count($arr);
+			for ($i = 0; $i < $n; $i += 2) {
+				$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
+				if (!$attr)
+					continue;
+				if ($options == "flat")	{
+					$ret[] = array ("name" => $attr, "value" => $arr[$i +1]);
+				}	else {
+					$ret[$attr] = $arr[$i +1];
+				}
+			}
+			return $ret;
+		}
+		
+		function replace_to08($matches) {
+			global $tables, $champs, $types;
+		
+			// on récupère un tableau des attributs de la loop
+			$tab = _decode_attributs($matches[1]);
+			foreach($tab as $name=>$value) {
+				$toreplace .= $name."=\"";
+				switch($name) {
+					case 'NAME':
+						break;
+					case 'TABLE':
+						foreach($tables as $table07=>$table08) {
+							$value = str_replace($table07, $table08, $value);
+						}
+						break;
+					case 'WHERE':
+					case 'ORDER':
+					case 'SELECT':
+					case 'DONTSELECT':
+					case 'GROUPBY':
+					case 'HAVING':
+						foreach($champs as $champ07=>$champ08) {
+							$value = str_replace($champ07, $champ08, $value);
+						}
+						foreach($types as $types07=>$types08) {
+							$value = str_replace($types07, $types08, $value);
+						}
+						break;
+				}
+				$toreplace .= $value."\" ";
+			}
+			$toreplace = "<LOOP ".$toreplace.">";
+			return $toreplace;
+		}
+		
+		$tpl = "./tpl/";
+		$tplmigred = $target."/tpl/";
+
+		$variables = array (	"TEXTES"=>"TEXTS", 
+					"NOTEBASPAGE"=>"NOTESBASPAGE",
+					"IDENTIFIANT"=>"IDENTIFIER",
+					"IDENTITE"=>"IDENTITY",
+					"NOMFAMILLE"=>"G_FAMILYNAME",
+					"PRENOM"=>"G_FIRSTNAME",
+					"NOM"=>"G_NAME",
+					"OPTION_SIGNALER_MAIL"=>"OPTIONS.METADONNEESSITE.SIGNALER_MAIL",
+					"STATUT"=>"STATUS",
+					"DROITREDACTEUR"=>"LODELUSER.REDACTOR",
+					"DROITEDITEUR"=>"LODELUSER.EDITOR",
+					"DROITVISITEUR"=>"LODELUSER.VISITOR",
+					"RETOUR"=>"URL_RETOUR",
+					"DATE"=>"DATEPUBLI",
+					"LANGUE"=>"LANG",
+					"OPTION_LISTE_DIFFUSION"=>"OPTIONS.LETTRE",
+					"OPTION_LISTE_TITRE"=>"OPTIONS.LETTRE.NOMDELALETTRE",
+					"ORDRE"=>"ORDER",
+					"MAJ"=>"UPD",
+					"LIEN"=>"ALTERFICHIER",
+					"LOGO"=>"ICONE",
+				);
+		$filtres = array (	
+					"couper"=>"cuttext",
+					"makeurlwithid\('(sommaire|document|personnes|personne|entrees|entree)'\)"=>"makeurlwithid"
+				);
+		
+		$champs = array(	
+					"statut"=>"status",
+					"maj"=>"upd",
+					"identifiant"=>"identifier",
+					"groupe"=>"usergroup",
+					"ordre"=>"rank",
+					"maj"=>"upd",
+					"degres"=>"degree",
+					"identite"=>"identity",
+					"nom"=>"name",
+					"valeur"=>"value",
+					"classe"=>"class",
+					"nomfamille"=>"g_familyname",
+					"prenom"=>"g_firstname",
+					"idpersonne"=>"idperson",
+					"rep"=>"path",
+					//"titre"=>"title", // faux selon la table, on laisse comme çà
+				);
+		
+		$tables = array(	"champs"=>"tablefields",
+					"documents"=>"textes",
+					"entites"=>"entities",
+					//"entites_personnes" comportement différent, non migrable
+					"entrees"=>"entries",
+					"groupes"=>"usergroups",
+					"groupesdechamps"=>"tablefieldgroups",
+					"objets"=>"objects",
+					"personnes"=>"persons",
+					"taches"=>"tasks",
+					"typeentites_typeentites"=>"entitytypes_entitytypes",
+					"typeentites_typeentrees"=>"relations",
+					"typeentites_typepersonnes"=>"relations",
+					"typeentrees"=>"entrytypes",
+					"typepersonnes"=>"persontypes",
+					"users_groupes"=>"usergroups"
+				);
+		
+		$types = array(
+					"regroupement"=>"souspartie",
+					"volume"=>"rubrique",
+					"colloque"=>"rubrique",
+					"presentation"=>"informations",
+					"breve"=>"billet",
+					"articlevide"=>"article"
+				);
+		
+		if(is_writeable($tplmigred)) {
+			if (is_dir($tpl) && ($dh = opendir($tpl))) {
+				while (($file = readdir($dh)) !== false) {
+					$tplFile = $tpl.$file;
+					if(!is_link($tplFile) && is_readable($tplFile) && $file != '.' && $file != '..') {
+						$content = file_get_contents($tplFile);
+						
+						// remplacement spécifique
+						$content = preg_replace("/\[\(#ID\|makeurlwithid\('docannexe'\)\)]/Ui", "[#ALTERFICHIER]", $content);
+						$content = preg_replace("/<USE TEMPLATEFILE=\"desk\">/Ui", "", $content);
+		
+						// remplacement des variables
+						foreach($variables as $k=>$var) {
+							$content = preg_replace("/\[\(?#$k(:[A-Z]{2})*(\|[\w\"'\(\)]+)*\)?\]/U", "[#$var\\1\\2]", $content);
+						}
+						// remplacement des filtres
+						foreach($filtres as $k=>$filtre) {
+							$content = preg_replace("/\|$k/i", "|$filtre", $content);
+						}
+			
+						// remplacement des champs dans les LOOPs
+						$content = preg_replace_callback("/<LOOP ([^>]+)>/U", "replace_to08", $content);
+		
+						// ecriture du template migré
+						file_put_contents($tplmigred.$file, $content);
+					}
+				}
+				closedir($dh);
+			} else {
+				echo "ERROR : cannot open directory $tpl.";
+			}
+			// on crée des liens symboliques pointant vers index.php pour simuler les scripts document.php, sommaire.php, etc ..
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/document.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/sommaire.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/personnes.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/personne.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/entrees.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/entree.".$GLOBALS['extensionscripts']);
+			symlink("index.".$GLOBALS['extensionscripts'], $target."/docannexe.".$GLOBALS['extensionscripts']);
+		} else {
+			echo "ERROR : directory $tplmigred is not writeable.";
+		}
 	}
 
 }
