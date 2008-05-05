@@ -1274,8 +1274,7 @@ class exportfor08
 		if(!$resu = mysql_query('SELECT id, g_name FROM ' . $GLOBALS['tp'] . 'entries ORDER BY g_name')) {
 			return mysql_error();
 		}
-		$query .= "ALTER TABLE _PREFIXTABLE_entrytypes ADD lang VARCHAR(10) NOT NULL DEFAULT 'fr';\n";	
-		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd) VALUES 
+		$query .= "REPLACE INTO _PREFIXTABLE_entrytypes (id, icon, type, class, title, altertitle, style, g_type, tpl, tplindex, gui_user_complexity, rank, status, flat, newbyimportallowed, edition, sort, upd, lang) VALUES 
 		(".$id[0].", '', 'motcle', 'indexes', 'Index de mots-clés', '', 'motscles, .motcles,motscls,motsclesfr', 'dc.subject', 'entree', 'entrees', '32', '1', '1', '1', '1', 'pool', 'sortkey', NOW(), 'fr'),
 		(".$id[1].", '', 'motsclesen', 'indexes', 'Index by keyword', '', 'keywords,motclesen', '', 'entree', 'entrees', '64', '2', '1', '1', '1', 'pool', 'sortkey', NOW(), 'en'),
 		(".$id[2].", '', 'periode', 'indexes', 'Index chronologique', '', 'periode, .periode, priode', '', 'entree', 'entrees', '64', '5', '1', '0', '1', 'pool', 'sortkey', NOW(), 'fr'),
@@ -1435,7 +1434,7 @@ class exportfor08
 		} else {
 			unset($q);
 		}
-
+		unset($ids);
 		// champ historique : transformé en ndlr
 		if(!$result = mysql_query("select identite, historique from " . $GLOBALS['tp'] . "documents__old where historique != ''")) {
 			return mysql_error();
@@ -1444,24 +1443,25 @@ class exportfor08
 			$ids[] = $res['identite'];
 			$historique[$res['identite']] = $res['historique'];
 		}
-		
-		$id=join(",",$ids);
-		unset($result, $res, $ids);
-		if(!$result = mysql_query("select identity, ndlr from " . $GLOBALS['tp'] . "textes where identity in ($id)")) {
-			return mysql_error();
-		}
-		while($res = mysql_fetch_array($req)) {
-			$ndlr = "";
-			$ndlr = $historique[$res['identity']].$res['ndlr'];
-			$ndlr = str_replace("'", "\'", $ndlr);
-		
-			$q .= "update " . $GLOBALS['tp'] . "textes set ndlr = '$ndlr' WHERE identity = '".$res['identity']."';\n";
-		}
+		if(!empty($ids)) {
+			$id=join(",",$ids);
+			unset($result, $res, $ids);
+			if(!$result = mysql_query("select identity, ndlr from " . $GLOBALS['tp'] . "textes where identity in ($id)")) {
+				return mysql_error();
+			}
+			while($res = mysql_fetch_array($req)) {
+				$ndlr = "";
+				$ndlr = $historique[$res['identity']].$res['ndlr'];
+				$ndlr = str_replace("'", "\'", $ndlr);
+			
+				$q .= "update " . $GLOBALS['tp'] . "textes set ndlr = '$ndlr' WHERE identity = '".$res['identity']."';\n";
+			}
 
-		if ($err = $this->__mysql_query_cmds($q)) {
-				return $err;
-		} else {
-			unset($q);
+			if ($err = $this->__mysql_query_cmds($q)) {
+					return $err;
+			} else {
+				unset($q);
+			}
 		}
 
 		// publications
@@ -1858,7 +1858,7 @@ class exportfor08
 	}
 
 	/**
-	 * Dump de la base avant modifs
+	 * Dump de la base après modifs
 	 */	
 	public function dump_after_changes_to08()
 	{
@@ -1867,13 +1867,16 @@ class exportfor08
 		
 		$outfile="site-$site.sql";
 		$tmpdir=tmpdir();
-		mysql_dump($GLOBALS['currentdb'],$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
+
+		$tables = $this->get_tables();
+
+		mysql_dump($GLOBALS['currentdb'],$tables,$tmpdir."/".$outfile);
 		# verifie que le fichier n'est pas vide
 		if (filesize($tmpdir."/".$outfile)<=0) return "ERROR: mysql_dump failed";
 		
 		// tar les sites et ajoute la base
 		$archivetmp=tempnam($tmpdir,"lodeldump_").".zip";
-		$archivefilename="site08-$site-".date("dmy").".zip";
+		$archivefilename="site-$site-".date("dmy").".zip";
 		if ($zipcmd && $zipcmd!="pclzip") {
 			system($zipcmd." -q $archivetmp -j $tmpdir/$outfile");
 		} else { // pclzip
