@@ -151,7 +151,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
   } while (0);
 
   if ($GLOBALS[currentdb]) mysql_select_db($GLOBALS[currentdb]);
-
+  $GLOBALS[recalcul_templates] = false; // anti DOS
   // exception
   if ($level==0) {
     return; // les variables ne sont pas mises... on retourne
