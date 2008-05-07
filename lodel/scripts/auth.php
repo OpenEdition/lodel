@@ -177,6 +177,9 @@ function authenticate($level = 0, $mode = "")
 			usecurrentdb();
 		}
 	
+		// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
+		$_REQUEST['clearcache'] = false;
+
 		// exception
 		if ($level == 0) {
 			return; // les variables ne sont pas mises... on retourne
