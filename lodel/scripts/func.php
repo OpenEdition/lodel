@@ -101,10 +101,10 @@ function clean_request_variable(&$var)
   	}
 
 	if (is_array($var)) {
-	#print_r($var);
-	foreach(array_keys($var) as $k) {
-		clean_request_variable($var[$k]);
-	}
+		#print_r($var);
+		foreach(array_keys($var) as $k) {
+			clean_request_variable($var[$k]);
+		}
 	} else {
 		$var = magic_stripslashes($var);
 		//ici on regle un bug : lors qu'on insere un espace insécable, l'appel à la fonction PHP 'chr' plante sur le &#160; dans la fonction $filter->decode

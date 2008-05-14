@@ -132,7 +132,7 @@ class InputFilter {
 				list($tagName) = explode(' ', $currentTag);
 			}		
 			// excludes all "non-regular" tagnames OR no tagname OR remove if xssauto is on and tag is blacklisted
-			if ((!preg_match("/^[a-z][a-z0-9]*$/i",$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $this->tagBlacklist)) && ($this->xssAuto))) { 				
+			if ((!preg_match("/^[a-z][a-z0-9:]*$/i",$tagName)) || (!$tagName) || ((in_array(strtolower($tagName), $this->tagBlacklist)) && ($this->xssAuto))) { 				
 				$postTag = substr($postTag, ($tagLength + 2));
 				$tagOpen_start = strpos($postTag, '<');
 				// don't append this tag

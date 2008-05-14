@@ -161,7 +161,9 @@ function mymysql_error($query, $tablename = '')
 		die("</body>".$tablename."QUERY: ". htmlentities($query)."<br /><br />".mysql_error());
 	}	else {
 		if ($GLOBALS['contactbug']) {
-			@mail($GLOBALS['contactbug'], "[BUG] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de requete sur la page ".$_SERVER['REQUEST_URI']."<br />". htmlentities($query). "<br /><br />".mysql_error());
+			$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$GLOBALS['currentdb'];
+			$contenu = "Erreur de requete sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." \n\nQuery : ". $query . "\n\nErreur : ".mysql_error()."\n\nBacktrace :\n\n".print_r(debug_backtrace(), true);
+			@mail($GLOBALS['contactbug'], $sujet, $contenu);
 		}
 		die("<code><strong>Error!</strong> An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>");
 	}

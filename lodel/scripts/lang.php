@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier contenant la liste des langues (abrégées)
+ * Fichier contenant la liste des langues (abrï¿½gï¿½es)
  *
  * PHP versions 4 et 5
  *
@@ -8,10 +8,10 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
  *
  * Home page: http://www.lodel.org
  *
@@ -36,13 +36,13 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Pierre-Alain Mignot
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
- * @since Fichier ajouté dans la version 0.8
+ * @since Fichier ajoutï¿½ dans la version 0.8
  */
 //contient la liste des langues disponibles pour installer lodel
 $GLOBALS['installlanguages'] = array(
@@ -188,7 +188,7 @@ $GLOBALS['languages']=array(
 #			    "AB"=> "Abkhazian",
 #			    "AF"=> "Afrikaans",
 #			    "AM"=> "Amharic",
-			    "AR"=> "Arabic",
+			    "AR"=> "&#x202B;&#x627;&#x644;&#x639;&#x631;&#x628;&#x64A;&#x629;",
 #			    "AS"=> "Assamese",
 #			    "AY"=> "Aymara",
 #			    "AZ"=> "Azerbaijani",
@@ -205,19 +205,19 @@ $GLOBALS['languages']=array(
 #			    "CS"=> "Czech",
 #			    "CY"=> "Welsh",
 #			    "DA"=> "Danish",
-			    "DE"=> "German",
+			    "DE"=> "Deutsch",
 #			    "DZ"=> "Bhutani",
-			    "EL"=> "Greek",
+			    "EL"=> "Î•Î»Î»Î·Î½Î¹ÎºÎ¬",
 			    "EN"=> "English",
 #			    "EO"=> "Esperanto",
-			    "ES"=> "Spanish",
+			    "ES"=> "EspaÃ±ol",
 #			    "ET"=> "Estonian",
-			    "EU"=> "Basque",
+			    "EU"=> "Euskara",
 #			    "FA"=> "Persian",
 #			    "FI"=> "Finnish",
 #			    "FJ"=> "Fiji",
 #			    "FO"=> "Faeroese",
-			    "FR"=> "French",
+			    "FR"=> "FranÃ§ais",
 #			    "FY"=> "Frisian",
 #			    "GA"=> "Irish",
 #			    "GD"=> "Gaelic" "Scots Gaelic",
@@ -234,7 +234,7 @@ $GLOBALS['languages']=array(
 #			    "IK"=> "Inupiak",
 #			    "IN"=> "Indonesian",
 #			    "IS"=> "Icelandic",
-			    "IT"=> "Italian",
+			    "IT"=> "Italiano",
 #			    "IW"=> "Hebrew",
 #			    "JA"=> "Japanese",
 #			    "JI"=> "Yiddish",
@@ -248,7 +248,7 @@ $GLOBALS['languages']=array(
 #			    "KS"=> "Kashmiri",
 #			    "KU"=> "Kurdish",
 #			    "KY"=> "Kirghiz",
-			    "LA"=> "Latin",
+			    "LA"=> "Latine",
 #			    "LN"=> "Lingala",
 #			    "LO"=> "Laothian",
 #			    "LT"=> "Lithuanian",
@@ -273,12 +273,12 @@ $GLOBALS['languages']=array(
 #			    "PA"=> "Punjabi",
 #			    "PL"=> "Polish",
 #			    "PS"=> "Pashto",
-			    "PT"=> "Portuguese",
+			    "PT"=> "PortuguÃªs",
 #			    "QU"=> "Quechua",
 #			    "RM"=> "Rhaeto-Romance",
 #			    "RN"=> "Kirundi",
 #			    "RO"=> "Romanian",
-			    "RU"=> "Russian",
+			    "RU"=> "Ñ€ÑƒÑÑÐºÐ¸Ð¹ ÑÐ·Ñ‹Ðº",
 #			    "RW"=> "Kinyarwanda",
 #			    "SA"=> "Sanskrit",
 #			    "SD"=> "Sindhi",
@@ -306,7 +306,7 @@ $GLOBALS['languages']=array(
 #			    "TL"=> "Tagalog",
 #			    "TN"=> "Setswana",
 #			    "TO"=> "Tonga",
-			    "TR"=> "Turkish",
+			    "TR"=> "TÃ¼rkÃ§e",
 #			    "TS"=> "Tsonga",
 #			    "TT"=> "Tatar",
 #			    "TW"=> "Twi",
@@ -327,7 +327,7 @@ $GLOBALS['languages']=array(
 /**
  * Construction du SELECT des langues
  *
- * @param string $selectedlang la langue sélectionnée (par défaut vide)
+ * @param string $selectedlang la langue sï¿½lectionnï¿½e (par dï¿½faut vide)
  */
 function makeselectlangs($selectedlang = "") 
 {
@@ -344,7 +344,7 @@ function makeselectlangs($selectedlang = "")
 /**
  * Construction du SELECT des langues (jamais vide)
  *
- * @param string $selectedlang la langue sélectionnée (par défaut vide)
+ * @param string $selectedlang la langue sï¿½lectionnï¿½e (par dï¿½faut vide)
  */
 function makeselectlangs_nevernil($selectedlang = "") 
 {
@@ -360,7 +360,7 @@ function makeselectlangs_nevernil($selectedlang = "")
 /**
  * Affichage choix langue
  *
- * Cette fonction affiche une liste déroulante permettant de choisir une langue (utilisée par entrytypes)
+ * Cette fonction affiche une liste dï¿½roulante permettant de choisir une langue (utilisï¿½e par entrytypes)
  *
  */	
 function makeSelectLang()
