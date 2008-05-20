@@ -716,10 +716,12 @@ function loop_alphabetSpec($context, $funcname)
 	require_once 'func.php';
 	if(empty($context['table']) || empty($context['field']))
 		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
-	if(!empty($context['idtype']))
-		$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} WHERE idtype = '{$context['idtype']}' ORDER BY l";
-	else
-		$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} ORDER BY l";
+	if(!empty($context['idtype'])) {
+		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
+		$whereCount = " idtype = '{$context['idtype']}' AND ";
+	}
+		
+	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} {$whereSelect} ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
 
@@ -728,7 +730,8 @@ function loop_alphabetSpec($context, $funcname)
 	}
 	reset($lettres);
 
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE SUBSTRING({$context['field']},1,1) = ");
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} SUBSTRING({$context['field']},1,1) = ");
+
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
 		$context['nbresults'] = $db->getOne($sql."'{$context['lettre']}'");
