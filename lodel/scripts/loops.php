@@ -717,24 +717,28 @@ function loop_alphabetSpec($context, $funcname)
 	if(empty($context['table']) || empty($context['field']))
 		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
 	if(!empty($context['idtype']))
-		$sql = "SELECT DISTINCT(SUBSTRING($context[field],1,1)) as l FROM #_TP_$context[table] WHERE idtype = '$context[idtype]' ORDER BY l";
+		$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} WHERE idtype = '{$context['idtype']}' ORDER BY l";
 	else
-		$sql = "SELECT DISTINCT(SUBSTRING($context[field],1,1)) as l FROM #_TP_$context[table] ORDER BY l";
+		$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
 
 	foreach($lettres as &$lettre) {
 		$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
+	reset($lettres);
 
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE SUBSTRING({$context['field']},1,1) = ");
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
+		$context['nbresults'] = $db->getOne($sql."'{$context['lettre']}'");
 		call_user_func("code_do_$funcname", $context);
 	}
-	reset($lettres);
+	
 	while (list(, $lettre) = each($lettres)) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
+			$context['nbresults'] = $db->getOne($sql.$context['lettre']);
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
@@ -742,6 +746,7 @@ function loop_alphabetSpec($context, $funcname)
 	while (list(, $lettre) = each($lettres)) {
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
+			$context['nbresults'] = $db->getOne($sql."'".addcslashes($context['lettre'], "'")."'");
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
