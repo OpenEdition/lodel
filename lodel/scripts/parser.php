@@ -399,11 +399,11 @@ class Parser
 	}
 
 	function parse_main()
-	{	
+	{
 		while ($this->ind < $this->countarr) {
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
-				$attrs = $this->_decode_attributs($arr[$this->ind + 1]);
+				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				$this->charset = $attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
 				// attribut refresh
 				$this->_checkforrefreshattribut($attrs);
@@ -416,7 +416,7 @@ class Parser
 					$macrofilename = $attrs['MACROFILE'];
 					if (file_exists("tpl/".$macrofilename))	{
 						$contents = file_get_contents("tpl/".$macrofilename);
-					}	elseif ($GLOBALS['sharedir'] && 	file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
+					}	elseif ($GLOBALS['sharedir'] && file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
 						$contents = file_get_contents($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename);
 					}	elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
 						$contents = file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
@@ -1117,6 +1117,9 @@ class Parser
 	 */
 	function _checkforrefreshattribut($mixed)
 	{
+		if(empty($mixed))
+			return;
+
 		if (is_array($mixed))	{
 			$attrs = $mixed;
 		}	else {
@@ -1174,8 +1177,8 @@ class Parser
 
 	function _decode_attributs($text, $options = '')
 	{
-			// decode attributs
-	$arr = explode('"', $text);
+		// decode attributs
+		$arr = explode('"', $text);
 		$n = count($arr);
 		for ($i = 0; $i < $n; $i += 2) {
 			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
