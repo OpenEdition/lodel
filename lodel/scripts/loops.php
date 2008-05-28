@@ -730,7 +730,7 @@ function loop_alphabetSpec($context, $funcname)
 	}
 	reset($lettres);
 
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} SUBSTRING({$context['field']},1,1) = ");
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} status>0 AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
