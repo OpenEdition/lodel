@@ -49,9 +49,10 @@
  */
 function calculateXML($context)
 {
-	require_once 'calcul-page.php';
+	if(!function_exists("insert_template"))
+		include 'view.php';
 	ob_start();
-	calcul_page($context, "xml-classe", "", SITEROOT."lodel/edition/tpl/");
+	insert_template($context, "xml-classe", "", SITEROOT."lodel/edition/tpl/");
 	$contents = ob_get_contents();
 	ob_end_clean();
 	return indentXML($contents);
@@ -62,9 +63,10 @@ function calculateXML($context)
  */
 function calculateXMLSchema($context)
 {
-	require_once "calcul-page.php";
+	if(!function_exists("insert_template"))
+		include 'view.php';
 	ob_start();
-	calcul_page($context, "schema-xsd", "", SITEROOT."lodel/admin/tpl/");
+	insert_template($context, "schema-xsd", "", SITEROOT."lodel/admin/tpl/");
 	$contents = ob_get_contents();
 	ob_end_clean();
 	return indentXML($contents);

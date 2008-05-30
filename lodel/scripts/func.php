@@ -202,19 +202,40 @@ function myaddslashes (&$var)
 
 
 
+/**
+ * Fonction permettant de vérifier l'existence d'un fichier correctement !
+ *
+ * @param string $file fichier à tester
+*/
+function myfileexists($file) {
+	// plus important : on supprime  le cache généré par les fonctions de stat de fichier !
+	clearstatcache();
+	return file_exists($file); // on retourne le test du fichier
+}
+
+/**
+ * Retourne la dernière date de modif de $filename
+ *
+ * @param string $filename fichier à tester
+*/
 function myfilemtime($filename)
 {
-  return file_exists($filename) ? filemtime($filename) : 0;
+  return myfileexists($filename) ? @filemtime($filename) : 0;
 }
 
 
 function update()
 {
+	global $cacheOptions, $site;
 	if (defined("SITEROOT")) {
-		@touch(SITEROOT."CACHE/maj");
+		$cacheOptions['cacheDir'] = realpath(SITEROOT. './CACHE/');
 	} else {
-		@touch("CACHE/maj");
+		$cacheOptions['cacheDir'] =  './CACHE/';
 	}
+	require_once 'Cache/Lite.php';
+	$cache = new Cache_Lite($cacheOptions);
+	$cache->clean($site);
+	unset($cache);
 }
 
 function addmeta(&$arr,$meta="")

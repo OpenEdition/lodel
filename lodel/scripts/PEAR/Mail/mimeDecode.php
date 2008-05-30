@@ -33,7 +33,7 @@
 // +-----------------------------------------------------------------------+
 
 // path modified by Ghislain
-require_once($GLOBALS['home']."PEAR/PEAR.php");
+require_once 'PEAR.php';
 
 /**
 *  +----------------------------- IMPORTANT ------------------------------+

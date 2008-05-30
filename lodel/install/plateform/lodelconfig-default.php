@@ -147,6 +147,22 @@ $installoption="";
 $installlang="fr";
 ############################################
 
+# config du cache #
+# @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
+$cacheOptions = array(
+	'cacheDir' => './CACHE/',
+	'lifeTime' => 3600,
+// pour débug : décommenter ici
+// 	'pearErrorMode' => CACHE_LITE_ERROR_DIE,
+	'pearErrorMode' => CACHE_LITE_ERROR_RETURN,
+	'fileNameProtection'=>true,
+	'readControl'=>true,
+	'readControlType'=>'crc32',
+	'writeControl'=>true,
+	'hashedDirectoryLevel'=>2
+	);
+##################
+
 setlocale (LC_ALL,"fr_FR.UTF8");
 
 set_magic_quotes_runtime(0);
