@@ -260,8 +260,7 @@ class View
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $escRefresh appel de la fonction par le refresh manager
 	*/
-	public function renderTemplateFile(&$context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh) {
-
+	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh) {
 		global $site;
 		include_once 'Cache/Lite.php';
 
@@ -277,7 +276,7 @@ class View
 			$cache->save($content, $tpl, 'TemplateFile');
 		}
  		if(!$escRefresh)
-			$content = $this->_eval($content, $context, true);
+			$content = $this->_eval($content, $context);
 		$GLOBALS['TemplateFile'][$tpl] = true;
 		return $content;	
 	}
@@ -303,11 +302,14 @@ class View
 	*/
 	private function _eval($content, $context) {
 		if(FALSE !== strpos($content, '<?')) { // on a du PHP, on l'execute
+			include_once 'loops.php';
+			global $home;
 			ob_start();
 			$ret = @eval('?'.'>'.$content);
 			if(FALSE === $ret) {
-				// on peut décommenter ici pour afficher l'erreur (mode devel)
-				//echo ob_get_clean();
+				// on peut décommenter ici pour afficher l'erreur (mode devel) 
+				// (faire de meme pour eval juste au dessus)
+ 				// echo ob_get_clean();
 				ob_end_clean();
 				$this->_error("Syntax error when evaluating", __FUNCTION__);
 			} elseif('refresh' == $ret) {
@@ -437,7 +439,6 @@ class View
 				$content = $this->_eval(_indent(show_html($content)), $context);
 				return $content;
 			}
-			include_once 'loops.php';
 			
 			if ($context['charset'] == 'utf-8') {
 				// utf-8 c'est le charset natif, donc on sort directement la chaine.
@@ -475,7 +476,7 @@ class View
  * @param string $base_rep chemin vers répertoire tpl
  * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
  */
-function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false) {
+function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false) {
 	$view =& View::getView();
 	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh);
 	echo $content;

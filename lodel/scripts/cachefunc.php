@@ -84,8 +84,34 @@ function removefilesincache()
 		$rep .= "/CACHE/";
 		$options['cacheDir'] = realpath($rep).'/';
 		$cache = new Cache_Lite($options);
-		$cache->clean($site);
-		unset($cache, $rep);
+		$cache->clean('TemplateFile'); // fichiers inclus en LS
+		$cache->clean('tpl'); // templates cachés
+		$cache->clean($site); // html
+
+		// fichiers/répertoires gérés indépendament de cache_lite
+		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+
+		while (($file = readdir($fd)) !== false) {
+			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || (FALSE !== strpos($file, 'cache_')))
+				continue;
+			$file = $rep. "/". $file;
+			if (is_dir($file)) { //si c'est un répertoire on l'ouvre
+				$rep2 = $file;
+				$fd2 = opendir($rep2) or die("Impossible d'ouvrir $file");
+				while (($file = readdir($fd2)) !== false) {
+					if ($file[0] == ".")
+						continue;
+					$file = $rep2."/".$file;
+					if (myfileexists($file) && is_writeable($file)) {
+						@unlink($file);
+					}
+				}
+				closedir($fd2);
+			} elseif (myfileexists($file) && is_writeable($file)) {
+				@unlink($file);
+			}
+		}
+		closedir($fd);		
 	}
 }
 
