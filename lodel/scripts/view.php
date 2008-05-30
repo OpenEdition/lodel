@@ -270,7 +270,7 @@ class View
 		if(!$content) {
 			if(!$base_rep)
 				$base_rep = './tpl/';
-			if (!file_exists("tpl/$tpl". ".html") && file_exists($GLOBALS['home']. "../tpl/$filename". ".html")) {
+			if (!file_exists("tpl/$tpl". ".html") && file_exists($GLOBALS['home']. "../tpl/$tpl". ".html")) {
 				$base_rep = $GLOBALS['home']. '../tpl/';
 			}
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
