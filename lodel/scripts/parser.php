@@ -206,7 +206,7 @@ class Parser
 
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= ' if(($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']){ insert_template($context, "'.$f.'", "", "tpl/", true);
+					$code .= ' if(($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']){ insert_template($context, "'.$f.'", "", "./tpl/", true);
 						}else{ ?>';
 					
 				} else { // refresh time
@@ -216,7 +216,7 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'if ($cachetime<$refreshtime && $now>$refreshtime && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']) insert_template($context, "'.$f.'", "", "tpl/", true); $GLOBALS['.$f.']=true;
+						$code .= 'if ($cachetime<$refreshtime && $now>$refreshtime && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']) insert_template($context, "'.$f.'", "", "./tpl/", true); $GLOBALS['.$f.']=true;
 							}else{ ?>';
 					}
 				}
