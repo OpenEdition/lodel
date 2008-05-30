@@ -269,7 +269,10 @@ class View
 		$content = $cache->get($tpl, 'TemplateFile');
 		if(!$content) {
 			if(!$base_rep)
-				$base_rep = 'tpl/';
+				$base_rep = './tpl/';
+			if (!file_exists("tpl/$tpl". ".html") && file_exists($GLOBALS['home']. "../tpl/$filename". ".html")) {
+				$base_rep = $GLOBALS['home']. '../tpl/';
+			}
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
 			$cache->save($content, $tpl, 'TemplateFile');
 		}
