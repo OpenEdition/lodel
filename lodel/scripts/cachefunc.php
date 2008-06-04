@@ -62,9 +62,13 @@ function clearcache($allCache=true)
 	} else {
 		require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($GLOBALS['cacheOptions']);
-		$cache->clean('TemplateFile'); // fichiers inclus en LS
-		$cache->clean('tpl'); // templates cachés
-		$cache->clean($GLOBALS['site']); // html
+		if($GLOBALS['site']) {
+			$cache->clean('TemplateFile'); // fichiers inclus en LS
+			$cache->clean('tpl'); // templates cachés
+			$cache->clean($GLOBALS['site']); // html
+		} else {
+			$cache->clean();
+		}
 		unset($cache);	
 	}
 }
