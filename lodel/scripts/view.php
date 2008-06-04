@@ -174,13 +174,15 @@ class View
 	{
 		global $site;
 
-		$this->_makeCachedFileName();
+		$this->_makeCachedFileName($tpl);
 		
 		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		if (!$caching || $_REQUEST['clearcache']) { // efface le cache si demandé
+		if($_REQUEST['clearcache']) {
 			clearcache();
+		} elseif (!$caching) { // efface le cache si demandé
+			clearcache(true);
 		}
 		if($content = $cache->get($this->_cachedfile, $site)) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
@@ -329,12 +331,12 @@ class View
 	/**
 	 * Modifie le nom du fichier à utiliser pour mettre en cache
 	 */
-	private function _makeCachedFileName() {
+	private function _makeCachedFileName($tpl='') {
 		global $lodeluser, $site;
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $tpl ."//". $lodeluser['name']. "//". $lodeluser['rights'];
 		$GLOBALS['cachedfile'] = getCachedFileName($this->_cachedfile, $site, $this->_cacheOptions);
 	}
 
@@ -513,7 +515,7 @@ class View
 
 		$group = $include ? 'TemplateFile' : 'tpl';
 
-		if ($_REQUEST['clearcache'])	{
+		if ($_REQUEST['clearcache']) {
 			clearcache();
 		}
 	

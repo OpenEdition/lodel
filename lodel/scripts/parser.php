@@ -864,7 +864,20 @@ class Parser
 	if(!function_exists("loop_'.$name.'")) {
 		function loop_'.$name.' ($context)
 		{'.$preprocesslimit.'
-			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults];$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
+			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.';
+			';
+			if($selectparts['groupby']) {
+				$this->fct_txt .= '
+			while($row='.sprintf($options['sqlfetchassoc'], '$result').') { $context[nbresults][] = $row[nbresults]; }
+			$context[nbresultats]=$context[nbresults]=count($context[nbresults]);
+				';	
+			} else {
+				$this->fct_txt .= '
+			$row='.sprintf($options['sqlfetchassoc'], '$result').';$context[nbresultats]=$context[nbresults] = $row[nbresults];';
+			}
+
+			$this->fct_txt .= '
+			$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
 			$result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
 		'.$postmysqlquery.'
 		 '.$processlimit.' 
@@ -884,7 +897,7 @@ class Parser
 		if ($contents['DOLAST']) {
 			$this->fct_txt .= ' if ($count==$context[nbresults]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
 		}
-		$this->fct_txt .= $contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresults] && $row='.sprintf($options['sqlfetchassoc'], '$result').');
+		$this->fct_txt .= $contents['PRE_DO'].' ?>'.$contents['DO'].'<?php     } while ($count<$generalcontext[nbresults] && $row='.sprintf($options['sqlfetchassoc'], '$result').');
 		?>'.$contents['AFTER'].'<?php  } ';
 
 		if ($contents['ALTERNATIVE'])
