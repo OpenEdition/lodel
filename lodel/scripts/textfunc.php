@@ -43,8 +43,8 @@
  * @package lodel
  */
 
-if (file_exists($home."textfunc_local.php"))
-	require_once ("textfunc_local.php");
+if (is_readable($home.'textfunc_local.php'))
+	require_once 'textfunc_local.php';
 
 # fonction largement reprises de SPIP
 
@@ -485,6 +485,7 @@ function eq($str, $texte)
 /**
  * Fonction permettant de récupérer les notes du texte
  *
+ * @author Mickael Sellapin
  * @author Pierre-Alain Mignot
  * @param string $texte le texte à parser
  * @param var $type type des notes présentes dans le texte
@@ -495,7 +496,7 @@ function notes($texte, $type)
 	// be cool... just select the paragraph or division.
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
-	$notere = '<a\s+[^>]*\bclass="(foot|end)note(definition|symbol)[^>]*>';
+	$notere = '<a class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
 			case 1: // seulement les astérisques
@@ -798,13 +799,14 @@ function defaultvalue($var1, $var2)
  * Fonction utilisée ci dessous pour la numérotation des paragraphes
  */
 
-function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
+function replacement($arg0, $arg1, $arg2, $arg3)
 {
-	static $count;
+	static $count=0;
 	
 	++$count;
-	$repl = $arg1. $arg2. ' id="pn'.$count.'"'.$arg3;
+	$repl = $arg0. ' id="pn'.$count.'"'.$arg1;
 	$repl .= '<span class="paranumber">'.$count.'</span>';
+	$repl .= $arg2.$arg3;
 	return $repl;
 }
 
@@ -821,6 +823,35 @@ function replacement($arg0, $arg1, $arg2, $arg3, $arg4, $count)
  * @param string $texte le texte à numéroter passé par référence
  * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
  */
+function paranumber($texte, $styles='texte')
+{
+  	static $paranum_count;
+
+	$tab_classes = explode(";", $styles);
+
+	$length_tab_classes = count($tab_classes);
+
+	$chaine_classes = '"'.$tab_classes[0].'"';
+
+	for($i=1; $i < $length_tab_classes; $i++) {
+		$chaine_classes .= '|"'.$tab_classes[$i].'"';
+	}
+	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
+	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
+	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
+	$regexp = '/(<p class=('.$chaine_classes.'))([^>]*>)(.*)(<\/p>)/eiU';
+
+	// on récupère les paragraphes à numéroter
+	preg_match_all($regexp, $tmpTexte, $m);
+
+	// on effectue la numérotation et on remplace dans le texte
+	foreach($m[0] as $k=>$paragraphe) {
+		$tmpTexte2 = explode($paragraphe, $texte, 2);
+		$texte = $tmpTexte2[0].str_replace($paragraphe, replacement($m[1][$k], $m[3][$k], $m[4][$k], $m[5][$k]), $paragraphe).$tmpTexte2[1];
+	}
+	return $texte;
+}
+/*
 function paranumber(&$texte, $styles='texte')
 {
   	static $paranum_count;
@@ -859,7 +890,7 @@ function paranumber(&$texte, $styles='texte')
 	 * ignore tous les styles attribués à la balise <p> sauf "texte" ; on peut rajouter un style à <p> comme l'exemple suivant : (<p\b class=(\"texte\"|\"citation\"). On a ajouté le style "citation" avec un "|" (OU exclusif).
 	 * ignore les puces
 	 */
-
+/*
 	if ($length_tab_classes != 1) {
 		$regexp = '/(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
 	} else {
@@ -916,7 +947,7 @@ function paranumber(&$texte, $styles='texte')
 									), $texte);
 
 	return $texte;
-}
+}*/
 
 
 
