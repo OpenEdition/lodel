@@ -441,7 +441,6 @@ class LodelParser extends Parser
 
 		$fullname = $group.'.'.$name;
 		$this->translationtags[] = "'".$fullname."'"; // save all the TEXT for the CACHE
-
 		if ($tag == "text")	{
 			// modify inline
 			$modifyif = '$context[\'righteditor\']';
@@ -493,6 +492,7 @@ class LodelParser extends Parser
 			$text = '<'.'?php
 	$langfile="CACHE/lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__);
 	if (!file_exists($langfile)) {
+		if(!function_exists("generateLangCache")) { require "view.php"; }
 		generateLangCache($GLOBALS[\'lang\'], $langfile, array('. join(',', $this->translationtags).'));
 	} else {
 		require_once($langfile);

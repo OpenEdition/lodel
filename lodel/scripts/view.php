@@ -43,21 +43,21 @@
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  */
-include_once 'func.php';
-include_once 'cachefunc.php';
+
 
 /**
  * Classe gérant la partie 'vue' du modèle MVC. Cette classe est un singleton.
  * 
  * Exemple d'utilisation de ce singleton :
  * <code>
- * $view = &getView();
+ * $view =& getView();
  * $view->render($context,$tpl);
  * </code>
  *
  * @package lodel
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Sophie Malafosse
  * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
@@ -67,6 +67,9 @@ include_once 'cachefunc.php';
  * @see logic.php
  * @see controler.php
  */
+
+include_once 'func.php';
+include_once 'cachefunc.php';
 
 class View
 {
@@ -98,7 +101,6 @@ class View
 		$this->_cacheOptions = $cacheOptions;
 	}
 
-
 	/**
 	 * 'Getter' de ce singleton.
 	 * Cette fonction évite l'initialisation inutile de la classe si une instance de celle-ci existe
@@ -106,10 +108,11 @@ class View
 	 *
 	 * @return object l'instance de la classe view
 	 */
-	public static function &getView()
+	public static function getView()
 	{
 		if (!isset(self::$_instance)) {
-			self::$_instance = new View;
+			$c = __CLASS__;
+			self::$_instance = new $c;
 		}
 		return self::$_instance;
 	}
@@ -135,17 +138,18 @@ class View
 		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='$idsession' ORDER BY id DESC"), 1, $offset) or dberror();
 		$row = $result->fetchRow();
 
-		$id = $row['id'];	$newurl = $row['url'];
+		$id = $row['id'];	
+		$newurl = $row['url'];
 		
 		if ($id) {
-			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='$id' AND idsession='$idsession'")) or dberror();
+			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='{$id}' AND idsession='{$idsession}'")) or dberror();
 			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
 				$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
 		}
 
 		if (!headers_sent()) {
-			header("location: ".$newurl);
+			header("Location: ".$newurl);
 			exit;
 		} else { // si probleme
 			echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
@@ -171,31 +175,26 @@ class View
 		global $site;
 
 		$this->_makeCachedFileName();
-
+		
 		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		if (!$caching || $_REQUEST['clearcache']) { // calcul la page si le cache n'existe pas
+		if (!$caching || $_REQUEST['clearcache']) { // efface le cache si demandé
 			clearcache();
-			$content = $this->_calcul_page($context, $tpl);
-			$cache->save($content, $this->_cachedfile, $site);
-			$content = $this->_eval($content, $context);
-			echo $content;
-			flush();
-			return;
 		}
-
 		if($content = $cache->get($this->_cachedfile, $site)) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+				$content = $this->_eval($content, $context, true);
 				echo $content;
 				flush();
 				return;
 			}
 		}
-		// pas de fichier dispo dans le cache, on le calcule, l'enregistre, l'execute et affiche le résultat
+		// pas de fichier dispo dans le cache ou fichier cache à recompiler
+		// on le calcule, l'enregistre, l'execute et affiche le résultat
 		$content = $this->_calcul_page($context, $tpl);
 		$cache->save($content, $this->_cachedfile, $site);
-		$content = $this->_eval($content, $context);
+		$content = $this->_eval($content, $context, true);
 		echo $content;
 		flush();
 		return;	
@@ -211,21 +210,20 @@ class View
 	public function renderIfCacheIsValid()
 	{
 		global $site, $context;
-
+		
 		if ($_REQUEST['clearcache'])	{
 			clearcache();
 			return false;
 		}
-
 		$this->_makeCachedFileName();
 		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		if($content = $cache->get($this->_cachedfile, $site)) {
-			// on vérifie que le tpl n'est pas à recompiler
+			// on vérifie le refresh du template
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
-				if(FALSE !== strpos($content, '<?')) {
-					$content = $this->_eval($content, $context);
-				}
+				// refresh d'un template inclus en lodelscript ?
+				// on évalue de nouveau le code pour être sur
+				$content = $this->_eval($content, $context, true);
 				echo $content;
 				flush();
 				return true;
@@ -243,7 +241,7 @@ class View
 	 * @param array $context Le tableau de toutes les variables du contexte
 	 * @param string $tpl Le nom du template utilisé pour l'affichage
 	 * @return retourne la même chose que la fonction render
-	 * @see render
+	 * @see render()
 	 */
 	public function renderCached(&$context, $tpl)
 	{
@@ -259,24 +257,71 @@ class View
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $escRefresh appel de la fonction par le refresh manager
+	* @param int $refreshTime (optionnel) temps de refresh pour le manager
 	*/
-	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh) {
-		global $site;
-		include_once 'Cache/Lite.php';
+	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh, $refreshTime=0) {
+		global $site, $lodeluser, $home;
 
+		$cachedTemplateFileName = str_replace('?id=0', '',
+					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
+					)."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
-		$content = $cache->get($tpl, 'TemplateFile');
-		if(!$content) {
+		
+		if(!($content = $cache->get($cachedTemplateFileName, 'TemplateFile')) || $escRefresh) {
 			if(!$base_rep)
 				$base_rep = './tpl/';
-			if (!file_exists("tpl/$tpl". ".html") && file_exists($GLOBALS['home']. "../tpl/$tpl". ".html")) {
-				$base_rep = $GLOBALS['home']. '../tpl/';
+			if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
+				$base_rep = $home. '../tpl/';
 			}
+			$cache->remove("tpl_{$tpl}", 'TemplateFile');
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
-			$cache->save($content, $tpl, 'TemplateFile');
+			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
 		}
- 		if(!$escRefresh)
+ 		if(!$escRefresh) {
 			$content = $this->_eval($content, $context);
+				
+			if($refreshTime > 0) {
+					$code = '
+					<'.'?php 
+						if (!function_exists("myfilemtime")) { include "func.php"; }
+						if (!function_exists("getCachedFileName")) { include "cachefunc.php"; }
+						if (!function_exists("insert_template")) { include "view.php"; }
+						$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+					$code .= ' if(($cachetime > 0) && ($cachetime + '.($refreshTime+1).') < time()){ insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refreshTime+1).'); 
+							}else{ ?>';
+							$code .= $content . '<'.'?php } ?'.'>';
+					$content = $code;
+					unset($code);		
+			} elseif(FALSE !== strpos($content, '#LODELREFRESH')) {
+				$refreshTime = preg_split("/(#LODELREFRESH \d+#)/", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+				$content = '';
+				while(list(, $text) = each($refreshTime)) {
+					if((FALSE !== strpos($text, '#LODELREFRESH'))) {
+						if(($tmpRefresh = intval(substr($text, 14, -1))) > $refresh) {
+							$refresh = $tmpRefresh;
+						}
+					} else {
+						$content .= $text;
+					}
+				}
+				if(is_int($refresh)) {
+					$code = '
+					<'.'?php 
+						if (!function_exists("myfilemtime")) { include "func.php"; }
+						if (!function_exists("getCachedFileName")) { include "cachefunc.php"; }
+						if (!function_exists("insert_template")) { include "view.php"; }
+						$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+					$code .= ' if(($cachetime > 0) && ($cachetime + '.($refresh+1).') < time()){ insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refresh+1).'); 
+							}else{ ?>';
+							$code .= $content . '<'.'?php } ?'.'>';
+					$content = $code;
+					unset($code);
+				}
+			}
+				
+		}
+		
 		$GLOBALS['TemplateFile'][$tpl] = true;
 		return $content;	
 	}
@@ -298,27 +343,141 @@ class View
 	*
 	* @param string $content contenu à évaluer
 	* @param array $context le context
+	* @param bool $escapeRefreshManager utilisé pour virer les balises de refresh si jamais page recalculée à la volée
 	* @return le contenu du code évalué
 	*/
-	private function _eval($content, $context) {
-		if(FALSE !== strpos($content, '<?')) { // on a du PHP, on l'execute
-			include_once 'loops.php';
+	private function _eval($content, &$context, $escapeRefreshManager=false) {
+		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			global $home;
+			
+			if(!$context['id'])
+				$this->_prepareContext($context);
+			
+			include_once 'loops.php';
+			include_once 'textfunc.php';
+			include_once 'func.php';
 			ob_start();
+			// supprimer le '@' de la fonction eval pour afficher l'erreur PHP
 			$ret = @eval('?'.'>'.$content);
 			if(FALSE === $ret) {
-				// on peut décommenter ici pour afficher l'erreur (mode devel) 
-				// (faire de meme pour eval juste au dessus)
- 				// echo ob_get_clean();
-				ob_end_clean();
-				$this->_error("Syntax error when evaluating", __FUNCTION__);
+				$this->_error("Syntax error when evaluating", __FUNCTION__, $content);
 			} elseif('refresh' == $ret) {
 				ob_end_clean();
 				return $ret;
 			}
 			$content = ob_get_clean();
 		}
+		if(TRUE === $escapeRefreshManager && (FALSE !== strpos($content, '#LODELREFRESH'))) {
+			$content = preg_replace("/#LODELREFRESH (\d+)#/", "", $content);
+		}
 		return $content;
+	}
+
+	/**
+	 * Fonction qui remplit le context selon l'id ou identifier
+	 *
+	 * @param array $context le context passé en référence
+	 * @see renderIfCacheIsValid()
+	 * @see _eval()
+	 */
+	private function _prepareContext(&$context) {
+		global $id, $identifier, $db, $lodeluser;
+		if(!$id && !$identifier)
+			return; 
+		if(!$context['classtype']) {
+			if ($id) {
+				$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='{$id}'"));
+
+				if (!$class) { 
+					$this->_error ("Entity not found: '{$id}'", __FUNCTION__); 
+				} else {
+					$context['id'] = $id;
+				}
+			} elseif ($identifier) {
+				$class = 'entities';
+			}		
+			$context['classtype'] = $class;
+		}
+		switch($class) {
+		case 'entities':
+			$critere = $lodeluser['visitor'] ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
+		
+			// cherche le document, et le template
+			if ($identifier) {
+				$identifier = addslashes(stripslashes(substr($identifier, 0, 255)));
+				$where = "#_TP_entities.identifier='". $identifier. "' ". $critere;
+			} else {
+				$where = "#_TP_entities.id='". $id. "' ". $critere;
+			}
+			$row = $db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ". $where));
+			if (!$row) {
+				$this->_error ("Internal error.", __FUNCTION__);
+			}
+			$base = $row['tpl']; // le template à utiliser pour l'affichage
+			if (!$base) { 
+				$id = $row['idparent'];
+			}
+
+			$context = array_merge($context, $row);
+			$row = $db->getRow(lq("SELECT * FROM #_TP_". $row['class']. " WHERE identity='". $row['id']. "'"));
+			if (!$row) {
+				$this->_error ("Internal error.", __FUNCTION__);
+			}
+			if (!(@include_once('CACHE/filterfunc.php'))) {
+				require_once 'filterfunc.php';
+			}
+			//Merge $row et applique les filtres définis dans le ME
+			merge_and_filter_fields($context, $context['class'], $row);
+			getgenericfields($context); // met les champs génériques de l'entité dans le contexte	
+			break;			
+		case 'entrytypes':
+		case 'persontypes':
+			$result = $db->execute(lq("SELECT * FROM #_TP_". $class. " WHERE id='". $id. "' AND status>0")) or $this->_error ("Internal error.", __FUNCTION__);
+			$context['type'] = $result->fields;
+			break;
+		case 'persons':
+		case 'entries':	
+			switch($class) {
+			case 'persons':
+				$typetable = '#_TP_persontypes';
+				$table     = '#_TP_persons';
+				$longid    = 'idperson';
+				break;
+			case 'entries':
+				$typetable = '#_TP_entrytypes';
+				$table     = '#_TP_entries';
+				$longid    = 'identry';
+				break;
+			default: $this->_error('Internal error ???.', __FUNCTION__); break;
+			}
+		
+			// get the index
+			$critere = $lodeluser['visitor'] ? 'AND status>-64' : 'AND status>0';
+			$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
+			if (!$row) {
+				$this->_error ("Internal error.", __FUNCTION__);
+			}
+			$context = array_merge($context, $row);
+			// get the type
+			$row = $db->getRow(lq("SELECT * FROM ". $typetable. " WHERE id='". $row['idtype']. "'". $critere));
+			if ($row === false || !$row) {
+				$this->_error ("Internal error.", __FUNCTION__);
+			}
+			$context['type'] = $row;
+		
+			// get the associated table
+			$row = $db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE ".$longid."='".$id."'"));
+			if (!$row) {
+				$this->_error ("Internal error.", __FUNCTION__);
+			}
+			if (!(@include_once("CACHE/filterfunc.php"))) {
+				require_once "filterfunc.php";
+			}
+			merge_and_filter_fields($context, $row['class'], $row);	
+			break;
+			default: $this->_error("Unknown class type {$class}", __FUNCTION__); break;	
+		}
+			
 	}
 
 	/**
@@ -328,7 +487,7 @@ class View
 	* @param array $context le context
 	*/
 	private function _iscachevalid($content, $context) {
-		if(FALSE !== strpos($content, '<?')) {
+		if(FALSE !== strpos($content, '<?php')) {
 			$content = $this->_eval($content, $context);
 			if('refresh' == $content) {
 				return false;
@@ -348,21 +507,17 @@ class View
 	*/
 	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = 'tpl/', $include=false) {
 
-		global $home, $format;
+		global $home;
 		if(!empty($cache_rep))
 			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
 
 		$group = $include ? 'TemplateFile' : 'tpl';
 
 		if ($_REQUEST['clearcache'])	{
-			clearcache();
+			clearcache(true);
 			$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 		}
 	
-		if ($format && !preg_match("/\W/", $format)) {
-			$base .= "_$format";
-		}
-		$format = ''; // en cas de nouvel appel a calcul_page
 		$template_cache = "tpl_$base";
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) {
@@ -408,19 +563,26 @@ class View
 		if(!empty($cache_rep))
 			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];	
 
-		$template_cache = "tpl_$base";
+		
 		$group = $include ? 'TemplateFile' : 'tpl';
 		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
-
+		
+		if ($format && !preg_match("/\W/", $format)) {
+			$base .= "_$format";
+		}
+		$template_cache = "tpl_$base";
 		$i=0; // on va essayer 5 fois de récupérer le fichier mis en cache
 		do {
-			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
 			$content = $cache->get($template_cache, $group);
 			if($content)
 				break;
+			else
+				$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
 			$i++;
 		} while (5>$i);
+
+		$format = ''; // en cas de nouvel appel a calcul_page
 
 		if(!$content) {	
 			include_once 'PEAR.php';
@@ -455,13 +617,50 @@ class View
 
 	/**
 	 * Fonction gérant les erreurs
-	 * Renvoit une 403 et affiche le message
+	 * Renvoit une 403 et affiche le message si loggé sinon page d'erreur
+	 * Accessoirement, on nettoie le cache
+	 *
+	 * @param string $msg message d'erreur
+	 * @param string $func nom de la fonction générant l'erreur
+	 * @param string $content (optionnel) contenu de la page si fonction appellée par $this->_eval()
+	 * @see _eval()
 	 */
-	private function _error($msg, $func) {
+	private function _error($msg, $func, $content='') {
+		global $lodeluser, $db, $home, $site;
+		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
+		clearcache(true);
 		header("HTTP/1.0 403 Internal Error");
 		header("Status: 403 Internal Error");
 		header("Connection: Close");
-		die("Error: [\" " . $msg . " \"] in function '".$func."'");	
+		if($lodeluser['rights'] > LEVEL_VISITOR) {
+			// on peut décommenter ici pour afficher les erreurs et le contenu évalué
+			// (décommenter aussi l'appel à la fonction eval() )
+			//echo ob_get_clean();
+			//echo "content : <br>".htmlentities($content)."<br><br>tampon: <br>"; 
+			ob_end_clean();
+			$error .= "Error: [\" " . $msg . " \"] in function '".$func." in file ".__FILE__."'<br />";
+			if($db->errorno())
+				$error .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."<br />";
+			echo $error;
+		} else {
+			ob_end_clean();
+			if(file_exists('./missing.html')) {
+				echo file_get_contents('./missing.html');
+			} elseif(file_exists($home."../../missing.html")) {
+				include $home."../../missing.html";
+			} elseif(file_exists('./not-found.html')) {
+				echo file_get_contents('./not-found.html');
+			} else {
+				die("Internal error.");
+			}
+		}
+		
+		if($GLOBALS['contactbug']) {
+			$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$site;
+			@mail($GLOBALS['contactbug'], $sujet, $error);
+		}
+		
+		exit();
 	}
 
 } // end class
@@ -475,11 +674,13 @@ class View
  * @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
  * @param string $base_rep chemin vers répertoire tpl
  * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
+ * @param int $refreshTime temps après lequel le tpl est à recompiler
  */
-function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false) {
+function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0) {
 	$view =& View::getView();
-	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh);
+	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, intval($refreshTime));
 	echo $content;
+	flush();
 }
 
 
@@ -549,6 +750,7 @@ function renderOptions($arr, $selected)
 		//sinon on génère une balise <option>
 		else { echo '<option value="'. $k. '" '. $s. '>'. $v. '</option>'; }
 	}
+	
 }
 
 /**

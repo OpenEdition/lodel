@@ -167,13 +167,7 @@ class Parser
 		//
 
 		if ($this->refresh)	{
-			$f = preg_replace("/^([^\/]*\/)*(\w+)\.html$/", "\\2", $in);
-// 			if(10 > $this->refresh) { // on dit que - de 10s on refresh systématiquement
-// // 				$code = '<'.'?php 
-// // 						insert_template($context, "'.$f.'", "", "tpl/", true);
-// // 					?'.'>';
-// 				$this->refresh = 10;
-// 			} 
+
 			if(!$include) {
 				$code = '<'.'?php 
 						if (!function_exists("myfilemtime")) { include "func.php"; }
@@ -181,7 +175,7 @@ class Parser
 	
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= ' if($cachetime + '.$this->refresh.' < time()) return "refresh"; ';
+					$code .= ' if(($cachetime>0) && (($cachetime + '.$this->refresh.') < time())) return "refresh"; ';
 					
 				} else { // refresh time
 					$code .= '$now = time(); $date = getdate($now);';
@@ -190,13 +184,18 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'if ($cachetime<$refreshtime && $now>$refreshtime) return "refresh"; ';
+						$code .= 'if (($cachetime > 0) && $cachetime<$refreshtime && $now>$refreshtime) return "refresh"; ';
 					}
 				}
 				$code .= '} ?'.'>';
 				$contents = '<'.'?php echo \''.quote_code($code).'\'; ?>
-					'.$contents;
+				'.$contents;
 			} else {
+				$tpl = preg_replace("/^([^\/]+\/)*(\w+)\.html$/", "\\2", $in);
+				$f = str_replace('?id=0', '',
+					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
+					)."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+				
 				$code = '
 					<'.'?php 
 						if (!function_exists("myfilemtime")) { include "func.php"; }
@@ -206,9 +205,10 @@ class Parser
 
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= ' if(($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']){ insert_template($context, "'.$f.'", "", "./tpl/", true);
-						}else{ ?>';
-					
+					$code .= 'echo "#LODELREFRESH '.($this->refresh + 1).'#";
+						if(($cachetime + '.($this->refresh + 1).') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.($this->refresh + 1).'); 
+					}else{ ?>';
+					$code .= $contents . '<'.'?php } ?'.'>';
 				} else { // refresh time
 					$code .= '$now = time(); $date = getdate($now);';
 	
@@ -216,13 +216,14 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'if ($cachetime<$refreshtime && $now>$refreshtime && TRUE !== $GLOBALS[\'TemplateFile\']['.$f.']) insert_template($context, "'.$f.'", "", "./tpl/", true); $GLOBALS['.$f.']=true;
+						$code .= 'echo "#LODELREFRESH ";echo $refreshtime;echo "#";
+							if ($cachetime<$refreshtime && $now>$refreshtime && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
 							}else{ ?>';
+						$code .= $contents . '<'.'?php } ?'.'>'; 
 					}
 				}
-				$code = $code . $contents . '<'.'?php } ?'.'>';
-				$code = preg_replace("/\?>\s*<\?(php)?/", '', $code);
-				$contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
+				$code = preg_replace("/\?><\?(php)?/", '', $code);
+	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
 			}
 			unset($code);
 		} elseif ($this->isphp)	{
@@ -983,18 +984,28 @@ class Parser
 				$this->parse_variable($val, 'quote');
 				$args[] = '"'. strtolower($attr). '"=>"'. $val. '"';
 			}
+			
 			$this->arr[$this->ind] .= '<?php '.$macrofunc.'($context,array('.join(",", $args).')); ?>';
-			//
 
 			if (!($this->funcs[$macrofunc])) {
 				$this->funcs[$macrofunc] = true;
 				// build the function 
-				$code = '<?php function '.$macrofunc.'($context,$args) {
-				         $context=array_merge($context,$args); ?>
-				'.$this->macrocode[$name]['code'].'
-				<?php  } ?>';
-				$this->_split_file($code, 'add');
+				$tmpArr = $this->arr;
+				$tmpInd = $this->ind;
+				$tmpCountArr = $this->countarr;
+				$this->arr = null;
+				$this->_split_file($this->macrocode[$name]['code']);
+				$this->parse_main();
+				$this->fct_txt .= ' function '.$macrofunc.'($context,$args) {
+				         $context=array_merge($context,$args); ?>';
+				$this->fct_txt .= join('', $this->arr);
+				$this->fct_txt .= '<?php  } ';
+				$this->arr = $tmpArr;
+				$this->ind = $tmpInd;
+				$this->countarr = $tmpCountArr;
+				unset($tmpArr, $tmpInd, $tmpCountArr);
 			}
+			
 		} else { // normal MACRO
 			$this->_split_file($this->macrocode[$name]['code'], 'insert');
 			$this->_clearposition();

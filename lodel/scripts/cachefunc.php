@@ -50,13 +50,22 @@
  *
  * Cette fonction appelle removefilesincache()
  */
-function clearcache()
+function clearcache($allCache=true)
 {
 	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
-	if (defined("SITEROOT")) {
-		removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-	}	else {
-		removefilesincache(".");
+	if(!$allCache) {
+		if (defined("SITEROOT")) {
+			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
+		}	else {
+			removefilesincache(".");
+		}
+	} else {
+		require_once 'Cache/Lite.php';
+		$cache = new Cache_Lite($GLOBALS['cacheOptions']);
+		$cache->clean('TemplateFile'); // fichiers inclus en LS
+		$cache->clean('tpl'); // templates cachés
+		$cache->clean($GLOBALS['site']); // html
+		unset($cache);	
 	}
 }
 
@@ -73,6 +82,7 @@ function removefilesincache()
 {
 	global $site;
 	require_once 'Cache/Lite.php';
+	require_once 'func.php';
 	$options = $GLOBALS['cacheOptions'];
 
 	foreach (func_get_args() as $rep) {
@@ -87,7 +97,7 @@ function removefilesincache()
 		$cache->clean('TemplateFile'); // fichiers inclus en LS
 		$cache->clean('tpl'); // templates cachés
 		$cache->clean($site); // html
-
+		unset($cache);
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
 
@@ -111,7 +121,7 @@ function removefilesincache()
 				@unlink($file);
 			}
 		}
-		closedir($fd);		
+		closedir($fd);	
 	}
 }
 
