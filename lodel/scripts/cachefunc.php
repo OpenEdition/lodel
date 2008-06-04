@@ -48,10 +48,13 @@
 /**
  * Nettoyage du répertoire de CACHE
  *
- * Cette fonction appelle removefilesincache()
+ * Cette fonction appelle removefilesincache() si $allCache = true
+ * @param bool $allCache
+ * @see func.php -> function update()
  */
-function clearcache($allCache=true)
+function clearcache($allCache=false)
 {
+	global $site;
 	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	if(!$allCache) {
 		if (defined("SITEROOT")) {
@@ -62,10 +65,10 @@ function clearcache($allCache=true)
 	} else {
 		require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($GLOBALS['cacheOptions']);
-		if($GLOBALS['site']) {
+		if($site) {
 			$cache->clean('TemplateFile'); // fichiers inclus en LS
 			$cache->clean('tpl'); // templates cachés
-			$cache->clean($GLOBALS['site']); // html
+			$cache->clean($site); // html
 		} else {
 			$cache->clean();
 		}
@@ -100,7 +103,10 @@ function removefilesincache()
 		$cache = new Cache_Lite($options);
 		$cache->clean('TemplateFile'); // fichiers inclus en LS
 		$cache->clean('tpl'); // templates cachés
-		$cache->clean($site); // html
+		if($site)
+			$cache->clean($site); // html
+		else
+			$cache->clean();
 		unset($cache);
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");

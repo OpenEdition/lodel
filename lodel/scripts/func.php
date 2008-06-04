@@ -226,16 +226,8 @@ function myfilemtime($filename)
 
 function update()
 {
-	global $cacheOptions, $site;
-	if (defined("SITEROOT")) {
-		$cacheOptions['cacheDir'] = realpath(SITEROOT. './CACHE/');
-	} else {
-		$cacheOptions['cacheDir'] =  './CACHE/';
-	}
-	require_once 'Cache/Lite.php';
-	$cache = new Cache_Lite($cacheOptions);
-	$cache->clean($site);
-	unset($cache);
+	require_once 'cachefunc.php';
+	clearcache(true);
 }
 
 function addmeta(&$arr,$meta="")

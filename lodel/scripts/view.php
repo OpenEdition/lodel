@@ -211,7 +211,7 @@ class View
 	{
 		global $site, $context;
 		
-		if ($_REQUEST['clearcache'])	{
+		if ($_REQUEST['clearcache']) {
 			clearcache();
 			return false;
 		}
@@ -514,8 +514,7 @@ class View
 		$group = $include ? 'TemplateFile' : 'tpl';
 
 		if ($_REQUEST['clearcache'])	{
-			clearcache(true);
-			$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
+			clearcache();
 		}
 	
 		$template_cache = "tpl_$base";
@@ -628,7 +627,7 @@ class View
 	private function _error($msg, $func, $content='') {
 		global $lodeluser, $db, $home, $site;
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
-		clearcache(true);
+		clearcache();
 		header("HTTP/1.0 403 Internal Error");
 		header("Status: 403 Internal Error");
 		header("Connection: Close");
