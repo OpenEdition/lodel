@@ -1,4 +1,4 @@
-<?Php
+<?php
 // +-----------------------------------------------------------------------+
 // | Copyright (c) 2002  Richard Heyes                                     |
 // | All rights reserved.                                                  |
@@ -32,8 +32,9 @@
 // | Author: Richard Heyes <richard@phpguru.org>                           |
 // +-----------------------------------------------------------------------+
 
-// path modified by Ghislain
-require_once 'PEAR.php';
+// path modified by Ghislain / Pierre-Alain
+if(!(@require_once 'PEAR.php'))
+	require_once 'PEAR/PEAR.php';
 
 /**
 *  +----------------------------- IMPORTANT ------------------------------+
