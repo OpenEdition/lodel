@@ -99,7 +99,7 @@ function removefilesincache()
 			$rep = "./".$rep;
 		}
 		$rep .= "/CACHE/";
-		$options['cacheDir'] = realpath($rep).'/';
+		$options['cacheDir'] = $rep;
 		$cache = new Cache_Lite($options);
 		$cache->clean('TemplateFile'); // fichiers inclus en LS
 		$cache->clean('tpl'); // templates cachés
@@ -108,6 +108,7 @@ function removefilesincache()
 		else
 			$cache->clean();
 		unset($cache);
+
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
 
