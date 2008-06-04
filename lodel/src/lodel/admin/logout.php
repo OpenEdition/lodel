@@ -45,7 +45,7 @@
 
 require_once 'siteconfig.php';
 require_once 'auth.php';
-authenticate(LEVEL_VISITOR);
+authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
 
 $name = addslashes($_COOKIE[$sessionname]);
 
