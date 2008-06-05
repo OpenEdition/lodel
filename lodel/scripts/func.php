@@ -1104,6 +1104,12 @@ function mystripslashes (&$var)
  */
 function _indent($source, $indenter = '  ')
 {
+	// preparation des lignes
+	$source = preg_replace("/\n/", "", $source);
+	$source = preg_replace("/\n\s*/", "\n", $source);
+	$source = preg_replace("/(<.*?>)/", "\n\\1\n", $source);
+	$source = preg_replace("/\n\n/", "\n", $source);
+	$source = preg_replace("/\n\s*/", "\n", $source);
 	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			require_once 'xmlfunc.php';

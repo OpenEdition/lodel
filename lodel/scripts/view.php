@@ -212,7 +212,7 @@ class View
 	public function renderIfCacheIsValid()
 	{
 		global $site, $context;
-		
+
 		if ($_REQUEST['clearcache']) {
 			clearcache();
 			return false;
@@ -599,18 +599,17 @@ class View
 			if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) {
 				require_once 'showhtml.php';
 				// on affiche la source
-				$content = $this->_eval(_indent(show_html($content)), $context);
-				return $content;
+				$content = $this->_eval($content, $context);
+				return _indent(show_html($content));
 			}
-			
 			if ($context['charset'] == 'utf-8') {
 				// utf-8 c'est le charset natif, donc on sort directement la chaine.
-				$content = $this->_eval(_indent($content), $context);
-				return $content;
+				$content = $this->_eval($content, $context);
+				return _indent($content);
 			} else {
 				// isolatin est l'autre charset par defaut
-				$content = $this->_eval(_indent(utf8_decode($content)), $context);
-				return $content;
+				$content = $this->_eval(utf8_decode($content), $context);
+				return _indent($content);
 			}
 			$this->_error('Calculating page failed', __FUNCTION__);
 		}
