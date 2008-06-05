@@ -352,7 +352,7 @@ class View
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			global $home;
 			
-			if(!$context['id'])
+			if(!$context['id'] && !$context['oai_ids'] && ($GLOBALS['id'] || $GLOBALS['identifier']))
 				$this->_prepareContext($context);
 			
 			include_once 'loops.php';
