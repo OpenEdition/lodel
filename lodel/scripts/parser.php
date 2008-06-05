@@ -807,7 +807,6 @@ class Parser
 	if ($cleanquery) $currenturl.=$cleanquery."&";
 	if ($context[nbresults]>'.$split.') {
 		$context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$split.');
-		//$context[nbresultats]--;$context[nbresults]--;
 	} else {
 		$context[nexturl]="";
 	}'. '$context[offsetname] ='. $offsetname. ';'. '$context[limitinfo] = '. $split. ';'. '$context[previousurl]=$currentoffset>='. $split. ' ? $currenturl."'. $offsetname. '=".($currentoffset-'. $split. ') : "";
@@ -868,12 +867,13 @@ class Parser
 			';
 			if($selectparts['groupby']) {
 				$this->fct_txt .= '
-			while($row='.sprintf($options['sqlfetchassoc'], '$result').') { $context[nbresults][] = $row[nbresults]; }
-			$context[nbresultats]=$context[nbresults]=count($context[nbresults]);
+			$context[nbresults] = 0;
+			while($row='.sprintf($options['sqlfetchassoc'], '$result').') { $context[nbresults]++; }
+			$context[nbresultats]= $context[nbresults];
 				';	
 			} else {
 				$this->fct_txt .= '
-			$row='.sprintf($options['sqlfetchassoc'], '$result').';$context[nbresultats]=$context[nbresults] = $row[nbresults];';
+			$row='.sprintf($options['sqlfetchassoc'], '$result').';$context[nbresultats] = $context[nbresults] = $row[nbresults];';
 			}
 
 			$this->fct_txt .= '
