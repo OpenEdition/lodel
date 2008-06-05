@@ -266,7 +266,7 @@ class View
 
 		$cachedTemplateFileName = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					)."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
 		include_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		
@@ -336,7 +336,7 @@ class View
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $tpl ."//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//". $tpl ."//". $lodeluser['name']. "//". $lodeluser['rights'];
 		$GLOBALS['cachedfile'] = getCachedFileName($this->_cachedfile, $site, $this->_cacheOptions);
 	}
 
