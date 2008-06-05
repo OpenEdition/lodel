@@ -632,21 +632,19 @@ class View
 		header("HTTP/1.0 403 Internal Error");
 		header("Status: 403 Internal Error");
 		header("Connection: Close");
+		$error = "Error: [\" " . $msg . " \"] in function '".$func." in file ".__FILE__."'<br />\n";
+		if($db->errorno())
+			$error .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."<br />\n";
 		if($lodeluser['rights'] > LEVEL_VISITOR) {
 			// on peut décommenter ici pour afficher les erreurs et le contenu évalué
 			// (décommenter aussi l'appel à la fonction eval() )
 			//echo ob_get_clean();
 			//echo "content : <br>".htmlentities($content)."<br><br>tampon: <br>"; 
 			ob_end_clean();
-			$error .= "Error: [\" " . $msg . " \"] in function '".$func." in file ".__FILE__."'<br />";
-			if($db->errorno())
-				$error .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."<br />";
 			echo $error;
 		} else {
 			ob_end_clean();
-			if(file_exists('./missing.html')) {
-				echo file_get_contents('./missing.html');
-			} elseif(file_exists($home."../../missing.html")) {
+			if(file_exists($home."../../missing.html")) {
 				include $home."../../missing.html";
 			} elseif(file_exists('./not-found.html')) {
 				echo file_get_contents('./not-found.html');
@@ -660,7 +658,7 @@ class View
 			@mail($GLOBALS['contactbug'], $sujet, $error);
 		}
 		
-		exit();
+		die();
 	}
 
 } // end class
