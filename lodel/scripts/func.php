@@ -1109,6 +1109,7 @@ function _indent($source, $indenter = '  ')
 	$source = preg_replace("/(<.*?>)/", "\n\\1\n", $source);
 	$source = preg_replace("/\n\n/", "\n", $source);
 	$source = preg_replace("/\n\s*/", "\n", $source);
+	$source = preg_replace("/(\n)?<(em|sup|span|sub|a|img)([^>]*)>(\n)?(.*?)(\n)?<\/\\2>(\n)?/", "<\\2\\3>\\5</\\2>", $source);
 	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			require_once 'xmlfunc.php';
@@ -1137,7 +1138,7 @@ function fix_newlines_for_clean_html($fixthistext)
 		//Makes sure empty lines are ignores
 		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
 		{
-			$fixedtextvalue = preg_replace("/[^[em|sup|sub|span]]>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
+			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
 			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
 		}
 		
