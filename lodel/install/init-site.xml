@@ -339,6 +339,12 @@
 			description="champ generique equivalent"
 			label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
 			edittype="select" />
+		<column name="g_name_tei"
+			type="VARCHAR"
+			size="255"
+			description="champ generique equivalent TEI"
+			label="[@ADMIN.TEI_EQUIVALENT]"
+			edittype="select" />
 	</vgroup>
 	<vgroup name="grcreation"
 		label="[@ADMIN.FIELDSET_CREATION]">
@@ -710,7 +716,9 @@
         		type="VARCHAR"
         		size="255"
         		label="[@ADMIN.EMAIL]"
-        		edittype="email" />
+        		edittype="email"
+			required="true"
+			/>
 	</vgroup>
 	<vgroup name="lodel_informations"
 		label="[@ADMIN.USER_LODEL_INFORMATIONS]">
