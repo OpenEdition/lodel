@@ -303,7 +303,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 			// let's deal with document reloading problem : PDF file disapeared, now resolved :
 			$daotablefields = &getDAO("tablefields");
-			$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND type='file'", "",	"name");			
+			$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");			
 			foreach($Filefields as $ffield) {
 				$gdaoaf = &getGenericDAO ($class, "identity");
 				$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
