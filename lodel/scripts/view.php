@@ -399,6 +399,8 @@ class View
 				$class = 'entities';
 			}		
 			$context['classtype'] = $class;
+		} else {
+			$class = $context['classtype'];
 		}
 		switch($class) {
 		case 'entities':
@@ -413,7 +415,7 @@ class View
 			}
 			$row = $db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ". $where));
 			if (!$row) {
-				$this->_error ("Internal error.", __FUNCTION__);
+				break;
 			}
 			$base = $row['tpl']; // le template à utiliser pour l'affichage
 			if (!$base) { 
@@ -457,7 +459,7 @@ class View
 			$critere = $lodeluser['visitor'] ? 'AND status>-64' : 'AND status>0';
 			$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
 			if (!$row) {
-				$this->_error ("Internal error.", __FUNCTION__);
+				break;
 			}
 			$context = array_merge($context, $row);
 			// get the type
@@ -479,7 +481,6 @@ class View
 			break;
 			default: $this->_error("Unknown class type {$class}", __FUNCTION__); break;	
 		}
-			
 	}
 
 	/**
@@ -632,29 +633,27 @@ class View
 		header("HTTP/1.0 403 Internal Error");
 		header("Status: 403 Internal Error");
 		header("Connection: Close");
-		$error = "Error: [\" " . $msg . " \"] in function '".$func." in file ".__FILE__."'<br />\n";
+		$error = "Error: [\" " . $msg . " \"] in function '".$func."' in file '".__FILE__."' (page demandée: ".$_SERVER['REQUEST_URI'].")\n";
 		if($db->errorno())
-			$error .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."<br />\n";
+			$error .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."\n";
 		if($lodeluser['rights'] > LEVEL_VISITOR) {
 			// on peut décommenter ici pour afficher les erreurs et le contenu évalué
 			// (décommenter aussi l'appel à la fonction eval() )
 			//echo ob_get_clean();
 			//echo "content : <br>".htmlentities($content)."<br><br>tampon: <br>"; 
 			ob_end_clean();
-			echo $error;
+			echo nl2br($error);
 		} else {
 			ob_end_clean();
 			if(file_exists($home."../../missing.html")) {
 				include $home."../../missing.html";
 			} elseif(file_exists('./not-found.html')) {
-				echo file_get_contents('./not-found.html');
-			} else {
-				die("Internal error.");
+				header('Location: not-found.html');
 			}
 		}
 		
 		if($GLOBALS['contactbug']) {
-			$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$site;
+			$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$GLOBALS['currentdb']." / ".$site;
 			@mail($GLOBALS['contactbug'], $sujet, $error);
 		}
 		
