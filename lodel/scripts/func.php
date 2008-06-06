@@ -1104,20 +1104,42 @@ function mystripslashes (&$var)
  */
 function _indent($source, $indenter = '  ')
 {
-	// preparation des lignes
-	$source = preg_replace("/\n\s*/", "\n", $source);
-	$source = preg_replace("/(<.*?>)/", "\n\\1\n", $source);
-	$source = preg_replace("/\n\n/", "\n", $source);
-	$source = preg_replace("/\n\s*/", "\n", $source);
-	$source = preg_replace("/(\n)?<(em|sup|span|sub|a|img)([^>]*)>(\n)?(.*?)(\n)?<\/\\2>(\n)?/", "<\\2\\3>\\5</\\2>", $source);
 	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			require_once 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
+	}
+	$source = preg_replace("/(\n|\t)+?(<(em|sup|span|sub|a|img|strong)[^>]*>)(\n|\t)+/", "\\2", $source);
+	$source = preg_replace("/(\n|\t)+(<\/(em|sup|span|sub|a|img|strong)>)(\n|\t)+?/", "\\2", $source);
+	$source = preg_replace("/^(\t|\n)+$/", "", $source);
+	$source = preg_replace("/((\t|\n)*)?\n\t*/", "", $source);
+	$source = preg_replace("/\n+/", "\n", $source);
+	$arr = preg_split("/[\t\n]*(<(\/?)(?!em|sup|span|sub|a|img)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)[\t\n]*/", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$tab = '';
+	for ($i = 1 ; $i < count($arr) ; $i += 3) {
+		if ($arr[$i +1]) {
+			$tab = substr($tab, 2); // closing tag
 		}
-	$source = _indent_xhtml($source,$indenter);
-	return $source;
+		if (substr($arr[$i], -2) == "/>") { // opening closing tag
+			$out = $tab.$arr[$i].$arr[$i +2]."\n";
+		} else {
+			if (!$arr[$i +1] && $arr[$i +4]) { // opening follow by a closing tags
+				$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
+				$i += 3;
+			}	else {
+				$out = $tab.$arr[$i]."\n";
+				if (!$arr[$i +1]) {
+					$tab .= "$indenter";
+				}
+				if (trim($arr[$i +2])) {
+					$out .= $tab.$arr[$i +2]."\n";
+				}
+			}
+		}
+		$ret .= $out;
+	}
+	return $ret;
 }
 
 
