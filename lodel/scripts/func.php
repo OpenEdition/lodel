@@ -1115,7 +1115,7 @@ function _indent($source, $indenter = '  ')
 	$source = preg_replace("/^(\t|\n)+$/", "", $source);
 	$source = preg_replace("/((\t|\n)*)?\n\t*/", "", $source);
 	$source = preg_replace("/\n+/", "\n", $source);
-	$arr = preg_split("/[\t\n]*(<(\/?)(?!em|sup|span|sub|a|img)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)[\t\n]*/", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$arr = preg_split("/[\t\n]*(<(\/?|!?)(?!em|sup|span|sub|a|img)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)[\t\n]*/", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$tab = '';
 	for ($i = 1 ; $i < count($arr) ; $i += 3) {
 		if ($arr[$i +1]) {
