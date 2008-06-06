@@ -1885,8 +1885,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
                  " [#G_TITLE|textebrut|nbsp] "
            </IF>
          </span>&nbsp;
-	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>
-	<span class="type_document">([#TYPE])</span>
+	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>&nbsp;
+	<span class="type_document">([#TYPE])</span> 
 	<LOOP NAME="getcomments" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 1" ORDER="type, entities.rank">
 		<AFTER><span class="comment" title="[#NBRESULTS] [@COMMON.COMMENTS]"><MACRO NAME="PNG_COMMENT" /> <sup>([#NBRESULTS])</sup></span></AFTER>
 	</LOOP>
