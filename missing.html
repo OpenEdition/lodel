@@ -5,10 +5,10 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÈnou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÈnou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÈnou, Jean Lamy, MikaÎl Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno CÈnou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C√©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno C√©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno C√©nou, Jean Lamy, Mika√´l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno C√©nou, Sophie Malafosse, Pierre-Alain Mignot
  *
  *  Home page: http://www.lodel.org
  *
@@ -29,36 +29,40 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
-
-
-# configurer le chemin de base des revues (normalement $base="" sur revues.org)
-
-// cherche la revue
-
-include ("lodelconfig.php");
-
-
-if (preg_match("/^(".preg_quote($urlroot,"/")."\/([a-zA-Z]\w+)\/)(\d+-\d+|index|i-auteurs|i-themes)\/(.*)$/",$REQUEST_URI,$result)) {
-  $revue=$result[2];
-  if ($result[3]=="i-auteurs") { header ("location: $urlroot/$revue/auteurs.html"); return; }
-  if ($result[3]=="i-themes") { header ("location: $urlroot/$revue/themes-court.html"); return; }
-  $document=substr($REQUEST_URI,strlen($result[1]))."\t";
-  if (file_exists("$revue/lodel/txt/dbconv")) {
-    $dbconv=fopen("$revue/lodel/txt/dbconv","r");
-    while ($line=fgets($dbconv,1024)) {
-      if (strpos($line,$document)===0) {
-	header("Location: $urlroot/$revue/".substr($line,strlen($document)));
-	return;
-#	echo("Location: $revue/article.html?id=".substr($line,strlen($document)));
-      }
-    }
-    fclose($dbconv);
-  }
-}
-
-
 ?>
 
-Page non trouvÈe
-<?php include ("XXXXXXXXXXXX A REMPLIR"); ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Erreur : page introuvable</title>
+	<style type="text/css">
+		body {background:#fff;color:#444;font:76%/1.5 Verdana, sans-serif;text-align:center}
+		h1 {color:#d00;font:normal 2.2em Georgia, serif;margin:1em 0;text-align:center}
+		div {width:50em; margin:0 auto;border:1px solid #ddd}
+		p {margin:1.5em} 
+		a {color:#4077D7;text-decoration:none}
+	</style>
+</head>
+<body>
+	<h1>
+		La page demand√©e est introuvable.
+	</h1>
+	<div>
+		<p>
+			Aucune page ne correspond √† cet URL&nbsp;:
+			<br /><strong><?php echo htmlspecialchars("http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']) ?></strong>
+		</p>
+		<p>
+			Veuillez v√©rifier la saisie dans la barre d'adresse de votre navigateur.
+		</p>
+	</div>
+	<?php 
+		if(file_exists("./missing_perso.html")) // racine site
+			echo file_get_contents("./missing_perso.html"); 
+		elseif(file_exists("../missing_perso.html")) // racine lodel
+			echo file_get_contents("../missing_perso.html"); 
+	?>
+</body>
+</html>
 
