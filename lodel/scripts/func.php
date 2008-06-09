@@ -1112,7 +1112,7 @@ function _indent($source, $indenter = '  ')
 	}
 	$source = preg_replace("/(\n|\t)+?(<(em|sup|span|sub|a|img|strong)[^>]*>)(\n|\t)+/", "\\2", $source);
 	$source = preg_replace("/(\n|\t)+(<\/(em|sup|span|sub|a|img|strong)>)(\n|\t)+?/", "\\2", $source);
-	$source = preg_replace("/([\t\n]*)?\n\t*/", "", $source);
+	$source = preg_replace("/([\t\n]*)?\n\t*$/", "", $source);
 	$source = preg_replace("/\n+/", "\n", $source);
 	$source = preg_replace("/\t+/", "", $source);
 	$source = preg_replace("/^[\t\n ]+$/", "", $source);
