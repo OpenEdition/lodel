@@ -55,6 +55,14 @@
  */
 
 require 'siteconfig.php';
+// vérifie l'intégrité de l'url demandée
+if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/(index|signaler|backend|logout|oai|search)(\d*)\.$extensionscripts(\?[^\/]*)?(\/.*)$/", $_SERVER['REQUEST_URI'])>0) {
+	header("HTTP/1.0 403 Bad Request");
+	header("Status: 403 Bad Request");
+	header("Connection: Close");
+	include "../missing.html";
+	exit;
+}
 //gestion de l'authentification
 require_once 'auth.php';
 authenticate();
@@ -109,6 +117,8 @@ if ($_POST['login']) {
 		}
 		$context['passwd'] = $passwd = 0;
 	} while (0);
+	if($err) // une erreur : besoin de l'afficher, donc pas d'utilisation du cache
+		$_REQUEST['clearcache'] = 1;
 } 
 if ($id || $identifier) {
 	require_once 'connect.php';
@@ -120,8 +130,15 @@ if ($id || $identifier) {
 				dberror();
 			}
 			if (!$class) { 
-				header ("Location: not-found.html"); 
-				return; 
+				header("HTTP/1.0 403 Internal Error");
+				header("Status: 403 Internal Error");
+				header("Connection: Close");
+				if(file_exists($home."../../missing.html")) {
+					include $home."../../missing.html";
+				} else {
+					header('Location: not-found.html');
+				}
+				exit; 
 			}
 		} elseif ($identifier) {
 			$class = 'entities';
@@ -238,8 +255,15 @@ function printEntities($id, $identifier, &$context)
 			dberror();
 		}
 		if (!$row) { 
-			header("Location: not-found.html");
-			return;
+			header("HTTP/1.0 403 Internal Error");
+			header("Status: 403 Internal Error");
+			header("Connection: Close");
+			if(file_exists($home."../../missing.html")) {
+				include $home."../../missing.html";
+			} else {
+				header('Location: not-found.html');
+			}
+			exit; 
 		}
 		$base = $row['tpl']; // le template à utiliser pour l'affichage
 		if (!$base) { 
@@ -258,7 +282,15 @@ function printEntities($id, $identifier, &$context)
 		dberror();
 	}
 	if (!$row) {
-		die("ERROR: internal error");
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit; 
 	}
 	if (!(@include_once('CACHE/filterfunc.php'))) {
 		require_once 'filterfunc.php';
@@ -304,8 +336,15 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header ('Location: not-found.html');
-		return;
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit;
 	}
 	$context = array_merge($context, $row);
 	// get the type
@@ -314,8 +353,15 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header ('Location: not-found.html');
-		return;
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit;
 	}
 	$base            = $row['tpl'];
 	$context['type'] = $row;
