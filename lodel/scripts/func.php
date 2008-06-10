@@ -1110,37 +1110,61 @@ function _indent($source, $indenter = '  ')
 			$source = indentXML($source, false, $indenter);
 			return $source;
 	}
-	$source = preg_replace("/(\n|\t)+?(<(em|sup|span|sub|a|img|strong)[^>]*>)(\n|\t)+/", "\\2", $source);
-	$source = preg_replace("/(\n|\t)+(<\/(em|sup|span|sub|a|img|strong)>)(\n|\t)+?/", "\\2", $source);
-	$source = preg_replace("/([\t\n]*)?\n\t*$/", "", $source);
-	$source = preg_replace("/\n+/", "\n", $source);
-	$source = preg_replace("/\t+/", "", $source);
-	$source = preg_replace("/^[\t\n ]+$/", "", $source);
-	$arr = preg_split("/[\t\n]*(<(\/?|!?)(?!em|sup|span|sub|a|img)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)[\t\n]*/", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
-	$tab = '';
-	for ($i = 1 ; $i < count($arr) ; $i += 3) {
-		if ($arr[$i +1]) {
-			$tab = substr($tab, 2); // closing tag
-		}
-		if (substr($arr[$i], -2) == "/>") { // opening closing tag
-			$out = $tab.$arr[$i].$arr[$i +2]."\n";
-		} else {
-			if (!$arr[$i +1] && $arr[$i +4]) { // opening follow by a closing tags
-				$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
-				$i += 3;
-			}	else {
-				$out = $tab.$arr[$i]."\n";
-				if (!$arr[$i +1]) {
-					$tab .= "$indenter";
+	// on touche pas à l'indentation du code PHP
+	$tmp = preg_split("/(<\?php)(.*?)(\?>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$source = $tab = '';
+	$isphp = false;
+	$nbOpPar = $nbCloPar = 0;
+	while(list(,$texte) = each($tmp)) {
+		if('<?php' == $texte) {
+			$isphp = true;
+		} elseif('?>' == $texte) {
+			$isphp = false;
+		} elseif(!$isphp && ($nbOpPar == $nbCloPar)) {
+			// on nettoie les balises de styles html en premier
+// 			$texte = preg_replace("/(\n|\t)*(<(em|sup|span|sub|a|img|strong|br)[^>]*>)(\n|\t)*/", "\\2", $texte);
+// 			$texte = preg_replace("/(\n|\t)*(<\/(em|sup|span|sub|a|img|strong)>)(\n|\t)*/", "\\2", $texte);
+ 			// on vire le superflu
+			$texte = preg_replace("/\n+/", "", $texte);
+			$texte = preg_replace("/\t+/", "", $texte);
+			//$texte = preg_replace("/([\t\n]*)?\n\t*/", "", $texte);
+			$texte = preg_replace("/^(\s)*$/", "", $texte);
+			// c'est parti on indente
+			$arr = preg_split("/(<(\/?|!?)(?!em|sup|span|sub|a|img|strong|br)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$texte = '';
+			$nbarr = count($arr);
+			for ($i = 1 ; $i < $nbarr ; $i += 3) {
+				if ($arr[$i +1]) {
+					$tab = substr($tab, 2); // closing tag
 				}
-				if (trim($arr[$i +2])) {
-					$out .= $tab.$arr[$i +2]."\n";
+				if (substr($arr[$i], -2) == "/>") { // opening closing tag
+					$out = $tab.$arr[$i].$arr[$i +2]."\n";
+				} else {
+					if (!$arr[$i +1] && $arr[$i +4]) { // opening follow by a closing tags
+						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
+						$i += 3;
+					}	else {
+						$out = $tab.$arr[$i]."\n";
+						if (!$arr[$i +1]) {
+							$tab .= "$indenter";
+						}
+						if (trim($arr[$i +2])) {
+							$out .= $tab.$arr[$i +2]."\n";
+						}
+					}
 				}
+				if(trim($out))
+					$texte .= $out;
 			}
+		} elseif($isphp) {
+			$nbOpPar += substr_count($texte, '{');
+			$nbCloPar += substr_count($texte, '}');
 		}
-		$ret .= $out;
+		if(trim($texte))
+			$source .= $texte;
 	}
-	return $ret;
+	
+	return $source;
 }
 
 
