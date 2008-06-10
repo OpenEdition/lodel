@@ -52,83 +52,63 @@
  * @param bool $allCache
  * @see func.php -> function update()
  */
-function clearcache($allCache=false)
+function clearcache($allCache=true)
 {
 	global $site;
 	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
-	if(!$allCache) {
+	if($allCache) {
 		if (defined("SITEROOT")) {
 			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
 		}	else {
 			removefilesincache(".");
 		}
-	} else {
+	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
 		require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($GLOBALS['cacheOptions']);
 		if($site) {
-			$cache->clean('TemplateFile'); // fichiers inclus en LS
-			$cache->clean('tpl'); // templates cachés
 			$cache->clean($site); // html
 		} else {
 			$cache->clean();
 		}
-		unset($cache);	
 	}
 }
 
 /**
  * Nettoyage des fichiers du répertoire de CACHE
  *
- * Note importante : cette fonction pourrait être écrite de facon beaucoup plus simple avec 
- * de la récurrence. Pour des raisons de sécurité/risque de bugs, elle est doublement 
- * protegée.
  * On ajoute le répertoire CACHE dans le code, ce qui empêche de détruire le contenu d'un autre
- * répertoire. On ne se propage pas de facon récurrente.
+ * répertoire.
  */
 function removefilesincache()
 {
 	global $site;
-	require_once 'Cache/Lite.php';
-	require_once 'func.php';
 	$options = $GLOBALS['cacheOptions'];
-
 	foreach (func_get_args() as $rep) {
 		if (!$rep) {
 			$rep = ".";
-		}else {
+		} else {
 			$rep = "./".$rep;
 		}
-		$rep .= "/CACHE/";
+		if(FALSE === strpos($rep, '/CACHE/'))
+			$rep .= "/CACHE/";
+		$rep = str_replace('//', '/', $rep);
+
 		$options['cacheDir'] = $rep;
+		require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($options);
-		$cache->clean('TemplateFile'); // fichiers inclus en LS
-		$cache->clean('tpl'); // templates cachés
-		if($site)
-			$cache->clean($site); // html
-		else
-			$cache->clean();
-		unset($cache);
+		$cache->clean();
+		$cache = null;
 
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
-
+		clearstatcache();
 		while (($file = readdir($fd)) !== false) {
 			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || (FALSE !== strpos($file, 'cache_')))
 				continue;
 			$file = $rep. "/". $file;
 			if (is_dir($file)) { //si c'est un répertoire on l'ouvre
-				$rep2 = $file;
-				$fd2 = opendir($rep2) or die("Impossible d'ouvrir $file");
-				while (($file = readdir($fd2)) !== false) {
-					if ($file[0] == ".")
-						continue;
-					$file = $rep2."/".$file;
-					if (myfileexists($file) && is_writeable($file)) {
-						@unlink($file);
-					}
-				}
-				closedir($fd2);
-			} elseif (myfileexists($file) && is_writeable($file)) {
+				removefilesincache($file);
+			} elseif (file_exists($file) && is_writeable($file)) {
 				@unlink($file);
 			}
 		}
@@ -139,7 +119,7 @@ function removefilesincache()
 /**
  * Fonction générant le nom du fichier caché (prise de Cache_Lite)
  * @param string $id base du nom du fichier à générer
- * @param string $group groupe du fichier (à définir ?)
+ * @param string $group groupe du fichier
  * @param array $options options du cache
 */
 function getCachedFileName($id, $group, $options) {

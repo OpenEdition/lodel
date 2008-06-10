@@ -227,7 +227,7 @@ function myfilemtime($filename)
 function update()
 {
 	require_once 'cachefunc.php';
-	clearcache(true);
+	clearcache(false);
 }
 
 function addmeta(&$arr,$meta="")
@@ -1133,6 +1133,10 @@ function _indent($source, $indenter = '  ')
 			$arr = preg_split("/(<(\/?|!?)(?!em|sup|span|sub|a|img|strong|br)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$texte = '';
 			$nbarr = count($arr);
+			if($nbarr<=1) {
+				$source .= $arr[0];
+				continue;
+			}
 			for ($i = 1 ; $i < $nbarr ; $i += 3) {
 				if ($arr[$i +1]) {
 					$tab = substr($tab, 2); // closing tag
@@ -1163,7 +1167,6 @@ function _indent($source, $indenter = '  ')
 		if(trim($texte))
 			$source .= $texte;
 	}
-	
 	return $source;
 }
 
