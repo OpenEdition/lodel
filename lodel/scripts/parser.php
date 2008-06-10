@@ -162,6 +162,7 @@ class Parser
 			$contents = '<?php 
 			'.$this->fct_txt.'?>'.$contents;
 		}
+		unset($this->fct_txt);
 		//
 		// refresh manager
 		//
@@ -170,7 +171,6 @@ class Parser
 
 			if(!$include) {
 				$code = '<'.'?php 
-						if (!function_exists("myfilemtime")) { include "func.php"; }
 						if ($GLOBALS[cachedfile]) { $cachetime=myfilemtime($GLOBALS[cachedfile]); ';
 	
 				// refresh period in second
@@ -194,13 +194,10 @@ class Parser
 				$tpl = preg_replace("/^([^\/]+\/)*(\w+)\.html$/", "\\2", $in);
 				$f = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					)."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//". $tpl. "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights'];
 				
 				$code = '
 					<'.'?php 
-						if (!function_exists("myfilemtime")) { include "func.php"; }
-						if (!function_exists("getCachedFileName")) { include "cachefunc.php"; }
-						if (!function_exists("insert_template")) { include "view.php"; }
 						$cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
 
 				// refresh period in second
@@ -222,7 +219,6 @@ class Parser
 						$code .= $contents . '<'.'?php } ?'.'>'; 
 					}
 				}
-				$code = preg_replace("/\?><\?(php)?/", '', $code);
 	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
 			}
 			unset($code);
@@ -237,11 +233,11 @@ class Parser
 			$this->charset = 'iso-8859-1';
 		if ($this->charset != 'utf-8')	{
 			#$t=microtime();
-			require_once TOINCLUDE. 'utf8.php'; // conversion des caracteres
+			if(!function_exists('convertHTMLtoUTF8'))
+				require_once 'utf8.php'; // conversion des caracteres
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
-
 		return $contents;
 	}
 
@@ -464,7 +460,6 @@ class Parser
 					$this->_clearposition();
 					$this->arr[$this->ind] = 
 					'<?php 
-						if(!function_exists("insert_template")) { include "view.php"; }
 						insert_template($context, "'.basename($attrs['TEMPLATEFILE']).'");
 					?>';
 				}
@@ -829,7 +824,7 @@ class Parser
 		if ($dontselect) { // DONTSELECT
 			// at the moment, the dontselect should not be prefixed by the table name !
 			if (!$tablefields)
-				require (TOINCLUDE.'tablefields.php');
+				require 'tablefields.php';
 			if (!$tablefields)
 				die("ERROR: internal error in decode_loop_content: table $table");
 
