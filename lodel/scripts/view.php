@@ -214,7 +214,7 @@ class View
 	 */
 	public function renderIfCacheIsValid()
 	{
-		global $site, $context;
+		global $site, $context, $home;
 
 		if ($_REQUEST['clearcache']) {
 			clearcache();
