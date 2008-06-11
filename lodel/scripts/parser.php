@@ -134,14 +134,8 @@ class Parser
 		$this->fct_txt = "";
 
 		// read the file
-		if (!function_exists("file_get_contents")) {
-			$fp = fopen($in, "r");
-			while (!feof($fp))
-				$file .= fread($fp, 1024);
-			fclose($fp);
-		}	else	{
-			$file = file_get_contents($in);
-		}
+		$file = file_get_contents($in);
+
 		$contents = stripcommentandcr($file);
 
 		$this->_split_file($contents); // split the contents into commands
@@ -197,13 +191,12 @@ class Parser
 					). "//". $GLOBALS['lang'] ."//". $tpl. "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights'];
 				
 				$code = '
-					<'.'?php 
-						$cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+					<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
 
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= 'echo "#LODELREFRESH '.($this->refresh + 1).'#";
-						if(($cachetime + '.($this->refresh + 1).') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.($this->refresh + 1).'); 
+					$code .= 'echo "#LODELREFRESH '.$this->refresh.'#";
+						if(($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.$this->refresh.'); 
 					}else{ ?>';
 					$code .= $contents . '<'.'?php } ?'.'>';
 				} else { // refresh time
@@ -911,16 +904,16 @@ class Parser
 		#echo "infilename=".$this->infilename;
 		$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
 		if ($contents['DO']) {
-			$this->fct_txt .= 'function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_do_'.$localtpl.$name.'")) { function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php } }';
 		}
 		if ($contents['BEFORE']) { // genere le code de avant
-			$this->fct_txt .= 'function code_before_'.$localtpl.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_before_'.$localtpl.$name.'")) { function code_before_'.$localtpl.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php } }';
 		}
 		if ($contents['AFTER'])	{ // genere le code de apres
-			$this->fct_txt .= 'function code_after_'.$localtpl.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_after_'.$localtpl.$name.'")) { function code_after_'.$localtpl.$name.' ($context) { ?>'.$contents['AFTER'].'<?php } }';
 		}
 		if ($contents['ALTERNATIVE'])	{ // genere le code de alternative
-			$this->fct_txt .= 'function code_alter_'.$localtpl.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_alter_'.$localtpl.$name.'")) { function code_alter_'.$localtpl.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php } }';
 		}
 		// fin ajout
 	}
@@ -1004,10 +997,10 @@ class Parser
 				$this->arr = null;
 				$this->_split_file($this->macrocode[$name]['code']);
 				$this->parse_main();
-				$this->fct_txt .= ' function '.$macrofunc.'($context,$args) {
+				$this->fct_txt .= 'if(!function_exists('.$macrofunc.')) { function '.$macrofunc.'($context,$args) {
 				         $context=array_merge($context,$args); ?>';
 				$this->fct_txt .= join('', $this->arr);
-				$this->fct_txt .= '<?php  } ';
+				$this->fct_txt .= '<?php  } }';
 				$this->arr = $tmpArr;
 				$this->ind = $tmpInd;
 				$this->countarr = $tmpCountArr;

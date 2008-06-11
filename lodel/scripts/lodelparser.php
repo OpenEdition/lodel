@@ -417,7 +417,7 @@ class LodelParser extends Parser
 		$group = strtolower($group);
 
 		if ($GLOBALS['righteditor']) { // cherche si le texte existe
-			require_once TOINCLUDE."connect.php";
+			require_once 'connect.php';
 
 			if ($group != "site") {
 				usemaindb();

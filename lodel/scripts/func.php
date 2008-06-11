@@ -1110,25 +1110,22 @@ function _indent($source, $indenter = '  ')
 			$source = indentXML($source, false, $indenter);
 			return $source;
 	}
-	// on touche pas à l'indentation du code PHP
-	$tmp = preg_split("/(<\?php)(.*?)(\?>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
+	// on touche pas à l'indentation du code PHP, JS, CSS
+	$tmp = preg_split("/(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)(.*?)(\?>|<\/script>|<\/noscript>|<\/style>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$source = $tab = '';
-	$isphp = false;
+	$iscode = 0;
 	$nbOpPar = $nbCloPar = 0;
 	while(list(,$texte) = each($tmp)) {
-		if('<?php' == $texte) {
-			$isphp = true;
-		} elseif('?>' == $texte) {
-			$isphp = false;
-		} elseif(!$isphp && ($nbOpPar == $nbCloPar)) {
-			// on nettoie les balises de styles html en premier
-// 			$texte = preg_replace("/(\n|\t)*(<(em|sup|span|sub|a|img|strong|br)[^>]*>)(\n|\t)*/", "\\2", $texte);
-// 			$texte = preg_replace("/(\n|\t)*(<\/(em|sup|span|sub|a|img|strong)>)(\n|\t)*/", "\\2", $texte);
- 			// on vire le superflu
+		if(preg_match("/^(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)$/", $texte)) {
+			$iscode++;
+		} elseif(preg_match("/^(\?>|<\/script>|<\/noscript>|<\/style>)$/", $texte)) {
+			$iscode--;
+		} elseif($iscode == 0 && ($nbOpPar == $nbCloPar)) {
+ 			// on vire toute l'indentation existante
 			$texte = preg_replace("/\n+/", "", $texte);
 			$texte = preg_replace("/\t+/", "", $texte);
-			//$texte = preg_replace("/([\t\n]*)?\n\t*/", "", $texte);
 			$texte = preg_replace("/^(\s)*$/", "", $texte);
+
 			// c'est parti on indente
 			$arr = preg_split("/(<(\/?|!?)(?!em|sup|span|sub|a|img|strong|br)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
 			$texte = '';
@@ -1160,7 +1157,7 @@ function _indent($source, $indenter = '  ')
 				if(trim($out))
 					$texte .= $out;
 			}
-		} elseif($isphp) {
+		} elseif($iscode>0) {
 			$nbOpPar += substr_count($texte, '{');
 			$nbCloPar += substr_count($texte, '}');
 		}

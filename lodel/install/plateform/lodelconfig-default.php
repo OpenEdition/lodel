@@ -128,7 +128,7 @@ $proxyhost="";
 $proxyport="8080";
 
  #tableau des types de fichiers acceptés à l'upload
-$authorizedFiles = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg');
+$authorizedFiles = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg', '.xml');
 
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK
@@ -162,6 +162,8 @@ $cacheOptions = array(
 	'hashedDirectoryLevel'=>2
 	);
 ##################
+
+$debugMode = false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
 
 setlocale (LC_ALL,"fr_FR.UTF8");
 

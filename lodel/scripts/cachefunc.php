@@ -64,11 +64,26 @@ function clearcache($allCache=true)
 		}
 	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
 		require_once 'Cache/Lite.php';
-		$cache = new Cache_Lite($GLOBALS['cacheOptions']);
-		if($site) {
-			$cache->clean($site); // html
+		$options = $GLOBALS['cacheOptions'];
+		if (defined("SITEROOT")) {
+			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
+			while(list(,$rep) = each($cacheReps)) {
+				$options['cacheDir'] = $rep.'/CACHE/';
+				$cache = new Cache_Lite($options);
+				if($site) {
+					$cache->clean($site); // html
+				} else {
+					$cache->clean();
+				}
+				$cache = null;
+			}
 		} else {
-			$cache->clean();
+			$cache = new Cache_Lite($GLOBALS['cacheOptions']);
+			if($site) {
+				$cache->clean($site); // html
+			} else {
+				$cache->clean();
+			}
 		}
 	}
 }
@@ -91,22 +106,15 @@ function removefilesincache()
 		}
 		if(FALSE === strpos($rep, '/CACHE/'))
 			$rep .= "/CACHE/";
-		$rep = str_replace('//', '/', $rep);
-
-		$options['cacheDir'] = $rep;
-		require_once 'Cache/Lite.php';
-		$cache = new Cache_Lite($options);
-		$cache->clean();
-		$cache = null;
 
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
 		clearstatcache();
 		while (($file = readdir($fd)) !== false) {
-			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || (FALSE !== strpos($file, 'cache_')))
+			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || (FALSE !== strpos($file, 'require_caching')))
 				continue;
 			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on l'ouvre
+			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
 				removefilesincache($file);
 			} elseif (file_exists($file) && is_writeable($file)) {
 				@unlink($file);
