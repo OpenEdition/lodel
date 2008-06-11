@@ -587,10 +587,8 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
-	if(!$arguments['array']) {
-		call_user_func("code_alter_$funcname", $localcontext);
-	}
-	if(!is_array($arguments['array'])) {
+
+	if((!is_array($arguments['array']) || !$arguments['array']) && function_exists("code_alter_$funcname")) {
 		call_user_func("code_alter_$funcname", $localcontext);
 	}
 	$localcontext['count'] = count($arguments['array']);
@@ -606,8 +604,8 @@ function loop_foreach(&$context, $funcname, $arguments)
 	}
 		
 	//L'after
-	if (function_exists("code_before_$funcname")) {
-		call_user_func("code_before_$funcname", $context);
+	if (function_exists("code_after_$funcname")) {
+		call_user_func("code_after_$funcname", $context);
 	}
 
 	
