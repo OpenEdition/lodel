@@ -48,7 +48,7 @@ require_once 'auth.php';
 authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
 
 $name = addslashes($_COOKIE[$sessionname]);
-$url_retour = strip_tags($_POST['url_retour']);
+$url_retour = strip_tags($_GET['url_retour']);
 include_once 'connect.php';
 $time = time()-1;
 usemaindb();
