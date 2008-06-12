@@ -48,7 +48,7 @@ require_once 'auth.php';
 authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
 
 $name = addslashes($_COOKIE[$sessionname]);
-
+$url_retour = strip_tags($_POST['url_retour']);
 include_once 'connect.php';
 $time = time()-1;
 usemaindb();
@@ -56,5 +56,8 @@ $db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) 
 $db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or dberror();
 setcookie($sessionname, "", $time,$urlroot);
 
-header ('Location: '. SITEROOT); // la norme ne supporte pas les chemins relatifs !!
+if($url_retour)
+	header('Location: '.$url_retour);
+else
+	header('Location: '.SITEROOT); // la norme ne supporte pas les chemins relatifs !!
 ?>
