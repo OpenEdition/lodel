@@ -68,7 +68,7 @@ function clearcache($allCache=true)
 		if (defined("SITEROOT")) {
 			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
 			while(list(,$rep) = each($cacheReps)) {
-				$options['cacheDir'] = $rep.'/CACHE/';
+				$options['cacheDir'] = $rep.'./CACHE/';
 				$cache = new Cache_Lite($options);
 				if($site) {
 					$cache->clean($site); // html
@@ -105,7 +105,7 @@ function removefilesincache()
 			$rep = "./".$rep;
 		}
 		if(FALSE === strpos($rep, '/CACHE/'))
-			$rep .= "/CACHE/";
+			$rep .= "./CACHE/";
 
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
