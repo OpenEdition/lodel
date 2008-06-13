@@ -89,9 +89,11 @@ class Parser
 		//if ($ind)
 		//$line = "line ".$this->linearr[$ind];
 		//die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
+		if (!headers_sent()) {
+			header("HTTP/1.0 403 Internal Error");
+			header("Status: 403 Internal Error");
+			header("Connection: Close");
+		}
 		die("LODELSCRIPT ERROR in file ".$this->infilename." : $msg");
 	}
 
