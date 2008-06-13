@@ -1231,24 +1231,19 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 <DEFMACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
-
+	&nbsp;
 	<IF COND="[#STATUS]==-8">
 		[@EDITION.DRAFT]
-	<ELSE/>
-	<IF COND="[#STATUS]==-1">
+	<ELSEIF COND="[#STATUS]==-1">
 		[@EDITION.READY_TO_BE_PUBLISHED]
-	<ELSE/>
-	<IF COND="[#STATUS]==1">
+	<ELSEIF COND="[#STATUS]==1">
 		[@EDITION.PUBLISHED]
-	<ELSE/>
-	<IF COND="[#STATUS]==8">
+	<ELSEIF COND="[#STATUS]==8">
 		[@COMMON.PROTECTED]
 	<ELSE/>
 		unknow ??
 	</IF>
-	</IF>
-	</IF>
-	</IF>
+	&nbsp;
 </DEFMACRO>
 
 <DEFFUNC NAME="STATUS_ICON" REQUIRED="status">
@@ -1740,10 +1735,10 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<MACRO NAME="AFFICHER_LIBELLE_STATUS_ENTITIES">
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
-				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|
+				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=-1">[@EDITION.SET_READY_TO_BE_PUBLISHED]</a>&nbsp;|&nbsp;
 			</DO>
 			<ALTERNATIVE>
-				|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|
+				|&nbsp;<span class="inactif">[@EDITION.SET_READY_TO_BE_PUBLISHED]</span>&nbsp;|&nbsp;
 			</ALTERNATIVE>
 		</LOOP>
 	</IF>
@@ -1765,11 +1760,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
 
-				&nbsp;|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|
+				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=+8">[@COMMON.PROTECT]</a>&nbsp;|&nbsp;
 
 			</DO>
 			<ALTERNATIVE>
-				&nbsp;|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|
+				|&nbsp;<span class="inactif">[@COMMON.PROTECT]</span>&nbsp;|&nbsp;
 			</ALTERNATIVE>
 		</LOOP>
 	</IF>
