@@ -171,7 +171,7 @@ class Parser
 	
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= ' if(($cachetime>0) && (($cachetime + '.$this->refresh.') < time())) return "refresh"; ';
+					$code .= ' if($cachetime && (($cachetime + '.$this->refresh.') < time())) return "refresh"; ';
 					
 				} else { // refresh time
 					$code .= '$now = time(); $date = getdate($now);';
@@ -180,7 +180,7 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'if (($cachetime > 0) && $cachetime<$refreshtime && $now>$refreshtime) return "refresh"; ';
+						$code .= 'if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now) return "refresh"; ';
 					}
 				}
 				$code .= '} ?'.'>';
@@ -198,7 +198,7 @@ class Parser
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
 					$code .= 'echo "#LODELREFRESH '.$this->refresh.'#";
-						if(($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.$this->refresh.'); 
+						if($cachetime && ($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.$this->refresh.'); 
 					}else{ ?>';
 					$code .= $contents . '<'.'?php } ?'.'>';
 				} else { // refresh time
@@ -209,7 +209,7 @@ class Parser
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
 						$code .= 'echo "#LODELREFRESH ";echo $refreshtime;echo "#";
-							if ($cachetime<$refreshtime && $now>$refreshtime && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
+							if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
 							}else{ ?>';
 						$code .= $contents . '<'.'?php } ?'.'>'; 
 					}
