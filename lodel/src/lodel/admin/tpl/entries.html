@@ -38,13 +38,16 @@
 	<strong>[@ADMIN.ADMINISTRATE_ENTRY_BY]</strong>
 		<LET VAR="current_entry_type">[#TYPE.TITLE]</LET>
 		<LOOP NAME="getTypes" TABLE="entrytypes" ORDER="rank">
+			<!--[
 			<BEFORE><select onchange="select_url(this)" class="barInfo"></BEFORE>
 			<IF COND="[#TITLE] EQ [#CURRENT_ENTRY_TYPE]">
 				<option selected="selected">[#TITLE]</option>
 			<ELSE />
 				<option value="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[#TITLE]</option>
 			</IF>
-			<AFTER></select></AFTER>
+			<AFTER></select></AFTER>]-->
+			&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a>&nbsp;&nbsp;|
+			<DOLAST>&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a></DOLAST>
 		</LOOP>
 	</li>
 </ul>
@@ -64,11 +67,19 @@
 
 <div id="entries">
 	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
+		<IF COND="[#LISTALL]">
+			<a href="index.php?do=list&amp;lo=entries&amp;idtype=[#TYPE.ID]"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span></a>&nbsp;|&nbsp;
+			<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span>
+		<ELSE />	
+			<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span>&nbsp;|&nbsp;<a href="[#CURRENTURL]&listall=1"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span></a>
+		</IF>
+		<br /><br />
 		<div id="alphabet">
 			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]">
 		</div>	
 	</IF>
-	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]">
+
+	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|strtoupper]" LISTALL="[#LISTALL]">
 </div>
 <MACRO NAME="OK_TOINDEX_ADMIN">
 

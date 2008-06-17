@@ -710,7 +710,7 @@ function loop_alphabet($context, $funcname)
  */
 function loop_alphabetSpec($context, $funcname)
 {
-	global $db;
+	global $db, $lodeluser;
 	require_once 'func.php';
 	if(empty($context['table']) || empty($context['field']))
 		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
@@ -728,7 +728,12 @@ function loop_alphabetSpec($context, $funcname)
 	}
 	reset($lettres);
 
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} status>0 AND SUBSTRING({$context['field']},1,1) = ");
+	if($lodeluser['editor'])
+		$status = ' status > -64 ';
+	else
+		$status = ' status > 0 ';
+
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;

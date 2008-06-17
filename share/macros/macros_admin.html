@@ -80,25 +80,36 @@
 		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
 </DEFMACRO>
 
-<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype">
+<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype, listall">
 	<LET VAR="field">[#FIELD]</LET>
 	<LET VAR="table">[#TABLE]</LET>
 	<LOOP NAME="alphabetSpec">
-		<a href="#[#LETTRE]">[#LETTRE]</a>
+		<IF COND="[#LISTALL]">
+			<IF COND="[#NBRESULTS] GT 0">
+				<a href="#[#LETTRE]">[#LETTRE]</a>
+			<ELSE />
+				[#LETTRE]&nbsp;
+			</IF>			
+		<ELSE />
+			<IF COND="[#LISTALL] OR [#NBRESULTS] GT 0">
+				<a href="[#CURRENTURL|reg_replace('/[&\?]offset_\w+=[^&]+/', '')|reg_replace('/[&\?]letter=[^&]+/', '')]&letter=[#LETTRE]">[#LETTRE]</a>
+			<ELSE />
+				[#LETTRE]&nbsp;
+			</IF>
+		</IF>
 	</LOOP>
 </DEFFUNC>
 
-<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort">
+<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall">
 	<IF COND="[#SORT] EQ 'sortkey'">
+		<IF COND="[#LISTALL]">	
 		<LET VAR="field">[#SORT]</LET>
 		<LET VAR="table">entries</LET>
 		<LOOP NAME="alphabetSpec">
 			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
-			<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#TYPE.SORT]">
+			<LOOP NAME="series_sortkey_listall" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#TYPE.SORT]">
 				<BEFORE>
-					<h2 id="[#LETTRE]">
-						<a href="#alphabet">[#LETTRE]</a>
-					</h2>
+					<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
 					<ELSE />
@@ -106,14 +117,14 @@
 					</IF>
 				</BEFORE>
 				<DO>
-				<IF COND="[#COUNT] % 2">
-					<li class="line1">
-				<ELSE/>
-					<li class="line2">
-				</IF>
+					<IF COND="[#COUNT] % 2">
+						<li class="line1">
+					<ELSE/>
+						<li class="line2">
+					</IF>
 					<div class="entityIcons">
-					<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+						<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+						<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
 					</div>
 					<div class="document">
 						<span class="titre_document">[#G_NAME|nbsp]</span>
@@ -122,22 +133,65 @@
 					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
 					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 					</li>
-				
 				</DO>
 				<AFTER>
 					<IF COND="[#FOLDER]">
 						</ul></li>
 					<ELSE />
 						</ul>
-					</IF>			
+					</IF>
 				</AFTER>
 				<ALTERNATIVE>
 					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
 				</ALTERNATIVE>
 			</LOOP>
 		</LOOP>
+		<ELSE />
+		<LET VAR="lettresql"><IF COND="[#LETTER]">[#LETTER|replace("'", "\'")]<ELSE />A</IF></LET>
+		<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#TYPE.SORT]" SPLIT="30">
+			<BEFORE>
+				<h2 id="[#LETTRESQL|stripslashes]">
+					<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
+				</h2>
+				<IF COND="[#FOLDER]">
+					<li class="unfoldedentities"><ul class="listEntities">
+				<ELSE />
+					<ul class="listEntities">
+				</IF>
+			</BEFORE>
+			<DO>
+			<IF COND="[#COUNT] % 2">
+				<li class="line1">
+			<ELSE/>
+				<li class="line2">
+			</IF>
+				<div class="entityIcons">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+				</div>
+				<div class="document">
+					<span class="titre_document">[#G_NAME|nbsp]</span>
+					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+				</div>
+				<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+				<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+				</li>
+			</DO>
+			<AFTER>
+				<IF COND="[#FOLDER]">
+					</ul></li>
+				<ELSE />
+					</ul>
+				</IF>
+				<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+			</AFTER>
+			<ALTERNATIVE>
+				<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+			</ALTERNATIVE>
+		</LOOP>
+		</IF>
 	<ELSEIF COND="[#SORT] EQ 'id'" />
-			<LOOP NAME="series_id" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id">
+			<LOOP NAME="series_id" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id" SPLIT="30">
 				<BEFORE>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
@@ -169,14 +223,15 @@
 						</ul></li>
 					<ELSE />
 						</ul>
-					</IF>			
+					</IF>
+					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</AFTER>
 				<ALTERNATIVE>
 					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
 				</ALTERNATIVE>
 			</LOOP>
 	<ELSEIF COND="[#SORT] EQ 'rank'" />
-			<LOOP NAME="series_rank" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank">
+			<LOOP NAME="series_rank" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
 				<BEFORE>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
@@ -208,7 +263,8 @@
 						</ul></li>
 					<ELSE />
 						</ul>
-					</IF>			
+					</IF>
+					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</AFTER>
 				<ALTERNATIVE>
 					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
