@@ -285,7 +285,7 @@ class View
 			if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
 				$base_rep = $home. '../tpl/';
 			}
-			$cache->remove("tpl_{$tpl}", 'TemplateFile');
+			$cache->remove("tpl_{$tpl}", 'TemplateFile', true);
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
 			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
 		}
@@ -574,7 +574,7 @@ function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $esc
  */
 function mymysql_error($query, $tablename = '')
 {
-	if ($GLOBALS['lodeluser']['editor']) {
+	if ($GLOBALS['lodeluser']['editor'] || $GLOBALS['debugMode']) {
 		if ($tablename) {
 			$tablename = "LOOP: $tablename ";
 		}
@@ -585,7 +585,7 @@ function mymysql_error($query, $tablename = '')
 			$contenu = "Erreur de requete sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." \n\nQuery : ". $query . "\n\nErreur : ".mysql_error()."\n\nBacktrace :\n\n".print_r(debug_backtrace(), true);
 			@mail($GLOBALS['contactbug'], $sujet, $contenu);
 		}
-		die("<code><strong>Error!</strong> An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>");
+		die("<code>An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>");
 	}
 }
 

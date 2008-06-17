@@ -19,7 +19,7 @@
 *
 * @package Cache_Lite
 * @category Caching
-* @version $Id: Lite.php,v 1.50 2008/04/13 14:41:23 tacker Exp $
+* @version $Id: Lite.php,v 1.51 2008/06/08 08:46:22 tacker Exp $
 * @author Fabien MARTY <fab@php.net>
 */
 
@@ -410,10 +410,11 @@ class Cache_Lite
     *
     * @param string $id cache id
     * @param string $group name of the cache group
+    * @param boolean $checkbeforeunlink check if file exists before removing it
     * @return boolean true if no problem
     * @access public
     */
-    function remove($id, $group = 'default')
+    function remove($id, $group = 'default', $checkbeforeunlink = false)
     {
         $this->_setFileName($id, $group);
         if ($this->_memoryCaching) {
@@ -424,6 +425,9 @@ class Cache_Lite
             if ($this->_onlyMemoryCaching) {
                 return true;
             }
+        }
+        if ( $checkbeforeunlink ) {
+            if (!file_exists($this->_file)) return true;
         }
         return $this->_unlink($this->_file);
     }
