@@ -417,7 +417,7 @@ class LodelParser extends Parser
 		$group = strtolower($group);
 
 		if ($GLOBALS['righteditor']) { // cherche si le texte existe
-			require_once TOINCLUDE."connect.php";
+			require_once 'connect.php';
 
 			if ($group != "site") {
 				usemaindb();
@@ -441,7 +441,6 @@ class LodelParser extends Parser
 
 		$fullname = $group.'.'.$name;
 		$this->translationtags[] = "'".$fullname."'"; // save all the TEXT for the CACHE
-
 		if ($tag == "text")	{
 			// modify inline
 			$modifyif = '$context[\'righteditor\']';
@@ -493,6 +492,7 @@ class LodelParser extends Parser
 			$text = '<'.'?php
 	$langfile="CACHE/lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__);
 	if (!file_exists($langfile)) {
+		if(!function_exists("generateLangCache")) { require "view.php"; }
 		generateLangCache($GLOBALS[\'lang\'], $langfile, array('. join(',', $this->translationtags).'));
 	} else {
 		require_once($langfile);
@@ -504,7 +504,8 @@ class LodelParser extends Parser
 		// add the code for the desk
 		if (!$GLOBALS['nodesk']) {
 			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert the desk
-	calcul_page($context,"desk","",$GLOBALS[\'home\']."../tpl/");
+	if(!function_exists("insert_template")) { include "view.php"; }
+	insert_template($context,"desk","",$GLOBALS[\'home\']."../tpl/");
 	?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
 
 			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert end of the desk

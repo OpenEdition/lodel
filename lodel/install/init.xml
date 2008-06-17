@@ -193,7 +193,8 @@
 						type="VARCHAR"
 						size="255"
 						label="[@ADMIN.EMAIL]"
-						edittype="email" />
+						edittype="email"
+						required="true" />
 	</vgroup>
 	<vgroup name="lodel_informations"
 					label="[@ADMIN.USER_LODEL_INFORMATIONS]">

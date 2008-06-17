@@ -215,7 +215,7 @@ class InputFilter {
 				// strips unicode, hex, etc
 				$attrSubSet[1] = str_replace('&#', '', $attrSubSet[1]);
 				// strip normal newline within attr value
-				$attrSubSet[1] = preg_replace('/\s+/', '', $attrSubSet[1]);
+				$attrSubSet[1] = preg_replace("/[\t\n]+/", '', $attrSubSet[1]);
 				// strip double quotes
 				$attrSubSet[1] = str_replace('"', '', $attrSubSet[1]);
 				// [requested feature] convert single quotes from either side to doubles (Single quotes shouldn't be used to pad attr value)

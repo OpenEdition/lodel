@@ -55,6 +55,14 @@
  */
 
 require 'siteconfig.php';
+// vérifie l'intégrité de l'url demandée
+if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/(index|signaler|backend|logout|oai|search)(\d*)\.$extensionscripts(\?[^\/]*)?(\/.*)$/", $_SERVER['REQUEST_URI'])>0) {
+	header("HTTP/1.0 403 Bad Request");
+	header("Status: 403 Bad Request");
+	header("Connection: Close");
+	include "../missing.html";
+	exit;
+}
 //gestion de l'authentification
 require_once 'auth.php';
 authenticate();
@@ -63,7 +71,7 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
 
-require 'view.php';
+require_once 'view.php';
 $view = &View::getView();
 if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
 	// get the view and check the cache.
@@ -71,7 +79,7 @@ if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les 
 		return;
 	}
 }
-require 'textfunc.php';
+// require 'textfunc.php';
 $id         = intval($_GET['id']);
 $identifier = $_GET['identifier'];
 $page       = $_GET['page']; // get only
@@ -85,17 +93,17 @@ $url_retour = strip_tags($url_retour);
 if ($_POST['login']) {
 	require_once 'func.php';
 	extract_post();
-	require_once 'connect.php';
+// 	require_once 'connect.php';
 	require_once 'loginfunc.php';
 	do {
 		if (!check_auth_restricted($context['login'], $context['passwd'], $site)) {
-			$context['error_login'] = 1;
+			$context['error_login'] = $err = 1;
 			break;
 		}
 
 		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
 		if(!check_expiration()) {
-			$context['error_expiration'] = 1;
+			$context['error_expiration'] = $err = 1;
 			unset($context['lodeluser']);
 			break;
 		}
@@ -103,15 +111,17 @@ if ($_POST['login']) {
 			// ouvre une session
 			$err = open_session($context['login']);
 			if ($err) {
-				$context[$err] = 1;
+				$context[$err] = $err = 1;
 				break;
 			}
 		}
 		$context['passwd'] = $passwd = 0;
 	} while (0);
+	if($err) // une erreur : besoin de l'afficher, donc pas d'utilisation du cache
+		$_REQUEST['clearcache'] = 1;
 } 
 if ($id || $identifier) {
-	require_once 'connect.php';
+// 	require_once 'connect.php';
 	do { // exception block
 		require_once 'func.php';
 		if ($id) {
@@ -120,8 +130,15 @@ if ($id || $identifier) {
 				dberror();
 			}
 			if (!$class) { 
-				header ("Location: not-found.html"); 
-				return; 
+				header("HTTP/1.0 403 Internal Error");
+				header("Status: 403 Internal Error");
+				header("Connection: Close");
+				if(file_exists($home."../../missing.html")) {
+					include $home."../../missing.html";
+				} else {
+					header('Location: not-found.html');
+				}
+				exit; 
 			}
 		} elseif ($identifier) {
 			$class = 'entities';
@@ -151,7 +168,7 @@ if ($id || $identifier) {
 	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
 		die('invalid page');
 	}
-	require_once 'connect.php';
+// 	require_once 'connect.php';
 	$view->renderCached($context, $page);
 	exit;
 
@@ -191,7 +208,7 @@ if ($id || $identifier) {
 } else {
 	//tente de récupérer le path - parse la query string pour trouver l'entité
 
-	require_once 'connect.php';
+// 	require_once 'connect.php';
 	$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
 	
 	if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
@@ -238,8 +255,15 @@ function printEntities($id, $identifier, &$context)
 			dberror();
 		}
 		if (!$row) { 
-			header("Location: not-found.html");
-			return;
+			header("HTTP/1.0 403 Internal Error");
+			header("Status: 403 Internal Error");
+			header("Connection: Close");
+			if(file_exists($home."../../missing.html")) {
+				include $home."../../missing.html";
+			} else {
+				header('Location: not-found.html');
+			}
+			exit; 
 		}
 		$base = $row['tpl']; // le template à utiliser pour l'affichage
 		if (!$base) { 
@@ -258,7 +282,15 @@ function printEntities($id, $identifier, &$context)
 		dberror();
 	}
 	if (!$row) {
-		die("ERROR: internal error");
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit; 
 	}
 	if (!(@include_once('CACHE/filterfunc.php'))) {
 		require_once 'filterfunc.php';
@@ -304,8 +336,15 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header ('Location: not-found.html');
-		return;
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit;
 	}
 	$context = array_merge($context, $row);
 	// get the type
@@ -314,8 +353,15 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header ('Location: not-found.html');
-		return;
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+		if(file_exists($home."../../missing.html")) {
+			include $home."../../missing.html";
+		} else {
+			header('Location: not-found.html');
+		}
+		exit;
 	}
 	$base            = $row['tpl'];
 	$context['type'] = $row;

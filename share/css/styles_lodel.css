@@ -233,6 +233,14 @@ input.button{
 	font-size: 90%;
 }
 
+input.button#submitentity{
+	width:315px;
+}
+
+input.button#actionentity{
+	width:150px;
+}
+
 input.button_v{
 	border: 2px outset #333;
 	background: #f1f5fb;

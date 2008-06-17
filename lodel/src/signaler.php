@@ -52,15 +52,13 @@ authenticate();
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
+require_once 'view.php';
+$view = &View::getView();
 
-if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
-	// get the view and check the cache.
-	require 'view.php';
-	$view = &View::getView();
-	if ($view->renderIfCacheIsValid()) {
-		return;
-	}
-}
+$context['signaler_recaptcha'] = $signaler_recaptcha;
+$context['recaptcha_publickey'] = $recaptcha_publickey;
+require_once 'recaptchalib.php';
+
 require 'textfunc.php';
 
 $context['id'] = $id = intval($id);
@@ -72,18 +70,21 @@ $critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : "AND $GLOBALS[tp]entities
 if (!(@include_once('CACHE/filterfunc.php'))) {
 	require_once 'filterfunc.php';
 }
-
-$result = mysql_query(lq("SELECT $GLOBALS[tp]publications.*, $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity LEFT JOIN $GLOBALS[tp]publications on $GLOBALS[tp]publications.identity = $GLOBALS[tp]entities.id WHERE $GLOBALS[tp]entities.id='$id' $critere")) or dberror();
+$result = mysql_query(lq("SELECT $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity WHERE $GLOBALS[tp]entities.id='$id' $critere")) or dberror();
 if (mysql_num_rows($result) < 1) {
 	$context['notfound'] = 1;
-	require_once 'calcul-page.php';
-	calcul_page($context, 'signaler');
+	$view->renderCached($context, 'signaler');
 	return;
 }
 
 $context = array_merge($context, filtered_mysql_fetch_assoc($context, $result));
 
-require_once 'recaptchalib.php';
+if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
+	// check the cache.
+	if ($view->renderIfCacheIsValid()) {
+		return;
+	}
+}
 
 // send
 if ($envoi) {
@@ -97,8 +98,7 @@ if ($envoi) {
 		
 		if (!$resp->is_valid) {
 			$context['recaptcha_error'] = $resp->error;
-			require_once 'calcul-page.php';
-			calcul_page($context, 'signaler');
+			insert_template($context, 'signaler');
 			exit;
 		}
 	}
@@ -121,15 +121,9 @@ if ($envoi) {
 		else
 			$context['subject'] .= "un ami (" . $context['from'] . ").";
 
-		require_once 'calcul-page.php';
-		require_once 'view.php';
-
 		ob_start();
 		$GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
-		if($GLOBALS['signaler_recaptcha'] === true) {
-			require_once 'recaptchalib.php';
-		}
-		calcul_page($context, 'signaler-mail');
+		insert_template($context, 'signaler-mail');
 		$content = ob_get_clean();
 
 		// envoie le mail
@@ -143,9 +137,5 @@ if ($envoi) {
 	} while (0);
 }
 
-$context['signaler_recaptcha'] = $signaler_recaptcha;
-$context['recaptcha_publickey'] = $recaptcha_publickey;
-require_once 'calcul-page.php';
-calcul_page($context, 'signaler');
-
+$view->renderCached($context, 'signaler');
 ?>

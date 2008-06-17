@@ -350,7 +350,7 @@ class UsersLogic extends Logic
 									'passwd' => array('passwd', ''),
 									'lastname' => array('text', ''),
 									'firstname' => array('text', ''),
-									'email' => array('email', ''),
+									'email' => array('email', '+'),
 									'lang' => array('lang', '+'),
 									'userrights' => array('select', '+'),
 									'gui_user_complexity' => array('select', '+'),

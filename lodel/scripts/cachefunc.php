@@ -48,70 +48,102 @@
 /**
  * Nettoyage du répertoire de CACHE
  *
- * Cette fonction appelle removefilesincache()
+ * Cette fonction appelle removefilesincache() si $allCache = true
+ * @param bool $allCache
+ * @see func.php -> function update()
  */
-function clearcache()
+function clearcache($allCache=true)
 {
-	if (defined("SITEROOT")) {
-		removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-	}	else {
-		removefilesincache(".");
+	global $site;
+	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
+	if($allCache) {
+		if (defined("SITEROOT")) {
+			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
+		}	else {
+			removefilesincache(".");
+		}
+	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
+		require_once 'Cache/Lite.php';
+		$options = $GLOBALS['cacheOptions'];
+		if (defined("SITEROOT")) {
+			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
+			while(list(,$rep) = each($cacheReps)) {
+				$rep = "./".$rep;
+				$options['cacheDir'] = $rep.'/CACHE/';
+				if(!file_exists($options['cacheDir']))
+					continue;
+				$cache = new Cache_Lite($options);
+				if($site) {
+					$cache->clean($site); // html
+				} else {
+					$cache->clean();
+				}
+				$cache = null;
+			}
+		} else {
+			$cache = new Cache_Lite($GLOBALS['cacheOptions']);
+			if($site) {
+				$cache->clean($site); // html
+			} else {
+				$cache->clean();
+			}
+		}
 	}
 }
 
 /**
  * Nettoyage des fichiers du répertoire de CACHE
  *
- * Note importante : cette fonction pourrait être écrite de facon beaucoup plus simple avec 
- * de la récurrence. Pour des raisons de sécurité/risque de bugs, elle est doublement 
- * protegée.
  * On ajoute le répertoire CACHE dans le code, ce qui empêche de détruire le contenu d'un autre
- * répertoire. On ne se propage pas de facon récurrente.
+ * répertoire.
  */
 function removefilesincache()
 {
+	global $site;
+	$options = $GLOBALS['cacheOptions'];
 	foreach (func_get_args() as $rep) {
-		if (!$rep) {
-			$rep = ".";
-		}
-		$rep .= "/CACHE";
-		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+		$rep = "./".$rep;
+		if(FALSE === strpos($rep, '/CACHE/'))
+			$rep .= "/CACHE/";
 
+		// fichiers/répertoires gérés indépendament de cache_lite
+		if(!file_exists($rep))
+			continue;
+		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+		clearstatcache();
 		while (($file = readdir($fd)) !== false) {
-			#echo $rep," ",$file," ",(substr($file,0,1)==".") || ($file=="CVS"),"<br />";
-			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload"))
+			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || (FALSE !== strpos($file, 'require_caching')))
 				continue;
 			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on l'ouvre
-				$rep2 = $file;
-				$fd2 = opendir($rep2) or die("Impossible d'ouvrir $file");
-				while (($file = readdir($fd2)) !== false) {
-					if (substr($file, 0, 1) == ".")
-						continue;
-					$file = $rep2."/".$file;
-					if (myfileexists($file) && is_file($file) && is_writable($file))	{
-						@unlink($file);
-					}
-				}
-				closedir($fd2);
-			} elseif (myfileexists($file) && is_file($file)&& is_writable($file))	{
+			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+				removefilesincache($file);
+			} elseif (file_exists($file) && is_writeable($file)) {
 				@unlink($file);
 			}
 		}
-		closedir($fd);
+		closedir($fd);	
 	}
-	require_once 'func.php';
-	update();
 }
 
 /**
- * Fonction permettant de vérifier l'existence d'un fichier correctement !
- *
- * @param string $file fichier à tester
+ * Fonction générant le nom du fichier caché (prise de Cache_Lite)
+ * @param string $id base du nom du fichier à générer
+ * @param string $group groupe du fichier
+ * @param array $options options du cache
 */
-function myfileexists($file) {
-	// plus important : on supprime  le cache généré par les fonctions de stat de fichier !
-	clearstatcache();
-	return file_exists($file); // on retourne le test du fichier
+function getCachedFileName($id, $group, $options) {
+        if ($options['fileNameProtection']) {
+            $suffix = 'cache_'.md5($group).'_'.md5($id);
+        } else {
+            $suffix = 'cache_'.$group.'_'.$id;
+        }
+        $root = $options['cacheDir'] ? $options['cacheDir'] : './CACHE/';
+        if ($options['hashedDirectoryLevel']>0) {
+            $hash = md5($suffix);
+            for ($i=0 ; $i<$options['hashedDirectoryLevel'] ; $i++) {
+                $root = $root . 'cache_' . substr($hash, 0, $i + 1) . '/';
+            }   
+        }
+        return $root.$suffix;
 }
 ?>

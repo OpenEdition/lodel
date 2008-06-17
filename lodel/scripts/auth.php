@@ -104,11 +104,20 @@ function authenticate($level = 0, $mode = "")
 			if ($row['site'] != "tous les sites" && $row['site'] != $site) {
 				break;
 			}
+
+			// passe les variables en global
+			$lodeluser = unserialize($row['context']);
+			if($level == (LEVEL_RESTRICTEDUSER | LEVEL_VISITOR)) {
+				if($lodeluser['rights'] == 5)
+					$level = LEVEL_RESTRICTEDUSER;
+				else
+					$level = LEVEL_VISITOR;
+			}
 	
 			// verifie que la session n'est pas expiree
 			$time = time();
 			if ($row['expire'] < $time || $row['expire2'] < $time) {
-				$login = "";
+				$login = $lodeluser = "";
 				if($level == LEVEL_RESTRICTEDUSER) {
 					$login = 'index.'.$GLOBALS['extensionscripts'];
 				} else {
@@ -124,14 +133,13 @@ function authenticate($level = 0, $mode = "")
 				exit;
 			}
 	
-			// passe les variables en global
-			$lodeluser = unserialize($row['context']);
 			if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
 				if($level == LEVEL_RESTRICTEDUSER) {
 					$login = 'index.'.$GLOBALS['extensionscripts'];
 				} else {
 					$login = 'login.php';
 				}
+				$lodeluser = '';
 				header("location: $login?error_privilege=1&". $retour);
 				exit;
 			}
@@ -179,6 +187,7 @@ function authenticate($level = 0, $mode = "")
 	
 		// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
 		$_REQUEST['clearcache'] = false;
+		$lodeluser = '';
 
 		// exception
 		if ($level == 0) {

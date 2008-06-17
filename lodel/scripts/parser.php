@@ -34,6 +34,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -88,9 +89,11 @@ class Parser
 		//if ($ind)
 		//$line = "line ".$this->linearr[$ind];
 		//die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
+		if (!headers_sent()) {
+			header("HTTP/1.0 403 Internal Error");
+			header("Status: 403 Internal Error");
+			header("Connection: Close");
+		}
 		die("LODELSCRIPT ERROR in file ".$this->infilename." : $msg");
 	}
 
@@ -122,24 +125,19 @@ class Parser
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
 	}
 
-	function parse($in, $out)
+	function parse($in, $include)
 	{
 		global $sharedir;
 		$this->infilename = $in;
 		if (!file_exists($in))
 			$this->errmsg("Unable to read file $in");
-		$this->signature = preg_replace("/\W+/", "_", $out);
+
+		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = "";
 
 		// read the file
-		if (!function_exists("file_get_contents")) {
-			$fp = fopen($in, "r");
-			while (!feof($fp))
-				$file .= fread($fp, 1024);
-			fclose($fp);
-		}	else	{
-			$file = file_get_contents($in);
-		}
+		$file = file_get_contents($in);
+
 		$contents = stripcommentandcr($file);
 
 		$this->_split_file($contents); // split the contents into commands
@@ -149,6 +147,7 @@ class Parser
 			$this->errmsg("this file contains more closing tags than opening tags");
 
 		$contents = join("", $this->arr); // recompose the file
+
 		unset ($this->arr); // save memory now.
 		$this->parse_after($contents); // user defined parse function
 
@@ -159,32 +158,66 @@ class Parser
 			$contents = '<?php 
 			'.$this->fct_txt.'?>'.$contents;
 		}
+		unset($this->fct_txt);
 		//
 		// refresh manager
 		//
-		#die("::".$this->refresh);
 
 		if ($this->refresh)	{
-			$code = '<'.'?php if ($GLOBALS[cachedfile] && !$dontcheckrefresh) { $cachetime=filemtime($GLOBALS[cachedfile].".php"); ';
 
-			// refresh period in second
-			if (preg_match("/^\d+$/", $this->refresh)) {
-				$code .= ' if($cachetime+'.$this->refresh.'<time()) return "refresh"; ';
-				// refresh time
-			}	else {
-				$code .= '$now = time(); $date = getdate($now);';
-
-				$refreshtimes = preg_split("/,/", $this->refresh);
-				foreach ($refreshtimes as $refreshtime) {
-					$refreshtime = preg_split("/:/", $refreshtime);
-					$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-					$code .= 'if ($cachetime<$refreshtime && $now>$refreshtime) return "refresh"; ';
+			if(!$include) {
+				$code = '<'.'?php 
+						if ($GLOBALS[cachedfile]) { $cachetime=myfilemtime($GLOBALS[cachedfile]); ';
+	
+				// refresh period in second
+				if (is_numeric($this->refresh)) {
+					$code .= ' if($cachetime && (($cachetime + '.$this->refresh.') < time())) return "refresh"; ';
+					
+				} else { // refresh time
+					$code .= '$now = time(); $date = getdate($now);';
+	
+					$refreshtimes = explode("/,/", $this->refresh);
+					foreach ($refreshtimes as $refreshtime) {
+						$refreshtime = explode("/:/", $refreshtime);
+						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
+						$code .= 'if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now) return "refresh"; ';
+					}
 				}
+				$code .= '} ?'.'>';
+				$contents = '<'.'?php echo \''.quote_code($code).'\'; ?>
+				'.$contents;
+			} else {
+				$tpl = preg_replace("/^([^\/]+\/)*(\w+)\.html$/", "\\2", $in);
+				$f = str_replace('?id=0', '',
+					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
+					). "//". $GLOBALS['lang'] ."//". $tpl. "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights'];
+				
+				$code = '
+					<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+
+				// refresh period in second
+				if (is_numeric($this->refresh)) {
+					$code .= 'echo "#LODELREFRESH '.$this->refresh.'#";
+						if($cachetime && ($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.$this->refresh.'); 
+					}else{ ?>';
+					$code .= $contents . '<'.'?php } ?'.'>';
+				} else { // refresh time
+					$code .= '$now = time(); $date = getdate($now);';
+	
+					$refreshtimes = explode("/,/", $this->refresh);
+					foreach ($refreshtimes as $refreshtime) {
+						$refreshtime = explode("/:/", $refreshtime);
+						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
+						$code .= 'echo "#LODELREFRESH ";echo $refreshtime;echo "#";
+							if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
+							}else{ ?>';
+						$code .= $contents . '<'.'?php } ?'.'>'; 
+					}
+				}
+	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
 			}
-			$code .= '} ?'.'>';
-			$contents = '<'.'?php echo \''.quote_code($code).'\'; ?>
-			'.$contents;
-		}	elseif ($this->isphp)	{
+			unset($code);
+		} elseif ($this->isphp)	{
 			$contents = '<?php if ($GLOBALS[cachedfile]) echo \'<?php #--# ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
 		}
 
@@ -195,20 +228,12 @@ class Parser
 			$this->charset = 'iso-8859-1';
 		if ($this->charset != 'utf-8')	{
 			#$t=microtime();
-			require_once TOINCLUDE. 'utf8.php'; // conversion des caracteres
+			if(!function_exists('convertHTMLtoUTF8'))
+				require_once 'utf8.php'; // conversion des caracteres
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
-		require_once 'cachefunc.php';
-		if(myfileexists($out))
-			@unlink($out); // detruit avant d'ecrire.
-		$fp = fopen($out, "w") or $this->errmsg("cannot write file $out");
-		fputs($fp, $contents);
-		fclose($fp);
-		if ($GLOBALS['filemask'] && myfileexists($out))
-			chmod($out, 0666 & octdec($GLOBALS['filemask']));
-
-		return $ret;
+		return $contents;
 	}
 
 	function parse_variable(& $text, $escape = 'php')
@@ -225,6 +250,7 @@ class Parser
 			}	else {
 				$para = false;
 			}
+
 			if ($text {$i} == '#' || strpos($text {$i }, $this->variablechar) !== false) { // 
 				$varchar = $text {$i};
 				$i ++;
@@ -403,7 +429,7 @@ class Parser
 		while ($this->ind < $this->countarr) {
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
-				$attrs = $this->_decode_attributs($arr[$this->ind + 1]);
+				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				$this->charset = $attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
 				// attribut refresh
 				$this->_checkforrefreshattribut($attrs);
@@ -416,18 +442,21 @@ class Parser
 					$macrofilename = $attrs['MACROFILE'];
 					if (file_exists("tpl/".$macrofilename))	{
 						$contents = file_get_contents("tpl/".$macrofilename);
-					}	elseif ($GLOBALS['sharedir'] && 	file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
+					} elseif ($GLOBALS['sharedir'] && file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
 						$contents = file_get_contents($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename);
-					}	elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
+					} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
 						$contents = file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
-					}	else {
+					} else {
 						$this->errmsg("the macro file \"$macrofilename\" doesn't exist");
 					}
 					$this->macros_txt .= stripcommentandcr($contents);
 					$this->_clearposition();
 				} elseif ($attrs['TEMPLATEFILE'])	{
 					$this->_clearposition();
-					$this->arr[$this->ind] = '<?php insert_template($context,"'.basename($attrs['TEMPLATEFILE']).'"); ?>';
+					$this->arr[$this->ind] = 
+					'<?php 
+						insert_template($context, "'.basename($attrs['TEMPLATEFILE']).'");
+					?>';
 				}
 				break;
 					// returns
@@ -457,7 +486,7 @@ class Parser
 						$this->$methodname ();
 						#call_user_func(array(&$this,$methodname));
 					}	else {
-						$this->errmsg('Unexpected tags '. $this->arr[$this->ind]. ". No method to call");
+						$this->errmsg('Unexpected tags "'. htmlentities($this->arr[$this->ind]) . '" on ind ' . $this->ind. ". No method to call");
 					}
 				}
 				break;
@@ -768,7 +797,6 @@ class Parser
 	if ($cleanquery) $currenturl.=$cleanquery."&";
 	if ($context[nbresults]>'.$split.') {
 		$context[nexturl]=$currenturl."'.$offsetname.'=".($currentoffset+'.$split.');
-		//$context[nbresultats]--;$context[nbresults]--;
 	} else {
 		$context[nexturl]="";
 	}'. '$context[offsetname] ='. $offsetname. ';'. '$context[limitinfo] = '. $split. ';'. '$context[previousurl]=$currentoffset>='. $split. ' ? $currenturl."'. $offsetname. '=".($currentoffset-'. $split. ') : "";
@@ -791,7 +819,7 @@ class Parser
 		if ($dontselect) { // DONTSELECT
 			// at the moment, the dontselect should not be prefixed by the table name !
 			if (!$tablefields)
-				require (TOINCLUDE.'tablefields.php');
+				require 'tablefields.php';
 			if (!$tablefields)
 				die("ERROR: internal error in decode_loop_content: table $table");
 
@@ -825,7 +853,21 @@ class Parser
 	if(!function_exists("loop_'.$name.'")) {
 		function loop_'.$name.' ($context)
 		{'.$preprocesslimit.'
-			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";'.'$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.'$row='.sprintf($options['sqlfetchassoc'], '$result').';'.'$context[nbresultats]=$context[nbresults] = $row[nbresults];$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
+			$query="SELECT count(*) as nbresults FROM '.$table.' '.$selectparts['where'].' '.$selectparts['groupby'].' '.$selectparts['having'].'";$result ='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';'.$postmysqlquery.';
+			';
+			if($selectparts['groupby']) {
+				$this->fct_txt .= '
+			$context[nbresults] = 0;
+			while($row='.sprintf($options['sqlfetchassoc'], '$result').') { $context[nbresults]++; }
+			$context[nbresultats]= $context[nbresults];
+				';	
+			} else {
+				$this->fct_txt .= '
+			$row='.sprintf($options['sqlfetchassoc'], '$result').';$context[nbresultats] = $context[nbresults] = $row[nbresults];';
+			}
+
+			$this->fct_txt .= '
+			$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
 			$result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
 		'.$postmysqlquery.'
 		 '.$processlimit.' 
@@ -845,7 +887,7 @@ class Parser
 		if ($contents['DOLAST']) {
 			$this->fct_txt .= ' if ($count==$context[nbresults]) { '.$contents['PRE_DOLAST'].'?>'.$contents['DOLAST'].'<?php continue; }';
 		}
-		$this->fct_txt .= $contents['PRE_DO'].' ?>'.$contents['DO'].'<?php    } while ($count<$generalcontext[nbresults] && $row='.sprintf($options['sqlfetchassoc'], '$result').');
+		$this->fct_txt .= $contents['PRE_DO'].' ?>'.$contents['DO'].'<?php     } while ($count<$generalcontext[nbresults] && $row='.sprintf($options['sqlfetchassoc'], '$result').');
 		?>'.$contents['AFTER'].'<?php  } ';
 
 		if ($contents['ALTERNATIVE'])
@@ -864,16 +906,16 @@ class Parser
 		#echo "infilename=".$this->infilename;
 		$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
 		if ($contents['DO']) {
-			$this->fct_txt .= 'function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_do_'.$localtpl.$name.'")) { function code_do_'.$localtpl.$name.' ($context) { ?>'.$contents['DO'].'<?php } }';
 		}
 		if ($contents['BEFORE']) { // genere le code de avant
-			$this->fct_txt .= 'function code_before_'.$localtpl.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_before_'.$localtpl.$name.'")) { function code_before_'.$localtpl.$name.' ($context) { ?>'.$contents['BEFORE'].'<?php } }';
 		}
 		if ($contents['AFTER'])	{ // genere le code de apres
-			$this->fct_txt .= 'function code_after_'.$localtpl.$name.' ($context) { ?>'.$contents['AFTER'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_after_'.$localtpl.$name.'")) { function code_after_'.$localtpl.$name.' ($context) { ?>'.$contents['AFTER'].'<?php } }';
 		}
 		if ($contents['ALTERNATIVE'])	{ // genere le code de alternative
-			$this->fct_txt .= 'function code_alter_'.$localtpl.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php }';
+			$this->fct_txt .= 'if(!function_exists("code_alter_'.$localtpl.$name.'")) { function code_alter_'.$localtpl.$name.' ($context) { ?>'.$contents['ALTERNATIVE'].'<?php } }';
 		}
 		// fin ajout
 	}
@@ -945,19 +987,29 @@ class Parser
 				$this->parse_variable($val, 'quote');
 				$args[] = '"'. strtolower($attr). '"=>"'. $val. '"';
 			}
+			
 			$this->arr[$this->ind] .= '<?php '.$macrofunc.'($context,array('.join(",", $args).')); ?>';
-			//
 
 			if (!($this->funcs[$macrofunc])) {
 				$this->funcs[$macrofunc] = true;
 				// build the function 
-				$code = '<?php function '.$macrofunc.'($context,$args) {
-				         $context=array_merge($context,$args); ?>
-				'.$this->macrocode[$name]['code'].'
-				<?php  } ?>';
-				$this->_split_file($code, 'add');
+				$tmpArr = $this->arr;
+				$tmpInd = $this->ind;
+				$tmpCountArr = $this->countarr;
+				$this->arr = null;
+				$this->_split_file($this->macrocode[$name]['code']);
+				$this->parse_main();
+				$this->fct_txt .= 'if(!function_exists('.$macrofunc.')) { function '.$macrofunc.'($context,$args) {
+				         $context=array_merge($context,$args); ?>';
+				$this->fct_txt .= join('', $this->arr);
+				$this->fct_txt .= '<?php  } }';
+				$this->arr = $tmpArr;
+				$this->ind = $tmpInd;
+				$this->countarr = $tmpCountArr;
+				unset($tmpArr, $tmpInd, $tmpCountArr);
 			}
-		}	else { // normal MACRO
+			
+		} else { // normal MACRO
 			$this->_split_file($this->macrocode[$name]['code'], 'insert');
 			$this->_clearposition();
 		}
@@ -1071,7 +1123,7 @@ class Parser
 		if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/", $this->arr[$this->ind + 1], $result))
 			$this->errmsg("LET have no VAR attribut");
 		if (!preg_match("/^$this->variable_regexp$/i", $result[1]))
-			$this->errmsg("Variable \"$result[1]\"in LET is not a valide variable", $this->ind);
+			$this->errmsg("Variable \"$result[1]\"in LET is not a valid variable", $this->ind);
 		$this->parse_variable($result[1], false); // parse the attributs
 		$var = strtolower($result[1]);
 
@@ -1117,10 +1169,13 @@ class Parser
 	 */
 	function _checkforrefreshattribut($mixed)
 	{
+		if(empty($mixed))
+			return;
+
 		if (is_array($mixed))	{
 			$attrs = $mixed;
 		}	else {
-			$attrs = $this->_decode_attributs($mided);
+			$attrs = $this->_decode_attributs($mixed);
 		}
 
 		if (!$attrs['REFRESH'])
@@ -1174,8 +1229,8 @@ class Parser
 
 	function _decode_attributs($text, $options = '')
 	{
-			// decode attributs
-	$arr = explode('"', $text);
+		// decode attributs
+		$arr = explode('"', $text);
 		$n = count($arr);
 		for ($i = 0; $i < $n; $i += 2) {
 			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
@@ -1210,10 +1265,10 @@ class Parser
 			$this->ind = 0;
 			$this->currentline = 0;
 			$this->arr = $arr;
-		}	elseif ($action == 'insert') {
+		} elseif ($action == 'insert') {
 			$this->arr[$this->ind + 2] = $arr[count($arr) - 1].$this->arr[$this->ind + 2];
 			array_splice($this->arr, $this->ind + 2, 0, array_slice($arr, 0, -1));
-		}	elseif ($action == 'add')	{
+		} elseif ($action == 'add') {
 			$this->arr[count($this->arr) - 1] .= $arr[0];
 			$this->arr = array_merge($this->arr, array_slice($arr, 1));
 		}
@@ -1230,7 +1285,7 @@ function replace_conditions($text, $style)
 
 function stripcommentandcr(& $text)
 {
-	return preg_replace(array ("/\r/", "/<!--\[.*?\]-->\s*\n?/s"), array ("", ""), $text);
+	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[[^i][^f].*?\]-->\s*\n?/s"), array ("", "", ""), $text);
 }
 
 function quote_code($text)

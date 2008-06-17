@@ -1,4 +1,4 @@
-<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1" REFRESH="1"/>
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
@@ -52,6 +52,9 @@
 	#lodel-desk ul.group2 a#clearcache{
 		background: transparent url("[#SHAREURL]/images/bg_clearcache.png") top left no-repeat;
 	}
+	#lodel-desk ul.group1 li.site a{
+		width:100px;
+	}
 	ul.listEntities li ul li div.entityIcons{
 		background-image: url("[#SHAREURL]/images/tree.gif");
 		background-position: 0 .5ex;
@@ -91,7 +94,7 @@
 			</IF>
 		</li>
 
-		<li>
+		<li class="site">
 			<IF COND="![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodel/edition')]">	
 				<a class="actif" href="[#SITEROOT]index.[#EXTENSIONSCRIPTS]"  title="[@COMMON.SITE]">
 			<ELSE/>

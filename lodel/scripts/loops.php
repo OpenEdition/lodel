@@ -587,10 +587,8 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
-	if(!$arguments['array']) {
-		call_user_func("code_alter_$funcname", $localcontext);
-	}
-	if(!is_array($arguments['array'])) {
+
+	if((!is_array($arguments['array']) || !$arguments['array']) && function_exists("code_alter_$funcname")) {
 		call_user_func("code_alter_$funcname", $localcontext);
 	}
 	$localcontext['count'] = count($arguments['array']);
@@ -606,8 +604,8 @@ function loop_foreach(&$context, $funcname, $arguments)
 	}
 		
 	//L'after
-	if (function_exists("code_before_$funcname")) {
-		call_user_func("code_before_$funcname", $context);
+	if (function_exists("code_after_$funcname")) {
+		call_user_func("code_after_$funcname", $context);
 	}
 
 	
@@ -713,35 +711,46 @@ function loop_alphabet($context, $funcname)
 function loop_alphabetSpec($context, $funcname)
 {
 	global $db;
+	require_once 'func.php';
 	if(empty($context['table']) || empty($context['field']))
 		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
-	if(!empty($context['idtype']))
-		$sql = "SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] WHERE idtype = '$context[idtype]' ORDER BY l";
-	else
-		$sql = "SELECT DISTINCT(UPPER(SUBSTRING($context[field],1,1))) as l FROM #_TP_$context[table] ORDER BY l";
+	if(!empty($context['idtype'])) {
+		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
+		$whereCount = " idtype = '{$context['idtype']}' AND ";
+	}
+		
+	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} {$whereSelect} ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
 
-	foreach ($lettres as &$lettre) {
-		$lettre['l'] = strtr(utf8_decode($lettre['l']), "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖØÙÚÛÜİŞßàáâãäåæçèéêëìíîïğñòóôõöøùúûıışÿ", 
-								"AAAAAAACEEEEIIIIDNOOOOOOUUUUYbsaaaaaaaceeeeiiiidnoooooouuuyyby"
-								);
-		if(preg_match("/[A-Z]/", $lettre['l'])) {
+	foreach($lettres as &$lettre) {
+		$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
+	}
+	reset($lettres);
+
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} status>0 AND SUBSTRING({$context['field']},1,1) = ");
+
+	for ($l = 'A'; $l != 'AA'; $l++) {
+		$context['lettre'] = $l;
+		$context['nbresults'] = $db->getOne($sql."'{$context['lettre']}'");
+		call_user_func("code_do_$funcname", $context);
+	}
+	
+	while (list(, $lettre) = each($lettres)) {
+		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
+			$context['nbresults'] = $db->getOne($sql.$context['lettre']);
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
-	foreach ($lettres as $lettre) {
-		if(preg_match("/[0-9]/", $lettre['l'])) {
-			$context['lettre'] = $lettre['l'];
-			call_user_func("code_do_$funcname", $context);
-		}
-	}
-	foreach ($lettres as $lettre) {
+	reset($lettres);
+	while (list(, $lettre) = each($lettres)) {
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
+			$context['nbresults'] = $db->getOne($sql."'".addcslashes($context['lettre'], "'")."'");
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
+	reset($lettres);
 }
 ?>
