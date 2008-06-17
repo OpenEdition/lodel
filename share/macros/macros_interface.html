@@ -1580,6 +1580,36 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</div>
 </DEFMACRO>
 
+<DEFFUNC NAME="ADD_AN_ENTITY_SIMPLE" OPTIONAL="displaywhere">
+	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
+	<div class="actionOnEntity">
+	<select onchange="ajouter_entite(this);" class="barInfo add">
+	<option value="" selected="selected" class="class">[@COMMON.ADD]</option>
+	<LOOP NAME="rightonentity" ACTION="create">
+		<DO>
+		<LET VAR="idparentsaved">[#ID|intval]</LET>
+		<LOOP NAME="classes_simple" TABLE="classes" WHERE="status lt 64" ORDER="rank">
+			<LOOP NAME="entites_de_classe_documents_simple" TABLE="types" TABLE="entitytypes_entitytypes" WHERE="identitytype=id AND identitytype2='[#IDTYPE]' AND class='[#CLASS]' AND [#DISPLAYWHERE]" ORDER="rank">
+				<BEFORE>
+					<optgroup label="<MACRO NAME="DISPLAY_ALTERTITLE">">
+				</BEFORE>
+				<DO>
+					<IF COND="[#IMPORT]==1">
+						<option value="oochargement.php?idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"><MACRO NAME="DISPLAY_ALTERTITLE"></option>
+					<ELSE/>
+						<option value="index.php?do=view&amp;idparent=[#IDPARENTSAVED]&amp;idtype=[#ID]"><LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+						<IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF></option>
+					</IF>
+				</DO>
+				<AFTER></optgroup></AFTER>
+			</LOOP>
+		</LOOP>
+		</DO>
+	</LOOP>
+	</select>
+	</div>
+</DEFFUNC>
+
 <DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
 	<ul class="listEntities">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
@@ -1598,6 +1628,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 			</div>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			<IF COND="[#CLASS] == 'publications'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			</li>
 		<IF COND="[#DISPLAY] eq 'unfolded'">
