@@ -561,7 +561,6 @@ function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $esc
 	$view =& View::getView();
 	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, intval($refreshTime));
 	echo _indent($content);
-	flush();
 }
 
 
