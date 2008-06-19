@@ -545,6 +545,26 @@ div.action{
 	width: auto;
 }
 
+div.actionOnEntity{
+	position: absolute;
+	right: 40em;
+	top: 1em;
+	margin: 1.5ex 0 0 0;
+	width: auto;
+}
+
+div.actionOnEntity select{
+	color: #0075AB;
+}
+
+div.actionOnEntity option, div.actionOnEntity optgroup{
+	color: black;
+}
+
+div.actionOnEntity option.class{
+	color: #0075AB;
+}
+
 ul.listEntities li.unfoldedentities div.action{
 	right: .6em;
 }

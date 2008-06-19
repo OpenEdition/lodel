@@ -1434,4 +1434,23 @@ function cleanCallNotes($text)
 {
 	return preg_replace("/(<(span|sup|sub|em)[^>]*>)*(\s*<a class=\"(end|foot)notecall\"[^>]*>.*<\/a>)\s*(<\/\\1>)*/Us", '\\3', $text);
 }
+
+/** 
+ * Coloration syntaxique de code
+ * 
+ * @author Pierre-Alain Mignot
+ * @param string $text le code à colorer
+ * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. défaut xml
+ * @param bool $lineNumbers numérotation des lignes. défaut à true
+ * @return $text le texte coloré
+ */
+function highlight_code($text, $language='xml', $lineNumbers=true)
+{
+	require_once SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
+	$geshi =& new GeSHi($text, $language);
+	if($lineNumbers)
+		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
+	$geshi->set_header_type(GESHI_HEADER_DIV);
+	return $geshi->parse_code();
+}
 ?>

@@ -88,7 +88,7 @@
 		    <a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
 		    </IF>
 		  <ELSE/>
-				<input class="button" type="submit" value="[@COMMON.UPLOAD]" onclick="this.value='[@COMMON.PLEASE_WAIT]';" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<input class="button" type="submit" value="[@COMMON.UPLOAD]" id="validImport" onclick="this.value='[@COMMON.PLEASE_WAIT]';" />&nbsp;&nbsp;&nbsp;&nbsp;
 				<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
 		  </IF>
 	</fieldset>
@@ -104,6 +104,12 @@
 
 	
 </form>
-
+<script type="text/javascript">
+function unScript() {
+	document.getElementById('uploadMsg').class= 'displayOff';
+	document.getElementById('validImport').value = '[#@COMMON.UPLOAD]'
+}
+window.onunload= unScript;
+</script>
 
 <MACRO NAME="CLOSE_HTML">

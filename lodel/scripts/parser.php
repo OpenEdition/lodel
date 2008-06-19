@@ -1285,7 +1285,7 @@ function replace_conditions($text, $style)
 
 function stripcommentandcr(& $text)
 {
-	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[[^i][^f].*?\]-->\s*\n?/s"), array ("", "", ""), $text);
+	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE).*?\]-->\s*\n?/s"), array ("", "", ""), $text);
 }
 
 function quote_code($text)

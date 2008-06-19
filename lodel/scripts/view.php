@@ -428,7 +428,12 @@ $code .= $content . '
 		$template_cache = "tpl_$base";
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) {
-			$this->_error("<code><strong>Error!</strong> The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__);
+			if (!headers_sent()) {
+				header("HTTP/1.0 403 Internal Error");
+				header("Status: 403 Internal Error");
+				header("Connection: Close");
+			}
+			$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__);
 		}
 
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -561,7 +566,6 @@ function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $esc
 	$view =& View::getView();
 	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, intval($refreshTime));
 	echo _indent($content);
-	flush();
 }
 
 
