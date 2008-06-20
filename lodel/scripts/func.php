@@ -1109,6 +1109,9 @@ function _indent($source, $indenter = '  ')
 			require_once 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
+	} elseif(!preg_match("/<[^><]+>/", $source)) {
+		$source = _indent_xhtml($source,$indenter);
+		return $source;
 	}
 	// on touche pas à l'indentation du code PHP, JS, CSS
 	$tmp = preg_split("/(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)(.*?)(\?>|<\/script>|<\/noscript>|<\/style>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
