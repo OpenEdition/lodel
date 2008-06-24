@@ -67,6 +67,7 @@ function authenticate ($level=0,$norecordurl=FALSE)
     $time=time();
     //        echo $name,"   ",$row[expire],"  ",$time,"<br>";
     if ($row['expire']<$time || $row['expire2']<$time) { 
+      $localcontext = unserialize($row['context']);
       $login="";
       if (file_exists("login.php")) {
 	$login="login.php"; 
@@ -75,8 +76,10 @@ function authenticate ($level=0,$norecordurl=FALSE)
       } else {
 	break;
       }
-       if ($userpriv>=LEVEL_VISITEUR) { header("location: $login?erreur_timeout=1&".$retour); exit(); }
-       else { header ("Location: " . SITEROOT); exit(); }
+      if($userpriv >= LEVEL_VISITEUR || $localcontext['userpriv'] >= LEVEL_VISITEUR) {
+        header("Location: $login?erreur_timeout=1&".$retour); 
+        exit();
+      } else { header ("Location: " . SITEROOT); exit(); }
     }
 
     // pass les variables en global
