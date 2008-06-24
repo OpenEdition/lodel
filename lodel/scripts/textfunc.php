@@ -1432,6 +1432,6 @@ function cryptEmails($texte, $codeInclude = FALSE)
  */
 function cleanCallNotes($text)
 {
-	return preg_replace("/(<(span|sup|sub|em)[^>]*>)*(\s*<a class=\"(end|foot)notecall\"[^>]*>.*<\/a>)\s*(<\/\\1>)*/Us", '\\3', $text);
+	return preg_replace("/<(span|sup|sub|em)[^>]*>(\s*<a class=\"(end|foot)notecall\"[^>]*>.*?<\/a>)\s*<\/\\1>/s", "\\2", $text);
 }
 ?>
