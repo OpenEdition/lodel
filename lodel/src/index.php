@@ -138,8 +138,8 @@ if ($id || $identifier) {
 				dberror();
 			}
 			if (!$class) { 
-				header("HTTP/1.0 403 Internal Error");
-				header("Status: 403 Internal Error");
+				header("HTTP/1.0 404 Not Found");
+				header("Status: 404 Not Found");
 				header("Connection: Close");
 				if(file_exists($home."../../missing.html")) {
 					include $home."../../missing.html";
@@ -261,8 +261,8 @@ function printEntities($id, $identifier, &$context)
 			dberror();
 		}
 		if (!$row) { 
-			header("HTTP/1.0 403 Internal Error");
-			header("Status: 403 Internal Error");
+			header("HTTP/1.0 404 Not Found");
+			header("Status: 404 Not Found");
 			header("Connection: Close");
 			if(file_exists($home."../../missing.html")) {
 				include $home."../../missing.html";
@@ -288,8 +288,8 @@ function printEntities($id, $identifier, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
+		header("HTTP/1.0 404 Not Found");
+		header("Status: 404 Not Found");
 		header("Connection: Close");
 		if(file_exists($home."../../missing.html")) {
 			include $home."../../missing.html";
@@ -342,8 +342,8 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
+		header("HTTP/1.0 404 Not Found");
+		header("Status: 404 Not Found");
 		header("Connection: Close");
 		if(file_exists($home."../../missing.html")) {
 			include $home."../../missing.html";
@@ -359,8 +359,8 @@ function printIndex($id, $classtype, &$context)
 		dberror();
 	}
 	if (!$row) {
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
+		header("HTTP/1.0 404 Not Found");
+		header("Status: 404 Not Found");
 		header("Connection: Close");
 		if(file_exists($home."../../missing.html")) {
 			include $home."../../missing.html";
