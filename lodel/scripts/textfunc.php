@@ -951,19 +951,14 @@ function paranumber(&$texte, $styles='texte')
 
 
 
-/** renvoie le type mime d'un fichier, soit par l'extension PEAR fileinfo, soit par le système 
+/** renvoie le type mime d'un fichier par le système (a+ windows)
 * @author Bruno Cénou
 * @param  string $filename le nom du fichier
 */
-
 function getFileMime($filename){
-	if(function_exists("finfo_open")){
-		$finfo = finfo_open(FILEINFO_MIME, "/usr/share/misc/file/magic");
-		return finfo_file($finfo, $filename);
-	}else{
-		system('file -i -b "'.$filename.'"');
-	}
+	system('file -i -b '.escapeshellarg($filename));
 }
+
 
 /** renvoie le type seul d'un fichier 
 * @author Bruno Cénou
@@ -1432,25 +1427,6 @@ function cryptEmails($texte, $codeInclude = FALSE)
  */
 function cleanCallNotes($text)
 {
-	return preg_replace("/<(span|sup|sub|em)[^>]*>(\s*<a class=\"(end|foot)notecall\"[^>]*>.*?<\/a>)\s*<\/\\1>/s", '\\2', $text);
-}
-
-/** 
- * Coloration syntaxique de code
- * 
- * @author Pierre-Alain Mignot
- * @param string $text le code à colorer
- * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. défaut xml
- * @param bool $lineNumbers numérotation des lignes. défaut à true
- * @return $text le texte coloré
- */
-function highlight_code($text, $language='xml', $lineNumbers=true)
-{
-	require_once SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
-	$geshi =& new GeSHi($text, $language);
-	if($lineNumbers)
-		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
-	$geshi->set_header_type(GESHI_HEADER_DIV);
-	return $geshi->parse_code();
+	return preg_replace("/<(span|sup|sub|em)[^>]*>(\s*<a class=\"(end|foot)notecall\"[^>]*>.*?<\/a>)\s*<\/\\1>/s", "\\2", $text);
 }
 ?>
