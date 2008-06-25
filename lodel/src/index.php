@@ -79,21 +79,29 @@ if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les 
 		return;
 	}
 }
-// require 'textfunc.php';
 $id         = intval($_GET['id']);
 $identifier = $_GET['identifier'];
 $page       = $_GET['page']; // get only
 $do         = $_POST['do'] ? $_POST['do'] : $_GET['do'];
 $tpl        = 'index'; // template by default.
-
-
-// ID ou IDENTIFIER
 $url_retour = strip_tags($url_retour);
 
+// appel d'un docannexe
+if($_GET['file']) {
+	$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : " AND #_TP_entities.status>0 AND #_TP_types.status>0";
+	
+	$row = $db->getRow(lq("SELECT tablefields.name, tablefields.class FROM #_TP_tablefields, #_TP_entities LEFT JOIN #_TP_types on (#_TP_entities.idtype = #_TP_types.id) WHERE #_TP_entities.id='{$id}' AND #_TP_tablefields.class = #_TP_types.class AND #_TP_tablefields.type = 'file'{$critere}"));
+	
+	if($row && ($file = $db->getRow(lq("SELECT {$row['name']} FROM #_TP_{$row['class']} WHERE identity = '{$id}'")))) {
+		require_once 'func.php';
+		checkdocannexedir('test');
+		download($file[$row['name']]);
+		return;
+	}
+}
 if ($_POST['login']) {
 	require_once 'func.php';
 	extract_post();
-// 	require_once 'connect.php';
 	require_once 'loginfunc.php';
 	do {
 		if (!check_auth_restricted($context['login'], $context['passwd'], $site)) {
@@ -120,8 +128,8 @@ if ($_POST['login']) {
 	if($err) // une erreur : besoin de l'afficher, donc pas d'utilisation du cache
 		$_REQUEST['clearcache'] = 1;
 } 
+// ID ou IDENTIFIER
 if ($id || $identifier) {
-// 	require_once 'connect.php';
 	do { // exception block
 		require_once 'func.php';
 		if ($id) {
@@ -168,7 +176,6 @@ if ($id || $identifier) {
 	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
 		die('invalid page');
 	}
-// 	require_once 'connect.php';
 	$view->renderCached($context, $page);
 	exit;
 
@@ -208,7 +215,6 @@ if ($id || $identifier) {
 } else {
 	//tente de récupérer le path - parse la query string pour trouver l'entité
 
-// 	require_once 'connect.php';
 	$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
 	
 	if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
