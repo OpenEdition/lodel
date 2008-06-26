@@ -36,19 +36,25 @@
 	<strong>[@ADMIN.ADMINISTRATE_PERSONS]</strong>
 		<LET VAR="current_entry_type">[#TYPE.TITLE]</LET>
 		<LOOP NAME="getTypes" TABLE="persontypes" ORDER="rank">
+			&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a>&nbsp;&nbsp;|
+			<DOLAST>&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a></DOLAST>	
+			<!--[	
 			<BEFORE><select onchange="select_url(this)" class="barInfo"></BEFORE>
 			<IF COND="[#TITLE] EQ [#CURRENT_ENTRY_TYPE]">
 				<option selected="selected">[#TITLE]</option>
 			<ELSE />
 				<option value="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=persons&amp;idtype=[#ID]">[#TITLE]</option>
 			</IF>
-			<AFTER></select></AFTER>
+			<AFTER></select></AFTER>]-->
 		</LOOP>
 	</li>
 </ul>
 <ul id="actionsOnEntitiesPath">
 	<li>
 		<span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]
+	<LOOP NAME="nbPersons" TABLE="persons" SELECT="count(id) as nbpersons" WHERE="idtype='[#TYPE.ID]'">
+		&nbsp;([#NBPERSONS])
+	</LOOP>
 	</li>
 	<li>
 		<ul class="actions">
@@ -64,40 +70,18 @@
 </ul>
 
 <div id="entries">
+	<IF COND="[#LISTALL]">
+		<a href="index.php?do=list&amp;lo=persons&amp;idtype=[#TYPE.ID]"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span></a>&nbsp;|&nbsp;
+		<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span>
+	<ELSE />	
+		<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span>&nbsp;|&nbsp;<a href="[#CURRENTURL]&listall=1"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span></a>
+	</IF>
+	<br /><br />
 	<div id="alphabet">
 		<FUNC NAME="ALPHABETSPECIFIC" TABLE="persons" FIELD="sortkey" IDTYPE="[#IDTYPE]">
-	</div>	
-	<LET VAR="table">persons</LET>
-	<LET VAR="field">sortkey</LET>
-	<LOOP NAME="alphabetSpec">
-		<LOOP NAME="listpersonnes" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64 AND upper(substring(sortkey,1,1)) = '[#LETTRE]'">
-			<BEFORE>
-				<h2 id="[#LETTRE]">
-					<a href="#alphabet">[#LETTRE]</a>
-				</h2>
-				<ul class="listEntities">
-			</BEFORE>
-			<DO>
-				<IF COND="[#COUNT] % 2">
-					<li class="line1">
-				<ELSE/>
-					<li class="line2">
-				</IF>
-				<div class="entityIcons">
-				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="persontypes">
-				</div>
-				<div class="document">
-				<span class="titre_document">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span></span>
-				<span class="numInfo">(<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="G" />)</span>
-				</div>
-				<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div></li>
-			</DO>
-			<AFTER></ul></AFTER>
-		</LOOP>
-	</LOOP>
+	</div>
+	<FUNC NAME="LIST_PERSONS" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="sortkey" LETTER="[#LETTER|strtoupper]" LISTALL="[#LISTALL]">
 </div>
-
-<MACRO NAME="OK_TOINDEX_ADMIN">
+<!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 
 <MACRO NAME="CLOSE_HTML">

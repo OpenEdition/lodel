@@ -426,6 +426,12 @@ function makeurlwithid ($id, $base = 'index')
 	}
 }
 
+function makeurlwithfile($id) {
+	$url = makeurlwithid($id);
+	$url .= (false === strpos($url, '?')) ? '?file=1' : '&file=1';
+	return $url;
+}
+
 if (!function_exists("file_get_contents")) {
   function file_get_contents($file) 
   {
@@ -748,6 +754,18 @@ function checkdocannexedir($dir)
 		}
 		@chmod($rep,0777 & octdec($GLOBALS['filemask']));
 		writefile($rep. '/index.html', '');
+	}
+	// pseudo-sécurité. faudrait trouver mieux, ptetre ajouter directement le répertoire docannexe dans la distrib avec un .htaccess
+	$htaccess = defined('SITEROOT') ? SITEROOT . "docannexe/file/.htaccess" : "docannexe/file/.htaccess";
+	if(!file_exists($htaccess)) {
+ 		file_put_contents($htaccess, "deny from all");
+		@chmod($htaccess, 0640);
+	}
+	// compatibilité 0.7
+	$htaccess07 = defined('SITEROOT') ? SITEROOT . "docannexe/fichier/" : "docannexe/fichier/";
+	if(file_exists($htaccess07) && !file_exists($htaccess07.'.htaccess')) {
+ 		file_put_contents($htaccess07.'.htaccess', "deny from all");
+		@chmod($htaccess07.'.htaccess', 0640);
 	}
 }
 
@@ -1109,6 +1127,9 @@ function _indent($source, $indenter = '  ')
 			require_once 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
+	} elseif(!preg_match("/<[^><]+>/", $source)) {
+		$source = _indent_xhtml($source,$indenter);
+		return $source;
 	}
 	// on touche pas à l'indentation du code PHP, JS, CSS
 	$tmp = preg_split("/(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)(.*?)(\?>|<\/script>|<\/noscript>|<\/style>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);

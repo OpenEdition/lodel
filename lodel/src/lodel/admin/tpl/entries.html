@@ -55,6 +55,9 @@
 <ul id="actionsOnEntitiesPath">
 	<li>
 	<span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]
+	<LOOP NAME="nbEntries" TABLE="entries" SELECT="count(id) as nbentries" WHERE="idtype='[#TYPE.ID]'">
+		&nbsp;([#NBENTRIES])
+	</LOOP>
 	</li>
 	<li>
 		<ul class="actions">
@@ -81,6 +84,6 @@
 
 	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|strtoupper]" LISTALL="[#LISTALL]">
 </div>
-<MACRO NAME="OK_TOINDEX_ADMIN">
+<!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 
 <MACRO NAME="CLOSE_HTML">
