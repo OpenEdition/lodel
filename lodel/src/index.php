@@ -103,7 +103,7 @@ if($_GET['file']) {
 
 			if(!function_exists('today'))
 				require 'textfunc.php';
-			if(!$datepubli || $datepubli <= today()) {
+			if(!$datepubli || $datepubli <= today() || $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER) {
 				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
 				download($file[$row['name']]);
 				return;
