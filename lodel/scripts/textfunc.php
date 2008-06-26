@@ -1080,9 +1080,10 @@ return $str;
 /** convertit entités html en entités xml 
 * @author Bruno Cénou
 * @param string $str 
+* @param bool $reverse xml->html
 */
 
-function HTML2XML($str){
+function HTML2XML($str, $reverse=false){
 	$replace = array(
 		"&quot;" => "&#34;",
 		"&amp;" => "&#38;",
@@ -1338,7 +1339,8 @@ function HTML2XML($str){
 		"&hearts;" => "&#9829;",
 		"&diams;" => "&#9830;"
 		);
-	return str_replace(array_keys($replace),array_values($replace),$str);
+	$str = $reverse ? ( str_replace(array_values($replace),array_keys($replace),$str) ) : ( str_replace(array_keys($replace),array_values($replace),$str) );
+	return $str;
 }
 
 
@@ -1427,7 +1429,7 @@ function cryptEmails($texte, $codeInclude = FALSE)
  */
 function cleanCallNotes($text)
 {
-	return preg_replace("/<(span|sup|sub|em)[^>]*>(\s*<a class=\"(end|foot)notecall\"[^>]*>.*?<\/a>)\s*<\/\\1>/s", "\\2", $text);
+	return preg_replace("/<(span|sup|sub|em|strong)[^>]*>(\s*<a class=\"(end|foot)notecall\"[^>]*>.*?<\/a>)\s*<\/\\1>/s", '\\2', $text);
 }
 
 /** 
