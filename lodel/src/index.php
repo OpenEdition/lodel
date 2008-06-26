@@ -88,15 +88,27 @@ $url_retour = strip_tags($url_retour);
 
 // appel d'un docannexe
 if($_GET['file']) {
-	$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : " AND #_TP_entities.status>0 AND #_TP_types.status>0";
+	$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : " AND {$GLOBALS['tableprefix']}entities.status>0 AND {$GLOBALS['tableprefix']}types.status>0";
 	
-	$row = $db->getRow(lq("SELECT tablefields.name, tablefields.class FROM #_TP_tablefields, #_TP_entities LEFT JOIN #_TP_types on (#_TP_entities.idtype = #_TP_types.id) WHERE #_TP_entities.id='{$id}' AND #_TP_tablefields.class = #_TP_types.class AND #_TP_tablefields.type = 'file'{$critere}"));
+	$row = $db->getRow("SELECT {$GLOBALS['tableprefix']}tablefields.name, {$GLOBALS['tableprefix']}tablefields.class FROM {$GLOBALS['tableprefix']}tablefields, {$GLOBALS['tableprefix']}entities LEFT JOIN {$GLOBALS['tableprefix']}types on ({$GLOBALS['tableprefix']}entities.idtype = {$GLOBALS['tableprefix']}types.id) WHERE {$GLOBALS['tableprefix']}entities.id='{$id}' AND {$GLOBALS['tableprefix']}tablefields.class = {$GLOBALS['tableprefix']}types.class AND {$GLOBALS['tableprefix']}tablefields.type = 'file'{$critere}");
 	
-	if($row && ($file = $db->getRow(lq("SELECT {$row['name']} FROM #_TP_{$row['class']} WHERE identity = '{$id}'")))) {
-		require_once 'func.php';
-		checkdocannexedir('test');
-		download($file[$row['name']]);
-		return;
+	if($row) {
+		$datepubli = $db->getRow("SELECT name FROM {$GLOBALS['tableprefix']}tablefields WHERE class = '{$row['class']}' AND name = 'datepubli'");
+		if(!$datepubli) {
+			$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
+			download($file[$row['name']]);
+		} else {
+			$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
+			$datepubli = $datepubli['datepubli'];
+
+			if(!function_exists('today'))
+				require 'textfunc.php';
+			if(!$datepubli || $datepubli <= today()) {
+				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
+				download($file[$row['name']]);
+				return;
+			}
+		}
 	}
 }
 if ($_POST['login']) {
