@@ -123,7 +123,8 @@ if ($envoi) {
 
 		ob_start();
 		$GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
-		insert_template($context, 'signaler-mail');
+		// on utilise pas le cache pour le mail généré !!
+		insert_template($context, 'signaler-mail', '', '', true);
 		$content = ob_get_clean();
 
 		// envoie le mail
