@@ -48,7 +48,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 05-06-2008.
 //
 
 
@@ -78,6 +78,7 @@ class entrytypesVO
 	var $class;
 	var $title;
 	var $altertitle;
+	var $lang;
 	var $icon;
 	var $gui_user_complexity;
 	var $edition;
