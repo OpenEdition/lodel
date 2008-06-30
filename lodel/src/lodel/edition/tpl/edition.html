@@ -340,7 +340,7 @@ function mouseUp(ev){
 					}
 				}
 			}
-			xhr.open("POST", '/08/share-0.8/ajax/dragndrop.php', true);
+			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', true);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.send('tabids='+tabDiffIds+'&site=test');
 		}
