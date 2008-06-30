@@ -772,7 +772,7 @@ function formatstring($text, $format)
 
 function ishtml($text)
 {
-	return preg_match("/<(p|br|span|ul|li|dl|strong|em)\b[^><]*>/", $text);
+	return preg_match("/<(p|br|span|ul|li|dl|strong|em|table|tr|td|th|sup|sub|h[0-9]|a|blockquote|code|del|img)\b[^><]*>/", $text);
 }
 
 /*
