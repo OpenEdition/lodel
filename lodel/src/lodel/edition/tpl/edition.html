@@ -1,4 +1,3 @@
-
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
 <!--[
 
@@ -6,9 +5,9 @@
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
    Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -39,15 +38,363 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
+<script type="text/javascript">
+// iMouseDown represents the current mouse button state: up or down
+/*
+lMouseState represents the previous mouse button state so that we can
+check for button clicks and button releases:
+
+if(iMouseDown && !lMouseState) // button just clicked!
+if(!iMouseDown && lMouseState) // button just released!
+*/
+var mouseOffset = null;
+var iMouseDown  = false;
+var lMouseState = false;
+
+// Demo 0 variables
+var DragDrops   = [];
+var curTarget   = null;
+var lastTarget  = null;
+var dragHelper  = null;
+var rootParent  = null;
+var rootSibling = null;
+var tabIds	= [];
+
+Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
+
+function CreateDragContainer(){
+	/*
+	Create a new "Container Instance" so that items from one "Set" can not
+	be dragged into items from another "Set"
+	*/
+	var cDrag        = DragDrops.length;
+	DragDrops[cDrag] = [];
+
+	/*
+	Each item passed to this function should be a "container".  Store each
+	of these items in our current container
+	*/
+	for(var i=0; i<arguments.length; i++){
+		var cObj = arguments[i];
+		DragDrops[cDrag].push(cObj);
+		cObj.setAttribute('DropObj', cDrag);
+		/*
+		Every top level item in these containers should be draggable.  Do this
+		by setting the DragObj attribute on each item and then later checking
+		this attribute in the mouseMove function
+		*/
+		for(var j=0; j<cObj.childNodes.length; j++){
+			if(cObj.childNodes[j].id)
+				tabIds[j] = cObj.childNodes[j].id;
+
+			// Firefox puts in lots of #text nodes...skip these
+			if(cObj.childNodes[j].nodeName=='#text') continue;
+
+			cObj.childNodes[j].setAttribute('DragObj', cDrag);
+		}
+	}
+}
+function getPosition(e){
+	var left = 0;
+	var top  = 0;
+	while (e.offsetParent){
+		left += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
+		top  += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
+		e     = e.offsetParent;
+	}
+	left += e.offsetLeft + (e.currentStyle?(parseInt(e.currentStyle.borderLeftWidth)).NaN0():0);
+	top  += e.offsetTop  + (e.currentStyle?(parseInt(e.currentStyle.borderTopWidth)).NaN0():0);
+	return {x:left, y:top};
+}
+function mouseCoords(ev){
+	if(ev.pageX || ev.pageY){
+		return {x:ev.pageX, y:ev.pageY};
+	}
+	return {
+		x:ev.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft) - document.documentElement.clientLeft,
+		y:ev.clientY + (document.documentElement.scrollTop || document.body.scrollTop) - document.documentElement.clientTop
+	};
+}
+function getMouseOffset(target, ev){
+	var docPos    = getPosition(target);
+	var mousePos  = mouseCoords(ev);
+	return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
+}
+function mouseMove(ev){
+	ev = ev || window.event;
+	/*
+	We are setting target to whatever item the mouse is currently on
+
+	Firefox uses event.target here, MSIE uses event.srcElement
+	*/
+	var target   = ev.target || ev.srcElement;
+	var mousePos = mouseCoords(ev);
+	// mouseOut event - fires if the item the mouse is on has changed
+	if(lastTarget && (target!==lastTarget)){
+
+		// reset the classname for the target element
+		var origClass = lastTarget.getAttribute('origClass');
+		if(origClass) lastTarget.className = origClass;
+	}
+	/*
+	dragObj is the grouping our item is in (set from the createDragContainer function).
+	if the item is not in a grouping we ignore it since it can't be dragged with this
+	script.
+	*/
+	var dragObj = target.getAttribute('DragObj');
+	// if the mouse was moved over an element that is draggable
+	if(dragObj!=null){
+		// mouseOver event - Change the item's class if necessary
+		if(target!=lastTarget){
+
+			var oClass = target.getAttribute('overClass');
+			if(oClass){
+				target.setAttribute('origClass', target.className);
+				target.className = oClass;
+			}
+		}
+		// if the user is just starting to drag the element
+		if(iMouseDown && !lMouseState){
+			// mouseDown target
+			curTarget     = target;
+			// Record the mouse x and y offset for the element
+			rootParent    = curTarget.parentNode;
+			rootSibling   = curTarget.nextSibling;
+			mouseOffset   = getMouseOffset(target, ev);
+			// We remove anything that is in our dragHelper DIV so we can put a new item in it.
+			for(var i=0; i<dragHelper.childNodes.length; i++) dragHelper.removeChild(dragHelper.childNodes[i]);
+			// Make a copy of the current item and put it in our drag helper.
+			var dragHelperCont = document.createElement('DIV');
+			var dragNodeList = curTarget.childNodes;
+			var nbChilds = dragNodeList.length;
+			for(var i=0; i<nbChilds; i++) {
+				if(dragNodeList[i].className == 'document' && dragNodeList[i].nodeName == 'DIV') {
+					dragHelperCont.innerHTML = dragNodeList[i].innerHTML;
+					break;
+				}
+			}
+			dragHelper.appendChild(dragHelperCont);
+			dragHelper.style.background = '#E18600';
+			dragHelper.style.color = 'white';
+			//dragHelper.appendChild(curTarget.cloneNode(true));
+			dragHelper.style.display = 'block';
+			// set the class on our helper DIV if necessary
+			var dragClass = curTarget.getAttribute('dragClass');
+			if(dragClass){
+				dragHelper.firstChild.className = dragClass;
+			}
+			// disable dragging from our helper DIV (it's already being dragged)
+			dragHelper.firstChild.removeAttribute('DragObj');
+			/*
+			Record the current position of all drag/drop targets related
+			to the element.  We do this here so that we do not have to do
+			it on the general mouse move event which fires when the mouse
+			moves even 1 pixel.  If we don't do this here the script
+			would run much slower.
+			*/
+			var dragConts = DragDrops[dragObj];
+			/*
+			first record the width/height of our drag item.  Then hide it since
+			it is going to (potentially) be moved out of its parent.
+			*/
+			curTarget.setAttribute('startWidth',  parseInt(curTarget.offsetWidth));
+			curTarget.setAttribute('startHeight', parseInt(curTarget.offsetHeight));
+			curTarget.style.display  = 'none';
+
+			// loop through each possible drop container
+			for(var i=0; i<dragConts.length; i++){
+				with(dragConts[i]){
+					var pos = getPosition(dragConts[i]);
+
+					setAttribute('startWidth',  parseInt(offsetWidth));
+					setAttribute('startHeight', parseInt(offsetHeight));
+					setAttribute('startLeft',   pos.x);
+					setAttribute('startTop',    pos.y);
+				}
+
+				// loop through each child element of each container
+				for(var j=0; j<dragConts[i].childNodes.length; j++){
+					with(dragConts[i].childNodes[j]){
+						if((nodeName=='#text') || (dragConts[i].childNodes[j]==curTarget)) continue;
+
+						var pos = getPosition(dragConts[i].childNodes[j]);
+
+						// save the width, height and position of each element
+						setAttribute('startWidth',  parseInt(offsetWidth));
+						setAttribute('startHeight', parseInt(offsetHeight));
+						setAttribute('startLeft',   pos.x);
+						setAttribute('startTop',    pos.y);
+					}
+				}
+			}
+		}
+	}
+
+	// If we get in here we are dragging something
+	if(curTarget){
+		// move our helper div to wherever the mouse is (adjusted by mouseOffset)
+		dragHelper.style.top  = mousePos.y - mouseOffset.y+"px";
+		dragHelper.style.left = mousePos.x - mouseOffset.x+"px";
+		var dragConts  = DragDrops[curTarget.getAttribute('DragObj')];
+		var activeCont = null;
+		var xPos = mousePos.x - mouseOffset.x + (parseInt(curTarget.getAttribute('startWidth')) /2);
+		var yPos = mousePos.y - mouseOffset.y + (parseInt(curTarget.getAttribute('startHeight'))/2);
+		// check each drop container to see if our target object is "inside" the container
+		for(var i=0; i<dragConts.length; i++){
+			with(dragConts[i]){
+				if((parseInt(getAttribute('startLeft')) < xPos) &&
+					(parseInt(getAttribute('startTop')) < yPos) &&
+					((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
+					((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
+
+						/*
+						our target is inside of our container so save the container into
+						the activeCont variable and then exit the loop since we no longer
+						need to check the rest of the containers
+						*/
+						activeCont = dragConts[i];
+						// exit the for loop
+						break;
+				}
+			}
+		}
+		// Our target object is in one of our containers.  Check to see where our div belongs
+		if(activeCont){
+			// beforeNode will hold the first node AFTER where our div belongs
+			var beforeNode = null;
+			// loop through each child node (skipping text nodes).
+			for(var i=activeCont.childNodes.length-1; i>=0; i--){
+				with(activeCont.childNodes[i]){
+					if(nodeName=='#text') continue;
+					// if the current item is "After" the item being dragged
+					if(curTarget != activeCont.childNodes[i]                                                  &&
+						((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
+						((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
+							beforeNode = activeCont.childNodes[i];
+					}
+				}
+			}
+			// the item being dragged belongs before another item
+			if(beforeNode){
+				if(beforeNode!=curTarget.nextSibling){
+					activeCont.insertBefore(curTarget, beforeNode);
+				}
+			// the item being dragged belongs at the end of the current container
+			} else {
+				if((curTarget.nextSibling) || (curTarget.parentNode!=activeCont)){
+					activeCont.appendChild(curTarget);
+				}
+			}
+			var contPos = getPosition(activeCont);
+			activeCont.setAttribute('startWidth',  parseInt(activeCont.offsetWidth));
+			activeCont.setAttribute('startHeight', parseInt(activeCont.offsetHeight));
+			activeCont.setAttribute('startLeft',   contPos.x);
+			activeCont.setAttribute('startTop',    contPos.y);
+			// make our drag item visible
+			if(curTarget.style.display!=''){
+				curTarget.style.display = '';
+			}
+		} else {
+			// our drag item is not in a container, so hide it.
+			if(curTarget.style.display!='none'){
+				curTarget.style.display = 'none';
+			}
+		}
+	}
+	// track the current mouse state so we can compare against it next time
+	lMouseState = iMouseDown;
+	// mouseMove target
+	lastTarget  = target;
+	// track the current mouse state so we can compare against it next time
+	lMouseState = iMouseDown;
+	// this prevents items on the page from being highlighted while dragging
+	if(curTarget) return false;
+}
+function mouseUp(ev){
+	if(curTarget){
+		dragHelper.style.display = 'none';
+		if(curTarget.style.display == 'none'){
+			if(rootSibling){
+				rootParent.insertBefore(curTarget, rootSibling);
+			} else {
+				rootParent.appendChild(curTarget);
+			}
+		}
+		curTarget.style.display    = '';
+		curTarget.style.visibility = 'visible';
+		var tabDiffIds = [];
+		var i=j=0;
+		while(rootParent.childNodes[i]){
+			if(rootParent.childNodes[i].id != null) {
+				tabDiffIds[j] = rootParent.childNodes[i].id;
+				j++;
+			}
+			i++;
+		}
+		var xhr = getXMLHttpRequest();
+		if(xhr) {
+			if(xhr.readyState == 4) {
+				if(xhr.status == 200) {
+					if(xhr.responseText != 'ok') {
+						alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
+					}
+				}
+			}
+			xhr.open("POST", '/08/share-0.8/ajax/dragndrop.php', true);
+			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+			xhr.send('tabids='+tabDiffIds+'&site=test');
+		}
+	}
+	curTarget  = null;
+	iMouseDown = false;
+}
+function getXMLHttpRequest() {
+	var xhr=null;
+	if(window.XMLHttpRequest) // Firefox et autres
+	   xhr = new XMLHttpRequest(); 
+	else if(window.ActiveXObject){ // IE sux
+	   try {
+                xhr = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+	}
+	else { // XMLHttpRequest non supporté par le navigateur 
+	   alert("[@ADMIN.NAVIGATOR_NOT_AJAX]"); 
+	   xhr = false; 
+	}
+	return xhr;
+}
+function mouseDown(ev){
+	ev         = ev || window.event;
+	var target = ev.target || ev.srcElement;
+
+	iMouseDown = true;
+
+	if(target.onmousedown || target.getAttribute('DragObj')){
+		return false;
+	}
+}
+</script>
 	
 	<MACRO NAME="CURRENT_PATH">
 	<MACRO NAME="ACTIONS_ON_CURRENT_PATH">
 
 	<FUNC NAME="ADD_AN_ENTITY">
+	
 	<div id="listEntities">
-		<FUNC NAME="LIST_ENTITIES" ID="[#ID]" />
+		<FUNC NAME="LIST_ENTITIES" ID="[#ID]" DRAG="true"/>
 	</div>
-
-
+	
+<script type="text/javascript">
+	// Create our helper object that will show the item while dragging
+	setTimeout(function(){
+			dragHelper = document.createElement('DIV');
+			document.body.appendChild(dragHelper);
+			dragHelper.style.cssText = 'position:absolute;display:none;';
+		}, 1);
+	document.onmousemove = mouseMove;
+	document.onmousedown = mouseDown;
+	document.onmouseup   = mouseUp;
+</script>
 <MACRO NAME="CLOSE_HTML">
-

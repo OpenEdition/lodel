@@ -119,7 +119,7 @@ h2.formHead{
 /* Container general au dessous du desk */
 
 #lodel-container{
-	position: relative;
+/* 	position: relative; */
 	clear: both;
 	padding: 0;
 	margin: 0;
@@ -487,9 +487,18 @@ ul.listEntities li{
 	min-height: 48px;
 }
 
+ul.listEntities li.unfoldedentities {
+	margin-top: 3em;
+	border-top: 1px solid #dadbdc;
+}
+
 ul.listEntities li ul li{
 	background: #fff;
 	border: 0;
+}
+
+li.line1_entity, li.line2_entity {
+	list-style-image: url(../images/index.gif);
 }
 
 ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{

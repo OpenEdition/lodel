@@ -60,6 +60,11 @@
 		background-position: 0 .5ex;
 		background-repeat: no-repeat;
 	}
+<IF COND="FALSE === strpos($_SERVER['PHP_SELF'], '/lodel/edition')">
+	#lodel-container{
+		position: relative;
+	}
+</IF>
 </style>
 
 <div id="lodel-desk">

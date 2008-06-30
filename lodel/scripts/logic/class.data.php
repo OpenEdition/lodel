@@ -585,6 +585,421 @@ class DataLogic
 	}
 
 	/**
+	 * Sauvegarde XML du modèle éditorial
+	 *
+	 * Sauve les tables du ME dans un dump SQL (table lodel + table créées). Si demandé inclut
+	 * aussi les templates, les css, les images et les scripts javascript. Le fichier créé est
+	 * de la forme <em>model-site-date.zip</em>.
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @return le nom du template utilisé pour cette action : backupmodel
+	 */
+	function backupxmlmodelAction(&$context, &$error)
+	{
+		if (!$context['backup']) {
+			return 'backupmodel';
+		}
+
+		if(!$context['title']) {
+			$error['title'] = 'title_required';
+		}
+		if(!$context['description']) {
+			$error['description'] = 'description_required';
+		}
+		if(!$context['author']) {
+			$error['author'] = 'author_required';
+		}
+		if(!$context['modelversion']) {
+			$error['modelversion'] = 'modelversion_required';
+		}
+		if($error) { // Si on detecte des erreurs
+			$context['error'] = $error;
+			return 'backupmodel';
+		}
+
+		// statiques
+		$tablesME = array($GLOBALS['tableprefix'].'classes'=>true, $GLOBALS['tableprefix'].'tablefields'=>true, $GLOBALS['tableprefix'].'tablefieldgroups'=>true, $GLOBALS['tableprefix'].'types'=>true, $GLOBALS['tableprefix'].'persontypes'=>true, $GLOBALS['tableprefix'].'entrytypes'=>true, $GLOBALS['tableprefix'].'entitytypes_entitytypes'=>true,
+				$GLOBALS['tableprefix'].'internalstyles'=>true, $GLOBALS['tableprefix'].'characterstyles'=>true, $GLOBALS['tableprefix'].'optiongroups'=>true, $GLOBALS['tableprefix'].'options'=>true);
+		// dynamiques
+		$dao = &getDAO('classes');
+		$vos = $dao->findMany('status > 0', '', 'class,classtype');
+		while (list(,$vo) = each($vos)) {
+			$tablesME[$GLOBALS['tableprefix'].$vo->class] = false;
+			if ($vo->classtype == 'persons') {
+				$tablesME[$GLOBALS['tableprefix'].'entities_'. $vo->class] = false;
+			}
+		}
+		
+		$document = new DOMDocument('1.0', $GLOBALS['db_charset']);
+		$schemaNode = $document->createElement("lodelEM");
+		$document->appendChild($schemaNode);
+		$model = $document->createElement("model");
+		$schemaNode->appendChild($model);
+		$descr = $document->createElement("lodelVersion");
+		$model->appendChild($descr);
+		$descr->nodeValue = $version;
+		$descr = $document->createElement("date");
+		$model->appendChild($descr);
+		$descr->nodeValue = date("Y-m-d");
+		$descr = $document->createElement("title");
+		$model->appendChild($descr);
+		$descr->nodeValue = myhtmlentities(stripslashes($context['title']));
+		$descr = $document->createElement("description");
+		$model->appendChild($descr);
+		$descr->nodeValue = myhtmlentities(stripslashes($context['description']));
+		$descr = $document->createElement("author");
+		$model->appendChild($descr);
+		$descr->nodeValue = myhtmlentities(stripslashes($context['author']));
+		$descr = $document->createElement("modelVersion");
+		$model->appendChild($descr);
+		$descr->nodeValue = myhtmlentities(stripslashes($context['modelversion']));
+
+		// besoin des fonctions de bruno pour conversion entités xml->html
+		if(!function_exists('HTML2XML')) { require 'textfunc.php'; }
+		while (	list($table,$content) = each($tablesME) ) {
+			$tableNode = $document->createElement("table");
+			$schemaNode->appendChild($tableNode);
+			$tableName = $GLOBALS['tableprefix'] ? ( str_replace($GLOBALS['tableprefix'], '#_TP_', $table) ) : '#_TP_'.$table;
+			$tableNode->setAttribute('name', $tableName);
+			$structNode = $document->createElement("structure");
+			$tableNode->appendChild($structNode);	
+		
+			$result = mysql_query( "SHOW CREATE TABLE ".$table );
+			$row = mysql_fetch_row($result);
+			preg_match("/^CREATE TABLE `$table`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $row[1], $matches);
+			$fields = explode("\n", $matches[1]);
+		
+			while(list($kk,$val) = each($fields)) {
+				$field = trim($val);
+				if(!$field)
+					continue;
+				$fieldNode = $document->createElement("field");
+				$structNode->appendChild($fieldNode);
+				if(FALSE !== strpos($field, ',', strlen($field)-1))
+					$field = substr($field, 0, strlen($field)-1);
+		
+				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
+					$fieldNode->setAttribute('name', $m[1]);
+					$fieldNode->nodeValue = $m[2];
+				} else { // clé
+					$field = explode('KEY', $field);
+					$field[0] = trim($field[0]);
+					$field[1] = trim($field[1]);
+					// on peut avoir plusieurs clé : on concatène $kk
+					if($field[0]) {
+						$fieldNode->setAttribute('name', $field[0].'_'.$kk);
+						$fieldNode->nodeValue = $field[1];
+					} else {
+						$fieldNode->setAttribute('name', 'KEY_'.$kk);
+						$fieldNode->nodeValue = $field[1];
+					}
+					$fieldNode->setAttribute('key', '1');
+				}
+			}
+		
+			$fieldNode = $document->createElement("field");
+			$structNode->appendChild($fieldNode);
+			$fieldNode->setAttribute('name', 'tableOptions');
+			$fieldNode->nodeValue = $matches[2];
+		
+			if($content) {
+				$req = mysql_query("SELECT * FROM ".$table);
+				if(mysql_num_rows($req)>0) {
+					$datasNode = $document->createElement("datas");
+					$tableNode->appendChild($datasNode);
+					while($res = mysql_fetch_assoc($req)) {
+						$rowNode = $document->createElement("row");
+						$datasNode->appendChild($rowNode);
+						while(list($key,$value) = each($res)) {
+							$dataNode = $document->createElement($key);
+							$rowNode->appendChild($dataNode);
+							$dataNode->nodeValue = strtr(HTML2XML($value), array('&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;'));
+						}
+					}
+				}				
+			}
+		}
+		// indentation
+		$document->formatOutput = true;
+		$content = $document->saveXML();
+		file_put_contents("CACHE/me.xml", $content);
+	}
+
+	/**
+	 * Importation XML du modèle éditorial
+	 *
+	 * Importe les données contenu dans un fichier ZIP de sauvegarde du ME
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @return le nom du template utilisé pour cette action : importmodel
+	 */
+	function importxmlmodelAction(&$context, &$error)
+	{
+		// on récupère le ME et vérifie qu'il soit valide
+		$reader = XMLReader::open('me.xml', $GLOBALS['charset']);
+		// buggé actuellement
+		// /* tell the parser to perform syntax validation */
+		// $reader->setParserProperty(XMLReader::VALIDATE, TRUE);
+		// // @ blocks the parser errors (missing DTD in this case)
+		// while (@$reader->read());
+		// 
+		// echo "XML document is: " . ($reader->isValid() ? '' : ' not') . " valid.";
+		// die();
+		
+		// on récupère les noms des tables sur la base
+		require_once 'tablefields.php';
+		// besoin des fonctions de bruno pour conversion entités html->xml
+		if(!function_exists('HTML2XML')) { require 'textfunc.php'; }
+		
+		// on récupère la structure de la base XML ainsi que les données
+		$xmlStruct = $xmlDatas = $recordedTables = array();
+		while ($reader->read()) {
+			if(XMLReader::ELEMENT == $reader->nodeType) {
+				switch($reader->localName) {
+					case 'table':
+					// nom de la table en cours de traitement
+					if(!$reader->hasAttribute('name')) die('Error : missing table name.');
+					$table = lq($reader->getAttribute('name'));
+					if(isset($recordedTables[$reader->getAttribute('name')]))
+						die("Error : duplicated table {$table}");
+					
+					$recordedTables[] = $table;
+					// nouvelle table 
+					if(!isset($tablefields[$table]))
+						$toCreate[] = $table;
+					break;
+		
+					case 'structure':
+					// début structure de la table
+					$j=0;
+					break;
+					
+					case 'field':
+					// champs de la structure d'une table
+					if(isset($xmlStruct[$table][$reader->getAttribute('name')]) && !$reader->getAttribute('key'))
+						die("Error : duplicated field name {$reader->getAttribute('name')} in table {$table}");
+		
+					$localName = $reader->getAttribute('name');
+					$key = $reader->getAttribute('key');
+					while($reader->read() && 'field' != $reader->localName) {
+						if($key) {
+							$xmlStruct[$table]['keys'][$localName] = $reader->value;
+							continue;
+						}
+						$xmlStruct[$table][$j][$localName] = $reader->value;
+					}
+					$j++;
+					$localName = $key = '';
+					break;
+					
+					case 'datas':
+					// début contenu de la table
+					$xmlDatas[$table] = array();
+					$xmlDatas[$table]['fields'] = array();
+					$i=0;
+					break;
+					
+					case 'row':
+					// champs du contenu de la table
+					while($reader->read() && 'row' != $reader->localName) {
+						if(!in_array($reader->localName, $xmlDatas[$table]['fields']))
+							$xmlDatas[$table]['fields'][] = $localName = $reader->localName;
+						$reader->read();
+						// on veut pas les valeurs des options
+						if('options' == $table && 'value' == $localName) {
+							$xmlDatas[$table][$i][] = '';
+							while(XMLReader::END_ELEMENT != $reader->nodeType) { $reader->read(); }
+							continue;
+						}
+						if(XMLReader::END_ELEMENT == $reader->nodeType) {
+							// balise vide
+							$xmlDatas[$table][$i][] = '';
+							continue;
+						}
+						$xmlDatas[$table][$i][] = HTML2XML(strtr($reader->value, array('&amp;'=>'&', '&lt;'=>'<', '&gt;'=>'>')), true);
+						$reader->read();
+					}
+					$i++;
+					$localName = '';
+					break;
+					default: break;
+				}
+			}
+		}
+		
+		// tables ME statiques
+		$tablesME = array($GLOBALS['tableprefix'].'classes'=>true, $GLOBALS['tableprefix'].'tablefields'=>true, $GLOBALS['tableprefix'].'tablefieldgroups'=>true, $GLOBALS['tableprefix'].'types'=>true, $GLOBALS['tableprefix'].'persontypes'=>true, $GLOBALS['tableprefix'].'entrytypes'=>true, $GLOBALS['tableprefix'].'entitytypes_entitytypes'=>true,
+				$GLOBALS['tableprefix'].'internalstyles'=>true, $GLOBALS['tableprefix'].'characterstyles'=>true, $GLOBALS['tableprefix'].'optiongroups'=>true, $GLOBALS['tableprefix'].'options'=>true);
+		//tables ME dynamiques
+		$dao = &getDAO('classes');
+		$vos = $dao->findMany('status > 0', '', 'class,classtype');
+		while (list(,$vo) = each($vos)) {
+			$tablesME[$GLOBALS['tableprefix'].$vo->class] = false;
+			if ($vo->classtype == 'persons') {
+				$tablesME[$GLOBALS['tableprefix'].'entities_'. $vo->class] = false;
+			}
+		}
+		
+		// on analyse chaque tables du ME de la base SQL
+		// puis on traite la table courante en fonction du XML
+		while (	list($table,$content) = each($tablesME) ) {
+			if(!in_array($table, $recordedTables)) {
+				// table du ME qu'on a changé de nom ou supprimée
+				$sql[] = "RENAME {$GLOBALS['tableprefix']}{$table} TO {$GLOBALS['tableprefix']}{$table}__oldME";
+				continue;
+			}
+			// on récupère la structure SQL de la base actuelle
+			$result = mysql_query( "SHOW CREATE TABLE ".$table );
+			$row = mysql_fetch_row($result);
+			preg_match("/^CREATE TABLE `$table`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $row[1], $matches);
+			$fields = explode("\n", $matches[1]);
+			$i=0;
+			while ( list($kk,$val) = each($fields) ) {
+				$field = trim($val);
+				if(!$field)
+					continue;
+				if(FALSE !== strpos($field, ',', strlen($field)-1))
+					$field = substr($field, 0, strlen($field)-1);
+				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
+					$sqlStruct[$table][$i][$m[1]] = $m[2];
+				} else { // clé
+					$field = explode('KEY', $field);
+					$field[0] = trim($field[0]);
+					$field[1] = trim($field[1]);	
+					if($field[0]) {
+						$sqlStruct[$table]['keys'][$field[0].'_'.$kk] = $field[1];
+					} else {
+						$sqlStruct[$table]['keys']['KEY_'.$kk] = $field[1];
+					}	
+				}
+				$i++;
+			}
+			// charset, engine, auto_inc..
+			$sqlStruct[$table]['tableOptions'] = $matches[2];
+		
+			// ok maintenant on a la structure des deux tables on les compare
+			$nbXmlStruct = count($xmlStruct[$table]);
+			$nbSqlStruct = count($sqlStruct[$table]);
+			$i=0;
+			if($nbXmlStruct>=$nbSqlStruct) { // même nombre de champs ou plus
+				while($xmlStruct[$table][$i]) { // on parcoure les champs du XML
+					if(!$sqlStruct[$table][$i]) {
+						$action = 'ADD';
+					} elseif($sqlStruct[$table][$i] != $xmlStruct[$table][$i]) {
+						$oldFieldName = array_keys($sqlStruct[$table][$i]);
+						$action = "CHANGE `{$oldFieldName[0]}`";
+					} else {
+						$i++;
+						continue;
+					}
+					$fieldName = array_keys($xmlStruct[$table][$i]);
+					$fieldType = array_values($xmlStruct[$table][$i]);
+					$sql[] = "ALTER TABLE `{$table}` {$action} `{$fieldName[0]}` {$fieldType[0]};\n";
+					$i++;
+				}
+			} else { // champs en moins
+				while($sqlStruct[$table][$i]) { // on parcoure les champs SQL
+					if(!isset($xmlStruct[$table][$i])) {
+						$fieldName = array_keys($sqlStruct[$table][$i]);
+						$fieldType = array_values($sqlStruct[$table][$i]);
+						$sql[] = "ALTER TABLE `{$table}` DROP `{$fieldName[0]}`;\n";
+					} elseif($sqlStruct[$table][$i] != $xmlStruct[$table][$i]) {
+						$fieldName = array_keys($xmlStruct[$table][$i]);
+						$fieldType = array_values($xmlStruct[$table][$i]);
+						$oldFieldName = array_keys($sqlStruct[$table][$i]);
+						$sql[] = "ALTER TABLE `{$table}` CHANGE `{$oldFieldName[0]}` `{$fieldName[0]}` {$fieldType[0]};\n";
+					}
+					$i++;
+				}
+			}
+		
+			// clés
+			if($xmlStruct[$table]['keys'] != $sqlStruct[$table]['keys']) {
+				// on efface toutes les clés présentes dans la table
+				if(is_array($sqlStruct[$table]['keys'])) {
+					while(list($k,$v) = each($sqlStruct[$table]['keys'])) {
+						$key = explode('_', $k);
+						$key = $key[0];
+						if('PRIMARY' == $key) {
+							$drop = 'PRIMARY KEY';
+						} else {
+							preg_match("/^`([^`]+)`/", $v, $m);
+							if('UNIQUE' == $key) {
+								$drop = 'UNIQUE KEY `'.$m[1].'`';
+							} else {
+								$drop = 'KEY `'.$m[1].'`';
+							}
+						}
+						$sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
+					}
+				}
+				// on ajoute les clés
+				while(list($k,$v) = each($xmlStruct[$table]['keys'])) {
+					$key = explode('_', $k);
+					$key = $key[0];
+					if('KEY' != $key)
+						$key .= ' KEY';
+					$sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
+				}
+			}
+			// données à insérer
+			$i=0;
+			if(isset($xmlDatas[$table])) {
+				$sql[] = "DELETE FROM `{$table}`;\n";
+				$nbFields = count($xmlDatas[$table]['fields']) - 1;
+				$fields = join(',', $xmlDatas[$table]['fields']);
+				$tmpSql = "INSERT INTO `{$table}` ({$fields}) VALUES ";
+				while(isset($xmlDatas[$table][$i])) {
+					$tmpSql .= ($i == 0) ? "\n(" : ",\n(";
+					$j=0;
+					while(isset($xmlDatas[$table][$i][$j])) {
+						$val = str_replace('"', '\"', $xmlDatas[$table][$i][$j]);
+						$tmpSql .= ($j < $nbFields) ? "\"{$val}\"," : "\"{$val}\"";
+						$j++;
+					}
+					$tmpSql .= ")";
+					$i++;
+				}
+				$sql[] = $tmpSql.";\n";
+			}
+		}
+		
+		// tables à rajouter ?
+		$i=0;
+		while($toCreate[$i]) {
+			if(!$xmlStruct[$toCreate[$i]])
+				die("Error : structure missing for new table {$toCreate[$i]}");
+			$tmpSql = "CREATE TABLE `{$toCreate[$i]}` (\n";
+			while(list($k,$v) = each($xmlStruct[$toCreate[$i]])) {
+				if('tableOptions' == $k) {
+					$tableOptions = $v;
+					continue;
+				}
+				if('keys' == $k) {
+					while(list($kk,$vv) = each($v)) {
+						$key = explode('_', $kk);
+						$key = $key[0];
+						if('KEY' != $key)
+							$key .= ' KEY';
+						preg_match("/^`([^`]+)`/", $vv, $m);
+						if($m[1] && $keys[$m[1]])
+							die("Error : duplicate key {$m[1]} in table {$toCreate[$i]}");
+						$tmpSql .= ' '.$key.' '.$vv.",\n";
+					}
+					continue;
+				}
+				$tmpSql .= ' `'.$k.'` '.$v.",\n";
+			}
+			$tmpSql = substr_replace($tmpSql, '', strlen($tmpSql)-2);
+			$tmpSql .= ") ".$tableOptions."\n\n";
+			$sql[] = $tmpSql;
+			$i++;
+		}
+	}
+
+	/**
 	 * Dump SQL d'un site donné
 	 * @access private
 	 * @param string $site le nom du site

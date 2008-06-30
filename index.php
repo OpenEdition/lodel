@@ -55,6 +55,13 @@ if (file_exists("siteconfig.php")) {
 } else {
 	require 'lodelconfig.php';
 }
+if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/index(\d*).$extensionscripts(\?[^\/]*)?(\/.+)$/", $_SERVER['REQUEST_URI'])>0) {
+	header("HTTP/1.0 403 Bad Request");
+	header("Status: 403 Bad Request");
+	header("Connection: Close");
+	include "../missing.html";
+	exit;
+}
 require_once $home. 'auth.php';
 authenticate();
 require_once $home. 'connect.php';

@@ -1610,8 +1610,12 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</div>
 </DEFFUNC>
 
-<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
-	<ul class="listEntities">
+<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere, drag">
+	<IF COND="![#FOLDER] AND [#DRAG]"> 
+		<ul class="listEntities" id="DragContainer[#ID]">
+	<ELSE />
+		<ul class="listEntities">
+	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
@@ -1619,23 +1623,32 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</BEFORE>
 		<DO>
 		<IF COND="[#COUNT] % 2">
-			<li class="line1">
+			<IF COND="[#DRAG]">
+				<li class="line1_entity" id="[#ID]">
+			<ELSE />
+				<li class="line1">
+			</IF>
 		<ELSE/>
-			<li class="line2">
+			<IF COND="[#DRAG]">
+				<li class="line2_entity" id="[#ID]">
+			<ELSE />
+				<li class="line2">
+			</IF>
 		</IF>
 			<div class="entityIcons">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 			</div>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-			<!--[<IF COND="[#CLASS] == 'publications'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>]-->
+
+			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
+
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
+			
+			<IF COND="[#DISPLAY] eq 'unfolded'">
+				<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
+			</IF>
 			</li>
-		<IF COND="[#DISPLAY] eq 'unfolded'">
-			<li>
-			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
-			</li>
-		</IF>
 		</DO>
 		<AFTER>
 			<IF COND="[#FOLDER]"></ul></li></IF>			
@@ -1645,6 +1658,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
+	<IF COND="![#FOLDER] AND [#DRAG]"> 
+		<script type="text/javascript">
+			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
+		</script>
+	</IF>
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTITIES_EDIT" REQUIRED="id" OPTIONAL="folder,displaywhere">
