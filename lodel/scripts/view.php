@@ -296,7 +296,7 @@ class View
 				$code = '
 <'.'?php 
 $cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
-if(($cachetime > 0) && ($cachetime + '.($refreshTime).') < time()){ 
+if($cachetime && ($cachetime + '.($refreshTime).') < (time()+10)){ 
 	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refreshTime).'); 
 }else{ ?>';
 $code .= $content . '
@@ -319,7 +319,7 @@ $code .= $content . '
 					$code = '
 <'.'?php 
 $cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
-if(($cachetime > 0) && ($cachetime + '.($refresh).') < time()){ 
+if($cachetime && ($cachetime + '.($refresh).') < (time()+10)){ 
 	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refresh).'); 
 }else{ ?>';
 $code .= $content . '
