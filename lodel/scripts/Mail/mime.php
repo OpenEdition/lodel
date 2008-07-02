@@ -62,7 +62,7 @@
  *
  * This package depends on PEAR to raise errors.
  */
-require_once 'PEAR.php';
+require_once 'PEAR/PEAR.php';
 
 /**
  * require Mail_mimePart

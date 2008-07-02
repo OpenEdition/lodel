@@ -18,7 +18,7 @@
  * @author     Stig Bakken <ssb@php.net>
  * @author     Tomas V.V.Cox <cox@idecnet.com>
  * @author     Greg Beaver <cellog@php.net>
- * @copyright  1997-2006 The PHP Group
+ * @copyright  1997-2008 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
  * @version    CVS: $Id$
  * @link       http://pear.php.net/package/PEAR
@@ -93,7 +93,7 @@ $GLOBALS['_PEAR_error_handler_stack']    = array();
  * @author     Greg Beaver <cellog@php.net>
  * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.4.11
+ * @version    Release: 1.7.2
  * @link       http://pear.php.net/package/PEAR
  * @see        PEAR_Error
  * @since      Class available since PHP 4.0.2
@@ -230,6 +230,12 @@ class PEAR
     function &getStaticProperty($class, $var)
     {
         static $properties;
+        if (!isset($properties[$class])) {
+            $properties[$class] = array();
+        }
+        if (!array_key_exists($var, $properties[$class])) {
+            $properties[$class][$var] = null;
+        }
         return $properties[$class][$var];
     }
 
@@ -559,13 +565,17 @@ class PEAR
         } else {
             $ec = 'PEAR_Error';
         }
-        if ($skipmsg) {
-            $a = &new $ec($code, $mode, $options, $userinfo);
-            return $a;
-        } else {
-            $a = &new $ec($message, $code, $mode, $options, $userinfo);
+        if (intval(PHP_VERSION) < 5) {
+            // little non-eval hack to fix bug #12147
+            include 'PEAR/FixPHP5PEARWarnings.php';
             return $a;
         }
+        if ($skipmsg) {
+            $a = new $ec($code, $mode, $options, $userinfo);
+        } else {
+            $a = new $ec($message, $code, $mode, $options, $userinfo);
+        }
+        return $a;
     }
 
     // }}}
@@ -767,7 +777,7 @@ function _PEAR_call_destructors()
         sizeof($_PEAR_destructor_object_list))
     {
         reset($_PEAR_destructor_object_list);
-        if (@PEAR::getStaticProperty('PEAR', 'destructlifo')) {
+        if (PEAR::getStaticProperty('PEAR', 'destructlifo')) {
             $_PEAR_destructor_object_list = array_reverse($_PEAR_destructor_object_list);
         }
         while (list($k, $objref) = each($_PEAR_destructor_object_list)) {
@@ -808,7 +818,7 @@ function _PEAR_call_destructors()
  * @author     Gregory Beaver <cellog@php.net>
  * @copyright  1997-2006 The PHP Group
  * @license    http://www.php.net/license/3_0.txt  PHP License 3.0
- * @version    Release: 1.4.11
+ * @version    Release: 1.7.2
  * @link       http://pear.php.net/manual/en/core.pear.pear-error.php
  * @see        PEAR::raiseError(), PEAR::throwError()
  * @since      Class available since PHP 4.0.2
@@ -858,9 +868,10 @@ class PEAR_Error
         $this->code      = $code;
         $this->mode      = $mode;
         $this->userinfo  = $userinfo;
-        if (function_exists("debug_backtrace")) {
-            if (@!PEAR::getStaticProperty('PEAR_Error', 'skiptrace')) {
-                $this->backtrace = debug_backtrace();
+        if (!PEAR::getStaticProperty('PEAR_Error', 'skiptrace')) {
+            $this->backtrace = debug_backtrace();
+            if (isset($this->backtrace[0]) && isset($this->backtrace[0]['object'])) {
+                unset($this->backtrace[0]['object']);
             }
         }
         if ($mode & PEAR_ERROR_CALLBACK) {
@@ -1039,6 +1050,12 @@ class PEAR_Error
         }
     }
 
+    // }}}
+    // {{{ toString()
+    function __toString()
+    {
+        return $this->getMessage();
+    }
     // }}}
     // {{{ toString()
 
