@@ -96,7 +96,10 @@ if($_GET['file']) {
 		$datepubli = $db->getRow("SELECT name FROM {$GLOBALS['tableprefix']}tablefields WHERE class = '{$row['class']}' AND name = 'datepubli'");
 		if(!$datepubli) {
 			$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
-			download($file[$row['name']]);
+			if($file[$row['name']]) {
+				download($file[$row['name']]);
+				return;
+			}
 		} else {
 			$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
 			$datepubli = $datepubli['datepubli'];
@@ -105,8 +108,10 @@ if($_GET['file']) {
 				require 'textfunc.php';
 			if(!$datepubli || $datepubli <= today() || $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER) {
 				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
-				download($file[$row['name']]);
-				return;
+				if($file[$row['name']]) {
+					download($file[$row['name']]);
+					return;
+				}
 			}
 		}
 	}
