@@ -532,7 +532,7 @@ $code .= $content . '
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
 		clearcache();
 		$error = "Error: " . $msg . "\n";
-		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (page demandée: ".$_SERVER['REQUEST_URI'].")\n";
+		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 		if($db->errorno())
 			$err .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."\n";
 		if($lodeluser['rights'] > LEVEL_VISITOR || $GLOBALS['debugMode']) {
