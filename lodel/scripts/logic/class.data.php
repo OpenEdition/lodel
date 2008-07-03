@@ -83,9 +83,13 @@ class DataLogic
 	 */
 	function DataLogic()
 	{
-		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN) {
+		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN 
+		|| ($GLOBALS['lodeluser']['rights'] == LEVEL_ADMIN && ($GLOBALS['context']['do'] == 'import' 
+		|| $GLOBALS['context']['do'] == 'backup' 
+		|| $GLOBALS['context']['do'] == 'importmodel' 
+		|| $GLOBALS['context']['do'] == 'importxmlmodel'))) {
 			die("ERROR: you don't have the right to access this feature");
-		}
+		}		
 		$this->fileExtension = 'zip';
 	}
 

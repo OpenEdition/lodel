@@ -68,8 +68,10 @@
 	<div class="tools">
 		<h4>[@ADMIN.TOOLS]</h4>
 		<ul>
-			<li><a href="index.php?do=backup&amp;lo=data">[@ADMIN.BACKUP_DATA]</a></li>
-			<li><a href="index.php?do=import&amp;lo=data">[@ADMIN.IMPORT_DATA]</a></li>
+			<IF COND="[#LODELUSER.ADMINLODEL]">
+				<li><a href="index.php?do=backup&amp;lo=data">[@ADMIN.BACKUP_DATA]</a></li>
+				<li><a href="index.php?do=import&amp;lo=data">[@ADMIN.IMPORT_DATA]</a></li>
+			</IF>
 			<li>[@ADMIN.DOWNLOAD_XML_SCHEMA] : 
 				<select onchange="select_url(this)" class="barInfo">
 					<option>--</option>
@@ -114,8 +116,14 @@
 			<li><a href="index.php?do=list&amp;lo=optiongroups">[@ADMIN.MANAGE_OPTIONS]</a></li>
 			<li><a href="index.php?do=list&amp;lo=internalstyles">[@ADMIN.INTERNALSTYLES]</a></li>
 			<li><a href="index.php?do=list&amp;lo=characterstyles">[@ADMIN.CHARACTERSTYLES]</a></li>
-			<li><a href="index.php?do=importmodel&amp;lo=data">[@ADMIN.IMPORT_EM]</a></li>
+			<IF COND="[#LODELUSER.ADMINLODEL]">
+				<li><a href="index.php?do=importmodel&amp;lo=data">[@ADMIN.IMPORT_EM]</a></li>
+			</IF>
 			<li><a href="index.php?do=backupmodel&amp;lo=data">[@ADMIN.BACKUP_EM]</a></li>
+			<IF COND="[#LODELUSER.ADMINLODEL]">
+				<li><a href="index.php?do=importxmlmodel&amp;lo=data">[@ADMIN.IMPORT_EM_XML]</a></li>
+			</IF>
+			<li><a href="index.php?do=backupxmlmodel&amp;lo=data">[@ADMIN.BACKUP_EM_XML]</a></li>
 		</ul>
 	</div>
 	</div>
