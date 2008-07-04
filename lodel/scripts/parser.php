@@ -1120,7 +1120,7 @@ class Parser
 	function parse_LET()
 	{
 
-		if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"/", $this->arr[$this->ind + 1], $result))
+		if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->errmsg("LET have no VAR attribut");
 		if (!preg_match("/^$this->variable_regexp$/i", $result[1]))
 			$this->errmsg("Variable \"$result[1]\"in LET is not a valid variable", $this->ind);
@@ -1137,7 +1137,10 @@ class Parser
 			$this->errmsg("&lt;/LET&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
 
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
+		if($result[3])
+			$this->arr[$this->ind + 1] = '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
+		else
+			$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
 	}
 
 	/**
