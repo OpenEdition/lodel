@@ -369,7 +369,7 @@ $code .= $content . '
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
 			}
 			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true));
-			if(FALSE === file_put_contents($tmpFileName, $content, LOCK_EX))
+			if((FALSE || 0) === file_put_contents($tmpFileName, $content, LOCK_EX))
 				$this->_error("Error while writing CACHE required file.", __FUNCTION__);
 			ob_start();
 			$refresh = require $tmpFileName;
@@ -487,7 +487,7 @@ $code .= $content . '
 		} while (5>$i);
 
 		$format = ''; // en cas de nouvel appel a calcul_page
-		if(!$content) {	
+		if(!$content || is_object($content)) {	
 			// si cache_lite est configuré en 'pearErrorMode' => CACHE_LITE_ERROR_RETURN, on récupère l'erreur générée par raiseError()
 			include_once 'PEAR.php';
 			$msg = 'Impossible to get cached TPL. Is the cache directory accessible ? (read/write)';
@@ -532,7 +532,7 @@ $code .= $content . '
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
 		clearcache();
 		$error = "Error: " . $msg . "\n";
-		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (page demandée: ".$_SERVER['REQUEST_URI'].")\n";
+		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 		if($db->errorno())
 			$err .= "SQL Errorno ".$db->errorno().": ".$db->errormsg()."\n";
 		if($lodeluser['rights'] > LEVEL_VISITOR || $GLOBALS['debugMode']) {
