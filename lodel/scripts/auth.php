@@ -362,7 +362,7 @@ $context = array ('version' => $GLOBALS['version'],
 			'currenturl' => 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
 			'siteroot' => defined('SITEROOT') ? SITEROOT : '',
 			'site' => $site,
-			'charset' => ($GLOBALS['db_charset'] == 'UTF8' ? 'utf-8' : 'iso-8859-1'),
+			'charset' => ($GLOBALS['db_charset'] == 'utf8' ? 'utf-8' : 'iso-8859-1'),
 			'langcache' => array ());
 
 // Tableau des options du site dans le $context
