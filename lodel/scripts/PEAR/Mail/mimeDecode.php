@@ -33,8 +33,7 @@
 // +-----------------------------------------------------------------------+
 
 // path modified by Ghislain / Pierre-Alain
-if(!(@require_once 'PEAR.php'))
-	require_once 'PEAR/PEAR.php';
+require_once 'PEAR/PEAR.php';
 
 /**
 *  +----------------------------- IMPORTANT ------------------------------+

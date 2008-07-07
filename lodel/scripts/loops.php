@@ -268,7 +268,7 @@ function loop_rss($context, $funcname, $arguments)
 			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
 		}	else {
 			if ($GLOBALS['contactbug'])
-				@mail($GLOBALS['contactbug'], "[WARNING] LODEL - $GLOBALS[version] - $GLOBALS[database]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+				@mail($GLOBALS['contactbug'], "[WARNING] LODEL - $GLOBALS[version] - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
 			return;
 		}
 	}
