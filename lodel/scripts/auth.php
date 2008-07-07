@@ -89,7 +89,6 @@ function authenticate($level = 0, $mode = "")
 			if (!$name) {
 				break;
 			}
-			require_once 'connect.php';
 			usemaindb();
 			
 	
@@ -294,7 +293,6 @@ function maintenance()
 	$reg = "`/lodeladmin`";
 	$query = "SELECT status FROM ".$tableprefix."sites where name = '".$site."' LIMIT 1";
 	if ($name) {
-		require_once 'connect.php';
 		$db->selectDB($database);
 		$row = $db->getRow(lq("SELECT context,expire,expire2 FROM #_MTP_session WHERE name='$name'"));
 		usecurrentdb();
@@ -329,7 +327,6 @@ function maintenance()
 			}
 		}
 	} elseif(!preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
-		require_once 'connect.php';
 		if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
 			$db->selectDB($database);
 			$row = $db->getRow($query);
@@ -354,7 +351,7 @@ if (!((bool) ini_get('register_globals'))){
 $lodeluser = array ();
 $idsession = 0;
 $session   = '';
-
+require_once 'connect.php';
 // tres important d'initialiser le context.
 $context = array ('version' => $GLOBALS['version'],
 			'shareurl' => $GLOBALS['shareurl'],
@@ -368,7 +365,6 @@ $context = array ('version' => $GLOBALS['version'],
 // Tableau des options du site dans le $context
 if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale (options définies pour un site)
 	$context['options'] = array ();
-	require_once 'connect.php';
 	require_once 'optionfunc.php';
 	$context['options'] = cacheOptionsInFile();
 }
