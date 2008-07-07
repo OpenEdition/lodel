@@ -99,6 +99,7 @@ function enregistre_entite_from_xml($context,$text,$classe)
 	// compatibilité PHP 5.2 et pcre.backtrack_limit
 	if(version_compare("5.2", PHP_VERSION, "<")) {
 		if(PREG_BACKTRACK_LIMIT_ERROR == preg_last_error()) {
+			ini_set('pcre.backtrack_limit', 20971520); 
 			if(preg_match("/<r2r:$style>(.*?)<\/r2r:$style>/s",$text,$result2)>0) {
 				$value=$result2[1];
 		
