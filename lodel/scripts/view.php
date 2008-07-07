@@ -369,7 +369,7 @@ $code .= $content . '
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
 			}
 			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true));
-			if(FALSE === file_put_contents($tmpFileName, $content, LOCK_EX))
+			if((FALSE || 0) === file_put_contents($tmpFileName, $content, LOCK_EX))
 				$this->_error("Error while writing CACHE required file.", __FUNCTION__);
 			ob_start();
 			$refresh = require $tmpFileName;
@@ -487,7 +487,7 @@ $code .= $content . '
 		} while (5>$i);
 
 		$format = ''; // en cas de nouvel appel a calcul_page
-		if(!$content) {	
+		if(!$content || is_object($content)) {	
 			// si cache_lite est configuré en 'pearErrorMode' => CACHE_LITE_ERROR_RETURN, on récupère l'erreur générée par raiseError()
 			include_once 'PEAR/PEAR.php';
 			$msg = 'Impossible to get cached TPL. Is the cache directory accessible ? (read/write)';
@@ -505,7 +505,7 @@ $code .= $content . '
 				$content = $this->_eval($content, $context);
 				return show_html($content);
 			}
-			if ($context['charset'] == 'utf-8') {
+			if (!$context['charset'] || $context['charset'] == 'utf-8') {
 				// utf-8 c'est le charset natif, donc on sort directement la chaine.
 				$content = $this->_eval($content, $context);
 				return $content;

@@ -569,7 +569,7 @@ class LodelParser extends Parser
 		} elseif ($tablefields[lq("#_MTP_".$table)] && ($dbname == "" || $dbname == DATABASE.".")) {
 			return lq("#_MTP_".$table).$alias;
 		}	else {
-			return $dname.$table.$alias;
+			return $dbname.$table.$alias;
 		}
 
 	}

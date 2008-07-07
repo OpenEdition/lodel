@@ -78,7 +78,7 @@ if (DBDRIVER == 'mysql') {
 	if ($GLOBALS['version_mysql'] > 40) {
 		$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
 		if ($GLOBALS['db_charset'] === false) {
-			$GLOBALS['db_charset'] = 'UTF8';
+			$GLOBALS['db_charset'] = 'utf8';
 		}
 		$db->execute('SET NAMES ' . $GLOBALS['db_charset']);
 	}
