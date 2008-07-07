@@ -505,7 +505,7 @@ $code .= $content . '
 				$content = $this->_eval($content, $context);
 				return show_html($content);
 			}
-			if ($context['charset'] == 'utf-8') {
+			if (!$context['charset'] || $context['charset'] == 'utf-8') {
 				// utf-8 c'est le charset natif, donc on sort directement la chaine.
 				$content = $this->_eval($content, $context);
 				return $content;
