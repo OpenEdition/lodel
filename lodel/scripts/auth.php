@@ -89,7 +89,6 @@ function authenticate($level = 0, $mode = "")
 			if (!$name) {
 				break;
 			}
-			require_once 'connect.php';
 			usemaindb();
 			
 	
