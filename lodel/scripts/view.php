@@ -489,7 +489,7 @@ $code .= $content . '
 		$format = ''; // en cas de nouvel appel a calcul_page
 		if(!$content || is_object($content)) {	
 			// si cache_lite est configuré en 'pearErrorMode' => CACHE_LITE_ERROR_RETURN, on récupère l'erreur générée par raiseError()
-			include_once 'PEAR.php';
+			include_once 'PEAR/PEAR.php';
 			$msg = 'Impossible to get cached TPL. Is the cache directory accessible ? (read/write)';
 			if(PEAR::isError($content))
 				$msg .= ". Cache_Lite says: ".$content->getMessage();
