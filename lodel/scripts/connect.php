@@ -80,7 +80,7 @@ if (DBDRIVER == 'mysql') {
 		if ($GLOBALS['db_charset'] === false) {
 			$GLOBALS['db_charset'] = 'utf8';
 		}
-		$db->execute('SET NAMES ' . $GLOBALS['db_charset']);
+		$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
 	}
 }
 
