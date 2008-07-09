@@ -115,7 +115,8 @@ if ($envoi) {
 		if ($err) {
 			break;
 		}
-		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . ' sur ' . "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '') . $urlroot.$site . ' signalé par ';
+		$row = $db->getRow(lq("SELECT url FROM #_MTP_sites WHERE name='{$site}'"));
+		$context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . " sur {$row['url']} ". utf8_encode(' signalé par ');
 		if(!empty($context['nom_expediteur']))
 			$context['subject'] .= $context['nom_expediteur'];
 		else
