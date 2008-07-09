@@ -479,10 +479,9 @@ $code .= $content . '
 		// on va essayer 5 fois de récupérer ou générer le fichier mis en cache
 		do {
 			$content = $cache->get($template_cache, $group);
-			if($content)
+			if(is_string($content) && strlen($content)>0)
 				break;
-			else
-				$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
+			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
 			$i++;
 		} while (5>$i);
 
