@@ -2197,7 +2197,7 @@ class exportfor08
 		
 		function replace_to08($matches) {
 			global $tables, $champs, $types;
-		
+
 			// on récupère un tableau des attributs de la loop
 			$tab = _decode_attributs($matches[1]);
 			foreach($tab as $name=>$value) {
@@ -2260,7 +2260,7 @@ class exportfor08
 					"makeurlwithid\('(sommaire|document|personnes|personne|entrees|entree)'\)"=>"makeurlwithid"
 				);
 		
-		$champs = array(	
+		$GLOBALS['champs'] = array(	
 					"statut"=>"status",
 					"maj"=>"upd",
 					"identifiant"=>"identifier",
@@ -2279,7 +2279,7 @@ class exportfor08
 					//"titre"=>"title", // faux selon la table, on laisse comme çà
 				);
 		
-		$tables = array(	"champs"=>"tablefields",
+		$GLOBALS['tables'] = array(	"champs"=>"tablefields",
 					"documents"=>"textes",
 					"entites"=>"entities",
 					//"entites_personnes" comportement différent, non migrable
@@ -2297,7 +2297,7 @@ class exportfor08
 					"users_groupes"=>"usergroups"
 				);
 		
-		$types = array(
+		$GLOBALS['types'] = array(
 					"regroupement"=>"souspartie",
 					"volume"=>"rubrique",
 					"colloque"=>"rubrique",
@@ -2314,7 +2314,7 @@ class exportfor08
 						$content = file_get_contents($tplFile);
 						
 						// remplacement spécifique
-						$content = preg_replace("/\[\(#ID\|makeurlwithid\('docannexe'\)\)]/Ui", "[#ALTERFICHIER]", $content);
+						$content = preg_replace("/\[\(#ID\|makeurlwithid\('docannexe'\)\)]/Ui", "[#ID|makeurlwithfile]", $content);
 						$content = preg_replace("/<USE TEMPLATEFILE=\"desk\">/Ui", "", $content);
 		
 						// remplacement des variables
@@ -2330,12 +2330,12 @@ class exportfor08
 						$content = preg_replace_callback("/<LOOP ([^>]+)>/U", "replace_to08", $content);
 		
 						// ecriture du template migré
-						file_put_contents($tplmigred.$file, $content);
+						//file_put_contents($tplmigred.$file, $content);
 					}
 				}
 				closedir($dh);
 			} else {
-				echo "ERROR : cannot open directory $tpl.";
+				return "ERROR : cannot open directory $tpl.";
 			}
 			// on crée des liens symboliques pointant vers index.php pour simuler les scripts document.php, sommaire.php, etc ..
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/document.".$GLOBALS['extensionscripts']);
@@ -2346,8 +2346,9 @@ class exportfor08
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/entree.".$GLOBALS['extensionscripts']);
 			symlink("index.".$GLOBALS['extensionscripts'], $target."/docannexe.".$GLOBALS['extensionscripts']);
 		} else {
-			echo "ERROR : directory $tplmigred is not writeable.";
+			return "ERROR : directory $tplmigred is not writeable.";
 		}
+		return 'Ok';
 	}
 
 }
