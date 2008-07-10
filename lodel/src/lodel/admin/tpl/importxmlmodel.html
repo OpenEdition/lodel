@@ -1,0 +1,96 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_IMPORT_EM_XML]</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO">
+
+
+<ul id="actionsOnEntitiesPath">
+	<li><span class="intit">[@ADMIN.TITLE_IMPORT_EM]</span></li>
+</ul>
+<br />&nbsp;<br />
+<IF COND="[#SUCCESS]">
+	<fieldset>
+		<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
+		<p>[@ADMIN.THE_EDITORIAL_MODEL_HAS_BEEN_SUCCESSFULY_INSTALLED]</p>
+	</fieldset>
+	<fieldset>
+		<input class="button" type="button" value="[@COMMON.OK]" onClick="javascript:window.location='index.php';" />
+	</fieldset>	
+<ELSE />
+	<fieldset>
+	<legend>[@ADMIN.TITLE_IMPORT_EM]</legend>
+	<IF COND="[#ERROR]">
+		<p class="error">[#ERROR]</p>
+	</IF>
+	<IF COND="[#ERROR_EXECUTE_DUMP]">
+		<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXECUTE_DUMP] : [#ERROR_EXECUTE_DUMP]</p>
+	</IF>
+	<IF COND="[#ERROR_READING]">
+		<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_READING].</p>
+	</IF>
+	<IF COND="[#ERROR_EXTRACT]">
+		<p class="error"><strong>[@COMMON.ERROR] :</strong> [@ADMIN.ERROR_EXTRACT].</p>
+	</IF>
+	<p>[@ADMIN.CHOOSE_EM]</p>
+	<LOOP NAME="files_model">
+		<BEFORE><dl></BEFORE>
+		<DO>
+			<dt><strong>[#TITLE]</strong></dt>
+			<dd>[#DESCRIPTION]</dd>
+			<dd><strong>[@ADMIN.FILENAME] :</strong> [#FILENAME]</dd>
+			<dd><strong>[@ADMIN.MODELVERSION] :</strong> [#MODELVERSION]</dd>
+			<dd><strong>[@COMMON.AUTHOR] :</strong> [#AUTHOR]</dd>
+			<dd><strong>[@ADMIN.DATE_CREATION] :</strong> [(#DATE|humandate)]</dd>
+			<dd>
+			<div style="text-align: right"><a class="action"  href="index.php?do=importxmlmodel&amp;lo=data&amp;file=[#FULLFILENAME|urlencode]"><strong>[@ADMIN.INSTALL_THIS_EDITORIAL_MODEL]</strong></a></div>
+			</dd>
+		</DO>
+		<AFTER></dl></AFTER>
+	</LOOP>
+	<p>[@ADMIN.ADD_A_MODEL_TO_THE_ABOVE_LIST] :</p>
+	<IF COND="[#ERROR_UPLOAD]">
+		<p class="error">[@ADMIN.ERROR_LOADING_FILE]</p>
+	</IF>
+		<IF COND="[#ERROR_REGEXP]"><p class="error">[@ADMIN.FILENAME_MUST_MATCH] modelxml-<em>modelname</em>.zip ([@COMMON.EG] modelxml-revorg.zip)</p></IF>
+	<form name="formfic" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post"  />
+		<input type="hidden" name="do" value="importxmlmodel" />
+		<input type="hidden" name="lo" value="data" />
+		<input type="file" name="archive" id="archive" size="40" />
+		<input class="button" type="submit" value="[@ADMIN.UPLOAD]" />
+	</form>
+	</fieldset>
+	<fieldset>
+		<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+	</fieldset>  
+</IF>
+
+
+<MACRO NAME="CLOSE_HTML">

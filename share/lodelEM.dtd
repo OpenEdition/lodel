@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+
+<!ELEMENT lodelEM    (model,table+)>
+<!ELEMENT model (lodelversion, date, title, description, author, modelversion)>
+<!ELEMENT lodelversion      (#PCDATA)>
+<!ELEMENT date      (#PCDATA)>
+<!ELEMENT title      (#PCDATA)>
+<!ELEMENT description      (#PCDATA)>
+<!ELEMENT author      (#PCDATA)>
+<!ELEMENT modelversion      (#PCDATA)>
+
+<!ELEMENT table      (structure, datas?)>
+<!ATTLIST table name CDATA #REQUIRED>
+
+<!ELEMENT structure      (field+)>
+<!ELEMENT field		(#PCDATA)>
+<!ATTLIST field	name CDATA #REQUIRED>
+<!ATTLIST field	key CDATA #IMPLIED>
+
+<!ELEMENT datas      (row+)>
+<!ELEMENT row		(col+)>
+<!ELEMENT col (#PCDATA)>
+<!ATTLIST col	name CDATA #REQUIRED>
+
+

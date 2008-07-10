@@ -259,8 +259,9 @@ function PMA_convert_display_charset($text)
  * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
  * @param array $acceptedexts la liste des types de fichiers acceptés
  * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
+ * @param bool $xml si on utilise l'import XML
  */
-function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '')
+function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '', $xml=false)
 {
 	global $unzipcmd;
 	$tmpdir = tmpdir();
@@ -292,7 +293,8 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#if (!chdir("lodel/admin"))
 		#  die("ERROR: chdir 2 fails");
 		if ($sqlfile)	{
-			system($unzipcmd." -qp $archive  \*.sql > $sqlfile");
+			$ext = $xml ? 'xml' : 'sql';
+			system($unzipcmd." -qp $archive  \*.$ext > $sqlfile");
 			if (filesize($sqlfile) <= 0)
 				return false;
 		}
@@ -303,10 +305,11 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		$archive = new PclZip($archive);
 
 		// functions callback
-		function preextract($p_event, &$p_header, $user_vars)
+		function preextract($p_event, &$p_header)
 		{ // choose the files to extract
 			//echo $p_header['filename'],"<br>";
-			if (preg_match("/^(\.\/)*.*\.sql$/", $p_header['filename']))	{ // extract the sql file
+			global $user_vars;
+			if (preg_match("/^(\.\/)*.*\.(sql|xml)$/", $p_header['filename']))	{ // extract the sql file
 				unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
 				//                   may cause problem if the file is recreated but it's so uncertain !
 				$p_header['filename'] = $user_vars['sqlfile'];
@@ -323,15 +326,16 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 			return 0; // don't extract
 		}
 
-		function postextract($p_event, &$p_header, $user_vars)
+		function postextract($p_event, &$p_header)
 		{ // chmod
 			#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
 			#    file_exists($p_header['filename'])) {
+			global $user_vars;
 			@ chmod($p_header['filename'], octdec($GLOBALS[filemask]) & (substr($p_header['filename'], -1) == "/" ? 0777 : 0666));
 			#}
 			return 1;
 		}
-		$archive->user_vars = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
+		$GLOBALS['user_vars'] = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
 		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
 		#echo "ici $res";
 

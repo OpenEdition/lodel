@@ -83,6 +83,25 @@ table{
 	border-collapse: collapse;
 }
 
+div.importME {
+	position:relative;
+	padding:2em;
+}
+
+div.importME ul {
+	clear:both;
+	position:relative;
+}
+
+ul.importME_left {
+	border: solid 1px red;
+/* 	float:left; */
+}
+ul.importME_right {
+	border: solid 1px blue;
+/* 	float:right; */
+}
+
 th{
 	text-align: left;
 }
