@@ -251,7 +251,8 @@ class Parser
 				$para = false;
 			}
 
-			if ($text {$i} == '#' || strpos($text {$i }, $this->variablechar) !== false) { // 
+			if ($text {$i} == '#' || $text {$i} == '%' || strpos($text {$i }, $this->variablechar) !== false) { // 
+				$globalScope = ($text {$i} == '%') ? true : false;
 				$varchar = $text {$i};
 				$i ++;
 				// look for the name of the variable now
@@ -342,7 +343,7 @@ class Parser
 					continue; // not a variable
 				// build the variable code
 				
-				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape);
+				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape, $globalScope);
 				$text = substr_replace($text, $varcode, $startvar, $i - $startvar);
 				$i = $startvar +strlen($varcode); // move the counter
 			} // we found a variable
@@ -350,11 +351,11 @@ class Parser
 		} // while there are some variable
 	}
 
-	function _make_variable_code($prefix, $name, $pipefunction, $escape)
+	function _make_variable_code($prefix, $name, $pipefunction, $escape, $globalScope)
 	{
 		$variable = $this->parse_variable_extra($prefix, $name);
 		if ($variable === false) { // has the variable being processed ?     
-			$variable = "\$context['".str_replace(".", "']['", strtolower($name))."']";
+			$variable = $globalScope ? "\$GLOBALS['context']['".str_replace(".", "']['", strtolower($name))."']" : "\$context['".str_replace(".", "']['", strtolower($name))."']";
 		}
 
 		# parse the filter
@@ -1119,7 +1120,6 @@ class Parser
 	 */
 	function parse_LET()
 	{
-
 		if (!preg_match("/\bVAR\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->errmsg("LET have no VAR attribut");
 		if (!preg_match("/^$this->variable_regexp$/i", $result[1]))
@@ -1134,13 +1134,17 @@ class Parser
 		#$this->parse_main2();
 		$this->parse_main();
 		if ($this->arr[$this->ind] != "/LET")
-			$this->errmsg("&lt;/LET&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
+			$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 		$this->_clearposition();
-		if($result[3])
+		if($result[3]) {
+			if(in_array($var, array('id', 'idtype', 'idparent', 'idclass', 'idgroup', 'class', 'type', 'classtype', 'textgroups')))
+				$this->errmsg("Variable '{$var}' is not accessible in GLOBAL scope in LET VAR");
+
 			$this->arr[$this->ind + 1] = '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
-		else
+		} else {
 			$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
+		}
 	}
 
 	/**
@@ -1281,9 +1285,43 @@ class Parser
 	}
 } // clase Parser
 
+/*function replace_conditions($text, $style)
+{
+	$conditions = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>($style == "sql" ? "=" : "=="),'ne'=>'!=', 'and'=>'&&', 'or'=> '||');
+	$tmp = preg_split("/(\s+\b".join('|',array_keys($conditions))."\b\s+)/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$open = false;
+	foreach($tmp as $texte) {
+		if(preg_match_all("/(?<!\\\)'/", $texte, $m) % 2) {
+			$open = (TRUE === $open) ? false : true;
+		}
+		$t = strtolower(trim($texte));
+		if(FALSE === $open && isset($conditions[$t])) {
+			$ret .= $conditions[$t];
+			continue;
+		}
+		$ret .= $texte;
+	}
+	return preg_replace("/([\w'\[\]\$]*) like (\/[^\/]*\/)/i", 'preg_match("$2i", $1)', $ret);
+}
+réécrit suite bug signalé par François Lermigeaux sur lodel-devel
+*/
 function replace_conditions($text, $style)
 {
-	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i", "/([\w'\[\]\$]*) like (\/[^\/]*\/)/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||", 'preg_match("$2i", $1)'), $text);
+	$conditions = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>($style == "sql" ? "=" : "=="),'ne'=>'!=', 'and'=>'&&', 'or'=> '||');
+	$tmp = preg_split("/(\s+\b".join('|',array_keys($conditions))."\b\s+)/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$open = false;
+	foreach($tmp as $texte) {
+		if(preg_match_all("/(?<!\\\)'/", $texte, $m) % 2) {
+			$open = (TRUE === $open) ? false : true;
+		}
+		$t = strtolower(trim($texte));
+		if(FALSE === $open && isset($conditions[$t])) {
+			$ret .= $conditions[$t];
+			continue;
+		}
+		$ret .= $texte;
+	}
+	return preg_replace("/([\w'\[\]\$]*) like (\/[^\/]*\/)/i", 'preg_match("$2i", $1)', $ret);
 }
 
 function stripcommentandcr(& $text)
