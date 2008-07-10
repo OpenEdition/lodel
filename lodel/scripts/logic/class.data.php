@@ -1579,7 +1579,7 @@ class DataLogic
 		$this->_getEMTables();
 		// on crée notre document XML avec sa DTD pour pouvoir valider par la suite
 		$impl = new DomImplementation();
-		$dtd = $impl->createDocumentType("lodelEM", "", "../../{$GLOBALS['home']}../../share-{$GLOBALS['version']}/lodelEM.dtd");
+		$dtd = $impl->createDocumentType("lodelEM", "", "share-{$GLOBALS['version']}/lodelEM.dtd");
 		$document = $impl->createDocument("", "", $dtd);
 		$document->encoding = $GLOBALS['db_charset'];
 		// début création XML
