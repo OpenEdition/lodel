@@ -1291,7 +1291,7 @@ réécrit suite bug signalé par François Lermigeaux sur lodel-devel
 function replace_conditions($text, $style)
 {
 	$conditions = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>($style == "sql" ? "=" : "=="),'ne'=>'!=', 'and'=>'&&', 'or'=> '||');
-	$tmp = preg_split("/(\s+\b".join('|',array_keys($conditions))."\b\s+)/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$tmp = preg_split("/\b(".join('|',array_keys($conditions)).")\b/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$open = false;
 	foreach($tmp as $texte) {
 		if(preg_match_all("/(?<!\\\)'/", $texte, $m) % 2) {
