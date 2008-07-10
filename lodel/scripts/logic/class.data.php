@@ -1775,7 +1775,7 @@ function loop_files_model(&$context, $funcname)
 					require_once "pclzip/pclzip.lib.php";
 					$archive = new PclZip("$dir/$file");
 					$arr = $archive->extract(PCLZIP_OPT_BY_NAME, $model,
-										PCLZIP_OPT_EXTRACT_AS_STRING);echo $archive->error_string;
+										PCLZIP_OPT_EXTRACT_AS_STRING);
 					$line = $arr[0]['content'];
 				}
 				if (!$line) {
