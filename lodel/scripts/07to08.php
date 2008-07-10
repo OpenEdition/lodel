@@ -2330,7 +2330,7 @@ class exportfor08
 						$content = preg_replace_callback("/<LOOP ([^>]+)>/U", "replace_to08", $content);
 		
 						// ecriture du template migré
-						//file_put_contents($tplmigred.$file, $content);
+						file_put_contents($tplmigred.$file, $content);
 					}
 				}
 				closedir($dh);
