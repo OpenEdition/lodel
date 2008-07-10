@@ -198,7 +198,9 @@ class View
 		// pas de fichier dispo dans le cache ou fichier cache à recompiler
 		// on le calcule, l'enregistre, l'execute et affiche le résultat
 		$content = $this->_calcul_page($context, $tpl);
-		$cache->save($content, $this->_cachedfile, $site);
+		if(empty($_POST)) {
+			$cache->save($content, $this->_cachedfile, $site);
+		}
 		$content = $this->_eval($content, $context, true);
 		echo _indent($content);
 		flush();
