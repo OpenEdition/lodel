@@ -1278,9 +1278,29 @@ class Parser
 	}
 } // clase Parser
 
-function replace_conditions($text, $style)
+/*function replace_conditions($text, $style)
 {
 	return preg_replace(array ("/\bgt\b/i", "/\blt\b/i", "/\bge\b/i", "/\ble\b/i", "/\beq\b/i", "/\bne\b/i", "/\band\b/i", "/\bor\b/i", "/([\w'\[\]\$]*) like (\/[^\/]*\/)/i"), array (">", "<", ">=", "<=", ($style == "sql" ? "=" : "=="), "!=", "&&", "||", 'preg_match("$2i", $1)'), $text);
+}
+réécrit suite bug signalé par François Lermigeaux sur lodel-devel
+*/
+function replace_conditions($text, $style)
+{
+	$conditions = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>($style == "sql" ? "=" : "=="),'ne'=>'!=', 'and'=>'&&', 'or'=> '||');
+	$tmp = preg_split("/(\s+\b".join('|',array_keys($conditions))."\b\s+)/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$open = false;
+	foreach($tmp as $texte) {
+		if(preg_match_all("/(?<!\\\)'/", $texte, $m) % 2) {
+			$open = (TRUE === $open) ? false : true;
+		}
+		$t = strtolower(trim($texte));
+		if(FALSE === $open && isset($conditions[$t])) {
+			$ret .= $conditions[$t];
+			continue;
+		}
+		$ret .= $texte;
+	}
+	return preg_replace("/([\w'\[\]\$]*) like (\/[^\/]*\/)/i", 'preg_match("$2i", $1)', $ret);
 }
 
 function stripcommentandcr(& $text)
