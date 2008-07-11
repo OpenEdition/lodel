@@ -1449,7 +1449,7 @@ class exportfor08
 			if(!$result = mysql_query("select identity, ndlr from " . $GLOBALS['tp'] . "textes where identity in ($id)")) {
 				return mysql_error();
 			}
-			while($res = mysql_fetch_array($req)) {
+			while($res = mysql_fetch_array($result)) {
 				$ndlr = "";
 				$ndlr = $historique[$res['identity']].$res['ndlr'];
 				$ndlr = str_replace("'", "\'", $ndlr);
