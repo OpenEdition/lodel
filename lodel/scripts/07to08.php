@@ -632,7 +632,7 @@ class exportfor08
 		while($res = mysql_fetch_array($result)) {
 			if($res['droitsauteur'] != "") {
 				$id = $this->__insert_object('entries');
-				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".strtolower($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
+				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".makeSortKey($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
 				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
 	
 				if(!$req = mysql_query("SELECT identite FROM ".$GLOBALS['tp']."documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
@@ -1699,7 +1699,7 @@ class exportfor08
 					return $q."<br>".mysql_error();
 				}
 				while ($rows = mysql_fetch_array($resu)) {
-					$query .= "UPDATE _PREFIXTABLE_entries SET idtype = '".$rows['id']."', sortkey = \"".strtolower(trim($row['nom']))."\" WHERE id = " . $row['id'] . ";\n";
+					$query .= "UPDATE _PREFIXTABLE_entries SET idtype = '".$rows['id']."', sortkey = \"".makeSortKey($row['nom'])."\" WHERE id = " . $row['id'] . ";\n";
 				}
 				$i++;
 			}
