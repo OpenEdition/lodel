@@ -724,7 +724,8 @@ function loop_alphabetSpec($context, $funcname)
 	$lettres = $db->getArray(lq($sql));
 
 	foreach($lettres as &$lettre) {
-		$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
+		if($lettre['l'] != '<' && $lettre['l'] != '>' && $lettre['l'] != ' ')
+			$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
 	$status = $lodeluser['editor'] ? ' status > -64 ' : ' status > 0 ';
 	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
@@ -743,7 +744,7 @@ function loop_alphabetSpec($context, $funcname)
 		}
 	}
 	foreach($lettres as $lettre) {
-		if(!$lettre['l']) continue;
+		if($lettre['l'] == '') continue;
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
 			$context['nbresults'] = $db->getOne($sql."'".addcslashes($context['lettre'], "'")."'");
