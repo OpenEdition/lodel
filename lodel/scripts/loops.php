@@ -726,13 +726,7 @@ function loop_alphabetSpec($context, $funcname)
 	foreach($lettres as &$lettre) {
 		$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
-	reset($lettres);
-
-	if($lodeluser['editor'])
-		$status = ' status > -64 ';
-	else
-		$status = ' status > 0 ';
-
+	$status = $lodeluser['editor'] ? ' status > -64 ' : ' status > 0 ';
 	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
@@ -741,21 +735,20 @@ function loop_alphabetSpec($context, $funcname)
 		call_user_func("code_do_$funcname", $context);
 	}
 	
-	while (list(, $lettre) = each($lettres)) {
+	foreach($lettres as $lettre) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
 			$context['nbresults'] = $db->getOne($sql.$context['lettre']);
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
-	reset($lettres);
-	while (list(, $lettre) = each($lettres)) {
+	foreach($lettres as $lettre) {
+		if(!$lettre['l']) continue;
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
 			$context['nbresults'] = $db->getOne($sql."'".addcslashes($context['lettre'], "'")."'");
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
-	reset($lettres);
 }
 ?>
