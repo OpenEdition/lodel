@@ -213,8 +213,9 @@
 			</LOOP>
 		</LOOP>
 		<ELSE />
+		<LET VAR="idpar"><IF COND="[#FOLDER]"> AND idparent='[#ID]' <ELSE /></IF></LET>
 		<LET VAR="lettresql"><IF COND="[#LETTER]">[#LETTER|replace("'", "\'")]<ELSE />A</IF></LET>
-		<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
+		<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' [#IDPAR] AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
 			<BEFORE>
 				<IF COND="[#FOLDER]">
 					<li class="unfoldedentities"><ul class="listEntities">
