@@ -175,10 +175,10 @@
 			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
 			<LOOP NAME="series_sortkey_listall" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]">
 				<BEFORE>
-					<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
 					<ELSE />
+						<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
 						<ul class="listEntities">
 					</IF>
 				</BEFORE>
@@ -216,12 +216,12 @@
 		<LET VAR="lettresql"><IF COND="[#LETTER]">[#LETTER|replace("'", "\'")]<ELSE />A</IF></LET>
 		<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
 			<BEFORE>
-				<h2 id="[#LETTRESQL|stripslashes]">
-					<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
-				</h2>
 				<IF COND="[#FOLDER]">
 					<li class="unfoldedentities"><ul class="listEntities">
 				<ELSE />
+					<h2 id="[#LETTRESQL|stripslashes]">
+						<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
+					</h2>
 					<ul class="listEntities">
 				</IF>
 				<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
