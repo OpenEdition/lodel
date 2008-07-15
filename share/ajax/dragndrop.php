@@ -13,7 +13,7 @@ require '../../lodelconfig.php';
 require '../../'.$home.'connect.php';
 require '../../'.$home.'auth.php';
 authenticate(LEVEL_VISITOR);
-
+usecurrentdb();
 while(list($k,$v) = each($tabIds)) {
 	$key = intval($k) + 1;
 	if($key>0) {
