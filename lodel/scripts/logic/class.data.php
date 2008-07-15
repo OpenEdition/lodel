@@ -963,6 +963,188 @@ class DataLogic
 	}
 
 	/**
+	 * Backup du ME sous format XML
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreurs, passées par référence
+	 */
+	public function backupxmlmodelAction(&$context, &$error) {
+		if (!$context['backup']) {
+			return 'backupmodel';
+		}
+		if(!$context['title']) {
+			$error['title'] = 'title_required';
+		}
+		if(!$context['description']) {
+			$error['description'] = 'description_required';
+		}
+		if(!$context['author']) {
+			$error['author'] = 'author_required';
+		}
+		if(!$context['modelversion']) {
+			$error['modelversion'] = 'modelversion_required';
+		}
+		if($error) { // Si on detecte des erreurs
+			$context['error'] = $error;
+			return 'backupmodel';
+		}
+		$xml = $this->_generateXML($context);
+		require 'backupfunc.php';
+		$tmpfile = tmpdir(). '/model.xml';
+		file_put_contents($tmpfile, $xml);
+		$dirs = array();
+		$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
+		foreach($dirstest as $dir) {
+			if ($context[$dir]) {
+				$dirs[] = $dir;
+			}
+		}
+		$zipfile = $this->_backupME($tmpfile, $dirs);
+		$site = $context['site'];
+		$filename  = "modelxml-$site-". date("dmy"). ".zip";
+		$operation = 'download';
+		if (operation($operation, $zipfile, $filename, $context)) {
+			$context['success'] = 1;
+			return 'backupmodel';
+		}
+		@unlink($tmpfile);
+		@unlink($zipfile);
+		return 'backupmodel';
+	}
+
+	/**
+	 * Met à jour le ME en fonction d'un fichier XML
+	 *
+	 * @param array $context le contexte passé par référence
+	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @return string $tpl nom du template à afficher
+	 */
+	public function importxmlmodelAction(&$context, &$error) {
+		$err = '';
+		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
+		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
+		if ($context['importdir']) {
+			$GLOBALS['importdirs'][] = $importdir;
+		}
+		$context['importdirs'] = $GLOBALS['importdirs'];
+		$context['xmlimport'] = true;
+		$this->fileExtension = 'zip';
+		$this->filePrefix = 'modelxml';
+		$this->fileRegexp = $GLOBALS['fileregexp'] = "({$this->filePrefix})-\w+(?:-\d+)?.{$this->fileExtension}"; //restriction sur le nom du ZIP
+
+		$file = $this->_extractImport($context);
+		
+		if ($file && $context['delete']) {// extra check. Need more ?
+			if (dirname($file) == 'CACHE') {
+				unlink($file);
+			}
+		} elseif ($file) {
+			require_once 'backupfunc.php';
+			require_once 'func.php';
+			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
+			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
+			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
+			if (!importFromZip($file, $accepteddirs, $acceptedexts, $xmlfile, true)) {
+				$error = $context['error_extract'] = 1;
+				return 'importxmlmodel';
+			}
+			$up = true;
+		}
+		if(file_exists('CACHE/require_caching/MEObject')) { // on a déjà parsé le XML
+			ob_start();
+			require 'CACHE/require_caching/MEObject';
+			$meObj = unserialize(base64_decode($meObj));
+			ob_end_clean();
+			if(!is_object($meObj)) {
+				$context['error'] = $error = 'Content in file "CACHE/require_caching/MEObject" is not an object. Aborted.';
+				return 'importxmlmodel';
+			}
+			$this->_xmlStruct = $meObj->_xmlStruct;
+			$this->_xmlDatas = $meObj->_xmlDatas;
+			$this->_recordedTables = $meObj->_recordedTables;
+			// besoin de parser la base de nouveau pour prendre en compte les éventuelles modifications
+			$this->_getEMTables();
+			$this->_parseSQL();
+			$this->_changedTables = $meObj->_changedTables;
+			unset($meObj);
+		} elseif($xmlfile) {
+			// besoin des fonctions de bruno pour conversion entités
+			require_once 'textfunc.php';
+			$this->_changedTables['added'] = $this->_changedTables['dropped'] = array();
+			// on récupère les tables du ME
+			$this->_getEMTables();
+			// parse le XML
+			$this->_parseXML($xmlfile, $err);
+			@unlink($xmlfile);
+			if($err) {
+				$context['error'] = $error = $err;
+				return 'importxmlmodel';
+			}
+			// parse la base
+			$this->_parseSQL();
+			file_put_contents('CACHE/require_caching/MEObject', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
+		}
+
+		if($context['checktables']) {
+			$this->_manageTables($context, $err);
+			if($err) {
+				$context['error'] = $err;
+				if(file_exists('CACHE/require_caching/MEObject')) {
+					unlink('CACHE/require_caching/MEObject');
+				}
+				return 'importxmlmodel';
+			}
+			if(!empty($this->_changedFields))
+				return 'importxml_checkfields';
+			$tpl = $this->_updateDatabase($context, $err);
+			if($err) {
+				$context['error'] = $err;
+				if(file_exists('CACHE/require_caching/MEObject')) {
+					unlink('CACHE/require_caching/MEObject');
+				}
+			}
+			return $tpl;
+		} elseif($context['checkfields']) {
+			$this->_manageFields($context, $err);
+			if($err) {
+				$context['error'] = $err;
+				$context['modifiedfields'] = $this->_changedFields;
+				if(file_exists('CACHE/require_caching/MEObject')) {
+					unlink('CACHE/require_caching/MEObject');
+				}
+				return 'importxml_checkfields';
+			}
+			$tpl = $this->_updateDatabase($context, $err);
+			if($err) {
+				if(file_exists('CACHE/require_caching/MEObject')) {
+					unlink('CACHE/require_caching/MEObject');
+				}
+				$context['error'] = $err;
+			}
+			return $tpl;
+		} elseif($file) {
+			if(count($this->_changedTables['dropped'])>0 && count($this->_changedTables['added'])>0) {
+				$context['modifiedtables'] = $this->_changedTables;
+				return 'importxml_checktables';
+			} elseif(!empty($this->_changedFields)) {
+				$context['modifiedfields'] = $this->_changedFields;
+				return 'importxml_checkfields';
+			} elseif($up) {
+				$tpl = $this->_updateDatabase($context, $err);
+				if($err) {
+					$context['error'] = $err;
+					if(file_exists('CACHE/require_caching/MEObject')) {
+						unlink('CACHE/require_caching/MEObject');
+					}
+					return $tpl;
+				}
+			}
+		}
+
+		return 'importxmlmodel';
+	}
+
+	/**
 	 * Récupération des tables du ME
 	 *
 	 * Cette fonction stock dans $this->_tables les noms des tables du ME (statiques ou dynamiques)
@@ -989,21 +1171,22 @@ class DataLogic
 	 */
 	private function _parseXML($file, &$error) {
 		// on récupère le ME
-		$validator = @XMLReader::open($file, $GLOBALS['charset']);
+		$reader = new XMLReader();
+		$validator = $reader->open($file, $GLOBALS['charset']);
 		if(FALSE === $validator) {
 			$error = 'Unable to read XML file';
 			return;
 		}
-		$validator->setParserProperty(XMLReader::VALIDATE, TRUE);
+		$reader->setParserProperty(XMLReader::VALIDATE, TRUE);
 		// on lit le doc jusqu'à la fin et on valide
-		while ($validator->read());
-		if(!$validator->isValid()) {
+		while ($reader->read());
+		if(!$reader->isValid()) {
 			$error = 'XML document is not valid.';
 			return;
 		}
-		$validator->close();
-		$reader = @XMLReader::open($file, $GLOBALS['charset']);
-		if(FALSE === $reader) {
+		$reader->close();
+		$validator = $reader->open($file, $GLOBALS['charset']);
+		if(FALSE === $validator) {
 			$error = 'Unable to read XML file';
 			return;
 		}
@@ -1447,139 +1630,6 @@ class DataLogic
 	}
 
 	/**
-	 * Met à jour le ME en fonction d'un fichier XML
-	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 * @return string $tpl nom du template à afficher
-	 */
-	public function importxmlmodelAction(&$context, &$error) {
-		$err = '';
-		//Vérifie que l'on peut bien faire cet import
-		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
-		if ($context['importdir']) {
-			$GLOBALS['importdirs'][] = $importdir;
-		}
-		$context['importdirs'] = $GLOBALS['importdirs'];
-		$context['xmlimport'] = true;
-		$this->fileExtension = 'zip';
-		$this->filePrefix = 'modelxml';
-		$this->fileRegexp = $GLOBALS['fileregexp'] = "({$this->filePrefix})-\w+(?:-\d+)?.{$this->fileExtension}"; //restriction sur le nom du ZIP
-
-		$file = $this->_extractImport($context);
-		
-		if ($file && $context['delete']) {// extra check. Need more ?
-			if (dirname($file) == 'CACHE') {
-				unlink($file);
-			}
-		} elseif ($file) {
-			require_once 'backupfunc.php';
-			require_once 'func.php';
-			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
-			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
-			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
-			if (!importFromZip($file, $accepteddirs, $acceptedexts, $xmlfile, true)) {
-				$error = $context['error_extract'] = 1;
-				return 'importxmlmodel';
-			}
-			$up = true;
-		}
-		if(file_exists('CACHE/require_caching/MEObject')) { // on a déjà parsé le XML
-			ob_start();
-			require 'CACHE/require_caching/MEObject';
-			$meObj = unserialize(base64_decode($meObj));
-			ob_end_clean();
-			if(!is_object($meObj)) {
-				$context['error'] = $error = 'Content in file "CACHE/require_caching/MEObject" is not an object. Aborted.';
-				return 'importxmlmodel';
-			}
-			$this->_xmlStruct = $meObj->_xmlStruct;
-			$this->_xmlDatas = $meObj->_xmlDatas;
-			$this->_recordedTables = $meObj->_recordedTables;
-			// besoin de parser la base de nouveau pour prendre en compte les éventuelles modifications
-			$this->_getEMTables();
-			$this->_parseSQL();
-			$this->_changedTables = $meObj->_changedTables;
-			unset($meObj);
-		} elseif($xmlfile) {
-			// besoin des fonctions de bruno pour conversion entités
-			require_once 'textfunc.php';
-			$this->_changedTables['added'] = $this->_changedTables['dropped'] = array();
-			// on récupère les tables du ME
-			$this->_getEMTables();
-			// parse le XML
-			$this->_parseXML($xmlfile, $err);
-			@unlink($xmlfile);
-			if($err) {
-				$context['error'] = $error = $err;
-				return 'importxmlmodel';
-			}
-			// parse la base
-			$this->_parseSQL();
-			file_put_contents('CACHE/require_caching/MEObject', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
-		}
-
-		if($context['checktables']) {
-			$this->_manageTables($context, $err);
-			if($err) {
-				$context['error'] = $err;
-				if(file_exists('CACHE/require_caching/MEObject')) {
-					unlink('CACHE/require_caching/MEObject');
-				}
-				return 'importxmlmodel';
-			}
-			if(!empty($this->_changedFields))
-				return 'importxml_checkfields';
-			$tpl = $this->_updateDatabase($context, $err);
-			if($err) {
-				$context['error'] = $err;
-				if(file_exists('CACHE/require_caching/MEObject')) {
-					unlink('CACHE/require_caching/MEObject');
-				}
-			}
-			return $tpl;
-		} elseif($context['checkfields']) {
-			$this->_manageFields($context, $err);
-			if($err) {
-				$context['error'] = $err;
-				$context['modifiedfields'] = $this->_changedFields;
-				if(file_exists('CACHE/require_caching/MEObject')) {
-					unlink('CACHE/require_caching/MEObject');
-				}
-				return 'importxml_checkfields';
-			}
-			$tpl = $this->_updateDatabase($context, $err);
-			if($err) {
-				if(file_exists('CACHE/require_caching/MEObject')) {
-					unlink('CACHE/require_caching/MEObject');
-				}
-				$context['error'] = $err;
-			}
-			return $tpl;
-		} elseif($file) {
-			if(count($this->_changedTables['dropped'])>0 && count($this->_changedTables['added'])>0) {
-				$context['modifiedtables'] = $this->_changedTables;
-				return 'importxml_checktables';
-			} elseif(!empty($this->_changedFields)) {
-				$context['modifiedfields'] = $this->_changedFields;
-				return 'importxml_checkfields';
-			} elseif($up) {
-				$tpl = $this->_updateDatabase($context, $err);
-				if($err) {
-					$context['error'] = $err;
-					if(file_exists('CACHE/require_caching/MEObject')) {
-						unlink('CACHE/require_caching/MEObject');
-					}
-					return $tpl;
-				}
-			}
-		}
-
-		return 'importxmlmodel';
-	}
-
-	/**
 	 * Génération du ME XML
 	 *
 	 * @param array $context le contexte passé par référence
@@ -1692,57 +1742,6 @@ class DataLogic
 		$xml = $document->saveXML();
 		return $xml;
 	}
-
-	/**
-	 * Backup du ME sous format XML
-	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 */
-	public function backupxmlmodelAction(&$context, &$error) {
-		if (!$context['backup']) {
-			return 'backupmodel';
-		}
-		if(!$context['title']) {
-			$error['title'] = 'title_required';
-		}
-		if(!$context['description']) {
-			$error['description'] = 'description_required';
-		}
-		if(!$context['author']) {
-			$error['author'] = 'author_required';
-		}
-		if(!$context['modelversion']) {
-			$error['modelversion'] = 'modelversion_required';
-		}
-		if($error) { // Si on detecte des erreurs
-			$context['error'] = $error;
-			return 'backupmodel';
-		}
-		$xml = $this->_generateXML($context);
-		require 'backupfunc.php';
-		$tmpfile = tmpdir(). '/model.xml';
-		file_put_contents($tmpfile, $xml);
-		$dirs = array();
-		$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
-		foreach($dirstest as $dir) {
-			if ($context[$dir]) {
-				$dirs[] = $dir;
-			}
-		}
-		$zipfile = $this->_backupME($tmpfile, $dirs);
-		$site = $context['site'];
-		$filename  = "modelxml-$site-". date("dmy"). ".zip";
-		$operation = 'download';
-		if (operation($operation, $zipfile, $filename, $context)) {
-			$context['success'] = 1;
-			return 'backupmodel';
-		}
-		@unlink($tmpfile);
-		@unlink($zipfile);
-		return 'backupmodel';
-	}
-
 }// end of DataLogic class
 
 
