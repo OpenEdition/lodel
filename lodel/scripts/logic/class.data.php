@@ -1168,11 +1168,13 @@ class DataLogic
 	 *
 	 * Stock la structure dans $this->_xmlStruct et les éventuelles données dans $this->_xmlDatas
 	 *
+	 * @param string $file lien vers le fichier XML
+	 * @param string $error erreur passée en référence
 	 */
 	private function _parseXML($file, &$error) {
 		// on récupère le ME
 		$reader = new XMLReader();
-		$validator = $reader->open($file, $GLOBALS['charset']);
+		$validator = $reader->open($file);
 		if(FALSE === $validator) {
 			$error = 'Unable to read XML file';
 			return;
@@ -1185,7 +1187,7 @@ class DataLogic
 			return;
 		}
 		$reader->close();
-		$validator = $reader->open($file, $GLOBALS['charset']);
+		$validator = $reader->open($file);
 		if(FALSE === $validator) {
 			$error = 'Unable to read XML file';
 			return;
