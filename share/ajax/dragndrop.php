@@ -1,27 +1,32 @@
 <?php
 $tabIds = explode(',', $_POST['tabids']);
 
-if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site'])) {
+if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || in_array($_POST['site'], array('lodel-0.8', 'share-0.8', 'lodeladmin-0.8', 'lodel', 'share', 'lodeladmin'))) {
 	// tentative ?
 	echo 'error';
 	exit();
 } else {
 	$GLOBALS['site'] = $_POST['site'];
-}
-
-require '../../lodelconfig.php';
-require '../../'.$home.'connect.php';
-require '../../'.$home.'auth.php';
-authenticate(LEVEL_VISITOR);
-usecurrentdb();
-while(list($k,$v) = each($tabIds)) {
-	$key = intval($k) + 1;
-	if($key>0) {
-		$v = intval($v);
-		$db->execute(lq("UPDATE #_TP_entities SET rank = '{$key}' WHERE id='{$v}'")) or dberror();
+	if(!is_dir('../../'.$GLOBALS['site'])) {
+		echo 'error';
+		exit();
 	}
 }
-require '../../'.$home.'cachefunc.php';
-removefilesincache('../../'.$GLOBALS['site'], '../../'.$GLOBALS['site'].'/lodel/edition/', '../../'.$GLOBALS['site'].'/lodel/admin/');
+$GLOBALS['ajax'] = true;
+require '../../'.$GLOBALS['site'].'/siteconfig.php';
+require '../'.$home.'connect.php';
+require '../'.$home.'auth.php';
+authenticate(LEVEL_VISITOR);
+$table = lq("#_TP_entities");
+foreach($tabIds as $k=>$v) {
+	$key = intval($k);
+	$v = intval($v);
+	if($key>0 && $v>0) {
+		$key++;
+		$db->execute(lq("UPDATE {$table} SET rank = '{$key}' WHERE id='{$v}'")) or dberror();
+	}
+}
+require '../'.$home.'cachefunc.php';
+removefilesincache('../../'.$GLOBALS['site'], '../../'.$GLOBALS['site'].'/lodel/edition/');
 echo 'ok';
 ?>
