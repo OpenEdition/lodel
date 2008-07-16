@@ -79,7 +79,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  */
 function authenticate($level = 0, $mode = "")
 {
-	global $context, $lodeluser;
+	global $context, $lodeluser, $norecordurl;
 	global $home, $timeout, $sessionname, $site;
 	global $db;
 
