@@ -1172,6 +1172,13 @@ class DataLogic
 	 * @param string $error erreur passée en référence
 	 */
 	private function _parseXML($file, &$error) {
+		// besoin de la dtd dans le meme répertoire pour valider
+		require_once 'func.php';
+		$dtd = @copy(SITEROOT . '../share-0.8/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		if(false === $dtd) {
+			$error = 'Unable to copy DTD into tmpdir "'.tmpdir().'"';
+			return;
+		}
 		// on récupère le ME
 		$reader = new XMLReader();
 		$validator = $reader->open($file);
@@ -1277,6 +1284,7 @@ class DataLogic
 			}
 		}
 		$reader->close();
+		@unlink(tmpdir().'/lodelEM.dtd');
 	}
 
 	/**
@@ -1646,9 +1654,7 @@ class DataLogic
 		$this->_getEMTables();
 		// on crée notre document XML avec sa DTD pour pouvoir valider par la suite
 		$impl = new DomImplementation();
-		// moche de chez moche le chemin mais au moins ça fonctionne
-		// le ../../ devant $home correspond à CACHE/tmp/
-		$dtd = $impl->createDocumentType("lodelEM", "", "../../{$GLOBALS['home']}../../share-{$GLOBALS['version']}/lodelEM.dtd");
+		$dtd = $impl->createDocumentType("lodelEM", "", "lodelEM.dtd");
 		$document = $impl->createDocument("", "", $dtd);
 		$document->encoding = $GLOBALS['db_charset'];
 		// début création XML
