@@ -323,26 +323,21 @@ function mouseUp(ev){
 		curTarget.style.display    = '';
 		curTarget.style.visibility = 'visible';
 		var tabDiffIds = [];
-		var i=j=0;
-		while(rootParent.childNodes[i]){
+		var j=0;
+		for(var i=0; i<rootParent.childNodes.length; i++){
 			if(rootParent.childNodes[i].id != null) {
 				tabDiffIds[j] = rootParent.childNodes[i].id;
 				j++;
 			}
-			i++;
 		}
 		var xhr = getXMLHttpRequest();
 		if(xhr) {
-			if(xhr.readyState == 4) {
-				if(xhr.status == 200) {
-					if(xhr.responseText != 'ok') {
-						alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
-					}
-				}
-			}
-			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', true);
+			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php');
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.send('tabids='+tabDiffIds+'&site=<?php echo $GLOBALS[site]; ?>');
+			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') {
+				alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
+			}
 		}
 	}
 	curTarget  = null;
@@ -374,6 +369,7 @@ function mouseDown(ev){
 	if(target.onmousedown || target.getAttribute('DragObj')){
 		return false;
 	}
+	return true;
 }
 </script>
 	
