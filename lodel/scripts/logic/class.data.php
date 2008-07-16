@@ -1350,6 +1350,10 @@ class DataLogic
 		if(!$diff)
 			return;
 		unset($this->_changedFields[$table]['added']['keys'], $this->_changedFields[$table]['added']['tableOptions'], $this->_changedFields[$table]['dropped']['tableOptions'], $this->_changedFields[$table]['dropped']['keys']);
+		if(empty($this->_changedFields[$table]['dropped']) && empty($this->_changedFields[$table]['added'])) {
+			unset($this->_changedFields[$table]);
+			return;
+		}
 		if(is_array($this->_changedFields[$table]['added'])) {
 			$fields = array();
 			$fields = $this->_changedFields[$table]['added'];
@@ -1362,20 +1366,22 @@ class DataLogic
 			$fields = array();
 			$fields = $this->_changedFields[$table]['dropped'];
 			$this->_changedFields[$table]['dropped'] = null;
+			$tablefield = lq('#_TP_tablefields');
+			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($fields as $k=>$field) {
 				$oldField = $idgroup = array();
 				$arrKeys = array_keys($field);
 				$oldField = multidimArrayLocate($this->_changedFields[$table]['added'], $arrKeys[0]);
 				if(!$oldField) {
-					$row = $db->getRow(lq("SELECT * FROM #_TP_tablefields where name='{$arrKeys[0]}' AND class='{$table}'"));
+					$row = $db->getRow("SELECT * FROM {$tablefield} where name='{$arrKeys[0]}' AND class='{$table}'");
 					if(!$row) continue;
 					unset($row['id']);
-					$idgroup = $db->getRow(lq("SELECT name FROM #_TP_tablefieldgroups where id='{$row['idgroup']}'"));
+					$idgroup = $db->getRow("SELECT name FROM {$tablefieldgroups} where id='{$row['idgroup']}'");
 					$this->_fieldsToKeep[$table][$arrKeys[0]] = $row;
 				}
-				$this->_changedFields[$table]['dropped'][] = empty($idgroup) ? $fields[$k] : array('value'=>$fields[$k], 'tablefieldgroups'=>$this->_xmlDatas[lq('#_TP_tablefieldgroups')]);
+				$this->_changedFields[$table]['dropped'][] = empty($idgroup) ? $fields[$k] : array('value'=>$fields[$k], 'tablefieldgroups'=>$this->_xmlDatas[$tablefieldgroups]);
 			}
-		}	
+		}
 		if(!is_array($this->_changedFields[$table]['dropped']) || !is_array($this->_changedFields[$table]['added']))
 			return;
 		foreach($this->_changedFields[$table]['added'] as $k=>$field) {
@@ -1412,12 +1418,12 @@ class DataLogic
 				foreach($this->_sql['differed'] as $sql) { 
 // echo $sql."<br>";
 					if(!$db->execute($sql))
-						die(mysql_error());
+						die('Query : '.$sql.'<br />SQL Error : '.mysql_error());
 				}
 			} else {
 // echo $this->_sql['differed']."<br>";
 				if(!$db->execute($this->_sql['differed']))
-					die(mysql_error());
+					die('Query : '.$this->_sql['differed'].'<br />SQL Error : '.mysql_error());
 			}	
 			return;	
 		}
@@ -1427,12 +1433,12 @@ class DataLogic
 				if('differed' === $k) continue;
 // 				echo $sql."<br>";
 				if(!$db->execute($sql))
-					die(mysql_error());
+					die('Query : '.$sql.'<br />SQL Error : '.mysql_error());
 			}
 		} else {
 // echo $this->_sql."<br>";
 			if(!$db->execute($this->_sql))
-				die(mysql_error());
+				die('Query : '.$this->_sql.'<br />SQL Error : '.mysql_error());
 		}
 		$this->_sql = isset($this->_sql['differed']) ? array('differed'=>array_values($this->_sql['differed'])) : array();
 	}
@@ -1601,6 +1607,7 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
 	private function _manageFields(&$context, &$error) {
+		if(!is_array($context['data'])) return;
 		foreach($context['data'] as $table=>$fields) {
 			$tablefieldgroup = isset($fields['dropped']['tablefieldgroup']) ? $fields['dropped']['tablefieldgroup'] : array();
 			unset($fields['dropped']['tablefieldgroup']);
