@@ -53,16 +53,9 @@
 							<li><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="5" /> - [#KEY] : [#VALUE]</li>
 						<ELSE />
 							<IF COND="'value' == [#KEY]">
-								<LET VAR="fieldname" GLOBAL="1">array_keys($context['value'])</LET>
-								<LET VAR="fieldtype" GLOBAL="1">array_values($context['value'])</LET>
-								<?php 
-								//$GLOBALS['context']['fieldname'] = array_keys($context['value']); 
-								//$GLOBALS['context']['fieldtype'] = array_values($context['value']); 
-								?>
+								<LET ARRAY="fieldname" GLOBAL="1">array_keys($context['value'])</LET>
+								<LET ARRAY="fieldtype" GLOBAL="1">array_values($context['value'])</LET>
 								<li><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="5" /> - [%FIELDNAME.0] : [%FIELDTYPE.0]<br />
-								<?php 
-								//echo $GLOBALS['context']['fieldname'][0].' : '.$GLOBALS['context']['fieldtype'][0].'<br />'; 
-								?>
 							<ELSEIF COND="'tablefieldgroups' == [#KEY]">
 								<LOOP NAME="foreach" ARRAY="[#VALUE]">
 									<IF COND="[#TABLE] == [#VALUE.2]">
