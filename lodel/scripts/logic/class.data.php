@@ -1570,7 +1570,7 @@ class DataLogic
 	 */
 	private function _updateDatabase(&$context, &$error) {
 		if(file_exists('CACHE/require_caching/MEObject')) {
-			//unlink('CACHE/require_caching/MEObject');
+			unlink('CACHE/require_caching/MEObject');
 		}
 		foreach($this->_xmlStruct as $table=>$content) {
 			// données à insérer
@@ -1645,33 +1645,39 @@ class DataLogic
 		$entitiesTable = lq('#_TP_entities');
 		$entriesTable = lq('#_TP_entries');
 		$personsTable = lq('#_TP_persons');
+		$typeTable = lq('#_TP_types');
+		$entrytypesTable = lq('#_TP_entrytypes');
+		$persontypesTable = lq('#_TP_persontypes');
 		if(!empty($datas)) {
 			$objectsTable = lq('#_TP_objects');
 			foreach($datas as $table=>$content) {
 				$before = array_keys($content);
 				$after = array_values($content);
-				if($before != $after) {
-					switch($table) {
-						case lq('#_TP_types'): $parentTable = $entitiesTable; break;
-						case lq('#_TP_entrytypes'): $parentTable = $entriesTable; break;
-						case lq('#_TP_persontypes'): $parentTable = $personsTable; break;
-					}
-					foreach($before as $k=>$val) {
-						$idtype=0;
-						if($val == $after[$k]) continue;
-						if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recréer
-							$db->execute("INSERT INTO `{$objectsTable}` (class) VALUES ('{$parentTable}');\n");
-							$id = $db->Insert_ID();
-							if(false === $id) {
-								$error = 'No way to get last inserted ID in table "class"';
-								return;
-							}
-							$db->execute("INSERT INTO `{$table}` (SELECT * FROM `{$table}__oldME` WHERE id = '{$val}')");
-							$db->execute("UPDATE `{$table}` SET id = '{$id}' WHERE id = '{$val}'");
+				if($before == $after) continue;
+				switch($table) {
+					case $typeTable: $parentTable = $entitiesTable; break;
+					case $entrytypesTable: $parentTable = $entriesTable; break;
+					case $persontypesTable: $parentTable = $personsTable; break;
+				}
+				foreach($before as $k=>$val) {
+					$idtype=0;
+					if($val == $after[$k]) continue;
+					if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recréer
+						$db->execute("INSERT INTO `{$objectsTable}` (class) VALUES ('{$parentTable}');\n");
+						$id = $db->Insert_ID();
+						if(false === $id) {
+							$error = 'No way to get last inserted ID in table "class"';
+							return;
 						}
-						$idtype = $id ? $id : $after[$k];
-						$this->_sql[] = "UPDATE `{$parentTable}` SET idtype = '{$idtype}' WHERE idtype = '{$val}';\n";
+						$db->execute("INSERT INTO `{$table}` (SELECT * FROM `{$table}__oldME` WHERE id = '{$val}')");
+						$db->execute("UPDATE `{$table}` SET id = '{$id}' WHERE id = '{$val}'");
+						if($parentTable == $entitiesTable) {
+							$toUpdate[] = $val;
+							$toUpNewId[] = $id;
+						}
 					}
+					$idtype = $id ? $id : $after[$k];
+					$this->_sql[] = "UPDATE `{$parentTable}` SET idtype = '{$idtype}' WHERE idtype = '{$val}';\n";
 				}
 			}
 		} else {
@@ -1692,8 +1698,34 @@ class DataLogic
 				}
 			}
 		}
-
 		$this->_executeSQL();
+
+		if(isset($toUpdate)) {// maj entitytypes_entitytypes
+			$id=0;
+			foreach($toUpdate as $k=>$id) {
+				$etypes = $db->getArray("SELECT identitytype2 FROM entitytypes_entitytypes__oldME WHERE identitytype = '{$id}'");
+				foreach($etypes as $etype) {
+					$id2=0;
+					if('' != $datas[$typeTable][$etype['identitytype2']]) {
+						$id2 = $datas[$typeTable][$etype['identitytype2']];
+					} else {
+						$id2 = $db->getOne("SELECT t.id FROM {$typeTable} as t JOIN {$typeTable}__oldME as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype2']}'");
+					}
+					$this->_sql[] = "INSERT INTO entitytypes_entitytypes(identitytype, identitytype2, cond) VALUES ('{$toUpNewId[$k]}', '{$id2}', '*');\n";
+				}
+				$etypes = $db->getArray("SELECT identitytype FROM entitytypes_entitytypes__oldME WHERE identitytype2 = '{$id}'");
+				foreach($etypes as $etype) {
+					$id2=0;
+					if('' != $datas[$typeTable][$etype['identitytype']]) {
+						$id2 = $datas[$typeTable][$etype['identitytype']];
+					} else {
+						$id2 = $db->getOne("SELECT t.id FROM {$typeTable} as t JOIN {$typeTable}__oldME as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype']}'");
+					}
+					$this->_sql[] = "INSERT INTO entitytypes_entitytypes(identitytype, identitytype2, cond) VALUES ('{$id2}', '{$toUpNewId[$k]}', '*');\n";
+				}
+			}
+			$this->_executeSQL();
+		}
 	}
 
 	/**
