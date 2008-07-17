@@ -137,6 +137,12 @@ class DataLogic
 	 * @var array
 	 */	
 	private $_fieldsToKeep;
+
+	/**
+	 * Tableau des types (entité ou entrée) n'ayant pas trouvé leur équivalent dans le XML
+	 * @var array
+	 */
+	private $_changedTypes;
 	/* FIN IMPORT ME XML */
 
 	/**
@@ -1020,6 +1026,7 @@ class DataLogic
 	 * @return string $tpl nom du template à afficher
 	 */
 	public function importxmlmodelAction(&$context, &$error) {
+		global $db;
 		$err = '';
 		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
@@ -1096,14 +1103,15 @@ class DataLogic
 			}
 			if(!empty($this->_changedFields))
 				return 'importxml_checkfields';
-			$tpl = $this->_updateDatabase($context, $err);
+			$this->_updateDatabase($context, $err);
 			if($err) {
 				$context['error'] = $err;
 				if(file_exists('CACHE/require_caching/MEObject')) {
 					unlink('CACHE/require_caching/MEObject');
 				}
+			} else {
+				$context['success'] = 1;
 			}
-			return $tpl;
 		} elseif($context['checkfields']) {
 			$this->_manageFields($context, $err);
 			if($err) {
@@ -1114,14 +1122,25 @@ class DataLogic
 				}
 				return 'importxml_checkfields';
 			}
-			$tpl = $this->_updateDatabase($context, $err);
+			$this->_updateDatabase($context, $err);
 			if($err) {
 				if(file_exists('CACHE/require_caching/MEObject')) {
 					unlink('CACHE/require_caching/MEObject');
 				}
 				$context['error'] = $err;
+			} else {
+				$context['success'] = 1;
 			}
-			return $tpl;
+		} elseif($context['checktypes']) {
+			$this->_updateTypes($context['data'], $err);
+			if($err) {
+				$context['error'] = $err;
+				if(file_exists('CACHE/require_caching/MEObject')) {
+					unlink('CACHE/require_caching/MEObject');
+				}
+			} else {
+				$context['success'] = 1;
+			}
 		} elseif($file) {
 			if(count($this->_changedTables['dropped'])>0 && count($this->_changedTables['added'])>0) {
 				$context['modifiedtables'] = $this->_changedTables;
@@ -1130,17 +1149,35 @@ class DataLogic
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			} elseif($up) {
-				$tpl = $this->_updateDatabase($context, $err);
+				$this->_updateDatabase($context, $err);
 				if($err) {
 					$context['error'] = $err;
 					if(file_exists('CACHE/require_caching/MEObject')) {
 						unlink('CACHE/require_caching/MEObject');
 					}
-					return $tpl;
+				} else {
+					$context['success'] = 1;
 				}
 			}
 		}
 
+		if(isset($context['success']) && !empty($this->_changedTypes)) {
+			$context['modifiedoldtypes'] = $this->_changedTypes;
+			$types = lq('#_TP_types');
+			$entrytypes = lq('#_TP_entrytypes');
+			$persontypes = lq('#_TP_persontypes');
+			$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM {$types}");
+			$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM {$entrytypes}");
+			$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM {$persontypes}");
+			return 'importxml_checktypes';
+		}		
+
+		//Vide le cache
+		if(isset($context['success'])) {
+			require_once 'cachefunc.php';
+			clearcache(true);
+		}
+		
 		return 'importxmlmodel';
 	}
 
@@ -1291,7 +1328,7 @@ class DataLogic
 	 * Récupère la structure des tables du ME
 	 *
 	 * Stock la structure dans $this->_sqlStruct
-	 *
+	 * @param array $tables on peut spécifier quelles tables en particulier parser
 	 */
 	private function _parseSQL() {
 		global $db;
@@ -1371,7 +1408,8 @@ class DataLogic
 			foreach($fields as $k=>$field) {
 				$oldField = $idgroup = array();
 				$arrKeys = array_keys($field);
-				$oldField = multidimArrayLocate($this->_changedFields[$table]['added'], $arrKeys[0]);
+				if(is_array($this->_changedFields[$table]['added']))
+					$oldField = multidimArrayLocate($this->_changedFields[$table]['added'], $arrKeys[0]);
 				if(!$oldField) {
 					$row = $db->getRow("SELECT * FROM {$tablefield} where name='{$arrKeys[0]}' AND class='{$table}'");
 					if(!$row) continue;
@@ -1497,7 +1535,9 @@ class DataLogic
 			$tmpSql .= " ) ".$tableOptions;
 			$this->_sql[] = $tmpSql;
 			if(isset($this->_xmlDatas[$table])) {
-				$this->_sql[] = "DELETE FROM `{$table}`";
+				// on garde une copie au cas où !
+				$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
+				$this->_sql[] = "DELETE FROM `{$table}`;\n";
 				$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
 				$fields = join(',', $this->_xmlDatas[$table]['fields']);
 				$tmpSql = "INSERT INTO `{$table}` ({$fields}) VALUES ";
@@ -1530,13 +1570,14 @@ class DataLogic
 	 */
 	private function _updateDatabase(&$context, &$error) {
 		if(file_exists('CACHE/require_caching/MEObject')) {
-			unlink('CACHE/require_caching/MEObject');
+			//unlink('CACHE/require_caching/MEObject');
 		}
-		// clés
 		foreach($this->_xmlStruct as $table=>$content) {
 			// données à insérer
 			$i=0;
 			if(isset($this->_xmlDatas[$table])) {
+				// copie au cas où
+				$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
 				$this->_sql[] = "DELETE FROM `{$table}`;\n";
 				$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
 				$fields = join(',', $this->_xmlDatas[$table]['fields']);
@@ -1586,16 +1627,73 @@ class DataLogic
 		}
 		// on execute les requetes en cours
 		$this->_executeSQL();
+		// on met à jour les idtypes des entités/entrées
+		$this->_updateTypes();
 		// requetes différées
 		$this->_executeSQL(true);
-		// change the id in order there are minimal and unique
-		$this->_reinitobjetstable();
+	}
 
-		//Vide le cache
-		require_once 'cachefunc.php';
-		clearcache(true);
-		$context['success'] = 1;
-		return 'importxmlmodel';
+	/**
+	 * Met à jour la base de données SQL
+	 *
+	 * Ajuste les idtypes après import XML du ME
+	 * @param $datas optionnel : quand présent, MAJ des types suivant choix utilisateur
+	 * @param $error erreur passée en référence
+	 */
+	private function _updateTypes($datas=array(), &$error='') {
+		global $db;
+		$entitiesTable = lq('#_TP_entities');
+		$entriesTable = lq('#_TP_entries');
+		$personsTable = lq('#_TP_persons');
+		if(!empty($datas)) {
+			$objectsTable = lq('#_TP_objects');
+			foreach($datas as $table=>$content) {
+				$before = array_keys($content);
+				$after = array_values($content);
+				if($before != $after) {
+					switch($table) {
+						case lq('#_TP_types'): $parentTable = $entitiesTable; break;
+						case lq('#_TP_entrytypes'): $parentTable = $entriesTable; break;
+						case lq('#_TP_persontypes'): $parentTable = $personsTable; break;
+					}
+					foreach($before as $k=>$val) {
+						$idtype=0;
+						if($val == $after[$k]) continue;
+						if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recréer
+							$db->execute("INSERT INTO `{$objectsTable}` (class) VALUES ('{$parentTable}');\n");
+							$id = $db->Insert_ID();
+							if(false === $id) {
+								$error = 'No way to get last inserted ID in table "class"';
+								return;
+							}
+							$db->execute("INSERT INTO `{$table}` (SELECT * FROM `{$table}__oldME` WHERE id = '{$val}')");
+							$db->execute("UPDATE `{$table}` SET id = '{$id}' WHERE id = '{$val}'");
+						}
+						$idtype = $id ? $id : $after[$k];
+						$this->_sql[] = "UPDATE `{$parentTable}` SET idtype = '{$idtype}' WHERE idtype = '{$val}';\n";
+					}
+				}
+			}
+		} else {
+			foreach(array(0=>lq('#_TP_types'), 1=>lq('#_TP_entrytypes'), 2=>lq('#_TP_persontypes')) as $key=>$type) {
+				switch($key) {
+					case 0: $table = $entitiesTable; break;
+					case 1: $table = $entriesTable; break;
+					case 2: $table = $personsTable; break;
+				}
+				$oldTypeArr = $db->getArray("SELECT id, type FROM `{$type}__oldME`");
+				foreach($oldTypeArr as $k=>$oldType) {
+					$typeArr = $db->getRow("SELECT id FROM `{$type}` WHERE type = '{$oldType['type']}'");
+					if(!$typeArr) {
+						$this->_changedTypes[$type][] = array($oldType['id'] => $oldType['type']);
+						continue;
+					}
+					$this->_sql[] = "UPDATE `{$table}` SET idtype = '{$typeArr['id']}' WHERE idtype = '{$oldType['id']}';\n";
+				}
+			}
+		}
+
+		$this->_executeSQL();
 	}
 
 	/**
