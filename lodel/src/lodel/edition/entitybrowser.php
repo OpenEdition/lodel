@@ -54,7 +54,7 @@ $context['caller'] = $_REQUEST['caller'];
 $context['single'] = isset($_REQUEST['single']);
 
 $ids = explode(',', $_REQUEST['value']);
-
+$context['id'] = intval($_GET['id']);
 $nodesk = true;
 require 'view.php';
 $view = &View::getView();

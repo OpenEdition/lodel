@@ -22,6 +22,7 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
@@ -42,7 +43,7 @@ function sendValue(id,title)
 function sendValues(){
 	obj=window.opener.document.getElementById('[#CALLER]');
 	objselect=window.opener.document.getElementById('[#CALLER]_select');
-	var pattern=/(\d+):(.*)/;
+	var pattern=/(\d+):(.*):(.*)/;
 	var chkbox = document.getElementsByName('entities');
 	var s='';
 	while(objselect.length) {
@@ -52,7 +53,10 @@ function sendValues(){
 	for(i=0; i<chkbox.length; i++){
 		if(chkbox[i].checked) {
 			var result = chkbox[i].value.match(pattern);
-			objselect.options[objselect.length] = new Option(result[2],result[1]);
+			if(result[2].length > 50) {
+				result[2] = result[2].substr(0,50) + ' ... ';
+			}
+			objselect.options[objselect.length] = new Option(result[2] + ' (' + result[3] + ')',result[1]);
 			obj.value=obj.value+result[1]+',';
 		}
 	}
@@ -69,19 +73,20 @@ function sendValues(){
 <fieldset>
 	<legend>[@EDITION.BROWSE_AND_CHOOSE_ONE_OR_MANY_ENTITIES]</legend>
 	
-
 	<input type="hidden" name="caller" value="[#CALLER]" />
 	<LET VAR="iddocument">[#ID]</LET>
+	<LET VAR="restrict"> AND idtype IN (select identitytype2 from #_TP_entitytypes_entitytypes where identitytype=(select idtype from #_TP_entities WHERE id = '[#IDDOCUMENT]'))</LET>
 	<LET VAR="id">0</LET>
-	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
+	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id [#RESTRICT|lq]" ORDER="entities.rank">
 		<BEFORE><ul class="listentities"></BEFORE>
 		<DO>
 			<li>
 			<IF COND="[#SINGLE]">
-				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE]</a>
+				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE] ([#TYPE])</a>
 			<ELSE/>
-				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]">[#G_TITLE]
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
 			</IF>
+			
 			<LOOP NAME="entities"></LOOP>
 			</li>
 		</DO>
