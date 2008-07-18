@@ -1640,7 +1640,6 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 			</div>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
@@ -1658,6 +1657,35 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
+	<LOOP NAME="showAliases" TABLE="relations, entities, types" SELECT="relations.id1, entities.*" WHERE="relations.nature='alias' AND relations.id2='[#ID]' AND entities.id = relations.id1 AND types.id=idtype" ORDER="entities.upd">
+		<BEFORE>
+			<div class="alias">
+			<hr />
+			<h3>Alias</h3>
+			<ul class="listEntities"></BEFORE>
+		<DO>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+		<div class="entityIcons">
+			<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+			<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
+		</div>
+		<LET VAR="alias">true</LET>
+		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+
+		<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
+
+		<LOOP NAME="parentsentities">
+			<DOFIRST><a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
+			<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
+		</LOOP>
+		</DO>
+		<AFTER></ul></div></AFTER>
+	</LOOP>
+	
 	<IF COND="![#FOLDER] AND [#DRAG]"> 
 		<script type="text/javascript">
 			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
@@ -1922,7 +1950,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 	<div class="document">
-	<span class="titre_document">
+	<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
           <IF COND="[#TPLEDITION]">
                  " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
           <ELSE/>
@@ -1945,8 +1973,13 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 		</LOOP>
 	</LOOP>
-	
-
+	<IF COND="![#ALIAS]">
+	<LOOP NAME="getAliases" SELECT="count(idrelation) as nbres" TABLE="relations" WHERE="nature='alias' AND id1='[#ID]'">
+		<IF COND="[#NBRES] GT 0">
+			<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" />
+		</IF>
+	</LOOP>	
+	</IF>
 	</div>
 </DEFMACRO>
 
