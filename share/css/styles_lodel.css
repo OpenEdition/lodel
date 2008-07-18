@@ -93,6 +93,14 @@ div.importME ul {
 	position:relative;
 }
 
+div.alias {
+	position:relative;
+	margin-top:7em;
+}
+span.titre_alias {
+	color: #6b6b6b;
+}
+
 ul.importME_left {
 	border: solid 1px red;
 /* 	float:left; */
