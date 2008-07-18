@@ -415,7 +415,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;single','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','[@COMMON.ENTITYBROWSER]','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
 	<LOOP NAME="entities_select">
 		<DO>
@@ -427,10 +427,10 @@ cp_[#VARNAME].writeDiv();
 	</LOOP>
 	<ELSE/>
 	
-	<select id="[#VARNAME]_select" row="3" multiple="multiple"  >
+	<select id="[#VARNAME]_select" row="3" multiple="multiple">
 	<LOOP NAME="entities_select">
 		<DO>
-		<option value="[#ID]">[#G_TITLE|couper(60)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></option>
+		<option value="[#ID]">[#G_TITLE|strip_tags|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF> ([#TYPE])</option>
 		</DO>
 		<AFTER>
 			</select>
@@ -443,7 +443,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<br /><br />
-	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 
