@@ -525,7 +525,10 @@ ul.listEntities li ul li{
 }
 
 li.line1_entity, li.line2_entity {
-	list-style-image: url(../images/index.gif);
+background-image: url(../images/dragndrop.gif);
+background-repeat: no-repeat;
+background-position: top left;
+	
 }
 
 ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
@@ -1036,7 +1039,7 @@ div.close{
 
 #browser fieldset{
 	margin-left: 10px;
-	width: 500px;
+	width: 800px;
 }
 
 /************** FCK ***************************/

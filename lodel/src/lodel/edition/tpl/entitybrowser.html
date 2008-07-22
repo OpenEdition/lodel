@@ -75,9 +75,8 @@ function sendValues(){
 	
 	<input type="hidden" name="caller" value="[#CALLER]" />
 	<LET VAR="iddocument">[#ID]</LET>
-	<LET VAR="restrict"> AND idtype IN (select identitytype2 from #_TP_entitytypes_entitytypes where identitytype=(select idtype from #_TP_entities WHERE id = '[#IDDOCUMENT]'))</LET>
 	<LET VAR="id">0</LET>
-	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id [#RESTRICT|lq]" ORDER="entities.rank">
+	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
 		<BEFORE><ul class="listentities"></BEFORE>
 		<DO>
 			<li>
@@ -86,8 +85,12 @@ function sendValues(){
 			<ELSE/>
 				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
 			</IF>
-			
-			<LOOP NAME="entities"></LOOP>
+			<IF COND="[#TPLEDITION]">
+			&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_haut_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_bas_gris.png' }" />
+			<div style="display:none" id="childContainer[#ID]">
+				<LOOP NAME="entities"></LOOP>	
+			</div>
+			</IF>
 			</li>
 		</DO>
 		<AFTER></ul></AFTER>

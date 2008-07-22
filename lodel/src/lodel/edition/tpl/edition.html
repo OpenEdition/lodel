@@ -128,6 +128,7 @@ function mouseMove(ev){
 	Firefox uses event.target here, MSIE uses event.srcElement
 	*/
 	var target   = ev.target || ev.srcElement;
+	
 	var mousePos = mouseCoords(ev);
 	// mouseOut event - fires if the item the mouse is on has changed
 	if(lastTarget && (target!==lastTarget)){
@@ -380,6 +381,7 @@ function mouseDown(ev){
 	
 	<div id="listEntities">
 		<FUNC NAME="LIST_ENTITIES" ID="[#ID]" DRAG="true"/>
+		<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
 	</div>
 	
 <script type="text/javascript">

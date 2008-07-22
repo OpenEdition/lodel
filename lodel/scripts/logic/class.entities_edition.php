@@ -183,7 +183,7 @@ class Entities_EditionLogic extends GenericLogic
 				return;
 			}
 			$ids = preg_split("/,/", $context['entities'][$varname], -1, PREG_SPLIT_NO_EMPTY);
-			$result = $db->execute(lq("SELECT * FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) or dberror();
+			$result = $db->execute(lq("SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) or dberror();
 			while (!$result->EOF) {
 				$localcontext = array_merge($context, $result->fields);
 				call_user_func("code_do_$funcname", $localcontext);

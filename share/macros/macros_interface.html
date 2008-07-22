@@ -443,7 +443,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<br /><br />
-	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','[@COMMON.ENTITYBROWSER]','width=565,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="#" onClick="preserveDatas;window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','[@COMMON.ENTITYBROWSER]','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes'); return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 
@@ -1657,12 +1657,21 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
+	<IF COND="![#FOLDER] AND [#DRAG]"> 
+		<script type="text/javascript">
+			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
+		</script>
+	</IF>
+</DEFFUNC>
+
+<DEFFUNC NAME="GET_ALIASES" REQUIRED="id">
 	<LOOP NAME="showAliases" TABLE="relations, entities, types" SELECT="relations.id1, entities.*" WHERE="relations.nature='alias' AND relations.id2='[#ID]' AND entities.id = relations.id1 AND types.id=idtype" ORDER="entities.upd">
 		<BEFORE>
 			<div class="alias">
 			<hr />
 			<h3>Alias</h3>
-			<ul class="listEntities"></BEFORE>
+			<ul class="listEntities">
+		</BEFORE>
 		<DO>
 		<IF COND="[#COUNT] % 2">
 			<li class="line1">
@@ -1675,22 +1684,15 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</div>
 		<LET VAR="alias">true</LET>
 		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-
-		<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
-
+		<!--[<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">]-->
+		<!--[		<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>]-->
+		[@EDITION.BASE]
 		<LOOP NAME="parentsentities">
-			<DOFIRST><a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
-			<DO>&nbsp;>&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
+			<DO>&nbsp;&gt;&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
 		</LOOP>
 		</DO>
 		<AFTER></ul></div></AFTER>
 	</LOOP>
-	
-	<IF COND="![#FOLDER] AND [#DRAG]"> 
-		<script type="text/javascript">
-			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
-		</script>
-	</IF>
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTITIES_EDIT" REQUIRED="id" OPTIONAL="folder,displaywhere">
@@ -1974,11 +1976,19 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</LOOP>
 	</LOOP>
 	<IF COND="![#ALIAS]">
-	<LOOP NAME="getAliases" SELECT="count(idrelation) as nbres" TABLE="relations" WHERE="nature='alias' AND id1='[#ID]'">
-		<IF COND="[#NBRES] GT 0">
-			<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" />
-		</IF>
-	</LOOP>	
+		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="nature='alias' AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
+			<BEFORE>
+				<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" onclick="if(document.getElementById('aliasContainer[%ID]').style.display == 'none') document.getElementById('aliasContainer[%ID]').style.display = 'inline'; else document.getElementById('aliasContainer[%ID]').style.display = 'none';" />
+				<div style="display:none" id="aliasContainer[%ID]">
+			</BEFORE>
+			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+			<LOOP NAME="parententities" TABLE="entities, relations" WHERE="entities.id=relations.id1 AND id2='[#ID]' AND nature='P'">
+				<DOFIRST><a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
+				<DO>&nbsp;&gt;&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
+				<ALTERNATIVE>[@EDITION.BASE] &gt;</ALTERNATIVE>
+			</LOOP>	
+			<AFTER></div></AFTER>
+		</LOOP>	
 	</IF>
 	</div>
 </DEFMACRO>
