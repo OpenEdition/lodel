@@ -22,9 +22,11 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-<USE MACROFILE="macros_technique.html">
-<USE MACROFILE="macros_site.html">
-<MACRO NAME="ENTETE_XML">
+
+<?php
+header('Content-type: text/xml');
+echo '<?xml version="1.0" encoding="', $context['charset'], '"?>';
+?>
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.google.com/schemas/sitemap/0.84 http://www.google.com/schemas/sitemap/0.84/sitemap.xsd">
 
 <!--[Page d'accueil du site]-->
