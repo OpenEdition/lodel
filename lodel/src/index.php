@@ -46,6 +46,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -64,159 +65,53 @@ if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/(index|si
 	exit;
 }
 //gestion de l'authentification
-require_once 'auth.php';
+require 'auth.php';
 authenticate();
 // record the url if logged
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
 
-require_once 'view.php';
-$view = &View::getView();
 if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
 	// get the view and check the cache.
+	require 'view.php';
+	$view = &View::getView();
 	if ($view->renderIfCacheIsValid()) {
 		return;
 	}
 }
-$id         = intval($_GET['id']);
-$identifier = $_GET['identifier'];
-$page       = $_GET['page']; // get only
-$do         = $_POST['do'] ? $_POST['do'] : $_GET['do'];
-$tpl        = 'index'; // template by default.
-$url_retour = strip_tags($url_retour);
 
-// appel d'un docannexe
-if($_GET['file']) {
-	$critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : " AND {$GLOBALS['tableprefix']}entities.status>0 AND {$GLOBALS['tableprefix']}types.status>0";
-	
-	$row = $db->getRow("SELECT {$GLOBALS['tableprefix']}tablefields.name, {$GLOBALS['tableprefix']}tablefields.class FROM {$GLOBALS['tableprefix']}tablefields, {$GLOBALS['tableprefix']}entities LEFT JOIN {$GLOBALS['tableprefix']}types on ({$GLOBALS['tableprefix']}entities.idtype = {$GLOBALS['tableprefix']}types.id) WHERE {$GLOBALS['tableprefix']}entities.id='{$id}' AND {$GLOBALS['tableprefix']}tablefields.class = {$GLOBALS['tableprefix']}types.class AND {$GLOBALS['tableprefix']}tablefields.type = 'file'{$critere}");
-	
-	if($row) {
-		$datepubli = $db->getRow("SELECT name FROM {$GLOBALS['tableprefix']}tablefields WHERE class = '{$row['class']}' AND name = 'datepubli'");
-		if(!$datepubli) {
-			$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
-			if($file[$row['name']]) {
-				download($file[$row['name']]);
-				return;
-			}
-		} else {
-			$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
-			$datepubli = $datepubli['datepubli'];
-
-			if(!function_exists('today'))
-				require 'textfunc.php';
-			if(!$datepubli || $datepubli <= today() || $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER) {
-				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
-				if($file[$row['name']]) {
-					download($file[$row['name']]);
-					return;
-				}
-			}
-		}
-	}
+if ($_POST) {
+	$request = &$_POST;
+} else {
+	$request = &$_GET;
 }
-if ($_POST['login']) {
-	require_once 'func.php';
-	extract_post();
-	require_once 'loginfunc.php';
-	do {
-		if (!check_auth_restricted($context['login'], $context['passwd'], $site)) {
-			$context['error_login'] = $err = 1;
-			break;
-		}
 
-		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
-		if(!check_expiration()) {
-			$context['error_expiration'] = $err = 1;
-			unset($context['lodeluser']);
-			break;
-		}
-		else {
-			// ouvre une session
-			$err = open_session($context['login']);
-			if ($err) {
-				$context[$err] = $err = 1;
-				break;
-			}
-		}
-		$context['passwd'] = $passwd = 0;
-	} while (0);
-	if($err) // une erreur : besoin de l'afficher, donc pas d'utilisation du cache
-		$_REQUEST['clearcache'] = 1;
-} 
-// ID ou IDENTIFIER
-if ($id || $identifier) {
-	do { // exception block
-		require_once 'func.php';
-		if ($id) {
-			$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
-			if ($db->errorno() && $lodeluser['rights'] > LEVEL_VISITOR) {
-				dberror();
-			}
-			if (!$class) { 
-				header("HTTP/1.0 404 Not Found");
-				header("Status: 404 Not Found");
-				header("Connection: Close");
-				if(file_exists($home."../../missing.html")) {
-					include $home."../../missing.html";
-				} else {
-					header('Location: not-found.html');
-				}
-				exit; 
-			}
-		} elseif ($identifier) {
-			$class = 'entities';
-		} else {
-			die("?? strange");
-		}
-		switch($class) {
-		case 'entities':
-			printEntities($id, $identifier, $context);
-			break;
-		case 'entrytypes':
-		case 'persontypes':
-			$result = $db->execute(lq("SELECT * FROM #_TP_". $class. " WHERE id='". $id. "' AND status>0")) or dberror();
-			$context['type'] = $result->fields;
-			$view = &View::getView();
-			$view->renderCached($context, $result->fields['tplindex']);
-			exit;
-		case 'persons':
-		case 'entries':
-			printIndex($id, $class, $context);
-			break;
-		} // switch class
-	} while(0);
+$request['idtype'] = (isset($_POST['idtype']) ? intval($_POST['idtype']) : intval($_GET['idtype']));
+$request['do'] = ($_POST['do'] ? $_POST['do'] : $_GET['do']);
+$request['tpl'] = 'index'; // template by default.
+$request['url_retour'] = isset($url_retour) ? strip_tags($url_retour) : null;
+// GET ONLY
+$request['id'] = intval($_GET['id']);
+$request['identifier'] = isset($_GET['identifier']) ? $_GET['identifier'] : null;
+$request['file'] = isset($_GET['file']) ? true : false;
+$request['page'] = isset($_GET['page']) ? $_GET['page'] : null;
+// POST ONLY
+$request['login'] = isset($_POST['login']) ? $_POST['login'] : null;
+$request['passwd'] = isset($_POST['passwd']) ? $_POST['passwd'] : null;
 
-//PAGE
-} elseif ($page) { // call a special page (and template)
-	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-		die('invalid page');
-	}
-	$view->renderCached($context, $page);
-	exit;
-
-//Appel d'une action via le model MVC
-} elseif ($do) {
-		require 'controler.php';
-	if ($do == 'edit' || $do == 'view') {
-		if($_GET) {// to be sure nobody is going to modify something wrong
-			$_GET['id'] = 0;
-		}
-		else {
-			$_POST['id'] = 0;
-		}
+if (isset($request['do'])) {
+	if ($request['do'] == 'edit' || $request['do'] == 'view') {
 		// check for the right to change this document
-		$idtype = $_POST['idtype'] ? intval($_POST['idtype']) : intval($_GET['idtype']) ;
-		if (!$idtype) {
+		if (!$request['idtype']) {
 			die('ERROR: idtype must be given');
 		}
 
 		require 'dao.php';
 		$dao = &getDAO('types');
-		$vo = $dao->find("id='$idtype' and public>0 and status>0");
+		$vo = $dao->find("id='{$request['idtype']}' and public>0 and status>0");
 		if (!$vo) {
-			die("ERROR: you are not allow to add this kind of document");
+			die("ERROR: you are not allowed to add this kind of document");
 		}
 
 		$lodeluser['rights']  = LEVEL_EDITOR; // grant temporary
@@ -224,187 +119,12 @@ if ($id || $identifier) {
 		$context['lodeluser'] = $lodeluser;
 		$accepted_logic = array('entities_edition');
 		$called_logic = 'entities_edition';
-		$Controler = new controler($accepted_logic, $called_logic);
-		exit;
 	} else {
 		die('ERROR: unknown action');
 	}
-} else {
-	//tente de récupérer le path - parse la query string pour trouver l'entité
-
-	$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
-	
-	if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
-		// maybe a path to the document
-		$path = preg_split("#/#", $query, -1, PREG_SPLIT_NO_EMPTY);
-		$entity = end($path);
-		$id = intval($entity);
-		if ($id) {
-			printEntities($id, '', $context);
-		}
-	} else {
-		// rien à faire.
-	}
 }
 
-$view->renderCached($context, 'index');
-
-
-/**
- * Affichage d'une entité
- *
- * Affiche une entité grâce à son id, son identifiant. Appelle la vue associée
- *
- * @param integer $id identifiant de l'entité
- * @param string $identifier l'identifiant littéral de l'entité
- * @param array &$context le contexte par référence
- */
-function printEntities($id, $identifier, &$context)
-{
-	global $lodeluser, $home, $db;
-	$context['classtype'] = 'entities';
-	$critere = $lodeluser['visitor'] ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
-
-	// cherche le document, et le template
-	do {
-		if ($identifier) {
-			$identifier = addslashes(stripslashes(substr($identifier, 0, 255)));
-			$where = "#_TP_entities.identifier='". $identifier. "' ". $critere;
-		} else {
-			$where = "#_TP_entities.id='". $id. "' ". $critere;
-		}
-		$row = $db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ". $where));
-		if ($row === false) {
-			dberror();
-		}
-		if (!$row) { 
-			header("HTTP/1.0 404 Not Found");
-			header("Status: 404 Not Found");
-			header("Connection: Close");
-			if(file_exists($home."../../missing.html")) {
-				include $home."../../missing.html";
-			} else {
-				header('Location: not-found.html');
-			}
-			exit; 
-		}
-		$base = $row['tpl']; // le template à utiliser pour l'affichage
-		if (!$base) { 
-			$id = $row['idparent'];
-			$relocation = TRUE;
-		}
-	} while (!$base && !$identifier && $id); 
-
-	if ($relocation) { 
-		header('location: '. makeurlwithid('index', $row['id']));
-		exit;
-	}
-	$context = array_merge($context, $row);
-	$row = $db->getRow(lq("SELECT * FROM #_TP_". $row['class']. " WHERE identity='". $row['id']. "'"));
-	if ($row === false) {
-		dberror();
-	}
-	if (!$row) {
-		header("HTTP/1.0 404 Not Found");
-		header("Status: 404 Not Found");
-		header("Connection: Close");
-		if(file_exists($home."../../missing.html")) {
-			include $home."../../missing.html";
-		} else {
-			header('Location: not-found.html');
-		}
-		exit; 
-	}
-	if (!(@include_once('CACHE/filterfunc.php'))) {
-		require_once 'filterfunc.php';
-	}
-	//Merge $row et applique les filtres définis dans le ME
-	merge_and_filter_fields($context, $context['class'], $row);
-	getgenericfields($context); // met les champs génériques de l'entité dans le contexte
-	$view=&View::getView();
-	$view->renderCached($context, $base);
-	exit;
-}
-
-/**
- * Affichage d'un objet de type index
- *
- * @param integer $id identifiant numérique de l'index
- * @param string $classtype type de la classe
- * @param array &$context le context par référence
- */
-function printIndex($id, $classtype, &$context)
-{
-	global $lodeluser, $home, $db;
-	$context['classtype'] = $classtype;
-	switch($classtype) {
-	case 'persons':
-		$typetable = '#_TP_persontypes';
-		$table     = '#_TP_persons';
-		$longid    = 'idperson';
-		break;
-	case 'entries':
-		$typetable = '#_TP_entrytypes';
-		$table     = '#_TP_entries';
-		$longid    = 'identry';
-		break;
-	default:
-		die('ERROR: internal error in printIndex');
-	}
-
-	// get the index
-	$critere = $lodeluser['visitor'] ? 'AND status>-64' : 'AND status>0';
-	$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
-	if ($row === false) {
-		dberror();
-	}
-	if (!$row) {
-		header("HTTP/1.0 404 Not Found");
-		header("Status: 404 Not Found");
-		header("Connection: Close");
-		if(file_exists($home."../../missing.html")) {
-			include $home."../../missing.html";
-		} else {
-			header('Location: not-found.html');
-		}
-		exit;
-	}
-	$context = array_merge($context, $row);
-	// get the type
-	$row = $db->getRow(lq("SELECT * FROM ". $typetable. " WHERE id='". $row['idtype']. "'". $critere));
-	if ($row === false) {
-		dberror();
-	}
-	if (!$row) {
-		header("HTTP/1.0 404 Not Found");
-		header("Status: 404 Not Found");
-		header("Connection: Close");
-		if(file_exists($home."../../missing.html")) {
-			include $home."../../missing.html";
-		} else {
-			header('Location: not-found.html');
-		}
-		exit;
-	}
-	$base            = $row['tpl'];
-	$context['type'] = $row;
-
-	// get the associated table
-	$row = $db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE ".$longid."='".$id."'"));
-	if ($row === false) {
-		dberror();
-	}
-	if (!$row) {
-		die("ERROR: internal error");
-	}
-	if (!(@include_once("CACHE/filterfunc.php"))) {
-		require_once "filterfunc.php";
-	}
-	merge_and_filter_fields($context, $row['class'], $row);
-	#getgenericfields($context);
-	$view = &View::getView();
-	$view->renderCached($context, $base);
-	exit;
-}
-
+require 'controler.php';
+$controler = new controler(isset($accepted_logic) ? $accepted_logic : array(), isset($called_logic) ? $called_logic : '', $request);
+exit();
 ?>
