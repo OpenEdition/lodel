@@ -301,19 +301,49 @@ class Entities_EditionLogic extends GenericLogic
 			if ($vo->status >= 16) {
 				die("ERROR: entity is locked. No operation is allowed");
 			}
-			// let's deal with document reloading problem : PDF file disapeared, now resolved :
-			$daotablefields = &getDAO("tablefields");
-			$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");			
-			foreach($Filefields as $ffield) {
-				$gdaoaf = &getGenericDAO ($class, "identity");
-				$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
-				$fieldname = $ffield->name;
-				if($context['data'][$ffield->name] == 'deleted')
-					$context['data'][$ffield->name] = '';
-				elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
-					$name = (string)$ffield->name;
-					$context['data'][$ffield->name] = $tmpfile->$name;
+			// possibly document reloading
+			if($vo->status>-64) {
+				// let's deal with document reloading problem : PDF file and entries disapeared :
+				$daotablefields = &getDAO("tablefields");
+				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");			
+				foreach($Filefields as $ffield) {
+					$gdaoaf = &getGenericDAO ($class, "identity");
+					$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
+					$fieldname = $ffield->name;
+					if($context['data'][$ffield->name] == 'deleted') {
+						$context['data'][$ffield->name] = '';
+					} elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
+						$name = $ffield->name;
+						$context['data'][$ffield->name] = $tmpfile->$name;
+					}
 				}
+				// entries
+				$daorelations = &getDAO("relations");
+				$Entryfields = $daorelations->findMany("id1='{$id}' AND nature = 'E'", "", "id2");
+				$daoentries = &getDAO("entries");
+				$daoentrytypes = &getDAO("entrytypes");
+				foreach($Entryfields as $ffield) {
+					$reloaded = false;
+					$entry = $daoentries->getById($ffield->id2, 'idtype, g_name');
+					$entryclass = $daoentrytypes->getById($entry->idtype, 'class');
+					if(is_array($context['entries'][$entry->idtype])) {
+						foreach($context['entries'][$entry->idtype] as $entryfield) {
+							if($entryfield['g_name'] == $entry->g_name) {
+								$reloaded = true;
+								break;
+							}
+						}
+					}
+					if($reloaded) continue;
+					$pos = count($context['entries'][$entry->idtype]);
+					$context['entries'][$entry->idtype][$pos]['g_name'] = $entry->g_name;
+					$context['entries'][$entry->idtype][$pos]['class'] = $entryclass->class;
+					$context['entries'][$entry->idtype][$pos]['idtype'] = $entry->idtype;
+					$indexfields = $daotablefields->find("class='{$entryclass->class}'", 'name');
+					foreach($indexfields as $indexfield)
+						$context['entries'][$entry->idtype][$pos]['data'][$indexfield->name] = null;
+				}
+				unset($entry, $entryclass, $daoentries, $daoentrytypes, $Entryfields, $daorelations, $daotablefields, $Filefields); // save some memory
 			}
 			// change the usergroup of the entity ?
 			if ($lodeluser['admin'] && $context['usergroup']) {
