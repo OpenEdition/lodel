@@ -96,8 +96,37 @@ function clean_request_variable(&$var)
 {
 	static $filter;
 	if (!$filter) {
-		require_once 'class.inputfilter.php';
-		$filter = new InputFilter(array(), array(), 1, 1);
+// 		require_once 'class.inputfilter.php';
+// 		$filter = new InputFilter(array(), array(), 1, 1);
+		require_once 'htmlpurifier/library/HTMLPurifier.auto.php';
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('Core', 'Encoding', $GLOBALS['context']['charset']);
+		$config->set('HTML', 'TidyLevel', 'heavy' );
+		if(!is_dir('./CACHE/htmlpurifier/')) {
+			if(is_writeable('./CACHE/')) {
+				@mkdir('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
+				@chmod('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
+			} else {
+				die('ERROR : cannot write in CACHE directory in '.__FUNCTION__.'.');
+			}
+		}
+		$config->set('Cache', 'SerializerPath', realpath('./CACHE/htmlpurifier/') );
+		$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+		$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
+		$config->set('HTML', 'DefinitionRev', 1);
+		if($GLOBALS['debugMode'])
+			$config->set('Core', 'DefinitionCache', null);
+		$def = $config->getHTMLDefinition(true);
+		$r2r = $def->addElement(
+			'r2r',   // name
+			'Block',  // content set
+			'Flow', // allowed children
+			'IL8N', // attribute collection
+			array( // attributes
+			'lang' => 'CDATA')
+			);
+		$r2r->excludes = array('r2r' => true);
+		$filter = new HTMLPurifier($config);
   	}
 
 	if (is_array($var)) {
@@ -106,14 +135,18 @@ function clean_request_variable(&$var)
 			clean_request_variable($var[$k]);
 		}
 	} else {
-		$var = magic_stripslashes($var);
+		$var = trim(magic_stripslashes($var));
+		// htmlpurifier n'est pas encore compatible avec les namespaces, chiant pour les balises r2r:ml
+		$var = str_replace('<r2r:ml ', '<r2r ', str_replace('</r2r:ml>', '</r2r>', $var));
+		$var = $filter->purify($var);
+		$var = str_replace('<r2r ', '<r2r:ml ', str_replace('</r2r>', '</r2r:ml>', $var));
 		//ici on regle un bug : lors qu'on insere un espace insécable, l'appel à la fonction PHP 'chr' plante sur le &#160; dans la fonction $filter->decode
-		if(preg_match("`&#160;`me", $var))
+		/*if(preg_match("`&#160;`me", $var))
 			$var = str_replace("&#160;", "&nbsp;", $var);
 		$var = $filter->process(trim($var));
 		// le process nettoie un peu trop : remplace les br fermés par des br ouverts : document plus valide..
 		$var = str_replace("<br>", "<br />", $var);
-		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);
+		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);*/
   	}
 }
 
