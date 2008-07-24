@@ -224,14 +224,13 @@ class ServOO_Client {
     // create Zip object
     $zip=new PclZip($outfilename);
     // 
-    if ($zipoptions['denyextensions']) $zip->user_vars['denyextensions']=$zipoptions['denyextensions'];
+    if ($zipoptions['denyextensions']) $GLOBALS['user_vars']['denyextensions']=$zipoptions['denyextensions'];
     if (isset($zipoptions['allowextensions'])) {
-      $zip->user_vars['allowextensions']=$zipoptions['allowextensions'];
+      $GLOBALS['user_vars']['allowextensions']=$zipoptions['allowextensions'];
     } else {
       // default value
-      $zip->user_vars['allowextensions']="xhtml|jpg|png|gif";
+      $GLOBALS['user_vars']['allowextensions']="xhtml|jpg|png|gif";
     }
-    
 
     $ret=$zip->extract(PCLZIP_OPT_PATH,$tmpoutdir,
 		       PCLZIP_OPT_REMOVE_ALL_PATH,
@@ -359,8 +358,8 @@ class ServOO_Client {
     }
     if ($this->_images) {
 
-      $zip->user_vars=$this->_images;
-
+      $GLOBALS['user_vars']=$this->_images;
+       
       // now extract the images
       $ret=$zip->extract(PCLZIP_OPT_REMOVE_ALL_PATH,
 			 PCLZIP_CB_PRE_EXTRACT,"_convertToXML_Pre_Extract_CB");
@@ -545,9 +544,10 @@ class ServOO_Client {
  * @access private
  */
 
-function _convertUnpack_Pre_Extract_CB($p_event, &$p_header,$user_vars)
+function _convertUnpack_Pre_Extract_CB($p_event, &$p_header)
 
 {
+  global $user_vars;
   if ($user_vars['denyextensions'] && 
       preg_match("/\.(".$user_vars['denyextensions'].")$/i",$p_header['stored_filename'])) return 0;
   if ($user_vars['allowextensions'] && 
@@ -561,9 +561,10 @@ function _convertUnpack_Pre_Extract_CB($p_event, &$p_header,$user_vars)
  * @access private
  */
 
-function _convertToXML_Pre_Extract_CB($p_event, &$p_header,$user_vars)
+function _convertToXML_Pre_Extract_CB($p_event, &$p_header)
 
 {
+  global $user_vars;
   if ($user_vars[$p_header['index']]) {
     $p_header['filename']=$user_vars[$p_header['index']];
     return 1; // extract with the new name
