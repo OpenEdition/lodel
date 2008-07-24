@@ -221,7 +221,7 @@ class LodelParser extends Parser
 				list ($table, $alias) = preg_split("/\s+AS\s+/i", $table);
 				$realtable = $this->prefixTableName($table);
 				if (!$alias){
-					$alias = $realtable;
+					$alias = (FALSE !== strpos($table, 'lodelmain')) ? $realtable : $table;
 				}
 				if (!$tablefields[$realtable] || !in_array("status", $tablefields[$realtable]) || $table == "session") {
 					continue;
