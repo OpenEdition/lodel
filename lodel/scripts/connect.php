@@ -161,7 +161,7 @@ function lq($query)
 	// any other ?
 	if (strpos($query, '#_') !== false)	{
 		if (!$cmd)
-			$cmd = array ('#_MTP_' => DATABASE.'.'.$GLOBALS['tableprefix'],
+			$cmd = array ('#_MTP_' => '`'.DATABASE.'`.'.$GLOBALS['tableprefix'],
 	'#_entitiestypesjoin_' => "$GLOBALS[tableprefix]types INNER JOIN $GLOBALS[tableprefix]entities ON $GLOBALS[tableprefix]types.id=$GLOBALS[tableprefix]entities.idtype",
 
 	'#_tablefieldsandgroupsjoin_' => "$GLOBALS[tableprefix]tablefieldgroups INNER JOIN $GLOBALS[tableprefix]tablefields ON $GLOBALS[tableprefix]tablefields.idgroup=$GLOBALS[tableprefix]tablefieldgroups.id",

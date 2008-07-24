@@ -208,7 +208,7 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'echo "#LODELREFRESH ";echo $refreshtime;echo "#";
+						$code .= 'echo "#LODELREFRESH ".$refreshtime."#";
 							if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
 							}else{ ?>';
 						$code .= $contents . '<'.'?php } ?'.'>'; 
@@ -521,9 +521,9 @@ class Parser
 				if ($name)
 					$this->errmsg("name already defined in loop $name", $this->ind);
 				$name = trim($attr['value']);
-			}	elseif ($attr['name'] == 'TABLE')	{
+			} elseif ($attr['name'] == 'TABLE') {
 				$issqldef = true;
-			}	elseif ($attr['name'] == 'REFRESH')	{
+			} elseif ($attr['name'] == 'REFRESH') {
 				$this->_checkforrefreshattribut($attrs);
 			}
 		}
@@ -536,7 +536,7 @@ class Parser
 				case 'NAME' :
 					break;
 				case 'DATABASE' :
-					$database = trim($value). '.';
+					$database = '`'.trim($value). '`.';
 					break;
 				case 'WHERE' :
 					$wheres[] = '('. replace_conditions($value, 'sql'). ')';
@@ -546,10 +546,10 @@ class Parser
 						$arr = array ();
 						foreach ($value as $val)
 							$arr = array_merge($arr, explode(',', $value));
-					}	else	{ // multiple table separated by comma
+					} else { // multiple table separated by comma
 						$arr = explode(',', $value);
 					}
-					if ($arr)	{
+					if ($arr) {
 						foreach ($arr as $value) {
 							array_push($tables, $database.trim($value));
 						}

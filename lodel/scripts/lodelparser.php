@@ -219,22 +219,15 @@ class LodelParser extends Parser
 			$teststatus = array ();
 			foreach ($tables as $table) {
 				list ($table, $alias) = preg_split("/\s+AS\s+/i", $table);
+				$realtable = $this->prefixTableName($table);
 				if (!$alias){
-					$alias = $table;
+					$alias = $realtable;
+				}
+				if (!$tablefields[$realtable] || !in_array("status", $tablefields[$realtable]) || $table == "session") {
+					continue;
 				}
 
-				$realtable = $this->prefixTableName($table);
-				if (!$tablefields[$realtable] || !in_array("status", $tablefields[$realtable])) {
-					continue;
-				}
-				if ($table == "session") {
-					continue;
-				}
-				if ($table == "entities") {
-					$lowstatus = '"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")';
-				}	else {
-					$lowstatus = "-64";
-				}
+				$lowstatus = ($table == "entities") ? '"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")' : "-64";
 				$where[count($where) - 1] .= " AND (".$alias.".status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
 			}
 		}
@@ -550,7 +543,7 @@ class LodelParser extends Parser
 		if (!$tablefields) {
 			require ('tablefields.php');
 		}
-
+		$table = str_replace('`', '', $table);
 		if (preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i", $table, $result))	{
 			$table = $result[1];
 			$alias = $result[2];
@@ -564,12 +557,13 @@ class LodelParser extends Parser
 		}
 
 		$prefixedtable = lq("#_TP_".$table);
+		$mprefixedtable = lq("#_MTP_".$table);
 		if ($tablefields[$prefixedtable] && ($dbname == "" || $dbname == $GLOBALS['currentdb'].".")) {
 			return $prefixedtable.$alias;
-		} elseif ($tablefields[lq("#_MTP_".$table)] && ($dbname == "" || $dbname == DATABASE.".")) {
-			return lq("#_MTP_".$table).$alias;
-		}	else {
-			return $dbname.$table.$alias;
+		} elseif ($tablefields[$mprefixedtable] && ($dbname == "" || $dbname == DATABASE.".")) {
+			return $mprefixedtable.$alias;
+		} else {
+			return ($dbname ? '`'.$dbname.'`'.$table.$alias : $table.$alias);
 		}
 
 	}

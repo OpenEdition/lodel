@@ -342,7 +342,7 @@ class Install {
 					} else { 
 						$db_charset = '';
 					}
-				if (!@mysql_query("CREATE DATABASE $createdatabase $db_charset")) {
+				if (!@mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
 					return false;
 				}
 			} else {

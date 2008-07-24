@@ -81,7 +81,7 @@ if (!function_exists("maketablefields"))	{
 			// select the DB
 			if ($i == 0)	{ // main database
 				usemaindb();
-				$prefix = DATABASE.".";
+				$prefix = '`'.DATABASE."`.";
 			}	else	{ // current database
 				usecurrentdb();
 				$prefix = "";
