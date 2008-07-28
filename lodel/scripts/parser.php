@@ -1086,14 +1086,23 @@ class Parser
 			$this->parse_main();
 			if ($this->arr[$this->ind] == 'DO') {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-				if ($attrs['CASE'])	{
-					$this->parse_variable($attrs['CASE'], false); // parse the attributs
+				if ($attrs['CASE']) {
 					$this->_clearposition();
-					if($begin) {
-						$this->arr[$toput] = '<?php switch ('.$test.') { case "'.$attrs['CASE'].'": { ?>';
-						$begin = false;
-					} else
-						$this->arr[$this->ind + 1] = '<?php case "'.$attrs['CASE'].'": { ?>';
+					// condition par défaut
+					if('default' == $attrs['CASE']) {
+						if($begin) {
+							$this->arr[$toput] = '<?php switch ('.$test.') { default: { ?>';
+							$begin = false;
+						} else
+							$this->arr[$this->ind + 1] = '<?php default: { ?>';						
+					} else {
+						$this->parse_variable($attrs['CASE'], false); // parse the attributs
+						if($begin) {
+							$this->arr[$toput] = '<?php switch ('.$test.') { case "'.$attrs['CASE'].'": { ?>';
+							$begin = false;
+						} else
+							$this->arr[$this->ind + 1] = '<?php case "'.$attrs['CASE'].'": { ?>';
+					}
 				} elseif($attrs['CASES']) {
 					// multiple case
 					$cases = explode(',', $attrs['CASES']);
