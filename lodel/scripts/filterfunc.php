@@ -88,8 +88,9 @@ function makefilterfunc()
 	// build the function with filtering
 	// to update with ADODB
 	$fp = fopen("CACHE/filterfunc.php", "w");
-	fputs($fp, '<'.'?php function filtered_mysql_fetch_assoc($context, $result) {
-			$filters = array('.$filterstr.');
+	fputs($fp, '<'.'?php 
+	function filtered_mysql_fetch_assoc($context, $result) {
+		$filters = array('.$filterstr.');
 		$count = mysql_num_fields($result);
 		$row = mysql_fetch_row($result);
 		if (!$row) return array();
@@ -98,12 +99,12 @@ function makefilterfunc()
 			$fullfieldname[$i] = mysql_field_table($result,$i). ".". $fieldname[$i];
 			$ret[$fieldname[$i]] = $row[$i];
 		}
+		if(empty($filters)) return $ret;
 		$localcontext=array_merge($context, $ret);
 		for($i = 0; $i < $count; $i++) {
 			if ($filters[$fullfieldname[$i]]) {
 					$filter = create_function(\'$x, $context\', $filters[$fullfieldname[$i]]);
 					$ret[$fieldname[$i]] = $filter($ret[$fieldname[$i]], $localcontext);
-	# echo $filters[$fullfieldname[$i]], " ", $fieldname[$i], " ", $ret[$fieldname[$i]]," ", $filter, "<br>";
 			}
 		}
 		return $ret;
@@ -115,13 +116,17 @@ function makefilterfunc()
 	function merge_and_filter_fields(&$context, $class, &$assoc)
 	{
 		$filters = array('. $filterstr. ');
+		if(empty($filters)) {
+			$context = array_merge($context, $assoc);
+			return;
+		}
 		$localcontext = array_merge($context, $assoc);
 		foreach($assoc as $k=>$v) {
 			if ($filters[$class. ".". $k]) {
 				$filter = create_function(\'$x, $context\', $filters[$class. ".". $k]);
 				$context[$k] = $filter($v, $localcontext);
 			} else {
-		$context[$k] = $v;
+				$context[$k] = $v;
 			}
 		}
 	}

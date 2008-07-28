@@ -365,7 +365,7 @@ class LodelParser extends Parser
 		global $home;
 
 		$havepublications = in_array("publications", $tables);
-		$havedocuments = in_array("documents", $tables);
+		$havedocuments = in_array("textes", $tables);
 		//
 		// est-ce qu'on veut le prev et next publication ?
 		//
