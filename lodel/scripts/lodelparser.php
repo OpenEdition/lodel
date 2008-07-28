@@ -216,17 +216,21 @@ class LodelParser extends Parser
 
 		// verifie le status
 		if (!preg_match_sql("/\bstatus\b/i", $where)) { // test que l'element n'est pas a la poubelle
-			$teststatus = array ();
 			foreach ($tables as $table) {
 				list ($table, $alias) = preg_split("/\s+AS\s+/i", $table);
 				$realtable = $this->prefixTableName($table);
+				$main = (FALSE === strpos($table, 'lodelmain')) ? false : true;
 				if (!$alias){
-					$alias = (FALSE !== strpos($table, 'lodelmain')) ? $realtable : $table;
+					$alias = $main ? $realtable : $table;
 				}
 				if (!$tablefields[$realtable] || !in_array("status", $tablefields[$realtable]) || $table == "session") {
 					continue;
 				}
-
+				// test for ambiguous column name
+				if(!$main) {
+					$alias = (in_array(DATABASE.".".$table, $tables) || in_array("lodelmain.".$table, $tables) && $site && $GLOBALS['singledatabase'] != "on") 
+						? '`'.DATABASE."_".$site.'`.'.$alias : $alias;
+				}
 				$lowstatus = ($table == "entities") ? '"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")' : "-64";
 				$where[count($where) - 1] .= " AND (".$alias.".status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
 			}
