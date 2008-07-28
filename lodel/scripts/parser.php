@@ -1083,7 +1083,6 @@ class Parser
 		$begin = true;
 		do {
 			$this->ind += 3;
-
 			$this->parse_main();
 			if ($this->arr[$this->ind] == 'DO') {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
@@ -1095,9 +1094,22 @@ class Parser
 						$begin = false;
 					} else
 						$this->arr[$this->ind + 1] = '<?php case "'.$attrs['CASE'].'": { ?>';
-				}	else {
-					die("ERROR: multiple choice case not implemented yet");
+				} elseif($attrs['CASES']) {
 					// multiple case
+					$cases = explode(',', $attrs['CASES']);
+					$nbCases = count($cases)-1;
+					$this->_clearposition();
+					foreach($cases as $k=>&$case) {
+						$case = trim($case);
+						$this->parse_variable($case, false); // parse the attributs
+						if($begin) {
+							$this->arr[$toput] = '<?php switch ('.$test.') { case "'.$case.'":'.($k==$nbCases ? ' { ?>' : ' ?>');
+							$begin = false;
+						} else
+							$this->arr[$this->ind + 1] .= '<?php case "'.$case.'":'.($k==$nbCases ? ' { ?>' : ' ?>');
+					}
+				} else {
+					$this->errmsg("missing attribute 'CASE(S)' in SWITCH condition", $this->ind);
 				}
 			} elseif ($this->arr[$this->ind] == "/DO") {
 				$this->_clearposition();
