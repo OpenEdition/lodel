@@ -291,49 +291,36 @@ class View
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
 			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
 		}
- 		if(!$escRefresh) {
-			$content = $this->_eval($content, $context, true);
-				
-			if($refreshTime > 0) {
-				$code = '
-<'.'?php 
-$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
-if($cachetime && ($cachetime + '.($refreshTime).') < (time()+10)){ 
-	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refreshTime).'); 
-}else{ ?>';
-$code .= $content . '
-<'.'?php } ?'.'>';
-				$content = $code;
-				unset($code);		
-			} elseif(FALSE !== strpos($content, '#LODELREFRESH')) {
-				$refreshTime = preg_split("/(#LODELREFRESH \d+#)/", $content, -1, PREG_SPLIT_DELIM_CAPTURE);
-				$content = '';
-				foreach($refreshTime as $text) {
-					if((FALSE !== strpos($text, '#LODELREFRESH'))) {
-						if(($tmpRefresh = intval(substr($text, 14, -1))) > $refresh) {
-							$refresh = $tmpRefresh;
-						}
-					} else {
-						$content .= $text;
-					}
+
+		if(!$refreshTime && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)) {
+			$refreshTime = $m[1];
+			if (!is_numeric($refreshTime)) {
+				$refreshtimes = explode(",", $refreshTime);
+				foreach ($refreshtimes as $k=>$refreshtim) {
+					$refreshtim = explode(":", $refreshtim);
+					$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
+					$code.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
+					
 				}
-				if(is_int($refresh)) {
-					$code = '
-<'.'?php 
-$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
-if($cachetime && ($cachetime + '.($refresh).') < (time()+10)){ 
-	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, '.($refresh).'); 
-}else{ ?>';
-$code .= $content . '
-<'.'?php } ?'.'>';
-					$content = $code;
-					unset($code);
-				}
+			} else {
+				$code = '($cachetime + '.($refreshTime).') < ($now + 10)';
 			}
-				
 		}
+		$content = $this->_eval($content, $context, true);
 		
-		$GLOBALS['TemplateFile'][$tpl] = true;
+		if($refreshTime) {
+			$code = '
+<'.'?php 
+$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
+$now = time(); $date = getdate($now);'.(isset($tmpcode) ? $tmpcode : '').'
+if($cachetime && ('.$code.') && !$escapeRefreshManager){ 
+	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, "'.($refreshTime).'"); 
+}else{ ?>
+'. $content . '
+<'.'?php } ?'.'>';
+			$content = $code;
+			unset($code);	
+		}	
 		return $content;	
 	}
 
@@ -385,7 +372,7 @@ $code .= $content . '
 			$ret = null;
 		}
 		if(TRUE === $escapeRefreshManager && (FALSE !== strpos($content, '#LODELREFRESH'))) {
-			$content = preg_replace("/#LODELREFRESH (\d+)#/", "", $content);
+			$content = preg_replace("/#LODELREFRESH [^#]+#/", "", $content);
 		}
 		return $content;
 	}

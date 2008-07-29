@@ -192,31 +192,31 @@ class Parser
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
 					). "//". $GLOBALS['lang'] ."//". $tpl. "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights'];
 				
-				$code = '
-					<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+				$code = '<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
 
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= 'echo "#LODELREFRESH '.$this->refresh.'#";
-						if($cachetime && ($cachetime + '.$this->refresh.') < time() && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, '.$this->refresh.'); 
+					$code .= 'if($cachetime && ($cachetime + '.$this->refresh.') < time() && !$escapeRefreshManager){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, "'.$this->refresh.'"); 
 					}else{ ?>';
 					$code .= $contents . '<'.'?php } ?'.'>';
+					$code = "#LODELREFRESH ".$this->refresh."#".$code;
 				} else { // refresh time
 					$code .= '$now = time(); $date = getdate($now);';
-	
-					$refreshtimes = explode("/,/", $this->refresh);
-					foreach ($refreshtimes as $refreshtime) {
-						$refreshtime = explode("/:/", $refreshtime);
-						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'echo "#LODELREFRESH ".$refreshtime."#";
-							if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now && TRUE !== $GLOBALS[TemplateFile]['.$tpl.']) insert_template($context, "'.$tpl.'", "", "./tpl/", true, $refreshtime); 
-							}else{ ?>';
-						$code .= $contents . '<'.'?php } ?'.'>'; 
+					$tmpcode = 'if (';
+					$refreshtimes = explode(",", $this->refresh);
+					foreach ($refreshtimes as $k=>$refreshtime) {
+						$refreshtime = explode(":", $refreshtime);
+						$code .= '$refreshtime'.$k.'=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
+						$tmpcode.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now && !$escapeRefreshManager)';
+						
 					}
+					$tmpcode .= ') { insert_template($context, "'.$tpl.'", "", "./tpl/", true, "'.$this->refresh.'"); }else{ ?>';
+					$code .= $tmpcode . $contents . '<'.'?php } ?'.'>';
+					$code = "#LODELREFRESH ".$this->refresh."#".$code;
 				}
 	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
 			}
-			unset($code);
+			unset($code, $tmpcode, $refreshtimes);
 		} elseif ($this->isphp)	{
 			$contents = '<?php if ($GLOBALS[cachedfile]) echo \'<?php #--# ?>\'; ?>'.$contents; // this is use to check if the output is a must be evaluated as a php or a raw file.
 		}
