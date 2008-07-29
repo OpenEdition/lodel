@@ -269,7 +269,7 @@ class View
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $escRefresh appel de la fonction par le refresh manager
-	* @param int $refreshTime (optionnel) temps de refresh pour le manager
+	* @param string $refreshTime (optionnel) temps de refresh pour le manager
 	*/
 	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh, $refreshTime=0) {
 		global $site, $lodeluser, $home;
@@ -548,11 +548,11 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
  * @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
  * @param string $base_rep chemin vers répertoire tpl
  * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
- * @param int $refreshTime temps après lequel le tpl est à recompiler
+ * @param string $refreshTime temps après lequel le tpl est à recompiler
  */
 function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0) {
 	$view =& View::getView();
-	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, intval($refreshTime));
+	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime);
 	echo _indent($content);
 }
 
