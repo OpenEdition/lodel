@@ -44,10 +44,7 @@
  */
 
 
-if(!$GLOBALS['ajax'])
-	require '../lodelconfig.php';
-else
-	require '../../lodelconfig.php';
+require '../lodelconfig.php';
 
 # la version est vide pour lodeldevel
 # sinon mettre la version sous forme numerique entre guillement. exemple: $version="0.4";

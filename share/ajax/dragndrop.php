@@ -7,16 +7,15 @@ if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) ||
 	// tentative ?
 	echo 'error';
 	exit();
-} else {
-	$GLOBALS['site'] = $_POST['site'];
 }
-$GLOBALS['ajax'] = true;
-require '../../'.$GLOBALS['site'].'/siteconfig.php';
-require '../'.$home.'connect.php';
-require '../'.$home.'auth.php';
-// accès seulement aux personnes autorisées
+
+// chdir pour faciliter les include
+chdir('../../'.$_POST['site']);
+require 'siteconfig.php';
+require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
+// accès seulement aux personnes autorisées
 authenticate(LEVEL_VISITOR);
 if(!$lodeluser['visitor'])
 	return;
@@ -29,7 +28,7 @@ foreach($tabIds as $k=>$v) {
 		$db->execute("UPDATE {$table} SET rank = '{$key}' WHERE id='{$v}'") or dberror();
 	}
 }
-require '../'.$home.'cachefunc.php';
-removefilesincache('../../'.$GLOBALS['site'], '../../'.$GLOBALS['site'].'/lodel/edition/');
+require 'cachefunc.php';
+removefilesincache('.', './lodel/edition/');
 echo 'ok';
 ?>

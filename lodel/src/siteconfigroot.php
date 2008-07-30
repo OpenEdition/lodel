@@ -48,7 +48,6 @@ require 'lodelconfig.php';
 
 # la version est vide pour lodeldevel
 # sinon mettre la version sous forme numerique entre guillement. exemple: $version="0.4";
-
 $version = "0.8";
 
 $site = "";
@@ -65,5 +64,12 @@ $shareurl.= $versionsuffix;
 if (!defined('SITEROOT')) {
 	define('SITEROOT', '');
 }
+
+# recaptcha pour la partie signaler
+# par défaut désactivé
+$signaler_recaptcha = false;
+$recaptcha_privatekey = ""; // clé privée recaptcha
+$recaptcha_publickey = ""; // clé publique recaptcha
+
 ini_set('include_path', SITEROOT. $home . PATH_SEPARATOR. ini_get('include_path'));
 ?>
