@@ -281,7 +281,7 @@ class View
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		
-		if(!($content = $cache->get($cachedTemplateFileName, 'TemplateFile')) || $escRefresh) {
+		if($escRefresh || !($content = $cache->get($cachedTemplateFileName, 'TemplateFile'))) {
 			if(!$base_rep)
 				$base_rep = './tpl/';
 			if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
@@ -292,24 +292,25 @@ class View
 			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
 		}
 
-		if(!$refreshTime && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)) {
+		if(empty($refreshTime) && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)>0) {
 			$refreshTime = $m[1];
-			if (!is_numeric($refreshTime)) {
-				$refreshtimes = explode(",", $refreshTime);
-				foreach ($refreshtimes as $k=>$refreshtim) {
-					$refreshtim = explode(":", $refreshtim);
-					$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
-					$code.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
-					
-				}
-			} else {
-				$code = '($cachetime + '.($refreshTime).') < ($now + 10)';
-			}
 		}
 		$content = $this->_eval($content, $context, true);
+		if(empty($refreshTime)) return $content;
+
+		if (!is_numeric($refreshTime)) {
+			$refreshtimes = explode(",", $refreshTime);
+			foreach ($refreshtimes as $k=>$refreshtim) {
+				$refreshtim = explode(":", $refreshtim);
+				$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
+				$code.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
+				
+			}
+		} else {
+			$code = '($cachetime + '.($refreshTime).') < ($now + 10)';
+		}
 		
-		if($refreshTime) {
-			$code = '
+		$code = '
 <'.'?php 
 $cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
 $now = time(); $date = getdate($now);'.(isset($tmpcode) ? $tmpcode : '').'
@@ -318,9 +319,8 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 }else{ ?>
 '. $content . '
 <'.'?php } ?'.'>';
-			$content = $code;
-			unset($code);	
-		}	
+		$content = $code;
+		unset($code);	
 		return $content;	
 	}
 
@@ -465,14 +465,14 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 		$template_cache = "tpl_$base";
 		$i=0;
 		$cache = new Cache_Lite($this->_cacheOptions);
-		// on va essayer 5 fois de récupérer ou générer le fichier mis en cache
+		// on va essayer 10 fois (!!!) de récupérer ou générer le fichier mis en cache
 		do {
 			$content = $cache->get($template_cache, $group);
 			if(is_string($content) && strlen($content)>0)
 				break;
 			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
 			$i++;
-		} while (5>$i);
+		} while (10>$i);
 
 		$format = ''; // en cas de nouvel appel a calcul_page
 		if(!$content || is_object($content)) {	
