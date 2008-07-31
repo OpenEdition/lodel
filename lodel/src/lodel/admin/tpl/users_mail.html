@@ -1,0 +1,220 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+<html>
+	<head>
+		<title>[#SITETITLE]</title>
+	</head>
+	<body>
+<p>
+Bonjour,
+<br /><br />
+<IF COND="[#RESTRICTED]">
+Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de 
+passe vous permettant d'accéder aux publications sous accès restreint du site "[#SITETITLE]" ([#SITEURL]).
+</p>
+<p>
+<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br />
+<strong>Votre mot de passe</strong> : [#TMPPASSWD]
+</p>
+<p>
+Ce compte sera actif jusqu'au [#EXPIRATION|humandate].
+</p>
+<ELSE />
+Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de 
+passe vous permettant d'accéder aux parties privées du site "[#SITETITLE]" ([#SITEURL]), 
+ainsi que quelques recommandations à lire attentivement.
+</p>
+
+<h3>-- Accès Lodel</h3>
+<p>
+Pour accéder à la partie édition ou administration de votre site, une 
+authentification est nécessaire. Il faut utiliser un compte 
+d'accès Lodel :<br />
+<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br />
+<strong>Votre mot de passe</strong> : [#TMPPASSWD]<br />
+L'url de connexion est la suivante : [#SITEURL]/lodel/edition/
+</p>
+<p>
+NOUS VOUS CONSEILLONS FORTEMENT DE CHANGER CE MOT DE PASSE POUR LA SECURITE 
+DE VOTRE SITE en vous inspirant des "Précautions d'usage pour travail 
+collectif" expliquées en fin de message. Il est très fortement conseillé 
+d'appliquer ces recommandations pour créer d'autres comptes d'accès "Lodel".
+</p>
+<p>
+Si votre mot de passe est intercepté lors d'un transfert d'e-mail (cet 
+e-mail par exemple) et que vous ne le changez pas, quelqu'un de mal 
+intentionné pourra ajouter des articles non autorisés ou détruire des 
+articles. C'est très dangereux pour l'image du site. La sécurité du site 
+repose à 80% sur la bonne (ou mauvaise) utilisation des mots de passe 
+par les administrateurs du site. Vous en portez l'entière 
+responsabilité, d'un point de vue éditorial et d'un point de vue légal.
+</p>
+<p>
+Pour modifier votre mot de passe, une fois connecté à la partie 
+"édition" de votre site, cliquez sur "Administration", " Utilisateurs et 
+droits" puis "Editer". Vous pourrez alors saisir votre mot de passe 
+puis valider en appuyant sur "Modifier".
+</p>
+
+<h3>-- Consultation du site</h3>
+<p>
+Pour l'instant, votre site n'est consultable que par les membres de 
+Revues.org. Il sera réellement mis en ligne seulement quand vous l'aurez 
+décidé et que nous l'aurons passé sur le serveur officiel de Revues.org.
+<br />
+Il sera alors consultable à l'adresse [#SITEURL]
+</p>
+
+<h3>-- Listes de diffusion</h3>
+<p>
+Il existe 2 listes de diffusion publiques concernant Lodel. Ne postez 
+pas vos messages sur plusieurs listes liées à Lodel à la fois.
+<br />
+Merci de bien distinguer ces 2 listes, de la plus simple à la plus 
+complexe :
+</p>
+<ul>
+  <li>lodel-users@cru.fr : une liste de discussion qui réunit les 
+    utilisateurs de Lodel : questions liées à l'installation, à 
+    l'usage quotidien et à la conception de maquettes.</li>
+  <li>lodel-devel@cru.fr : une liste de discussion restreinte. On y 
+    discute des développements informatiques de Lodel (liste très 
+    technique).</li>
+</ul>
+<p>
+La liste Lodel-devel peut évoquer longuement des fonctionnalités qui ne 
+verront jamais le jour, qui seront abandonnées ou qui subiront de 
+profondes modifications techniques ou philosophiques. 
+</p>
+<p>
+Vous pouvez vous inscrire à ces listes à l'adresse suivante : 
+http://sourcesup.cru.fr/mail/?group_id=193
+</p>
+
+<h3>-- Précautions d'usage pour travail collectif (extrait)</h3>
+
+<h4>Définition des logins</h4>
+<p>
+Les logins sont composés au maximum des 8 premiers caractères du nom de 
+la personne. Ils ne doivent pas comporter d'accent, de trait d'union ou 
+d'espace.
+</p>
+<p>
+Exemple :<br />
+Alain Dépondupon<br />
+login : depondup<br />
+</p>
+<p>
+En cas de doublons, placer la première lettre du prénom à la place du 
+dernier caractère du login (le 8e au maximum).
+</p>
+<p>
+Exemple :<br />
+Michel Dépondupon<br />
+login : depondum<br />
+</p>
+<p>
+En cas de nouveaux doublons, placer la première lettre du prénom à la 
+place de l'avant dernier caractère du login (le 7e au maximum), et un 
+chiffre à la place du dernier caractère du login (le 8e au maximum) 
+</p>
+<p>
+Exemple :<br />
+Marie Dépondupalace<br />
+login : depondm1<br />
+</p>
+<p>
+Définition des mots de passe<br />
+Inspiré d'un article de Jean-Luc Archimbaud (CNRS/UREC) :
+</p>
+
+<h4>Le bon choix</h4>
+
+<p>
+Prenez tout d'abord un temps de réflexion pour choisir votre mot de 
+passe. Si l'on vous presse lors de l'ouverture de votre compte sur une 
+machine d'un centre de calcul par exemple, donnez en un simple et 
+changez le à tête reposée lors de votre premier login.
+</p>
+<p>
+Il faut choisir une suite de 7 à 8 caractères, avec des majuscules, 
+chiffres et/ou caractères de ponctuation. Cette suite doit être 
+difficile à découvrir par les pirates mais facile à mémoriser. Une 
+première méthode est de combiner des mots en introduisant des chiffres 
+ou des caractères de ponctuation (BaD!beurk, PC3rpr5). Une autre 
+consiste à utiliser des mots avec de la phonétique (7touMuch, uneCtion). 
+Vous pouvez aussi prendre les premiers lettres d'une phrase, 
+expression... que vous aimez (JvAlPaLl pour "Je vais à la pèche à la 
+ligne"). Et pour finir, vous pouvez mixer tout ca (c'est 1KO).
+</p>
+<p>
+Il faut faire marcher votre imagination pour trouver des suites de 
+signes apparemment aléatoires qui n'ont un sens que pour vous. Mais il 
+faut que ça vous soit facile à mémoriser.
+</p>
+<p>
+Dernière recommandation, il faut changer son mot de passe régulièrement, 
+même s'il est très bon, à cause principalement de l'écoute qui peut être 
+faite sur les réseaux. La périodicité de changement dépend de 
+l'utilisation que vous faites de l'informatique et de votre 
+environnement. Changer son mot de passe avant de partir en vacances est 
+souvent une sage attitude à condition de s'en souvenir en revenant. A 
+noter qu'il ne faut pas reprendre d'anciens mots de passe que vous avez 
+déjà utilisés.
+</p>
+
+<h4>Ce qu'il ne faut pas faire</h4>
+
+<p>
+Il ne faut pas noter son mot de passe. Pour cela, il faut qu'il soit 
+mnémonique.
+</p>
+<p>
+Il ne faut pas le confier a quelqu'un, ni le partager avec d'autres. Il 
+doit toujours être personnel. Si l'on désire travailler a plusieurs sur 
+les mêmes fichiers, ceci est possible dans tous les systèmes 
+d'exploitation avec un mot de passe différent pour chacun (possibilité 
+des groupes sous Unix par exemple).
+</p>
+<p>
+Il ne faut pas choisir comme mot de passe une information personnelle 
+telle que son nom; celui de son laboratoire, de son projet ou de ses 
+proches; son numéro de voiture ... Les noms communs, noms propres ou 
+prénoms présents dans un dictionnaire français ou étranger sont a 
+proscrire. Est a éviter aussi, toute variation de ce qui précède telle 
+que l'inversion, les initiales, ou l'ajout de chiffre.
+</p>
+<p>
+Il ne faut pas communiquer son mot de passe par courriel sauf en cas 
+d'utilisation d'un logiciel de chiffrement, en parallèle.
+</p>
+</IF>
+<br />
+Cordialement,
+<br /><br />
+Les administrateurs du site.
+</body>
+</html>

@@ -257,7 +257,10 @@ class UsersLogic extends Logic
 	function _prepareEdit($dao,&$context) 
 	{
 		// encode the password
-		if ($context['passwd']) $context['passwd']=md5($context['passwd'].$context['username']);
+		if ($context['passwd']) {
+			$context['tmppasswd'] = $context['passwd'];
+			$context['passwd']=md5($context['passwd'].$context['username']);
+		}
 	}
 
 
@@ -294,8 +297,8 @@ class UsersLogic extends Logic
 			$this->_deleteRelatedTables($vo->id);
 			// now add the usergroups
 			foreach ($context['usergroups'] as $usergroup) {
-	$usergroup=intval($usergroup);
-	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
+				$usergroup=intval($usergroup);
+				$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
 			}
 		}
 	}
@@ -407,6 +410,30 @@ class UsersLogic extends Logic
 			die("ERROR : You don't have permissions to suspend this user. Contact your administrator.");
 		
 		return "_back";
+	}
+
+	/**
+	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
+	 */
+	function _sendPrivateInformation(&$context) {
+		global $db;
+		if(!$context['tmppasswd']) return;
+		$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
+		if(!$row) die('Error while getting url and title of site for new user mailing');
+		$context['siteurl'] = str_replace(":80", "", $row['url']);
+		$context['sitetitle'] = $row['title'];
+		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
+		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
+		if(!$email) die('Error while getting your email for new user mailing');
+		require_once 'view.php';
+		$GLOBALS['nodesk'] = true;
+		ob_start();
+		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/", true);
+		$body = ob_get_contents();
+		ob_end_clean();
+		unset($context['tmppasswd']);
+		require_once 'func.php';
+		return send_mail($context['email'], $body, "Votre compte Lodel sur le site '{$context['sitetitle']}' ({$context['siteurl']})", $email, '');
 	}
 
 } // class 
