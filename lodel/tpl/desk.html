@@ -23,8 +23,6 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-
-
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
@@ -60,9 +58,18 @@
 		background-position: 0 .5ex;
 		background-repeat: no-repeat;
 	}
+
 <IF COND="FALSE === strpos($_SERVER['PHP_SELF'], '/lodel/edition')">
 	#lodel-container{
 		position: relative;
+	}
+<ELSE />
+	div.loggedUsers{
+		margin-top:.5em;
+		margin-bottom:-1em;
+		margin-left:1em;
+		font-weight: bold;
+		font-size: 90%;
 	}
 </IF>
 </style>
@@ -147,12 +154,13 @@
 	</IF>
 		[@COMMON.CLEARCACHE]</a>
 	</li>
+
 	</ul>
 
 	<ul id="deskContext">
 		<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')]">
 			<li>
-			<IF COND="![#CURRENTURL|strpos('lodel/edition/search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID]">
+			<IF COND="![#CURRENTURL|strpos('lodel/edition/search')] AND ![#LO] AND ![#CURRENTURL|strpos('page=dashboard')] AND ![#ID] AND ![#CURRENTURL|strpos('page=site_map')]">
 				<strong>[@COMMON.BROWSE]</strong>
 			<ELSE/>
 				<a href="[#SITEROOT]lodel/edition/">[@COMMON.BROWSE]</a>
@@ -194,6 +202,11 @@
 				</IF>
 				</li>
 			</LOOP>
+			<IF COND="[#CURRENTURL|strpos('page=site_map')]">
+				<li><strong>[@COMMON.SITE_MAP]</strong></li>
+			<ELSE/>
+				<li><a href="[#SITEROOT]lodel/edition/index.php?page=site_map" title="[@COMMON.SITE_MAP]">[@COMMON.SITE_MAP]</a></li>
+			</IF>
 		</IF>
 		<IF COND="[#CURRENTURL|strpos('page=dashboard')] AND ![#CURRENTURL|strpos('page=dashboard_information')] AND ![#CURRENTURL|strpos('page=dashboard_statistics')] AND ![#CURRENTURL|strpos('page=dashboard_me')]">
 			<li>
@@ -272,7 +285,9 @@
 			
 
 	</ul>
-
+	
+		
+	
 	<table class="infos">
 	
 	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITEDESK]' AND status GT 0">
@@ -324,6 +339,7 @@
 	</table>
 
 </div>
+
 <IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
 	<div id="siteContext">
 	<MACRO NAME="CURRENT_PATH" />

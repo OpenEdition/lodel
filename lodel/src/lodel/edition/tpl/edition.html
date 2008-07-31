@@ -37,7 +37,9 @@
 <MACRO NAME="JS_AFFICHE_IMAGE">
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-
+<IF COND="[#CURRENTURL|strpos('lodel/edition')]">
+	<USE TEMPLATEFILE="loggedusers" />
+</IF>
 <script type="text/javascript">
 // iMouseDown represents the current mouse button state: up or down
 /*

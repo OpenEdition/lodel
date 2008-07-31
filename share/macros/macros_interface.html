@@ -803,7 +803,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 <!--[*************************************************]-->
 <DEFFUNC NAME="SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
 
-<form id="searchform" action="search.[#EXTENSIONSCRIPTS]" method="get">
+<form id="searchform" action="search.php" method="get">
 <fieldset>
 <legend>[@COMMON.SEARCH_ENGINE]</legend>
 <input type="text" name="query"  id="query" size="25" value="<IF COND="![#QUERY]"><ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" />
@@ -1610,6 +1610,38 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</div>
 </DEFFUNC>
 
+<DEFFUNC NAME="LIST_ENTITIES_SITEMAP" REQUIRED="id" OPTIONAL="folder">
+	<ul class="listEntities">
+	<LOOP NAME="getAllEntitiesByTree" TABLE="entities, types" WHERE="idparent='[#ID]' AND types.id=idtype" ORDER="entities.rank">
+		<BEFORE>
+			<IF COND="[#FOLDER]"><div style="display:none;" id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
+		</BEFORE>
+		<IF COND="[#COUNT] % 2">
+			<li class="line1">
+		<ELSE/>
+			<li class="line2">
+		</IF>
+		<div class="entityIcons">
+			<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+			<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
+		</div>
+		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
+		<LOOP NAME="countChildren" TABLE="entities" SELECT="count(id) as nbres" WHERE="idparent='[#ID]'">
+			<IF COND="[#NBRES] GT 0">
+				<div class="entityIcons">
+				&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]') && document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_haut_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { if(document.getElementById('childContainer[#ID]')) { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_UNFOLDED]'; } }" />
+				</div>
+				<FUNC NAME="LIST_ENTITIES_SITEMAP" ID="[#ID]" FOLDER="yes"/>
+			</IF>
+		</LOOP>
+		</li>
+		<AFTER>
+			<IF COND="[#FOLDER]"></ul></li></div></IF>			
+		</AFTER>
+	</LOOP>
+	</ul>
+</DEFFUNC>
+
 <DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere, drag">
 	<IF COND="![#FOLDER] AND [#DRAG]"> 
 		<ul class="listEntities" id="DragContainer[#ID]">
@@ -1952,13 +1984,34 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 	<div class="document">
-	<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
-          <IF COND="[#TPLEDITION]">
-                 " <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
-          <ELSE/>
-                 " [#G_TITLE|textebrut|nbsp] "
-           </IF>
-         </span>&nbsp;
+	<!--[PROPRE AU ME REVUES.ORG]-->
+	<LET VAR="iddocument">[#ID]</LET>
+	<!--[vérifie que le champ 'numero' existe dans la table correspondante au type de l'entité]-->
+	<LOOP NAME="getPossibleNumero" TABLE="tablefields, entities, types" WHERE="entities.id = '[#ID]' AND types.id = entities.idtype AND tablefields.class = types.class AND tablefields.name = 'numero'">
+		<!--[ok le champ existe bien on récupère la valeur]-->
+		<LOOP NAME="getNumero" SELECT="numero" TABLE="[#CLASS]" WHERE="identity='[#IDDOCUMENT]'">
+			<LET VAR="tmpnumero" GLOBAL="1">[#NUMERO]</LET>
+		</LOOP>
+	</LOOP>
+	<IF COND="![%TMPNUMERO|empty]"> <!--[PROPRE AU ME REVUES.ORG]-->
+		<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
+		<IF COND="[#TPLEDITION]">
+			[%TMPNUMERO] " <a href="index.php?id=[#ID]"> [#G_TITLE|textebrut|nbsp]</a> "
+		<ELSE/>
+			[%TMPNUMERO] " [#G_TITLE|textebrut|nbsp] "
+		</IF>
+		</span>
+		<LET VAR="tmpnumero" GLOBAL="1"></LET>
+	<ELSE/>
+		<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
+		<IF COND="[#TPLEDITION]">
+			" <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
+		<ELSE/>
+			" [#G_TITLE|textebrut|nbsp] "
+		</IF>
+		</span>
+	</IF>
+	&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>&nbsp;
 	<span class="type_document">([#TYPE])</span> 
 	<LOOP NAME="getcomments" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 1" ORDER="type, entities.rank">

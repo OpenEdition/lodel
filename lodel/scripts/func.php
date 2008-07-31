@@ -137,9 +137,9 @@ function clean_request_variable(&$var)
 	} else {
 		$var = trim(magic_stripslashes($var));
 		// htmlpurifier n'est pas encore compatible avec les namespaces, chiant pour les balises r2r:ml
-		$var = str_replace('<r2r:ml ', '<r2r ', str_replace('</r2r:ml>', '</r2r>', $var));
+		$var = strtr($var, array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>'));
 		$var = $filter->purify($var);
-		$var = str_replace('<r2r ', '<r2r:ml ', str_replace('</r2r>', '</r2r:ml>', $var));
+		$var = strtr($var, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
 		//ici on regle un bug : lors qu'on insere un espace insécable, l'appel à la fonction PHP 'chr' plante sur le &#160; dans la fonction $filter->decode
 		/*if(preg_match("`&#160;`me", $var))
 			$var = str_replace("&#160;", "&nbsp;", $var);
