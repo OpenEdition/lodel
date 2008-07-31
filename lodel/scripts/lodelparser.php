@@ -567,7 +567,7 @@ class LodelParser extends Parser
 		} elseif ($tablefields[$mprefixedtable] && ($dbname == "" || $dbname == DATABASE.".")) {
 			return $mprefixedtable.$alias;
 		} else {
-			return ($dbname ? '`'.$dbname.'`'.$table.$alias : $table.$alias);
+			return ($dbname ? '`'.substr($dbname, 0, strlen($dbname)-1).'`.'.$table.$alias : $table.$alias);
 		}
 
 	}
