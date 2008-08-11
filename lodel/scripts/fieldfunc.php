@@ -68,6 +68,7 @@ $GLOBALS['g_entities_fields'] = array(
 					'DC.Creator',
 					'DCTERMS.accessRights',
 					'DCTERMS.issued',
+					'DCTERMS.modified',
 					'DCTERMS.available',
 					'DCTERMS.bibliographicCitation',
 					'DCTERMS.bibliographicCitation.volume',
