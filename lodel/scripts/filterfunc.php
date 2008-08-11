@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 * Fichier de gestion des filtres
 *
