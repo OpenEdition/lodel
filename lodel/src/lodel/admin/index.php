@@ -67,7 +67,7 @@ $authorized_logics = array('entrytypes', 'persontypes',
 				'types', 'classes',
 				'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 				'internalstyles', 'characterstyles', 'entities_index',
-				'filebrowser', 'xml', 'data');
+				'filebrowser', 'xml', 'data', 'internal_messaging');
 $Controler = new controler($authorized_logics);
 
 function loop_classtypes($context, $funcname)

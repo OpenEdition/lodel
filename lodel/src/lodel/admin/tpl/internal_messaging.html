@@ -1,0 +1,103 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1" REFRESH="1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C?ou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+
+<IF COND="![%NBMSGS|isset]">
+<LET VAR="lodeluserid">
+<IF COND="[#LODELUSER.ADMINLODEL]">
+	lodelmain-[#LODELUSER.ID]
+<ELSE />
+	[#SITE]-[#LODELUSER.ID]
+</IF>
+</LET>
+<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee LIKE '%:[#LODELUSERID|trim]:%' AND status EQ 1">
+<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
+</LOOP>
+</IF>
+
+<title>[(#SITE|strtoupper)].[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF>
+</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<ul id="actionsOnEntitiesPath"><li><span class="intit">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></span></li>
+<li>
+	<ul class="actions">
+		<li class="isolated">
+			<span class="inactif"><a href="index.php?do=view&amp;lo=internal_messaging">[@ADMIN.ADD_INTERNAL_MESSAGING]</a></span>
+		</li>
+	</ul>
+</li>
+</ul>
+<br />&nbsp;<br />
+<IF COND="[#ERROR]">
+	<p class="error">[#ERROR]</span>
+<ELSE />
+<IF COND="[#MSGSENDED]" />
+	<p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
+<ELSEIF COND="[#DELETED]" />
+	<p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+</IF>
+<IF COND="[#ID]">
+<fieldset>
+<legend>[@ADMIN.INTERNAL_MESSAGING_NEW_MAIL]</legend>
+<p>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: [#DATA.SUBJECT]</p>
+<p>[@ADMIN.INTERNAL_MESSAGING_SENDER]: [#DATA.SENDER]</p>
+<p>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :<br>[#DATA.BODY]</p>
+</fieldset>
+<fieldset>
+<legend>[@COMMON.VALIDATION]</legend>
+	<input class="button" type="button" value="[@ADMIN.INTERNAL_MESSAGING_ANSWER]" onclick="javascript:window.location='index.php?do=view&amp;idparent=[#ID]&amp;lo=internal_messaging'" />&nbsp;&nbsp;&nbsp;&nbsp;
+	<MACRO NAME="DELETE_BUTTON">&nbsp;&nbsp;&nbsp;&nbsp;
+	<input class="button" type="button" value="[@LODELADMIN.BACK]" onclick="javascript:window.location='index.php?do=list&amp;lo=internal_messaging'" />
+</fieldset>
+
+<ELSE/>
+	<LET VAR="idpar"><IF COND="[#IDPARENT]">[#IDPARENT]<ELSE />0</IF></LET>
+	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee LIKE '%:[#LODELUSERID|trim]:%' AND status GT -64 AND idparent = '[#IDPAR]'" ORDER="upd DESC">
+		<BEFORE><ul></BEFORE>
+		<DO><li>
+		<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/"><LET VAR="userdb"><IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF></LET></IF>
+		<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]">
+		<IF COND="1 EQ [#STATUS]"><strong></IF>
+		<LOOP NAME="getUserName" TABLE="[#USERDB].users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+			[@ADMIN.INTERNAL_MESSAGING_FROM]: [#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF> - 
+		</LOOP>
+		[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: <IF COND="![#SUBJECT]">[@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT]<ELSE />[#SUBJECT]</IF> - [@ADMIN.INTERNAL_MESSAGING_DATE]: [#UPD|humandate]
+		<IF COND="1 EQ [#STATUS]"></strong></IF></a>
+		<br />
+		<LET VAR="idpar">[#ID]</LET>
+		<LOOP NAME="getMessages"></LOOP>
+		</li></DO>
+		<AFTER></ul></AFTER>
+		<ALTERNATIVE><IF COND="[#IDPARENT] EQ [#IDPAR]"><ul><li>[@ADMIN.INTERNAL_MESSAGING_NO_MAILS]</li></ul></IF></ALTERNATIVE>
+	</LOOP>
+</IF>
+</IF>
+<MACRO NAME="CLOSE_HTML">

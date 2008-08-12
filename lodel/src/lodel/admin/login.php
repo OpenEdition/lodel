@@ -105,7 +105,7 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 				break;
 			}
 		}
-
+		check_internal_messaging();
 		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
 	} while (0);
 }

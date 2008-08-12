@@ -86,7 +86,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 				$context['id'] = $id = $idparent;
 			}
 		} while (!$base && $idparent);
-} else {
+	} else {
 		if ($_GET['page']) { // call a special page (and template)
 			$base = $_GET['page'];
 			if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {

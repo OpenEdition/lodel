@@ -23,24 +23,30 @@
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
-<USE MACROFILE="macros.html">
-<USE MACROFILE="macros_interface.html">
-<MACRO NAME="HEADER_HEAD_OPEN">
-<title>[(#SITE|strtoupper)] - [@COMMON.SITE_MAP]</title>
-
-<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
-<MACRO NAME="JS_AFFICHE_IMAGE">
-<MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
-
-<ul class="entitiesPath">
-	<li>
-	[@COMMON.SITE_MAP]
-	</li>
-</ul>
-
-<!--[<div id="listEntities">]-->
-	<FUNC NAME="LIST_ENTITIES_SITEMAP" ID="0"/>
-
-<!--[</div>]-->
-<MACRO NAME="CLOSE_HTML">
+<IF COND="$_GET['xml']">
+	<USE TEMPLATEFILE="sitemap" />
+<ELSE />
+	<USE MACROFILE="macros.html">
+	<USE MACROFILE="macros_interface.html">
+	<MACRO NAME="HEADER_HEAD_OPEN">
+	<title>[(#SITE|strtoupper)] - [@COMMON.SITE_MAP]</title>
+	
+	<MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
+	<MACRO NAME="JS_AFFICHE_IMAGE">
+	<MACRO NAME="HEADER_HEAD_CLOSE">
+	<MACRO NAME="HEADER_LOGO"> 
+	
+	<ul class="entitiesPath">
+		<li>
+		[@COMMON.SITE_MAP]
+		</li>
+		<li>
+		<a href="[#CURRENTURL]&amp;xml=1" target="_blank">[@COMMON.XML_FILE]</a>
+		</li>
+	</ul>
+	
+	<div id="listEntities">
+		<FUNC NAME="LIST_ENTITIES_SITEMAP" ID="0"/>
+	</div>
+	<MACRO NAME="CLOSE_HTML">
+</IF>
