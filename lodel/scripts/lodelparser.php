@@ -139,8 +139,7 @@ class LodelParser extends Parser
 		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
 		#		    ),$where);
 		//
-		if ($tablefields[lq("#_TP_classes")]) {
-
+		if ($GLOBALS['currentdb'] == $db->database && $tablefields[lq("#_TP_classes")]) {
 			$dao = &getDAO("classes");
 			$classes = $dao->findMany("status > 0");
 			foreach ($classes as $class) {
@@ -231,6 +230,7 @@ class LodelParser extends Parser
 					$alias = (in_array(DATABASE.".".$table, $tables) || in_array("lodelmain.".$table, $tables) && $site && $GLOBALS['singledatabase'] != "on") 
 						? '`'.DATABASE."_".$site.'`.'.$alias : $alias;
 				}
+
 				$lowstatus = ($table == "entities") ? '"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")' : "-64";
 				$where[count($where) - 1] .= " AND (".$alias.".status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
 			}

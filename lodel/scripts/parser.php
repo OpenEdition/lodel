@@ -1261,7 +1261,7 @@ class Parser
 				$inquote = true;
 				$escaped = false;
 				$quotec = $c;
-			} elseif ($c == "." && preg_match("/\b((?:\w+\.)?\w+)$/", $str, $result))	{ // table dot ?
+			} elseif ($c == "." && preg_match("/((?:`?\w+`?\.)?\w+)$/", $str, $result))	{ // table dot ?
 				$prefixedtable = $this->prefixTableName($result[1]);
 				if ($prefixedtable != $result[1])	{
 					// we have a table... let's prefix it
@@ -1345,7 +1345,7 @@ function replace_conditions($text, $style)
 		}
 		$ret .= $texte;
 	}
-	return preg_replace("/([\w'\[\]\$]*) like (\/[^\/]*\/)/i", 'preg_match("$2i", $1)', $ret);
+	return preg_replace("/([\w'\[\]\$]*) like (\/[^\/]*\/)/i", 'preg_match("$2i", $1, $context[\'matches\'])', $ret);
 }
 
 function stripcommentandcr(& $text)
