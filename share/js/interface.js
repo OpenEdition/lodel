@@ -1,3 +1,20 @@
+function getXMLHttpRequest() {
+	var xhr=null;
+	if(window.XMLHttpRequest) // Firefox et autres
+	xhr = new XMLHttpRequest(); 
+	else if(window.ActiveXObject){ // IE sux
+		try {
+			xhr = new ActiveXObject("Msxml2.XMLHTTP");
+		} catch (e) {
+			xhr = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+	}
+	else { // XMLHttpRequest non supporté par le navigateur 
+		xhr = false; 
+	}
+	return xhr;
+}
+
 function preserveDatas()
 {
 	if(document.getElementById('edit_ent'))

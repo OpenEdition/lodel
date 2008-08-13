@@ -73,6 +73,8 @@
 <DEFMACRO NAME="SUBMIT_CANCEL_BUTTON">
 		<IF COND="[#ID]"><input class="button" type="submit" value="[@COMMON.MODIFY]" /><ELSE/><input class="button" type="submit" value="[@COMMON.ADD]" /></IF>
 		&nbsp;&nbsp;&nbsp;&nbsp;
+		<IF COND="[#LO] EQ 'internal_messaging'"><input class="button" type="submit" name="prev" value="[@ADMIN.CHECK_MSG_BEFORE_SEND]" /></IF>
+		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.history.go(-1)" />&nbsp;&nbsp;&nbsp;&nbsp;
 </DEFMACRO>
 

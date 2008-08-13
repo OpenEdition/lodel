@@ -26,7 +26,7 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
+				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spï¿½cial dans le cas d'une personne -->
 					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
 					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
 						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
@@ -95,7 +95,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par dï¿½faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -175,10 +175,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien é cause du nom de la
-	variable qui différe.]-->
+<!--[ Gestion de l'ï¿½dition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisï¿½e dans les templates gï¿½nï¿½rï¿½s automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien ï¿½ cause du nom de la
+	variable qui diffï¿½re.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -283,9 +283,9 @@
 		</IF>
 		<IF COND="[#EDITION] EQ 'wysiwyg_spaw'">
 <?php
- 			include_once(SITEROOT . $GLOBALS['sharedir'] . "/plugins/spaw2/spaw.inc.php");
+ 		/*	include_once(SITEROOT . $GLOBALS['sharedir'] . "/plugins/spaw2/spaw.inc.php");
 			$spaw = new SpawEditor($context['fullvarname'], $context['value']);
-			$spaw->show();
+			$spaw->show();*/
 ?>
 		</IF>
     	<ELSE/>
@@ -296,11 +296,11 @@
         	</IF>
       </IF>
 	<?php 
-			/* le javascript sert à débugger FCKEditor qui charge à l'infini
-			on avait la div qui sert à générer les champs auteur/directeur de publication etc ..
-			qui par défaut avait comme display 'none' ce qui créait le bug. 
+			/* le javascript sert ï¿½ï¿½dï¿½bugger FCKEditor qui charge ï¿½ l'infini
+			on avait la div qui sert ï¿½ gï¿½nï¿½rer les champs auteur/directeur de publication etc ..
+			qui par dï¿½faut avait comme display 'none' ce qui crï¿½ait le bug. 
 			Maintenant on a une div en display block qui se met en display none 
-			3s apres le début de chargement de la page
+			3s apres le dï¿½but de chargement de la page
 			=> Largement suffisant, mais pas trop quand meme, sachant que FCKEditor est tres lourd */
 			if($context['nom']) {	?>
 				<script type="text/javascript">
@@ -976,7 +976,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisé.
+Affichage du titre internationalisï¿½.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -988,7 +988,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro lé alors qu'elle est déjé dans macros_admin !!
+C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macros_admin !!
 
 ]-->
 
@@ -1000,20 +1000,20 @@ C'est ignoble de remettre cette macro lé alors qu'elle est déjé dans macros_admi
 
 <!--[ 
 
-Macros rapatriées de lodel/src/lodel/edition/tpl
+Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'édition. 2002                        ]-->
+<!--[ * Macros de l'ï¿½dition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutï¿½e le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ cachï¿½ "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -1027,7 +1027,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutï¿½es le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1076,8 +1076,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
-<!--[ Macro servant é publication.html et                ]-->
+<!--[ Macro rajoutï¿½e le 17/09/03 *********************** ]-->
+<!--[ Macro servant ï¿½ publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1288,17 +1288,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intï¿½gration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on pré-charge les image */
-	//img1=new Image(82,18); /* on déclare les images */
+	/* on prï¿½-charge les image */
+	//img1=new Image(82,18); /* on dï¿½clare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pré-charge */
+	//img1.src="image1.gif"; /* on les prï¿½-charge */
 	//img2.src="image2.gif";
-	/* on déclare la fonction qui affiche les Rollovers */
+	/* on dï¿½clare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
@@ -1986,15 +1986,15 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<div class="document">
 	<!--[PROPRE AU ME REVUES.ORG]-->
 	<LET VAR="iddocument">[#ID]</LET>
-	<!--[vérifie que le champ 'numero' existe dans la table correspondante au type de l'entité]-->
-	<LOOP NAME="getPossibleNumero" TABLE="tablefields, entities, types" WHERE="entities.id = '[#ID]' AND types.id = entities.idtype AND tablefields.class = types.class AND tablefields.name = 'numero'">
-		<!--[ok le champ existe bien on récupère la valeur]-->
-		<LOOP NAME="getNumero" SELECT="numero" TABLE="[#CLASS]" WHERE="identity='[#IDDOCUMENT]'">
+	<!--[vï¿½rifie que le champ 'numero' existe dans la table correspondante au type de l'entitï¿½]-->
+<!--[	<LOOP NAME="getPossibleNumero" TABLE="tablefields, entities, types" WHERE="entities.id = '[#ID]' AND types.id = entities.idtype AND tablefields.class = types.class AND tablefields.name = 'numero'">
+		<!--[ok le champ existe bien on rï¿½cupï¿½re la valeur]-->
+				<!--[<LOOP NAME="getNumero" SELECT="numero" TABLE="[#CLASS]" WHERE="identity='[#IDDOCUMENT]'">
 			<LET VAR="tmpnumero" GLOBAL="1">[#NUMERO]</LET>
 		</LOOP>
 	</LOOP>
-	<IF COND="![%TMPNUMERO|empty]"> <!--[PROPRE AU ME REVUES.ORG]-->
-		<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
+	<IF COND="![%TMPNUMERO|empty]">]--> <!--[PROPRE AU ME REVUES.ORG]-->
+				<!--[<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
 		<IF COND="[#TPLEDITION]">
 			[%TMPNUMERO] " <a href="index.php?id=[#ID]"> [#G_TITLE|textebrut|nbsp]</a> "
 		<ELSE/>
@@ -2002,7 +2002,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		</IF>
 		</span>
 		<LET VAR="tmpnumero" GLOBAL="1"></LET>
-	<ELSE/>
+	<ELSE/>]-->
 		<span class="<IF COND="[#ALIAS]">titre_alias<ELSE />titre_document</IF>">
 		<IF COND="[#TPLEDITION]">
 			" <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
@@ -2010,7 +2010,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			" [#G_TITLE|textebrut|nbsp] "
 		</IF>
 		</span>
-	</IF>
+	<!--[</IF>]-->
 	&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>&nbsp;
 	<span class="type_document">([#TYPE])</span> 
@@ -2018,21 +2018,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<AFTER><span class="comment" title="[#NBRESULTS] [@COMMON.COMMENTS]"><MACRO NAME="PNG_COMMENT" /> <sup>([#NBRESULTS])</sup></span></AFTER>
 	</LOOP>
 	<br />
-	<LOOP NAME="getannexes" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 0" ORDER="type, entities.rank">
-		<LOOP NAME="rightonentity" ACTION="edit">
-		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]">
-			<MACRO NAME="STATUS_ANNEXE">
-		</a>
-		<ALTERNATIVE>
-			<MACRO NAME="STATUS_ANNEXE">
-		</ALTERNATIVE>
-		</LOOP>
-	</LOOP>
 	<IF COND="![#ALIAS]">
 		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="nature='alias' AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
 			<BEFORE>
-				<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" onclick="if(document.getElementById('aliasContainer[%ID]').style.display == 'none') document.getElementById('aliasContainer[%ID]').style.display = 'inline'; else document.getElementById('aliasContainer[%ID]').style.display = 'none';" />
-				<div style="display:none" id="aliasContainer[%ID]">
+				&nbsp;<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" onclick="if(document.getElementById('aliasContainer[#ID]').style.display == 'none') document.getElementById('aliasContainer[#ID]').style.display = 'inline'; else document.getElementById('aliasContainer[#ID]').style.display = 'none';" />
+				<div style="display:none" id="aliasContainer[#ID]">
 			</BEFORE>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<LOOP NAME="parententities" TABLE="entities, relations" WHERE="entities.id=relations.id1 AND id2='[#ID]' AND nature='P'">
@@ -2043,6 +2033,16 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<AFTER></div></AFTER>
 		</LOOP>	
 	</IF>
+	<LOOP NAME="getannexes" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 0" ORDER="type, entities.rank">
+		<LOOP NAME="rightonentity" ACTION="edit">
+		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]">
+			<MACRO NAME="STATUS_ANNEXE">
+		</a>
+		<ALTERNATIVE>
+			<MACRO NAME="STATUS_ANNEXE">
+		</ALTERNATIVE>
+		</LOOP>
+	</LOOP>
 	</div>
 </DEFMACRO>
 
