@@ -247,7 +247,7 @@ ul.entitiesPath{
 #actionsOnEntitiesPath li.entitieTitle{
 	font-weight: bold;
 	color: #ed8400;
-	padding-left: 85px;
+	/*padding-left: 85px;*/
 }
 
 #actionsOnEntitiesPath li.entitieTitle em{
@@ -259,6 +259,11 @@ ul.entitiesPath{
 	position: absolute;
 	top: 20%;
 /* 	background: red; */
+}
+
+#actionsOnEntitiesPath li.entitieTitle div.entityTitle{
+	display:inline;
+	margin-left:8em;
 }
 
 #actionsOnEntitiesPath div.entityIcons img.statusIcon{
