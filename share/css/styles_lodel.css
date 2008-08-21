@@ -525,10 +525,9 @@ ul.listEntities li ul li{
 }
 
 li.line1_entity, li.line2_entity {
-background-image: url(../images/dragndrop.gif);
+background-image: url(../images/dragndrop.png);
 background-repeat: no-repeat;
-background-position: top left;
-	
+background-position: center left;
 }
 
 ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
