@@ -94,7 +94,7 @@
 			</IF>			
 		<ELSE />
 			<IF COND="[#LISTALL] OR [#NBRESULTS] GT 0">
-				<a href="[#CURRENTURL|reg_replace('/[&\?]offset_\w+=[^&]+/', '')|reg_replace('/[&\?]letter=[^&]+/', '')|reg_replace('/[&\?]clearcache=[^&]+/', '')]&amp;letter=[#LETTRE|urlencode]">[#LETTRE]</a>
+				<a href="[#CURRENTURL|reg_replace('/[&?](amp;)?offset_\w+=[^&]+/', '')|reg_replace('/[&?](amp;)?letter=[^&]+/', '')|reg_replace('/[&?](amp;)?clearcache=[^&]+/', '')]&amp;letter=[#LETTRE|urlencode]">[#LETTRE]</a>
 			<ELSE />
 				[#LETTRE]&nbsp;
 			</IF>
