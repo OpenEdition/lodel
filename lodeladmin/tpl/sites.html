@@ -63,14 +63,14 @@
 
 <th><a href="[#URL]">[(#TITLE|nbsp)]</a></th>
 <td class="actions">
-<a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a> |
-<a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a> |
+<a href="site.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
+<a href="site.php?id=[#ID]&amp;delete=1">[@COMMON.DELETE]</a>&nbsp;|&nbsp;
 <IF COND="[#STATUS] ge 32">
 	<!--[<a href="locksite.php?id=[#ID]&amp;unlock=1">[@LODELADMIN.UNLOCK]</a>]-->
-	<a href="index.php?lo=sites&amp;do=unlock&amp;id=[#ID]">[@LODELADMIN.UNLOCK]</a> |
+	<a href="index.php?lo=sites&amp;do=unlock&amp;id=[#ID]">[@LODELADMIN.UNLOCK]</a>&nbsp;|&nbsp;
 <ELSE/>
 	<!--[<a href="locksite.php?id=[#ID]&amp;lock=1">[@LODELADMIN.LOCK]</a>]-->
-	<a href="index.php?lo=sites&amp;do=lock&amp;id=[#ID]">[@LODELADMIN.LOCK]</a> |
+	<a href="index.php?lo=sites&amp;do=lock&amp;id=[#ID]">[@LODELADMIN.LOCK]</a>&nbsp;|&nbsp;
 </IF>
 
 <IF COND="[#STATUS] EQ -64 OR [#STATUS] EQ -65">
