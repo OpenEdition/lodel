@@ -1107,9 +1107,6 @@ class DataLogic
 			$this->_manageTables($context, $err);
 			if($err) {
 				$context['error'] = $err;
-				if(file_exists('CACHE/require_caching/ME.obj')) {
-					unlink('CACHE/require_caching/ME.obj');
-				}
 				return 'importxmlmodel';
 			}
 			if(!empty($this->_changedFields))
@@ -1117,9 +1114,6 @@ class DataLogic
 			$this->_updateDatabase($context, $err);
 			if($err) {
 				$context['error'] = $err;
-				if(file_exists('CACHE/require_caching/ME.obj')) {
-					unlink('CACHE/require_caching/ME.obj');
-				}
 			} else {
 				$context['success'] = 1;
 			}
@@ -1128,16 +1122,10 @@ class DataLogic
 			if($err) {
 				$context['error'] = $err;
 				$context['modifiedfields'] = $this->_changedFields;
-				if(file_exists('CACHE/require_caching/ME.obj')) {
-					unlink('CACHE/require_caching/ME.obj');
-				}
 				return 'importxml_checkfields';
 			}
 			$this->_updateDatabase($context, $err);
 			if($err) {
-				if(file_exists('CACHE/require_caching/ME.obj')) {
-					unlink('CACHE/require_caching/ME.obj');
-				}
 				$context['error'] = $err;
 			} else {
 				$context['success'] = 1;
@@ -1146,15 +1134,13 @@ class DataLogic
 			$this->_updateTypes($context['data'], $err);
 			if($err) {
 				$context['error'] = $err;
-				if(file_exists('CACHE/require_caching/ME.obj')) {
-					unlink('CACHE/require_caching/ME.obj');
-				}
 			} else {
 				$context['success'] = 1;
 			}
 		} elseif($file) {
 			$this->_cleanDatabase();
 			if(!$context['checkcontent'] && TRUE === $this->_checkContents()) {
+				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
 			} elseif(count($this->_changedTables['dropped'])>0 && count($this->_changedTables['added'])>0) {
@@ -1167,9 +1153,6 @@ class DataLogic
 				$this->_updateDatabase($context, $err);
 				if($err) {
 					$context['error'] = $err;
-					if(file_exists('CACHE/require_caching/ME.obj')) {
-						unlink('CACHE/require_caching/ME.obj');
-					}
 				} else {
 					$context['success'] = 1;
 				}
@@ -1221,8 +1204,8 @@ class DataLogic
 							if((int)$tble[0] === (int)$ffield[$content[$table]['newcontent'][$value]]) {
 								if(in_array($ffield[0], $ids)) { // id déjà présent
 									$oldId = $ffield[0];
-									$maxId++;
-									$ffield[0] = $maxId;
+									do { $maxId++; } while(in_array($maxId, $ids));
+									$ffield[0] = $ids[] = $maxId;
 									if($childTable) {
 										foreach($this->_xmlDatas[$childTable] as $k=>&$field) {
 											if('fields' === (string)$k) {
@@ -1248,8 +1231,8 @@ class DataLogic
 				} else { 
 					if(in_array($this->_changedContent['oldcontent'][$table][$key][0], $ids)) { // id déjà présent
 						$oldId = $this->_changedContent['oldcontent'][$table][$key][0];
-						$maxId++;
-						$this->_changedContent['oldcontent'][$table][$key][0] = $maxId;
+						do { $maxId++; } while(in_array($maxId, $ids));
+						$this->_changedContent['oldcontent'][$table][$key][0] = $ids[] = $maxId;
 						if($childTable) {
 							foreach($this->_xmlDatas[$childTable] as $k=>&$field) {
 								if('fields' === (string)$k) {
@@ -1286,7 +1269,6 @@ class DataLogic
 
 	/**
 	 * On va comparer le contenu des tables qui nous intéresse
-	 * @todo corriger le comportement de cette fonction qui bug pour les anciens groupes sans correspondances
 	 */
 	private function _checkContents() {
 		global $db;
@@ -1742,9 +1724,6 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
 	private function _updateDatabase(&$context, &$error) {
-		if(file_exists('CACHE/require_caching/ME.obj')) {
-			unlink('CACHE/require_caching/ME.obj');
-		}
 		foreach($this->_xmlStruct as $table=>$content) {
 			// données à insérer
 			$i=0;
@@ -1770,28 +1749,30 @@ class DataLogic
 				$this->_sql[] = $tmpSql.";\n";
 			}
 			// clés
-			if(array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys'])) {
-				// on efface toutes les clés présentes dans la table
-				if(is_array($this->_sqlStruct[$table]['keys'])) {
-					foreach($this->_sqlStruct[$table]['keys'] as $k=>$v) {
+			if(is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) {
+				if(array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys'])) {
+					// on efface toutes les clés présentes dans la table
+					if(is_array($this->_sqlStruct[$table]['keys'])) {
+						foreach($this->_sqlStruct[$table]['keys'] as $k=>$v) {
+							$key = explode('_', $k);
+							$key = $key[0];
+							if('PRIMARY' == $key) {
+								$drop = 'PRIMARY KEY';
+							} else {
+								preg_match("/^`([^`]+)`/", $v, $m);
+								$drop = 'KEY `'.$m[1].'`';
+							}
+							$this->_sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
+						}
+					}
+					// on ajoute les clés
+					foreach($this->_xmlStruct[$table]['keys'] as $k=>$v) {
 						$key = explode('_', $k);
 						$key = $key[0];
-						if('PRIMARY' == $key) {
-							$drop = 'PRIMARY KEY';
-						} else {
-							preg_match("/^`([^`]+)`/", $v, $m);
-							$drop = 'KEY `'.$m[1].'`';
-						}
-						$this->_sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
+						if('KEY' != $key)
+							$key .= ' KEY';
+						$this->_sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
 					}
-				}
-				// on ajoute les clés
-				foreach($this->_xmlStruct[$table]['keys'] as $k=>$v) {
-					$key = explode('_', $k);
-					$key = $key[0];
-					if('KEY' != $key)
-						$key .= ' KEY';
-					$this->_sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
 				}
 			}
 			// table options
