@@ -149,6 +149,11 @@ class DataLogic
 	 * @var array
 	 */
 	private $_changedContent;
+
+	/**
+	 * Tableau des noms des classes du ME XML
+	 */
+	private $_classes;
 	/* FIN IMPORT ME XML */
 
 	/**
@@ -1077,6 +1082,7 @@ class DataLogic
 			$this->_xmlDatas = $meObj->_xmlDatas;
 			$this->_recordedTables = $meObj->_recordedTables;
 			$this->_changedContent = $meObj->_changedContent;
+			$this->_classes = $meObj->_classes;
 			// besoin de parser la base de nouveau pour prendre en compte les éventuelles modifications
 			$this->_getEMTables();
 			$this->_parseSQL();
@@ -1107,10 +1113,12 @@ class DataLogic
 			$this->_manageTables($context, $err);
 			if($err) {
 				$context['error'] = $err;
-				return 'importxmlmodel';
+				return 'importxml_checktables';
 			}
-			if(!empty($this->_changedFields))
+			if(!empty($this->_changedFields)) {
+				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
+			}
 			$this->_updateDatabase($context, $err);
 			if($err) {
 				$context['error'] = $err;
@@ -1143,7 +1151,9 @@ class DataLogic
 				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
-			} elseif(count($this->_changedTables['dropped'])>0 && count($this->_changedTables['added'])>0) {
+			} elseif(count($this->_changedTables['dropped'])>0 || count($this->_changedTables['added'])>0) {
+				$this->_changedTables['added'] += $this->_classes;
+				$this->_changedTables['added'] = array_unique($this->_changedTables['added']);
 				$context['modifiedtables'] = $this->_changedTables;
 				return 'importxml_checktables';
 			} elseif(!empty($this->_changedFields)) {
@@ -1187,6 +1197,7 @@ class DataLogic
 	 */
 	private function _manageContent(&$content) {
 		foreach($content as $table=>$fields) {
+			if(!isset($fields['oldcontent'])) continue;
 			$maxId = 0;
 			$ids = array();
 			$childTable = ( (FALSE !== strpos($table, 'groups')) ? str_replace('group', '', $table) : false);
@@ -1259,7 +1270,7 @@ class DataLogic
 			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($this->_changedFields as $table=>&$value) {
 				foreach($value['dropped'] as $k=>&$v) {
-					if(!is_array($v) || !isset($v['tablefieldgroups'])) continue;
+					if(!isset($v['tablefieldgroups'])) continue;
 					$v['tablefieldgroups'] = $this->_xmlDatas[$tablefieldgroups];
 				}
 			}
@@ -1290,11 +1301,11 @@ class DataLogic
 			} else continue;
 
 			$diffs = array_diff_all($tmpXmlDatas, $tmpSqlDatas);
-			if(!$diffs) continue;
+			if(!isset($diffs['dropped'])) continue;
 			foreach($diffs['dropped'] as $k=>$diff) {
-				$newContent[$table][] = $tmpXmlDatas[$k];
 				$oldContent[$table][] = $tmpSqlDatas[$k];
 			}
+			$newContent[$table] = $tmpXmlDatas;
 		}
 		$this->_changedContent = array('newcontent'=>(isset($newContent) ? $newContent : ''), 'oldcontent'=>(isset($oldContent) ? $oldContent : array()));
 		return (is_array($this->_changedContent['newcontent']) ? TRUE : FALSE);
@@ -1456,10 +1467,11 @@ class DataLogic
 						$value = $db->getOne(lq("SELECT value FROM #_TP_options WHERE name = '{$this->_xmlDatas[$table][$i][2]}'"));
 						$this->_xmlDatas[$table][$i][] = $value ? $value : '';
 						break;
-					}elseif(XMLReader::END_ELEMENT == $reader->nodeType) {
+					} elseif(XMLReader::END_ELEMENT == $reader->nodeType) {
 						$this->_xmlDatas[$table][$i][] = '';
 						break;
 					}
+					if('classes' == $table && 'class' == $localName) $this->_classes[] = $reader->value;
 					$this->_xmlDatas[$table][$i][] = HTML2XML(strtr($reader->value, array('&amp;'=>'&', '&lt;'=>'<', '&gt;'=>'>')), true) ;
 					break;
 					default: break;
@@ -1507,7 +1519,7 @@ class DataLogic
 			}
 			// charset, engine, auto_inc..
 			$this->_sqlStruct[$table]['tableOptions'] = $matches[2];
-			if(!in_array($table, $this->_recordedTables)) {
+			if(!in_array($table, $this->_recordedTables) || (isset($this->_classes) && !in_array($table, $this->_classes))) {
 				// table du ME qu'on a changé de nom ou supprimée
 				$this->_changedTables['dropped'][] = $table;
 				continue;
@@ -1520,7 +1532,7 @@ class DataLogic
 			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($this->_changedFields as $table=>&$value) {
 				foreach($value['dropped'] as $k=>&$v) {
-					if(!is_array($v) || !isset($v['tablefieldgroups'])) continue;
+					if(!isset($v['tablefieldgroups'])) continue;
 					$v['tablefieldgroups'] = $this->_xmlDatas[$tablefieldgroups];
 				}
 			}
@@ -1644,6 +1656,7 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
 	private function _manageTables(&$context, &$error) {
+		global $db;
 		$flipped = array_flip($context['data']['dropped']);
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
@@ -1655,6 +1668,37 @@ class DataLogic
 						$type['class'] = $table;
 					}
 				}
+				$this->_executeSQL();
+				unset($this->_sqlStruct[$table]);
+				// on reparse la structure de la table
+				$result = $db->getRow( "SHOW CREATE TABLE `{$table}`" );
+				$row = $result['Create Table'];
+				preg_match("/^CREATE TABLE `{$table}`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $row, $matches);
+				$fields = explode("\n", $matches[1]);
+				$i=0;
+				foreach($fields as $kk=>$val) {
+					if(!($field = trim($val)))
+						continue;
+					if(FALSE !== strpos($field, ',', strlen($field)-1))
+						$field = substr($field, 0, strlen($field)-1);
+					if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
+						$this->_sqlStruct[$table][] = array($m[1]=>$m[2]);
+					} else { // clé
+						$field = explode('KEY', $field);
+						$field[0] = trim($field[0]);
+						$field[1] = trim($field[1]);	
+						if($field[0]) {
+							$this->_sqlStruct[$table]['keys'][$field[0].'_'.$kk] = $field[1];
+						} else {
+							$this->_sqlStruct[$table]['keys']['KEY_'.$kk] = $field[1];
+						}	
+					}
+					$i++;
+				}
+				// charset, engine, auto_inc..
+				$this->_sqlStruct[$table]['tableOptions'] = $matches[2];
+				// on compare
+				$this->_getModifiedStruct($table);
 				continue;
 			} 
 			// nouvelle table
@@ -1662,13 +1706,13 @@ class DataLogic
 				$error = "structure missing for new table {$table}";
 				return;
 			}
-			$tmpSql = "CREATE TABLE `{$table}` ( ";
+			$tmpSql = "CREATE TABLE IF NOT EXISTS `{$table}` ( ";
 			foreach($this->_xmlStruct[$table] as $k=>$v) {
-				if('tableOptions' == $k) {
+				if('tableOptions' === $k) {
 					$tableOptions = $v;
 					continue;
 				}
-				if('keys' == $k) {
+				if('keys' === $k) {
 					foreach($v as $kk=>$vv) {
 						$key = explode('_', $kk);
 						$key = $key[0];
@@ -1683,9 +1727,11 @@ class DataLogic
 					}
 					continue;
 				}
-				$tmpSql .= ' `'.$k.'` '.$v.", ";
+				$fieldName = array_keys($v);
+				$fieldDefinition = array_values($v);
+				$tmpSql .= ' `'.$fieldName[0].'` '.$fieldDefinition[0].', ';
 			}
-			$tmpSql = substr_replace($tmpSql, '', strlen($tmpSql)-2);
+			$tmpSql = substr_replace($tmpSql, '', strlen($tmpSql)-1);
 			$tmpSql .= " ) ".$tableOptions;
 			$this->_sql[] = $tmpSql;
 			if(isset($this->_xmlDatas[$table])) {
@@ -1882,6 +1928,19 @@ class DataLogic
 						$id2 = $db->getOne("SELECT t.id FROM `{$typeTable}` as t JOIN `{$typeTable}__oldME` as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype']}'");
 					}
 					$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$id2}', '{$toUpNewId[$k]}', '*');\n";
+				}
+			}
+			$this->_executeSQL();
+			// suppression ancien types
+			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typeTable}`) AND identitytype != '0';\n";
+			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typeTable}`) AND identitytype2 != '0';\n";
+			// suppression des doublons
+			$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `entitytypes_entitytypes` GROUP BY identitytype, identitytype2 HAVING nb > 1");
+			if ($result) {
+				while (!$result->EOF) {
+					$nb = $result->fields['nb']-1;
+					$this->_sql[] = "DELETE FROM `entitytypes_entitytypes` WHERE identitytype = '{$result->fields['identitytype']}' AND identitytype2 = '{$result->fields['identitytype2']}' LIMIT {$nb};\n";
+					$result->MoveNext();
 				}
 			}
 			$this->_executeSQL();

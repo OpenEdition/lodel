@@ -37,6 +37,7 @@
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDTABLES]">
 	<table class="importME_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
 		<LET VAR="act">[#KEY]</LET>
+		[#ACT]
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<tr><td><input type="text" value="[#KEY]" name="data[[#ACT]][[#VALUE]]" size="5" /> - [#VALUE]</td></tr>
 		</LOOP>
@@ -45,6 +46,7 @@
 </div>
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
+<input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checktables" value="1" />
 <input type="submit" />
 </form>

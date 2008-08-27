@@ -28,37 +28,40 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@ADMIN.TITLE_IMPORTXML_CHECKTYPES]</title>
+<title>[@ADMIN.TITLE_IMPORTXML_CHECKCONTENT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 <form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
 <div class="importME">
-<LOOP NAME="foreach" ARRAY="[#MODIFIEDOLDTYPES]">
-	table '[#KEY]'
-	<table class="importME_left">
-		<LET VAR="act">[#KEY]</LET>
-		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<LET ARRAY="fieldname">array_values($context['value'])</LET>
-			<LET ARRAY="fieldidtype">array_keys($context['value'])</LET>
-			<tr><td><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="5" /> - [#FIELDNAME.0]</td></tr>
-		</LOOP>
-	</table>
-</LOOP>
-Liste des types disponibles par classe (ID => TYPE) :<br />
-<LOOP NAME="foreach" ARRAY="[#MODIFIEDNEWTYPES]">
-	classe '[#KEY]' :
-	<table class="importME_right">
-		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<tr><td>[#VALUE.ID] => [#VALUE.TYPE]</td></tr>
-		</LOOP>
-	</table>
+<IF COND="[#ERROR]">
+	<p class="error">[#ERROR]</p>
+</IF>
+<LOOP NAME="foreach" ARRAY="[#CHANGEDCONTENT]">
+	<LET VAR="act">[#KEY]</LET>
+	<div class="">
+	<LOOP NAME="foreach" ARRAY="[#VALUE]">
+		[#ACT] - [#KEY]
+		<LET VAR="table">[#KEY]</LET>
+		<ul class="importME_<IF COND="'newcontent' == [#ACT]">right<ELSE />left</IF>">
+			<LOOP NAME="foreach" ARRAY="[#VALUE]">
+				<IF COND="[#VALUE|is_array]">
+					<li><input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACT]][[#KEY]]" />&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp; 
+					<LOOP NAME="foreach" ARRAY="[#VALUE]">
+						[#VALUE]&nbsp;
+					</LOOP>
+					</li>
+				</IF>
+			</LOOP>
+		</ul>
+	</LOOP>
+	</div>	
 </LOOP>
 </div>
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
-<input type="hidden" name="checktypes" value="1" />
+<input type="hidden" name="checkcontent" value="1" />
 <input type="submit" />
 </form>
 
