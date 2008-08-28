@@ -1288,7 +1288,7 @@ class DataLogic
 			$tmpXmlDatas = $this->_xmlDatas[$table];
 			if(!$tmpXmlDatas) continue;
 			$tmpSqlDatas = array();
-			$tmpXmlDatas['fields'] = null;
+			unset($tmpXmlDatas['fields']);
 			$result = $db->execute("SELECT * FROM `{$table}`");
 			if($result) {
 				$i=0;
@@ -1321,7 +1321,7 @@ class DataLogic
 		foreach($this->_existingTables as $table=>$k) {
 			if(FALSE !== strpos($table, '__oldME')) {
 				$db->execute("DROP TABLE `{$table}`");
-				$this->_existingTables[$table] = null;
+				unset($this->_existingTables[$table]);
 			}
 		}
 	}
@@ -1548,16 +1548,16 @@ class DataLogic
 		if($diff = array_diff_all($this->_xmlStruct[$table], $this->_sqlStruct[$table]))
 			$this->_changedFields[$table] = $diff;
 		else return;
-		$this->_changedFields[$table]['added']['keys'] = $this->_changedFields[$table]['added']['tableOptions'] = $this->_changedFields[$table]['dropped']['tableOptions'] = $this->_changedFields[$table]['dropped']['keys'] = null;
+		unset($this->_changedFields[$table]['added']['keys'], $this->_changedFields[$table]['added']['tableOptions'], $this->_changedFields[$table]['dropped']['tableOptions'], $this->_changedFields[$table]['dropped']['keys']);
 		if(empty($this->_changedFields[$table]['dropped']) && empty($this->_changedFields[$table]['added'])) {
-			$this->_changedFields[$table] = null;
+			unset($this->_changedFields[$table]);
 			return;
 		}
 		$escape = true;
 		if(is_array($this->_changedFields[$table]['added'])) {
 			$fields = array();
 			$fields = $this->_changedFields[$table]['added'];
-			$this->_changedFields[$table]['added'] = null;
+			unset($this->_changedFields[$table]['added']);
 			foreach($fields as $k=>$field) {
 				$this->_changedFields[$table]['added'][] = $fields[$k];
 			}
@@ -1566,7 +1566,7 @@ class DataLogic
 		if(is_array($this->_changedFields[$table]['dropped'])) {
 			$fields = array();
 			$fields = $this->_changedFields[$table]['dropped'];
-			$this->_changedFields[$table]['dropped'] = null;
+			unset($this->_changedFields[$table]['dropped']);
 			$tablefield = lq('#_TP_tablefields');
 			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($fields as $k=>$field) {
@@ -1577,7 +1577,7 @@ class DataLogic
 				if(!$oldField) {
 					$row = $db->getRow("SELECT * FROM `{$tablefield}` where name='{$arrKeys[0]}' AND class='{$table}'");
 					if(!$row) continue;
-					$row['id'] = null;
+					unset($row['id']);
 					$idgroup = $db->getRow("SELECT name FROM `{$tablefieldgroups}` where id='{$row['idgroup']}'");
 					$this->_fieldsToKeep[$table][$arrKeys[0]] = $row;
 				}
@@ -1588,7 +1588,7 @@ class DataLogic
 		if($escape) return;
 		foreach($this->_changedFields[$table]['added'] as $k=>$field) {
 			if(!is_array($field)) {
-				$this->_changedFields[$table]['added'][$k] = null;
+				unset($this->_changedFields[$table]['added'][$k]);
 				continue;
 			}
 			foreach($field as $name=>$type) {
@@ -1602,7 +1602,7 @@ class DataLogic
 						if(isset($this->_changedFields[$table]['added'][$key[0]]))
 							$this->_changedFields[$table]['added'][] = $this->_changedFields[$table]['added'][$key[0]];
 						$this->_changedFields[$table]['added'][$key[0]] = array($name=>$type);
-						$this->_changedFields[$table]['added'][$ki[0]] = null;
+						unset($this->_changedFields[$table]['added'][$ki[0]]);
 					}
 				}
 			}
@@ -1658,14 +1658,14 @@ class DataLogic
 				$this->_sql[] = "RENAME TABLE `{$flipped[$equivalent]}` TO `{$table}`";
 				if(isset($this->_fieldsToKeep[$flipped[$equivalent]])) {
 					$this->_fieldsToKeep[$table] = $this->_fieldsToKeep[$flipped[$equivalent]];
-					$this->_fieldsToKeep[$flipped[$equivalent]] = null;
+					unset($this->_fieldsToKeep[$flipped[$equivalent]]);
 					foreach($this->_fieldsToKeep[$table] as $name=>&$type) {
 						$type['class'] = $table;
 					}
 				}
 				$error = $this->_executeSQL();
 				if($error) return false;
-				$this->_sqlStruct[$table] = null;
+				unset($this->_sqlStruct[$table]);
 				// on reparse la structure de la table
 				$result = $db->getRow( "SHOW CREATE TABLE `{$table}`" );
 				$row = $result['Create Table'];
@@ -1873,7 +1873,7 @@ class DataLogic
 					}
 					$idtype = isset($id) ? $id : $after[$k];
 					$this->_sql[] = "UPDATE `{$parentTable}` SET idtype = '{$idtype}' WHERE idtype = '{$val}';\n";
-					$id = $fieldName = null;
+					unset($id, $fieldName);
 				}
 			}
 		} else {
@@ -1955,7 +1955,7 @@ class DataLogic
 		$tablefield = lq('#_TP_tablefields');
 		foreach($context['data'] as $table=>$fields) {
 			$tablefieldgroup = isset($fields['dropped']['tablefieldgroup']) ? $fields['dropped']['tablefieldgroup'] : array();
-			$fields['dropped']['tablefieldgroup'] = null;
+			unset($fields['dropped']['tablefieldgroup']);
 			$flipped = is_array($fields['dropped']) ? array_flip($fields['dropped']) : array();
 			if(is_array($fields['added'])) {
 				foreach($fields['added'] as $field=>$equivalent) {

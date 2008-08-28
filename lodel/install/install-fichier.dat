@@ -148,6 +148,9 @@ ln tpl/edit_xml.html
 ln search.php
 ln tpl/search.html
 
+#sitemap
+ln tpl/site_map.html
+
 ###############################################################
 ############# admin
 
@@ -233,3 +236,14 @@ ln tpl/backupmodel.html
 
 # xml schema
 ln tpl/schema-xsd.html
+
+#messagerie interne
+ln tpl/edit_internal_messaging.html
+ln tpl/internal_messaging.html
+
+#import xml du ME
+ln tpl/importxml_checkcontent.html
+ln tpl/importxml_checkfields.html
+ln tpl/importxml_checktables.html
+ln tpl/importxml_checktypes.html
+ln tpl/importxmlmodel.html
