@@ -132,7 +132,8 @@ class OptionsLogic extends Logic {
 		switch($var) {
 		case "userrights":
 			require_once("commonselect.php");
-			makeSelectUserRights($context['userrights']);
+			$lodeladmin = ((!$GLOBALS['site'] || SINGLESITE) && (FALSE !== strpos(dirname($_SERVER['REQUEST_URI']), '/lodeladmin'))) ? TRUE : FALSE;
+			makeSelectUserRights($context['userrights'], $lodeladmin);
 			break;
 		case "type" :
 			require_once("commonselect.php");
