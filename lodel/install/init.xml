@@ -461,5 +461,58 @@
 <unique-column name="textgroups" />
 </unique>
 </table>
+<table name="internal_messaging"
+       description="Table gérant la messagerie interne"
+       uniqueid="yes"
+       writeright="redactor"
+       protectright="redactor">
+	
+	<column name="id"
+		type="INTEGER"
+		size="10"
+		required="true"
+		primaryKey="true"
+		autoIncrement="true" />
+	<column name="idparent"
+		type="INTEGER"
+		size="10"
+		default="0"
+		visibility="hidden"
+		required="true" />
+	<column name="iduser"
+		type="VARCHAR"
+		size="255"
+		default="[#LODELUSER.ID]"
+		visibility="hidden"
+		required="true" />
+	<column name="addressee"
+		type="LONGVARCHAR"
+		default="0"
+		required="true" 
+		label="[@ADMIN.INTERNAL_MESSAGING_TO]"
+		edittype="multipleselect"/>
+	<column name="subject"
+		type="VARCHAR"
+		size="255"
+		default=""
+		required="false"
+		label="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"
+		edittype="text"/>
+	<column name="body"
+		type="LONGVARCHAR"
+		required="true" 
+		default=""
+		label="[@ADMIN.INTERNAL_MESSAGING_BODY]"
+		edittype="longtext"/>
+	<column name="cond"
+		type="TINYINT"
+		size="1"
+		default="0"
+		required="true"
+		label="[@ADMIN.FORCE_LOOKING]"
+		edittype="boolean" />
+	<column name="upd"
+		type="TIMESTAMP" />
+</table>
 </database>
 

@@ -148,7 +148,17 @@ CREATE TABLE IF NOT EXISTS #_MTP_translations (
 	KEY index_lang (lang)
 ) _CHARSET_;
 
-
+CREATE TABLE IF NOT EXISTS #_MTP_internal_messaging (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `idparent` int(10) unsigned NOT NULL,
+  `iduser` varchar(255) NOT NULL,
+  `addressee` longtext NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `body` longtext NOT NULL,
+  `cond` tinyint(1) NOT NULL default '0',
+  `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+  PRIMARY KEY  (`id`)
+) _CHARSET_
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.
 # Administrateur par defaut. mot de passe : admintmp

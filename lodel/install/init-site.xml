@@ -2063,8 +2063,8 @@
 	<column name="id"
 		 type="INTEGER(11)"
 		 required="true"
-		 primarykey="true"
-		 auto_increment="true" />
+		 primaryKey="true"
+		 autoIncrement="true" />
 	<column name="host"
 		type="TINYTEXT"
 		default=""
@@ -2078,4 +2078,5 @@
 		default="0"
 		required="true" />
 </table>
+
 </database>

@@ -172,7 +172,8 @@ $tables=array("persontypes",
 	      "internalstyles",
 	      "translations",
 		"texts",
-		"restricted_users"
+		"restricted_users",
+		"internal_messaging"
 				);
 foreach ($tables as $table) {
   echo "table=$table\n";
