@@ -70,6 +70,7 @@
 		margin-left:1em;
 		font-size: 90%;
 	}
+	
 </style>
 
 <div id="lodel-desk">
@@ -353,8 +354,8 @@
 		</DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
 	</LOOP>
-	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND users.id = lodelmain.session.iduser">
-		<DOFIRST><IF COND="[%HASADMINLOGGED]">, </IF><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
+	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser">
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%HASADMINLOGGED]">, </IF>[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
 	</LOOP>
 <ELSE />
