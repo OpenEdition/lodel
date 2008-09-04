@@ -579,11 +579,11 @@ class exportfor08
 	 * Remplissage des tables des index et index de personnes à partir des tables 0.7 (entrees et auteurs)
 	 * Mise à jour des relations : en 0.8, toutes les relations sont stockées dans la table relations,
 	 * en 0.7 dans les tables entites_entrees et entites_personnes
-	 * 
+	 * @var bool $meRevuesorg
 	 * @return Ok si insertions dans les tables OK
 	 */
 
-	public function insert_index_data() {
+	public function insert_index_data($meRevuesorg=false) {
 		// id unique pour les entrées d'index
 		if(!$req = mysql_query("SELECT ".$GLOBALS['tp']."entries.id FROM ".$GLOBALS['tp']."entries JOIN ".$GLOBALS['tp']."objects ON ".$GLOBALS['tp']."entries.id = ".$GLOBALS['tp']."objects.id WHERE ".$GLOBALS['tp']."objects.class != 'entries';")) {
 			return mysql_error();
@@ -623,29 +623,30 @@ class exportfor08
 		$query .= "REPLACE INTO _PREFIXTABLE_indexes (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries;\n
 		INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) SELECT DISTINCT identree, identite, 'E' as nat, '1' as deg from _PREFIXTABLE_entites_entrees__old;\n
 		";
-	
-		// licence
-		if(!$result = mysql_query("SELECT distinct droitsauteur from ".$GLOBALS['tp']."documents__old;")) {
-			return mysql_error();
+		if($meRevuesorg) {
+			// licence
+			if(!$result = mysql_query("SELECT distinct droitsauteur from ".$GLOBALS['tp']."documents__old;")) {
+				return mysql_error();
+			}
+			$i = 1;
+			while($res = mysql_fetch_array($result)) {
+				if($res['droitsauteur'] != "") {
+					$id = $this->__insert_object('entries');
+					$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".makeSortKey($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
+					$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
+		
+					if(!$req = mysql_query("SELECT identite FROM ".$GLOBALS['tp']."documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
+						return mysql_error();
+					}
+					while($re = mysql_fetch_array($req)) {
+						$query .= "INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) VALUES ('".$id."', '".$re['identite']."', 'E', 1);\n";	
+					}
+					$i++;	
+				}	
+			}
+			mysql_free_result($result);
+			mysql_free_result($req);
 		}
-		$i = 1;
-		while($res = mysql_fetch_array($result)) {
-			if($res['droitsauteur'] != "") {
-				$id = $this->__insert_object('entries');
-				$query .= "INSERT INTO _PREFIXTABLE_entries(id, g_name, sortkey, idtype, rank, status, upd) VALUES ('".$id."', \"".$res['droitsauteur']."\", \"".makeSortKey($res['droitsauteur'])."\", (select id from _PREFIXTABLE_entrytypes where type = 'licence'), '".$i."', '1', NOW());\n";
-				$query .= "INSERT INTO _PREFIXTABLE_indexavances (identry, nom) SELECT id, g_name from _PREFIXTABLE_entries WHERE id = '".$id."';\n";
-	
-				if(!$req = mysql_query("SELECT identite FROM ".$GLOBALS['tp']."documents__old WHERE droitsauteur = \"".$res['droitsauteur']."\"")) {
-					return mysql_error();
-				}
-				while($re = mysql_fetch_array($req)) {
-					$query .= "INSERT INTO _PREFIXTABLE_relations (id2, id1, nature, degree) VALUES ('".$id."', '".$re['identite']."', 'E', 1);\n";	
-				}
-				$i++;	
-			}	
-		}
-		mysql_free_result($result);
-		mysql_free_result($req);
 		// besoin d'executer certaines requetes avant de continuer
 		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 			return $err;
@@ -1288,8 +1289,9 @@ class exportfor08
 			$query .= "UPDATE _PREFIXTABLE_entries SET idtype = (SELECT id FROM _PREFIXTABLE_entrytypes WHERE type = '".$res['type']."') WHERE idtype = '".$res['id']."';\n";
 		}
 		$i = 1;
+		require_once 'func.php';
 		while($re = mysql_fetch_array($resu)) {
-			$query .= "UPDATE _PREFIXTABLE_entries SET sortkey = \"".strtolower(str_replace('"', '\"', $re['g_name']))."\", rank = '".$i++."' WHERE id = '".$re['id']."';\n";
+			$query .= "UPDATE _PREFIXTABLE_entries SET sortkey = \"".makeSortKey(str_replace('"', '\"', $re['g_name']))."\", rank = '".$i++."' WHERE id = '".$re['id']."';\n";
 		}
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'motsclesfr' where id = '".$id[0]."';\n";
 		$query .= "UPDATE _PREFIXTABLE_entrytypes SET type = 'chrono' where id = '".$id[2]."';\n";
@@ -1507,6 +1509,19 @@ class exportfor08
 
 		// ajustement spécifique : champ icone de publication en 0.7 = image d'accroche document annexe en 0.8
 		if(!$result = mysql_query('SELECT id, icone, titre, identifier, g_title, status FROM ' . $GLOBALS['tp'] . 'publications JOIN  ' . $GLOBALS['tp'] . 'entities ON (' . $GLOBALS['tp'] . 'entities.id = ' . $GLOBALS['tp'] . 'publications.identity) where icone != ""')) {
+			return mysql_error();
+		}			
+		while($res = mysql_fetch_array($result)) {
+			$id = $this->__insert_object('entities');
+			$titre = str_replace("'", "\\'", $res['titre']);
+			$identifier = str_replace("'", "\\'", $res['identifier']);
+			$g_title = str_replace("'", "\\'", $res['g_title']);
+			$query .= "INSERT INTO _PREFIXTABLE_fichiers (identity, titre, document) VALUES ('".$id."', '".$titre."', '".$res['icone']."');\n";
+			$query .= "INSERT INTO _PREFIXTABLE_entities (id, idparent, idtype, identifier, g_title, rank, status) VALUES ('".$id."', '".$res['id']."', (select id from types where type = 'imageaccroche'), '".$identifier."', '".$g_title."', 1, '".$res['status']."');\n";
+		}
+
+		// idem classe texte
+		if(!$result = mysql_query('SELECT id, icone, titre, identifier, g_title, status FROM ' . $GLOBALS['tp'] . 'textes JOIN  ' . $GLOBALS['tp'] . 'entities ON (' . $GLOBALS['tp'] . 'entities.id = ' . $GLOBALS['tp'] . 'textes.identity) where icone != ""')) {
 			return mysql_error();
 		}			
 		while($res = mysql_fetch_array($result)) {
@@ -1808,13 +1823,13 @@ class exportfor08
 			*/
 			if($res['type'] != "documentannexe-lienfacsimile" && $res['type'] != "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."liens (identity, titre, url) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
-				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'lienannexe') WHERE id = '".$res['id']."';\n";
+				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-liendocument') WHERE id = '".$res['id']."';\n";
 			} elseif($res['type'] == "documentannexe-lienfacsimile") {
 				$query .= "UPDATE ".$GLOBALS['tp']."documents SET alterfichier = \"".$res['lien']."\" WHERE identity = '".$res['idparent']."';\n";
 				$query .= "DELETE FROM ".$GLOBALS['tp']."entities WHERE id = '".$res['id']."';\n";
 			} elseif($res['type'] == "documentannexe-lienfichier") {
 				$query .= "INSERT INTO ".$GLOBALS['tp']."fichiers (identity, titre, document) VALUES ('".$res['id']."', \"".addslashes($res['titre'])."\", \"".$res['lien']."\");\n";
-				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'fichierannexe') WHERE id = '".$res['id']."';\n";
+				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier') WHERE id = '".$res['id']."';\n";
 			}
 		}
 		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type LIKE 'documentannexe-%';\n";
