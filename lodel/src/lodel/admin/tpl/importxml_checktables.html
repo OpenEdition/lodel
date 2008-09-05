@@ -31,7 +31,9 @@
 <title>[@ADMIN.TITLE_IMPORTXML_CHECKTABLES]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-
+	<IF COND="[#ERROR]">
+		<p class="error">[#ERROR]</p>
+	</IF>
 <form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
 <div class="importME">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDTABLES]">

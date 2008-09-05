@@ -31,7 +31,9 @@
 <title>[@ADMIN.TITLE_IMPORTXML_CHECKTYPES]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-
+	<IF COND="[#ERROR]">
+		<p class="error">[#ERROR]</p>
+	</IF>
 <form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
 <div class="importME">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDOLDTYPES]">
@@ -39,8 +41,8 @@
 	<table class="importME_left">
 		<LET VAR="act">[#KEY]</LET>
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<LET ARRAY="fieldname">array_values($context['value'])</LET>
-			<LET ARRAY="fieldidtype">array_keys($context['value'])</LET>
+			<LET ARRAY="fieldname">[#VALUE|array_values]</LET>
+			<LET ARRAY="fieldidtype">[#VALUE|array_keys]</LET>
 			<tr><td><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="5" /> - [#FIELDNAME.0]</td></tr>
 		</LOOP>
 	</table>

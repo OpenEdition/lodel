@@ -53,8 +53,8 @@
 							<li><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="5" /> - [#KEY] : [#VALUE]</li>
 						<ELSE />
 							<IF COND="'value' == [#KEY]">
-								<LET ARRAY="fieldname" GLOBAL="1">array_keys($context['value'])</LET>
-								<LET ARRAY="fieldtype" GLOBAL="1">array_values($context['value'])</LET>
+								<LET ARRAY="fieldname" GLOBAL="1">[#VALUE|array_keys]</LET>
+								<LET ARRAY="fieldtype" GLOBAL="1">[#VALUE|array_values]</LET>
 								<li><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="5" /> - [%FIELDNAME.0] : [%FIELDTYPE.0]<br />
 							<ELSEIF COND="'tablefieldgroups' == [#KEY]">
 								<LOOP NAME="foreach" ARRAY="[#VALUE]">
