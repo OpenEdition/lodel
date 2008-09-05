@@ -1177,10 +1177,9 @@ class Parser
 			$this->_clearposition();
 			$this->ind += 2;
 			$values = explode(',', $this->arr[$this->ind]);
-			$regexpVar = ($result[4] ? '\$GLOBALS[\'context\']' : '\$context').'(\[\'[a-zA-Z0-9_\.]+\'\])+';
 			foreach($values as &$value) {
-				if(preg_match("/{$regexpVar}/", $value, $match)) {
-					$value = "array_values((array){$match[0]})";
+				if(preg_match("/<\?php\s+echo\s+(.*?);\s+\?>/", $value, $match)) { // variable LS déjà parsée
+					$value = "array_values((array){$match[1]})";
 				} else {
 					$value = addcslashes(trim($value), "'");
 					$value = "(array)'{$value}'";
