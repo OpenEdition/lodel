@@ -502,7 +502,7 @@ ul.listEntities{
 }
 
 ul.listEntities li{
-	padding: .5ex 0;
+	padding: .5ex 0 0 25px;
 	position: relative;
 	height: 48px;
 /* 	background: #e9e9e9; */
@@ -553,7 +553,7 @@ ul.listEntities li.unfoldedentities ul li ul{
 
 ul.listEntities div.entityIcons{
 	position: absolute;
-	left: .5em;
+	left: 2.5em;
 	top: 1ex;
 	width: 70px;
 /* 	background: red; */
