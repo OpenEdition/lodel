@@ -78,7 +78,7 @@ class Parser
 	var $currentline;
 	var $ind;
 	var $refresh = "";
-
+	var $denied = array();
 	var $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
 	var $id = "";
@@ -123,6 +123,7 @@ class Parser
 		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
 
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
+		$this->denied = array('id'=>'','idtype'=>'','idparent'=>'','idclass'=>'','idgroup'=>'','class'=>'','type'=>'','classtype'=>'','textgroups'=>'','options'=>'','lodeluser'=>'','defaultlang'=>'','sitelang'=>'','version'=>'','shareurl'=>'','extensionscripts'=>'','currenturl'=>'','siteroot'=>'','site'=>'','charset'=>'','langcache'=>'','clearcacheurl'=>'');
 	}
 
 	function parse($in, $include)
@@ -252,7 +253,6 @@ class Parser
 			}
 
 			if ($text {$i} == '#' || $text {$i} == '%' || strpos($text {$i }, $this->variablechar) !== false) { // 
-				$globalScope = ($text {$i} == '%') ? true : false;
 				$varchar = $text {$i};
 				$i ++;
 				// look for the name of the variable now
@@ -343,7 +343,7 @@ class Parser
 					continue; // not a variable
 				// build the variable code
 				
-				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape, $globalScope);
+				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape);
 				$text = substr_replace($text, $varcode, $startvar, $i - $startvar);
 				$i = $startvar +strlen($varcode); // move the counter
 			} // we found a variable
@@ -351,11 +351,11 @@ class Parser
 		} // while there are some variable
 	}
 
-	function _make_variable_code($prefix, $name, $pipefunction, $escape, $globalScope)
+	function _make_variable_code($prefix, $name, $pipefunction, $escape)
 	{
 		$variable = $this->parse_variable_extra($prefix, $name);
 		if ($variable === false) { // has the variable being processed ?     
-			$variable = $globalScope ? "\$GLOBALS['context']['".str_replace(".", "']['", strtolower($name))."']" : "\$context['".str_replace(".", "']['", strtolower($name))."']";
+			$variable = ('%' === (string)$prefix) ? "\$GLOBALS['context']['".str_replace(".", "']['", strtolower($name))."']" : "\$context['".str_replace(".", "']['", strtolower($name))."']";
 		}
 
 		# parse the filter
@@ -407,7 +407,8 @@ class Parser
 			$testcode = ' echo "'.$code.'";';
 			break;
 		default :
-			$code = $variable;
+			$code =& $variable;
+			break;
 		}
 		// unable to test the code.... 
 		// must use the PEAR::PHP_Parser
@@ -1143,13 +1144,19 @@ class Parser
 	{
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->errmsg("LET have no VAR|ARRAY attribut");
-		if (!preg_match("/^$this->variable_regexp$/i", $result[2]))
+		$regexpVarName = ('ARRAY' == $result[1]) ? $this->variable_regexp.'(\[\])?' : $this->variable_regexp;
+		if (!preg_match("/^{$regexpVarName}$/i", $result[2]))
 			$this->errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
 
 		$var = strtolower($result[2]);
+		// sécurité
+		// todo : lors de l'eval dans la vue, passer en parametre une variable et non le context lui même !!
+		// pour çà, supprimer l'extract dans auth.php et utiliser un singleton de l'objet context ?
+// 		if(isset($this->denied[$var]))
+// 			$this->errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
 		if('VAR' == $result[1]) {
-			$this->parse_variable($result[2], false); // parse the attributs
-			
+			// commenté septembre 2008 par pierre-alain car pas d'utilité trouvée ?!?
+			//$this->parse_variable($result[2], false); // parse the attributs
 			$this->_clearposition();
 			$this->arr[$this->ind + 1] = '<?php ob_start(); ?>';
 	
@@ -1158,33 +1165,35 @@ class Parser
 			$this->parse_main();
 			if ($this->arr[$this->ind] != "/LET")
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
-	
+
 			$this->_clearposition();
-			if($result[4]) {
-				if(in_array($var, array('id', 'idtype', 'idparent', 'idclass', 'idgroup', 'class', 'type', 'classtype', 'textgroups')))
-					$this->errmsg("Variable '{$var}' is not accessible in GLOBAL scope in LET VAR");
-	
-				$this->arr[$this->ind + 1] = '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
-			} else {
-				$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
-			}
+			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
 		} else {
+			$arr = '';
+			if(FALSE !== strpos($var, '[]')) {
+				$var = substr($var, 0, -2);
+				$arr = '[]';
+			}
 			$this->_clearposition();
 			$this->ind += 2;
-			$value = $this->arr[$this->ind];
+			$values = explode(',', $this->arr[$this->ind]);
+			$regexpVar = ($result[4] ? '\$GLOBALS[\'context\']' : '\$context').'(\[\'[a-zA-Z0-9_\.]+\'\])+';
+			foreach($values as &$value) {
+				if(preg_match("/{$regexpVar}/", $value, $match)) {
+					$value = "array_values((array){$match[0]})";
+				} else {
+					$value = addcslashes(trim($value), "'");
+					$value = "(array)'{$value}'";
+				}
+			}
 			$this->arr[$this->ind] = '';
 			$this->ind++;
 			if ($this->arr[$this->ind] != "/LET")
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 			$this->_clearposition();
-			if($result[4]) {
-				if(in_array($var, array('id', 'idtype', 'idparent', 'idclass', 'idgroup', 'class', 'type', 'classtype', 'textgroups')))
-					$this->errmsg("Variable '{$var}' is not accessible in GLOBAL scope in LET VAR");
-	
-				$this->arr[$this->ind + 1] = '<?php $GLOBALS[\'context\'][\''.$var.'\']='.$value.'; ?>';
-			} else {
-				$this->arr[$this->ind + 1] = '<?php $context[\''.$var.'\']='.$value.'; ?>';
-			}
+			$this->arr[$this->ind + 1] = $result[4] ? 
+				'<?php $GLOBALS[\'context\'][\''.$var.'\']'.$arr.'=array_merge('.join(',',$values).'); ?>' : 
+				'<?php $context[\''.$var.'\']'.$arr.'=array_merge('.join(',',$values).'); ?>';
 		}
 	}
 
@@ -1305,10 +1314,10 @@ class Parser
 
 		// parse the variables
 		$this->parse_variable($arr[0]);
-		for ($i = 1; $i < count($arr); $i += 3)	{
-			$this->parse_variable($arr[$i +2]); // parse the content
+		$nbArr = count($arr);
+		for ($i = 3; $i < $nbArr; $i += 3) {
+			$this->parse_variable($arr[$i]); // parse the content
 		}
-
 		if (!$this->arr) {
 			$this->ind = 0;
 			$this->currentline = 0;
