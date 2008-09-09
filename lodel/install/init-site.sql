@@ -546,4 +546,4 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `index_username` (`username`)
-) _CHARSET_
+) _CHARSET_;
