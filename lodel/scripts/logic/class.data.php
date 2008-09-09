@@ -1106,10 +1106,10 @@ class DataLogic
 			file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 		}
 
-		if($context['checkcontent']) {
+		if(isset($context['checkcontent'])) {
 			$this->_manageContent($context['changedcontent']);
 		}
-		if($context['checktables']) {
+		if(isset($context['checktables'])) {
 			$this->_manageTables($context, $error);
 			if($error) {
 				$context['error'] =& $error;
@@ -1119,28 +1119,16 @@ class DataLogic
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
-			$this->_updateDatabase($context, $error);
-			if(!$error) {
-				$context['success'] = 1;
-			} else {
-				$context['error'] =& $error;
-				return 'importxmlmodel';
-			}
-		} elseif($context['checkfields']) {
+			$context['success'] = 1;
+		} elseif(isset($context['checkfields'])) {
 			$this->_manageFields($context, $error);
 			if($error) {
 				$context['error'] =& $error;
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
-			$this->_updateDatabase($context, $error);
-			if(!$error) {
-				$context['success'] = 1;
-			} else {
-				$context['error'] =& $error;
-				return 'importxmlmodel';
-			}
-		} elseif($context['checktypes']) {
+			$context['success'] = 1;
+		} elseif(isset($context['checktypes'])) {
 			$this->_updateTypes($context['data'], $error);
 			if(!$error) {
 				$context['success'] = 1;
@@ -1148,9 +1136,9 @@ class DataLogic
 				$context['error'] =& $error;
 				return 'importxml_checktypes';
 			}
-		} elseif($file) {
+		} elseif(isset($file)) {
 			$this->_cleanDatabase();
-			if(!$context['checkcontent'] && TRUE === $this->_checkContents()) {
+			if(!isset($context['checkcontent']) && TRUE === $this->_checkContents()) {
 				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
@@ -1162,27 +1150,41 @@ class DataLogic
 			} elseif(!empty($this->_changedFields)) {
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
-			} elseif($up) {
-				$this->_updateDatabase($context, $error);
-				if(!$error) {
-					$context['success'] = 1;
-				} else {
+// 			} elseif(isset($up)) {
+				$context['success'] = 1;
+			}
+		}
+
+		if(isset($context['success'])) {
+			$this->_updateDatabase($context, $error);
+			if($error) {
+				$context['error'] =& $error;
+				return 'importxmlmodel';
+			}
+			$this->_updateTypes(false, $error);
+			if($error) {
+				$context['error'] =& $error;
+				return 'importxmlmodel';
+			}
+			if(!isset($context['checktypes'])) {
+				if(!empty($this->_changedTypes)) {
+					file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
+					$context['modifiedoldtypes'] = $this->_changedTypes;
+					$types = lq('#_TP_types');
+					$entrytypes = lq('#_TP_entrytypes');
+					$persontypes = lq('#_TP_persontypes');
+					$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}`");
+					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}`");
+					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}`");
+					return 'importxml_checktypes';
+				} 
+				$this->_updateTypes(true, $error);
+				if($error) {
 					$context['error'] =& $error;
 					return 'importxmlmodel';
 				}
 			}
 		}
-
-		if(isset($context['success']) && !empty($this->_changedTypes)) {
-			$context['modifiedoldtypes'] = $this->_changedTypes;
-			$types = lq('#_TP_types');
-			$entrytypes = lq('#_TP_entrytypes');
-			$persontypes = lq('#_TP_persontypes');
-			$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}`");
-			$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}`");
-			$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}`");
-			return 'importxml_checktypes';
-		}		
 
 		// Vide le cache
 		if(isset($context['success'])) {
@@ -1653,10 +1655,22 @@ class DataLogic
 	private function _manageTables(&$context, &$error) {
 		global $db;
 		if(!is_array($context['data']['added'])) return;
+		$tablefield = lq('#_TP_tablefields');
+		$classes = lq('#_TP_classes');
 		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
+				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") or dberror();
+				switch($classType) {
+					case 'entities': $typeTable = lq('#_TP_types'); break;
+					case 'entries': $typeTable = lq('#_TP_entrytypes'); break;
+					case 'persons': $typeTable = lq('#_TP_persontypes'); break;
+				}
 				$this->_sql[] = "RENAME TABLE `{$flipped[$equivalent]}` TO `{$table}`";
+				$this->_tables[$table] = $this->_tables[$flipped[$equivalent]];
+				unset($this->_tables[$flipped[$equivalent]]);
+				$this->_sql[] = "UPDATE `{$tablefield}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
+				$this->_sql[] = "UPDATE `{$typeTable}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
 				if(isset($this->_fieldsToKeep[$flipped[$equivalent]])) {
 					$this->_fieldsToKeep[$table] = $this->_fieldsToKeep[$flipped[$equivalent]];
 					unset($this->_fieldsToKeep[$flipped[$equivalent]]);
@@ -1735,9 +1749,9 @@ class DataLogic
 			$this->_sql[] = $tmpSql;
 			if(isset($this->_xmlDatas[$table])) {
 				// on garde une copie au cas où !
-				if(!isset($this->_existingTables[$table.'__oldME']))
-					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
-				$this->_sql[] = "DELETE FROM `{$table}`;\n";
+// 				if(!isset($this->_existingTables[$table.'__oldME']))
+// 					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
+// 				$this->_sql[] = "DELETE FROM `{$table}`;\n";
 				$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
 				$tmpSql = "INSERT INTO `{$table}` (".join(',', $this->_xmlDatas[$table]['fields']).") VALUES ";
 				foreach($this->_xmlDatas[$table] as $i=>$fields) {
@@ -1758,17 +1772,21 @@ class DataLogic
 	/**
 	 * Met à jour la base de données SQL
 	 *
-	 * Termine la mise à jour de la base (clés, options des tables et éventuelles données)
+	 * Termine la mise à jour de la base (ids des objects, clés, options des tables et éventuelles données)
 	 *
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
 	private function _updateDatabase(&$context, &$error) {
 		global $db;
-		$db->execute(lq("CREATE TABLE `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or dberror();
+		$db->execute(lq("CREATE TABLE IF NOT EXISTS `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or dberror();
+		$objectsClasses = array('types'=>'', 'entrytypes'=>'', 'persontypes'=>'', 'classes'=>'');
+		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
+		$entitiesTable = lq('#_TP_entities');
+		$typesTable = lq('#_TP_types');
 		foreach($this->_xmlStruct as $table=>$content) {
 			// données à insérer
-			if(isset($this->_xmlDatas[$table])) {
+			if(isset($this->_xmlDatas[$table][0])) {
 				// copie au cas où
 				if(!isset($this->_existingTables[$table.'__oldME']))
 					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
@@ -1778,13 +1796,17 @@ class DataLogic
 				foreach($this->_xmlDatas[$table] as $i=>$fields) {
 					if('fields' === $i) continue;
 					$tmpSql .= ($i === 0) ? "\n(" : ",\n(";
-					foreach($fields as $j=>$val) {
+					foreach($fields as $j=>&$val) {
 						$val = str_replace('"', '\"', $val);
 						$tmpSql .= ($j < $nbFields) ? "\"{$val}\"," : "\"{$val}\"";
 					}
 					$tmpSql .= ")";
 				}
 				$this->_sql[] = $tmpSql.";\n";
+				$f = $this->_xmlDatas[$table]['fields'];
+				unset($this->_xmlDatas[$table]);
+				$this->_xmlDatas[$table]['fields'] = $f;
+				unset($f);
 			}
 			// clés
 			if((is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) 
@@ -1812,6 +1834,7 @@ class DataLogic
 					$this->_sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
 				}
 			}
+			unset($this->_xmlStruct[$table]['keys']);
 			// table options
 			if($this->_xmlStruct[$table]['tableOptions'] != $this->_sqlStruct[$table]['tableOptions']) {
 				$this->_sql[] = "ALTER TABLE `{$table}` {$this->_xmlStruct[$table]['tableOptions']};\n";
@@ -1819,9 +1842,6 @@ class DataLogic
 		}
 		// on execute les requetes en cours
 		$error = $this->_executeSQL();
-		if($error) return false;
-		// on met à jour les idtypes des entités/entrées
-		$error = $this->_updateTypes(false);
 		if($error) return false;
 		// requetes différées
 		$error = $this->_executeSQL(true);
@@ -1832,11 +1852,10 @@ class DataLogic
 	 * Met à jour la base de données SQL
 	 *
 	 * Ajuste les idtypes après import XML du ME
-	 * @param $datas false si pas eu besoin de faire les correspondances entre les types, sinon tableau contenant les données à traiter
+	 * @param $datas tableau contenant les données à traiter ou bool
 	 * @param $error erreur passée en référence
 	 */
 	private function _updateTypes($datas, &$error='') {
-		if(TRUE === $datas) return;
 		global $db;
 		$entriesTable = lq('#_TP_entries');
 		$personsTable = lq('#_TP_persons');
@@ -1846,8 +1865,8 @@ class DataLogic
 		$persontypesTable = lq('#_TP_persontypes');
 		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
 		$tablefieldsTable = lq('#_TP_tablefields');
+		$objectsTable = lq('#_TP_objects');
 		if(is_array($datas)) {
-			$objectsTable = lq('#_TP_objects');
 			foreach($datas as $table=>$content) {
 				$typesFields = join(',', $this->_xmlDatas[$table]['fields']);
 				$before = array_keys($content);
@@ -1865,22 +1884,17 @@ class DataLogic
 					$ids = array();
 					if((int)$val === (int)$after[$k]) continue;
 					if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recréer
-						$db->execute("INSERT INTO `{$objectsTable}` (class) VALUES ('{$objectType}')") or dberror();
-						$id = $db->Insert_ID();
-						if(false === $id) {
-							$error = 'No way to get last inserted ID in table "class"';
-							return;
+						$id = uniqueid($objectType);
+						if($parentTable == $entitiesTable) {
+							$toUpdate[] = $val;
+							$toUpNewId[] = $id;
 						}
 						$field = $db->GetRow("SELECT * FROM `{$table}__oldME` WHERE id = '{$val}'") or dberror();
 						unset($field['id']);
 						array_walk($field, create_function('&$f', '$f = addcslashes($f, "\'");'));
 						$db->execute("INSERT INTO `{$table}` ({$typesFields}) VALUES ('{$id}','".join("','", $field)."')") or dberror();
-						if($parentTable == $typesTable) {
-							$toUpdate[] = $val;
-							$toUpNewId[] = $id;
-						}
 						$fieldName = $db->getOne("SELECT type FROM `{$table}__oldME` WHERE id = '{$val}'") or dberror();
-						$this->_sql[] = "INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n";
+						$db->execute("INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n") or dberror();
 					}
 					$idtype = isset($id) ? $id : $after[$k];
 					$result = $db->execute("SELECT id FROM `{$oldMETable}` WHERE idtype = '{$val}'");
@@ -1895,7 +1909,98 @@ class DataLogic
 					unset($id, $fieldName);
 				}
 			}
-		} else {
+			if(isset($toUpdate)) {// maj entitytypes_entitytypes
+				$error = $this->_executeSQL();
+				if($error) return false;
+				$id=0;
+				foreach($toUpdate as $k=>$id) {
+					$etypes = $db->getArray("SELECT identitytype2 FROM `{$entitytypeTable}__oldME` WHERE identitytype = '{$id}'");
+					if(is_array($etypes)) {
+						foreach($etypes as $etype) {
+							$id2=0;
+							if('' != $datas[$typesTable][$etype['identitytype2']]) {
+								$id2 = $datas[$typesTable][$etype['identitytype2']];
+							} else {
+								$id2 = $db->getOne("SELECT t.id FROM `{$typesTable}` as t JOIN `{$typesTable}__oldME` as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype2']}'");
+							}
+							$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$toUpNewId[$k]}', '{$id2}', '*');\n";
+						}
+					}
+					$etypes = $db->getArray("SELECT identitytype FROM `{$entitytypeTable}__oldME` WHERE identitytype2 = '{$id}'");
+					if(!$etypes) continue;
+					foreach($etypes as $etype) {
+						$id2=0;
+						if('' != $datas[$typesTable][$etype['identitytype']]) {
+							$id2 = $datas[$typesTable][$etype['identitytype']];
+						} else {
+							$id2 = $db->getOne("SELECT t.id FROM `{$typesTable}` as t JOIN `{$typesTable}__oldME` as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype']}'");
+						}
+						$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$id2}', '{$toUpNewId[$k]}', '*');\n";
+					}
+				}
+			}
+			unset($toUpdate);
+			unset($toUpNewId);
+			$error = $this->_executeSQL();
+			if($error) return false;
+			foreach(array(0=>$typesTable, 1=>$entrytypesTable, 2=>$persontypesTable) as $key=>$typeName) {
+				switch($key) {
+					case 0: $table = $entitiesTable; break;
+					case 1: $table = $entriesTable; break;
+					case 2: $table = $personsTable; break;
+				}
+				$typeArr = $db->getArray("SELECT id, type FROM `{$typeName}` ORDER BY id");
+				$objectTableName = ($table == $entitiesTable) ? 'types' : str_replace($GLOBALS['tp'], '', $typeName);
+				foreach($typeArr as $k=>$type) {
+					$ids = array();
+					$class = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$type['id']}'");
+					if($class != $objectTableName) {
+						$newID = uniqueid($objectTableName);
+						$this->_sql[] = "UPDATE `{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
+						if('types' == $objectTableName) {
+							$toUpdate[] = $type['id'];
+							$toUpNewId[] = $newID;
+						}
+						$result = $db->execute("SELECT id FROM `{$table}` WHERE idtype = '{$type['id']}'");
+						if($result) {
+							while(!$result->EOF) {
+								$ids[] = $result->fields['id'];
+								$result->MoveNext();
+							}
+							if(isset($ids[0]))
+								$this->_sql[] = "UPDATE `{$table}` SET idtype = '{$newID}' WHERE id IN (".join(',', $ids).");\n";
+						}
+					}
+				}
+			}
+			$error = $this->_executeSQL();
+			if($error) return false;
+			if(isset($toUpdate)) {// maj entitytypes_entitytypes
+				$error = $this->_executeSQL();
+				if($error) return false;
+				$id=0;
+				foreach($toUpdate as $k=>$id) {
+					$this->_sql[] = "UPDATE `{$entitytypeTable}` SET identitytype = '{$toUpNewId[$k]}' WHERE identitytype = '{$id}';\n";
+					$this->_sql[] = "UPDATE `{$entitytypeTable}` SET identitytype2 = '{$toUpNewId[$k]}' WHERE identitytype2 = '{$id}';\n";
+				}
+			}
+			// suppression ancien types
+			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
+			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
+			$error = $this->_executeSQL();
+			if($error) return false;
+			// suppression des doublons
+			$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `{$entitytypeTable}` GROUP BY identitytype, identitytype2 HAVING nb > 1");
+			if ($result) {
+				while (!$result->EOF) {
+					$nb = $result->fields['nb']-1;
+					$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype = '{$result->fields['identitytype']}' AND identitytype2 = '{$result->fields['identitytype2']}' LIMIT {$nb};\n";
+					$result->MoveNext();
+				}
+			}
+			$error = $this->_executeSQL();
+			if($error) return false;
+		} elseif(FALSE === $datas) {
 			foreach(array(0=>$typesTable, 1=>$entrytypesTable, 2=>$persontypesTable) as $key=>$type) {
 				switch($key) {
 					case 0: $table = $entitiesTable; break;
@@ -1904,6 +2009,7 @@ class DataLogic
 				}
 				$oldTypeArr = $db->getArray("SELECT id, type FROM `{$type}__oldME` ORDER BY id");
 				$oldMETable = ($table == $entitiesTable) ? $entitiesTable.'__oldME' : $table;
+				$objectTableName = ($table == $entitiesTable) ? 'types' : str_replace($GLOBALS['tp'], '', $type);
 				foreach($oldTypeArr as $k=>$oldType) {
 					$ids = array();
 					$typeArr = $db->getRow("SELECT id FROM `{$type}` WHERE type = '{$oldType['type']}'");
@@ -1922,53 +2028,75 @@ class DataLogic
 					}
 				}
 			}
+		} elseif(TRUE === $datas) { // unique ID check
+			foreach(array(0=>$typesTable, 1=>$entrytypesTable, 2=>$persontypesTable) as $key=>$typeName) {
+				switch($key) {
+					case 0: $table = $entitiesTable; break;
+					case 1: $table = $entriesTable; break;
+					case 2: $table = $personsTable; break;
+				}
+				$typeArr = $db->getArray("SELECT id, type FROM `{$typeName}` ORDER BY id");
+				$objectTableName = ($table == $entitiesTable) ? 'types' : str_replace($GLOBALS['tp'], '', $typeName);
+				foreach($typeArr as $k=>$type) {
+					$ids = array();
+					$class = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$type['id']}'");
+					if($class != $objectTableName) {
+						$newID = uniqueid($objectTableName);
+						$this->_sql[] = "UPDATE `{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
+						if('types' == $objectTableName) {
+							$toUpdate[] = $type['id'];
+							$toUpNewId[] = $newID;
+						}
+						$result = $db->execute("SELECT id FROM `{$table}` WHERE idtype = '{$type['id']}'");
+						if($result) {
+							while(!$result->EOF) {
+								$ids[] = $result->fields['id'];
+								$result->MoveNext();
+							}
+							if(isset($ids[0]))
+								$this->_sql[] = "UPDATE `{$table}` SET idtype = '{$newID}' WHERE id IN (".join(',', $ids).");\n";
+						}
+					}
+				}
+				$error = $this->_executeSQL();
+				if($error) return false;
+				if(isset($toUpdate)) {// maj entitytypes_entitytypes
+					$error = $this->_executeSQL();
+					if($error) return false;
+					$id=0;
+					foreach($toUpdate as $k=>$id) {
+						$etypes = $db->getArray("SELECT identitytype2 FROM `{$entitytypeTable}` WHERE identitytype = '{$id}'");
+						if(is_array($etypes)) {
+							foreach($etypes as $etype) {
+								$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$toUpNewId[$k]}', '{$etype['identitytype2']}', '*');\n";
+							}
+						}
+						$etypes = $db->getArray("SELECT identitytype FROM `{$entitytypeTable}` WHERE identitytype2 = '{$id}'");
+						if(is_array($etypes)) {
+							foreach($etypes as $etype) {
+								$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$etype['identitytype']}', '{$toUpNewId[$k]}', '*');\n";
+							}
+						}
+					}
+				}
+				// suppression ancien types
+				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
+				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
+				$error = $this->_executeSQL();
+				if($error) return false;
+				// suppression des doublons
+				$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `{$entitytypeTable}` GROUP BY identitytype, identitytype2 HAVING nb > 1");
+				if ($result) {
+					while (!$result->EOF) {
+						$nb = $result->fields['nb']-1;
+						$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype = '{$result->fields['identitytype']}' AND identitytype2 = '{$result->fields['identitytype2']}' LIMIT {$nb};\n";
+						$result->MoveNext();
+					}
+				}
+			}
 		}
 		$error = $this->_executeSQL();
 		if($error) return false;
-		if(isset($toUpdate)) {// maj entitytypes_entitytypes
-			$id=0;
-			foreach($toUpdate as $k=>$id) {
-				$etypes = $db->getArray("SELECT identitytype2 FROM `{$entitytypeTable}__oldME` WHERE identitytype = '{$id}'");
-				if(is_array($etypes)) {
-					foreach($etypes as $etype) {
-						$id2=0;
-						if('' != $datas[$typesTable][$etype['identitytype2']]) {
-							$id2 = $datas[$typesTable][$etype['identitytype2']];
-						} else {
-							$id2 = $db->getOne("SELECT t.id FROM `{$typesTable}` as t JOIN `{$typesTable}__oldME` as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype2']}'");
-						}
-						$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$toUpNewId[$k]}', '{$id2}', '*');\n";
-					}
-				}
-				$etypes = $db->getArray("SELECT identitytype FROM `{$entitytypeTable}__oldME` WHERE identitytype2 = '{$id}'");
-				if(!$etypes) continue;
-				foreach($etypes as $etype) {
-					$id2=0;
-					if('' != $datas[$typesTable][$etype['identitytype']]) {
-						$id2 = $datas[$typesTable][$etype['identitytype']];
-					} else {
-						$id2 = $db->getOne("SELECT t.id FROM `{$typesTable}` as t JOIN `{$typesTable}__oldME` as tt ON (t.type=tt.type) WHERE tt.id = '{$etype['identitytype']}'");
-					}
-					$this->_sql[] = "INSERT INTO `{$entitytypeTable}`(identitytype, identitytype2, cond) VALUES ('{$id2}', '{$toUpNewId[$k]}', '*');\n";
-				}
-			}
-			$error = $this->_executeSQL();
-			if($error) return false;
-			// suppression ancien types
-			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
-			$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
-			// suppression des doublons
-			$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `entitytypes_entitytypes` GROUP BY identitytype, identitytype2 HAVING nb > 1");
-			if ($result) {
-				while (!$result->EOF) {
-					$nb = $result->fields['nb']-1;
-					$this->_sql[] = "DELETE FROM `entitytypes_entitytypes` WHERE identitytype = '{$result->fields['identitytype']}' AND identitytype2 = '{$result->fields['identitytype2']}' LIMIT {$nb};\n";
-					$result->MoveNext();
-				}
-			}
-			$error = $this->_executeSQL();
-			if($error) return false;
-		}
 	}
 
 	/**
@@ -1991,6 +2119,9 @@ class DataLogic
 					$fieldType = array_pop(multidimArrayLocate($this->_xmlStruct[$table], $field));
 					if(isset($flipped[$equivalent])) {
 						$action = "CHANGE `{$flipped[$equivalent]}` `{$field}`";
+						if($field != $flipped[$equivalent])
+							$this->_sql[] = "UPDATE `{$tablefield}` SET name = '{$field}' WHERE name = '{$flipped[$equivalent]}' AND class = '{$table}'";
+						unset($this->_fieldsToKeep[$table][$flipped[$equivalent]]);
 					} else {
 						$action = "ADD `{$field}`";
 					}
@@ -2266,6 +2397,6 @@ function multidimArrayLocate($array, $text)
 			if ($key === $text) $arrayResult[$key] = $arrayValue;
 		}
 	}
-	return $arrayResult;
+	return isset($arrayResult) ? $arrayResult : null;
 }
 ?>
