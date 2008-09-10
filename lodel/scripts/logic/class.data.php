@@ -1142,11 +1142,13 @@ class DataLogic
 				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
+				$context['success'] = 1;
 			} elseif(count($this->_changedTables['dropped'])>0 || count($this->_changedTables['added'])>0) {
 				$this->_changedTables['added'] += $this->_classes;
 				$this->_changedTables['added'] = array_unique($this->_changedTables['added']);
 				$context['modifiedtables'] = $this->_changedTables;
 				return 'importxml_checktables';
+				$context['success'] = 1;
 			} elseif(!empty($this->_changedFields)) {
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
@@ -1161,12 +1163,12 @@ class DataLogic
 				$context['error'] =& $error;
 				return 'importxmlmodel';
 			}
-			$this->_updateTypes(false, $error);
-			if($error) {
-				$context['error'] =& $error;
-				return 'importxmlmodel';
-			}
 			if(!isset($context['checktypes'])) {
+				$this->_updateTypes(false, $error);
+				if($error) {
+					$context['error'] =& $error;
+					return 'importxmlmodel';
+				}
 				if(!empty($this->_changedTypes)) {
 					file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 					$context['modifiedoldtypes'] = $this->_changedTypes;
@@ -1320,6 +1322,7 @@ class DataLogic
 	 */
 	private function _cleanDatabase() {
 		global $db;
+		if(!is_array($this->_existingTables)) return;
 		foreach($this->_existingTables as $table=>$k) {
 			if(FALSE !== strpos($table, '__oldME')) {
 				$db->execute("DROP TABLE `{$table}`");
