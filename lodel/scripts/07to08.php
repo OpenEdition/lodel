@@ -381,9 +381,9 @@ class exportfor08
 		}
 		while($res = mysql_fetch_array($req)) {
 			$q .= "UPDATE _PREFIXTABLE_persons SET sortkey = \"".strtolower(utf8_decode($res['g_familyname'])." ".utf8_decode($res['g_firstname']))."\" WHERE id = '".$res['id']."';\n";
-			if (!empty($q) && $err = $this->__mysql_query_cmds($q)) {
-				return $err;
-			}			
+		}
+		if (!empty($q) && $err = $this->__mysql_query_cmds($q)) {
+			return $err;
 		}
 		return "Ok";
 	}
@@ -1781,7 +1781,7 @@ class exportfor08
 				if(mb_detect_encoding($cmd, "auto", TRUE) != "UTF-8") {	
 					$cmd = mb_convert_encoding($cmd, "UTF-8");
 				}
-				$this->requetes .= "\n".$cmd."\n";
+				$this->requetes .= "\n".$cmd;
 				if (!mysql_query($cmd)) {
 					$this->mysql_errors = $cmd."\nL'erreur retournee est : ".mysql_error()."\n";
       				}
@@ -1832,7 +1832,7 @@ class exportfor08
 				$query .= "UPDATE ".$GLOBALS['tp']."entities SET idtype = (SELECT id FROM ".$GLOBALS['tp']."types WHERE type = 'documentannexe-lienfichier') WHERE id = '".$res['id']."';\n";
 			}
 		}
-		$query .= "DELETE FROM _PREFIXTABLE_types WHERE type LIKE 'documentannexe-%';\n";
+		//$query .= "DELETE FROM _PREFIXTABLE_types WHERE type LIKE 'documentannexe-%';\n";
 		if (!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 		} else {
