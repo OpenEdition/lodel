@@ -178,7 +178,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			$fd=opendir(SITEROOT.$dir);
 			if (!$fd) die ("ERROR: cannot open the directory $dir");
 			while ($file=readdir($fd)) {
-				if ($file{0}==".") continue;
+				if ($file{0}=="." || !preg_match("/^(img-\d+(-small\d+)?|\w+-small\d+).(jpg|gif|png)$/i", $file)) continue;
 				$file=SITEROOT.$dir."/".$file;
 				if (is_file($file)) @unlink($file);
 			}
