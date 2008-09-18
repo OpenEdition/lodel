@@ -1086,6 +1086,7 @@ class DataLogic
 			// besoin de parser la base de nouveau pour prendre en compte les éventuelles modifications
 			$this->_getEMTables();
 			$this->_parseSQL();
+			$this->_fieldsToKeep = $meObj->_fieldsToKeep;
 			$this->_changedTables = $meObj->_changedTables;
 			$meObj = null;
 		} elseif($xmlfile) {
@@ -1116,6 +1117,7 @@ class DataLogic
 				return 'importxml_checktables';
 			}
 			if(!empty($this->_changedFields)) {
+				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
@@ -1255,12 +1257,14 @@ class DataLogic
 									foreach($field as $kk=>$fieldName) {
 										if('idgroup' === (string)$fieldName) {
 											$keyGroup = $kk;
-											break;
+										}
+										if('class' === (string)$fieldName) {
+											$keyClass = $kk;
 										}
 									}
 									continue;
 								}
-								if((int)$oldId === (int)$field[$keyGroup]) {
+								if((int)$oldId === (int)$field[$keyGroup] && isset($this->_sqlStruct[$field[$keyClass]])) {
 									$field[$keyGroup] = $this->_changedContent['oldcontent'][$table][$key][0];
 								}
 							}
@@ -1470,7 +1474,12 @@ class DataLogic
 						$value = $db->getOne(lq("SELECT value FROM #_TP_options WHERE name = '{$this->_xmlDatas[$table][$i][2]}'"));
 						$this->_xmlDatas[$table][$i][] = $value ? $value : '';
 						break;
-					} elseif(XMLReader::END_ELEMENT == $reader->nodeType) {
+					} elseif(XMLReader::END_ELEMENT == $reader->nodeType) { 
+						// http://fr2.php.net/manual/fr/class.xmlreader.php#xmlreader.props.hasvalue ?
+						/*
+							$reader->moveToElement();
+							echo $reader->readInnerXML().'<br>';
+						*/
 						$this->_xmlDatas[$table][$i][] = '';
 						break;
 					}
@@ -1780,6 +1789,7 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
+	// TODO : gérer les ids uniques des classes
 	private function _updateDatabase(&$context, &$error) {
 		global $db;
 		$db->execute(lq("CREATE TABLE IF NOT EXISTS `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or dberror();
@@ -1869,6 +1879,7 @@ class DataLogic
 		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
 		$tablefieldsTable = lq('#_TP_tablefields');
 		$objectsTable = lq('#_TP_objects');
+		$classesTable = lq('#_TP_classes');
 		if(is_array($datas)) {
 			foreach($datas as $table=>$content) {
 				$typesFields = join(',', $this->_xmlDatas[$table]['fields']);
