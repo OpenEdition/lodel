@@ -418,17 +418,22 @@ class UsersLogic extends Logic
 	function _sendPrivateInformation(&$context) {
 		global $db;
 		if(!$context['tmppasswd']) return;
-		$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
-		if(!$row) die('Error while getting url and title of site for new user mailing');
-		$context['siteurl'] = str_replace(":80", "", $row['url']);
-		$context['sitetitle'] = $row['title'];
+		if(!empty($GLOBALS['site'])) {
+			$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
+			if(!$row) die('Error while getting url and title of site for new user mailing');
+			$context['siteurl'] = str_replace(":80", "", $row['url']);
+			$context['sitetitle'] = $row['title'];
+		} else { // lodeladmin
+			$context['siteurl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : '');
+			$context['sitetitle'] = 'Lodel administration';
+		}
 		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
 		if(!$email) die('Error while getting your email for new user mailing');
 		require_once 'view.php';
 		$GLOBALS['nodesk'] = true;
 		ob_start();
-		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/", true);
+		insert_template($context, 'users_mail', "", $GLOBALS['home']."../src/lodel/admin/tpl/", true);
 		$body = ob_get_contents();
 		ob_end_clean();
 		unset($context['tmppasswd']);
