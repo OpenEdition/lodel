@@ -32,37 +32,51 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
-<div class="importME">
+<form method="POST">
+
 <IF COND="[#ERROR]">
 	<p class="error">[#ERROR]</p>
 </IF>
 <LOOP NAME="foreach" ARRAY="[#CHANGEDCONTENT]">
-	<LET VAR="act">[#KEY]</LET>
-	<div class="">
+	<LET VAR="action"><IF COND="[#KEY] EQ 'newcontent'">[@ADMIN.IMPORTXML_NEW_TABLECONTENT]<ELSE/>[@ADMIN.IMPORTXML_OLD_TABLECONTENT]</IF></LET>
+	<LET VAR="actiontype">[#KEY]</LET>
+	<div class="importME_<IF COND="'newcontent' EQ [#KEY]">left<ELSE />right</IF>">
 	<LOOP NAME="foreach" ARRAY="[#VALUE]">
-		[#ACT] - [#KEY]
 		<LET VAR="table">[#KEY]</LET>
-		<ul class="importME_<IF COND="'newcontent' == [#ACT]">right<ELSE />left</IF>">
+		<ul class="importXML">
+			<li><strong>[#ACTION] - [#TABLE]</strong></li>
+			<IF COND="'newcontent' EQ [#ACTIONTYPE]">
+				<li><strong>[@ADMIN.IMPORTXML_FIELDS]:</strong> [#VALUE.FIELDS|join(' - ')]</li>
+			</IF>
 			<LOOP NAME="foreach" ARRAY="[#VALUE]">
-				<IF COND="[#VALUE|is_array]">
-					<li><input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACT]][[#KEY]]" />&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp; 
-					<LOOP NAME="foreach" ARRAY="[#VALUE]">
-						[#VALUE]&nbsp;
-					</LOOP>
-					</li>
+				<IF COND="[#KEY] SNE 'fields'">
+					<IF COND="[#VALUE|is_array]">
+						<li>
+							<input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACTIONTYPE]][[#KEY]]"/>&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp;
+							<LOOP NAME="foreach" ARRAY="[#VALUE]">
+								<DO>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]&nbsp;-&nbsp;</DO>
+								<DOLAST>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</DOLAST>
+							</LOOP>
+						</li>
+					<ELSE />
+						<li><input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACTIONTYPE]][[#KEY]]"/>&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp;[#VALUE|join(' - ')]</li>
+					</IF>
 				</IF>
 			</LOOP>
 		</ul>
 	</LOOP>
 	</div>	
 </LOOP>
-</div>
+<div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checkcontent" value="1" />
-<input type="submit" />
+<fieldset>
+	<input class="button" type="submit" />&nbsp;&nbsp;
+	<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+</fieldset>
+</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">

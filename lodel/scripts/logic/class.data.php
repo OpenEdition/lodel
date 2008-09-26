@@ -1068,7 +1068,7 @@ class DataLogic
 			}
 			$up = true;
 		}
-		if(file_exists('CACHE/require_caching/ME.obj')) { // on a déjà parsé le XML
+		if(file_exists('CACHE/require_caching/ME.obj') && (isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']))) { // on a déjà parsé le XML
 			ob_start();
 			require 'CACHE/require_caching/ME.obj';
 			$meObj = unserialize(base64_decode($meObj));
@@ -1144,18 +1144,14 @@ class DataLogic
 				file_put_contents('CACHE/require_caching/ME.obj', '<?php $meObj = "'.base64_encode(serialize($this)).'"; ?>', LOCK_EX);
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
-				$context['success'] = 1;
 			} elseif(count($this->_changedTables['dropped'])>0 || count($this->_changedTables['added'])>0) {
 				$this->_changedTables['added'] += $this->_classes;
 				$this->_changedTables['added'] = array_unique($this->_changedTables['added']);
 				$context['modifiedtables'] = $this->_changedTables;
 				return 'importxml_checktables';
-				$context['success'] = 1;
 			} elseif(!empty($this->_changedFields)) {
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
-// 			} elseif(isset($up)) {
-				$context['success'] = 1;
 			}
 		}
 
@@ -1278,6 +1274,7 @@ class DataLogic
 		if(!empty($this->_changedFields)) {
 			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($this->_changedFields as $table=>&$value) {
+				if(!is_array($value['dropped'])) continue;
 				foreach($value['dropped'] as $k=>&$v) {
 					if(!isset($v['tablefieldgroups'])) continue;
 					$v['tablefieldgroups'] = $this->_xmlDatas[$tablefieldgroups];
@@ -1292,7 +1289,7 @@ class DataLogic
 	 */
 	private function _checkContents() {
 		global $db;
-		foreach(array('tablefieldgroups', 'options', 'optiongroups', 'internalstyles', 'characterstyles') as $table) {
+		foreach(array($GLOBALS['tp'].'tablefieldgroups', $GLOBALS['tp'].'options', $GLOBALS['tp'].'optiongroups', $GLOBALS['tp'].'internalstyles', $GLOBALS['tp'].'characterstyles') as $table) {
 			$tmpXmlDatas = $this->_xmlDatas[$table];
 			if(!$tmpXmlDatas) continue;
 			$tmpSqlDatas = array();
@@ -1311,10 +1308,12 @@ class DataLogic
 
 			$diffs = array_diff_all($tmpXmlDatas, $tmpSqlDatas);
 			if(!isset($diffs['dropped'])) continue;
+
 			foreach($diffs['dropped'] as $k=>$diff) {
 				$oldContent[$table][] = $tmpSqlDatas[$k];
 			}
 			$newContent[$table] = $tmpXmlDatas;
+			$newContent[$table]['fields'] = $this->_xmlDatas[$table]['fields'];
 		}
 		$this->_changedContent = array('newcontent'=>(isset($newContent) ? $newContent : ''), 'oldcontent'=>(isset($oldContent) ? $oldContent : array()));
 		return (is_array($this->_changedContent['newcontent']) ? TRUE : FALSE);
@@ -1530,7 +1529,7 @@ class DataLogic
 			}
 			// charset, engine, auto_inc..
 			$this->_sqlStruct[$table]['tableOptions'] = $matches[2];
-			if(!in_array($table, $this->_recordedTables) || (isset($this->_classes) && !in_array($table, $this->_classes))) {
+			if(!$this->_tables[$table] && 0 !== strpos($table, 'entities_') && (!in_array($table, $this->_recordedTables) || (isset($this->_classes) && !in_array($table, $this->_classes)))) {
 				// table du ME qu'on a changé de nom ou supprimée
 				$this->_changedTables['dropped'][] = $table;
 				continue;
@@ -1542,6 +1541,7 @@ class DataLogic
 		if(!empty($this->_changedFields)) {
 			$tablefieldgroups = lq('#_TP_tablefieldgroups');
 			foreach($this->_changedFields as $table=>&$value) {
+				if(!is_array($value['dropped'])) continue;
 				foreach($value['dropped'] as $k=>&$v) {
 					if(isset($v['tablefieldgroups'])) $v['tablefieldgroups'] = $this->_xmlDatas[$tablefieldgroups];
 				}
@@ -1567,17 +1567,17 @@ class DataLogic
 			unset($this->_changedFields[$table]);
 			return;
 		}
-		$escape = true;
-		if(is_array($this->_changedFields[$table]['added'])) {
+		$escapeAdd = $escapeDrop = true;
+		if(is_array($this->_changedFields[$table]['added']) && !empty($this->_changedFields[$table]['added'])) {
 			$fields = array();
 			$fields = $this->_changedFields[$table]['added'];
 			unset($this->_changedFields[$table]['added']);
 			foreach($fields as $k=>$field) {
 				$this->_changedFields[$table]['added'][] = $fields[$k];
 			}
-			$escape = false;
+			$escapeAdd = false;
 		}
-		if(is_array($this->_changedFields[$table]['dropped'])) {
+		if(is_array($this->_changedFields[$table]['dropped']) && !empty($this->_changedFields[$table]['dropped'])) {
 			$fields = array();
 			$fields = $this->_changedFields[$table]['dropped'];
 			unset($this->_changedFields[$table]['dropped']);
@@ -1597,14 +1597,15 @@ class DataLogic
 				}
 				$this->_changedFields[$table]['dropped'][] = empty($idgroup) ? $fields[$k] : array('value'=>$fields[$k], 'tablefieldgroups'=>$this->_xmlDatas[$tablefieldgroups]);
 			}
-			$escape = false;
+			$escapeDrop = false;
 		}
-		if($escape) return;
+		if($escapeAdd || $escapeDrop) return;
 		foreach($this->_changedFields[$table]['added'] as $k=>$field) {
 			if(!is_array($field)) {
 				unset($this->_changedFields[$table]['added'][$k]);
 				continue;
 			}
+			if(!is_array($this->_changedFields[$table]['dropped'])) continue;
 			foreach($field as $name=>$type) {
 				$arr = $arrAdd = array();
 				if($arr = multidimArrayLocate($this->_changedFields[$table]['dropped'], $name)) {
@@ -1760,10 +1761,6 @@ class DataLogic
 			$tmpSql .= " ) ".$tableOptions;
 			$this->_sql[] = $tmpSql;
 			if(isset($this->_xmlDatas[$table])) {
-				// on garde une copie au cas où !
-// 				if(!isset($this->_existingTables[$table.'__oldME']))
-// 					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
-// 				$this->_sql[] = "DELETE FROM `{$table}`;\n";
 				$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
 				$tmpSql = "INSERT INTO `{$table}` (".join(',', $this->_xmlDatas[$table]['fields']).") VALUES ";
 				foreach($this->_xmlDatas[$table] as $i=>$fields) {
@@ -1789,11 +1786,9 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
-	// TODO : gérer les ids uniques des classes
 	private function _updateDatabase(&$context, &$error) {
 		global $db;
 		$db->execute(lq("CREATE TABLE IF NOT EXISTS `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or dberror();
-		$objectsClasses = array('types'=>'', 'entrytypes'=>'', 'persontypes'=>'', 'classes'=>'');
 		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
 		$entitiesTable = lq('#_TP_entities');
 		$typesTable = lq('#_TP_types');
@@ -2022,6 +2017,7 @@ class DataLogic
 					case 2: $table = $personsTable; break;
 				}
 				$oldTypeArr = $db->getArray("SELECT id, type FROM `{$type}__oldME` ORDER BY id");
+				if(!$oldTypeArr) continue;
 				$oldMETable = ($table == $entitiesTable) ? $entitiesTable.'__oldME' : $table;
 				$objectTableName = ($table == $entitiesTable) ? 'types' : str_replace($GLOBALS['tp'], '', $type);
 				foreach($oldTypeArr as $k=>$oldType) {
@@ -2106,6 +2102,15 @@ class DataLogic
 						$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype = '{$result->fields['identitytype']}' AND identitytype2 = '{$result->fields['identitytype2']}' LIMIT {$nb};\n";
 						$result->MoveNext();
 					}
+				}
+			}
+			// class id unique check
+			$classArr = $db->getArray("SELECT id FROM `{$GLOBALS['tp']}classes` ORDER BY id");
+			foreach($classArr as $class) {
+				$object = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$class}'");
+				if($class != $objectTableName) {
+					$newID = uniqueid('classes');
+					$this->_sql[] = "UPDATE `{$GLOBALS['tp']}class` SET id = '{$newID}' WHERE id = '{$class}'";
 				}
 			}
 		}

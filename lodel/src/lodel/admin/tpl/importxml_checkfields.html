@@ -28,24 +28,24 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@ADMIN.TITLE_IMPORTXML_CHECKTABLES]</title>
+<title>[@ADMIN.TITLE_IMPORTXML_CHECKFIELDS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
-<div class="importME">
 <IF COND="[#ERROR]">
 	<p class="error">[#ERROR]</p>
 </IF>
+
+<form method="POST">
+
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDFIELDS]">
 	<LET VAR="table">[#KEY]</LET>
-	<div class="">
 	<LOOP NAME="foreach" ARRAY="[#VALUE]">
-		[#TABLE]
-		<ul class="importME_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
-			<LET VAR="act">[#KEY]</LET>
-			[#ACT]
+		<div class="importME_<IF COND="'added' EQ [#KEY]">left<ELSE />right</IF>">
+		<ul class="importXML">
+			<li><strong>[#TABLE]</strong></li>
 			<IF COND="[#VALUE|is_array] AND ![#VALUE|empty]">
+				<LET VAR="act">[#KEY]</LET>
 				<LOOP NAME="foreach" ARRAY="[#VALUE]">
 					<LET VAR="kkey">[#KEY]</LET>
 					<LOOP NAME="foreach" ARRAY="[#VALUE]">
@@ -71,15 +71,19 @@
 				<li>[@ADMIN.IMPORTXML_NO_ENTRY_FOUND]</li>
 			</IF>
 		</ul>
-	</LOOP>
 	</div>
+	</LOOP>
 </LOOP>
-</div>
+<div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checkfields" value="1" />
-<input type="submit" />
+<fieldset>
+	<input class="button" type="submit" />&nbsp;&nbsp;
+	<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+</fieldset>
+</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">

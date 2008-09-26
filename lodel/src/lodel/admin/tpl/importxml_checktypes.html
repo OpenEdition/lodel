@@ -34,34 +34,41 @@
 	<IF COND="[#ERROR]">
 		<p class="error">[#ERROR]</p>
 	</IF>
-<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
-<div class="importME">
+<form method="POST">
+<div class="importME_left">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDOLDTYPES]">
-	table '[#KEY]'
-	<table class="importME_left">
+	<ul class="importXML">
+		<li><strong>'[#KEY]'</strong></li>
 		<LET VAR="act">[#KEY]</LET>
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<LET ARRAY="fieldname">[#VALUE|array_values]</LET>
 			<LET ARRAY="fieldidtype">[#VALUE|array_keys]</LET>
-			<tr><td><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="5" /> - [#FIELDNAME.0]</td></tr>
+			<li><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="5" /> - [#FIELDNAME.0]</li>
 		</LOOP>
-	</table>
-</LOOP>
-Liste des types disponibles par classe (ID => TYPE) :<br />
-<LOOP NAME="foreach" ARRAY="[#MODIFIEDNEWTYPES]">
-	classe '[#KEY]' :
-	<table class="importME_right">
-		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<tr><td>[#VALUE.ID] => [#VALUE.TYPE]</td></tr>
-		</LOOP>
-	</table>
+	</ul>
 </LOOP>
 </div>
+<div class="importME_right">
+[@ADMIN.IMPORTXML_TYPESAVAILABLE]:<br />
+<LOOP NAME="foreach" ARRAY="[#MODIFIEDNEWTYPES]">
+	<ul class="importXML">
+		<li><strong>[@ADMIN.IMPORTXML_CLASS] '[#KEY]' :</strong></li>
+		<LOOP NAME="foreach" ARRAY="[#VALUE]">
+			<li>[#VALUE.ID] => [#VALUE.TYPE]</li>
+		</LOOP>
+	</ul>
+</LOOP>
+</div>
+<div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checktypes" value="1" />
-<input type="submit" />
+<fieldset>
+<input class="button" type="submit" />&nbsp;&nbsp;
+<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+</fieldset>
+</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">

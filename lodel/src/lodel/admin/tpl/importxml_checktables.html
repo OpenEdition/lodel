@@ -34,23 +34,28 @@
 	<IF COND="[#ERROR]">
 		<p class="error">[#ERROR]</p>
 	</IF>
-<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="POST">
-<div class="importME">
+<form method="POST">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDTABLES]">
-	<table class="importME_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
-		<LET VAR="act">[#KEY]</LET>
-		[#ACT]
+	<div class="importME_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
+		<LET VAR="action">[#KEY]</LET>
+		<ul class="importXML">
+		<li><strong><IF COND="[#ACTION] EQ 'dropped'">[@ADMIN.IMPORTXML_DROPPEDTABLE]<ELSE/>[@ADMIN.IMPORTXML_ADDEDTABLE]</IF></strong></li>
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<tr><td><input type="text" value="[#KEY]" name="data[[#ACT]][[#VALUE]]" size="5" /> - [#VALUE]</td></tr>
+			<li><input type="text" value="[#KEY]" name="data[[#ACTION]][[#VALUE]]" size="5" /> - [#VALUE]</li>
 		</LOOP>
-	</table>
+		</ul>
+	</div>
 </LOOP>
-</div>
+<div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checktables" value="1" />
-<input type="submit" />
+<fieldset>
+<input class="button" type="submit" />&nbsp;&nbsp;
+<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+</fieldset>
+</div>
 </form>
 
 <MACRO NAME="CLOSE_HTML">
