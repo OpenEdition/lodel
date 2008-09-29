@@ -333,7 +333,7 @@ function mouseUp(ev){
 		}
 		var xhr = getXMLHttpRequest();
 		if(xhr) {
-			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php');
+			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', false);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.send('tabids='+tabDiffIds+'&site=<?php echo $GLOBALS[site]; ?>');
 			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') {
@@ -376,7 +376,7 @@ function mouseDown(ev){
 			dragHelper = document.createElement('DIV');
 			document.body.appendChild(dragHelper);
 			dragHelper.style.cssText = 'position:absolute;display:none;';
-		}, 1);
+		}, 10);
 	document.onmousemove = mouseMove;
 	document.onmousedown = mouseDown;
 	document.onmouseup   = mouseUp;
