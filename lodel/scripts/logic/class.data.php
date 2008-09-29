@@ -2009,6 +2009,15 @@ class DataLogic
 			}
 			$error = $this->_executeSQL();
 			if($error) return false;
+			// class id unique check
+			$classArr = $db->getArray("SELECT id FROM `{$GLOBALS['tp']}classes` ORDER BY id");
+			foreach($classArr as $class) {
+				$object = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$class['id']}'");
+				if('classes' != $object) {
+					$newID = uniqueid('classes');
+					$this->_sql[] = "UPDATE `{$GLOBALS['tp']}classes` SET id = '{$newID}' WHERE id = '{$class['id']}'";
+				}
+			}
 		} elseif(FALSE === $datas) {
 			foreach(array(0=>$typesTable, 1=>$entrytypesTable, 2=>$persontypesTable) as $key=>$type) {
 				switch($key) {
@@ -2107,10 +2116,10 @@ class DataLogic
 			// class id unique check
 			$classArr = $db->getArray("SELECT id FROM `{$GLOBALS['tp']}classes` ORDER BY id");
 			foreach($classArr as $class) {
-				$object = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$class}'");
-				if($class != $objectTableName) {
+				$object = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$class['id']}'");
+				if('classes' != $object) {
 					$newID = uniqueid('classes');
-					$this->_sql[] = "UPDATE `{$GLOBALS['tp']}class` SET id = '{$newID}' WHERE id = '{$class}'";
+					$this->_sql[] = "UPDATE `{$GLOBALS['tp']}classes` SET id = '{$newID}' WHERE id = '{$class['id']}'";
 				}
 			}
 		}
