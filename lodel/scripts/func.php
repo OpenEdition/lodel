@@ -128,12 +128,12 @@ function clean_request_variable(&$var, $key='')
 		$filter = new HTMLPurifier($config);
   	}
 
-// 	if (is_array($var)) {
+	if (is_array($var)) {
 // 		#print_r($var);
-// 		foreach(array_keys($var) as $k) {
-// 			clean_request_variable($var[$k]);
-// 		}
-// 	} else {
+		foreach(array_keys($var) as $k) {
+			clean_request_variable($var[$k]);
+		}
+	} else {
 		$var = trim(magic_stripslashes($var));
 		// htmlpurifier n'est pas encore compatible avec les namespaces, chiant pour les balises r2r:ml
 		$var = strtr($var, array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>'));
@@ -146,7 +146,7 @@ function clean_request_variable(&$var, $key='')
 		// le process nettoie un peu trop : remplace les br fermés par des br ouverts : document plus valide..
 		$var = str_replace("<br>", "<br />", $var);
 		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);*/
-//   	}
+  	}
 }
 
 function magic_addslashes($var) 
