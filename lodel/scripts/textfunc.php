@@ -1339,7 +1339,7 @@ function HTML2XML($str, $reverse=false){
 		"&hearts;" => "&#9829;",
 		"&diams;" => "&#9830;"
 		);
-	$str = $reverse ? ( str_replace(array_values($replace),array_keys($replace),$str) ) : ( str_replace(array_keys($replace),array_values($replace),$str) );
+	$str = $reverse ? strtr($str, array_flip($replace)) : strtr($str, $replace);
 	return $str;
 }
 
