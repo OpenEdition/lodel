@@ -242,22 +242,33 @@ function mysqldatetime($s, $type = 'datetime')
 		$timestamp = mktime($arr['tm_hour'], $arr['tm_min'], $arr['tm_sec'], $arr['tm_mon'] + 1, $arr['tm_mday'], 1900 + $arr['tm_year']);
 
 	}	else {
-		$date = mysqldate($s, $type);
+		if($type == 'datetime') {
+			$datetime = explode(' ', $s);
+			$date = mysqldate($datetime[0], 'date');
+			$time = mysqldate($datetime[1], 'time');
+			if($date == 'bad date' || $time == 'bad date')
+				return $type;
+			if(!$date) $date = date("Y-m-d");
+			if(!$time) $time = date("H:i:s");
+			return trim($date.' '.$time);
+		} else {
+			$date = mysqldate($s, $type);
 
-		if($date == "bad date")
-			return $type;
-		elseif($type == 'time' && $date)
-			return $date;
-		elseif(!$date && $type != 'time')
-			$date = date("Y-m-d");
-		elseif(!$date)
-			$date = date("H:i:s");
-
-		list ($y, $m, $d) = explode('-', $date);
+			if($date == "bad date")
+				return $type;
+			elseif($type == 'time' && $date)
+				return $date;
+			elseif(!$date && $type != 'time')
+				$date = date("Y-m-d");
+			elseif(!$date)
+				$date = date("H:i:s");
+		}
 
 		if ($type == "date") {
 			return $date;
 		}
+
+		list ($y, $m, $d) = explode('-', $date);
 
 		if (preg_match("/(\d+)[:hH](?:(\d+)(?:[:](\d+))?)?\s*$/", $s, $result)) { // time
 			$timestamp = mktime($result[1], $result[2], $result[3], $m, $d, $y);
@@ -265,7 +276,7 @@ function mysqldatetime($s, $type = 'datetime')
 				$time = sprintf("%02d:%02d:%02d", $result[1], $result[2], $result[3]);
 			}
 		}	else {
-			$arr = localtime();
+			$arr = localtime(time(), 1);
 			$timestamp = mktime($arr['tm_hour'], $arr['tm_min'], $arr['tm_sec'], $m, $d, $y);
 			if ($timestamp <= 0) { // no algebra
 				$time = sprintf("%02d:%02d:%02d", $arr['tm_hour'], $arr['tm_min'], $arr['tm_sec']);
