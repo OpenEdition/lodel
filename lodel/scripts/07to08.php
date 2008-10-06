@@ -707,7 +707,7 @@ class exportfor08
 					if(mysql_num_rows($resu) > 1) {
 						while($r = mysql_fetch_array($resu)) {
 							// on récupère l'idtype après migration de l'entrée déjà créée
-							if(!$resulta = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "persons WHERE g_familyname = \"".$res['nomfamille']."\" OR g_familyname = \"".utf8_encode($res['nomfamille'])."\"")) {
+							if(!$resulta = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "persons WHERE (g_familyname = \"".$res['nomfamille']."\" OR g_familyname = \"".utf8_encode($res['nomfamille'])."\") AND (g_firstname = \"".$res['prenom']."\" OR g_firstname = \"".utf8_encode($res['prenom'])."\")")) {
 								return mysql_error();
 							}
 							unset($idtype);
@@ -744,7 +744,7 @@ class exportfor08
 			}
 			// on s'attaque à l'ordre d'affichage des entités
 			// articles en premiers, regroupements et autres rubriques après
-			
+			/*
 			// on récupère chaque partie du site
 			if(!$result = mysql_query("SELECT DISTINCT idparent FROM ".$GLOBALS['tp']."entities;")) {
 				return mysql_error();
@@ -786,6 +786,7 @@ class exportfor08
 			if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 				return $err;
 			}
+			*/
 		}
 		return "Ok";
 	}
