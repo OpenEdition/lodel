@@ -160,7 +160,7 @@
 		<DO>
 		<IF COND="[#IMPORT] eq '1'"> 		
 			<IF COND="[#LODELUSER.REDACTOR]">	
-				<li><a onClick="preserveDatas();" href="oochargement.php?identity=[#ID]&amp;idparent=[#IDPARENT]">[@EDITION.RELOAD_FILE]</a></li>
+				<li><a onClick="preserveDatas();" href="oochargement.php?identity=[#ID]&amp;idparent=[#IDPARENT]&amp;reload=1">[@EDITION.RELOAD_FILE]</a></li>
 			<ELSE/>
 				<li><span class="texte_intitule">[@EDITION.RELOAD_FILE]</span><br />
 				<span class="texte_info">[@EDITION.MOVE_INFO_ACCESS_REDACTOR]</span></li>

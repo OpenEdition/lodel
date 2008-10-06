@@ -54,6 +54,7 @@ require_once 'xmlimport.php';
 require_once 'class.checkImportHandler.php';
 $task              = gettask($idtask);
 $context['idtask'] = $idtask;
+$context['reload'] = intval($_GET['reload']);
 gettypeandclassfromtask($task, $context);
 
 $textorig = $text = file_get_contents($task['fichier']);

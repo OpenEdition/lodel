@@ -61,6 +61,7 @@ $context['identity']  = $therequest['identity'] ? intval($therequest['identity']
 $context['idtask']    = $idtask = intval($therequest['idtask']);
 $context['idtype']    = intval($therequest['idtype']);
 $context['lodeltags'] = intval($therequest['lodeltags']);
+$context['reload']    = intval($therequest['reload']);
 
 if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 	header("location: index.php?id=". $context['idparent']);
@@ -177,7 +178,7 @@ if ($client->error_message) {
 		require_once 'taskfunc.php';
 		$idtask = maketask("Import $file1_name", 3, $row);
 
-		header("Location: checkimport.php?idtask=". $idtask);
+		header("Location: checkimport.php?reload=".intval($context['reload'])."&idtask=". $idtask);
 		return;
 	} while (0); // exceptions
 }

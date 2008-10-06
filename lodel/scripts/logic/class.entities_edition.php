@@ -300,13 +300,13 @@ class Entities_EditionLogic extends GenericLogic
 				die("ERROR: entity is locked. No operation is allowed");
 			}
 			// possibly document reloading
-			if($vo->status>-64) {
+			if($context['reload']) {
 				// let's deal with document reloading problem : PDF file and entries disapeared :
 				$daotablefields = &getDAO("tablefields");
-				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");			
+				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");
 				foreach($Filefields as $ffield) {
 					$gdaoaf = &getGenericDAO ($class, "identity");
-					$tmpfile = $gdaoaf->getById($id, $ffield->name); 			
+					$tmpfile = $gdaoaf->getById($id, $ffield->name);
 					$fieldname = $ffield->name;
 					if($context['data'][$ffield->name] == 'deleted') {
 						$context['data'][$ffield->name] = '';
