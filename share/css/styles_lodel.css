@@ -83,16 +83,7 @@ table{
 	border-collapse: collapse;
 }
 
-div.importME {
-	position:relative;
-	padding:2em;
-}
-
-div.importME ul {
-	clear:both;
-	position:relative;
-}
-
+/* Affichage des alias côté interface */
 div.alias {
 	position:relative;
 	margin-top:7em;
@@ -100,14 +91,33 @@ div.alias {
 span.titre_alias {
 	color: #6b6b6b;
 }
-
-ul.importME_left {
-	border: solid 1px red;
-/* 	float:left; */
+/* Import xml du ME */
+div.importME_right ul, div.importME_left ul {
+	clear:both;
+	position:relative;
 }
-ul.importME_right {
-	border: solid 1px blue;
-/* 	float:right; */
+div.importMEXML_action {
+	clear:both;
+	position:relative;
+	padding:2em;
+}
+div.importME_right {
+	padding-top:1em;
+	padding-right:1em;
+	float:right;
+	min-width:45%;
+	max-width:45%;
+}
+div.importME_left {
+	padding-top:1em;
+	padding-left:1em;
+	float:left;
+	min-width:45%;
+	max-width:45%;
+}
+ul.importXML {
+	margin-top:2em;
+	margin-bottom:2em;
 }
 
 th{
