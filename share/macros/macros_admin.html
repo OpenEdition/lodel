@@ -107,7 +107,8 @@
 		<LET VAR="table">persons</LET>
 		<LET VAR="field">sortkey</LET>
 		<LOOP NAME="alphabetSpec">
-			<LOOP NAME="listpersonnesfull" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64 AND upper(substring(sortkey,1,1)) = '[#LETTRE]'">
+			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
+			<LOOP NAME="listpersonnesfull" TABLE="persons" ORDER="g_familyname,g_firstname" WHERE="idtype='[#TYPE.ID]' AND status gt -64 AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'">
 				<BEFORE>
 					<h2 id="[#LETTRE]">
 						<a href="#alphabet">[#LETTRE]</a>
