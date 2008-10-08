@@ -736,14 +736,16 @@ function loop_alphabetSpec($context, $funcname)
 		call_user_func("code_do_$funcname", $context);
 	}
 	
-	foreach($lettres as $lettre) {
+	// bug PHP : si on ne passe le tableau en référence, il modifie la derniere valeur du tableau et vire les références !!!
+	foreach($lettres as &$lettre) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
 			$context['nbresults'] = $db->getOne($sql.$context['lettre']);
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
-	foreach($lettres as $lettre) {
+
+	foreach($lettres as &$lettre) {
 		if($lettre['l'] == '') continue;
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
