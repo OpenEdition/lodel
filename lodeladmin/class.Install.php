@@ -887,9 +887,10 @@ class Install {
 
 		@include($this->lodelconfig);
 		$table_charset = $this->find_mysql_db_charset($database);
-		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
-			$filename = str_replace('init-translations.sql', 'init-translations_utf8.sql', $filename);
-		}
+		// commenté par P.A. le 09/10/08, UTF8 uniquement.
+// 		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
+// 			$filename = str_replace('init-translations.sql', 'init-translations_utf8.sql', $filename);
+// 		}
 		$sqlfile=preg_replace('/#_M?TP_/',$tableprefix ,
 				file_get_contents($filename));
 		$sqlfile=str_replace('_CHARSET_', $table_charset , $sqlfile);

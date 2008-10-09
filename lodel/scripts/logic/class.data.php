@@ -1886,7 +1886,7 @@ class DataLogic
 					case $entrytypesTable: $parentTable = $entriesTable; break;
 					case $persontypesTable: $parentTable = $personsTable; break;
 				}
-				$objectType = ($parentTable == $entitiesTable) ? 'types' : $parentTable;
+				$objectType = ($parentTable == $entitiesTable) ? $typesTable : $parentTable;
 				$oldMETable = ($parentTable == $entitiesTable) ? $entitiesTable.'__oldME' : $parentTable;
 				foreach($before as $k=>$val) {
 					$idtype=0;
@@ -1965,7 +1965,7 @@ class DataLogic
 					$class = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$type['id']}'");
 					if($class != $objectTableName) {
 						$newID = uniqueid($objectTableName);
-						$this->_sql[] = "UPDATE `{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
+						$this->_sql[] = "UPDATE `{$GLOBALS['tp']}{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
 						if('types' == $objectTableName) {
 							$toUpdate[] = $type['id'];
 							$toUpNewId[] = $newID;
@@ -2028,7 +2028,6 @@ class DataLogic
 				$oldTypeArr = $db->getArray("SELECT id, type FROM `{$type}__oldME` ORDER BY id");
 				if(!$oldTypeArr) continue;
 				$oldMETable = ($table == $entitiesTable) ? $entitiesTable.'__oldME' : $table;
-				$objectTableName = ($table == $entitiesTable) ? 'types' : str_replace($GLOBALS['tp'], '', $type);
 				foreach($oldTypeArr as $k=>$oldType) {
 					$ids = array();
 					$typeArr = $db->getRow("SELECT id FROM `{$type}` WHERE type = '{$oldType['type']}'");
@@ -2061,7 +2060,7 @@ class DataLogic
 					$class = $db->getOne("SELECT class FROM `{$objectsTable}` WHERE id = '{$type['id']}'");
 					if($class != $objectTableName) {
 						$newID = uniqueid($objectTableName);
-						$this->_sql[] = "UPDATE `{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
+						$this->_sql[] = "UPDATE `{$GLOBALS['tp']}{$objectTableName}` SET id = '{$newID}' WHERE id = '{$type['id']}'";
 						if('types' == $objectTableName) {
 							$toUpdate[] = $type['id'];
 							$toUpNewId[] = $newID;
