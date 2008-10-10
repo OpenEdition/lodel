@@ -1307,13 +1307,35 @@ class Parser
 		$this->arr[$this->ind + 2] = preg_replace("/^(\s*\n)/", "", $this->arr[$this->ind + 2]);
 	}
 
+	// bug [#4454]
+	function _checkSplit(&$arr, $nbArr)
+	{
+		for($i=2;$i<$nbArr;$i+=3) {
+			$nbQuotes = substr_count($arr[$i], '"');
+			if(0 === $nbQuotes) {
+				$nbQuotes = substr_count($arr[$i], "'");
+				if(0 === $nbQuotes) continue;
+			}
+
+			if($nbQuotes % 2) {
+				$pos = strpos($arr[$i+1], '>');
+				$arr[$i] .= '>'.substr($arr[$i+1], 0, $pos);
+				$arr[$i+1] = substr_replace($arr[$i+1], '', 0, $pos+1);
+			}
+		}
+	}
+
 	function _split_file($contents, $action = 'insert')
 	{
 		$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 
+		$nbArr = count($arr);
+		// repair bad splitting
+		$this->_checkSplit($arr, $nbArr);
+
 		// parse the variables
 		$this->parse_variable($arr[0]);
-		$nbArr = count($arr);
+		
 		for ($i = 3; $i < $nbArr; $i += 3) {
 			$this->parse_variable($arr[$i]); // parse the content
 		}
