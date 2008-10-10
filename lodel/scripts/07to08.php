@@ -683,13 +683,11 @@ class exportfor08
 				unset($query);
 			}			
 			// on récupère les équivalences entre les IDs 0.7 et 0.8
-			if(!$resultat = mysql_query("SELECT t.id, t.titre, tp.id as tid, tp.title as title FROM ".$GLOBALS['tp']."typepersonnes__old as t JOIN ".$GLOBALS['tp']."persontypes as tp ON titre = title")) {
-				return mysql_error();
+			if(!$resultat = mysql_query("SELECT t.id, t.titre, tp.id as tid, tp.title as title FROM " . $GLOBALS['tp'] . "typepersonnes__old as t, " . $GLOBALS['tp'] . "persontypes as tp where replace(titre, ' ', '%') LIKE replace(replace(title, ' ', '%'), 's', '%')")) {
+				die(mysql_error());
 			}
 			while($rtypes = mysql_fetch_array($resultat)) { 
-				$type07[] = $rtypes['id'];
-				$type08[] = $rtypes['tid'];
-				$titre[] = $rtypes['titre'];
+				$type08[$rtypes['id']] = $rtypes['tid'];
 			}
 			// puis on travaille avec
 			if(!$result = mysql_query("SELECT * FROM ".$GLOBALS['tp']."personnes__old")) {
@@ -705,22 +703,21 @@ class exportfor08
 					}
 					// plus d'un idtype par personne ? ok faut donc créer une entrée correspondante
 					if(mysql_num_rows($resu) > 1) {
+						// on récupère l'idtype après migration de l'entrée déjà créée
+						if(!$resulta = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "persons WHERE (g_familyname = \"".$res['nomfamille']."\" OR g_familyname = \"".utf8_encode($res['nomfamille'])."\") AND (g_firstname = \"".$res['prenom']."\" OR g_firstname = \"".utf8_encode($res['prenom'])."\")")) {
+							die(mysql_error());
+						}
+						unset($idtype);
+						while($resr = mysql_fetch_array($resulta)) {
+							$idtype[] = $resr['idtype'];
+						}
 						while($r = mysql_fetch_array($resu)) {
-							// on récupère l'idtype après migration de l'entrée déjà créée
-							if(!$resulta = mysql_query("SELECT DISTINCT idtype FROM " . $GLOBALS['tp'] . "persons WHERE (g_familyname = \"".$res['nomfamille']."\" OR g_familyname = \"".utf8_encode($res['nomfamille'])."\") AND (g_firstname = \"".$res['prenom']."\" OR g_firstname = \"".utf8_encode($res['prenom'])."\")")) {
-								return mysql_error();
-							}
-							unset($idtype);
-							while($resr = mysql_fetch_array($resulta)) {
-								$idtype[] = $resr['idtype'];
-							}
-							
 							foreach($type07 as $k=>$t) {// c'est parti pour chaque type on va tester si une entrée correspond
-								if(!in_array($type08[$k], $idtype)) { // n'existe pas encore .. on la crée
+								if(!in_array($type08[$r['idtype']], $idtype)) { // n'existe pas encore .. on la crée
 
 									$id = $this->__insert_object('persons');
 
-									$query .= "INSERT INTO _PREFIXTABLE_persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$k]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');\n";
+									$query .= "INSERT INTO _PREFIXTABLE_persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$r['idtype']]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');\n";
 
 									$query .= "INSERT INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\");\n";
 
