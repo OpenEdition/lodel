@@ -93,7 +93,7 @@
 				[#LETTRE]&nbsp;
 			</IF>			
 		<ELSE />
-			<IF COND="[#LISTALL] OR [#NBRESULTS] GT 0">
+			<IF COND="[#NBRESULTS] GT 0">
 				<a href="[#CURRENTURL|reg_replace('/[&?](amp;)?offset_\w+=[^&]+/', '')|reg_replace('/[&?](amp;)?letter=[^&]+/', '')|reg_replace('/[&?](amp;)?clearcache=[^&]+/', '')]&amp;letter=[#LETTRE|urlencode]">[#LETTRE]</a>
 			<ELSE />
 				[#LETTRE]&nbsp;
@@ -152,7 +152,7 @@
 				</IF>
 				<div class="entityIcons">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="persontypes">
 				</div>
 				<div class="document">
 					<span class="titre_document">[#G_FIRSTNAME] <span class="familyName">[#G_FAMILYNAME]</span></span>&nbsp;
@@ -780,7 +780,7 @@ cp_[#NAME].writeDiv();
                        <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
 			|&nbsp;<a href="translation.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
 	               <ELSE/>
-			|&nbsp;<span class="inactif>[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
+			|&nbsp;<span class="inactif">[@COMMON.MODIFY]</span>&nbsp;|&nbsp;
 	               </IF>
 	               <IF COND="[#STATUS] lt 32">
 				<a href="translation?delete=1&id=[#ID]">[@COMMON.DELETE]</a>&nbsp;|
