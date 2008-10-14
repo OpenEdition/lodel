@@ -257,7 +257,7 @@ class exportfor08
 			$query = '';
 			foreach ($this->old_tables as $table07) {
 				if (substr($table07, -5) != '__old') {
-					$query .= "RENAME TABLE _PREFIXTABLE_$table07 TO _PREFIXTABLE_$table07" . "__old;\n";
+					$query .= "RENAME TABLE $table07 TO $table07" . "__old;\n";
 				}
 			}
 			if ($err = $this->__mysql_query_cmds($query)) {
@@ -712,28 +712,26 @@ class exportfor08
 							$idtype[] = $resr['idtype'];
 						}
 						while($r = mysql_fetch_array($resu)) {
-							foreach($type07 as $k=>$t) {// c'est parti pour chaque type on va tester si une entrée correspond
-								if(!in_array($type08[$r['idtype']], $idtype)) { // n'existe pas encore .. on la crée
+							if(!in_array($type08[$r['idtype']], $idtype)) { // n'existe pas encore .. on la crée
 
-									$id = $this->__insert_object('persons');
+								$id = $this->__insert_object('persons');
 
-									$query .= "INSERT INTO _PREFIXTABLE_persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$r['idtype']]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');\n";
+								$query .= "INSERT INTO _PREFIXTABLE_persons (id, idtype, g_familyname, g_firstname, sortkey, status, upd) VALUES ('".$id."', '".$type08[$r['idtype']]."', \"".$res['nomfamille']."\", \"".$res['prenom']."\", \"".strtolower($res['nomfamille']." ".$res['prenom'])."\" , '".$res['statut']."', '".$res['maj']."');\n";
 
-									$query .= "INSERT INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\");\n";
+								$query .= "INSERT INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\");\n";
 
-									// puis on met à jour la table relations pour indiquer l'ID de l'entrée créée!
-									if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$t."'")) {
-										return mysql_error();
-									}
-
-									while($rr = mysql_fetch_array($resul)) {
-										$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';\n";
-									}
-									if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
-										return $err;
-									}
-									unset($query);
+								// puis on met à jour la table relations pour indiquer l'ID de l'entrée créée!
+								if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$t."'")) {
+									return mysql_error();
 								}
+
+								while($rr = mysql_fetch_array($resul)) {
+									$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';\n";
+								}
+								if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
+									return $err;
+								}
+								unset($query);
 							}
 						}
 					}
@@ -1848,6 +1846,7 @@ class exportfor08
 		
 		$outfile="site-$site.sql";
 		$tmpdir=tmpdir();
+		$GLOBALS['uselodelprefix']=true;
 		mysql_dump($GLOBALS['currentdb'],$GLOBALS['lodelsitetables'],$tmpdir."/".$outfile);
 		# verifie que le fichier n'est pas vide
 		if (filesize($tmpdir."/".$outfile)<=0) return "ERROR: mysql_dump failed";
@@ -1953,7 +1952,7 @@ class exportfor08
 			
 			while ( FALSE !== ( $entry = $d->read() ) )
 			{
-				if ( $entry == '.' || $entry == '..' )
+				if ( $entry{0} == '.' )
 				{
 					continue;
 				}
