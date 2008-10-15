@@ -36,7 +36,7 @@ $version = "0.8";
 /************************************ !! VERSION !! **************************************/
 
 
-require_once "class.Install.php";
+require "class.Install.php";
 $test = false;
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
 // securise l'entree
@@ -48,22 +48,19 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	if (!((bool) ini_get("register_globals"))) { 
 		extract($_REQUEST,EXTR_SKIP);
 	}
-	
+	$test = $installing = true;
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
-	if (!(@file_get_contents("../lodelconfig.php"))) $install->problem("reading_lodelconfig");
+	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
-	// le lodelconfig.php doit exister 
-	// et permettre un acces a une DB valide... 
-	// meme si on reconfigure une nouvelle DB ca doit marcher... 
-
-	if ($tache=="lodelconfig") $_SERVER['REQUEST_URI'].="?tache=lodelconfig";
-
-	$test = true;
-  
-} else {
-	error_reporting(E_ERROR | E_WARNING | E_PARSE);
+	if($installlang != $_GET['installlang']) {
+		require_once '../lodel-'.$version.'/scripts/lang.php';
+		if(in_array(strtoupper($_GET['installlang']), array_keys($GLOBALS['installlanguages']))) {
+			$installlang = $_GET['installlang'];
+		}
+	}
 }
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if($test) {
 	// Version of lodel to be installed.
@@ -84,42 +81,31 @@ if($test) {
 	$install->set('versioninstall', $version);
 	$install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
 }
+
 header("Content-type: text/html; charset=utf-8");
 
-
+$install->set('installlang', $installlang);
 
 if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 
-// does what ./lodelconfig.php does.
-if ( !defined('PATH_SEPARATOR') ) {
-    define('PATH_SEPARATOR', ( substr(PHP_OS, 0, 3) == 'WIN' ) ? ';' : ':');
-}
 ini_set('include_path',LODELROOT. "lodel".$install->get('versionsuffix')."/scripts" .PATH_SEPARATOR . LODELROOT . "share".$install->get('versionsuffix'). PATH_SEPARATOR . ini_get("include_path"));
 
 
 //
 // option
 //
-if ($erase_and_option1) { $option1=true; @unlink($install->get('lodelconfig')); }
-if ($erase_and_option2) { $option2=true; @unlink($install->get('lodelconfig')); }
-
-if ($option1) $installoption = '1';
-if ($option2) $installoption = '2';
-
+if ($erase_and_option1) { $installoption=1; @unlink($install->get('lodelconfig')); }
+if ($erase_and_option2) { $installoption=2; @unlink($install->get('lodelconfig')); }
+if(isset($installoption))
+	$install->set('installoption', $installoption);
 
 //
 // Test the PHP version
 //
-preg_match("/^\d+\.\d+/",phpversion(),$result);
-
-if (doubleval($result[0]<4.1)) {
+if (!version_compare(PHP_VERSION,'5.0.0','>=')) {
   $install->problem('version');
   exit;
 }
-
-
-
-
 
 //
 // choix de la plateforme
@@ -129,9 +115,8 @@ if (doubleval($result[0]<4.1)) {
 $install->set('plateformdir', LODELROOT."lodel".$install->get('versionsuffix')."/install/plateform");
 
 if ($tache=="plateform") {
-
 	$install->set('plateform', $plateform);
-	$install->installConf($installoption, $testfile);
+	$install->installConf($testfile);
 }
 
 //
@@ -139,7 +124,6 @@ if ($tache=="plateform") {
 //
 
 if ($tache=="mysql") {
-
 	$install->majConfDB($newdbusername, $newdbpasswd, $newdbhost);
 }
 
@@ -214,30 +198,21 @@ if ($tache=="htaccess") {
 
 // maj des options lodel
 if ($tache=="options") {
-
 	$install->maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri);
 }
 
 // téléchargement du fichier de conf ?
 if ($tache=="downloadlodelconfig") {
-
 	if($install->downloadlodelconfig($log_version))
 		return;
 }
 
 // affichage du contenu du fichier lodelconfig ?
 if ($tache=="showlodelconfig") {
-
 	if($install->showlodelconfig())
 		return;
 }
 
-// pas de tache ? ok on est donc au début de l'installation
-if (!$tache) {
-	$installing = $install->startInstall();
-	$install->include_tpl("install-bienvenue.html");
-	return;
-}
 
 /////////////////////////////////////////////////////////////////
 //                              TESTS                          //
@@ -248,54 +223,55 @@ if (!$tache) {
 //
 
 // les fonctions de tests existent, donc on peut faire des tests sur les droits
-$t = $install->testRights();
-if($t !== true)
-{
-
-	$erreur['functions'] = array();	
-	$erreur['functions'] = $t;
-	$install->include_tpl("install-php.html");
-	return;
+if($tache == 'droits') {
+	$t = $install->testRights();
+	if($t !== true)
+	{
+		$erreur['functions'] = array();	
+		$erreur['functions'] = $t;
+		$install->include_tpl("install-php.html");
+		return;
+	}
 }
 
+// pas de tache ? ok on est donc au début de l'installation
+if (!$tache) {
+	if(!is_bool($installing))
+		$installing = $install->startInstall();
+	$install->include_tpl("install-bienvenue.html");
+	return;
+}
 
 // include: lodelconfig
 //
 // essai de trouver une configuration
 //
-
-
-if(!$install->checkConfig())
-	return;
-
+$install->checkConfig();
 
 //
 // essaie d'etablir si on accede au script func.php
 //
-
 $install->checkFunc();
 
 
 //
 // essaie la connection a la base de donnée
 //
-
-
 if($install->checkDB() === "error_cnx")
 {
-
 	$erreur_connect=1;
 	$install->include_tpl("install-mysql.html");
-	return;
 }
 
 @include($install->get('lodelconfig'));
 // on cherche si on a une database
-
+if(!$install->get('installoption')) {
+	if(!$installoption) die('Internal error. Missing installoption value from lodelconfig.php !');
+	$install->set('installoption', $installoption);
+}
 if (!$database) {
 	$resultshowdatabases = $install->seekDB();
 	$install->include_tpl("install-database.html");
-	return;
 }
 
 $t = $install->installDB($erasetables, $tache);
