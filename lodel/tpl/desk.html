@@ -59,15 +59,15 @@
 		background-repeat: no-repeat;
 	}
 
-<IF COND="FALSE === strpos($_SERVER['PHP_SELF'], '/lodel/edition')">
+<IF COND="FALSE SEQ [#CURRENTURL|strpos('lodel/edition')]">
 	#lodel-container{
 		position: relative;
 	}
 </IF>
 	div.loggedUsers{
 		margin-top:.5em;
-		margin-bottom:.3em;
 		margin-left:1em;
+		margin-bottom:.2em;
 		font-size: 90%;
 	}
 	
@@ -352,7 +352,7 @@
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>
 		</DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%HASADMINLOGGED]">, </IF>[#USERNAME]</LET></IF></DOFIRST>

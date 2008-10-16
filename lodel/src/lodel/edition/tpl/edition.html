@@ -165,19 +165,16 @@ function mouseMove(ev){
 			// We remove anything that is in our dragHelper DIV so we can put a new item in it.
 			for(var i=0; i<dragHelper.childNodes.length; i++) dragHelper.removeChild(dragHelper.childNodes[i]);
 			// Make a copy of the current item and put it in our drag helper.
-			var dragHelperCont = document.createElement('DIV');
-			var dragNodeList = curTarget.childNodes;
-			var nbChilds = dragNodeList.length;
-			for(var i=0; i<nbChilds; i++) {
-				if(dragNodeList[i].className == 'document' && dragNodeList[i].nodeName == 'DIV') {
-					dragHelperCont.innerHTML = dragNodeList[i].innerHTML;
-					break;
+			var dragList = document.createElement('UL');
+			dragList.className = 'listEntities';
+			var dragLi = dragList.appendChild(document.createElement('LI'));
+			for(var i=0; i<curTarget.childNodes.length; i++) {
+				if((curTarget.childNodes[i].className == 'document' || curTarget.childNodes[i].className == 'entityIcons') && curTarget.childNodes[i].nodeName == 'DIV') {
+					dragLi.appendChild(curTarget.childNodes[i].cloneNode(true));
 				}
 			}
-			dragHelper.appendChild(dragHelperCont);
-			dragHelper.style.background = '#E18600';
-			dragHelper.style.color = 'white';
-			//dragHelper.appendChild(curTarget.cloneNode(true));
+			dragHelper.appendChild(dragList);
+			dragHelper.style.width = '500px';
 			dragHelper.style.display = 'block';
 			// set the class on our helper DIV if necessary
 			var dragClass = curTarget.getAttribute('dragClass');
@@ -235,7 +232,7 @@ function mouseMove(ev){
 	if(curTarget){
 		// move our helper div to wherever the mouse is (adjusted by mouseOffset)
 		dragHelper.style.top  = mousePos.y - mouseOffset.y+"px";
-		dragHelper.style.left = mousePos.x - mouseOffset.x+"px";
+		dragHelper.style.left = mousePos.x - mouseOffset.x - 50+"px";
 		var dragConts  = DragDrops[curTarget.getAttribute('DragObj')];
 		var activeCont = null;
 		var xPos = mousePos.x - mouseOffset.x + (parseInt(curTarget.getAttribute('startWidth')) /2);
@@ -374,6 +371,7 @@ function mouseDown(ev){
 	// Create our helper object that will show the item while dragging
 	setTimeout(function(){
 			dragHelper = document.createElement('DIV');
+// 			dragHelper.id = 'listEntities';
 			document.body.appendChild(dragHelper);
 			dragHelper.style.cssText = 'position:absolute;display:none;';
 		}, 10);
