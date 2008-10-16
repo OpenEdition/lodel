@@ -232,7 +232,7 @@ function mouseMove(ev){
 	if(curTarget){
 		// move our helper div to wherever the mouse is (adjusted by mouseOffset)
 		dragHelper.style.top  = mousePos.y - mouseOffset.y+"px";
-		dragHelper.style.left = mousePos.x - mouseOffset.x - 50+"px";
+		dragHelper.style.left = mousePos.x - mouseOffset.x+"px";
 		var dragConts  = DragDrops[curTarget.getAttribute('DragObj')];
 		var activeCont = null;
 		var xPos = mousePos.x - mouseOffset.x + (parseInt(curTarget.getAttribute('startWidth')) /2);
@@ -371,7 +371,6 @@ function mouseDown(ev){
 	// Create our helper object that will show the item while dragging
 	setTimeout(function(){
 			dragHelper = document.createElement('DIV');
-// 			dragHelper.id = 'listEntities';
 			document.body.appendChild(dragHelper);
 			dragHelper.style.cssText = 'position:absolute;display:none;';
 		}, 10);
