@@ -175,11 +175,10 @@ class View
 		global $site, $home;
 
 		$this->_makeCachedFileName($tpl);
-		$included = get_included_files();
-		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
+		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
-		if(!in_array(realpath($home.'func.php'), $included))
-			require 'func.php';		
+		if(!function_exists('_indent'))
+			require 'func.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 
 		// efface le cache si demandé
@@ -223,8 +222,7 @@ class View
 			return false;
 		}
 		$this->_makeCachedFileName();
-		$included = get_included_files();
-		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
+		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 				
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -234,7 +232,7 @@ class View
 				// refresh d'un template inclus en lodelscript ?
 				// on tente d'évaluer de nouveau le code pour être sur
 				$content = $this->_eval($content, $context, true);
-				if(!in_array(realpath($home.'func.php'), $included))
+				if(!function_exists('_indent'))
 					require 'func.php';
 				echo _indent($content);
 				flush();
@@ -277,7 +275,7 @@ class View
 		$cachedTemplateFileName = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
 					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
-		if(!in_array(realpath($home.'Cache/Lite.php'), get_included_files()))
+		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		
@@ -346,14 +344,16 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @return le contenu du code évalué
 	*/
 	private function _eval($content, &$context, $escapeRefreshManager=false) {
-		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
-			global $home;
-			$included = get_included_files();
-			if(!in_array(realpath($home.'loops.php'), $included))
+		global $home;
+		static $called = false;
+		if(!$called) {
+			if(!function_exists('loop_errors'))
 				require 'loops.php';
-			if(!in_array(realpath($home.'textfunc.php'), $included))
+			if(!function_exists('textebrut'))
 				require 'textfunc.php';
-			
+			$called = true;
+		}
+		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
 			}
@@ -429,7 +429,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 
 		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= myfilemtime($tpl) || !$cache->get($template_cache, $group)) {
 			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
-			if(!in_array(realpath($home.'lodelparser.php'), get_included_files()))
+			if(!class_exists('LodelParser'))
 				require 'lodelparser.php';
 			$parser = new LodelParser;
 			$contents = $parser->parse($tpl, $include);
