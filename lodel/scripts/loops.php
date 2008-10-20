@@ -718,7 +718,8 @@ function loop_alphabetSpec($context, $funcname)
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
 		$whereCount = " idtype = '{$context['idtype']}' AND ";
 	}
-		
+	$status = $lodeluser['editor'] ? ' status > -64 ' : ' status > 0 ';
+	$whereSelect .= isset($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
 	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} {$whereSelect} ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
@@ -727,7 +728,7 @@ function loop_alphabetSpec($context, $funcname)
 		if($lettre['l'] != '<' && $lettre['l'] != '>' && $lettre['l'] != ' ')
 			$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
-	$status = $lodeluser['editor'] ? ' status > -64 ' : ' status > 0 ';
+	
 	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
