@@ -11,6 +11,11 @@ if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) ||
 
 // chdir pour faciliter les include
 chdir('../../'.$_POST['site']);
+if(!file_exists('siteconfig.php')) {
+	echo 'error';
+	return;
+}
+
 require 'siteconfig.php';
 require 'auth.php';
 // pas de log de l'url dans la base

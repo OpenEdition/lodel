@@ -92,6 +92,9 @@ span.titre_alias {
 	color: #6b6b6b;
 }
 /* Import xml du ME */
+div#spacer {
+	clear:both;
+}
 div.importME_right ul, div.importME_left ul {
 	clear:both;
 	position:relative;
@@ -118,6 +121,7 @@ div.importME_left {
 ul.importXML {
 	margin-top:2em;
 	margin-bottom:2em;
+	list-style-type:none;
 }
 
 th{
