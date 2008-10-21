@@ -496,7 +496,7 @@ function notes($texte, $type)
 	// be cool... just select the paragraph or division.
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
-	$notere = '<a class="(foot|end)note(definition|symbol)[^>]*>';
+	$notere = '<a [^>]*class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
 			case 1: // seulement les astérisques
