@@ -170,11 +170,16 @@ function mouseMove(ev){
 			var dragLi = dragList.appendChild(document.createElement('LI'));
 			for(var i=0; i<curTarget.childNodes.length; i++) {
 				if((curTarget.childNodes[i].className == 'document' || curTarget.childNodes[i].className == 'entityIcons') && curTarget.childNodes[i].nodeName == 'DIV') {
-					dragLi.appendChild(curTarget.childNodes[i].cloneNode(true));
+					if(curTarget.childNodes[i].className == 'document') {
+						var clone = curTarget.childNodes[i].cloneNode(true);
+						clone.style.width = '600px';
+						dragLi.appendChild(clone);
+						clone = null;
+					} else dragLi.appendChild(curTarget.childNodes[i].cloneNode(true));
 				}
 			}
 			dragHelper.appendChild(dragList);
-			dragHelper.style.width = '500px';
+			dragHelper.style.width = '700px';
 			dragHelper.style.display = 'block';
 			// set the class on our helper DIV if necessary
 			var dragClass = curTarget.getAttribute('dragClass');
