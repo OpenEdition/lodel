@@ -444,17 +444,17 @@ function makeurlwithid ($id, $base = 'index')
 	switch($uri) {
 	case 'leftid':
 		return $base. $id. '.'. $GLOBALS['extensionscripts'];
+	case 'singleid':
+		return intval($id);
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
-		$id = intval($id);
 		$path = getPath($id,'path');
 		return $path;
 	case 'querystring':
-		$id = intval($id);
 		$path = getPath($id,'querystring');
 		return $path;
 	default:
-		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. $id;
+		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. intval($id);
 	}
 }
 
@@ -487,20 +487,20 @@ function getPath($id, $urltype,$base='index')
 		return;
 	}
 	$id = intval($id);
-		$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
-		while(!$result->EOF) {
-			$path.= '/'. $result->fields['identifier'];
-			$result->MoveNext();
-		}
-		$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
-		if ($GLOBALS['db']->errorno()) {
-			dberror();
-		}
-		$path.= "/$id-". $row['identifier'];
-		if($urltype == 'path') {
-			return $base. '.'. $GLOBALS['extensionscripts']. $path;
-		}
-		return "$base.". $GLOBALS['extensionscripts']. "?$path";
+	$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
+	while(!$result->EOF) {
+		$path.= '/'. $result->fields['identifier'];
+		$result->MoveNext();
+	}
+	$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
+	if ($GLOBALS['db']->errorno()) {
+		dberror();
+	}
+	$path.= "/$id-". $row['identifier'];
+	if($urltype == 'path') {
+		return $base. '.'. $GLOBALS['extensionscripts']. $path;
+	}
+	return "$base.". $GLOBALS['extensionscripts']. "?$path";
 }
 
 
