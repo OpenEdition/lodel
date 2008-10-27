@@ -392,6 +392,7 @@ class TableFieldsLogic extends Logic
 									'editionparams' => array('text', ''),
 									'weight' => array('select', ''),
 									'filtering' => array('text', ''),
+									'mask' => array('text', ''),
 									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //

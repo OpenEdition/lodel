@@ -373,6 +373,12 @@
 			description="traitement a faire a l import"
 			label="[@ADMIN.PROCESSING_IMPORT]"
 			edittype="text" />
+		<column name="mask"
+			type="VARCHAR"
+			size="255"
+			description="mask à appliquer sur le champs lors de l'import/edition"
+			label="[@ADMIN.MASK_IMPORT]"
+			edittype="text" />
 		<column name="allowedtags"
 			type="VARCHAR"
 			size="255"
@@ -381,22 +387,22 @@
 			edittype="multipleselect" /> <!-- complex case -->
 		
 	</vgroup>
-<vgroup name="gredition"
-	label="[@ADMIN.FIELDSET_EDITION]">
-<column name="edition"
-	type="VARCHAR"
-	size="255"
-	description="input pour l edition"
-	label="[@ADMIN.INTERFACE_VIEW]"
-	edittype="select" />
-<column name="editionparams"
-	type="VARCHAR"
-	size="255"
-	description="params pour l edition"
-	label="[@ADMIN.PARAMETER_FOR_EDITION]"
-        edittype="text" />
-
-</vgroup>
+	<vgroup name="gredition"
+		label="[@ADMIN.FIELDSET_EDITION]">
+	<column name="edition"
+		type="VARCHAR"
+		size="255"
+		description="input pour l edition"
+		label="[@ADMIN.INTERFACE_VIEW]"
+		edittype="select" />
+	<column name="editionparams"
+		type="VARCHAR"
+		size="255"
+		description="params pour l edition"
+		label="[@ADMIN.PARAMETER_FOR_EDITION]"
+		edittype="text" />
+	
+	</vgroup>
 	<vgroup name="grindexation"
 		label="[@ADMIN.FIELDSET_INDEXATION]">
 		<column name="weight"

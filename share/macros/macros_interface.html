@@ -86,6 +86,7 @@
 <IF COND="[#ERROR] eq 'identifier'">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</IF>
 <IF COND="[#ERROR] eq 'lang'">[@COMMON.INVALID_LANGUAGE_CODE]</IF>
 <IF COND="[#ERROR] eq 'numeric'">[@COMMON.ERROR_FIELD_MUST_BE_NUMERIC|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR|strpos('mask:')] eq 0">[#ERROR|substr(5)]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 

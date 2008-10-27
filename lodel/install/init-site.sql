@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
 	weight		TINYINT NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur le champs
-
+	mask 		TEXT NOT NULL DEFAULT '',	# masque à appliquer sur le champs pour validation
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	upd		TIMESTAMP,

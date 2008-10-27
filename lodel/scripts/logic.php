@@ -120,7 +120,9 @@ class Logic
 		if (!$vo) //erreur critique
 			die("ERROR: can't find object $id in the table ". $this->maintable);
 		$this->_populateContext($vo, $context); //rempli le context
-
+		if('tablefields' == $this->maintable) {
+			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
+		}
 		//ajout d'informations supplémentaires dans le contexte (éventuellement)
 		$ret=$this->_populateContextRelatedTables($vo, $context); 
 
@@ -176,6 +178,7 @@ class Logic
 				return '_error';
 			}
 		}
+		
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
 		$id = $context['id'] = intval($context['id']);
@@ -394,7 +397,7 @@ class Logic
 					$directory =array ('icon' => 'lodel/icons');
 					$valid = validfield($context[$field], $type, "",$field, "", $directory[$field]);
 				} else {
-					$valid = validfield($context[$field], $type, "",$field);
+					$valid = validfield($context[$field], $type, "",$field, '', '', $context);
 				}
 				if ($valid === false) {
 					die("ERROR: \"$type\" can not be validated in logic.php");
@@ -402,6 +405,10 @@ class Logic
 				if (is_string($valid)) {
 					$error[$field]=$valid;
 				}
+			}
+			if('tablefields' == $this->maintable && 'mask' == $field) {
+				$this->_makeMask($context, $error);
+				if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
 			}
 		}
 		if ($error) {
@@ -424,6 +431,149 @@ class Logic
 		}
 
 		return empty($error);
+	}
+
+	function _makeMask(&$context, &$error)
+	{
+		if($context['mask']['user'] == '') return;
+		$mask = $context['mask']['user'];
+		if(isset($context['mask_regexp'])) {
+			// disable eval options for more security
+			$mask = $context['mask']['user'] = preg_replace('/^(.)(.*)(\\1)([msieDASUXxuJ]*)?$/e', "'\\1'.\\2.'\\1'.str_replace('e', '', \"\\4\")", $mask);
+			if(FALSE === @preg_match($mask, 'just a test for user regexp')) {
+				$error['mask'] = 'mask: '.getlodeltextcontents('mask_bad_regexp', 'common');
+				return;
+			} elseif(PREG_NO_ERROR !== preg_last_error()) {
+				$error['mask'] = 'mask: '.getlodeltextcontents('mask_bad_regexp', 'common').' : PCRE : '.preg_last_error();
+				return;
+			}
+			$context['mask']['lodel'] = $mask;
+			$context['mask']['model'] = 'regexp';
+		} elseif(isset($context['mask_reasonable'])) {
+			$regexp = null;
+			$ponct = false;
+			$chars = false;
+			$num = false;
+			$unknown = false;
+			$spaces = false;
+			while($strlen = mb_strlen($mask, 'UTF-8')) {
+				$c = mb_substr($mask,0,1,"UTF-8");
+				$mask = mb_substr($mask,1,$strlen,"UTF-8");
+				if($c >= '0' && $c <= '9') {
+					$regexp .= (false === $num ? '[0-9]+' : '');
+					$spaces = false;
+					$num = true;
+					$chars = false;
+					$unknown = false;
+					$ponct = false;
+				} elseif( ($c >= 'a' && $c <= 'z') || 
+					($c >= 'A' && $c <= 'Z')  ||
+					(preg_match("/^[".ACCENTS."]$/u", $c)>0) ) {
+					$regexp .= (false === $chars ? '[a-zA-Z'.ACCENTS.']+' : '');
+					$spaces = false;
+					$num = false;
+					$chars = true;
+					$unknown = false;
+					$ponct = false;
+				} elseif(preg_match("/^[".PONCTUATION."]$/u", $c)>0) {
+					$regexp .= (false === $ponct ? '['.PONCTUATION.']+' : '');
+					$spaces = false;
+					$num = false;
+					$chars = false;
+					$unknown = false;
+					$ponct = true;
+				} elseif(preg_match("/^\s$/u", $c)>0) {
+					$regexp .= (false === $spaces ? '\s+' : '');
+					$spaces = true;
+					$num = false;
+					$chars = false;
+					$unknown = false;
+					$ponct = false;
+				}  else {
+					// unknown character ?
+					$regexp .= (false === $unknown ? '.+?' : '');
+					$spaces = false;
+					$num = false;
+					$chars = false;
+					$unknown = true;
+					$ponct = false;
+				}
+			}
+			if(!is_null($regexp)) {
+				$regexp = '/^'.$regexp.'$/';
+				$context['mask']['lodel'] = $regexp;
+				$context['mask']['model'] = 'reasonable';
+			} else {
+				$error['mask'] = 'mask: unknown error';
+			}
+		} else {
+			// let's find masks like %something% and decode them
+			preg_match_all("/(?<!\\\\)(?:%)(?!\s)(.*?)((?<!\\\\)(?:[\?\+\*]|\{[\d,]+\}))?(?<!(?:\\\\|\s))(?:%)/u", $mask, $m);
+			$masks = array();
+			foreach($m[0] as $k=>$v) {
+				$content = $m[1][$k];
+				$chars = 0;
+				$num = 0;
+				$spaces = 0;
+				$pmask = '';
+				while($strlen = mb_strlen($content, 'UTF-8')) {
+					$c = mb_substr($content,0,1,"UTF-8");
+					$content = mb_substr($content,1,$strlen,"UTF-8");
+					if($c >= '0' && $c <= '9') {
+						if($chars === 0 && $num === 0) {
+							$pmask .= '[';
+						}
+						if(0 === $num) {
+							$pmask .= '0-9';
+						}
+						$spaces = 0;
+						$num++;
+					} elseif(($c >= 'a' && $c <= 'z') || 
+						($c >= 'A' && $c <= 'Z')  ||
+						(preg_match("/^[".ACCENTS."]$/u", $c)>0) ) {
+						if($num === 0 && $chars === 0) {
+							$pmask .= '[';
+						}
+						if(0 === $chars) {
+							$pmask .= 'a-zA-Z'.ACCENTS.'';
+						}
+						$spaces = 0;
+						$chars++;
+					} elseif(preg_match("/^\s$/u", $c)>0) {
+						if($chars > 0 || $num > 0) {
+							$pmask .= ($chars > 1 || $num > 1 ? ']+' : ']');
+						}
+						if(0 === $spaces) {
+							$pmask .= '\s';
+						} elseif(1 === $spaces) {
+							$pmask .= '+';
+						}
+						$spaces++;
+						$num = 0;
+						$chars = 0;
+					} else {
+						if($chars > 0 || $num > 0) {
+							$pmask .= ($chars > 1 || $num > 1 ? ']+' : ']');
+						}
+						$pmask .= preg_quote($c, '/');
+						$spaces = 0;
+						$num = 0;
+						$chars = 0;
+					}
+					
+				}
+				if($chars > 0 || $num > 0) {
+					$pmask .= ($chars > 1 || $num > 1 ? ']+' : ']');
+				}
+				if($m[2][$k]) $pmask = '('.$pmask.')'.$m[2][$k];
+				$masks[$v] = $pmask;
+			}
+			$mask = preg_quote($mask, '/');
+			foreach($masks as $k=>$m)
+				$mask = str_replace(preg_quote($k, '/'), $m, $mask);
+			$context['mask']['lodel'] = '/^'.$mask.'$/';
+			$context['mask']['model'] = 'traditional';
+		}
 	}
 
 	function _publicfields() 
