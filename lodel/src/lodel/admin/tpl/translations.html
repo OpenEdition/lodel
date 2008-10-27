@@ -37,10 +37,10 @@
 </ul>
 <div class="ligne_ajouter_serie">
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
+	<a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
 	<br/>
 	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=import&lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
+	<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
 </div>
 <br /><br />
 
@@ -68,7 +68,7 @@
 			<td>
 			<LET VAR="currentlang">[#LANG]</LET>
 			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
-				<a href="index.php?do=list&lo=texts&textgroup=[#TEXTGROUP]&lang=[#CURRENTLANG]">
+				<a href="index.php?do=list&amp;lo=texts&amp;textgroup=[#TEXTGROUP]&amp;lang=[#CURRENTLANG]">
 					[(#TEXTGROUP|strtoupper)]
 				</a>&nbsp;
 			</LOOP>
@@ -85,7 +85,7 @@
 	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
 		<tr>
 			<td class="texte_noir_gras">[@COMMON.NAME]</td>
-				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="lang">
 					<td class="texte_noir_gras">[#LANG]</td>
 					<td>&nbsp;</td>
 				</LOOP>
@@ -99,10 +99,10 @@
 			</td>
 			<LOOP NAME="lang_and_text">
 				<td>
-					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&lo=texts&id=[#ID]">E</a>
+					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&amp;lo=texts&amp;id=[#ID]">E</a>
 				</td>
 				<td align="right">
-						<a href="index.php?do=delete&lo=texts&id=[#ID]">[@COMMON.DELETE](*)</a>
+						<a href="index.php?do=delete&amp;lo=texts&amp;id=[#ID]">[@COMMON.DELETE](*)</a>
 				</td>
 			</LOOP>
 		

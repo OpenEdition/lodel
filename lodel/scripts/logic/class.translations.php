@@ -80,52 +80,49 @@ class TranslationsLogic extends Logic {
 		$this->_setTextGroups($context);
 
 		function loop_textgroups(&$context,$funcname)
-
 		{
 			foreach($GLOBALS['translations_textgroups'][$context['textgroups']] as $textgroup) {
-	$localcontext=$context;
-	$localcontext['textgroup']=$textgroup;
-	call_user_func("code_do_".$funcname,$localcontext);
+				$localcontext=$context;
+				$localcontext['textgroup']=$textgroup;
+				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
 
 		function loop_alltexts(&$context,$funcname)
-
 		{
 			global $db,$distincttexts,$alltexts_cache;
 
-			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."'")) or dberror();
+			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' ORDER BY lang")) or dberror();
 
 			$distincttexts=array();
 			while(!$result->EOF) {
-	$lang=$result->fields['lang'];
-	$name=$result->fields['name'];	
-	if ($name && $lang) {
-		$alltexts_cache[$lang][$name]=$result->fields;
-		if ($lang==$GLOBALS['lang']) {
-			$distincttexts[$name]=$result->fields['contents'];
-		} elseif (!isset($distincttexts[$name])) {
-			$distincttexts[$name]=true;
-		}
-	} // valid name
-	$result->MoveNext();
+				$lang=$result->fields['lang'];
+				$name=$result->fields['name'];	
+				if ($name && $lang) {
+					$alltexts_cache[$lang][$name]=$result->fields;
+					if ($lang==$GLOBALS['lang']) {
+						$distincttexts[$name]=$result->fields['contents'];
+					} elseif (!isset($distincttexts[$name])) {
+						$distincttexts[$name]=true;
+					}
+				} // valid name
+				$result->MoveNext();
 			}
 			foreach($distincttexts as $name=>$contents) {
-	$localcontext=$context;
-	$localcontext['name']=$name;
-	$localcontext['contents']=$contents;
-	call_user_func("code_do_".$funcname,$localcontext);
+				$localcontext=$context;
+				$localcontext['name']=$name;
+				$localcontext['contents']=$contents;
+				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
 
 		function loop_lang_and_text(&$context,$funcname)
-			
 		{
 			foreach(array_keys($GLOBALS['alltexts_cache']) as $lang) {
-	$localcontext=$context;
-	$row=$GLOBALS['alltexts_cache'][$lang][$context['name']];
-	$localcontext=$row ? array_merge($context,$row) : $context;
-	call_user_func("code_do_".$funcname,$localcontext);       
+				$localcontext=$context;
+				$row=$GLOBALS['alltexts_cache'][$lang][$context['name']];
+				$localcontext=$row ? array_merge($context,$row) : $context;
+				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
 
