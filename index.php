@@ -46,7 +46,7 @@
 $version = '0.9';
 
 if (!file_exists("lodelconfig.php")) {
-	header('location: lodeladmin-'.$version'./install.php');
+	header('location: lodeladmin-'.$version.'/install.php');
 	exit;
 }
 
