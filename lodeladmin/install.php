@@ -94,8 +94,13 @@ ini_set('include_path',LODELROOT. "lodel".$install->get('versionsuffix')."/scrip
 //
 // option
 //
-if ($erase_and_option1) { $installoption=1; @unlink($install->get('lodelconfig')); }
-if ($erase_and_option2) { $installoption=2; @unlink($install->get('lodelconfig')); }
+
+if($option1) { $installoption=1; }
+elseif($option2){ $installoption=2; }
+elseif ($erase_and_option1) { $installoption=1; @unlink($install->get('lodelconfig')); }
+elseif ($erase_and_option2) { $installoption=2; @unlink($install->get('lodelconfig')); }
+
+
 if(isset($installoption))
 	$install->set('installoption', $installoption);
 
