@@ -45,7 +45,7 @@
 
 
 if (!file_exists("lodelconfig.php")) {
-	header('location: lodeladmin-0.8/install.php');
+	header('location: lodeladmin-0.9/install.php');
 	exit;
 }
 

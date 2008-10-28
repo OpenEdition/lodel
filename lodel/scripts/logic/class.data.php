@@ -1372,7 +1372,7 @@ class DataLogic
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
 		require_once 'func.php';
-		$dtd = @copy(SITEROOT . '../share-0.8/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		$dtd = @copy(SITEROOT . '../share-'.$GLOBALS['version'].'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir "'.tmpdir().'". Aborted.';
 			return;

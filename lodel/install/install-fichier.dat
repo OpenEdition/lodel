@@ -38,7 +38,7 @@ ln search.php
 ln oai.php
 
 #Sitemap
-dirsource $homelodel/lodel-0.8
+dirsource $homelodel/lodel-0.9
 ln tpl/sitemap.html
 
 ### desuet. cp tpl

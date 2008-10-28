@@ -31,7 +31,7 @@
 
 
 # Script de creation des paquets de release
-# Version actuelle du script : 0.8
+# Version actuelle du script : 0.9
 
 
 if [ -e lodel ]; then
@@ -42,4 +42,4 @@ fi
 svn export https://subversion.cru.fr/lodel/trunk lodel
 
 # creation des archives (.tar.gz et .zip)
-lodel/lodel/install/exportlodel 0.8
+lodel/lodel/install/exportlodel 0.9

@@ -537,6 +537,7 @@ class Parser
 				case 'NAME' :
 					break;
 				case 'DATABASE' :
+					// si la database est dynamique, on rajoute le préfix pour les tables
 					$database = '`'.trim($value). '`.';
 					break;
 				case 'WHERE' :
@@ -551,8 +552,9 @@ class Parser
 						$arr = explode(',', $value);
 					}
 					if ($arr) {
+						$prefix = (FALSE !== strpos($database, '$context') ? $GLOBALS['tableprefix'] : '');
 						foreach ($arr as $value) {
-							array_push($tables, $database.trim($value));
+							array_push($tables, $database.$prefix.trim($value));
 						}
 					}
 					break;

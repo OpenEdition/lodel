@@ -54,7 +54,7 @@ if(empty($_GET) && empty($_POST))
 	header('Location:index.php?do=list&lo=sites');
 
 $context['installoption'] = intval($installoption);
-$context['version']       = '0.8';
+$context['version']       = '0.9';
 
 require_once 'class.siteManage.php';
 $context['shareurl'] = $shareurl;
@@ -128,6 +128,7 @@ if($website->context['name'] && !$website->context['dbname'])
 
 unset($t);
 if ($task === 'createdb') {
+
 	$t = $website->createDB($lodeldo);
 
 	if($t === true)
