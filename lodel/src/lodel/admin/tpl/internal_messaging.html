@@ -86,7 +86,7 @@
 		<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/"><LET VAR="userdb"><IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF></LET></IF>
 		<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]">
 		<IF COND="1 EQ [#STATUS]"><strong></IF>
-		<LOOP NAME="getUserName" TABLE="[#USERDB].users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+		<LOOP NAME="getUserName" DATABASE="[#USERDB]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
 			[@ADMIN.INTERNAL_MESSAGING_FROM]: [#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF> - 
 		</LOOP>
 		[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: <IF COND="![#SUBJECT]">[@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT]<ELSE />[#SUBJECT]</IF> - [@ADMIN.INTERNAL_MESSAGING_DATE]: [#UPD|humandate]
