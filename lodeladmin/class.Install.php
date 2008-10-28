@@ -318,7 +318,7 @@ class Install {
 			
 			@include($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
 			
-			if ($this->installoption>1) {
+			if ($installoption>1) {
 				$set['singledatabase']=$newsingledatabase ? "on" : "";
 				$set['tableprefix']=$newtableprefix;
 			}
