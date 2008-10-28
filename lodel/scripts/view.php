@@ -177,22 +177,21 @@ class View
 		$this->_makeCachedFileName($tpl);
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
-		if(!function_exists('_indent'))
-			require 'func.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 
 		// efface le cache si demandé
 		if($_REQUEST['clearcache']) {
 			clearcache();
-		} elseif (!$caching || $context['nocache']) { 
-			clearcache(false);
-		} elseif($content = $cache->get($this->_cachedfile, $site)) {
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+		} elseif(($caching || !$context['nocache']) && myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
+			$content = $cache->get($this->_cachedfile, $site)) {
+			if(FALSE !== ($content = $this->_iscachevalid($content, $context, $tpl))) {
 				$content = $this->_eval($content, $context, true);
-				echo _indent($content);
+				echo $content;
 				flush();
 				return;
 			}
+		} else {
+			$cache->remove("tpl_{$tpl}", 'tpl', true);
 		}
 		// pas de fichier dispo dans le cache ou fichier cache à recompiler
 		// on le calcule, l'enregistre, l'execute et affiche le résultat
@@ -201,46 +200,9 @@ class View
 			$cache->save($content, $this->_cachedfile, $site);
 		}
 		$content = $this->_eval($content, $context, true);
-		echo _indent($content);
+		echo $content;
 		flush();
 		return;	
-	}
-
-	/**
-	 * Fonction qui affiche le résultat si le cache est valide
-	 * 
-	 * Alternative à la fonction render.
-	 *
-	 * @return boolean true ou false si le cache est valide ou non
-	 */
-	public function renderIfCacheIsValid()
-	{
-		global $site, $context, $home;
-
-		if ($_REQUEST['clearcache']) {
-			clearcache();
-			return false;
-		}
-		$this->_makeCachedFileName();
-		if(!class_exists('Cache_Lite'))
-			require 'Cache/Lite.php';
-				
-		$cache = new Cache_Lite($this->_cacheOptions);
-		if($content = $cache->get($this->_cachedfile, $site)) {
-			// on vérifie le refresh du template
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
-				// refresh d'un template inclus en lodelscript ?
-				// on tente d'évaluer de nouveau le code pour être sur
-				$content = $this->_eval($content, $context, true);
-				if(!function_exists('_indent'))
-					require 'func.php';
-				echo _indent($content);
-				flush();
-				return true;
-			}
-		}
-			
-		return false;
 	}
 
 	/**
@@ -269,7 +231,8 @@ class View
 	* @param bool $escRefresh appel de la fonction par le refresh manager
 	* @param string $refreshTime (optionnel) temps de refresh pour le manager
 	*/
-	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh, $refreshTime=0) {
+	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='./tpl/', $escRefresh, $refreshTime=0) 
+	{
 		global $site, $lodeluser, $home;
 
 		$cachedTemplateFileName = str_replace('?id=0', '',
@@ -278,13 +241,17 @@ class View
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
-		
-		if($escRefresh || !($content = $cache->get($cachedTemplateFileName, 'TemplateFile'))) {
-			if(!$base_rep)
-				$base_rep = './tpl/';
-			if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
-				$base_rep = $home. '../tpl/';
-			}
+
+		if(!$base_rep)
+			$base_rep = './tpl/';
+		if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
+			$base_rep = $home. '../tpl/';
+		}
+		$tplFile = $base_rep. $tpl. '.html';
+
+		if(myfilemtime(getCachedFileName("tpl_{$tpl}", 'TemplateFile', $this->_cacheOptions)) <= myfilemtime($tplFile) ||
+			$escRefresh || !($content = $cache->get($cachedTemplateFileName, 'TemplateFile'))) {
+
 			$cache->remove("tpl_{$tpl}", 'TemplateFile', true);
 			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
 			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
@@ -324,9 +291,10 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 
 	/**
 	 * Modifie le nom du fichier à utiliser pour mettre en cache
-	 * @param string $tpl (optionnel) nom du template
+	 * @param string $tpl (optionnel) nom du template, par défaut index
 	 */
-	private function _makeCachedFileName($tpl='') {
+	private function _makeCachedFileName($tpl='index') 
+	{
 		global $lodeluser, $site;
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = str_replace('?id=0', '',
@@ -343,7 +311,8 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param bool $escapeRefreshManager utilisé pour virer les balises de refresh si jamais page recalculée à la volée
 	* @return le contenu du code évalué
 	*/
-	private function _eval($content, &$context, $escapeRefreshManager=false) {
+	private function _eval($content, &$context, $escapeRefreshManager=false) 
+	{
 		global $home;
 		static $called = false;
 		if(!$called) {
@@ -351,15 +320,17 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 				require 'loops.php';
 			if(!function_exists('textebrut'))
 				require 'textfunc.php';
+			if(!function_exists('_indent'))
+				require 'func.php';
 			$called = true;
 		}
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
-				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
+				$this->_error("CACHE directory is not writeable.", __FUNCTION__, false);
 			}
 			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true));
 			if(!file_put_contents($tmpFileName, $content, LOCK_EX))
-				$this->_error("Error while writing CACHE required file.", __FUNCTION__);
+				$this->_error("Error while writing CACHE required file.", __FUNCTION__, false);
 			ob_start();
 			$refresh = require $tmpFileName;
 			$ret = ob_get_contents();
@@ -374,7 +345,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 		if(TRUE === $escapeRefreshManager && (FALSE !== strpos($content, '#LODELREFRESH'))) {
 			$content = preg_replace("/#LODELREFRESH [^#]+#/", "", $content);
 		}
-		return $content;
+		return _indent($content);
 	}
 
 	/**
@@ -383,7 +354,8 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param string $content contenu à évaluer
 	* @param array $context le context
 	*/
-	private function _iscachevalid($content, $context) {
+	private function _iscachevalid($content, $context) 
+	{
 		if(FALSE !== strpos($content, '<?php')) {
 			$content = $this->_eval($content, $context);
 			if('refresh' == $content) {
@@ -402,8 +374,8 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
 	*/
-	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = 'tpl/', $include=false) {
-
+	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = './tpl/', $include=false) 
+	{
 		global $home;
 		if(!empty($cache_rep))
 			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
@@ -422,7 +394,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 				header("Status: 403 Internal Error");
 				header("Connection: Close");
 			}
-			$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__);
+			$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, false);
 		}
 
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -481,7 +453,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 			$msg = 'Impossible to get cached TPL. Is the cache directory accessible ? (read/write)';
 			if(PEAR::isError($content))
 				$msg .= ". Cache_Lite says: ".$content->getMessage();
-			$this->_error($msg, __FUNCTION__);
+			$this->_error($msg, __FUNCTION__, true);
 		} else {
 			// si jamais le path a été modifié on remet par défaut
 			$this->_cacheOptions['cacheDir'] = "./CACHE/";
@@ -493,16 +465,10 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 				$content = $this->_eval($content, $context);
 				return show_html($content);
 			}
-			if (!$context['charset'] || $context['charset'] == 'utf-8') {
-				// utf-8 c'est le charset natif, donc on sort directement la chaine.
-				$content = $this->_eval($content, $context);
-				return $content;
-			} else {
-				// isolatin est l'autre charset par defaut
-				$content = $this->_eval(utf8_decode($content), $context);
-				return $content;
-			}
-			$this->_error('Calculating page failed', __FUNCTION__);
+
+			// utf-8 c'est le charset natif, donc on sort directement la chaine.
+			$content = $this->_eval($content, $context);
+			return $content;
 		}
 	}
 
@@ -513,12 +479,15 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	 *
 	 * @param string $msg message d'erreur
 	 * @param string $func nom de la fonction générant l'erreur
+	 * @param bool $clearcache a-t-on besoin de nettoyer le cache ?
 	 * @see _eval()
 	 */
-	private function _error($msg, $func) {
+	private function _error($msg, $func, $clearcache) 
+	{
 		global $lodeluser, $db, $home, $site;
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
-		clearcache();
+		if($clearcache)
+			clearcache();
 		$error = "Error: " . $msg . "\n";
 		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 		if($db->errorno())
@@ -553,7 +522,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0) {
 	$view =& View::getView();
 	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime);
-	echo _indent($content);
+	echo $content;
 }
 
 

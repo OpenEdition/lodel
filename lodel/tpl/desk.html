@@ -140,9 +140,9 @@
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
-			<a class="actif" href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></a>
+			<a class="actif" href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		<ELSE/>
-			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></a>
+			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		</IF>
 		</li>
 	<ELSE/>
