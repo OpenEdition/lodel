@@ -28,7 +28,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-$version="0.8";
+$version="0.9";
 
 ##########################
 
