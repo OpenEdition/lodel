@@ -70,6 +70,7 @@
 
 
 require_once 'cachefunc.php';
+require_once 'func.php';
 
 class View
 {
@@ -320,8 +321,6 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 				require 'loops.php';
 			if(!function_exists('textebrut'))
 				require 'textfunc.php';
-			if(!function_exists('_indent'))
-				require 'func.php';
 			$called = true;
 		}
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
