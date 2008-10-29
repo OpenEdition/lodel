@@ -443,9 +443,9 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
-		return $base. $id. '.'. $GLOBALS['extensionscripts'];
+		return $base. intval($id). '.'. $GLOBALS['extensionscripts'];
 	case 'singleid':
-		return intval($id);
+		return ('index' != $base ? $base. intval($id) : intval($id));
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
 		$path = getPath($id,'path');
@@ -1522,6 +1522,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname)
 	require_once 'Mail/Mail.php';
 	require_once 'Mail/mime.php';
 	$message = new Mail_mime();
+	
+	// body creation
 	$message->setHTMLBody($body);
 	$aParam = array(
 		"text_charset" => "UTF-8",
@@ -1529,15 +1531,19 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname)
 		"head_charset" => "UTF-8"
 	);
 	$body = $message->get($aParam);
-	if(mb_detect_encoding($subject, "auto", TRUE) != "UTF-8") {	
-		$subject = mb_convert_encoding($subject, "UTF-8");
-	}
-	$extraheaders = array("From"=>$fromname."<".$fromaddress.">", "Subject"=>$subject);
-	$headers = $message->headers($extraheaders);
+	// set headers
+	$message->setFrom($fromname."<".$fromaddress.">");
+	$message->setSubject($subject);
+	$headers = $message->headers();
+	unset($message);
+	// send the mail
 	$mail = Mail::factory('mail');
-	return $mail->send($to, $headers, $body);
+	if(PEAR::isError($mail->send($to, $headers, $body)))
+		return false;
+	return true;
 }
 
-// valeur de retour identifier ce script
+// valeur de retour identifiant ce script
+// utilisé dans l'installation pour vérifier l'accès aux scripts
 return 568;
 ?>
