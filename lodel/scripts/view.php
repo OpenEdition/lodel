@@ -175,7 +175,7 @@ class View
 	{
 		global $site, $home;
 
-		$this->_makeCachedFileName($tpl);
+		$this->_makeCachedFileName();
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -183,9 +183,10 @@ class View
 		// efface le cache si demandé
 		if($_REQUEST['clearcache']) {
 			clearcache();
-		} elseif(($caching || !$context['nocache']) && myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
+		} elseif(($caching || !$context['nocache']) && 
+			myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
 			$content = $cache->get($this->_cachedfile, $site)) {
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context, $tpl))) {
+			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
 				echo $content;
 				flush();
@@ -221,6 +222,32 @@ class View
 		return $this->render($context, $tpl, true);
 	}
 
+	/**
+	 * Fonction qui affiche une page mise en cache lorsqu'il n'y a pas de données en $_POST
+	 * 
+	 * @return bool : true si page en cache, false sinon
+	 */
+	public function renderIfCacheIsValid() 
+	{
+		global $site, $context;
+		// only when not in debug mode and no clearcache asked
+		// else render() will do the job to check for tpl mtime
+		if($GLOBALS['debugMode'] || $_REQUEST['clearcache'] || $context['nocache']) 
+			return false;
+		$this->_makeCachedFileName();
+		if(!class_exists('Cache_Lite'))
+			require 'Cache/Lite.php';
+		$cache = new Cache_Lite($this->_cacheOptions);
+		if($content = $cache->get($this->_cachedfile, $site)) {
+			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+				$content = $this->_eval($content, $context, true);
+				echo $content;
+				flush();
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	* Fonction qui affiche un template inclus en LodelScript
@@ -291,16 +318,20 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	}
 
 	/**
-	 * Modifie le nom du fichier à utiliser pour mettre en cache
-	 * @param string $tpl (optionnel) nom du template, par défaut index
+	 * Modifie le nom du fichier à utiliser pour mettre en cache 
+	 *
+	 * Cette fonction calcule le nom du fichier mis en cache uniquement pour la page principale
+	 * et non pour les templates inclus dynamiquement
+	 * @see render()
+	 * @see renderIfCacheIsValid()
 	 */
-	private function _makeCachedFileName($tpl='index') 
+	private function _makeCachedFileName() 
 	{
 		global $lodeluser, $site;
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//". $tpl ."//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//". $lodeluser['name']. "//". $lodeluser['rights'];
 		$GLOBALS['cachedfile'] = getCachedFileName($this->_cachedfile, $site, $this->_cacheOptions);
 	}
 

@@ -75,6 +75,10 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 if ($_POST) {
 	$request = &$_POST;
 } else {
+	require 'view.php';
+	$view =& View::getView();
+	if($view->renderIfCacheIsValid()) return;
+	unset($view);
 	$request = &$_GET;
 }
 
