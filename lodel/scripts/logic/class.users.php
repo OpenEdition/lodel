@@ -424,8 +424,9 @@ class UsersLogic extends Logic
 			$context['siteurl'] = str_replace(":80", "", $row['url']);
 			$context['sitetitle'] = $row['title'];
 		} else { // lodeladmin
-			$context['siteurl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : '');
-			$context['sitetitle'] = 'Lodel administration';
+			$context['siteurl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : '').dirname($_SERVER['REQUEST_URI']);
+			$context['sitetitle'] = $context['siteurl'];
+			$context['islodeladmin'] = true;
 		}
 		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
