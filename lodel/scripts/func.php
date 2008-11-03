@@ -443,18 +443,18 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
-		return $base. $id. '.'. $GLOBALS['extensionscripts'];
+		return $base. intval($id). '.'. $GLOBALS['extensionscripts'];
+	case 'singleid':
+		return ('index' != $base ? $base. intval($id) : intval($id));
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
-		$id = intval($id);
 		$path = getPath($id,'path');
 		return $path;
 	case 'querystring':
-		$id = intval($id);
 		$path = getPath($id,'querystring');
 		return $path;
 	default:
-		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. $id;
+		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. intval($id);
 	}
 }
 
@@ -487,20 +487,20 @@ function getPath($id, $urltype,$base='index')
 		return;
 	}
 	$id = intval($id);
-		$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
-		while(!$result->EOF) {
-			$path.= '/'. $result->fields['identifier'];
-			$result->MoveNext();
-		}
-		$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
-		if ($GLOBALS['db']->errorno()) {
-			dberror();
-		}
-		$path.= "/$id-". $row['identifier'];
-		if($urltype == 'path') {
-			return $base. '.'. $GLOBALS['extensionscripts']. $path;
-		}
-		return "$base.". $GLOBALS['extensionscripts']. "?$path";
+	$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
+	while(!$result->EOF) {
+		$path.= '/'. $result->fields['identifier'];
+		$result->MoveNext();
+	}
+	$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
+	if ($GLOBALS['db']->errorno()) {
+		dberror();
+	}
+	$path.= "/$id-". $row['identifier'];
+	if($urltype == 'path') {
+		return $base. '.'. $GLOBALS['extensionscripts']. $path;
+	}
+	return "$base.". $GLOBALS['extensionscripts']. "?$path";
 }
 
 
@@ -1522,6 +1522,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname)
 	require_once 'Mail/Mail.php';
 	require_once 'Mail/mime.php';
 	$message = new Mail_mime();
+	
+	// body creation
 	$message->setHTMLBody($body);
 	$aParam = array(
 		"text_charset" => "UTF-8",
@@ -1529,15 +1531,19 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname)
 		"head_charset" => "UTF-8"
 	);
 	$body = $message->get($aParam);
-	if(mb_detect_encoding($subject, "auto", TRUE) != "UTF-8") {	
-		$subject = mb_convert_encoding($subject, "UTF-8");
-	}
-	$extraheaders = array("From"=>$fromname."<".$fromaddress.">", "Subject"=>$subject);
-	$headers = $message->headers($extraheaders);
+	// set headers
+	$message->setFrom($fromname."<".$fromaddress.">");
+	$message->setSubject($subject);
+	$headers = $message->headers();
+	unset($message);
+	// send the mail
 	$mail = Mail::factory('mail');
-	return $mail->send($to, $headers, $body);
+	if(PEAR::isError($mail->send($to, $headers, $body)))
+		return false;
+	return true;
 }
 
-// valeur de retour identifier ce script
+// valeur de retour identifiant ce script
+// utilisé dans l'installation pour vérifier l'accès aux scripts
 return 568;
 ?>

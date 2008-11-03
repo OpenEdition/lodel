@@ -57,11 +57,14 @@
  * @param string $default la valeur par défaut à valider (si le texte est vide). Est vide par défaut
  * @param string $name le nom du champ
  * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
+ * @param array $context le context utilisé par la fonction appelante
  * @return boolean true si le champ est valide. false sinon
  */
-function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="")
+function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="", $context=null)
 {
+	global $db;
 	static $tmpdir;
+	static $masks = array();
 	require_once 'fieldfunc.php';
 	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
@@ -73,7 +76,29 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'longtext' :
 		if (!$text) {
 			$text = $default;
+		} elseif($name) {
+			if(!$masks[$context['class']]) {
+				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext')"));
+				if(!$fields) return true;
+				while(!$fields->EOF) {
+					if($fields->fields['mask'] != '') {
+						$mask = unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+						$masks[$context['class']][$fields->fields['name']]['lodel'] = $mask['lodel'];
+						$masks[$context['class']][$fields->fields['name']]['user'] = $mask['user'];
+					}
+					$fields->MoveNext();
+				}
+				unset($mask);
+			}
+			
+			if(isset($masks[$context['class']][$name]['lodel'])) {
+				$ret = @preg_match($masks[$context['class']][$name]['lodel'], $text);
+				if(FALSE === $ret) die('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.');
+				// doesn't validate mask
+				if(0 === $ret) return 'mask: '.getlodeltextcontents('field_doesnt_match_mask', 'common').' ("'.htmlentities($masks[$context['class']][$name]['user']).'")';
+			}
 		}
+
 		return true; // always true
 		break;
 	case 'select_lang':

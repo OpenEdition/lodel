@@ -1350,7 +1350,7 @@ function HTML2XML($str, $reverse=false){
 * @param string $type 
 */
 
-function getParentByType($id,$type){
+function getParentByType($id,$type, $return=false){
         $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
         $r = mysql_query($q);
         if($idparent = @mysql_result($r, 0)){
@@ -1360,9 +1360,13 @@ function getParentByType($id,$type){
                 $ltype = mysql_result($r2, 0);
                 //echo mysql_error();
                 if($ltype == $type){
-                        echo $idparent;
+			if($return) return $idparent;
+                        else echo $idparent;
                 }else{
-                        getParentByType($idparent, $type);
+			if($return)
+                        	return getParentByType($idparent, $type, $return);
+			else
+				getParentByType($idparent, $type);
                 }
         }else{
                 return(FALSE);

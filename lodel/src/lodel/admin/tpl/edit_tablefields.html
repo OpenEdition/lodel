@@ -35,6 +35,7 @@
 			<IF COND="[#ID]">
 				return confirm("[@ADMIN.CONFIRM_CHANGE_FIELDTYPE]");
 			</IF>
+			
 		}
 	//
 		
@@ -145,7 +146,7 @@
   <label for="type">[@ADMIN.FIELD_TYPE] : 
 		</label>
   <br class="nobr">
-  <select name="type" id="type" onChange="confirm_change_type();">
+  <select name="type" id="type" onChange="confirm_change_type();displayMask();">
     <?php 
 						makeSelect($context,"type","tablefields","select");
 					?>
@@ -216,6 +217,26 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROCESSING_IMPORT]"></FUNC>
     </span>
   </LOOP>
+  <br />
+  <div id="mask" style="display:none">
+  <label for="mask">[@ADMIN.MASK_IMPORT] : </label>
+  <br class="nobr">
+    <input type="text" size="30" name="mask[user]" id="mask[user]" class="text" value="[#MASK.USER]">&nbsp;
+    [@ADMIN.MASK_REASONNABLE] : <input name="mask_reasonable" value="1" type="checkbox" <IF COND="[#MASK.MODEL] EQ 'reasonable'">checked</IF>/>&nbsp;
+    [@ADMIN.MASK_REGEXP] : <input type="checkbox" name="mask_regexp" value="1" <IF COND="[#MASK.MODEL] EQ 'regexp'">checked</IF>/>
+    <LOOP NAME="fielderror" FIELD="mask"><a id="mask"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.MASK_ERROR]"></FUNC></span></LOOP>
+  </div>
+<script type="text/javascript">
+function displayMask() {
+	var typeText = document.getElementById('type');
+	if(typeText.value == 'text' || typeText.value == 'tinytext' || typeText.value == 'longtext') {
+		document.getElementById('mask').style.display = 'block';
+	} else {
+		document.getElementById('mask').style.display = 'none';
+	}
+}
+displayMask();
+</script>
   <br />
   <label for="allowedtags">[@ADMIN.ALLOWED_TAGS] : 
 		</label>

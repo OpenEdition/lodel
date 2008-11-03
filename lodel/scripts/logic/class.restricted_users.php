@@ -336,9 +336,10 @@ class Restricted_UsersLogic extends Logic
 									'passwd' => array('passwd', ''),
 									'lastname' => array('text', ''),
 									'firstname' => array('text', ''),
-									'email' => array('email', ''),
+									'email' => array('email', '+'),
 									'expiration' => array('date', '+'),
-									'lang' => array('lang', '+'));
+									'lang' => array('lang', '+'),
+									'ip' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 

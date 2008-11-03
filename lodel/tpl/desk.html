@@ -69,6 +69,7 @@
 		margin-left:1em;
 		margin-bottom:.2em;
 		font-size: 90%;
+		text-align:left;
 	}
 	
 </style>
@@ -136,13 +137,13 @@
 			[#SITE]-[#LODELUSER.ID]
 		</IF>
 		</LET>
-		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee LIKE '%:[#LODELUSERID|trim]:%' AND status EQ 1">
+		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status EQ 1">
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
-			<a class="actif" href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></a>
+			<a class="actif" href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		<ELSE/>
-			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></a>
+			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		</IF>
 		</li>
 	<ELSE/>
@@ -352,10 +353,10 @@
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>
 		</DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser">
-		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%HASADMINLOGGED]">, </IF>[#USERNAME]</LET></IF></DOFIRST>
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
 	</LOOP>
 <ELSE />

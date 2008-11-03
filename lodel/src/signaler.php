@@ -79,13 +79,6 @@ if (mysql_num_rows($result) < 1) {
 
 $context = array_merge($context, filtered_mysql_fetch_assoc($context, $result));
 
-if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
-	// check the cache.
-	if ($view->renderIfCacheIsValid()) {
-		return;
-	}
-}
-
 // send
 if ($envoi) {
 	extract_post();

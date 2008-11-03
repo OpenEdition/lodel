@@ -128,6 +128,7 @@ if($website->context['name'] && !$website->context['dbname'])
 
 unset($t);
 if ($task === 'createdb') {
+
 	$t = $website->createDB($lodeldo);
 
 	if($t === true)

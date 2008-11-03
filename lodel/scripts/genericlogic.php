@@ -293,7 +293,7 @@ class GenericLogic extends Logic
 				$value = trim(strip_tags($value));
 			}
 
-			$valid = validfield($value, $type, $field->default, $name, 'data');
+			$valid = validfield($value, $type, $field->default, $name, 'data', '', $context);
 			if ($valid === true)	{				
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {

@@ -46,10 +46,6 @@
 
 require 'lodelconfig.php';
 
-# la version est vide pour lodeldevel
-# sinon mettre la version sous forme numerique entre guillement. exemple: $version="0.4";
-$version = "0.8";
-
 $site = "";
 
 ##########################################

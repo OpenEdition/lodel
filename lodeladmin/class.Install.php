@@ -1177,13 +1177,13 @@ class Install {
 	function makeSelectLang($tpr)
 	{
 		global $db;
-		include($this->lodelconfig);
+		@include($this->lodelconfig);
 		$text_lang = "";
 		$GLOBALS['database'] = $database;
 		$GLOBALS['dbusername'] = $dbusername;
 		$GLOBALS['dbpasswd'] = $dbpasswd;
 		$GLOBALS['dbhost'] = $dbhost;
- 		require_once("../lodel".$this->versionsuffix."/scripts/connect.php");
+ 		@require_once("../lodel".$this->versionsuffix."/scripts/connect.php");
  		$result=$db->execute(lq("SELECT lang,title FROM ".$tpr."translations WHERE status>0 AND textgroups='interface'")) or die("ERROR : error during selecting lang");
  		$lang=$this->installlang;
  		while(!$result->EOF) {

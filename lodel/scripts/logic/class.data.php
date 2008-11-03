@@ -832,7 +832,7 @@ class DataLogic
 					$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
 	
 					#echo $p_header['stored_filename'],"<br>";
-					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql)$/", $p_header['stored_filename']);
+					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
 				}
 				// end of function to exclude files
 				foreach ($zipdirs as $dir) {
@@ -1372,7 +1372,7 @@ class DataLogic
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
 		require_once 'func.php';
-		$dtd = @copy(SITEROOT . '../share-0.8/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		$dtd = @copy(SITEROOT . '../share-'.$GLOBALS['version'].'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir "'.tmpdir().'". Aborted.';
 			return;

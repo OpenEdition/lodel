@@ -39,7 +39,7 @@ comment */
 # version de Lodel
 $version="0.9";
 # révision SVN de la release
-$revision="";
+$revision="443X";
 
 
 # Racine de lodel sur le systeme

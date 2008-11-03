@@ -333,7 +333,7 @@ class LodelParser extends Parser
 	//
 	// Traitement special des variables
 	//
-	function parse_variable_extra($prefix, $varname)
+	function parse_variable_extra($prefix, $varname, $continue = false)
 	{
 		// VARIABLES SPECIALES
 		if ($prefix == "#") {
@@ -354,7 +354,8 @@ class LodelParser extends Parser
 				$name = $varname;
 				$group = "site";
 			}
-			return $this->maketext($name, $group, "@");
+			if(!$continue)
+				return $this->maketext($name, $group, "@");
 		}
 		return FALSE;
 	}

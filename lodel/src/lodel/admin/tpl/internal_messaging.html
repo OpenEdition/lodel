@@ -29,18 +29,12 @@
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
 
+<!--[
 <IF COND="![%NBMSGS|isset]">
-<LET VAR="lodeluserid">
-<IF COND="[#LODELUSER.ADMINLODEL]">
-	lodelmain-[#LODELUSER.ID]
-<ELSE />
-	[#SITE]-[#LODELUSER.ID]
-</IF>
-</LET>
-<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee LIKE '%:[#LODELUSERID|trim]:%' AND status EQ 1">
+<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status EQ 1">
 <LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 </LOOP>
-</IF>
+</IF>]-->
 
 <title>[(#SITE|strtoupper)].[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF>
 </title>
@@ -51,6 +45,9 @@
 	<ul class="actions">
 		<li class="isolated">
 			<span class="inactif"><a href="index.php?do=view&amp;lo=internal_messaging">[@ADMIN.ADD_INTERNAL_MESSAGING]</a></span>
+		</li>
+		<li class="isolated">
+			<span class="inactif"> - <a href="index.php?do=delete&amp;lo=internal_messaging&amp;all=1" onclick="return confirm('[@ADMIN.INTERNAL_MESSAGING_CONFIRM_CLEAR]')">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</a></span>
 		</li>
 	</ul>
 </li>
@@ -69,7 +66,7 @@
 <legend>[@ADMIN.INTERNAL_MESSAGING_NEW_MAIL]</legend>
 <p>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: [#DATA.SUBJECT]</p>
 <p>[@ADMIN.INTERNAL_MESSAGING_SENDER]: [#DATA.SENDER]</p>
-<p>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :<br>[#DATA.BODY]</p>
+<p>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :<br>[#DATA.BODY|nl2br]</p>
 </fieldset>
 <fieldset>
 <legend>[@COMMON.VALIDATION]</legend>
@@ -79,8 +76,16 @@
 </fieldset>
 
 <ELSE/>
-	<LET VAR="idpar"><IF COND="[#IDPARENT]">[#IDPARENT]<ELSE />0</IF></LET>
-	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee LIKE '%:[#LODELUSERID|trim]:%' AND status GT -64 AND idparent = '[#IDPAR]'" ORDER="upd DESC">
+
+	<LET VAR="lodeluserid">
+	<IF COND="[#LODELUSER.ADMINLODEL]">
+		lodelmain-[#LODELUSER.ID]
+	<ELSE />
+		[#SITE]-[#LODELUSER.ID]
+	</IF>
+	</LET>
+	<LET VAR="idpar"><IF COND="[#IDPARENT]">[#IDPARENT]<ELSE/>0</IF></LET>
+	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status GT -64 AND idparent = '[#IDPAR]'" ORDER="upd ASC">
 		<BEFORE><ul></BEFORE>
 		<DO><li>
 		<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/"><LET VAR="userdb"><IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF></LET></IF>
@@ -89,7 +94,7 @@
 		<LOOP NAME="getUserName" DATABASE="[#USERDB]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
 			[@ADMIN.INTERNAL_MESSAGING_FROM]: [#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF> - 
 		</LOOP>
-		[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: <IF COND="![#SUBJECT]">[@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT]<ELSE />[#SUBJECT]</IF> - [@ADMIN.INTERNAL_MESSAGING_DATE]: [#UPD|humandate]
+		[@ADMIN.INTERNAL_MESSAGING_SUBJECT]: <IF COND="![#SUBJECT]">([@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT])<ELSE />[#SUBJECT]</IF> - [@ADMIN.INTERNAL_MESSAGING_DATE]: [#UPD|humandate]
 		<IF COND="1 EQ [#STATUS]"></strong></IF></a>
 		<br />
 		<LET VAR="idpar">[#ID]</LET>

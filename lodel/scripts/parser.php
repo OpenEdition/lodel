@@ -537,6 +537,7 @@ class Parser
 				case 'NAME' :
 					break;
 				case 'DATABASE' :
+					// si la database est dynamique, on rajoute le préfix pour les tables
 					$database = '`'.trim($value). '`.';
 					break;
 				case 'WHERE' :

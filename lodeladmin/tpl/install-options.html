@@ -140,7 +140,10 @@ include 'tpl/install-openhtml.html';
 		<code>http://monsite.com/index1.php</code><br />
 		<input type="radio" name="newuri" id="newurirightid" value="rightid" <?php if(URI=="rightid" || (URI!="leftid" && URI!="path")) echo "checked";?> />
 		<label for="newurirightid" class="boolean">[@INSTALL.RIGHTID_FORMAT]</label>
-		<code>http://monsite.com/index.php?id=1</code>
+		<code>http://monsite.com/index.php?id=1</code><br />
+		<input type="radio" name="newuri" id="newurisingleid" value="singleid" <?php if(URI=="singleid") echo "checked";?> />
+		<label for="newurisingleid" class="boolean">[@INSTALL.SINGLEID_FORMAT]</label>
+		<code>http://monsite.com/1</code>
 	</fieldset>
 
 	<fieldset class="install">
