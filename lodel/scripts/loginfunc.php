@@ -82,6 +82,7 @@ function open_session($login)
 		die("Probleme avec setcookie... probablement du texte avant");
 
 	usecurrentdb();
+	return $name;
 }
 
 
@@ -296,7 +297,7 @@ function check_internal_messaging()
 	global $db, $context, $site, $lodeluser, $urlroot;
 	$lodeluserid = ($site && !$lodeluser['adminlodel']) ? $site.'-'.$lodeluser['id'] : 'lodelmain-'.$lodeluser['id'];
 
-	$msg = $db->getOne(lq("SELECT count(id) as nbMsg FROM #_MTP_internal_messaging WHERE addressee LIKE '%:{$lodeluserid}:%' AND status = '1' AND cond = '1'"));
+	$msg = $db->getOne(lq("SELECT count(id) as nbMsg FROM #_MTP_internal_messaging WHERE addressee = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
 	if($msg) {
 		header("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : '').$urlroot.$site.'/lodel/admin/index.php?do=list&lo=internal_messaging');
 		exit();

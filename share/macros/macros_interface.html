@@ -86,7 +86,7 @@
 <IF COND="[#ERROR] eq 'identifier'">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</IF>
 <IF COND="[#ERROR] eq 'lang'">[@COMMON.INVALID_LANGUAGE_CODE]</IF>
 <IF COND="[#ERROR] eq 'numeric'">[@COMMON.ERROR_FIELD_MUST_BE_NUMERIC|sprintf([#TITLE])]</IF>
-<IF COND="[#ERROR|strpos('mask:')] eq 0">[#ERROR|substr(5)]</IF>
+<IF COND="[#ERROR|strpos('mask:')] SEQ 0">[#ERROR|substr(5)]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 
@@ -1616,11 +1616,13 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTITIES_SITEMAP" REQUIRED="id" OPTIONAL="folder">
+	<script type="text/javascript">var html = document.getElementById('listIDs').innerHTML;if(html.indexOf(',[#ID],')<0) document.getElementById('listIDs').innerHTML += '[#ID],';</script>
 	<ul class="listEntities">
 	<LOOP NAME="getAllEntitiesByTree" TABLE="entities, types" WHERE="idparent='[#ID]' AND types.id=idtype" ORDER="entities.rank">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div style="display:none;" id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
+		<script type="text/javascript">var html = document.getElementById('listIDs').innerHTML;if(html.indexOf(',[#ID],')<0) document.getElementById('listIDs').innerHTML += '[#ID],';</script>
 		<IF COND="[#COUNT] % 2">
 			<li class="line1">
 		<ELSE/>
@@ -1630,11 +1632,12 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 			<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 			<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 		</div>
+		<LET VAR="sitemap">true</LET>
 		<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 		<LOOP NAME="countChildren" TABLE="entities" SELECT="count(id) as nbres" WHERE="idparent='[#ID]'">
 			<IF COND="[#NBRES] GT 0">
 				<div class="entityIcons">
-				&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]') && document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_haut_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { if(document.getElementById('childContainer[#ID]')) { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png';this.title='[@ADMIN.GET_UNFOLDED]'; } }" />
+				&nbsp;<img id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="changeIcon([#ID])" />
 				</div>
 				<FUNC NAME="LIST_ENTITIES_SITEMAP" ID="[#ID]" FOLDER="yes"/>
 			</IF>
@@ -1676,6 +1679,7 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 			</div>
+			<LET VAR="count_documents">[#COUNT]</LET>
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 
@@ -1988,7 +1992,7 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFMACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
-	<div class="document">
+	<div class="document"<IF COND="[#COUNT_DOCUMENTS|isset]"> id="document_[#COUNT_DOCUMENTS]"</IF>>
 	<!--[PROPRE AU ME REVUES.ORG]-->
 	<LET VAR="iddocument">[#ID]</LET>
 	<!--[v�rifie que le champ 'numero' existe dans la table correspondante au type de l'entit�]-->
@@ -2040,9 +2044,13 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 	</IF>
 	<LOOP NAME="getannexes" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 0" ORDER="type, entities.rank">
 		<LOOP NAME="rightonentity" ACTION="edit">
+		<IF COND="![#SITEMAP]">
 		<a href="index.php?do=view&amp;id=[#ID]" title="[#G_TITLE|textebrut|nbsp]">
 			<MACRO NAME="STATUS_ANNEXE">
 		</a>
+		<ELSE/>
+			<MACRO NAME="STATUS_ANNEXE">
+		</IF>
 		<ALTERNATIVE>
 			<MACRO NAME="STATUS_ANNEXE">
 		</ALTERNATIVE>

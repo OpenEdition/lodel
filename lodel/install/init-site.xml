@@ -895,6 +895,11 @@
 			required="true"
 			label="[@ADMIN.RESTRICTEDUSER_EXPIRATIONDATE]"
 			edittype="date"/>
+		<column name="ip"
+			type="VARCHAR"
+			size="255"
+			label="[@ADMIN.RESTRICTED_USERS_IP]"
+			edittype="text"/>
 	</vgroup>
 	<vgroup name="lodel_informations"
 		label="[@ADMIN.USER_LODEL_INFORMATIONS]">

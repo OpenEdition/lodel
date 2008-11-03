@@ -51,14 +51,13 @@ var mouseOffset = null;
 var iMouseDown  = false;
 var lMouseState = false;
 
-// Demo 0 variables
 var DragDrops   = [];
 var curTarget   = null;
 var lastTarget  = null;
 var dragHelper  = null;
 var rootParent  = null;
 var rootSibling = null;
-var tabIds	= [];
+var tabDiffIds	= [];
 
 Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
 
@@ -84,12 +83,8 @@ function CreateDragContainer(){
 		this attribute in the mouseMove function
 		*/
 		for(var j=0; j<cObj.childNodes.length; j++){
-			if(cObj.childNodes[j].id)
-				tabIds[j] = cObj.childNodes[j].id;
-
 			// Firefox puts in lots of #text nodes...skip these
 			if(cObj.childNodes[j].nodeName=='#text') continue;
-
 			cObj.childNodes[j].setAttribute('DragObj', cDrag);
 		}
 	}
@@ -121,6 +116,7 @@ function getMouseOffset(target, ev){
 	return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
 }
 function mouseMove(ev){
+
 	ev = ev || window.event;
 	/*
 	We are setting target to whatever item the mouse is currently on
@@ -132,7 +128,6 @@ function mouseMove(ev){
 	var mousePos = mouseCoords(ev);
 	// mouseOut event - fires if the item the mouse is on has changed
 	if(lastTarget && (target!==lastTarget)){
-
 		// reset the classname for the target element
 		var origClass = lastTarget.getAttribute('origClass');
 		if(origClass) lastTarget.className = origClass;
@@ -147,7 +142,6 @@ function mouseMove(ev){
 	if(dragObj!=null){
 		// mouseOver event - Change the item's class if necessary
 		if(target!=lastTarget){
-
 			var oClass = target.getAttribute('overClass');
 			if(oClass){
 				target.setAttribute('origClass', target.className);
@@ -169,17 +163,20 @@ function mouseMove(ev){
 			dragList.className = 'listEntities';
 			var dragLi = dragList.appendChild(document.createElement('LI'));
 			for(var i=0; i<curTarget.childNodes.length; i++) {
-				if((curTarget.childNodes[i].className == 'document' || curTarget.childNodes[i].className == 'entityIcons') && curTarget.childNodes[i].nodeName == 'DIV') {
-					if(curTarget.childNodes[i].className == 'document') {
-						var clone = curTarget.childNodes[i].cloneNode(true);
-						clone.style.width = '600px';
-						dragLi.appendChild(clone);
-						clone = null;
-					} else dragLi.appendChild(curTarget.childNodes[i].cloneNode(true));
+				if(curTarget.childNodes[i].nodeName == 'DIV' &&
+				curTarget.childNodes[i].className.indexOf('document') == 0) {
+					var largeur = curTarget.childNodes[i].style.width;
+					var clone = curTarget.childNodes[i].cloneNode(true);
+					clone.className = "";
+					clone.style.width = parseInt((largeur.substr(0, largeur.length-1)*document.body.clientWidth)/100)-10 + "px";
+					dragLi.style.border = "0px";
+					dragLi.style.padding = "1em 0 0 1em";
+					dragLi.appendChild(clone);
 				}
 			}
 			dragHelper.appendChild(dragList);
-			dragHelper.style.width = '700px';
+			dragHelper.style.width = largeur;
+			dragHelper.style.height = "3em";
 			dragHelper.style.display = 'block';
 			// set the class on our helper DIV if necessary
 			var dragClass = curTarget.getAttribute('dragClass');
@@ -237,7 +234,7 @@ function mouseMove(ev){
 	if(curTarget){
 		// move our helper div to wherever the mouse is (adjusted by mouseOffset)
 		dragHelper.style.top  = mousePos.y - mouseOffset.y+"px";
-		dragHelper.style.left = mousePos.x - mouseOffset.x+"px";
+		dragHelper.style.left = mousePos.x - mouseOffset.x+115+"px";
 		var dragConts  = DragDrops[curTarget.getAttribute('DragObj')];
 		var activeCont = null;
 		var xPos = mousePos.x - mouseOffset.x + (parseInt(curTarget.getAttribute('startWidth')) /2);
@@ -246,18 +243,16 @@ function mouseMove(ev){
 		for(var i=0; i<dragConts.length; i++){
 			with(dragConts[i]){
 				if((parseInt(getAttribute('startLeft')) < xPos) &&
-					(parseInt(getAttribute('startTop')) < yPos) &&
-					((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
-					((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
-
-						/*
-						our target is inside of our container so save the container into
-						the activeCont variable and then exit the loop since we no longer
-						need to check the rest of the containers
-						*/
-						activeCont = dragConts[i];
-						// exit the for loop
-						break;
+				(parseInt(getAttribute('startTop')) < yPos) &&
+				((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
+				((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
+					/*
+					our target is inside of our container so save the container into
+					the activeCont variable and then exit the loop since we no longer
+					need to check the rest of the containers
+					*/
+					activeCont = dragConts[i];
+					break;
 				}
 			}
 		}
@@ -270,10 +265,10 @@ function mouseMove(ev){
 				with(activeCont.childNodes[i]){
 					if(nodeName=='#text') continue;
 					// if the current item is "After" the item being dragged
-					if(curTarget != activeCont.childNodes[i]                                                  &&
-						((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
-						((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
-							beforeNode = activeCont.childNodes[i];
+					if(curTarget != activeCont.childNodes[i] &&
+					((parseInt(getAttribute('startLeft')) + parseInt(getAttribute('startWidth')))  > xPos) &&
+					((parseInt(getAttribute('startTop'))  + parseInt(getAttribute('startHeight'))) > yPos)){
+						beforeNode = activeCont.childNodes[i];
 					}
 				}
 			}
@@ -297,21 +292,14 @@ function mouseMove(ev){
 			if(curTarget.style.display!=''){
 				curTarget.style.display = '';
 			}
-		} else {
-			// our drag item is not in a container, so hide it.
-			if(curTarget.style.display!='none'){
-				curTarget.style.display = 'none';
-			}
 		}
 	}
-	// track the current mouse state so we can compare against it next time
-	lMouseState = iMouseDown;
 	// mouseMove target
 	lastTarget  = target;
 	// track the current mouse state so we can compare against it next time
 	lMouseState = iMouseDown;
 	// this prevents items on the page from being highlighted while dragging
-	if(curTarget) return false;
+	return false;
 }
 function mouseUp(ev){
 	if(curTarget){
@@ -323,7 +311,7 @@ function mouseUp(ev){
 				rootParent.appendChild(curTarget);
 			}
 		}
-		curTarget.style.display    = '';
+		curTarget.style.display    = 'block';
 		curTarget.style.visibility = 'visible';
 		var tabDiffIds = [];
 		var j=0;
@@ -347,18 +335,17 @@ function mouseUp(ev){
 	}
 	curTarget  = null;
 	iMouseDown = false;
+	document.onselectstart = function() { return true; };
 }
 
 function mouseDown(ev){
+	document.onselectstart = function() { return false; };
 	ev         = ev || window.event;
 	var target = ev.target || ev.srcElement;
 
 	iMouseDown = true;
 
-	if(target.onmousedown || target.getAttribute('DragObj')){
-		return false;
-	}
-	return true;
+	return false;
 }
 </script>
 	
@@ -373,11 +360,23 @@ function mouseDown(ev){
 	</div>
 	
 <script type="text/javascript">
+	var content = '';
+	var i = 1;
+	var div = null;
+	var largeur = 0;
+	while((div = document.getElementById('document_'+i)) != null) {
+		content = div.innerHTML;
+		content = content.replace(/<[^>]+>/g, '');
+		largeur = parseInt(content.length / 2.2);
+		div.style.width = largeur > 45 ? "45%":largeur+"%";
+		i++;
+	}
+	
 	// Create our helper object that will show the item while dragging
 	setTimeout(function(){
 			dragHelper = document.createElement('DIV');
 			document.body.appendChild(dragHelper);
-			dragHelper.style.cssText = 'position:absolute;display:none;';
+			dragHelper.style.cssText = 'position:absolute;display:none;background-color:white;border:1px solid #999;';
 		}, 10);
 	document.onmousemove = mouseMove;
 	document.onmousedown = mouseDown;

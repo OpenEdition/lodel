@@ -63,11 +63,13 @@ function clearcache($allCache=true)
 			removefilesincache(".");
 		}
 	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
-		require_once 'Cache/Lite.php';
+		if(!class_exists('Cache_Lite'))
+			require 'Cache/Lite.php';
 		$options = $GLOBALS['cacheOptions'];
 		if (defined("SITEROOT")) {
 			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
 			foreach($cacheReps as $rep) {
+				$cache = null;
 				$rep = "./".$rep;
 				$options['cacheDir'] = $rep.'/CACHE/';
 				if(!file_exists($options['cacheDir']))
@@ -78,7 +80,6 @@ function clearcache($allCache=true)
 				} else {
 					$cache->clean();
 				}
-				$cache = null;
 			}
 		} else {
 			$cache = new Cache_Lite($GLOBALS['cacheOptions']);
@@ -112,7 +113,7 @@ function removefilesincache()
 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
 		clearstatcache();
 		while (($file = readdir($fd)) !== false) {
-			if (($file[0] == ".") || ($file == "CVS") || ($file == "upload") || ($file == 'require_caching'))
+			if (($file{0} == ".") || ($file == "CVS") || ($file == "upload") || ($file == 'require_caching'))
 				continue;
 			$file = $rep. "/". $file;
 			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement

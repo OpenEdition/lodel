@@ -72,6 +72,36 @@ class TranslationsLogic extends Logic {
 	}
 
 	/**
+	 * lookfor Action
+	 * recherche dans tous les templates du site les variables LS de traductions
+	 */
+	function lookforAction(&$context, $error)
+	{
+		$this->_setTextGroups($context);
+		if('site' != $context['textgroups']) return '_back';
+		if(!class_exists('LodelParser')) require 'lodelparser.php';
+		$lodelparser = new LodelParser();
+		$cacheDirs = new RecursiveDirectoryIterator(SITEROOT.'tpl/');
+		$cache = new RecursiveIteratorIterator($cacheDirs);
+		$vars = array();
+		foreach($cache as $file) {
+			if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
+			if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {
+				$matches = array_unique($matches[1]);
+				foreach($matches as $var) {
+					if(!isset($vars[$var])) {
+						$lodelparser->parse_variable_extra('@', $var, true);
+						$vars[$var] = true;
+					}
+				}
+			}
+		}
+		unset($vars);
+		update();
+		return '_back';
+	}
+
+	/**
 		* list Action
 		*/
 

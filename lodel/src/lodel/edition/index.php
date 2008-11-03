@@ -55,7 +55,7 @@ if ($_GET['page'] == 'backend' && $_GET['format'] ) {
 else {
 	authenticate(LEVEL_VISITOR);
 	}
-
+define('backoffice', true);
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	if ($lodeluser['rights'] >= LEVEL_ADMIN) {
 		require_once ('entitiesfunc.php');

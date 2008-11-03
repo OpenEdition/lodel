@@ -43,11 +43,42 @@
 	</ul>
 	<ul id="actionsOnEntitiesPath">
 		<li>
+		<a href="#" id="displayButton" onclick="javascript:displayAll();">[@COMMON.DISPLAY_ALL_SITEMAP]</a>
+		</li>
+		<li>
 		<a href="[#CURRENTURL]&amp;xml=1" target="_blank">[@COMMON.XML_FILE]</a>
 		</li>
 	</ul>
+	<div id="listIDs" style="display:none;"></div>
 	<div id="listEntities">
 		<FUNC NAME="LIST_ENTITIES_SITEMAP" ID="0"/>
 	</div>
+<script type="text/javascript">
+function displayAll() {
+	var liste = document.getElementById('listIDs').innerHTML;
+	var tabIds = liste.split(',');
+	var i;
+	var currentBlock;
+	for(i=0;i<tabIds.length;i++) {
+		currentBlock = document.getElementById('childContainer'+tabIds[i]);
+		if(currentBlock) {
+			changeIcon(tabIds[i]);
+		}
+	}
+	if(document.getElementById('displayButton').innerHTML == '[@COMMON.DISPLAY_ALL_SITEMAP]') document.getElementById('displayButton').innerHTML = '[@COMMON.HIDE_ALL_SITEMAP]';
+	else document.getElementById('displayButton').innerHTML = '[@COMMON.DISPLAY_ALL_SITEMAP]';
+}
+function changeIcon(id) {
+	if(document.getElementById('childContainer'+id).style.display == 'none') { 
+		document.getElementById('childContainer'+id).style.display='block';
+		document.getElementById('img'+id).src='[#SHAREURL]/images/fleche_bas_gris.png';
+		document.getElementById('img'+id).title='[@ADMIN.GET_FOLDED]';  
+	} else {
+		document.getElementById('childContainer'+id).style.display='none';
+		document.getElementById('img'+id).src='[#SHAREURL]/images/fleche_droite_gris.png';
+		document.getElementById('img'+id).title='[@ADMIN.GET_UNFOLDED]'; 
+	} 
+}
+</script>
 	<MACRO NAME="CLOSE_HTML">
 </IF>

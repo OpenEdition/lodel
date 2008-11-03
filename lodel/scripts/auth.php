@@ -87,11 +87,27 @@ function authenticate($level = 0, $mode = "")
 		do { // block de control
 			$name = addslashes($_COOKIE[$sessionname]);
 			if (!$name) {
-				break;
+				// check for restricted users by client IP address
+				$ip = $_SERVER['REMOTE_ADDR'];
+				list($oct1,$oct2,$oct3,$oct4) = sscanf($ip, "%d.%d.%d.%d");
+				$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE ip = '$ip' OR ip = '$oct1.$oct2.$oct3.' OR ip = '$oct1.$oct2.' AND status>0"));
+				if(!$row) break;
+				require_once 'loginfunc.php';
+				$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
+				$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
+				$lodeluser['id'] = $row['id'];
+				$lodeluser['name'] = $context['login'] = $row['username'];
+				$lodeluser['groups'] = '';
+				$context['lodeluser'] = $lodeluser; // export info into the context
+				unset($row);
+				if(!check_expiration()) {
+					$context['lodeluser'] = $lodeluser = array();
+					break;
+				}
+				$name = open_session($context['login']);
 			}
 			usemaindb();
 			
-	
 			if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
 				break;
 			}

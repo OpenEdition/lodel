@@ -832,7 +832,7 @@ class DataLogic
 					$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
 	
 					#echo $p_header['stored_filename'],"<br>";
-					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql)$/", $p_header['stored_filename']);
+					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
 				}
 				// end of function to exclude files
 				foreach ($zipdirs as $dir) {

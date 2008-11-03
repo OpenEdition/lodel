@@ -79,6 +79,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		} elseif($name) {
 			if(!$masks[$context['class']]) {
 				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext')"));
+				if(!$fields) return true;
 				while(!$fields->EOF) {
 					if($fields->fields['mask'] != '') {
 						$mask = unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));

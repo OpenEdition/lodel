@@ -174,8 +174,13 @@ class View
 	public function render(&$context, $tpl, $caching = false)
 	{
 		global $site, $home;
-
-		$this->_makeCachedFileName();
+		// if we are in lodel/edition or lodel/admin or /lodeladmin
+		// we need to specify the tpl name
+		// because logic is not all time specified in uri
+		if(defined('backoffice'))
+			$this->_makeCachedFileName($tpl);
+		else
+			$this->_makeCachedFileName();
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -238,7 +243,7 @@ class View
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
-		if($content = $cache->get($this->_cachedfile, $site)) {
+		if($content = $cache->get($this->_cachedfile, $site)) {echo 'ici';
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
 				echo $content;
@@ -265,7 +270,7 @@ class View
 
 		$cachedTemplateFileName = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] . "//". $lodeluser['name']. "//". $lodeluser['rights']."//".$tpl;
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
@@ -322,16 +327,17 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	 *
 	 * Cette fonction calcule le nom du fichier mis en cache uniquement pour la page principale
 	 * et non pour les templates inclus dynamiquement
+	 * @param string $tpl nom du template appellé, optionnel
 	 * @see render()
 	 * @see renderIfCacheIsValid()
 	 */
-	private function _makeCachedFileName() 
+	private function _makeCachedFileName($tpl='') 
 	{
 		global $lodeluser, $site;
 		// Calcul du nom du fichier en cache
 		$this->_cachedfile = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//". $lodeluser['name']. "//". $lodeluser['rights'].($tpl!='' ? '//'.$tpl : '');
 		$GLOBALS['cachedfile'] = getCachedFileName($this->_cachedfile, $site, $this->_cacheOptions);
 	}
 
@@ -622,7 +628,6 @@ function renderOptions($arr, $selected)
 		//sinon on génère une balise <option>
 		else { echo '<option value="'. $k. '" '. $s. '>'. $v. '</option>'; }
 	}
-	
 }
 
 /**
