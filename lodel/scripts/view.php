@@ -185,12 +185,11 @@ class View
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		// efface le cache si demandé
 		if($_REQUEST['clearcache']) {
-			clearcache();
-		} elseif(($caching || !$context['nocache']) && 
-			myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
-			$content = $cache->get($this->_cachedfile, $site)) {
+			clearcache(true);
+		} elseif($caching && !$context['nocache'] && 
+		myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
+		$content = $cache->get($this->_cachedfile, $site)) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
 				echo $content;
@@ -243,7 +242,7 @@ class View
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
-		if($content = $cache->get($this->_cachedfile, $site)) {echo 'ici';
+		if($content = $cache->get($this->_cachedfile, $site)) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
 				echo $content;
@@ -418,10 +417,6 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 
 		$group = $include ? 'TemplateFile' : 'tpl';
 
-		if ($_REQUEST['clearcache']) {
-			clearcache();
-		}
-	
 		$template_cache = "tpl_$base";
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) {
@@ -523,7 +518,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 		global $lodeluser, $db, $home, $site;
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages.
 		if($clearcache)
-			clearcache();
+			clearcache(true);
 		$error = "Error: " . $msg . "\n";
 		$err = $error."\nBacktrace:\n function '".$func."' in file '".__FILE__."' (requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 		if($db->errorno())
