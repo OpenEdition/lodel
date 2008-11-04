@@ -490,6 +490,13 @@
 		default="0"
 		required="true" 
 		label="[@ADMIN.INTERNAL_MESSAGING_TO]"
+		visibility="hidden"
+		edittype="text"/>
+	<column name="addressees"
+		type="LONGVARCHAR"
+		default="0"
+		required="true" 
+		label="[@ADMIN.INTERNAL_MESSAGING_TO]"
 		edittype="multipleselect"/>
 	<column name="subject"
 		type="VARCHAR"

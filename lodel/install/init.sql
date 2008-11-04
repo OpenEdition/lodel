@@ -134,6 +134,7 @@ CREATE TABLE #_MTP_internal_messaging (
   `idparent` int(10) unsigned NOT NULL,
   `iduser` varchar(255) default NULL,
   `addressee` longtext NOT NULL,
+  `addressees` longtext NOT NULL
   `subject` varchar(255) NOT NULL,
   `body` longtext NOT NULL,
   `cond` tinyint(1) NOT NULL default '0',
