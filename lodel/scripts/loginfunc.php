@@ -66,12 +66,11 @@ function open_session($login)
 	$expire2 = time() + $cookietimeout;
 
 	usemaindb();
-
 	for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
 		// name de la session
 		$name = md5($login.microtime());
 		// enregistre la session, si ca marche sort de la boucle
-		$result = $db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2')")) or dberror();
+		$result = $db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2, userrights) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2', '{$lodeluser['rights']}')")) or dberror();
 		if ($result)
 			break; // ok, it's working fine
 	}

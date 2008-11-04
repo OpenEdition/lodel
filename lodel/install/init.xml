@@ -112,6 +112,9 @@
         type="VARCHAR"
         size="4096"
         required="true"/>
+<column name="userrights"
+	type="INTEGER"
+        required="true"/>
 <column name="context"
         type="LONGVARCHAR"
         required="true"/>

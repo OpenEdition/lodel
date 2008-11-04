@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_session (
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 	site		VARCHAR(64) BINARY NOT NULL,
 	currenturl	MEDIUMBLOB,
-
+	userrights	tinyint(3) unsigned NOT NULL default '0'
 	context		TEXT,
 	expire		INT,  # temps d'expiration entre deux access
 	expire2		INT,  # expiration de cette session
