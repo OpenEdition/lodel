@@ -304,14 +304,17 @@ class EntriesLogic extends GenericLogic
 			do {
 				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) or dberror();
 				$ids=array();
-				$i=1;
+				$i=0;
 				while (!$result->EOF) {
 					$id=$result->fields['id'];
 					$ids[]=$id;	 
 					$fullname=$result->fields['g_name'];
 					$idparent=$result->fields['idparent'];
 					if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
-					$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+					do {
+						$i++;
+						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+					} while(isset($arr["p$d"]));
 					$arr["p$d"]=array($id,$fullname);
 					$parent[$id]=$fullname;
 					$i++;
