@@ -83,6 +83,60 @@ table{
 	border-collapse: collapse;
 }
 
+
+table.internal_messaging {
+	width:100%;
+	border:1px solid #F1F1F1;
+}
+table.internal_messaging tr th.im_select {
+	width:1%;
+	border:1px solid #F1F1F1;
+	background-color:#CCC;
+}
+table.internal_messaging tr th.im_from {
+	width:15%;
+	border:1px solid #F1F1F1;
+	background-color:#CCC;
+}
+table.internal_messaging tr th.im_subject {
+	width:59%;
+	border:1px solid #F1F1F1;
+	background-color:#CCC;
+}
+table.internal_messaging tr th.im_date {
+	width:15%;
+	border:1px solid #F1F1F1;
+	background-color:#CCC;
+}
+table.internal_messaging tr td.im_select_line1 {
+	width:1%;
+	background-color:#F1F1F1;
+}
+table.internal_messaging tr td.im_from_line1 {
+	width:15%;
+	background-color:#F1F1F1;
+}
+table.internal_messaging tr td.im_subject_line1 {
+	width:59%;
+	background-color:#F1F1F1;
+}
+table.internal_messaging tr td.im_date_line1 {
+	width:15%;
+	background-color:#F1F1F1;
+}
+table.internal_messaging tr td.im_select_line2 {
+	width:1%;
+}
+table.internal_messaging tr td.im_from_line2 {
+	width:15%;
+}
+table.internal_messaging tr td.im_subject_line2 {
+	width:59%;
+}
+table.internal_messaging tr td.im_date_line2 {
+	width:15%;
+}
+
 /* Affichage des alias côté interface */
 div.alias {
 	position:relative;
@@ -538,12 +592,13 @@ ul.listEntities li ul li{
 	border: 0;
 }
 
-li.line1_entity, li.line2_entity {
-background-image: url(../images/dragndrop.png);
-background-repeat: no-repeat;
-background-position: 0em 1em;
+li.line1_entity div.dragndrop, li.line2_entity div.dragndrop {
+	margin: 2.5ex 0 0 -2ex;
+	float:left;
 }
-
+li.line1_entity a.dragger, li.line2_entity a.dragger {
+	cursor:move;
+}
 ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
 	list-style: none;
 	font-size: 11px;
@@ -568,9 +623,8 @@ ul.listEntities li.unfoldedentities ul li ul{
 ul.listEntities div.entityIcons{
 	position: absolute;
 	left: 2.5em;
-	top: 1ex;
+	top: 1.8ex;
 	width: 70px;
-/* 	background: red; */
 }
 
 ul.listEntities div.entityIcons img.statusIcon, ul.listEntities div.entityIcons img.associatedIcon{
@@ -593,7 +647,7 @@ div.action{
 	position: absolute;
 	right: 1.3em;
 	top: 0;
-	margin: 1.5ex 0 0 0;
+	margin: 1ex 0 0 0;
 	width: auto;
 }
 
@@ -662,9 +716,14 @@ div.action a{
 }
 
 ul.listEntities div.document{
-	margin: 1.5ex 0 .8ex 90px;
+	margin: 2.5ex 0 0 90px;
 	max-width: 45%;
-/* 	float:left; */
+}
+
+ul.listEntities div.alias_container{
+	font-size:85%;
+	display:none;
+	margin: 2.5ex 0 0 0;
 }
 
 ul.listEntities div.document a{

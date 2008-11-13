@@ -1,7 +1,7 @@
 function getXMLHttpRequest() {
 	var xhr=null;
 	if(window.XMLHttpRequest) // Firefox et autres
-	xhr = new XMLHttpRequest(); 
+		xhr = new XMLHttpRequest(); 
 	else if(window.ActiveXObject){ // IE sux
 		try {
 			xhr = new ActiveXObject("Msxml2.XMLHTTP");
@@ -340,6 +340,77 @@ function focusOnLogin(){
 	var loginS = document.getElementById('loginscreen');
 	if(loginS){
 		document.getElementById('login').focus();
+	}
+}
+
+/* IM - select all messages */
+function im_selectAll() 
+{
+	var table = document.getElementById('internal_messaging');
+	if(table) {
+		selects = table.getElementsByTagName('input');
+		if(selects) {
+			for(var i=0;i<selects.length;i++) {
+			with(selects[i]) {
+				if(type == 'checkbox') {
+					if(name == "im_select_all") continue;
+					checked = (checked == "") ? "checked" : "";
+				}
+			}
+			}
+		}
+	}
+}
+
+function manageDesk(shareurl, msgHide, msgShow, site, errorXHR, errorSave) 
+{
+	var desk = document.getElementById('lodel-globalDesk');
+	var img = document.getElementById('lodelGlobalDeskDisplayer-img');
+	if(desk && img) {
+		if(desk.style.display != 'none'){
+			img.src = shareurl + '/images/fleche_bas_gris.png';
+			img.alt = img.title = msgShow;
+			desk.style.display='none';
+		}else{
+			img.src = shareurl + '/images/fleche_haut_gris.png';
+			img.alt = img.title = msgHide;
+			desk.style.display='block';
+		}
+		var xhr = getXMLHttpRequest();
+		if(xhr) {
+			xhr.open("POST", shareurl + '/ajax/desk.php', false);
+			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+			xhr.send('site='+site);
+			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') {
+				alert(errorSave);
+			}
+		} else {
+			alert(errorXHR);
+		}
+	}
+}
+
+/* IM - select action */
+function im_action(action, dir, message)
+{
+	switch(action) {
+	
+	case 'view': window.location='index.php?do=view&lo=internal_messaging';
+	break;
+	case 'rest': document.getElementById('im_restore').value=1;document.getElementById('im_form').submit();
+	break;
+	
+	case 'delSelected':
+	if(confirm(message +' ?')) document.getElementById('im_form').submit();
+	else document.getElementById('actions').selectedIndex = 0;
+	break;
+	
+	case 'delAll':
+	if(confirm(message +' ?')) window.location='index.php?do=delete&lo=internal_messaging&all=1&directory='+dir;
+	else document.getElementById('actions').selectedIndex = 0;
+	break;
+	
+	default: break;
 	}
 }
 
