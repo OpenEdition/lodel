@@ -514,6 +514,8 @@
 		default=""
 		label="[@ADMIN.INTERNAL_MESSAGING_BODY]"
 		edittype="longtext"/>
+	<column name="incom_date"
+		type="DATETIME"/>
 	<column name="cond"
 		type="TINYINT"
 		size="1"

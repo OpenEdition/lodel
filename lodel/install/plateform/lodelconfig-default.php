@@ -38,7 +38,7 @@ comment */
 
 # version de Lodel
 $version="0.9";
-# rÃ©vision SVN de la release
+# revision SVN de la release
 $revision="443X";
 
 
@@ -169,8 +169,8 @@ $cacheOptions = array(
 ##################
 
 $debugMode = false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
-
-setlocale (LC_ALL,"fr_FR.UTF8");
+$locale = "fr_FR.UTF8";
+setlocale (LC_ALL,$locale);
 
 set_magic_quotes_runtime(0);
 ignore_user_abort();
