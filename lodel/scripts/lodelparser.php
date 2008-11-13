@@ -91,6 +91,12 @@ class LodelParser extends Parser
 	 */
 	var $translationlanglist = "'fr','en','es','de'";
 
+	/**
+	 * Nombre de langues disponibles
+	 * Tient compte de la base utilisée
+	 * @var array
+	 */
+	var $nbLangs = array();
 
 	/**
 	 * Constructeur.
@@ -333,7 +339,7 @@ class LodelParser extends Parser
 	//
 	// Traitement special des variables
 	//
-	function parse_variable_extra($prefix, $varname, $continue = false)
+	function parse_variable_extra($prefix, $varname)
 	{
 		// VARIABLES SPECIALES
 		if ($prefix == "#") {
@@ -354,8 +360,7 @@ class LodelParser extends Parser
 				$name = $varname;
 				$group = "site";
 			}
-			if(!$continue)
-				return $this->maketext($name, $group, "@");
+			return $this->maketext($name, $group, "@");
 		}
 		return FALSE;
 	}
@@ -415,7 +420,7 @@ class LodelParser extends Parser
 		$group = strtolower($group);
 
 		if ($GLOBALS['righteditor']) { // cherche si le texte existe
-			require_once 'connect.php';
+			if(!defined('DATABASE')) require 'connect.php';
 
 			if ($group != "site") {
 				usemaindb();
@@ -423,15 +428,20 @@ class LodelParser extends Parser
 			} else	{
 				$prefix = lq("#_TP_");
 			}
-			$textexists = $db->getOne("SELECT 1 FROM ".$prefix."texts WHERE name='$name' AND textgroup='$group'");
+			if(!isset($this->nbLangs[$prefix]))
+				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations");
+			$textexists = $db->getOne("SELECT count(id) FROM {$prefix}texts WHERE name='{$name}' AND textgroup='{$group}'");
 			if ($db->errorno()) {
 				dberror();
 			}
-			if (!$textexists)	{ // text does not exists. Have to create it.
-				require_once "logic.php";
+			if ($textexists < $this->nbLangs[$prefix])	{ 
+				// text does not exists or not available in every langs
+				// Have to create them
+				if(!class_exists('getLogic')) require "logic.php";
 				$textslogic = getLogic("texts");
 				$textslogic->createTexts($name, $group);
 			}
+			
 			if ($group != "site") {
 				usecurrentdb();
 			}
@@ -502,7 +512,7 @@ class LodelParser extends Parser
 		// add the code for the desk
 		if (!$GLOBALS['nodesk']) {
 			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert the desk
-	if(!function_exists("insert_template")) { include "view.php"; }
+	if(!function_exists("insert_template")) { require "view.php"; }
 	insert_template($context,"desk","",$GLOBALS[\'home\']."../tpl/");
 	?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
 

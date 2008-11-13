@@ -60,7 +60,8 @@ function open_session($login)
 
 	// context
 	$lodeluser['name'] = $login;
-
+	// by default, we want the desk
+	$lodeluser['desk'] = true;
 	$contextstr = addslashes(serialize($lodeluser));
 	$expire = time() + $timeout;
 	$expire2 = time() + $cookietimeout;
@@ -206,18 +207,18 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 	$datab = addslashes($datab);
 	$old_pass = md5($old_passwd . $login);
 	mysql_select_db($datab);
-	$res = $db->getall("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
+	$res = $db->getRow("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
 
-	if(!$res[0])
+	if(!$res)
 		return false;
 	else {
 		if($passwd == $passwd2 && $passwd != $old_passwd && strlen($passwd) > 3 && strlen($passwd) < 256 && preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd)) {
 			$passwd = md5($passwd . $login);
-			if($res[0]['status'] == 10)
+			if($res['status'] == 10)
 				$status = 1;
-			elseif($res[0]['status'] == 11)
+			elseif($res['status'] == 11)
 				$status = 32; 
-			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res[0]['id']."'");
+			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res['id']."'");
 			return true;
 		}
 		else
@@ -247,8 +248,8 @@ function check_auth_restricted($login, & $passwd)
 		$pass = md5($passwd. $login);
 
 		usecurrentdb();
-		$result = $db->execute(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
-		if (!($row = $result->fields))	{
+		$row = $db->getRow(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
+		if (!$row)	{
 			break;
 		}
 		// pass les variables en global
@@ -279,10 +280,8 @@ function check_expiration()
 	$context['datab'] = $db->database;
 	$status = $db->getOne(lq("SELECT expiration FROM #_TP_restricted_users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
 	$status = explode('-', $status);
-	$time = time();
-	$status = mktime(23, 59, 0, $status[1], $status[2], $status[0]);
 
-	if($status <= $time)
+	if(mktime(23, 59, 0, $status[1], $status[2], $status[0]) <= time())
 		return false;
 	return true;
 }
@@ -290,17 +289,45 @@ function check_expiration()
 /**
  * Vérifie la messagerie de l'utilisateur. S'il a un message avec priorité alors on redirige vers la messagerie
  *
+ * @param string $site nom du site actuel, optionnel (côté lodeladmin)
  */
-function check_internal_messaging()
+function check_internal_messaging($site='')
 {
-	global $db, $context, $site, $lodeluser, $urlroot;
-	$lodeluserid = ($site && !$lodeluser['adminlodel']) ? $site.'-'.$lodeluser['id'] : 'lodelmain-'.$lodeluser['id'];
-
+	global $db, $context, $urlroot;
+	
+	$url_retour = "Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : '').$urlroot;
+	
+	if(defined('backoffice')) {
+		if(!preg_match("/^[a-z0-9\-]+$/",$site))
+			die('Error: incorrect variable site in '.__FILE__.' function '.__FUNCTION__);
+		$url_retour .= $site.'/lodel/admin/index.php?do=list&lo=internal_messaging';
+	} elseif(defined('backoffice-lodeladmin')) {
+		$url_retour .= 'lodeladmin-'.$context['version'].'/index.php?do=list&lo=internal_messaging';
+	} else {
+		// où sommes-nous ??
+		return false;
+	}
+	$lodeluserid = (int)$context['lodeluser']['rights'] !== 128 ? 
+			$site.'-'.$context['lodeluser']['id'] : 
+			'lodelmain-'.$context['lodeluser']['id'];
 	$msg = $db->getOne(lq("SELECT count(id) as nbMsg FROM #_MTP_internal_messaging WHERE addressee = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
 	if($msg) {
-		header("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : '').$urlroot.$site.'/lodel/admin/index.php?do=list&lo=internal_messaging');
+		header($url_retour);
 		exit();
 	}
 }
 
+function updateDeskDisplayInSession()
+{
+	global $db, $context, $idsession;
+	
+	if(!$context['lodeluser']['visitor']) return 'error';
+	$row = $db->getRow(lq("SELECT context FROM #_MTP_session WHERE id='{$idsession}'"));
+	if(!$row) return 'error';
+	$localcontext = unserialize($row['context']);
+	$localcontext['desk'] = (TRUE !== $localcontext['desk']) ? true : false;
+	$localcontext = addslashes(serialize($localcontext));
+	if(!$db->execute(lq("UPDATE #_MTP_session SET context = '{$localcontext}' WHERE id='{$idsession}'"))) return 'error';
+	return 'ok';
+}
 ?>

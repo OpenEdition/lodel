@@ -409,6 +409,7 @@ class UsersLogic extends Logic
 		} else
 			die("ERROR : You don't have permissions to suspend this user. Contact your administrator.");
 		
+		update();
 		return "_back";
 	}
 

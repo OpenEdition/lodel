@@ -68,9 +68,11 @@
  * @see controler.php
  */
 
-
-require_once 'cachefunc.php';
-require_once 'func.php';
+// needed functions
+if(!function_exists('getCachedFileName'))
+	require 'cachefunc.php';
+if(!function_exists('_indent'))
+	require 'func.php';
 
 class View
 {
@@ -87,19 +89,39 @@ class View
 	private $_cacheOptions;
 
 	/**
+	 * 
+	 * @var bool
+	 */
+	private $_evalCalled;
+	
+	/**
 	 * Instance du singleton
 	 * @var object
 	 */
 	private static $_instance;
 
-
+	/**
+	 * le $context sauvegardé
+	 * @var array
+	 * @see _eval()
+	 */
+	private static $_context;
+	
+	/**
+	 * A-t-on regénéré un template/block inclus dynamiquement ?
+	 * @var bool
+	 */
+	private $_updatedTplFile;
+	
 	/** 
 	 * Constructeur privé
 	 * @access private
 	 */
-	private function View() {
+	private function __construct() {
 		global $cacheOptions;
 		$this->_cacheOptions = $cacheOptions;
+		$this->_evalCalled = false;
+		$this->_updatedTplFile = false;
 	}
 
 	/**
@@ -114,9 +136,20 @@ class View
 		if (!isset(self::$_instance)) {
 			$c = __CLASS__;
 			self::$_instance = new $c;
+			self::$_context = $GLOBALS['context'];
 		}
 		return self::$_instance;
 	}
+
+	/**
+	 * Surcharge de la fonction clone()
+	 * @see getView()
+	 */ 
+	public function __clone()
+	{ 
+		return View::getView();
+	}
+
 
 	/**
 	 * Fonction qui redirige l'utilisateur vers la page précédente
@@ -187,15 +220,14 @@ class View
 
 		if($_REQUEST['clearcache']) {
 			clearcache(true);
-		} elseif($caching && !$context['nocache'] && 
-		myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) >= myfilemtime('./tpl/'.$tpl.'.html') && 
-		$content = $cache->get($this->_cachedfile, $site)) {
+		} elseif($caching && !$context['nocache'] && myfilemtime(getCachedFileName("tpl_{$tpl}", 'tpl', $this->_cacheOptions)) 
+			>= myfilemtime('./tpl/'.$tpl.'.html') && ($content = $cache->get($this->_cachedfile, $site))) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
-				echo $content;
+				echo _indent($content);
 				flush();
 				return;
-			}
+			} else unset($content);
 		} else {
 			$cache->remove("tpl_{$tpl}", 'tpl', true);
 		}
@@ -206,7 +238,7 @@ class View
 			$cache->save($content, $this->_cachedfile, $site);
 		}
 		$content = $this->_eval($content, $context, true);
-		echo $content;
+		echo _indent($content);
 		flush();
 		return;	
 	}
@@ -245,7 +277,7 @@ class View
 		if($content = $cache->get($this->_cachedfile, $site)) {
 			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
 				$content = $this->_eval($content, $context, true);
-				echo $content;
+				echo _indent($content);
 				flush();
 				return true;
 			}
@@ -260,65 +292,79 @@ class View
 	* @param string $base le nom du fichier template
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
-	* @param bool $escRefresh appel de la fonction par le refresh manager
+	* @param bool $escRefresh doit-on rafraichir le template
 	* @param string $refreshTime (optionnel) temps de refresh pour le manager
+	* @param int $blockId (optionnel) identifiant du block
 	*/
-	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='./tpl/', $escRefresh, $refreshTime=0) 
+	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo) 
 	{
 		global $site, $lodeluser, $home;
 
-		$cachedTemplateFileName = str_replace('?id=0', '',
-					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] . "//". $lodeluser['name']. "//". $lodeluser['rights']."//".$tpl;
-		if(!class_exists('Cache_Lite'))
-			require 'Cache/Lite.php';
-		$cache = new Cache_Lite($this->_cacheOptions);
-
 		if(!$base_rep)
 			$base_rep = './tpl/';
-		if (!file_exists("tpl/$tpl". ".html") && file_exists($home. "../tpl/$tpl". ".html")) {
+		if (!file_exists("tpl/{$tpl}.html") && file_exists($home. "../tpl/{$tpl}.html")) {
 			$base_rep = $home. '../tpl/';
 		}
 		$tplFile = $base_rep. $tpl. '.html';
-
-		if(myfilemtime(getCachedFileName("tpl_{$tpl}", 'TemplateFile', $this->_cacheOptions)) <= myfilemtime($tplFile) ||
-			$escRefresh || !($content = $cache->get($cachedTemplateFileName, 'TemplateFile'))) {
-
-			$cache->remove("tpl_{$tpl}", 'TemplateFile', true);
-			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true);
+		
+		$id = intval($blockId);
+		$tplName = ($id>0) ? "tpl_".$tpl.'_block'.$id : "tpl_".$tpl;
+		
+		$cachedTemplateFileName = str_replace('?id=0', '',
+					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
+					). "//". $GLOBALS['lang'] . "//". $lodeluser['name']. "//". $lodeluser['rights']."//".$tpl.($id ? '//'.$id : '');
+		if(!class_exists('Cache_Lite'))
+			require 'Cache/Lite.php';
+		$cache = new Cache_Lite($this->_cacheOptions);
+		if($escRefresh || myfilemtime(getCachedFileName($cachedTemplateFileName, 'TemplateFile', $this->_cacheOptions)) <= 
+			myfilemtime($tplFile) || !($content = $cache->get($cachedTemplateFileName, 'TemplateFile'))) {
+			$cache->remove($tplName, 'TemplateFile', true);
+			$cache->remove($cachedTemplateFileName, 'TemplateFileEvalued', true);
+			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $id);
 			$cache->save($content, $cachedTemplateFileName, 'TemplateFile');
 		}
-
-		if(empty($refreshTime) && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)>0) {
-			$refreshTime = $m[1];
-		}
-		$content = $this->_eval($content, $context, true);
-		if(empty($refreshTime)) return $content;
-
-		if (!is_numeric($refreshTime)) {
-			$refreshtimes = explode(",", $refreshTime);
-			foreach ($refreshtimes as $k=>$refreshtim) {
-				$refreshtim = explode(":", $refreshtim);
-				$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
-				$code.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
-				
+		
+		if($echo) {
+			if(!($template = $cache->get($cachedTemplateFileName, 'TemplateFileEvalued'))) {
+				$content = $this->_eval($content, $context, true);
+				$cache->save($content, $cachedTemplateFileName, 'TemplateFileEvalued');
+				return $content;
+			} else {
+				return $template;
 			}
 		} else {
-			$code = '($cachetime + '.($refreshTime).') < ($now + 10)';
+			if(empty($refreshTime) && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)>0) {
+				$refreshTime = $m[1];
+			}
 		}
-		
-		$code = '
-<'.'?php 
-$cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
-$now = time(); $date = getdate($now);'.(isset($tmpcode) ? $tmpcode : '').'
-if($cachetime && ('.$code.') && !$escapeRefreshManager){ 
-	insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, "'.($refreshTime).'"); 
-}else{ ?>
-'. $content . '
-<'.'?php } ?'.'>';
-		$content = $code;
-		unset($code);	
-		return $content;	
+		if(!empty($refreshTime)) {
+			// template manager
+			// @see parser.php
+			if (!is_numeric($refreshTime)) {
+				$refreshtimes = explode(",", $refreshTime);
+				foreach ($refreshtimes as $k=>$refreshtim) {
+					$refreshtim = explode(":", $refreshtim);
+					$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
+					$code.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
+				}
+				$tmpcode = '$date = getdate(time());'.$tmpcode;
+			} else {
+				$code = '($cachetime + '.$refreshTime.') < time()';
+			}
+			// $escapeRefreshManager
+			// @see _eval()
+			$code = '
+ <?php
+ '.(isset($tmpcode) ? $tmpcode : '').' $cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", "TemplateFile", $GLOBALS[cacheOptions]));
+ if(('.$code.') && !$escapeRefreshManager){ insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, "'.$refreshTime.'", '.$id.');
+ }else{ insert_template($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", false, "'.$refreshTime.'", '.$id.', true); }
+ ?>';
+			$content = $code;
+			unset($code);
+		} else {
+			$content = $this->_eval($content, $context, true);
+		}
+		return $content;
 	}
 
 	/**
@@ -348,22 +394,21 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param bool $escapeRefreshManager utilisé pour virer les balises de refresh si jamais page recalculée à la volée
 	* @return le contenu du code évalué
 	*/
-	private function _eval($content, &$context, $escapeRefreshManager=false) 
+	private function _eval($content, $context, $escapeRefreshManager=false) 
 	{
 		global $home;
-		static $called = false;
-		if(!$called) {
+		if(FALSE === $this->_evalCalled) {
 			if(!function_exists('loop_errors'))
 				require 'loops.php';
 			if(!function_exists('textebrut'))
 				require 'textfunc.php';
-			$called = true;
-		}
-		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__, false);
 			}
-			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true));
+			$this->_evalCalled = true;
+		}
+		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
+			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(), true));
 			if(!file_put_contents($tmpFileName, $content, LOCK_EX))
 				$this->_error("Error while writing CACHE required file.", __FUNCTION__, false);
 			ob_start();
@@ -372,15 +417,19 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 			ob_end_clean();
 			unlink($tmpFileName);
 			if('refresh' == $refresh) {
+				// reset the context
+				$GLOBALS['context'] = self::$_context;
 				return $refresh;
-			} 
+			}
 			$content = $ret;
-			$ret = null;
+			unset($ret);
 		}
-		if(TRUE === $escapeRefreshManager && (FALSE !== strpos($content, '#LODELREFRESH'))) {
-			$content = preg_replace("/#LODELREFRESH [^#]+#/", "", $content);
+		if(TRUE === $escapeRefreshManager) {
+			$content = preg_replace("/#LODELREFRESH\s+[^#]+#/", "", $content);
 		}
-		return _indent($content);
+		// reset the context
+		$GLOBALS['context'] = self::$_context;
+		return $content;
 	}
 
 	/**
@@ -389,11 +438,11 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param string $content contenu à évaluer
 	* @param array $context le context
 	*/
-	private function _iscachevalid($content, $context) 
+	private function _iscachevalid($content, &$context) 
 	{
 		if(FALSE !== strpos($content, '<?php')) {
-			$content = $this->_eval($content, $context);
-			if('refresh' == $content) {
+			$content = $this->_eval($content, $context, false);
+			if('refresh' === (string)$content) {
 				return false;
 			}
 		}
@@ -408,8 +457,9 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
+	* @param int $blockId (optionnel) numéro du block
 	*/
-	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = './tpl/', $include=false) 
+	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = './tpl/', $include=false, $blockId) 
 	{
 		global $home;
 		if(!empty($cache_rep))
@@ -417,7 +467,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 
 		$group = $include ? 'TemplateFile' : 'tpl';
 
-		$template_cache = "tpl_$base";
+		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}" : "tpl_$base";
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) {
 			if (!headers_sent()) {
@@ -435,7 +485,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 			if(!class_exists('LodelParser'))
 				require 'lodelparser.php';
 			$parser = new LodelParser;
-			$contents = $parser->parse($tpl, $include);
+			$contents = $parser->parse($tpl, $include, $blockId);
 			$cache->save($contents, $template_cache, $group);
 		}
 		// si jamais le path a été modifié on remet par défaut
@@ -452,8 +502,9 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
+	* @param int $blockId (optionnel) 
 	*/
-	private function _calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/', $include=false)
+	private function _calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/', $include=false, $blockId=0)
 	{
 		global $format;
 
@@ -465,7 +516,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 		if ($format && !preg_match("/\W/", $format)) {
 			$base .= "_$format";
 		}
-		$template_cache = "tpl_$base";
+		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}" : "tpl_$base";
 		$i=0;
 		$cache = new Cache_Lite($this->_cacheOptions);
 		// on va essayer 10 fois (!!!) de récupérer ou générer le fichier mis en cache
@@ -473,7 +524,7 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 			$content = $cache->get($template_cache, $group);
 			if(is_string($content) && strlen($content)>0)
 				break;
-			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include);
+			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include, $blockId);
 			$i++;
 		} while (10>$i);
 
@@ -493,13 +544,10 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
 			if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) {
 				require_once 'showhtml.php';
 				// on affiche la source
-				$content = $this->_eval($content, $context);
-				return show_html($content);
+				return show_html($this->_eval($content, $context, false));
 			}
-
 			// utf-8 c'est le charset natif, donc on sort directement la chaine.
-			$content = $this->_eval($content, $context);
-			return $content;
+			return $this->_eval($content, $context, false);
 		}
 	}
 
@@ -549,11 +597,13 @@ if($cachetime && ('.$code.') && !$escapeRefreshManager){
  * @param string $base_rep chemin vers répertoire tpl
  * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
  * @param string $refreshTime temps après lequel le tpl est à recompiler
+ * @param int $blockId (optionnel) numéro d'un block de template
  */
-function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0) {
+function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
+{
 	$view =& View::getView();
-	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime);
-	echo $content;
+	$content = $view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime, $blockId, $echo);
+	echo _indent($content);
 }
 
 
@@ -564,13 +614,13 @@ function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $esc
  * @param string $query la requete SQL
  * @param string $tablename le nom de la table SQL (par défaut vide)
  */
-function mymysql_error($query, $tablename = '')
+function mymysql_error($query, $tablename = '', $line, $file)
 {
 	if ($GLOBALS['lodeluser']['editor'] || $GLOBALS['debugMode']) {
 		if ($tablename) {
-			$tablename = "LOOP: $tablename ";
+			$tablename = "LOOP: $tablename; ";
 		}
-		die("</body>".$tablename."QUERY: ". htmlentities($query)."<br /><br />".mysql_error());
+		die("</body><br/>Internal error in file {$file} on line {$line};<br/> ".$tablename."<br/>QUERY: ". htmlentities($query)."<br /><br />MYSQL ERROR: ".mysql_error());
 	}	else {
 		if ($GLOBALS['contactbug']) {
 			$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$GLOBALS['currentdb'];

@@ -86,25 +86,37 @@ function authenticate($level = 0, $mode = "")
 		$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
 		do { // block de control
 			$name = addslashes($_COOKIE[$sessionname]);
-			if (!$name) {
+			if (!$name && !defined('backoffice') && !defined('backoffice-lodeladmin')) {
 				// check for restricted users by client IP address
-				$ip = $_SERVER['REMOTE_ADDR'];
-				list($oct1,$oct2,$oct3,$oct4) = sscanf($ip, "%d.%d.%d.%d");
-				$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE ip = '$ip' OR ip = '$oct1.$oct2.$oct3.' OR ip = '$oct1.$oct2.' AND status>0"));
-				if(!$row) break;
-				require_once 'loginfunc.php';
-				$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
-				$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
-				$lodeluser['id'] = $row['id'];
-				$lodeluser['name'] = $context['login'] = $row['username'];
-				$lodeluser['groups'] = '';
-				$context['lodeluser'] = $lodeluser; // export info into the context
-				unset($row);
-				if(!check_expiration()) {
-					$context['lodeluser'] = $lodeluser = array();
+				$users = $db->getArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
+				if(!$users) break;
+				list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
+				foreach($users as $user) {
+					$octs = explode('.', $user['ip']);
+					foreach($octs as $k=>$octet) {
+						if(FALSE !== strpos($octet, '[')) { // plage d'ip
+							$o = explode('-', substr($octet, 1, strlen($octet)-2));
+							if((int)$oct[$k] < (int)$o[0] || (int)$oct[$k] > (int)$o[1]) continue 2;
+						} elseif((int)$octet !== (int)$oct[$k]) continue 2;
+					}
+					$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
+					require_once 'loginfunc.php';
+					$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
+					$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
+					$lodeluser['id'] = $row['id'];
+					$lodeluser['name'] = $context['login'] = $row['username'];
+					$lodeluser['groups'] = '';
+					$context['lodeluser'] = $lodeluser; // export info into the context
+					unset($row);
+					if(!check_expiration()) {
+						$context['lodeluser'] = $lodeluser = array();
+						break 2;
+					}
+					$name = open_session($context['login']);
+					// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
 					break;
 				}
-				$name = open_session($context['login']);
+				if(!$name || $name == 'error_opensession') break;
 			}
 			usemaindb();
 			
@@ -123,10 +135,7 @@ function authenticate($level = 0, $mode = "")
 			// passe les variables en global
 			$lodeluser = unserialize($row['context']);
 			if($level == (LEVEL_RESTRICTEDUSER | LEVEL_VISITOR)) {
-				if($lodeluser['rights'] == 5)
-					$level = LEVEL_RESTRICTEDUSER;
-				else
-					$level = LEVEL_VISITOR;
+				$level = ($lodeluser['rights'] == 5) ? LEVEL_RESTRICTEDUSER : LEVEL_VISITOR;
 			}
 	
 			// verifie que la session n'est pas expiree
@@ -213,7 +222,7 @@ function authenticate($level = 0, $mode = "")
 			return;
 		}
 		elseif($level == LEVEL_RESTRICTEDUSER) {
-			header("Location: index.".$GLOBALS['extensionscripts']);
+			header("Location: ".SITEROOT."index.".$GLOBALS['extensionscripts']);
 			exit;
 		}
 		else {
@@ -331,7 +340,7 @@ function maintenance()
 		}
 
 		// passe les variables en global
-		$lodeluser = unserialize($row['context']);			
+		$lodeluser = unserialize($row['context']);
 		if($lodeluser['rights'] < 128) {
 			if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
 				$db->selectDB($database);
