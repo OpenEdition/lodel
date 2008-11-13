@@ -43,7 +43,7 @@
  * @version CVS:$Id:
  * @package lodeladmin
  */
-
+define('backoffice-lodeladmin', true);
 // gere un site. L'acces est reserve au niveau lodeladmin.
 require_once 'lodelconfig.php';
 require_once 'auth.php';

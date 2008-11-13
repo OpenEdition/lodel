@@ -47,11 +47,11 @@ if (!file_exists('../lodelconfig.php')) {
 	header("location: install.php");
 	exit;
 }
-
+define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL);
-define('backoffice-lodeladmin', true);
+
 $accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data', 'internal_messaging');
 
 require_once 'controler.php';
