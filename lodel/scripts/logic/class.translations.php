@@ -2,7 +2,7 @@
 /**	
  * Logique des traductions
  *
- * PHP versions 4 et 5
+ * PHP 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -29,6 +29,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -78,25 +79,47 @@ class TranslationsLogic extends Logic {
 	function lookforAction(&$context, $error)
 	{
 		$this->_setTextGroups($context);
-		if('site' != $context['textgroups']) return '_back';
+		if('site' === (string)$context['textgroups']) {
+			$tplDirs = SITEROOT.'tpl/';
+		} else { // interface
+			$tplDirs = array('./tpl/', '../tpl/', '../share-'.$context['version'].'/macros/', '../lodel-'.$context['version'].'/tpl/');
+		}
 		if(!class_exists('LodelParser')) require 'lodelparser.php';
 		$lodelparser = new LodelParser();
-		$cacheDirs = new RecursiveDirectoryIterator(SITEROOT.'tpl/');
-		$cache = new RecursiveIteratorIterator($cacheDirs);
 		$vars = array();
-		foreach($cache as $file) {
-			if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
-			if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {
-				$matches = array_unique($matches[1]);
-				foreach($matches as $var) {
-					if(!isset($vars[$var])) {
-						$lodelparser->parse_variable_extra('@', $var, true);
-						$vars[$var] = true;
+		if(is_array($tplDirs)) {
+			foreach($tplDirs as $tplDir) {
+				$cacheDir = new RecursiveDirectoryIterator($tplDir);
+				$cache = new RecursiveIteratorIterator($cacheDir);
+				foreach($cache as $file) {
+					if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
+					if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {
+						$matches = array_unique($matches[1]);
+						foreach($matches as $var) {
+							if(!isset($vars[$var])) {
+								$lodelparser->parse_variable_extra('@', $var);
+								$vars[$var] = true;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			$cacheDir = new RecursiveDirectoryIterator($tplDirs);
+			$cache = new RecursiveIteratorIterator($cacheDir);
+			foreach($cache as $file) {
+				if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
+				if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {
+					$matches = array_unique($matches[1]);
+					foreach($matches as $var) {
+						if(!isset($vars[$var])) {
+							$lodelparser->parse_variable_extra('@', $var);
+							$vars[$var] = true;
+						}
 					}
 				}
 			}
 		}
-		unset($vars);
 		update();
 		return '_back';
 	}
@@ -122,11 +145,11 @@ class TranslationsLogic extends Logic {
 		{
 			global $db,$distincttexts,$alltexts_cache;
 
-			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' ORDER BY lang")) or dberror();
+			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' AND lang IN (SELECT distinct(lang) FROM #_TP_translations) ORDER BY lang, name")) or dberror();
 
 			$distincttexts=array();
 			while(!$result->EOF) {
-				$lang=$result->fields['lang'];
+				$lang=strtolower($result->fields['lang']);
 				$name=$result->fields['name'];	
 				if ($name && $lang) {
 					$alltexts_cache[$lang][$name]=$result->fields;
@@ -148,9 +171,32 @@ class TranslationsLogic extends Logic {
 
 		function loop_lang_and_text(&$context,$funcname)
 		{
-			foreach(array_keys($GLOBALS['alltexts_cache']) as $lang) {
-				$localcontext=$context;
-				$row=$GLOBALS['alltexts_cache'][$lang][$context['name']];
+			global $alltexts_cache, $distincttexts, $db;
+			$logic = null;
+			foreach(array_keys($alltexts_cache) as $lang) {
+				$row=$alltexts_cache[$lang][$context['name']];
+				$localcontext=$row ? array_merge($context,$row) : $context;
+				if(0 === (int)$localcontext['id']) { // entry doesn't exist in this lang
+					if(is_null($logic)) $logic = getLogic('texts');
+					$logic->createTexts($localcontext['name'], $localcontext['textgroups']);
+					
+					$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$localcontext['textgroup']."' AND name='{$localcontext['name']}' ORDER BY lang")) or dberror();
+		
+					$distincttexts[$localcontext['name']]=array();
+					while(!$result->EOF) {
+						$l=strtolower($result->fields['lang']);
+						if ($l) {
+							$alltexts_cache[$l][$localcontext['name']]=$result->fields;
+							if ($l==$GLOBALS['lang']) {
+								$distincttexts[$localcontext['name']]=$result->fields['contents'];
+							} elseif (!isset($distincttexts[$localcontext['name']])) {
+								$distincttexts[$localcontext['name']]=true;
+							}
+						} // valid name
+						$result->MoveNext();
+					}
+				}
+				$row=$alltexts_cache[$lang][$context['name']];
 				$localcontext=$row ? array_merge($context,$row) : $context;
 				call_user_func("code_do_".$funcname,$localcontext);
 			}

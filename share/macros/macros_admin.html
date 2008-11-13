@@ -79,7 +79,7 @@
 </DEFMACRO>
 
 <DEFMACRO NAME="DELETE_BUTTON">
-		<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]'" />
+	<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]<IF COND="[#DIRECTORY|isset]" />&amp;directory=[#DIRECTORY]</IF>'" />
 </DEFMACRO>
 
 <DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype, listall">

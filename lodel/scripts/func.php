@@ -241,6 +241,7 @@ function myaddslashes (&$var)
 */
 function myfileexists($file) {
 	// plus important : on supprime  le cache généré par les fonctions de stat de fichier !
+	// ça pompe des ressources mais ça évite les warnings PHP
 	clearstatcache();
 	return file_exists($file); // on retourne le test du fichier
 }
@@ -258,7 +259,8 @@ function myfilemtime($filename)
 
 function update()
 {
-	require_once 'cachefunc.php';
+	if(!function_exists('clearcache'))
+		require 'cachefunc.php';
 	clearcache(false);
 }
 
@@ -464,15 +466,6 @@ function makeurlwithfile($id) {
 	return $url;
 }
 
-if (!function_exists("file_get_contents")) {
-  function file_get_contents($file) 
-  {
-    $fp=fopen($file,"r") or die("Impossible to read the file $file");
-    while(!feof($fp)) $res.=fread($fp,2048);
-    fclose($fp);
-    return $res;
-  }
-}
 /**
  * retourne le chemin complet vers une entitée *
  * @param integer $id identifiant numérique de l'entitée * 

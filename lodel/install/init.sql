@@ -137,6 +137,7 @@ CREATE TABLE #_MTP_internal_messaging (
   `addressees` longtext NOT NULL
   `subject` varchar(255) NOT NULL,
   `body` longtext NOT NULL,
+  `incom_date` datetime NOT NULL,
   `cond` tinyint(1) NOT NULL default '0',
   `status` tinyint(4) NOT NULL default '0',
   `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,

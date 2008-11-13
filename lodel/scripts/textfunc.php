@@ -1454,4 +1454,16 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
 	$geshi->set_header_type(GESHI_HEADER_DIV);
 	return $geshi->parse_code();
 }
+
+/**
+ * implémentation de la fonction explode
+ * utile pour les tableaux
+ *
+ * @param string $text le texte à découper
+ * @param string $delimiter le délimiteur
+ * @return array
+ */
+function lexplode($text, $delimiter) {
+	return explode($delimiter, $text);
+}
 ?>

@@ -82,6 +82,8 @@ class Parser
 	var $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
 	var $id = "";
+	var $tpl; // actual name of tpl
+	var $blocks; // possibles blocks in template
 
 	function errmsg($msg, $ind = 0)
 	{
@@ -120,16 +122,18 @@ class Parser
 
 	function Parser()
 	{ // constructor
-		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE");
+		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE", "BLOCK");
 
-		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
-		$this->denied = array('id'=>'','idtype'=>'','idparent'=>'','idclass'=>'','idgroup'=>'','class'=>'','type'=>'','classtype'=>'','textgroups'=>'','options'=>'','lodeluser'=>'','defaultlang'=>'','sitelang'=>'','version'=>'','shareurl'=>'','extensionscripts'=>'','currenturl'=>'','siteroot'=>'','site'=>'','charset'=>'','langcache'=>'','clearcacheurl'=>'');
+		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s, __LINE__, __FILE__)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
+		$this->denied = array('options'=>'','lodeluser'=>'','version'=>'','shareurl'=>'','extensionscripts'=>'','currenturl'=>'','siteroot'=>'','site'=>'','charset'=>'','langcache'=>'','clearcacheurl'=>'');
+		$this->blocks = array();
 	}
 
-	function parse($in, $include)
+	function parse($in, $include, $blockId=0)
 	{
 		global $sharedir;
 		$this->infilename = $in;
+		$this->tpl = preg_replace("/^([^\/]+\/)*(\w+)\.html$/", "\\2", $in);
 		if (!file_exists($in))
 			$this->errmsg("Unable to read file $in");
 
@@ -141,9 +145,9 @@ class Parser
 
 		$contents = stripcommentandcr($file);
 
-		$this->_split_file($contents); // split the contents into commands
+		$this->_split_file($contents, '', $blockId); // split the contents into commands
 		$this->parse_main(); // parse the commands
-
+		
 		if ($this->ind != $this->countarr)
 			$this->errmsg("this file contains more closing tags than opening tags");
 
@@ -153,11 +157,11 @@ class Parser
 		$this->parse_after($contents); // user defined parse function
 
 		// remove  <DEFMACRO>.*?</DEFMACRO>
-		$contents = preg_replace("/<DEF(MACRO|FUNC)\b[^>]*>.*?<\/DEF(MACRO|FUNC)>\s*\n?/s", "", $contents);
+		$contents = preg_replace("/<DEF(MACRO|FUNC)\b[^>]*>.*?<\/DEF(MACRO|FUNC)>\s*\n*/s", "", $contents);
 
 		if ($this->fct_txt)	{
 			$contents = '<?php 
-			'.$this->fct_txt.'?>'.$contents;
+			'.$this->fct_txt.' ?>'.$contents;
 		}
 		unset($this->fct_txt);
 		//
@@ -181,26 +185,24 @@ class Parser
 					foreach ($refreshtimes as $refreshtime) {
 						$refreshtime = explode("/:/", $refreshtime);
 						$code .= '$refreshtime=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$code .= 'if ($cachetime && $cachetime<$refreshtime && $refreshtime<$now) return "refresh"; ';
+						$code .= 'if ($cachetime<$refreshtime && $refreshtime<$now) return "refresh"; ';
 					}
 				}
 				$code .= '} ?'.'>';
 				$contents = '<'.'?php echo \''.quote_code($code).'\'; ?>
 				'.$contents;
 			} else {
-				$tpl = preg_replace("/^([^\/]+\/)*(\w+)\.html$/", "\\2", $in);
 				$f = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//". $tpl. "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights'];
-				
-				$code = '<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
+					). "//". $GLOBALS['lang'] . "//". $GLOBALS['lodeluser']['name']. "//". $GLOBALS['lodeluser']['rights']."//".$this->tpl.($blockId ? '//'.$blockId : '');
+				$code = '#LODELREFRESH '.$this->refresh.'#
+					<'.'?php $cachetime=myfilemtime(getCachedFileName("'.$f.'", "TemplateFile", $GLOBALS[cacheOptions]));';
 
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= 'if($cachetime && ($cachetime + '.$this->refresh.') < time() && !$escapeRefreshManager){ insert_template($context, "'.$tpl.'", "", "./tpl/", true, "'.$this->refresh.'"); 
-					}else{ ?>';
+					$code .= 'if(($cachetime + '.$this->refresh.') < time() && !$escapeRefreshManager){
+					insert_template($context, "'.$this->tpl.'", "", "./tpl/", true, '.$this->refresh.', '.$blockId.'); }else{ ?>';
 					$code .= $contents . '<'.'?php } ?'.'>';
-					$code = "#LODELREFRESH ".$this->refresh."#".$code;
 				} else { // refresh time
 					$code .= '$now = time(); $date = getdate($now);';
 					$tmpcode = 'if (';
@@ -208,14 +210,14 @@ class Parser
 					foreach ($refreshtimes as $k=>$refreshtime) {
 						$refreshtime = explode(":", $refreshtime);
 						$code .= '$refreshtime'.$k.'=mktime('.intval($refreshtime[0]).','.intval($refreshtime[1]).','.intval($refreshtime[2]).',$date[mon],$date[mday],$date[year]);';
-						$tmpcode.= ($k>0 ? ' || ' : '').'($cachetime && $cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now && !$escapeRefreshManager)';
+						$tmpcode.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now && !$escapeRefreshManager)';
 						
 					}
-					$tmpcode .= ') { insert_template($context, "'.$tpl.'", "", "./tpl/", true, "'.$this->refresh.'"); }else{ ?>';
+					$tmpcode .= ') { 
+					insert_template($context, "'.$this->tpl.'", "", "./tpl/", true, "'.$this->refresh.'", '.$blockId.'); }else{ ?>';
 					$code .= $tmpcode . $contents . '<'.'?php } ?'.'>';
-					$code = "#LODELREFRESH ".$this->refresh."#".$code;
 				}
-	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?>';
+	                        $contents = '<'.'?php echo \''.quote_code($code).'\'; ?'.'>';
 			}
 			unset($code, $tmpcode, $refreshtimes);
 		} elseif ($this->isphp)	{
@@ -223,14 +225,14 @@ class Parser
 		}
 
 		// clean the open/close php tags
-		$contents = preg_replace(array ('/\?><\?(php\b)?/', '/<\?php[\s\n]*\?>/'), array ("", ""), $contents);
+		$contents = preg_replace(array ('/\?>\s*<\?(php\b)?/', '/<\?php[\s\n]*\?>/'), array ("", ""), $contents);
 
 		if (!$this->charset)
 			$this->charset = 'iso-8859-1';
 		if ($this->charset != 'utf-8')	{
 			#$t=microtime();
 			if(!function_exists('convertHTMLtoUTF8'))
-				require_once 'utf8.php'; // conversion des caracteres
+				require 'utf8.php'; // conversion des caracteres
 			$contents = utf8_encode($contents);
 			convertHTMLtoUTF8($contents);
 		}
@@ -431,37 +433,37 @@ class Parser
 		while ($this->ind < $this->countarr) {
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
-				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-				$this->charset = $attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
-				// attribut refresh
-				$this->_checkforrefreshattribut($attrs);
-				$this->_clearposition();
-				break;
+			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+			$this->charset = $attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
+			// attribut refresh
+			$this->_checkforrefreshattribut($attrs);
+			$this->_clearposition();
+			break;
 			case 'USE' :
-				$siteroot = defined('SITEROOT') ? SITEROOT : '';
-				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-				if ($attrs['MACROFILE']) {
-					$macrofilename = $attrs['MACROFILE'];
-					if (file_exists("tpl/".$macrofilename))	{
-						$contents = file_get_contents("tpl/".$macrofilename);
-					} elseif ($GLOBALS['sharedir'] && file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
-						$contents = file_get_contents($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename);
-					} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
-						$contents = file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
-					} else {
-						$this->errmsg("the macro file \"$macrofilename\" doesn't exist");
-					}
-					$this->macros_txt .= stripcommentandcr($contents);
-					$this->_clearposition();
-				} elseif ($attrs['TEMPLATEFILE'])	{
-					$this->_clearposition();
-					$this->arr[$this->ind] = 
-					'<?php 
-						insert_template($context, "'.basename($attrs['TEMPLATEFILE']).'");
-					?>';
+			$siteroot = defined('SITEROOT') ? SITEROOT : '';
+			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+			if ($attrs['MACROFILE']) {
+				$macrofilename = $attrs['MACROFILE'];
+				if (file_exists("tpl/".$macrofilename))	{
+					$contents = file_get_contents("tpl/".$macrofilename);
+				} elseif ($GLOBALS['sharedir'] && file_exists($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename)) {
+					$contents = file_get_contents($siteroot.$GLOBALS['sharedir']."/macros/".$macrofilename);
+				} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename))	{
+					$contents = file_get_contents($GLOBALS['home']."../tpl/".$macrofilename);
+				} else {
+					$this->errmsg("the macro file \"$macrofilename\" doesn't exist");
 				}
-				break;
-					// returns
+				$this->macros_txt .= stripcommentandcr($contents);
+				$this->_clearposition();
+			} elseif ($attrs['TEMPLATEFILE'])	{
+				$this->_clearposition();
+				$this->arr[$this->ind] = 
+'<?php 
+	insert_template($context, "'.basename($attrs['TEMPLATEFILE']).'");
+?>';
+			}
+			break;
+			// returns
 			case 'ELSE' :
 			case 'ELSEIF':
 			case 'DO' :
@@ -1019,6 +1021,27 @@ class Parser
 		}
 	}
 
+	function parse_BLOCK()
+	{
+		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+		if(!($id = intval($attrs['ID'])) || in_array($id, $this->blocks)) 
+			$this->errmsg("Incorrect ID for block n°".count($this->blocks));
+		$this->blocks[] = $id;
+		$this->_clearposition();
+		$this->ind++;
+		$this->arr[$this->ind] = 
+'<?php 
+	insert_template($context, "'.$this->tpl.'", "", "./tpl/", false, '.intval($attrs['REFRESH']).', '.$id.');
+?>';
+		$this->ind++;
+		while($this->arr[$this->ind] != '/BLOCK') {
+			$this->arr[$this->ind] = '';
+			$this->ind++;
+		}
+		$this->_clearposition();
+		$this->arr[$this->ind + 1] = '';
+	}
+
 	/**
 	 * Traite les conditions avec IF
 	 */
@@ -1141,21 +1164,21 @@ class Parser
 	
 	/**
 	 * Traite les LET
+	 * Le context est protégé, il ne peut être modifié que localement
+	 * pendant l'évaluation des templates
+	 * @see View::_eval()
 	 */
 	function parse_LET()
 	{
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->errmsg("LET have no VAR|ARRAY attribut");
-		$regexpVarName = ('ARRAY' == $result[1]) ? $this->variable_regexp.'(\[\])?' : $this->variable_regexp;
-		if (!preg_match("/^{$regexpVarName}$/i", $result[2]))
+		$regexpVarName = ('ARRAY' == $result[1]) ? '('.$this->variable_regexp.')(\[[a-zA-Z0-9_]*\])?' : '('.$this->variable_regexp.')';
+		if (!preg_match("/^{$regexpVarName}$/i", $result[2], $res))
 			$this->errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
-
-		$var = strtolower($result[2]);
-		// sécurité
-		// todo : lors de l'eval dans la vue, passer en parametre une variable et non le context lui même !!
-		// pour çà, supprimer l'extract dans auth.php et utiliser un singleton de l'objet context ?
-// 		if(isset($this->denied[$var]))
-// 			$this->errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
+		
+		$var = strtolower($res[1]);
+		if(isset($this->denied[$var]))
+			$this->errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
 		if('VAR' == $result[1]) {
 			// commenté septembre 2008 par pierre-alain car pas d'utilité trouvée ?!?
 			//$this->parse_variable($result[2], false); // parse the attributs
@@ -1169,32 +1192,34 @@ class Parser
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 			$this->_clearposition();
-			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>';
+			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>';
 		} else {
-			$arr = '';
-			if(FALSE !== strpos($var, '[]')) {
-				$var = substr($var, 0, -2);
-				$arr = '[]';
-			}
 			$this->_clearposition();
 			$this->ind += 2;
-			$values = explode(',', $this->arr[$this->ind]);
-			foreach($values as &$value) {
-				if(preg_match("/<\?php\s+echo\s+(.*?);\s+\?>/", $value, $match)) { // variable LS déjà parsée
-					$value = "array_values((array){$match[1]})";
+			preg_match_all("/(<\?php\s+echo\s+(.*?);\s+\?>|[^,]+)*/", $this->arr[$this->ind], $values);
+			$vars = $originalVars = array();
+			foreach($values[0] as $k=>$value) {
+				if('' === (string)$value) continue;
+				if($values[2][$k]) { // variable LS déjà parsée
+					$originalVars[] = $values[2][$k];
+					$vars[$k] = "array_values((array){$values[2][$k]})";
 				} else {
 					$value = addcslashes(trim($value), "'");
-					$value = "(array)'{$value}'";
+					$originalVars[] = "'{$value}'";
+					$vars[$k] = "(array)'{$value}'";
 				}
 			}
+			
 			$this->arr[$this->ind] = '';
 			$this->ind++;
 			if ($this->arr[$this->ind] != "/LET")
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 			$this->_clearposition();
+			$merge = (count($vars)>1 || !$res[2]) ? 'array_merge('.join(',',$vars).')' : $originalVars[0];
+			unset($values,$originalVars, $vars);
 			$this->arr[$this->ind + 1] = $result[4] ? 
-				'<?php $GLOBALS[\'context\'][\''.$var.'\']'.$arr.'=array_merge('.join(',',$values).'); ?>' : 
-				'<?php $context[\''.$var.'\']'.$arr.'=array_merge('.join(',',$values).'); ?>';
+				'<?php $GLOBALS[\'context\'][\''.$var.'\']'.$res[2].'='.$merge.'; ?>' : 
+				'<?php $context[\''.$var.'\']'.$res[2].'='.$merge.'; ?>';
 		}
 	}
 
@@ -1218,7 +1243,6 @@ class Parser
 		}
 		$this->_clearposition();
 	}
-
 
 	/**
 	 * Accept an array or a string
@@ -1327,14 +1351,25 @@ class Parser
 		}
 	}
 
-	function _split_file($contents, $action = 'insert')
+	function _split_file($contents, $action = 'insert', $blockId=0)
 	{
-		$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+		if($blockId>0) {
+			if(!preg_match("/<BLOCK\b ([^>]*ID=\"".$blockId."\"[^>]*)>(.*?)<\/BLOCK>/s", $contents, $matches)) {
+				$this->errmsg('No block number '.$blockId.' found in file '.$this->infilename);
+			}
+			$attrs = $this->_decode_attributs($matches[1]);
+			$this->_checkforrefreshattribut($attrs);
+			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
+			$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+			unset($matches, $attrs);
+		} else {
+			$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+		}
 
 		$nbArr = count($arr);
 		// repair bad splitting
 		$this->_checkSplit($arr, $nbArr);
-
+		
 		// parse the variables
 		$this->parse_variable($arr[0]);
 		

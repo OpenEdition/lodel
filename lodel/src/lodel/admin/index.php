@@ -42,12 +42,12 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
+define('backoffice', true);
 require_once 'siteconfig.php';
 require_once 'lang.php';
 require_once 'auth.php';
 
-authenticate(LEVEL_VISITOR);
-define('backoffice', true);
+authenticate(LEVEL_REDACTOR);
 if ($_GET['page']) { // call a special page (and template)
 	$page = $_GET['page'];
   	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {

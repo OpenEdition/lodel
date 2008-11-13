@@ -114,7 +114,7 @@
 	<table class="statistics">
 		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
 	<tr>
-		<th class="type">Lodel</th><td>[#VERSION] - <?php echo $GLOBALS['revision'];?></td>
+		<th class="type">Lodel</th><td>[#VERSION] - r. <?php echo $GLOBALS['revision'];?></td>
 	</tr>
 
 	<tr>
@@ -158,7 +158,7 @@
 			echo "<ul>";
 			foreach(mb_get_info(ALL) as $k => $mbinfo){
 				if($mbinfo){
-					echo "<li>$k : $mbinfo</li>";
+					echo "<li>$k : ".(is_array($mbinfo) ? join(',', $mbinfo) : $mbinfo)."</li>";
 				}
 			}
 			echo "</ul>";

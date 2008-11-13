@@ -58,22 +58,31 @@
 		background-position: 0 .5ex;
 		background-repeat: no-repeat;
 	}
-
 <IF COND="FALSE SEQ [#CURRENTURL|strpos('lodel/edition')]">
 	#lodel-container{
 		position: relative;
 	}
 </IF>
 	div.loggedUsers{
-		margin-top:.5em;
 		margin-left:1em;
-		margin-bottom:.2em;
 		font-size: 90%;
+		margin-top:.2em;
 		text-align:left;
 	}
 	
+	div.loggedUsers span#loggedUsers {
+		display:none;
+	}
+<IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin')">
+	div#lodelGlobalDeskDisplayer {
+		text-align:left;
+		background-color:#E5E8E3;
+		width:100%;
+	}
+</IF>
 </style>
 
+<div id="lodel-globalDesk" style="<IF COND="![#LODELUSER.DESK]">display:none;<ELSE/>display:block;</IF>">
 <div id="lodel-desk">
 	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
 	<ul  class="group1">
@@ -143,12 +152,27 @@
 		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
 			<a class="actif" href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		<ELSE/>
-			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
+			<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
 		</IF>
 		</li>
 	<ELSE/>
 		<li>
-			<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]" >[@COMMON.ADMINISTRATIONLODEL]</a>
+			<IF COND="![#LO]">
+				<a href="index.php" id="admin" class="actif" title="[@COMMON.ADMINISTRATIONLODEL]">[@COMMON.ADMINISTRATIONLODEL]</a>
+			<ELSE/>
+				<a href="index.php" id="admin" title="[@COMMON.ADMINISTRATIONLODEL]">[@COMMON.ADMINISTRATIONLODEL]</a>
+			</IF>
+		</li>
+		<li>
+		<LET VAR="lodeluserid">lodelmain-[#LODELUSER.ID]</LET>
+		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status EQ 1">
+			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
+		</LOOP>	
+		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
+			<a class="actif" href="index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
+		<ELSE/>
+			<a href="index.php?do=list&amp;lo=internal_messaging" title="[@COMMON.INTERNAL_MESSAGING]">[@COMMON.INTERNAL_MESSAGING]<IF COND="[%NBMSGS]">&nbsp;([%NBMSGS])</IF></a>
+		</IF>
 		</li>
 	</IF>
 	</ul>
@@ -272,7 +296,29 @@
 				<li><a href="[#SITEROOT]lodel/edition/index.php?page=site_map" title="[@COMMON.SITE_MAP]" onclick="return confirm('[@COMMON.WARNING_LOADING_CAN_TAKE_A_WHILE]');">[@COMMON.SITE_MAP]</a></li>
 			</IF>
 		</IF>
-		
+		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')]">
+			<li>
+				<IF COND="([#DIRECTORY|empty] OR [#CURRENTURL|strpos('directory=inbox')]) AND [#DO] EQ 'list'">
+					<strong>[@ADMIN.INTERNAL_MESSAGING_INBOX]</strong>
+				<ELSE/>
+					<a href="index.php?lo=internal_messaging&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_INBOX]">[@ADMIN.INTERNAL_MESSAGING_INBOX]</a>
+				</IF>
+			</li>
+			<li>
+				<IF COND="[#CURRENTURL|strpos('directory=sent')] AND [#DO] EQ 'list'">
+					<strong>[@ADMIN.INTERNAL_MESSAGING_SENT]</strong>
+				<ELSE/>
+					<a href="index.php?lo=internal_messaging&amp;directory=sent&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_SENT]">[@ADMIN.INTERNAL_MESSAGING_SENT]</a>
+				</IF>
+			</li>
+			<li>
+				<IF COND="[#CURRENTURL|strpos('directory=trash')] AND [#DO] EQ 'list'">
+					<strong>[@ADMIN.INTERNAL_MESSAGING_TRASH]</strong>
+				<ELSE/>
+					<a href="index.php?lo=internal_messaging&amp;directory=trash&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_TRASH]">[@ADMIN.INTERNAL_MESSAGING_TRASH]</a>
+				</IF>
+			</li>
+		</IF>
 			<li><a>&nbsp;</a></li>
 			
 				<li>
@@ -346,28 +392,30 @@
 
 </div>
 
- 
-<IF COND="[#LODELUSER.RIGHTS] EQ 128">
-	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser">
+<IF COND="[#LODELUSER.RIGHTS] EQ 128 AND [#SITE] NE ''">
+	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>
 		</DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
-	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser">
+	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
 	</LOOP>
-<ELSE />
-	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser">
+<ELSEIF COND="[#LODELUSER.RIGHTS] GT 10">
+	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5 AND lodelmain.session.userrights LT '128'">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[%USERSNAME], [#USERNAME]</LET></IF></DO>
 	</LOOP>
 </IF>
 <IF COND="![%USERSNAME|empty]">
 <div class="loggedUsers">
-[@COMMON.LOGGED_USERS] : [%USERSNAME]
+<a href="#" onclick="if(document.getElementById('loggedUsers').style.display=='' || document.getElementById('loggedUsers').style.display=='none') document.getElementById('loggedUsers').style.display='inline';else document.getElementById('loggedUsers').style.display='none';">
+<img src="[#SHAREURL]/images/personne.gif" width="17px" height="20px" title="[@COMMON.LOGGED_USERS]" alt="[@COMMON.LOGGED_USERS]"/>
+</a>
+&nbsp;<span id="loggedUsers">[@COMMON.LOGGED_USERS] : [%USERSNAME]</span>
 </div>
 </IF>
 <IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
@@ -376,4 +424,16 @@
 	<MACRO NAME="ACTIONS_ON_CURRENT_PATH" />
 	<MACRO NAME="CURRENT_PATH_SITE" />
 	</div>
+</IF>
+</div>
+<IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin')">
+<div id="lodelGlobalDeskDisplayer">
+<a href="#" onclick="javascript:manageDesk('[#SHAREURL]', '[@COMMON.HIDE_DESK]', '[@COMMON.SHOW_DESK]', '[#SITEDESK]', '[@ADMIN.NAVIGATOR_NOT_AJAX|addslashes]', '[@ADMIN.DESK_NOT_SAVED]');return false;">
+<IF COND="![#LODELUSER.DESK]">
+<img src="[#SHAREURL]/images/fleche_bas_gris.png" id="lodelGlobalDeskDisplayer-img" alt="[@COMMON.SHOW_DESK]" title="[@COMMON.SHOW_DESK]" />
+<ELSE/>
+<img src="[#SHAREURL]/images/fleche_haut_gris.png" id="lodelGlobalDeskDisplayer-img" alt="[@COMMON.HIDE_DESK]" title="[@COMMON.HIDE_DESK]" />
+</IF>
+</a>
+</div>
 </IF>

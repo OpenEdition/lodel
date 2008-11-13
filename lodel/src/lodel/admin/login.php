@@ -42,7 +42,7 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
-
+define('backoffice', true);
 require_once 'siteconfig.php';
 require_once 'auth.php';
 
@@ -66,7 +66,7 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 		} else {
 			// et on ouvre une session
 			$err = open_session($_POST['login']);
-			if ($err)
+			if ((string)$err === 'error_opensession')
 				$context[$err] = 1;
 			else
 				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
@@ -78,6 +78,7 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 	require_once 'connect.php';
 	require_once 'loginfunc.php';
 	do {
+		$currentSite = $site;
 		if (!check_auth($context['login'], $context['passwd'], $site)) {
 			$context['error_login'] = 1;
 			break;
@@ -100,14 +101,14 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 		else {
 			// ouvre une session
 			$err = open_session($context['login']);
-			if ($err == 'error_opensession') {
+			if ((string)$err === 'error_opensession') {
 				$context[$err] = 1;
 				break;
 			}
 			unset($err);
 		}
-		check_internal_messaging();
-		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
+		check_internal_messaging($currentSite);
+		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
 	} while (0);
 }
 
