@@ -34,8 +34,8 @@
 
 <ul id="actionsOnEntitiesPath">
 	<li>
-		<span class="intit">[@ADMIN.TITLE_TEXTS_EDITION] [(#TEXTGROUP|strtoupper)] : </span> 
-		<LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'"><em> [#TITLE]</em></LOOP> 
+		<span class="intit">[@ADMIN.TITLE_TEXTS_EDITION]&nbsp;[#TEXTGROUP|strtoupper] :</span>
+		<LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'">&nbsp;<em>[#TITLE]</em></LOOP>
 	</li>
 </ul>
 <br />&nbsp;<br />
@@ -48,7 +48,7 @@
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="textgroup" value="[#TEXTGROUP]" />
 <input type="hidden" name="lang" value="[#LANG]" />
-<legend>[(#TEXTGROUP|strtoupper)] : <LOOP NAME="langue" TABLE="translations" WHERE="lang='[#LANG]'"><em> [#TITLE]</em></LOOP></legend>
+<legend>[(#TEXTGROUP|strtoupper)] : <LOOP NAME="langue"></LOOP></legend>
 <LOOP NAME="textes" TABLE="texts" WHERE="textgroup='[#TEXTGROUP]' AND lang='[#LANG]'" ORDER="name" SELECT="name,textgroup">
 <BEFORE>
 	<dl id="translation">

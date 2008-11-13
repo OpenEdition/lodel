@@ -1,0 +1,92 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_INTERNALMESSAGING_EDITION] - [@ADMIN.INTERNAL_MESSAGING_NEW_MSG]</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<ul id="actionsOnEntitiesPath"><li><span class="intit">[@ADMIN.INTERNAL_MESSAGING_NEW_MSG]</span></li></ul>
+<br />&nbsp;<br />
+
+<IF COND="[#IDPARENT]">
+<fieldset>
+		<legend>[@ADMIN.INTERNAL_MESSAGING_PARENT_MSG]</legend>
+<LOOP NAME="getParentMsg" DATABASE="lodelmain" SELECT="id, subject, body, idparent, incom_date" TABLE="internal_messaging" WHERE="id = '[#IDPARENT]'">
+	<BEFORE><ul style="list-style:none;"></BEFORE>
+	<li>
+	<div id="container[#ID]">
+	<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]') && document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='block';this.src='[#SHAREURL]/images/fleche_haut_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { if(document.getElementById('childContainer[#ID]')) { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png';this.title='[@ADMIN.GET_UNFOLDED]'; } }" />
+	[#SUBJECT] - [#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
+	<div id="childContainer[#ID]" style="display:none;"><p>[#BODY|nl2br]</p>
+	<LOOP NAME="getParentMsg"></LOOP>
+	</div>
+	</div>
+	</li>
+	<AFTER></ul></AFTER>
+</LOOP>
+</fieldset>
+</IF>
+<form method="post" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
+<fieldset>
+		<legend>[@ADMIN.INTERNAL_MESSAGING_NEW_MSG]</legend>
+<!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
+<input type="hidden" name="do" value="edit"><input type="hidden" name="lo" value="internal_messaging"><input type="hidden" name="id" value="[#ID]">
+<LOOP NAME="fielderror" FIELD="id"><a id="id"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC></span></LOOP><input type="hidden" name="idparent" value="[#IDPARENT]"><input type="hidden" name="status" value="1"><label for="addressee">[@ADMIN.INTERNAL_MESSAGING_TO]<span class="optional">(*)</span> : 
+		</label><br class="nobr"><select name="addressees[]" id="addressees" multiple="multiple">
+		<?php 
+			makeSelect($context,"addressees","internal_messaging","multipleselect");
+		?>
+</select><LOOP NAME="fielderror" FIELD="addressee"><a id="addressee"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_TO]"></FUNC></span></LOOP><br /><label for="subject">[@ADMIN.INTERNAL_MESSAGING_SUBJECT] : 
+		</label><br class="nobr"><input type="text" size="62" name="subject" id="subject" class="text" value="[#SUBJECT|trim]"><LOOP NAME="fielderror" FIELD="subject"><a id="subject"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"></FUNC></span></LOOP><br /><label for="body">[@ADMIN.INTERNAL_MESSAGING_BODY]<span class="optional">(*)</span> : 
+		</label><br class="nobr"><textarea size="30" name="body" id="body" class="text" rows="10" cols="60">[#BODY|htmlentities(ENT_NOQUOTES, 'UTF-8')]</textarea><LOOP NAME="fielderror" FIELD="body"><a id="body"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_BODY]"></FUNC></span></LOOP><br /><label for="cond">[@ADMIN.FORCE_LOOKING] : 
+		</label><br class="nobr"><IF COND="[#COND]"><input type="checkbox" name="cond" id="cond" checked><ELSE/><input type="checkbox" name="cond" id="cond"></IF><LOOP NAME="fielderror" FIELD="cond"><a id="cond"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FORCE_LOOKING]"></FUNC></span></LOOP><br />
+<!--[ end{form} Automatic generated. Don't edit ]-->
+</fieldset>
+<div id="prev" style="display:none;">
+<fieldset>
+<legend>[@ADMIN.CHECK_MSG_BEFORE_SEND]</legend>
+<div id="prev_body" style="white-space:pre;max-width:500px;overflow:auto;"></div>
+</fieldset>
+</div>
+<fieldset>
+<legend>[@COMMON.VALIDATION]</legend>
+	<input class="button" value="[@ADMIN.INTERNAL_MESSAGING_SEND]" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;
+	<input class="button" name="prev" value="[@ADMIN.INTERNAL_MESSAGING_PREV]" type="button" onclick="javascript:makePrev();">&nbsp;&nbsp;&nbsp;&nbsp;
+	<input class="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php?lo=internal_messaging&amp;do=list<IF COND="[#IDPARENT">&amp;id=[#IDPARENT]</IF>'" type="button">	
+</fieldset>
+</form>
+<script type="text/javascript">
+function makePrev()
+{
+	var prev = document.getElementById('prev_body');
+	prev.innerHTML = document.getElementById('body').value;
+	document.getElementById('prev').style.display = 'block';
+}
+</script>
+<MACRO NAME="CLOSE_HTML">

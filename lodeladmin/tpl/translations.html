@@ -35,12 +35,18 @@
 <ul id="actionsOnEntitiesPath">
 	<li><span class="intit">[@ADMIN.TITLE_ADMINISTRATE_TRANSLATION_FOR_SITE]</span></li>
 	<li>
+		<LET ARRAY="actions[import]">[@LODELADMIN.IMPORT_A_TRANSLATION]</LET>
+		<LET ARRAY="actions[lookfor]">[@ADMIN.LOOKFOR_TRANSLATIONS]</LET>
+		<LET ARRAY="actions[view]">[@LODELADMIN.ADD_A_TRANSLATION]</LET>
 		<ul class="actions">
 			<li class="isolated">
-				<a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
-			</li>
-			<li class="isolated">
-				&nbsp;/&nbsp;<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
+				<label for="actions">[@COMMON.ACTIONS] :</label>
+				<select onchange="select_url(this)" class="barInfo" id="actions">
+				<option>--</option>
+				<LOOP NAME="foreach" ARRAY="[#ACTIONS]">
+					<option value="index.php?lo=translations&amp;do=[#KEY]">[#VALUE]</option>
+				</LOOP>
+				</select>
 			</li>
 		</ul>
 	</li>

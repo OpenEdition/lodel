@@ -1,0 +1,373 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1" REFRESH="1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C?ou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_admin.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+
+<title>[(#SITE|strtoupper)].[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF>
+</title>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+<LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
+<ul id="actionsOnEntitiesPath"><li><span class="intit">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></span></li>
+<li>
+	<ul class="actions">
+		<IF COND="[#DIRECTORY] EQ 'inbox'">
+		<LET ARRAY="actions[view]">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
+		<ELSEIF COND="[#DIRECTORY] EQ 'trash'">
+		<LET ARRAY="actions[rest]">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
+		</IF>
+		<LET ARRAY="actions[delSelected]">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
+		<LET ARRAY="actions[delAll]">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
+		<li class="isolated">
+			<label for="actions">[@COMMON.ACTIONS] :</label>
+			<select class="barInfo" id="actions">
+			<option>--</option>
+			<LOOP NAME="foreach" ARRAY="[#ACTIONS]">
+				<option onclick="javascript:im_action('[#KEY]', '[#DIRECTORY]', '[#VALUE|addslashes]');" value="[#KEY]">[#VALUE]</option>
+			</LOOP>
+			</select>
+		</li>
+	</ul>
+</li>
+</ul>
+<br />
+<IF COND="[#ERROR]">
+	<p class="error">[#ERROR]</span>
+<ELSE />
+<IF COND="[#MSGSENDED]" />
+	<p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
+<ELSEIF COND="[#DELETED]" />
+	<p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+</IF>
+
+<IF COND="[#ID]">
+	<fieldset>
+	<legend>[@ADMIN.INTERNAL_MESSAGING_MESSAGE]</legend>
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT] :</strong> [#DATA.SUBJECT]</p>
+	<IF COND="[#DIRECTORY] NE 'sent'">
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_SENDER] :</strong> [#DATA.SENDER]</p>
+	<ELSE/>
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_TO] :</strong> [#DATA.ADDRESSEE]</p>
+	</IF>
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :</strong><br>[#DATA.BODY|nl2br]</p>
+	</fieldset>
+	<fieldset>
+	<legend>[@COMMON.VALIDATION]</legend>
+	<input class="button" type="button" value="[@ADMIN.INTERNAL_MESSAGING_ANSWER]" onclick="javascript:window.location='index.php?do=view&amp;idparent=[#ID]&amp;lo=internal_messaging&amp;directory=[#DIRECTORY]'" />&nbsp;&nbsp;&nbsp;&nbsp;
+	<MACRO NAME="DELETE_BUTTON">&nbsp;&nbsp;&nbsp;&nbsp;
+	<input class="button" type="button" value="[@LODELADMIN.BACK]" onclick="javascript:window.location='index.php?do=list&amp;lo=internal_messaging&amp;directory=[#DIRECTORY]'" />
+	</fieldset>
+
+<ELSE/>
+
+	<LET VAR="lodeluserid">
+	<IF COND="[#LODELUSER.ADMINLODEL]">
+		lodelmain-[#LODELUSER.ID]
+	<ELSE />
+		[#SITE]-[#LODELUSER.ID]
+	</IF>
+	</LET>
+	<LET VAR="idpar">0</LET>
+	<SWITCH TEST="[#DIRECTORY]">
+	<DO CASE="sent">
+		<LET VAR="im_where">in (-32, -8, -1, 0, 1) AND iduser = '[#LODELUSERID|trim]'</LET>
+		<LET VAR="im_groupby">incom_date, subject</LET>
+	</DO>
+	<DO CASE="trash">
+		<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_groupby">id</LET>
+	</DO>
+	<DO CASE="inbox">
+		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_groupby">id</LET>
+	</DO>
+	<DO CASE="default">
+		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_groupby">id</LET>
+	</DO>
+	</SWITCH>
+	<LET VAR="inside" GLOBAL="1">0</LET>
+	<LET VAR="level" GLOBAL="1">0</LET>
+<form method="POST" id="im_form">
+<IF COND="[#DIRECTORY] EQ 'trash'">
+<input type="hidden" id="im_restore" name="restore" value="0"/>
+</IF>
+<input type="hidden" name="lo" value="internal_messaging"/>
+<input type="hidden" name="do" value="delete"/>
+<input type="hidden" name="directory" value="[#DIRECTORY]"/>
+<IF COND="![#SORT|isset]">
+	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="incom_date ASC" GROUPBY="[#IM_GROUPBY]">
+		<BEFORE>
+			<IF COND="[%INSIDE|intval] GT 0"><?php $GLOBALS['context']['level']++; ?><tr><ELSE/>
+			<table class="internal_messaging" id="internal_messaging">
+				<th class="im_select"><input type="checkbox" name="im_select_all" onclick="javascript:im_selectAll();"/></th>
+				<IF COND="[#DIRECTORY] NE 'sent'">
+				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=iduser&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_FROM]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_FROM]"/></a></th>
+				<ELSE/>
+				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a></th>
+				</IF>
+				<th class="im_subject"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=subject&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"/></a></th>
+				<th class="im_date"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=incom_date&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_DATE]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_DATE]"/></a></th></tr>
+			</IF>
+		</BEFORE>
+		<DO>
+			<tr>
+			<td class="im_select_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>"><input type="checkbox" name="im_select[[#ID]]" id="im_select_[#ID]"/></td>
+			<IF COND="[#DIRECTORY] NE 'sent'">
+			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
+				<LET VAR="userdb">
+				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				</LET>
+			</IF>
+			<td class="im_from_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>">
+			<LOOP NAME="getUserName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+				[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF>
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+				</a>
+			</LOOP>
+			</td>
+			<ELSE/>
+				<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+				<LET VAR="tos" GLOBAL="1"></LET>
+				<LOOP NAME="FOREACH" ARRAY="[#USERS]">
+				<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
+					<LET VAR="userdb">
+					<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+					</LET>
+				
+					<LOOP NAME="getUsersName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+						<LET VAR="tos" GLOBAL="1"><IF COND="[%TOS|strlen] GT 0">[%TOS], </IF>[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF></LET>
+					</LOOP>
+				</IF>
+				</LOOP>
+				<td class="im_from_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>">
+				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+				[%TOS]
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+				</a>
+				</td>
+			</IF>
+			<td class="im_subject_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>">
+				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+				<IF COND="[#IDPAR] GT 0">
+					<?php $context['spaces'] = array_fill(0, $GLOBALS['context']['level'], '&nbsp;'); 
+					echo join('', $context['spaces'])."<img src=\"{$context['shareurl']}/images/tree.gif\" alt=\"-\"/>&nbsp;";
+					?>
+				</IF>
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+				<IF COND="![#SUBJECT]">([@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT])<ELSE />[#SUBJECT]</IF>
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+				</a>
+			</td>
+			<td class="im_date_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>">
+				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+				<IF COND="[#INCOM_DATE] LIKE /(\d{4})\-(\d{2})\-(\d{2})/">
+					<IF COND="today() EQ [#MATCHES.0]">
+					<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0],'')]</LET>
+					[#INCOM_DATE]
+					<ELSE/>
+					<IF COND="'fr' EQ [#LODELUSER.LANG]">[#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
+					<ELSE/>[#INCOM_DATE]</IF>
+					</IF>
+				</IF>
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+				</a>
+			</td>
+			<?php $GLOBALS['context']['inside']++; ?>
+			<IF COND="[#DIRECTORY] NE 'sent'">
+				<LET VAR="idpar">[#ID]</LET>
+				<SWITCH TEST="[#DIRECTORY]">
+				<DO CASE="sent">
+					<LET VAR="im_where">in (-32, -8, -1, 0, 1) AND iduser = '[#LODELUSERID|trim]'</LET>
+				</DO>
+				<DO CASE="trash">
+					<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+				</DO>
+				<DO CASE="inbox">
+					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+				</DO>
+				<DO CASE="default">
+					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+				</DO>
+				</SWITCH>
+				<LOOP NAME="getMessages"></LOOP>
+			</IF>
+			</tr>
+		</DO>
+		<AFTER>
+			<IF COND="[%INSIDE] GT 0"></tr><?php $GLOBALS['context']['level']--; ?><ELSE/></table></IF>
+		</AFTER>
+		<ALTERNATIVE><IF COND="[#IDPARENT] EQ [#IDPAR]">[@ADMIN.INTERNAL_MESSAGING_NO_MAILS]</IF></ALTERNATIVE>
+	</LOOP>	
+
+<ELSE/>
+
+	<LET VAR="dir">
+	<IF COND="[#DIR|strtolower] EQ 'desc'">
+		DESC
+	<ELSE/>
+		ASC
+	</IF>
+	</LET>
+	<LET VAR="orderby">
+	<IF COND="[#SORT]">
+		<SWITCH TEST="[#SORT|strtolower]">
+			<DO CASES="iduser,subject,addressees">
+				[#SORT|strtolower]
+			</DO>
+			<DO CASE="default">
+				incom_date
+			</DO>
+		</SWITCH>
+	<ELSE/>incom_date</IF>
+	</LET>
+	<LET VAR="dir">[#DIR|trim]</LET>
+	<LET VAR="orderby">[#ORDERBY|trim]</LET>
+	<LOOP NAME="getMessagesWithSort" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="[#ORDERBY] [#DIR]" GROUPBY="[#IM_GROUPBY]">
+		<BEFORE>
+		<table class="internal_messaging" id="internal_messaging">
+		<th class="im_select"><input type="checkbox" name="im_select_all" onclick="javascript:im_selectAll();"/></th>
+		<th class="im_from">
+		<IF COND="[#DIRECTORY] NE 'sent'">
+		<IF COND="[#ORDERBY] EQ 'iduser' AND [#DIR] EQ 'DESC'">
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=iduser&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_FROM]</strong>&nbsp;
+			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_FROM]"/></a>
+		<ELSE/>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=iduser&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_FROM]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_FROM]"/></a>
+		</IF>
+		<ELSE/>
+		<IF COND="[#ORDERBY] EQ 'iduser' AND [#DIR] EQ 'DESC'">
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;
+			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
+		<ELSE/>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
+		</IF>
+		</IF>
+		</th>
+		<th class="im_subject">
+		<IF COND="[#ORDERBY] EQ 'subject' AND [#DIR] EQ 'DESC'">
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=subject&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]</strong>&nbsp;
+			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"/></a>
+		<ELSE/>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=subject&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"/></a>
+		</IF>			
+		</th>
+		<th class="im_date">
+		<IF COND="[#ORDERBY] EQ 'incom_date' AND [#DIR] EQ 'DESC'">
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=date&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_DATE]</strong>&nbsp;
+			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_DATE]"/></a>
+		<ELSE/>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=date&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_DATE]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_DATE]"/></a>
+		</IF>			
+		</th>
+		</tr>
+		</BEFORE>
+		
+		<DO>
+		<tr>
+		<td class="im_select_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>"><input type="checkbox" name="im_select[[#ID]]" id="im_select_[#ID]"/></td>
+		<IF COND="[#DIRECTORY] NE 'sent'">
+			<td class="im_from_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
+			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
+				<LET VAR="userdb">
+				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				</LET>
+			</IF>
+			<LOOP NAME="getUserNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+				[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF>
+				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+				</a>
+			</LOOP>
+			</td>
+		<ELSE/>
+			<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+			<LET VAR="tos" GLOBAL="1"></LET>
+			<LOOP NAME="FOREACH" ARRAY="[#USERS]">
+			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
+				<LET VAR="userdb">
+				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				</LET>
+			
+				<LOOP NAME="getUsersNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+					<LET VAR="tos" GLOBAL="1"><IF COND="[%TOS|strlen] GT 0">[%TOS], </IF>[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF></LET>
+				</LOOP>
+			</IF>
+			</LOOP>
+			<td class="im_from_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
+			&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+			[%TOS]
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+			</a>
+			</td>
+		</IF>
+		<td class="im_subject_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
+			&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+			<IF COND="[%INSIDE] GT 0">
+				<?php $context['spaces'] = array_fill(0, $context['inside'], '&nbsp;'); 
+				echo join('', $context['spaces'])."<img src=\"{$context['shareurl']}/images/tree.gif\" alt=\"-\"/>&nbsp;";
+				?>
+			</IF>
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+			<IF COND="![#SUBJECT]">([@ADMIN.INTERNAL_MESSAGING_NO_SUBJECT])<ELSE />[#SUBJECT]</IF>
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+			</a>
+		</td>
+		<td class="im_date_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
+			&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
+			<IF COND="[#INCOM_DATE] LIKE /(\d{4})\-(\d{2})\-(\d{2})/">
+				<IF COND="today() EQ [#MATCHES.0]">
+				<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0],'')]</LET>
+				[#INCOM_DATE]
+				<ELSE/>
+				<IF COND="'fr' EQ [#LODELUSER.LANG]">[#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
+				<ELSE/>[#INCOM_DATE]</IF>
+				</IF>
+			</IF>
+			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
+			</a>
+		</td>
+		</tr>
+		</DO>
+		
+		<AFTER></table></AFTER>
+		<ALTERNATIVE>[@ADMIN.INTERNAL_MESSAGING_NO_MAILS]</ALTERNATIVE>
+	</LOOP>
+</IF>
+</form>
+</IF>
+</IF>
+<MACRO NAME="CLOSE_HTML">
