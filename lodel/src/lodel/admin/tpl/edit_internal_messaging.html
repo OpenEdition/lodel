@@ -37,13 +37,13 @@
 <IF COND="[#IDPARENT]">
 <fieldset>
 		<legend>[@ADMIN.INTERNAL_MESSAGING_PARENT_MSG]</legend>
-<LOOP NAME="getParentMsg" DATABASE="lodelmain" SELECT="id, subject, body, idparent, upd" TABLE="internal_messaging" WHERE="id = '[#IDPARENT]'">
-	<BEFORE><ul></BEFORE>
+<LOOP NAME="getParentMsg" DATABASE="lodelmain" SELECT="id, subject, body, idparent, incom_date" TABLE="internal_messaging" WHERE="id = '[#IDPARENT]'">
+	<BEFORE><ul style="list-style:none;"></BEFORE>
 	<li>
 	<div id="container[#ID]">
 	<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]') && document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='block';this.src='[#SHAREURL]/images/fleche_haut_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { if(document.getElementById('childContainer[#ID]')) { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png';this.title='[@ADMIN.GET_UNFOLDED]'; } }" />
-	[#SUBJECT] - [#UPD|humandate]
-	<div id="childContainer[#ID]" style="display:none;"><p>[#BODY]</p>
+	[#SUBJECT] - [#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
+	<div id="childContainer[#ID]" style="display:none;"><p>[#BODY|nl2br]</p>
 	<LOOP NAME="getParentMsg"></LOOP>
 	</div>
 	</div>
@@ -71,7 +71,7 @@
 <div id="prev" style="display:none;">
 <fieldset>
 <legend>[@ADMIN.CHECK_MSG_BEFORE_SEND]</legend>
-<div id="prev_body" style="white-space:pre;"></div>
+<div id="prev_body" style="white-space:pre;max-width:500px;overflow:auto;"></div>
 </fieldset>
 </div>
 <fieldset>

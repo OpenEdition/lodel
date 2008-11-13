@@ -77,19 +77,25 @@ function sendValues(){
 	<LET VAR="iddocument">[#ID]</LET>
 	<LET VAR="id">0</LET>
 	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
-		<BEFORE><ul class="listentities"></BEFORE>
+		<BEFORE><ul class="listentities" style="list-style-type:none;"></BEFORE>
 		<DO>
 			<li>
+			<IF COND="[#TPLEDITION]">
+			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />
 			<IF COND="[#SINGLE]">
 				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE] ([#TYPE])</a>
 			<ELSE/>
 				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
 			</IF>
-			<IF COND="[#TPLEDITION]">
-			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />
 			<div style="display:none" id="childContainer[#ID]">
 				<LOOP NAME="entities"></LOOP>	
 			</div>
+			<ELSE/>
+			<IF COND="[#SINGLE]">
+				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE] ([#TYPE])</a>
+			<ELSE/>
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
+			</IF>
 			</IF>
 			</li>
 		</DO>

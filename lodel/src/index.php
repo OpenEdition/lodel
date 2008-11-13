@@ -77,7 +77,7 @@ if ($_POST) {
 } else {
 	require 'view.php';
 	$view =& View::getView();
-	if($view->renderIfCacheIsValid()) return;
+	if($view->renderIfCacheIsValid()) exit();
 	unset($view);
 	$request = &$_GET;
 }
@@ -95,7 +95,7 @@ $request['page'] = isset($_GET['page']) ? $_GET['page'] : null;
 $request['login'] = isset($_POST['login']) ? $_POST['login'] : null;
 $request['passwd'] = isset($_POST['passwd']) ? $_POST['passwd'] : null;
 
-if (isset($request['do'])) {
+if ($request['do']) {
 	if ($request['do'] == 'edit' || $request['do'] == 'view') {
 		// check for the right to change this document
 		if (!$request['idtype']) {
