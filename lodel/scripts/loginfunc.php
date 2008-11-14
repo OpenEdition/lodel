@@ -80,7 +80,11 @@ function open_session($login)
 		return "error_opensession";
 	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
 		die("Probleme avec setcookie... probablement du texte avant");
-
+	// nettoyage des tables session et urlstack
+	if($lodeluser['rights'] == LEVEL_ADMINLODEL) {
+		$db->execute(lq("DELETE FROM #_MTP_session WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) or dberror();
+		$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) or dberror();
+	}
 	usecurrentdb();
 	return $name;
 }

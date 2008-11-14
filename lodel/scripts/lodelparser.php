@@ -511,12 +511,12 @@ class LodelParser extends Parser
 
 		// add the code for the desk
 		if (!$GLOBALS['nodesk']) {
-			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert the desk
+			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\']) { // insert the desk
 	if(!function_exists("insert_template")) { require "view.php"; }
 	insert_template($context,"desk","",$GLOBALS[\'home\']."../tpl/");
 	?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
 
-			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\'] || $GLOBALS[\'lodeluser\'][\'adminlodel\']) { // insert end of the desk
+			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\']) { // insert end of the desk
 	?'.'></div><'.'?php  } ?'.'>';
 
 

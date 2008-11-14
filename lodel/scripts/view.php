@@ -107,12 +107,6 @@ class View
 	 */
 	private static $_context;
 	
-	/**
-	 * A-t-on regénéré un template/block inclus dynamiquement ?
-	 * @var bool
-	 */
-	private $_updatedTplFile;
-	
 	/** 
 	 * Constructeur privé
 	 * @access private
@@ -210,7 +204,7 @@ class View
 		// if we are in lodel/edition or lodel/admin or /lodeladmin
 		// we need to specify the tpl name
 		// because logic is not all time specified in uri
-		if(defined('backoffice'))
+		if(defined('backoffice') || defined('backoffice-lodeladmin'))
 			$this->_makeCachedFileName($tpl);
 		else
 			$this->_makeCachedFileName();
@@ -295,8 +289,9 @@ class View
 	* @param bool $escRefresh doit-on rafraichir le template
 	* @param string $refreshTime (optionnel) temps de refresh pour le manager
 	* @param int $blockId (optionnel) identifiant du block
+	* @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
 	*/
-	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo) 
+	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
 	{
 		global $site, $lodeluser, $home;
 
@@ -337,6 +332,7 @@ class View
 				$refreshTime = $m[1];
 			}
 		}
+
 		if(!empty($refreshTime)) {
 			// template manager
 			// @see parser.php
@@ -347,7 +343,7 @@ class View
 					$tmpcode .= '$refreshtime'.$k.'=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
 					$code.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime'.$k.' && $refreshtime'.$k.'<$now)';
 				}
-				$tmpcode = '$date = getdate(time());'.$tmpcode;
+				$tmpcode = '$now = time();$date = getdate($now);'.$tmpcode;
 			} else {
 				$code = '($cachetime + '.$refreshTime.') < time()';
 			}
@@ -408,7 +404,7 @@ class View
 			$this->_evalCalled = true;
 		}
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
-			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(), true));
+			$tmpFileName = "./CACHE/require_caching/".uniqid(mt_rand(), true);
 			if(!file_put_contents($tmpFileName, $content, LOCK_EX))
 				$this->_error("Error while writing CACHE required file.", __FUNCTION__, false);
 			ob_start();
@@ -416,7 +412,7 @@ class View
 			$ret = ob_get_contents();
 			ob_end_clean();
 			unlink($tmpFileName);
-			if('refresh' == $refresh) {
+			if('refresh' === (string)$refresh) {
 				// reset the context
 				$GLOBALS['context'] = self::$_context;
 				return $refresh;
@@ -522,7 +518,7 @@ class View
 		// on va essayer 10 fois (!!!) de récupérer ou générer le fichier mis en cache
 		do {
 			$content = $cache->get($template_cache, $group);
-			if(is_string($content) && strlen($content)>0)
+			if(is_string($content))
 				break;
 			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include, $blockId);
 			$i++;
@@ -589,7 +585,8 @@ class View
 
 
 /**
- *  Insertion d'un template dans le context
+ * Insertion d'un template dans le context
+ * wrapper de la fonction View::renderTemplateFile
  *
  * @param array $context le context
  * @param string $tpl le nom du fichier template
@@ -598,6 +595,7 @@ class View
  * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
  * @param string $refreshTime temps après lequel le tpl est à recompiler
  * @param int $blockId (optionnel) numéro d'un block de template
+ * @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
  */
 function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
 {
