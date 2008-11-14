@@ -392,7 +392,7 @@
 
 </div>
 
-<IF COND="[#LODELUSER.RIGHTS] EQ 128 AND [#SITE] NE ''">
+<IF COND="[#LODELUSER.RIGHTS] EQ 128">
 	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
@@ -418,7 +418,7 @@
 &nbsp;<span id="loggedUsers">[@COMMON.LOGGED_USERS] : [%USERSNAME]</span>
 </div>
 </IF>
-<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lodeladmin')]">
+<IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin')">
 	<div id="siteContext">
 	<MACRO NAME="CURRENT_PATH" />
 	<MACRO NAME="ACTIONS_ON_CURRENT_PATH" />

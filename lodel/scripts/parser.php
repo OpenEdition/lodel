@@ -225,11 +225,9 @@ class Parser
 		}
 
 		// clean the open/close php tags
-		$contents = preg_replace(array ('/\?>\s*<\?(php\b)?/', '/<\?php[\s\n]*\?>/'), array ("", ""), $contents);
+		$contents = preg_replace(array ('/\?>[\s\n]*<\?(php\b)?/', '/<\?php[\s\n]*\?>/'), array ("", ""), $contents);
 
-		if (!$this->charset)
-			$this->charset = 'iso-8859-1';
-		if ($this->charset != 'utf-8')	{
+		if (!$this->charset || $this->charset != 'utf-8') {
 			#$t=microtime();
 			if(!function_exists('convertHTMLtoUTF8'))
 				require 'utf8.php'; // conversion des caracteres
@@ -873,15 +871,14 @@ class Parser
 			}
 
 			$this->fct_txt .= '
-			$context[nblignes] = mysql_num_rows($result);'.'$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'"; '. ($options['showsql'] ? 'echo htmlentities($query);' : '').'
-			$result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
+			$context[nblignes]=mysql_num_rows($result);$query="SELECT '.$select.' FROM '.$table." ".$selectparts['where']." ".$selectparts['groupby']." ".$selectparts['having']." ".$selectparts['order']." ".$limit.'";'. ($options['showsql'] ? 'echo htmlentities($query);' : '').'$result='.sprintf($options['sqlquery'], '$query').sprintf($options['sqlerror'], '$query', '$name').';
 		'.$postmysqlquery.'
 		 '.$processlimit.' 
 			$generalcontext=$context;
 			$count=0;
 			if ($row='.sprintf($options['sqlfetchassoc'], '$result').') {
 			?>'.$contents['BEFORE'].'<?php
-		do {
+			do {
 			$context=array_merge ($generalcontext,$row);
 			$count++;
 			$context[count]=$count;';
@@ -1192,7 +1189,7 @@ class Parser
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 			$this->_clearposition();
-			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();  ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>';
+			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>';
 		} else {
 			$this->_clearposition();
 			$this->ind += 2;
@@ -1423,17 +1420,5 @@ function stripcommentandcr(& $text)
 function quote_code($text)
 {
 	return addcslashes($text, "'");
-}
-
-if (!function_exists('file_get_contents'))
-{
-	function file_get_contents($file)
-	{
-		$fp = fopen($file, "r") or die("Impossible to read the file $file");
-		while (!feof($fp))
-			$res .= fread($fp, 2048);
-		fclose($fp);
-		return $res;
-	}
 }
 ?>
