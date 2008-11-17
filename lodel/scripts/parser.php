@@ -879,7 +879,7 @@ PHP;
 // 			if (!isset ($options[$piece]))
 // 				$options[$piece] = $this->codepieces[$piece];
 // 		}
-		$sqlfetchassoc = sprintf($this->codepieces['sqlfetchassoc'], '\$result');
+		$sqlfetchassoc = sprintf($this->codepieces['sqlfetchassoc'], '$result');
 		#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 		//
 		// genere le code pour parcourir la loop
