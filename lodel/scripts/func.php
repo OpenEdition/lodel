@@ -361,7 +361,7 @@ function getoption($name)
 
 function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 {
-	
+	static $req;
 	if ($group=="") {
 		if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
 		$dotpos=strpos($name,".");
@@ -379,22 +379,31 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	
 	if ($group!="site") {
 		usemaindb();
-		$prefix="#_MTP_";
+		$prefix=lq("#_MTP_");
 	} else {
-		$prefix="#_TP_";
+		$prefix=lq("#_TP_");
 	}
 	
 	$critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
 	$logic=false;
+	if(!$stmt[$prefix]) {
+		$stmt[$prefix] = $db->prepare("SELECT id,contents,status 
+						FROM {$prefix}texts 
+						WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
+						ORDER BY lang DESC");
+	}
 	do {
-		$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
+		//$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
+		$arr = $db->execute($stmt[$prefix], array((string)$name, (string)$group, (string)$lang));
 		if ($arr===false) dberror();
+		else {
+			$arr = $arr->fields;
+		}
 		if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
 		
 		if (!$arr) {
-			
+			if(!function_exists('getLogic')) require 'logic.php';
 			// create the textfield
-			require_once("logic.php");
 			$logic=getLogic("texts");
 			$logic->createTexts($name,$group);
 		}
@@ -552,6 +561,7 @@ function download($filename,$originalname="",$contents="")
   } else { 
     echo $contents; 
   }
+  die();
 }
 
 
@@ -704,18 +714,9 @@ function checkdocannexedir($dir)
 	{//si le siteroot est défini
 		$rep = SITEROOT . $dir;
 		if(!file_exists(SITEROOT . "docannexe/image"))
-		{//il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
-				//on arrive pas a le créer, peut etre que docannexe n'existe pas, on tente de le créer
-				if (!@mkdir(SITEROOT . "docannexe",0777 & octdec($GLOBALS['filemask']))) {
-					die("ERROR: impossible to create the directory \"docannexe\"");//peut rien faire
-				}
-				else
-				{//on a créé le repertoire docannexe, on tente de créer image
-					if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
-						die("ERROR: impossible to create the directory \"docannexe/image\"");//peut rien faire
-					}
-				}
+		{// il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
+			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
+				die("ERROR: impossible to create the directory \"docannexe/image\"");//peut rien faire
 			}
 		}
 	}
@@ -724,16 +725,8 @@ function checkdocannexedir($dir)
 		$rep = $dir;
 		if(!file_exists("docannexe/image"))
 		{
-			if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
-				if (!@mkdir("docannexe",0777 & octdec($GLOBALS['filemask']))) {
-					die("ERROR: impossible to create the directory \"docannexe\"");
-				}
-				else
-				{
-					if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']))) {
-						die("ERROR: impossible to create the directory \"docannexe/image\"");
-					}
-				}
+			if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
+				die("ERROR: impossible to create the directory \"docannexe\"");
 			}
 		}
 	}
@@ -741,17 +734,8 @@ function checkdocannexedir($dir)
 	{//si le siteroot est défini
 		if(!file_exists(SITEROOT . "docannexe/file"))
 		{//il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec($GLOBALS['filemask']))) {
-				//on arrive pas a le créer, peut etre que docannexe n'existe pas, on tente de le créer
-				if (!@mkdir(SITEROOT . "docannexe",0777 & octdec($GLOBALS['filemask']))) {
-					die("ERROR: impossible to create the directory \"docannexe\"");//peut rien faire
-				}
-				else
-				{//on a créé le repertoire docannexe, on tente de créer image
-					if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec($GLOBALS['filemask']))) {
-						die("ERROR: impossible to create the directory \"docannexe/file\"");//peut rien faire
-					}
-				}
+			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
+				die("ERROR: impossible to create the directory \"docannexe\"");//peut rien faire
 			}
 		}
 	}
@@ -759,16 +743,8 @@ function checkdocannexedir($dir)
 	{
 		if(!file_exists("docannexe/file"))
 		{
-			if (!@mkdir("docannexe/file",0777 & octdec($GLOBALS['filemask']))) {
-				if (!@mkdir("docannexe",0777 & octdec($GLOBALS['filemask']))) {
-					die("ERROR: impossible to create the directory \"docannexe\"");
-				}
-				else
-				{
-					if (!@mkdir("docannexe/file",0777 & octdec($GLOBALS['filemask']))) {
-						die("ERROR: impossible to create the directory \"docannexe/file\"");
-					}
-				}
+			if (!@mkdir("docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
+				die("ERROR: impossible to create the directory \"docannexe\"");
 			}
 		}
 	}

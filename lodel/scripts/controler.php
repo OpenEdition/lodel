@@ -221,7 +221,7 @@ class Controler
 						$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
 						if($file[$row['name']]) {
 							download($file[$row['name']]);
-							return;
+							exit();
 						}
 					} else {
 						$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
@@ -233,7 +233,7 @@ class Controler
 							$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
 							if($file[$row['name']]) {
 								download($file[$row['name']]);
-								return;
+								exit();
 							}
 						}
 					}
