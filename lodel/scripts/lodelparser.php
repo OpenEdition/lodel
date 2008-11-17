@@ -120,7 +120,7 @@ class LodelParser extends Parser
 	function parse_loop_extra(& $tables, & $tablesinselect, & $extrainselect, & $selectparts)
 	{
 		global $site, $home, $db;
-		static $tablefields; // charge qu'une seule fois
+		static $tablefields, $classes; // charge qu'une seule fois
 		if (!$tablefields) {
 			require ('tablefields.php');
 		}
@@ -146,8 +146,10 @@ class LodelParser extends Parser
 		#		    ),$where);
 		//
 		if ($GLOBALS['currentdb'] == $db->database && $tablefields[lq("#_TP_classes")]) {
-			$dao = &getDAO("classes");
-			$classes = $dao->findMany("status > 0");
+			if(!$classes) {
+				$dao = &getDAO("classes");
+				$classes = $dao->findMany("status > 0");
+			}
 			foreach ($classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
@@ -415,7 +417,7 @@ class LodelParser extends Parser
 	function maketext($name, $group, $tag)
 	{
 		global $db;
-
+		static $stmt;
 		$name = strtolower($name);
 		$group = strtolower($group);
 
@@ -429,17 +431,20 @@ class LodelParser extends Parser
 				$prefix = lq("#_TP_");
 			}
 			if(!isset($this->nbLangs[$prefix]))
-				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations");
-			$textexists = $db->getOne("SELECT count(id) FROM {$prefix}texts WHERE name='{$name}' AND textgroup='{$group}'");
+				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations LIMIT 1");
+			if(!isset($stmt[$prefix]))
+				$stmt[$prefix] = $db->prepare("SELECT count(id) as nb FROM {$prefix}texts WHERE name=? AND textgroup=? LIMIT 1");
+			$textexists = $db->execute($stmt[$prefix], array((string)$name, (string)$group));
 			if ($db->errorno()) {
 				dberror();
 			}
-			if ($textexists < $this->nbLangs[$prefix])	{ 
+			if ($textexists->fields['nb'] < $this->nbLangs[$prefix]) { 
 				// text does not exists or not available in every langs
 				// Have to create them
 				if(!class_exists('getLogic')) require "logic.php";
-				$textslogic = getLogic("texts");
+				$textslogic =& getLogic("texts");
 				$textslogic->createTexts($name, $group);
+				unset($textslogic);
 			}
 			
 			if ($group != "site") {
@@ -478,47 +483,57 @@ class LodelParser extends Parser
 			$closepos = strpos($text, "</body>");
 			if ($closepos === false)
 				return; // no idea what to do...
-
-			$code = '<?php if ($context[\'lodeluser\'][\'translationmode\']=="interface") { require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
-			<hr />
-			<form method="post" action="index.php">
-			<input type="hidden" name="edit" value="1" />
-			<input type="hidden" name="do" value="edit" />
-			<input type="hidden" name="lo" value="texts" />
-			<fieldset id="translationforms">
-				<legend>'.getlodeltextcontents('TRANSLATIONS_FOR_THIS_PAGE','lodeladmin') .'</legend>
-			<input type="submit" class="button" value="<?php echo getlodeltextcontents(\'update\', \'common\');?>" />
-			<dl id="translation"><a id="top" href="#bottom"> --bottom -- </a>'.join("", $this->translationform).'<a id="bottom" href="#top"> --top-- </a></dl>
-			<input type="submit" class="button" value="<?php echo getlodeltextcontents(\'update\', \'common\');?>" />
-			</fieldset>
-			</form>
-			<?php } ?>';
-
+			$tf = join("", $this->translationform);
+			$code = <<<PHP
+<?php if (\$context['lodeluser']['translationmode']=="interface") { 
+require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
+<hr />
+<form method="post" action="index.php">
+<input type="hidden" name="edit" value="1" />
+<input type="hidden" name="do" value="edit" />
+<input type="hidden" name="lo" value="texts" />
+<fieldset id="translationforms">
+	<legend><?php echo getlodeltextcontents('TRANSLATIONS_FOR_THIS_PAGE','lodeladmin'); ?></legend>
+<input type="submit" class="button" value="<?php echo getlodeltextcontents('update', 'common'); ?>" />
+<dl id="translation"><a id="top" href="#bottom"> --bottom -- </a>{$tf}<a id="bottom" href="#top"> --top-- </a></dl>
+<input type="submit" class="button" value="<?php echo getlodeltextcontents('update', 'common');?>" />
+</fieldset>
+</form>
+<?php } ?>
+PHP;
+			unset($tf);
 			$text = substr_replace($text, $code, $closepos, 0);
 		}
 		if ($this->translationtags)	{
-			$text = '<'.'?php
-	$langfile="CACHE/lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__);
-	if (!file_exists($langfile)) {
-		if(!function_exists("generateLangCache")) { require "view.php"; }
-		generateLangCache($GLOBALS[\'lang\'], $langfile, array('. join(',', $this->translationtags).'));
-	} else {
-		require_once($langfile);
-	}
-	?'.'>
-'. $text;
+			$tt = join(',', $this->translationtags);
+			$text = <<<PHP
+<?php 
+\$langfile="CACHE/lang-{\$GLOBALS['lang']}/". basename(__FILE__);
+if (!file_exists(\$langfile)) {
+	generateLangCache(\$GLOBALS['lang'], \$langfile, array({$tt}));
+} else {
+	require_once(\$langfile);
+}
+?>
+{$text}
+PHP;
+			unset($tt);
 		}
 
 		// add the code for the desk
 		if (!$GLOBALS['nodesk']) {
-			$deskbegin = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\']) { // insert the desk
-	if(!function_exists("insert_template")) { require "view.php"; }
-	insert_template($context,"desk","",$GLOBALS[\'home\']."../tpl/");
-	?'.'><div id="lodel-container"><'.'?php  } ?'.'>';
+			$deskbegin = <<<PHP
+<?php if (\$GLOBALS['lodeluser']['visitor']) { // insert the desk
+	echo \$this->renderTemplateFile(\$context,"desk","",\$GLOBALS['home']."../tpl/");
+?>
+<div id="lodel-container">
+<?php } ?>
+PHP;
 
-			$deskend = '<'.'?php if ($GLOBALS[\'lodeluser\'][\'visitor\']) { // insert end of the desk
-	?'.'></div><'.'?php  } ?'.'>';
-
+			$deskend = <<<PHP
+<?php if (\$GLOBALS['lodeluser']['visitor']) { // insert end of the desk
+ ?></div><?php } ?>
+PHP;
 
 			/* modifs par Pierre-Alain Mignot */
 			$bodystarttag = strpos($text, "<body>");

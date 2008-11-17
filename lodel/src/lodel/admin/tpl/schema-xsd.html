@@ -30,7 +30,6 @@
 	  xmlns:xhtml="http://www.w3.org/1999/xhtml"
 	  elementFormDefault="qualified">
 </LOOP>
-
 <xsd:import namespace="http://www.w3.org/1999/xhtml"
             schemaLocation="http://www.w3.org/2002/08/xhtml/xhtml1-strict.xsd"/>
 
@@ -138,8 +137,8 @@
 			    <xsd:element name="[#NAME]" type="[#XSDSIMPLETYPE]" [#OCCURS]>
 			  <ELSE/>
 			  	<IF COND="[#TYPE] eq 'persons' OR [#TYPE] eq 'entries'">
-			  		<LET VAR="typetable"><IF COND="[#TYPE] eq 'persons'">person<ELSE>entry</IF></LET>
-			  		<xsd:element name="[#NAME]" <LOOP NAME="typesentrypersons" TABLE="#_TP_[#TYPETABLE]types" WHERE="type eq '[#NAME]'">type="type[#CLASS|ucfirst]"</LOOP> [#OCCURS]>
+			  		<LET VAR="typetable"><IF COND="[#TYPE] eq 'persons'">person<ELSE>entry</IF>types</LET>
+			  		<xsd:element name="[#NAME]" <LOOP NAME="typesentrypersons" TABLE="[#TYPETABLE]" WHERE="type eq '[#NAME]'">type="type[#CLASS|ucfirst]"</LOOP> [#OCCURS]>
 					<ELSE/>
 				    <xsd:element name="[#NAME]" [#OCCURS]>
 				    <IF COND="[#COMMENTAIRE]">
