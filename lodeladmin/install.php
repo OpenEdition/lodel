@@ -165,6 +165,8 @@ if ($tache=="admin") {
 			$erreur_confirm_passwd=true;
 		elseif($t === "error_create")
 			$erreur_create=1;
+		elseif($t === "error_email")
+			$erreur_admin_email=true;
 
 		$install->include_tpl("install-admin.html");
 	}

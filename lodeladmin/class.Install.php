@@ -381,7 +381,7 @@ class Install {
 		if ($adminpasswd2 != $adminpasswd) {
 			return "error_confirmpasswd";
 		}
-
+		if(empty($adminemail)) return 'error_email';
 		@mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
 		@mysql_select_db($database); // selectionne la database
 		$this->set_mysql_charset();

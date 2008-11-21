@@ -65,8 +65,8 @@ function clearcache($allCache=true)
 	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
-		$options = $GLOBALS['cacheOptions'];
 		if (defined("SITEROOT")) {
+			$options = $GLOBALS['cacheOptions'];
 			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
 			foreach($cacheReps as $rep) {
 				$cache = null;
@@ -102,27 +102,36 @@ function removefilesincache()
 {
 	global $site;
 	$options = $GLOBALS['cacheOptions'];
-	foreach (func_get_args() as $rep) {
+	$dirs = func_get_args();
+	foreach ($dirs as $rep) {
 		$rep = "./".$rep;
 		if(FALSE === strpos($rep, '/CACHE/'))
 			$rep .= "/CACHE/";
 
 		// fichiers/répertoires gérés indépendament de cache_lite
-		if(!file_exists($rep))
-			continue;
-		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+		if(!is_dir($rep)) continue;
+
 		clearstatcache();
-		while (($file = readdir($fd)) !== false) {
-			if (($file{0} == ".") || ($file == "CVS") || ($file == "upload") || ($file == 'require_caching'))
-				continue;
-			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
-				removefilesincache($file);
-			} elseif (file_exists($file) && is_writeable($file)) {
-				@unlink($file);
-			}
+
+		$cacheDir = new RecursiveDirectoryIterator($rep);
+		$cache = new RecursiveIteratorIterator($cacheDir);
+		foreach($cache as $file) {
+			if($cache->isDot() || $cache->isDir() || ($dir = basename($cache->getPath())) == 'CVS' 
+				|| $dir == 'upload' || $dir == 'require_caching' || !$cache->isWritable()) continue;
+			unlink($file);
 		}
-		closedir($fd);	
+// 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+// 		while (($file = readdir($fd)) !== false) {
+// 			if (($file{0} == ".") || ($file == "CVS") || ($file == "upload") || ($file == 'require_caching'))
+// 				continue;
+// 			$file = $rep. "/". $file;
+// 			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+// 				removefilesincache($file);
+// 			} elseif (is_writeable($file)) {
+// 				@unlink($file);
+// 			}
+// 		}
+// 		closedir($fd);	
 	}
 }
 

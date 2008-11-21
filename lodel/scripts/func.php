@@ -561,7 +561,6 @@ function download($filename,$originalname="",$contents="")
   } else { 
     echo $contents; 
   }
-  die();
 }
 
 

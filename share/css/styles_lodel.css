@@ -53,6 +53,49 @@ div.passwdHelper {
 	font-size: 0.8em;
 }
 
+div.warner {
+	z-index:99;
+	position:fixed;
+	left:25%;
+	border:3px solid #AAAAAA;
+	font-weight:bold;
+	padding:1em;
+	background:#FFFFFF none repeat scroll 0 0;
+	color:black;
+	display:none;
+}
+div#unfolder {
+	z-index:99;
+	float:left;
+	margin-left:1em;
+	margin-top:1.5em;
+}
+img.unfolder {
+
+}
+ul.listEntities div.entityIconsEdition{
+	z-index:1;
+	position: absolute;
+	left: 4.2em;
+	top: 1.8ex;
+	width: 52px;
+}
+ul.listEntities div.entityIconsEdition img.statusIcon, ul.listEntities div.entityIcons img.associatedIcon{
+	display: block;
+	float: left;
+	margin: 1.5ex 0 0 10px;
+	width: 11px;
+/* 	top: 1ex; */
+}
+
+ul.listEntities div.entityIconsEdition img.associatedIcon{
+	float: right;
+	margin: .5ex 0 0 0;
+	width: auto;
+	max-width: 22px;
+/* 	top: .5ex; */
+}
+
 a:link, a:visited{
 	text-decoration: none;
 	color: #000;
