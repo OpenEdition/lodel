@@ -140,7 +140,8 @@ class Parser
 		$this->base_rep = $m[1];
 		$this->cache_rep = $cache_rep;
 		unset($m);
-		$blockId = intval($blockId);
+		$blockId = (int)$blockId;
+		$this->blockid = $blockId;
 		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = "";
 
@@ -162,7 +163,8 @@ class Parser
 		$contents = preg_replace("/<DEF(MACRO|FUNC)\b[^>]*>.*?<\/DEF(MACRO|FUNC)>\s*\n*/s", "", $contents);
 
 		if ($this->fct_txt)	{
-			$contents = <<<PHP
+			$contents = 
+<<<PHP
 <?php 
 {$this->fct_txt}
  ?> 
@@ -177,55 +179,65 @@ PHP;
 		if ($this->refresh)	{
 
 			if(!$include) {
-				$code = <<<PHP
+				$code = 
+<<<PHP
 <?php 
 if (\$GLOBALS['cachedfile']) { 
 	\$cachetime=myfilemtime(\$GLOBALS['cachedfile']);
 PHP;
 				// refresh period in second
 				if (is_numeric($this->refresh)) {
-					$code .= <<<PHP
+					$code .= 
+<<<PHP
 	if((\$cachetime + {$this->refresh}) < time()) return "refresh";
 PHP;
 					
 				} else { // refresh time
-					$code .= <<<PHP
+					$code .= 
+<<<PHP
 	\$now = time(); \$date = getdate(\$now);
 PHP;
-					$refreshtimes = explode("/,/", $this->refresh);
+					$refreshtimes = explode(",", $this->refresh);
 					foreach ($refreshtimes as $refreshtime) {
-						$refreshtime = explode("/:/", $refreshtime);
+						$refreshtime = explode(":", $refreshtime);
 						$refreshtime = array_map("intval", $refreshtime);
-						$code .= <<<PHP
+						if(!isset($refreshtime[2])) $refreshtime[2] = 0;
+						$code .= 
+<<<PHP
 	\$refreshtime=mktime({$refreshtime[0]},{$refreshtime[1]},{$refreshtime[2]},\$date['mon'],\$date['mday'],\$date['year']);
 	if (\$cachetime<\$refreshtime && \$refreshtime<\$now) return "refresh";
 PHP;
 					}
 				}
-				$code .= <<<PHP
+				$code .= 
+<<<PHP
 } 
 ?>
 PHP;
 				$code = quote_code($code);
-				$contents = <<<PHP
+				$contents = 
+<<<PHP
 <?php echo '{$code}'; ?>
 {$contents}
 PHP;
 			} else {
 				// the view manage the template refresh
-				$code = <<<PHP
+				$code = 
+<<<PHP
 #LODELREFRESH {$this->refresh}#
 {$contents}
 PHP;
 				$code = quote_code($code);
-	                        $contents = <<<PHP
+	                        $contents =
+<<<PHP
 <?php echo '{$code}'; ?>
 PHP;
 			}
 			unset($code, $tmpcode, $refreshtimes);
 		} elseif ($this->isphp)	{
 			// this is use to check if the output is a must be evaluated as a php or a raw file.
-			$contents = <<<PHP
+			$contents = 
+<<<PHP
 <?php if(\$GLOBALS['cachedfile']) echo '<?php #--# ?>'; ?>
 {$contents}
 PHP;
@@ -366,11 +378,13 @@ PHP;
 			$code = str_replace(".", "']['", strtolower($name));
 			if('%' === (string)$prefix) {
 				$code = str_replace(".", "']['", strtolower($name));
-				$variable = <<<PHP
+				$variable = 
+<<<PHP
 \$GLOBALS['context']['{$code}']
 PHP;
 			} else {
-				$variable = <<<PHP
+				$variable = 
+<<<PHP
 \$context['{$code}']
 PHP;
 			}
@@ -418,12 +432,14 @@ PHP;
 		switch ($escape) {
 		case 'php' :
 			// traitement normal, php espace
-			$code = <<<PHP
+			$code = 
+<<<PHP
 <?php echo {$variable}; ?>
 PHP;
 			break;
 		case 'quote' :
-				$code = <<<PHP
+				$code = 
+<<<PHP
 ".{$variable}."
 PHP;
 			break;
@@ -477,8 +493,17 @@ PHP;
 			} elseif ($attrs['TEMPLATEFILE'])	{
 				$this->_clearposition();
 				$attrs['TEMPLATEFILE'] = basename($attrs['TEMPLATEFILE']);
-				$this->arr[$this->ind] = <<<PHP
-<?php echo \$this->renderTemplateFile(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}"); ?>
+				$echo = ($attrs['BLOCKID'] = (int)$attrs['BLOCKID'])>0 ? 'true' : 'false';
+				$this->arr[$this->ind] = 
+<<<PHP
+<?php 
+if(!is_null(\$this)) {
+	echo \$this->renderTemplateFile(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}", '', false, 0, {$attrs['BLOCKID']}, {$echo});
+} else {
+	\$context['noreset'] = true;
+	insert_template(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}", '', false, 0, {$attrs['BLOCKID']}, {$echo});
+}
+?>
 PHP;
 			}
 			break;
@@ -703,14 +728,15 @@ PHP;
 			} else {
 				$this->errmsg("loop $name cannot be defined more than once with different contents", $this->ind);
 			}
-			$code = <<<PHP
+			$code = 
+<<<PHP
 <?php loop_{$name}_{$this->signature}(\$context); ?>
 PHP;
 		} else {
 			//
 			if (!$issql) { // the loop is not defined yet, thus it is a user loop
 				$this->loops[$name]['id']++; // increment the name count
-				$newname = $name. '_'. $this->loops[$name]['id']; // change the name in order to be unique
+				$newname = $name. '_'. $this->loops[$name]['id'].($this->blockid ? '_'.$this->blockid : ''); // change the name in order to be unique
 				$this->decode_loop_content($name, $contents, $options);
 				$this->make_userdefined_loop_code($newname, $contents, $arguments);
 				// build the array for the arguments:
@@ -722,11 +748,13 @@ PHP;
 				$argumentsstr = preg_replace(array ('/""\./', '/\.""/'), array ('', ''), $argumentsstr);
 				// make the loop call
 				$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
-				$code = <<<PHP
+				$code = 
+<<<PHP
 <?php loop_{$name}(\$context,"{$localtpl}{$newname}",array({$argumentsstr})); ?>
 PHP;
 			} else	{ // the loop is an sql recurrent loop
-				$code = <<<PHP
+				$code = 
+<<<PHP
 <?php loop_{$name}_{$this->signature}(\$context); ?>
 PHP;
 				$this->ind += 3;
@@ -817,10 +845,12 @@ PHP;
 			$split = $selectparts['split'];
 			$offsetname = 'offset_'. substr(md5($name), 0, 5);
 
-			$preprocesslimit = <<<PHP
-\$currentoffset=intval(\$_REQUEST['{$offsetname}']);
+			$preprocesslimit = 
+<<<PHP
+\$currentoffset=(int)\$_REQUEST['{$offsetname}'];
 PHP;
-			$processlimit = <<<PHP
+			$processlimit = 
+<<<PHP
 \$currenturl=basename(\$_SERVER['SCRIPT_NAME'])."?";
 \$cleanquery=preg_replace("/(^|&){$offsetname}=\d+/","",\$_SERVER['QUERY_STRING']);
 if(\$cleanquery[0]=="&") \$cleanquery=substr(\$cleanquery,1);
@@ -834,7 +864,8 @@ if(\$context['nbresults']>{$split}) {
 \$context['limitinfo'] = {$split};
 \$context['previousurl']= (\$currentoffset>={$split}) ? \$currenturl."{$offsetname}=".(\$currentoffset - {$split}) : "";
 PHP;
-			$limit = <<<PHP
+			$limit = 
+<<<PHP
 ".\$currentoffset.", {$split}
 PHP;
 		}	else {
@@ -884,7 +915,8 @@ PHP;
 		//
 		// genere le code pour parcourir la loop
 		//
-		$this->fct_txt .= <<<PHP
+		$this->fct_txt .= 
+<<<PHP
 if(!function_exists("loop_{$name}")) {
 	function loop_{$name}(\$context)
 	{
@@ -896,18 +928,21 @@ if(!function_exists("loop_{$name}")) {
 		\$result = mysql_query(\$query) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
 PHP;
 		if($selectparts['groupby']) {
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 		\$context['nbresults'] = 0;
 		while(\$row = {$sqlfetchassoc}) { \$context['nbresults']++; }
 		\$context['nbresultats'] = \$context['nbresults'];
 PHP;
 		} else {
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 		\$row = {$sqlfetchassoc};
 		\$context['nbresultats'] = \$context['nbresults'] = \$row['nbresults'];
 PHP;
 		}
-		$this->fct_txt .= <<<PHP
+		$this->fct_txt .= 
+<<<PHP
 		\$context['nblignes']=mysql_num_rows(\$result);
 		mysql_free_result(\$result);
 		\$query =	"SELECT {$select} 
@@ -917,11 +952,13 @@ PHP;
 					{$limit}";
 PHP;
 		if($options['showsql']) { 
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 		echo htmlentities(\$query);
 PHP;
 		}
-		$this->fct_txt .= <<<PHP
+		$this->fct_txt .= 
+<<<PHP
 		\$result=mysql_query(\$query) or mymysql_error(\$query, '{$name}', __LINE__, __FILE__);
 		{$processlimit}
 		\$generalcontext=\$context;
@@ -933,7 +970,8 @@ PHP;
 PHP;
 		// gere le cas ou il y a un premier
 		if ($contents['DOFIRST'])	{
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 			if(\$count==1) {{$contents['PRE_DOFIRST']}?>{$contents['DOFIRST']}<?php 
 				continue;
 			}
@@ -941,13 +979,15 @@ PHP;
 		}
 		// gere le cas ou il y a un dernier
 		if ($contents['DOLAST']) {
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 			if(\$count==\$generalcontext['nbresults']) {{$contents['PRE_DOLAST']}?>{$contents['DOLAST']}<?php 
 				continue;
 			}
 PHP;
 		}
-		$this->fct_txt .= <<<PHP
+		$this->fct_txt .= 
+<<<PHP
 {$contents['PRE_DO']}?>{$contents['DO']}<?php 
 			} while (\$count<\$generalcontext['nbresults'] && \$row={$sqlfetchassoc}); 
 ?>{$contents['AFTER']}<?php 
@@ -955,12 +995,14 @@ PHP;
 PHP;
 
 		if($contents['ALTERNATIVE']) {
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 		  else {?>{$contents['ALTERNATIVE']}<?php 
 		}
 PHP;
 		}
-		$this->fct_txt .= <<<PHP
+		$this->fct_txt .= 
+<<<PHP
 		mysql_free_result(\$result);
 	}
 }
@@ -973,7 +1015,8 @@ PHP;
 		#echo "infilename=".$this->infilename;
 		$localtpl = str_replace(array('.','-'),array('_','_'),basename($this->infilename)). '_';
 		if ($contents['DO']) {
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 if(!function_exists("code_do_{$localtpl}{$name}")) { 
 	function code_do_{$localtpl}{$name}(\$context) { 
 ?>{$contents['DO']}<?php 
@@ -982,7 +1025,8 @@ if(!function_exists("code_do_{$localtpl}{$name}")) {
 PHP;
 		}
 		if ($contents['BEFORE']) { // genere le code de avant
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 if(!function_exists("code_before_{$localtpl}{$name}")) { 
 	function code_before_{$localtpl}{$name}(\$context) { 
 ?>{$contents['BEFORE']}<?php 
@@ -991,7 +1035,8 @@ if(!function_exists("code_before_{$localtpl}{$name}")) {
 PHP;
 		}
 		if ($contents['AFTER'])	{ // genere le code de apres
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 if(!function_exists("code_after_{$localtpl}{$name}")) { 
 	function code_after_{$localtpl}{$name}(\$context) { 
 ?>{$contents['AFTER']}<?php 
@@ -1000,7 +1045,8 @@ if(!function_exists("code_after_{$localtpl}{$name}")) {
 PHP;
 		}
 		if ($contents['ALTERNATIVE'])	{ // genere le code de alternative
-			$this->fct_txt .= <<<PHP
+			$this->fct_txt .= 
+<<<PHP
 if(!function_exists("code_alter_{$localtpl}{$name}")) { 
 	function code_alter_{$localtpl}{$name}(\$context) { 
 ?>{$contents['ALTERNATIVE']}<?php 
@@ -1079,7 +1125,8 @@ PHP;
 				$args[] = '"'. strtolower($attr). '"=>"'. $val. '"';
 			}
 			$args = join(",", $args);
-			$this->arr[$this->ind] .= <<<PHP
+			$this->arr[$this->ind] .= 
+<<<PHP
 <?php {$macrofunc}(\$context,array({$args})); ?>
 PHP;
 			if (!($this->funcs[$macrofunc])) {
@@ -1092,7 +1139,8 @@ PHP;
 				$this->_split_file($this->macrocode[$name]['code']);
 				$this->parse_main();
 				$this->arr = trim(join('', $this->arr));
-				$this->fct_txt .= <<<PHP
+				$this->fct_txt .= 
+<<<PHP
 if(!function_exists({$macrofunc})) { 
 	function {$macrofunc}(\$context,\$args) {
 		\$context=array_merge(\$context,\$args); 
@@ -1115,23 +1163,51 @@ PHP;
 	function parse_BLOCK()
 	{
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-		if(!($id = intval($attrs['ID'])) || in_array($id, $this->blocks)) 
-			$this->errmsg("Incorrect ID for block number ".count($this->blocks));
-		$this->blocks[] = $id;
+		if(!($attrs['ID'] = (int)$attrs['ID']) || in_array($attrs['ID'], $this->blocks)) 
+			$this->errmsg("Incorrect ID for block number ".count($this->blocks)+1);
+		$this->blocks[] = $attrs['ID'];
 		$this->_clearposition();
-		$this->ind++;
-		$this->arr[$this->ind] = <<<PHP
+		if(isset($attrs['REFRESH'])) {
+			if (!is_numeric($attrs['REFRESH'])) {
+				$refreshtimes = explode(",", $attrs['REFRESH']);
+				foreach ($refreshtimes as $k=>$refreshtim) {
+					$refreshtim = explode(":", $refreshtim);
+					$tmpcode .= '$refreshtime['.$k.']=mktime('.(int)$refreshtim[0].','.(int)$refreshtim[1].','.(int)$refreshtim[2].',$date[\'mon\'],$date[\'mday\'],$date[\'year\']);';
+					$code.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime['.$k.'] && $refreshtime['.$k.']<$now)';
+				}
+				$tmpcode = '$now=time();$date=getdate($now);'.$tmpcode;
+				unset($refreshtimes, $refreshtim);
+			} else {
+				$code = '($cachetime + '.$attrs['REFRESH'].') < time()';
+			}
+			// $escapeRefreshManager
+			// @see View->_eval()
+			$this->arr[$this->ind] = 
+<<<PHP
 <?php 
-echo \$this->renderTemplateFile(\$context, "{$this->tpl}", "{$this->cache_rep}", "{$this->base_rep}", false, "{$attrs['REFRESH']}", {$id});
-?>
+{$tmpcode}
+\$cachetime=myfilemtime(getCachedFileName("{$cachedTemplateFileName}", \$GLOBALS['site']."_TemplateFileEvalued", \$GLOBALS['cacheOptions']));
+if(({$code}) && !\$escapeRefreshManager){ 
+	if(!is_null(\$this)) {
+		echo \$this->renderTemplateFile(\$context, "{$this->tpl}", "{$this->cache_rep}", "{$this->base_rep}", true, "{$attrs['REFRESH']}", '{$attrs['ID']}');
+	} else {
+		\$context['noreset'] = true;
+		insert_template(\$context, "{$this->tpl}", "{$this->cache_rep}", "{$this->base_rep}", true, "{$attrs['REFRESH']}", '{$attrs['ID']}');
+	}
+}else{ ?>
 PHP;
-		$this->ind++;
-		while($this->arr[$this->ind] != '/BLOCK') {
-			$this->arr[$this->ind] = '';
-			$this->ind++;
 		}
+		
+		$this->ind += 3;
+
+		$this->parse_main();
+		if ($this->arr[$this->ind] != "/BLOCK")
+			$this->errmsg("&lt;/BLOCK&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
+
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '';
+		if(isset($attrs['REFRESH'])) {
+			$this->arr[$this->ind] = '<?php } ?>';
+		}
 	}
 
 	/**
@@ -1447,14 +1523,21 @@ PHP;
 	function _split_file($contents, $action = 'insert', $blockId=0)
 	{
 		if($blockId>0) {
-			if(!preg_match("/<BLOCK\b ([^>]*ID=\"".$blockId."\"[^>]*)>(.*?)<\/BLOCK>/s", $contents, $matches)) {
+			if(!preg_match("/<BLOCK\b ([^>]*ID=\"".$blockId."\"[^>]*)>.*?<\/BLOCK>/s", $contents, $matches)) {
 				$this->errmsg('No block number '.$blockId.' found in file '.$this->infilename);
 			}
 			$attrs = $this->_decode_attributs($matches[1]);
 			$this->_checkforrefreshattribut($attrs);
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
-			$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $matches[2], -1, PREG_SPLIT_DELIM_CAPTURE);
-			unset($matches, $attrs);
+
+			// get the possible macros
+			preg_match_all('/<DEF(FUNC|MACRO)\s+NAME\s*=\s*"'.$attrs['NAME'].'"[^>]*>.*?<\/DEF\\1>/s', $contents, $m);
+			// get the possible macrofiles
+			preg_match_all("/<USE\s+MACROFILE=\"[^\"]+\"\s*\/?>/", $contents, $mm);
+
+			$contents = join('',$m[0]) . join('',$mm[0]) . $matches[0];
+			unset($matches, $mm,$m,$attrs);
+			$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 		} else {
 			$arr = preg_split("/<(\/?(?:".join("|", $this->commands)."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 		}

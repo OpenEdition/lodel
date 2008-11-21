@@ -120,6 +120,15 @@ class View
 	 */
 	private $_toRefresh;
 	
+	/**
+	 * Répertoire dans lequel le require doit s'effectuer
+	 * $tmpoutdir (du lodelconfig.php) ou CACHE/require_caching/
+	 * 
+	 * @var string
+	 * @see $this->_eval()
+	 */
+	private $_evalPath;
+
 	/** 
 	 * Constructeur privé
 	 * @access private
@@ -186,14 +195,14 @@ class View
 			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='{$id}' AND idsession='{$idsession}'")) or dberror();
 			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
-				$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
+			$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
 		}
 
 		if (!headers_sent()) {
 			header("Location: ".$newurl);
 			exit;
 		} else { // si probleme
-			echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$go\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
+			echo "<h2>Warnings seem to appear on this page. You may go on anyway by following <a href=\"$newurl\">this link</a>. Please report the problem to help us to improve Lodel.</h2>";
 			exit;
 		}
 	}
@@ -228,14 +237,14 @@ class View
 		if($_REQUEST['clearcache']) {
 			clearcache(true);
 		} elseif($caching && !$context['nocache'] && myfilemtime(getCachedFileName("tpl_{$tpl}", $this->_site.'_tpl', $this->_cacheOptions)) 
-			>= myfilemtime('./tpl/'.$tpl.'.html') && ($content = $cache->get($this->_cachedfile, $this->_site))) {
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+			>= filemtime('./tpl/'.$tpl.'.html') && ($content = $cache->get($this->_cachedfile, $this->_site))) {
+			if(FALSE !== ($content = $this->_isCacheValid($content, $context))) {
 				echo _indent($this->_eval($content, $context, true));
 				flush();
 				$cache->extendLife();
 				// reset the context
 				self::resetContext();
-				return;
+				return true;
 			} else {
 				$this->_toRefresh = true;
 				unset($content);
@@ -254,7 +263,7 @@ class View
 		flush();
 		// reset the context
 		self::resetContext();
-		return;	
+		return true;
 	}
 
 	/**
@@ -274,14 +283,15 @@ class View
 
 	/**
 	 * Fonction qui affiche une page mise en cache lorsqu'il n'y a pas de données en $_POST
-	 * 
+	 * Uniquement utilisée côté site 
+	 *
 	 * @return bool : true si page en cache, false sinon
 	 */
 	public function renderIfCacheIsValid() 
 	{
 		global $context;
 		// only when not in debug mode and no clearcache asked
-		// else render() will do the job to check for tpl mtime
+		// else render() will do the job to check for tpl filemtime
 		if($GLOBALS['debugMode'] || $_REQUEST['clearcache'] || $context['nocache']) 
 			return false;
 		$this->_makeCachedFileName();
@@ -289,7 +299,7 @@ class View
 			require 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		if($content = $cache->get($this->_cachedfile, $this->_site)) {
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+			if(FALSE !== ($content = $this->_isCacheValid($content, $context))) {
 				echo _indent($this->_eval($content, $context, true));
 				flush();
 				$cache->extendLife();
@@ -313,7 +323,7 @@ class View
 	* @param int $blockId (optionnel) identifiant du block
 	* @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
 	*/
-	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
+	public function renderTemplateFile(&$context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
 	{
 		global $lodeluser, $home;
 		
@@ -322,33 +332,44 @@ class View
 		if (!file_exists("tpl/{$tpl}.html") && file_exists($home. "../tpl/{$tpl}.html")) {
 			$base_rep = $home. '../tpl/';
 		}
+
 		$tplFile = $base_rep. $tpl. '.html';
-		$id = intval($blockId);
-		
+		$blockId = (int)$blockId;
+		$idcontext = (int)$context['id'];
 		$cachedTemplateFileName = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/",
 					"/[\?&]clearcache=[^&]*/","/(index\.{$GLOBALS['extensionscripts']}\??|\?)$/"), 
 					"", $_SERVER['REQUEST_URI']))
 					. "//". $GLOBALS['lang'] . "//". $lodeluser['name']. "//". $lodeluser['rights']
-					."//".$tpl.($id ? '//'.$id : '');
-		$tplName = ($id>0) ? "tpl_".$tpl.'_block'.$id : "tpl_".$tpl;
-		
+					."//".$tpl.($blockId ? '//'.$blockId.'//'.$idcontext : '');
+		$tplName = ($blockId>0) ? "tpl_{$tpl}_block{$blockId}_{$idcontext}" : "tpl_".$tpl;
+
 		if(!class_exists('Cache_Lite'))
 			require 'Cache/Lite.php';
+		if(!empty($cache_rep)) {
+			$cacheDir = $this->_cacheOptions['cacheDir'];
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+		}
+
 		$cache = new Cache_Lite($this->_cacheOptions);
 		
 		if(myfilemtime(getCachedFileName($tplName, $this->_site.'_TemplateFile', $this->_cacheOptions)) <= 
-			myfilemtime($tplFile)) {
+			filemtime($tplFile)) {
 			$cache->remove($tplName, $this->_site.'_TemplateFile', true);
 			$cache->remove($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued', true);
 		} elseif($escRefresh || $this->_toRefresh) {
 			$cache->remove($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued', true);
 		}
-		
+
+		if(isset($cacheDir)) {
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cachedir;
+			unset($cacheDir);
+		}
+
 		if($echo) {
 			if(!($content = $cache->get($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued'))) {
 				if(!($content = $cache->get($tplName, $this->_site.'_TemplateFile'))) {
-					$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $id);
+					$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $blockId);
 				} else {
 					$cache->extendLife();
 				}
@@ -361,7 +382,7 @@ class View
 		}
 
 		if(!($content = $cache->get($tplName, $this->_site.'_TemplateFile'))) {
-			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $id);
+			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $blockId);
 		} else {
 			$cache->extendLife();
 		}
@@ -377,27 +398,29 @@ class View
 				$refreshtimes = explode(",", $refreshTime);
 				foreach ($refreshtimes as $k=>$refreshtim) {
 					$refreshtim = explode(":", $refreshtim);
-					$tmpcode .= '$refreshtime['.$k.']=mktime('.intval($refreshtim[0]).','.intval($refreshtim[1]).','.intval($refreshtim[2]).',$date[mon],$date[mday],$date[year]);';
+					$tmpcode .= '$refreshtime['.$k.']=mktime('.(int)$refreshtim[0].','.(int)$refreshtim[1].','.(int)$refreshtim[2].',$date[\'mon\'],$date[\'mday\'],$date[\'year\']);';
 					$code.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime['.$k.'] && $refreshtime['.$k.']<$now)';
 				}
-				$tmpcode = '$now = time();$date = getdate($now);'.$tmpcode;
+				$tmpcode = '$now=time();$date=getdate($now);'.$tmpcode;
 				unset($refreshtimes, $refreshtim);
 			} else {
 				$code = '($cachetime + '.$refreshTime.') < time()';
 			}
 			// $escapeRefreshManager
 			// @see $this->_eval()
-			$content = '
- <?php
- '.(isset($tmpcode) ? $tmpcode : '').' 
- $cachetime=myfilemtime(getCachedFileName("'.$cachedTemplateFileName.'", $this->_site."_TemplateFileEvalued", $this->_cacheOptions));
- if(('.$code.') && !$escapeRefreshManager){ 
- 	echo $this->renderTemplateFile($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", true, "'.$refreshTime.'", '.$id.', true);
- }else{ 
- 	echo $this->renderTemplateFile($context, "'.$tpl.'", "'.$cache_rep.'", "'.$base_rep.'", false, "'.$refreshTime.'", '.$id.', true);
- }
- unset($cachetime,$now,$date,$refreshtime);
- ?>';
+			$content = 
+<<<PHP
+<?php 
+{$tmpcode}
+\$cachetime=myfilemtime(getCachedFileName("{$cachedTemplateFileName}", \$this->_site."_TemplateFileEvalued", \$this->_cacheOptions));
+if(({$code}) && !\$escapeRefreshManager){ 
+	echo \$this->renderTemplateFile(\$context, "{$tpl}", "{$cache_rep}", "{$base_rep}", true, "{$refreshTime}", '{$blockId}', true);
+}else{ 
+	echo \$this->renderTemplateFile(\$context, "{$tpl}", "{$cache_rep}", "{$base_rep}", false, "{$refreshTime}", '{$blockId}', true);
+}
+unset(\$cachetime,\$now,\$date,\$refreshtime);
+?>
+PHP;
 			unset($code, $tmpcode);
 		} else {
 			$content = $this->_eval($content, $context, true);
@@ -434,7 +457,7 @@ class View
 	*/
 	private function _eval($content, $context, $escapeRefreshManager=false) 
 	{
-		global $home;
+		global $home, $tmpoutdir;
 		
 		if(FALSE !== strpos($content, '<?php')) { // PHP to be evaluated
 			if(FALSE === $this->_evalCalled) {
@@ -442,19 +465,25 @@ class View
 					require 'loops.php';
 				if(!function_exists('textebrut'))
 					require 'textfunc.php';
-				if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
-					$this->_error("CACHE directory is not writeable.", __FUNCTION__, false);
+
+				if($tmpoutdir != '') {
+					$this->_evalPath = $tmpoutdir.'/'.$this->_site.'_';
+				} else {
+					if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
+						$this->_error("CACHE directory is not writeable.", __FUNCTION__, false);
+					}
+					$this->_evalPath = "./CACHE/require_caching/";
 				}
 				$this->_evalCalled = true;
-			}		
-			$tmpFileName = "./CACHE/require_caching/".uniqid(mt_rand(), true);
-			if(!file_put_contents($tmpFileName, $content, LOCK_EX))
-				$this->_error("Error while writing CACHE required file.", __FUNCTION__, false);
+			}
+			$filename = $this->_evalPath.uniqid(mt_rand(), true);
+			if(!file_put_contents($filename, $content, LOCK_EX))
+				$this->_error("Error while writing CACHE required file ".$filename, __FUNCTION__, false);
 			ob_start();
-			$refresh = require $tmpFileName;
+			$refresh = require $filename;
 			$ret = ob_get_contents();
 			ob_end_clean();
-			unlink($tmpFileName);
+			unlink($filename);
 			if('refresh' === (string)$refresh) {
 				return $refresh;
 			}
@@ -474,7 +503,7 @@ class View
 	* @param string $content contenu à évaluer
 	* @param array $context le context
 	*/
-	private function _iscachevalid($content, &$context) 
+	private function _isCacheValid($content, &$context) 
 	{
 		if(FALSE !== strpos($content, '<?php')) {
 			$content = $this->_eval($content, $context);
@@ -482,7 +511,7 @@ class View
 				return false;
 			}
 		}
-		return $content;	
+		return $content;
 	}
 
 	/**
@@ -498,12 +527,14 @@ class View
 	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = './tpl/', $include=false, $blockId) 
 	{
 		global $home;
-		if(!empty($cache_rep))
-			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+		if(!empty($cache_rep)) {
+			$cacheDir = $this->_cacheOptions['cacheDir'];
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+		}
 
 		$group = $this->_site.'_'.($include ? 'TemplateFile' : 'tpl');
-
-		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}" : "tpl_$base";
+		$idcontext = (int)$context['id'];
+		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}_{$idcontext}" : "tpl_$base";
 		
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) {
@@ -517,7 +548,7 @@ class View
 
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= myfilemtime($tpl) || !$cache->get($template_cache, $group)) {
+		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= filemtime($tpl) || !$cache->get($template_cache, $group)) {
 			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
 			if(!class_exists('LodelParser'))
 				require 'lodelparser.php';
@@ -529,7 +560,9 @@ class View
 			$cache->extendLife();
 		}
 		// si jamais le path a été modifié on remet par défaut
-		$this->_cacheOptions['cacheDir'] = "./CACHE/";
+		if(isset($cacheDir)) {
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
+		}
 	}
 
 	/**
@@ -548,17 +581,24 @@ class View
 	{
 		global $format;
 		
-		if(!empty($cache_rep))
-			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];	
+		if(!empty($cache_rep)) {
+			$cacheDir = $this->_cacheOptions['cacheDir'];
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+		}	
 
 		$group = $this->_site.'_'.($include ? 'TemplateFile' : 'tpl');
 		
 		if ($format && !preg_match("/\W/", $format)) {
 			$base .= "_$format";
 		}
-		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}" : "tpl_$base";
+		$idcontext = (int)$context['id'];
+		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}_{$idcontext}" : "tpl_$base";
 		$i=0;
 		$cache = new Cache_Lite($this->_cacheOptions);
+		// si jamais le path a été modifié on remet par défaut
+		if(isset($cacheDir)) {
+			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
+		}
 		// on va essayer 10 fois (!!!) de récupérer ou générer le fichier mis en cache
 		do {
 			$content = $cache->get($template_cache, $group);
@@ -577,8 +617,6 @@ class View
 				$msg .= ". Cache_Lite says: ".$content->getMessage();
 			$this->_error($msg, __FUNCTION__, true);
 		} else {
-			// si jamais le path a été modifié on remet par défaut
-			$this->_cacheOptions['cacheDir'] = "./CACHE/";
 
 			// execute le template php
 			if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) {
@@ -686,11 +724,19 @@ class View
  * @param int $blockId (optionnel) numéro d'un block de template
  * @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
  */
-function insert_template($context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
+function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
 {
+	if(!isset($context['noreset'])) {
+		$reset = true;
+	} else {
+		$reset = false;
+		unset($context['noreset']);
+	}
 	$view =& View::getView();
 	echo _indent($view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime, $blockId, $echo));
-	View::resetContext();
+	if($reset) {
+		View::resetContext();
+	}
 }
 
 /**

@@ -43,7 +43,7 @@
  * @version CVS:$Id:
  * @package lodel/source/lodel/edition
  */
-
+define('backoffice', true);
 require_once 'siteconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_REDACTOR);

@@ -1439,7 +1439,6 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 					<li class="this">&gt; [@EDITION.NEW]</li>
 				</IF>
 		</LOOP>
-		
 	</ul>
 	<IF COND="[#NOID]">
 		<LET VAR="id">0</LET>
@@ -1485,6 +1484,13 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 		<li>
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 		</li>
+		<IF COND="defined('backoffice')">
+		<li>
+			<ul class="actions">
+				<li class="isolated"><a href="#" id="displayButton" onclick="javascript:displayAll(this, true);">[@COMMON.DISPLAY_ALL_SITEMAP]</a></li>
+			</ul>
+		</li>
+		</IF>
 	</ul>
 </DEFMACRO>
 
@@ -1644,7 +1650,7 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 		</LOOP>
 		</li>
 		<AFTER>
-			<IF COND="[#FOLDER]"></ul></li></div></IF>			
+			<IF COND="[#FOLDER]"></ul></li></div></IF>
 		</AFTER>
 	</LOOP>
 	</ul>
@@ -1780,7 +1786,6 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 	</LOOP>
 	</div>
 </DEFMACRO>
-
 
 <DEFMACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 	<div class="action">

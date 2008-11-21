@@ -271,7 +271,7 @@ class LodelParser extends Parser
 						$alias = "relation_entities_".$table; // use alias for security
 						array_push($tables, "relations as ".$alias); ###,"entities_persons");
 						#print_R($where);
-						preg_replace_sql("/\b(iddocument|identity)\b/", $alias.".id1", $where);
+						preg_replace_sql("/\b(?<!\.)(iddocument|identity)\b/", $alias.".id1", $where);
 						#print_R($where);
 						$where[count($where) - 1] .= " AND $alias.id2=$table.id";
 
@@ -421,7 +421,7 @@ class LodelParser extends Parser
 		$name = strtolower($name);
 		$group = strtolower($group);
 
-		if ($GLOBALS['righteditor']) { // cherche si le texte existe
+		if ($GLOBALS['lodeluser']['editor']) { // cherche si le texte existe
 			if(!defined('DATABASE')) require 'connect.php';
 
 			if ($group != "site") {
@@ -431,7 +431,7 @@ class LodelParser extends Parser
 				$prefix = lq("#_TP_");
 			}
 			if(!isset($this->nbLangs[$prefix]))
-				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations LIMIT 1");
+				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations") or dberror();
 			if(!isset($stmt[$prefix]))
 				$stmt[$prefix] = $db->prepare("SELECT count(id) as nb FROM {$prefix}texts WHERE name=? AND textgroup=? LIMIT 1");
 			$textexists = $db->execute($stmt[$prefix], array((string)$name, (string)$group));
@@ -441,7 +441,7 @@ class LodelParser extends Parser
 			if ($textexists->fields['nb'] < $this->nbLangs[$prefix]) { 
 				// text does not exists or not available in every langs
 				// Have to create them
-				if(!class_exists('getLogic')) require "logic.php";
+				if(!function_exists('getLogic')) require "logic.php";
 				$textslogic =& getLogic("texts");
 				$textslogic->createTexts($name, $group);
 				unset($textslogic);
@@ -456,11 +456,11 @@ class LodelParser extends Parser
 		$this->translationtags[] = "'".$fullname."'"; // save all the TEXT for the CACHE
 		if ($tag == "text")	{
 			// modify inline
-			$modifyif = '$context[\'righteditor\']';
+			$modifyif = '$context[\'lodeluser\'][\'editor\']';
 			if ($group == 'interface')
 				$modifyif .= ' && $context[\'lodeluser\'][\'translationmode\']';
 
-			$modify = ' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/index.php?do=edit&lo=texts&id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
+			$modify = ' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/index.php?do=edit&amp;lo=texts&amp;id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
 			return '<?php getlodeltext("'.$name.'","'.$group.'",$id,$text,$status);'.$modify.' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
 		}	else {
