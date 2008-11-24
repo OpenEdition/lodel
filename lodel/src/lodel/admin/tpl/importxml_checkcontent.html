@@ -37,35 +37,54 @@
 <IF COND="[#ERROR]">
 	<p class="error">[#ERROR]</p>
 </IF>
-<LOOP NAME="foreach" ARRAY="[#CHANGEDCONTENT]">
-	<LET VAR="action"><IF COND="[#KEY] EQ 'newcontent'">[@ADMIN.IMPORTXML_NEW_TABLECONTENT]<ELSE/>[@ADMIN.IMPORTXML_OLD_TABLECONTENT]</IF></LET>
-	<LET VAR="actiontype">[#KEY]</LET>
-	<div class="importME_<IF COND="'newcontent' EQ [#KEY]">left<ELSE />right</IF>">
-	<LOOP NAME="foreach" ARRAY="[#VALUE]">
-		<LET VAR="table">[#KEY]</LET>
-		<ul class="importXML">
-			<li><strong>[#ACTION] - [#TABLE]</strong></li>
-			<IF COND="'newcontent' EQ [#ACTIONTYPE]">
-				<li><strong>[@ADMIN.IMPORTXML_FIELDS]:</strong> [#VALUE.FIELDS|join(' - ')]</li>
-			</IF>
-			<LOOP NAME="foreach" ARRAY="[#VALUE]">
-				<IF COND="[#KEY] SNE 'fields'">
-					<IF COND="[#VALUE|is_array]">
-						<li>
-							<input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACTIONTYPE]][[#KEY]]"/>&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp;
-							<LOOP NAME="foreach" ARRAY="[#VALUE]">
-								<DO>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]&nbsp;-&nbsp;</DO>
-								<DOLAST>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</DOLAST>
-							</LOOP>
-						</li>
-					<ELSE />
-						<li><input type="text" size="4" value="[#KEY]" name="changedcontent[[#TABLE]][[#ACTIONTYPE]][[#KEY]]"/>&nbsp;[@ADMIN.IMPORTXML_FIELD_VALUES]:&nbsp;[#VALUE|join(' - ')]</li>
-					</IF>
-				</IF>
-			</LOOP>
-		</ul>
-	</LOOP>
-	</div>	
+<LOOP NAME="foreach" ARRAY="[#CHANGEDCONTENT.OLDCONTENT]">
+	<div class="importME_left">
+	<LET VAR="table">[#KEY]</LET>
+	<LET VAR="nbrows">[#VALUE.0|count|lmath('+', 1)]</LET>
+	<table class="importXML">
+		<tr><td colspan="[#NBROWS]"><strong>[@ADMIN.IMPORTXML_OLD_TABLECONTENT] - table [#TABLE]</strong></td></tr>
+		<tr>
+		<td>&nbsp;</td>
+		<LOOP NAME="foreach" ARRAY="[#VALUE|array_pop]">
+			<td>[#VALUE]</td>
+		</LOOP>
+		</tr>
+		<LOOP NAME="foreach" ARRAY="[#VALUE]">
+			<tr>
+				<td>
+				<input type="text" size="3" value="[#KEY]" name="changedcontent[[#TABLE]]['oldcontent'][[#KEY]]"/>
+				</td>
+				<LOOP NAME="foreach" ARRAY="[#VALUE]">
+					<td>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</td>
+				</LOOP>
+			</tr>
+		</LOOP>
+	</table>
+	</div>
+	<div class="importME_right">
+	<LET ARRAY="newcontent">[#CHANGEDCONTENT.NEWCONTENT.#TABLE]</LET>
+	<LET VAR="nbrows">[#NEWCONTENT.0|count|lmath('+', 1)]</LET>
+	<table class="importXML">
+		<tr><td colspan="[#NBROWS]"><strong>[@ADMIN.IMPORTXML_NEW_TABLECONTENT] - table [#TABLE]</strong></td></tr>
+		<tr>
+		<td>&nbsp;</td>
+		<LOOP NAME="foreach" ARRAY="[#NEWCONTENT|array_pop]">
+			<td>[#VALUE]</td>
+		</LOOP>
+		</tr>
+		<LOOP NAME="foreach" ARRAY="[#NEWCONTENT]">
+			<tr>
+				<td>
+				<input type="text" size="3" value="[#CHANGEDCONTENT.#TABLE.NEWCONTENT.#KEY]" name="changedcontent[[#TABLE]]['newcontent'][[#KEY]]"/>
+				</td>
+				<LOOP NAME="foreach" ARRAY="[#VALUE]">
+					<td>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</td>
+				</LOOP>
+			</tr>
+		</LOOP>
+	</table>
+	</div>
+	<div class="spacer"></div>	
 </LOOP>
 <div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />

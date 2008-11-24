@@ -1174,9 +1174,9 @@ class DataLogic
 					$types = lq('#_TP_types');
 					$entrytypes = lq('#_TP_entrytypes');
 					$persontypes = lq('#_TP_persontypes');
-					$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}`");
-					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}`");
-					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}`");
+					$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}` ORDER BY id");
+					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}` ORDER BY id");
+					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}` ORDER BY id");
 					return 'importxml_checktypes';
 				} 
 				$this->_updateTypes(true, $error);
