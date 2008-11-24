@@ -325,11 +325,20 @@ function mouseDown(ev){
 	if(target.className == "dragger") {
 		target = target.parentNode.parentNode.parentNode;
 		if(target.getAttribute('DragObj') != null) {
-			var id = target.id.substr(10);
-			var container = document.getElementById('childContainer'+id);
-			if(container && (container.style.display == 'block' || container.style.display == '')) {
-				if(confirm('[@ADMIN.PLEASE_FOLD_BEFORE_USE_DRAGNDROP|addslashes]')) {
-					changeIcon(id, true);
+			var opened = false;
+			var ids = [];
+			var j=0;
+			for(var i=0;i<document.getElementsByTagName('div').length;i++) {
+				with(document.getElementsByTagName('div')[i]) {
+					if(id.indexOf('container') != -1 && style.display == 'block') {
+						ids[j++] = id.substr(9);
+						opened = true;
+					}
+				}
+			}
+			if(opened) {
+				if(confirm("[@ADMIN.PLEASE_FOLD_BEFORE_USE_DRAGNDROP]")) {
+					for(var i=0;i<ids.length;i++) changeIcon(ids[i], false);
 				}
 				target = null;
 				curTarget = null;
@@ -356,7 +365,8 @@ function autoScroll(e){
 				clearInterval(interval['down']);
 				interval['down'] = null;
 			}
-			interval['up'] = window.setInterval(function(){
+			interval['up'] = window.setInterval(
+				function(){
 					window.scrollBy(0, -3);
 				},10);
 	} else {
@@ -366,7 +376,8 @@ function autoScroll(e){
 				clearInterval(interval['up']);
 				interval['up'] = null;
 			}
-			interval['down'] = window.setInterval(function(){
+			interval['down'] = window.setInterval(
+				function(){
 					window.scrollBy(0, 3);
 				},10);
 		} else {
@@ -423,9 +434,9 @@ function autoScroll(e){
 			<IF COND="[#TPLEDITION]">
 			<div id="unfolder">
 			<IF COND="[#DISPLAY] eq 'unfolded'">
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID]);" />
+			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID], false);" />
 			<ELSE/>
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID]);" />
+			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID], true);" />
 			</IF>
 			</div>
 			</IF>
@@ -433,7 +444,7 @@ function autoScroll(e){
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-			<div id="container[#ID]">
+			<div id="container[#ID]" style="display:<IF COND="[#DISPLAY] eq 'unfolded'">block<ELSE/>none</IF>;">
 			<IF COND="[#DISPLAY] eq 'unfolded'">
 				<LET VAR="folder">yes</LET>
 				<USE TEMPLATEFILE="edition" BLOCKID="1"/>
@@ -476,6 +487,7 @@ function loadTemplate(id,displayWarner)
 			return false;
 		}
 		container.innerHTML = response;
+		container.style.display = 'block';
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		return true;
 	} else {
@@ -489,29 +501,28 @@ function displayAll(obj, statut)
 {
 	document.getElementById('warner').style.display = "block";
 	obj.onclick = function(){return false;};
-	<IF COND="[#DRAG] == 'true'">
-	var liste = document.getElementById('DragContainer[#ID]');
-	<ELSE/>
-	var liste = document.getElementById('ul_listEntities');
-	</IF>
 	var tabIds = [];
-	var id = 0;
-	for(var i=0;i<liste.childNodes.length;i++) {
-		if(liste.childNodes[i].nodeName != 'LI' || liste.childNodes[i].id.indexOf('container_') == -1) continue;
-		tabIds[i] = liste.childNodes[i].id.substr(10);
+	var c=0;
+	var lis = document.getElementsByTagName('li');
+	for(var i=0;i<lis.length;i++) {
+		if(lis[i].id.indexOf('container_') != -1)
+			tabIds[c++] = lis[i].id.substr(10);
 	}
-	var currentBlock;
-	var c = 0;
+	
 	do {
 		var ids = [];
+		var c = 0;
 		for(var i=0;i<tabIds.length;i++) {
 			if(!loadTemplate(tabIds[i], false)) continue;
 	
-			currentBlock = document.getElementById('childContainer'+tabIds[i]);
-			if(!currentBlock) continue;
+			var currentBlock = document.getElementById('childContainer'+tabIds[i]);
+			if(!currentBlock) {
+				var currentBlock = document.getElementById('container'+tabIds[i]);
+				if(!currentBlock) continue;
+			}
 	
-			changeIcon(tabIds[i], !statut);
-	
+			changeIcon(tabIds[i], statut);
+			
 			for(var j=0;j<currentBlock.childNodes.length;j++) {
 				if(currentBlock.childNodes[j].nodeName != 'LI') continue;
 
@@ -529,7 +540,6 @@ function displayAll(obj, statut)
 			}
 		}
 		tabIds = ids;
-		c = 0;
 	} while(tabIds.length > 0);
 
 	if(statut) {
@@ -542,20 +552,25 @@ function displayAll(obj, statut)
 	document.getElementById('warner').style.display = "none";
 }
 
-function changeIcon(id, drag) 
+function changeIcon(id, statut) 
 {
-	var container = document.getElementById('childContainer'+id);
-	if(!container) return;
 	var img = document.getElementById('img'+id);
-	if(drag == false || img.title == '[@ADMIN.GET_UNFOLDED]') { 
-		container.style.display='block';
+	if(statut == true) { 
+		var childcontainer = document.getElementById('childContainer'+id);
+		if(childcontainer) childcontainer.style.display='block';
 		img.src='[#SHAREURL]/images/fleche_bas_gris.png';
 		img.title='[@ADMIN.GET_FOLDED]';
+		var container = document.getElementById('container'+id);
+		if(container) container.style.display='block';
 	} else {
-		container.style.display='none';
+		var childcontainer = document.getElementById('childContainer'+id);
+		if(childcontainer) childcontainer.style.display='none';
 		img.src='[#SHAREURL]/images/fleche_droite_gris.png';
 		img.title='[@ADMIN.GET_UNFOLDED]';
-	} 
+		var container = document.getElementById('container'+id);
+		if(container) container.style.display='none';
+	}
+	img.onclick = function(){loadTemplate(id, true);changeIcon(id, !statut);}
 }
 </script>
 <IF COND="[#LODELUSER.EDITOR]">

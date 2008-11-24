@@ -26,13 +26,13 @@ if(!$lodeluser['visitor'])
 	return;
 
 $table = lq("#_TP_entities");
-foreach($tabIds as $k=>$v) {
-	$key = (int)$k;
-	$key++;
-	$v = (int)substr($v, 10);
-	if($v>0) {
-		$db->execute("UPDATE {$table} SET rank = '{$key}' WHERE id='{$v}'") or dberror();
+$i=1;
+foreach($tabIds as $v) {
+	$id = (int)str_replace('container_','',$v);
+	if($id>0) {
+		$db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or dberror();
 	}
+	$i++;
 }
 require 'cachefunc.php';
 removefilesincache('.', './lodel/edition/');
