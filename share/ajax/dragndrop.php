@@ -27,9 +27,10 @@ if(!$lodeluser['visitor'])
 
 $table = lq("#_TP_entities");
 foreach($tabIds as $k=>$v) {
-	$key = (0 === $k) ? 1 : intval($k)+1;
-	$v = intval($v);
-	if($key>0 && $v>0) {
+	$key = (int)$k;
+	$key++;
+	$v = (int)substr($v, 10);
+	if($v>0) {
 		$db->execute("UPDATE {$table} SET rank = '{$key}' WHERE id='{$v}'") or dberror();
 	}
 }

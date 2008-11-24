@@ -459,21 +459,14 @@ function autoScroll(e){
 </BLOCK>
 	<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
 </div>
-<IF COND="[#LODELUSER.EDITOR]">
-<script type="text/javascript">
-	document.onmousemove = mouseMove;
-	document.onmousedown = mouseDown;
-	document.onmouseup   = mouseUp;
-</script>
-</IF>
 <script type="text/javascript">
 function loadTemplate(id,displayWarner)
 {
 	var container = document.getElementById('container'+id);
 	if(!container || container.innerHTML.length > 0) return true;
+	if(displayWarner) document.getElementById('warner').style.display = "block";
 	var xhr = getXMLHttpRequest();
 	if(xhr) {
-		if(displayWarner) document.getElementById('warner').style.display = "block";
 		xhr.open("POST", '[#SHAREURL]/ajax/sitemap.php', false);
 		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 		xhr.send('site=<?php echo $GLOBALS[site]; ?>&id='+id);
@@ -486,6 +479,7 @@ function loadTemplate(id,displayWarner)
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		return true;
 	} else {
+		if(displayWarner) document.getElementById('warner').style.display = "none";
 		alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
 		return false;
 	}
@@ -493,8 +487,8 @@ function loadTemplate(id,displayWarner)
 }
 function displayAll(obj, statut) 
 {
-	obj.onclick = function(){return false;};
 	document.getElementById('warner').style.display = "block";
+	obj.onclick = function(){return false;};
 	<IF COND="[#DRAG] == 'true'">
 	var liste = document.getElementById('DragContainer[#ID]');
 	<ELSE/>
@@ -564,4 +558,11 @@ function changeIcon(id, drag)
 	} 
 }
 </script>
+<IF COND="[#LODELUSER.EDITOR]">
+<script type="text/javascript">
+	document.onmousemove = mouseMove;
+	document.onmousedown = mouseDown;
+	document.onmouseup   = mouseUp;
+</script>
+</IF>
 <MACRO NAME="CLOSE_HTML">

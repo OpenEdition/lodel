@@ -1150,6 +1150,7 @@ class DataLogic
 				$context['modifiedtables'] = $this->_changedTables;
 				return 'importxml_checktables';
 			} elseif(!empty($this->_changedFields)) {
+				unset($this->_changedFields[lq('#_TP_tablefields')]);
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
@@ -1313,7 +1314,7 @@ class DataLogic
 				$oldContent[$table][] = $tmpSqlDatas[$k];
 			}
 			$newContent[$table] = $tmpXmlDatas;
-			$newContent[$table]['fields'] = $this->_xmlDatas[$table]['fields'];
+			$newContent[$table]['fields'] = $oldContent[$table]['fields'] = $this->_xmlDatas[$table]['fields'];
 		}
 		$this->_changedContent = array('newcontent'=>(isset($newContent) ? $newContent : ''), 'oldcontent'=>(isset($oldContent) ? $oldContent : array()));
 		return (is_array($this->_changedContent['newcontent']) ? TRUE : FALSE);
