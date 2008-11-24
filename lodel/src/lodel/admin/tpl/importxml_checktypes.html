@@ -30,29 +30,31 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_IMPORTXML_CHECKTYPES]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
-	<IF COND="[#ERROR]">
-		<p class="error">[#ERROR]</p>
-	</IF>
+<MACRO NAME="HEADER_LOGO">
+
+<IF COND="[#ERROR]">
+	<p class="error">[#ERROR]</p>
+</IF>
 <form method="POST">
 <div class="importME_left">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDOLDTYPES]">
+	[@ADMIN.IMPORTXML_OLDTYPES]<br />
+	<strong>[@COMMON.CLASS] [#KEY]</strong>
 	<ul class="importXML">
-		<li><strong>'[#KEY]'</strong></li>
 		<LET VAR="act">[#KEY]</LET>
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<LET ARRAY="fieldname">[#VALUE|array_values]</LET>
 			<LET ARRAY="fieldidtype">[#VALUE|array_keys]</LET>
-			<li><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="5" /> - [#FIELDNAME.0]</li>
+			<li><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="3" />&nbsp;[#FIELDNAME.0]</li>
 		</LOOP>
 	</ul>
 </LOOP>
 </div>
 <div class="importME_right">
-[@ADMIN.IMPORTXML_TYPESAVAILABLE]:<br />
+<strong>[@ADMIN.IMPORTXML_TYPESAVAILABLE]<br />
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDNEWTYPES]">
+	<strong>[@COMMON.CLASS] [#KEY]</strong>
 	<ul class="importXML">
-		<li><strong>[@ADMIN.IMPORTXML_CLASS] '[#KEY]' :</strong></li>
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<li>[#VALUE.ID] => [#VALUE.TYPE]</li>
 		</LOOP>

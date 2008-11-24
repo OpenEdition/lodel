@@ -192,33 +192,35 @@ span.titre_alias {
 div#spacer {
 	clear:both;
 }
-div.importME_right ul, div.importME_left ul {
-	clear:both;
-	position:relative;
-}
+
 div.importMEXML_action {
 	clear:both;
 	position:relative;
 	padding:2em;
 }
 div.importME_right {
-	padding-top:1em;
-	padding-right:1em;
+	margin-top:2em;
 	float:right;
-	min-width:45%;
-	max-width:45%;
+	max-width:49.5%;
+	overflow:auto;
+	border:1px solid #CCC;
 }
 div.importME_left {
-	padding-top:1em;
-	padding-left:1em;
-	float:left;
-	min-width:45%;
-	max-width:45%;
-}
-ul.importXML {
 	margin-top:2em;
-	margin-bottom:2em;
-	list-style-type:none;
+	float:left;
+	max-width:49.5%;
+	overflow:auto;
+	border:1px solid #CCC;
+}
+
+div.importMEContainer {
+	padding-left:30%;
+	padding-right:30%;
+	padding-top:2em;
+}
+
+table.importXML tr, table.importXML td {
+	border:1px solid #999;
 }
 
 th{

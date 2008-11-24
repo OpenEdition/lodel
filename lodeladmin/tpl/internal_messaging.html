@@ -157,12 +157,11 @@
 			<ELSE/>
 				<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
 				<LET VAR="tos" GLOBAL="1"></LET>
-				<LOOP NAME="FOREACH" ARRAY="[#USERS]">
-				<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
+				<LOOP NAME="foreach" ARRAY="[#USERS]">
+				<IF COND="[#VALUE] LIKE /(\w+)\-(\d+)/">
 					<LET VAR="userdb">
 					<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
 					</LET>
-				
 					<LOOP NAME="getUsersName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
 						<LET VAR="tos" GLOBAL="1"><IF COND="[%TOS|strlen] GT 0">[%TOS], </IF>[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF></LET>
 					</LOOP>
@@ -314,7 +313,7 @@
 		<ELSE/>
 			<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
 			<LET VAR="tos" GLOBAL="1"></LET>
-			<LOOP NAME="FOREACH" ARRAY="[#USERS]">
+			<LOOP NAME="foreach" ARRAY="[#USERS]">
 			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
 				<LET VAR="userdb">
 				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>

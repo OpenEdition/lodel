@@ -323,11 +323,34 @@ PHP;
 					}
 					$pipefunction = '|multilingue('.$lang.')';
 				}
+				
+				if($text{$i} == '#' || $text{$i} == '%') { // syntaxe [#VAR.#VAR] pour les tableaux !
+					do {
+						$tmpvarname = '';
+						$isvar = false;
+						if($text{$i} == '#' || $text{$i} == '%') {
+							$tmpvarname = '['.$text{$i};
+							$isvar = true;
+						}
+						$i++;
+						while (($text {$i}	>= 'A' && $text {$i}	<= 'Z') || ($text {$i}	>= '0' && 
+									$text {$i}	<= '9') || $text {$i}	== '_')	{
+							$tmpvarname .= $text {$i};
+							$i ++;
+						}
+						if($isvar) {
+							$tmpvarname .= ']';
+							$this->parse_variable($tmpvarname, $false);
+						}
+						$varname .= $tmpvarname;
+						if($text{$i} == '.') $varname .= $text{$i};
+					} while($text{$i} != ']' && $text{$i} != '|');
+				}
 
 				if ($text {$i}	== '|')	{ // have a pipe function
 					// look for the end of the variable
 					$bracket = 1;
-					$mustnewparse = false;
+					$mustparse = false;
 					while ($bracket) {
 						switch ($text {$i})	{
 						case '[' :
@@ -375,17 +398,25 @@ PHP;
 		$infunc = false;
 		$variable = $this->parse_variable_extra($prefix, $name);
 		if ($variable === false) { // has the variable being processed ?
-			$code = str_replace(".", "']['", strtolower($name));
+			$name = strtolower($name);
+			if(substr_count($name, '.')) {
+				$brackets = explode('.', $name);
+				foreach($brackets as $k=>$bracket) {
+					$code .= ($bracket{0} == '$') ? '['.$bracket.']' : "['{$bracket}']";
+				}
+			} else {
+				$code = ($name{0} == '$') ? '['.$name.']' : "['{$name}']";
+			}
+			//$code = str_replace(".", "']['", $name);
 			if('%' === (string)$prefix) {
-				$code = str_replace(".", "']['", strtolower($name));
 				$variable = 
 <<<PHP
-\$GLOBALS['context']['{$code}']
+\$GLOBALS['context']{$code}
 PHP;
 			} else {
 				$variable = 
 <<<PHP
-\$context['{$code}']
+\$context{$code}
 PHP;
 			}
 			unset($code);

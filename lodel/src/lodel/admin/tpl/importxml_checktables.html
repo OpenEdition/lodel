@@ -35,17 +35,19 @@
 		<p class="error">[#ERROR]</p>
 	</IF>
 <form method="POST">
+<div class="importMEContainer">
 <LOOP NAME="foreach" ARRAY="[#MODIFIEDTABLES]">
 	<div class="importME_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
 		<LET VAR="action">[#KEY]</LET>
-		<ul class="importXML">
-		<li><strong><IF COND="[#ACTION] EQ 'dropped'">[@ADMIN.IMPORTXML_DROPPEDTABLE]<ELSE/>[@ADMIN.IMPORTXML_ADDEDTABLE]</IF></strong></li>
+		<strong><IF COND="[#ACTION] EQ 'dropped'">[@ADMIN.IMPORTXML_DROPPEDTABLE]<ELSE/>[@ADMIN.IMPORTXML_ADDEDTABLE]</IF></strong>
+		<ul class="importXML_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<li><input type="text" value="[#KEY]" name="data[[#ACTION]][[#VALUE]]" size="5" /> - [#VALUE]</li>
+			<li><input type="text" value="<IF COND="[#ACTION] EQ 'dropped'">[#KEY]</IF>" name="data[[#ACTION]][[#VALUE]]" size="3" /> - [#VALUE]</li>
 		</LOOP>
 		</ul>
 	</div>
 </LOOP>
+</div>
 <div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />

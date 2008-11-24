@@ -1463,7 +1463,27 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
  * @param string $delimiter le délimiteur
  * @return array
  */
-function lexplode($text, $delimiter) {
+function lexplode($text, $delimiter) 
+{
 	return explode($delimiter, $text);
+}
+
+/**
+ * fonction permettant de faire des opérations mathématiques simples
+ *
+ * @param string $text
+ * @param string $operator (+,-,*,/)
+ * @param int $var
+ */
+function lmath($text, $operator, $var) 
+{
+	switch($operator) {
+	case '+': $text += $var; break;
+	case '-': $text -= $var; break;
+	case '/': $text /= $var; break;
+	case '*': $text *= $var; break;
+	default:break;
+	}
+	return $text;
 }
 ?>

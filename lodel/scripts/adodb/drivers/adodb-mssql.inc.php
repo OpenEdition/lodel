@@ -1,6 +1,6 @@
 <?php
 /* 
-V4.94 23 Jan 2007  (c) 2000-2007 John Lim (jlim#natsoft.com.my). All rights reserved.
+V5.06 16 Oct 2008   (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. 
@@ -13,6 +13,7 @@ Set tabs to 4 for best viewing.
    	http://phpbuilder.com/columns/alberto20000919.php3
 	
 */
+
 
 // security - hide paths
 if (!defined('ADODB_DIR')) die();
@@ -99,7 +100,7 @@ class ADODB_mssql extends ADOConnection {
 	var $rightOuter = '=*';
 	var $ansiOuter = true; // for mssql7 or later
 	var $poorAffectedRows = true;
-	var $identitySQL = 'select @@IDENTITY'; // 'select SCOPE_IDENTITY'; # for mssql 2000
+	var $identitySQL = 'select SCOPE_IDENTITY()'; // 'select SCOPE_IDENTITY'; # for mssql 2000
 	var $uniqueOrderBy = true;
 	var $_bindInputArray = true;
 	
@@ -151,7 +152,11 @@ class ADODB_mssql extends ADOConnection {
 	// the same scope. A scope is a module -- a stored procedure, trigger, 
 	// function, or batch. Thus, two statements are in the same scope if 
 	// they are in the same stored procedure, function, or batch.
+        if ($this->lastInsID !== false) {
+            return $this->lastInsID; // InsID from sp_executesql call
+        } else {
 			return $this->GetOne($this->identitySQL);
+		}
 	}
 
 	function _affectedrows()
@@ -200,14 +205,14 @@ class ADODB_mssql extends ADOConnection {
 	}
 	
 
-	function &SelectLimit($sql,$nrows=-1,$offset=-1, $inputarr=false,$secs2cache=0)
+	function SelectLimit($sql,$nrows=-1,$offset=-1, $inputarr=false,$secs2cache=0)
 	{
 		if ($nrows > 0 && $offset <= 0) {
 			$sql = preg_replace(
 				'/(^\s*select\s+(distinctrow|distinct)?)/i','\\1 '.$this->hasTop." $nrows ",$sql);
-			$rs =& $this->Execute($sql,$inputarr);
+			$rs = $this->Execute($sql,$inputarr);
 		} else
-			$rs =& ADOConnection::SelectLimit($sql,$nrows,$offset,$inputarr,$secs2cache);
+			$rs = ADOConnection::SelectLimit($sql,$nrows,$offset,$inputarr,$secs2cache);
 	
 		return $rs;
 	}
@@ -328,7 +333,7 @@ class ADODB_mssql extends ADOConnection {
 	}
 	
 	
-	function &MetaIndexes($table,$primary=false)
+	function MetaIndexes($table,$primary=false)
 	{
 		$table = $this->qstr($table);
 
@@ -360,7 +365,7 @@ class ADODB_mssql extends ADOConnection {
 
 		$indexes = array();
 		while ($row = $rs->FetchRow()) {
-			if (!$primary && $row[5]) continue;
+			if ($primary && !$row[5]) continue;
 			
             $indexes[$row[0]]['unique'] = $row[6];
             $indexes[$row[0]]['columns'][] = $row[1];
@@ -385,7 +390,7 @@ from sysforeignkeys
 where upper(object_name(fkeyid)) = $table
 order by constraint_name, referenced_table_name, keyno";
 		
-		$constraints =& $this->GetArray($sql);
+		$constraints = $this->GetArray($sql);
 		
 		$ADODB_FETCH_MODE = $save;
 		
@@ -431,7 +436,7 @@ order by constraint_name, referenced_table_name, keyno";
 
 	// "Stein-Aksel Basma" <basma@accelero.no>
 	// tested with MSSQL 2000
-	function &MetaPrimaryKeys($table)
+	function MetaPrimaryKeys($table)
 	{
 	global $ADODB_FETCH_MODE;
 	
@@ -456,14 +461,14 @@ order by constraint_name, referenced_table_name, keyno";
 	}
 
 	
-	function &MetaTables($ttype=false,$showSchema=false,$mask=false) 
+	function MetaTables($ttype=false,$showSchema=false,$mask=false) 
 	{
 		if ($mask) {
 			$save = $this->metaTablesSQL;
 			$mask = $this->qstr(($mask));
 			$this->metaTablesSQL .= " AND name like $mask";
 		}
-		$ret =& ADOConnection::MetaTables($ttype,$showSchema);
+		$ret = ADOConnection::MetaTables($ttype,$showSchema);
 		
 		if ($mask) {
 			$this->metaTablesSQL = $save;
@@ -538,7 +543,7 @@ order by constraint_name, referenced_table_name, keyno";
 		for ($i = 1, $max = sizeof($sqlarr); $i < $max; $i++) {
 			$sql2 .=  '@P'.($i-1) . $sqlarr[$i];
 		} 
-		return array($sql,$this->qstr($sql2),$max);
+		return array($sql,$this->qstr($sql2),$max,$sql2);
 	}
 	
 	function PrepareSP($sql)
@@ -606,7 +611,7 @@ order by constraint_name, referenced_table_name, keyno";
 		if ($type === false) 
 			switch(gettype($var)) {
 			default:
-			case 'string': $type = SQLCHAR; break;
+			case 'string': $type = SQLVARCHAR; break;
 			case 'double': $type = SQLFLT8; break;
 			case 'integer': $type = SQLINT4; break;
 			case 'boolean': $type = SQLINT1; break; # SQLBIT not supported in 4.1.0
@@ -662,6 +667,11 @@ order by constraint_name, referenced_table_name, keyno";
 			# bind input params with sp_executesql: 
 			# see http://www.quest-pipelines.com/newsletter-v3/0402_F.htm
 			# works only with sql server 7 and newer
+            $getIdentity = false;
+            if (!is_array($sql) && preg_match('/^\\s*insert/i', $sql)) {
+                $getIdentity = true;
+                $sql .= (preg_match('/;\\s*$/i', $sql) ? ' ' : '; ') . $this->identitySQL;
+            }
 			if (!is_array($sql)) $sql = $this->Prepare($sql);
 			$params = '';
 			$decl = '';
@@ -701,13 +711,20 @@ order by constraint_name, referenced_table_name, keyno";
 			$decl = $this->qstr($decl);
 			if ($this->debug) ADOConnection::outp("<font size=-1>sp_executesql N{$sql[1]},N$decl,$params</font>");
 			$rez = mssql_query("sp_executesql N{$sql[1]},N$decl,$params", $this->_connectionID);
+            if ($getIdentity) {
+                $arr = @mssql_fetch_row($rez);
+                $this->lastInsID = isset($arr[0]) ? $arr[0] : false;
+                @mssql_data_seek($rez, 0);
+            }
 			
 		} else if (is_array($sql)) {
 			# PrepareSP()
 			$rez = mssql_execute($sql[1]);
+            $this->lastInsID = false;
 			
 		} else {
 			$rez = mssql_query($sql,$this->_connectionID);
+            $this->lastInsID = false;
 		}
 		return $rez;
 	}
@@ -722,12 +739,12 @@ order by constraint_name, referenced_table_name, keyno";
 	}
 	
 	// mssql uses a default date like Dec 30 2000 12:00AM
-	function UnixDate($v)
+	static function UnixDate($v)
 	{
 		return ADORecordSet_array_mssql::UnixDate($v);
 	}
 	
-	function UnixTimeStamp($v)
+	static function UnixTimeStamp($v)
 	{
 		return ADORecordSet_array_mssql::UnixTimeStamp($v);
 	}	
@@ -799,7 +816,7 @@ class ADORecordset_mssql extends ADORecordSet {
 		fields in a certain query result. If the field offset isn't specified, the next field that wasn't yet retrieved by
 		fetchField() is retrieved.	*/
 
-	function &FetchField($fieldOffset = -1) 
+	function FetchField($fieldOffset = -1) 
 	{
 		if ($fieldOffset != -1) {
 			$f = @mssql_fetch_field($this->_queryID, $fieldOffset);
@@ -917,12 +934,12 @@ class ADORecordset_mssql extends ADORecordSet {
 		return $rez;
 	}
 	// mssql uses a default date like Dec 30 2000 12:00AM
-	function UnixDate($v)
+	static function UnixDate($v)
 	{
 		return ADORecordSet_array_mssql::UnixDate($v);
 	}
 	
-	function UnixTimeStamp($v)
+	static function UnixTimeStamp($v)
 	{
 		return ADORecordSet_array_mssql::UnixTimeStamp($v);
 	}
@@ -937,7 +954,7 @@ class ADORecordSet_array_mssql extends ADORecordSet_array {
 	}
 	
 		// mssql uses a default date like Dec 30 2000 12:00AM
-	function UnixDate($v)
+	static function UnixDate($v)
 	{
 	
 		if (is_numeric(substr($v,0,1)) && ADODB_PHPVER >= 0x4200) return parent::UnixDate($v);
@@ -968,7 +985,7 @@ class ADORecordSet_array_mssql extends ADORecordSet_array {
 		return  mktime(0,0,0,$themth,$theday,$rr[3]);
 	}
 	
-	function UnixTimeStamp($v)
+	static function UnixTimeStamp($v)
 	{
 	
 		if (is_numeric(substr($v,0,1)) && ADODB_PHPVER >= 0x4200) return parent::UnixTimeStamp($v);

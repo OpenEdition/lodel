@@ -42,35 +42,48 @@
 	<LET VAR="table">[#KEY]</LET>
 	<LOOP NAME="foreach" ARRAY="[#VALUE]">
 		<div class="importME_<IF COND="'added' EQ [#KEY]">left<ELSE />right</IF>">
-		<ul class="importXML">
-			<li><strong>[#TABLE]</strong></li>
+		<table class="importXML">
+			<tr><td colspan="3"><strong>[@COMMON.CLASS] [#TABLE]</strong></td></tr>
+			<tr><td>&nbsp;</td><td><strong>[@COMMON.FIELD]</strong></td><td><strong>[@ADMIN.FIELD_TYPE]</strong></td></tr>
 			<IF COND="[#VALUE|is_array] AND ![#VALUE|empty]">
 				<LET VAR="act">[#KEY]</LET>
 				<LOOP NAME="foreach" ARRAY="[#VALUE]">
 					<LET VAR="kkey">[#KEY]</LET>
 					<LOOP NAME="foreach" ARRAY="[#VALUE]">
 						<IF COND="![#VALUE|is_array]">
-							<li><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="5" /> - [#KEY] : [#VALUE]</li>
+							<tr><td><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="3" /></td>
+							<td>[#KEY]</td><td>[#VALUE]</td></tr>
 						<ELSE />
 							<IF COND="'value' == [#KEY]">
+								<tr>
 								<LET ARRAY="fieldname" GLOBAL="1">[#VALUE|array_keys]</LET>
 								<LET ARRAY="fieldtype" GLOBAL="1">[#VALUE|array_values]</LET>
-								<li><input type="text" value="" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="5" /> - [%FIELDNAME.0] : [%FIELDTYPE.0]<br />
+								<td><input type="text" value="" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="3" /></td>
+								<td>[%FIELDNAME.0]</td>
+								<td>[%FIELDTYPE.0]</td>
+								</tr>
 							<ELSEIF COND="'tablefieldgroups' == [#KEY]">
+								<tr>
+								<td colspan="3">
+								<strong>[@ADMIN.DATAFIELDGROUP]</strong>
+								</td>
+								</tr>
+								<tr><td colspan="3">
 								<LOOP NAME="foreach" ARRAY="[#VALUE]">
 									<IF COND="[#TABLE] == [#VALUE.2]">
 										<input type="radio" value="[#VALUE.0]" name="data[[#TABLE]][[#ACT]][tablefieldgroup][[%FIELDNAME.0]]" /> [#VALUE.3]
 									</IF>
 								</LOOP>
-								</li>
+								</td>
+								</tr>
 							</IF>
 						</IF>
 					</LOOP>
 				</LOOP>
 			<ELSE />
-				<li>[@ADMIN.IMPORTXML_NO_ENTRY_FOUND]</li>
+				<tr><td>[@ADMIN.IMPORTXML_NO_ENTRY_FOUND]</td></tr>
 			</IF>
-		</ul>
+		</table>
 	</div>
 	</LOOP>
 	<div id="spacer"></div>
