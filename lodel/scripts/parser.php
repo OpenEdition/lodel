@@ -156,7 +156,7 @@ class Parser
 
 		$contents = join("", $this->arr); // recompose the file
 
-		unset ($this->arr); // save memory now.
+		unset ($this->arr,$this->macros_txt); // save memory now.
 		$this->parse_after($contents); // user defined parse function
 
 		// remove  <DEFMACRO>.*?</DEFMACRO>
@@ -284,6 +284,30 @@ PHP;
 					$varname .= $text {$i};
 					$i ++;
 				}
+
+				if($text{$i} == '#' || $text{$i} == '%') { // syntaxe [#VAR.#VAR] pour les tableaux !
+					do {
+						$tmpvarname = '';
+						$isvar = false;
+						if($text{$i} == '#' || $text{$i} == '%') {
+							$tmpvarname = '['.$text{$i};
+							$isvar = true;
+						}
+						$i++;
+						while (($text {$i}	>= 'A' && $text {$i}	<= 'Z') || ($text {$i}	>= '0' && 
+									$text {$i}	<= '9') || $text {$i}	== '_')	{
+							$tmpvarname .= $text {$i};
+							$i ++;
+						}
+						if($isvar) {
+							$tmpvarname .= ']';
+							$this->parse_variable($tmpvarname, false);
+						}
+						$varname .= $tmpvarname;
+						if($text{$i} == '.') $varname .= $text{$i};
+					} while($text{$i} != ']' && $text{$i} != '|' && $text{$i} != ':');
+				}
+
 				$pipefunction = '';
 
 				if ($text {$i}	== ':')	{ // a lang
@@ -324,29 +348,6 @@ PHP;
 					$pipefunction = '|multilingue('.$lang.')';
 				}
 				
-				if($text{$i} == '#' || $text{$i} == '%') { // syntaxe [#VAR.#VAR] pour les tableaux !
-					do {
-						$tmpvarname = '';
-						$isvar = false;
-						if($text{$i} == '#' || $text{$i} == '%') {
-							$tmpvarname = '['.$text{$i};
-							$isvar = true;
-						}
-						$i++;
-						while (($text {$i}	>= 'A' && $text {$i}	<= 'Z') || ($text {$i}	>= '0' && 
-									$text {$i}	<= '9') || $text {$i}	== '_')	{
-							$tmpvarname .= $text {$i};
-							$i ++;
-						}
-						if($isvar) {
-							$tmpvarname .= ']';
-							$this->parse_variable($tmpvarname, $false);
-						}
-						$varname .= $tmpvarname;
-						if($text{$i} == '.') $varname .= $text{$i};
-					} while($text{$i} != ']' && $text{$i} != '|');
-				}
-
 				if ($text {$i}	== '|')	{ // have a pipe function
 					// look for the end of the variable
 					$bracket = 1;
@@ -395,13 +396,12 @@ PHP;
 
 	function _make_variable_code($prefix, $name, $pipefunction, $escape)
 	{
-		$infunc = false;
 		$variable = $this->parse_variable_extra($prefix, $name);
 		if ($variable === false) { // has the variable being processed ?
 			$name = strtolower($name);
 			if(substr_count($name, '.')) {
 				$brackets = explode('.', $name);
-				foreach($brackets as $k=>$bracket) {
+				foreach($brackets as $bracket) {
 					$code .= ($bracket{0} == '$') ? '['.$bracket.']' : "['{$bracket}']";
 				}
 			} else {
@@ -496,11 +496,12 @@ PHP;
 
 	function parse_main()
 	{	
+		global $home;
 		while ($this->ind < $this->countarr) {
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
 			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-			$this->charset = $attrs['CHARSET'] ? $attrs['CHARSET'] : "iso-8859-1";
+			$this->charset = isset($attrs['CHARSET']) ? $attrs['CHARSET'] : "iso-8859-1";
 			// attribut refresh
 			$this->_checkforrefreshattribut($attrs);
 			$this->_clearposition();
@@ -524,18 +525,29 @@ PHP;
 			} elseif ($attrs['TEMPLATEFILE'])	{
 				$this->_clearposition();
 				$attrs['TEMPLATEFILE'] = basename($attrs['TEMPLATEFILE']);
-				$echo = ($attrs['BLOCKID'] = (int)$attrs['BLOCKID'])>0 ? 'true' : 'false';
-				$this->arr[$this->ind] = 
+				$attrs['BLOCKID'] = (int)$attrs['BLOCKID'];
+
+				if($attrs['BLOCKID']) {
+					$path = './tpl/';
+					if (!file_exists("{$path}{$attrs['TEMPLATEFILE']}.html") && file_exists($home. "../tpl/{$attrs['TEMPLATEFILE']}.html")) {
+						$path = $home. '../tpl/';
+					}
+					preg_match("/<BLOCK\b ([^>]*ID=\"".$attrs['BLOCKID']."\"[^>]*)>(.*?)<\/BLOCK>/s", file_get_contents("{$path}{$attrs['TEMPLATEFILE']}.html"), $block);
+					$this->arr[$this->ind] = $this->parse_BLOCK($block);
+					unset($m);
+				} else {
+					$this->arr[$this->ind] = 
 <<<PHP
 <?php 
 if(!is_null(\$this)) {
-	echo \$this->renderTemplateFile(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}", '', false, 0, {$attrs['BLOCKID']}, {$echo});
+	echo \$this->renderTemplateFile(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}");
 } else {
 	\$context['noreset'] = true;
-	insert_template(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}", '', false, 0, {$attrs['BLOCKID']}, {$echo});
+	insert_template(\$context, '{$attrs['TEMPLATEFILE']}', "{$this->cache_rep}");
 }
 ?>
 PHP;
+				}
 			}
 			break;
 			// returns
@@ -941,7 +953,8 @@ PHP;
 // 			if (!isset ($options[$piece]))
 // 				$options[$piece] = $this->codepieces[$piece];
 // 		}
-		$sqlfetchassoc = sprintf($this->codepieces['sqlfetchassoc'], '$result');
+
+		$sqlfetchassoc = !is_null($options['sqlfetchassoc']) ? sprintf($options['sqlfetchassoc'], '$result') : sprintf($this->codepieces['sqlfetchassoc'], '$result');
 		#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 		//
 		// genere le code pour parcourir la loop
@@ -1172,7 +1185,7 @@ PHP;
 				$this->arr = trim(join('', $this->arr));
 				$this->fct_txt .= 
 <<<PHP
-if(!function_exists({$macrofunc})) { 
+if(!function_exists('{$macrofunc}')) { 
 	function {$macrofunc}(\$context,\$args) {
 		\$context=array_merge(\$context,\$args); 
 ?>{$this->arr}<?php 
@@ -1191,13 +1204,21 @@ PHP;
 		}
 	}
 
-	function parse_BLOCK()
+	function parse_BLOCK($block=array())
 	{
-		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-		if(!($attrs['ID'] = (int)$attrs['ID']) || in_array($attrs['ID'], $this->blocks)) 
+		if(!empty($block)) {
+			$attrs = $this->_decode_attributs($block[1]);
+		} else {
+			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
+		}
+		if(!($attrs['ID'] = (int)$attrs['ID']))
 			$this->errmsg("Incorrect ID for block number ".count($this->blocks)+1);
-		$this->blocks[] = $attrs['ID'];
-		$this->_clearposition();
+		if(empty($block)) {
+			if(in_array($attrs['ID'], $this->blocks))
+				$this->errmsg("Duplicate ID for block number ".count($this->blocks)+1);
+			$this->blocks[] = $attrs['ID'];
+			$this->_clearposition();
+		}
 		if(isset($attrs['REFRESH'])) {
 			if (!is_numeric($attrs['REFRESH'])) {
 				$refreshtimes = explode(",", $attrs['REFRESH']);
@@ -1213,7 +1234,7 @@ PHP;
 			}
 			// $escapeRefreshManager
 			// @see View->_eval()
-			$this->arr[$this->ind] = 
+			$code = 
 <<<PHP
 <?php 
 {$tmpcode}
@@ -1228,16 +1249,39 @@ if(({$code}) && !\$escapeRefreshManager){
 }else{ ?>
 PHP;
 		}
-		
-		$this->ind += 3;
-
-		$this->parse_main();
-		if ($this->arr[$this->ind] != "/BLOCK")
-			$this->errmsg("&lt;/BLOCK&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
-
-		$this->_clearposition();
-		if(isset($attrs['REFRESH'])) {
-			$this->arr[$this->ind] = '<?php } ?>';
+		if(empty($block)) {
+			$this->arr[$this->ind] = $code;
+			unset($code);
+			$this->ind += 3;
+	
+			$this->parse_main();
+			if ($this->arr[$this->ind] != "/BLOCK")
+				$this->errmsg("&lt;/BLOCK&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
+	
+			$this->_clearposition();
+			if(isset($attrs['REFRESH'])) {
+				$this->arr[$this->ind] = '<?php } ?>';
+			}
+		} else {
+			$tmpArr = $this->arr;
+			$tmpInd = $this->ind;
+			$tmpCountArr = $this->countarr;
+			$this->arr = null;
+			$this->_split_file($block[2]);
+			$this->parse_main();
+			$this->arr = trim(join('', $this->arr));
+			$code .= 
+<<<PHP
+{$this->arr}
+PHP;
+			if(isset($attrs['REFRESH'])) {
+				$code .= '<?php } ?>';
+			}
+			$this->arr = $tmpArr;
+			$this->ind = $tmpInd;
+			$this->countarr = $tmpCountArr;
+			unset($tmpArr, $tmpInd, $tmpCountArr);
+			return $code;
 		}
 	}
 
@@ -1365,7 +1409,7 @@ PHP;
 	 * Traite les LET
 	 * Le context est protégé, il ne peut être modifié que localement
 	 * pendant l'évaluation des templates
-	 * @see View::_eval()
+	 * @see View::resetContext()
 	 */
 	function parse_LET()
 	{
@@ -1400,11 +1444,11 @@ PHP;
 			foreach($values[0] as $k=>$value) {
 				if('' === (string)$value) continue;
 				if($values[2][$k]) { // variable LS déjà parsée
-					$originalVars[] = $values[2][$k];
+					if(!isset($originalVar)) $originalVar = $values[2][$k];
 					$vars[$k] = "array_values((array){$values[2][$k]})";
 				} else {
-					$value = addcslashes(trim($value), "'");
-					$originalVars[] = "'{$value}'";
+					$value = quote_code(trim($value));
+					if(!isset($originalVar)) $originalVar = "'{$value}'";
 					$vars[$k] = "(array)'{$value}'";
 				}
 			}
@@ -1414,8 +1458,8 @@ PHP;
 			if ($this->arr[$this->ind] != "/LET")
 				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 			$this->_clearposition();
-			$merge = (count($vars)>1 || !$res[2]) ? 'array_merge('.join(',',$vars).')' : $originalVars[0];
-			unset($values,$originalVars, $vars);
+			$merge = (count($vars)>1 || !$res[2]) ? 'array_merge('.join(',',$vars).')' : $originalVar;
+			unset($values,$originalVar, $vars);
 			$this->arr[$this->ind + 1] = $result[4] ? 
 				'<?php $GLOBALS[\'context\'][\''.$var.'\']'.$res[2].'='.$merge.'; ?>' : 
 				'<?php $context[\''.$var.'\']'.$res[2].'='.$merge.'; ?>';
@@ -1562,7 +1606,7 @@ PHP;
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
 
 			// get the possible macros
-			preg_match_all('/<DEF(FUNC|MACRO)\s+NAME\s*=\s*"'.$attrs['NAME'].'"[^>]*>.*?<\/DEF\\1>/s', $contents, $m);
+			preg_match_all('/<DEF(FUNC|MACRO)\s+NAME\s*=\s*"[^"]+"[^>]*>.*?<\/DEF\\1>/s', $contents, $m);
 			// get the possible macrofiles
 			preg_match_all("/<USE\s+MACROFILE=\"[^\"]+\"\s*\/?>/", $contents, $mm);
 

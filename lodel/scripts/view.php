@@ -247,6 +247,7 @@ class View
 				return true;
 			} else {
 				$this->_toRefresh = true;
+				$cache->remove("tpl_{$tpl}", $this->_site.'_tpl', true);
 				unset($content);
 			}
 		} else {
