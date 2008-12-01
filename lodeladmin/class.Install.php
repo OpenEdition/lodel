@@ -366,7 +366,7 @@ class Install {
 	 * @param string $lang langue par défaut pour l'utilisateur créé
 	 * @param string $site site lié à l'utilisation en cours de création
 	 */
-	function manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site)
+	function manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail)
 	{
 		@include($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
 

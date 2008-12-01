@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_session (
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
 	site		VARCHAR(64) BINARY NOT NULL,
 	currenturl	MEDIUMBLOB,
-	userrights	tinyint(3) unsigned NOT NULL default '0'
+	userrights	tinyint(3) unsigned NOT NULL default '0',
 	context		TEXT,
 	expire		INT,  # temps d'expiration entre deux access
 	expire2		INT,  # expiration de cette session
@@ -134,7 +134,7 @@ CREATE TABLE #_MTP_internal_messaging (
   `idparent` int(10) unsigned NOT NULL,
   `iduser` varchar(255) default NULL,
   `addressee` longtext NOT NULL,
-  `addressees` longtext NOT NULL
+  `addressees` longtext NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` longtext NOT NULL,
   `incom_date` datetime NOT NULL,
