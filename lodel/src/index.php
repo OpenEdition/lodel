@@ -72,14 +72,9 @@ if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$request = &$_POST;
 } else {
-	if(!isset($_GET['file'])) {
-		require 'view.php';
-		$view =& View::getView();
-		if($view->renderIfCacheIsValid()) exit();
-	}
 	$request = &$_GET;
 }
 

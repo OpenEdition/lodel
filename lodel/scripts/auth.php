@@ -77,7 +77,7 @@ error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE |
  *
  * @param integer $level Le niveau de l'utilisateur. Par défaut 0
  */
-function authenticate($level = 0, $mode = "")
+function authenticate($level = 0, $mode = "", $return = false)
 {
 	global $context, $lodeluser, $norecordurl;
 	global $home, $timeout, $sessionname, $site;
@@ -100,7 +100,7 @@ function authenticate($level = 0, $mode = "")
 						} elseif((int)$octet !== (int)$oct[$k]) continue 2;
 					}
 					$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
-					require_once 'loginfunc.php';
+					if(!function_exists('check_expiration')) require 'loginfunc.php';
 					$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
 					$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
 					$lodeluser['id'] = $row['id'];
@@ -203,7 +203,7 @@ function authenticate($level = 0, $mode = "")
 			$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die($db->errormsg());
 			$context['clearcacheurl'] = mkurl($url, "clearcache=oui");
 			usecurrentdb();
-			return; // ok !!!
+			return true; // ok !!!
 		}	while (0);
 		if (function_exists("usecurrentdb")) {
 			usecurrentdb();
@@ -226,6 +226,7 @@ function authenticate($level = 0, $mode = "")
 			exit;
 		}
 		else {
+			if($return) return false;
 			header("location: login.php?". $retour);
 			exit;
 		}

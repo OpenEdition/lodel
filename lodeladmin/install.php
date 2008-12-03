@@ -153,7 +153,7 @@ if ($tache=="database") {
 if ($tache=="admin") {
 
 	unset($t);
-	$t = $install->manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site);
+	$t = $install->manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail);
 
 	if($t !== true)
 	{

@@ -182,8 +182,7 @@ PHP;
 				$code = 
 <<<PHP
 <?php 
-if (\$GLOBALS['cachedfile']) { 
-	\$cachetime=myfilemtime(\$GLOBALS['cachedfile']);
+if (\$GLOBALS['cachedfile'] && (\$cachetime=myfilemtime(\$GLOBALS['cachedfile']))) { 
 PHP;
 				// refresh period in second
 				if (is_numeric($this->refresh)) {

@@ -366,7 +366,7 @@ class Install {
 	 * @param string $lang langue par défaut pour l'utilisateur créé
 	 * @param string $site site lié à l'utilisation en cours de création
 	 */
-	function manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site)
+	function manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail)
 	{
 		@include($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
 
@@ -391,7 +391,7 @@ class Install {
 		unset($adminpasswd);
 		if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) die("ERROR: invalid lang");
 		
-		if (!@mysql_query("REPLACE INTO ".$tableprefix."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','',128,'$lang')")) {
+		if (!@mysql_query("REPLACE INTO ".$tableprefix."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','$adminemail',128,'$lang')")) {
 			return "error_create";
 		}
 

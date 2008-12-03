@@ -69,7 +69,7 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 			if ((string)$err === 'error_opensession')
 				$context[$err] = 1;
 			else
-				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
 		}
 	}
 } elseif ($_POST['login']) {
@@ -108,7 +108,7 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 			unset($err);
 		}
 		check_internal_messaging($currentSite);
-		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
 	} while (0);
 }
 

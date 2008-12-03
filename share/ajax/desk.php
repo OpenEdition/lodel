@@ -18,8 +18,7 @@ require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
 // accès seulement aux personnes autorisées
-authenticate(LEVEL_VISITOR);
-if(!$lodeluser['visitor'])
+if(!authenticate(LEVEL_VISITOR, null, true) || !$lodeluser['visitor'])
 	return;
 require_once 'loginfunc.php';
 echo updateDeskDisplayInSession();
