@@ -120,7 +120,7 @@ class Logic
 		if (!$vo) //erreur critique
 			die("ERROR: can't find object $id in the table ". $this->maintable);
 		$this->_populateContext($vo, $context); //rempli le context
-		if('tablefields' == $this->maintable) {
+		if('tablefields' == $this->maintable && $context['mask']) {
 			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
 		}
 		//ajout d'informations supplémentaires dans le contexte (éventuellement)
@@ -407,7 +407,7 @@ class Logic
 					$error[$field]=$valid;
 				}
 			}
-			if('tablefields' == $this->maintable && 'mask' == $field) {
+			if('tablefields' == $this->maintable && 'mask' == $field && $context['mask']['user']) {
 				$this->_makeMask($context, $error);
 				if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
 			}

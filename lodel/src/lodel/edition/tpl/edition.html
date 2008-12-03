@@ -4,10 +4,10 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -310,8 +310,11 @@ function mouseUp(ev){
 			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', false);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.send('tabids='+tabDiffIds+'&site=<?php echo $GLOBALS[site]; ?>');
-			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') {
+			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText == 'error') {
 				alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
+			} else if(xhr.responseText == 'auth') {
+				window.location="login.php?error_timeout=1&url_retour="+location.pathname+location.search;
+				return false;
 			}
 		} else {
 			alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
@@ -481,12 +484,14 @@ function loadTemplate(id,displayWarner)
 		xhr.open("POST", '[#SHAREURL]/ajax/sitemap.php', false);
 		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 		xhr.send('site=<?php echo $GLOBALS[site]; ?>&id='+id);
-		var response = xhr.responseText;
-		if(xhr.readyState == 4 && xhr.status == 200 && response == 'error') {
+		if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText == 'error') {
 			alert("[@INSTALL.ERROR]");
 			return false;
+		} else if(xhr.responseText == 'auth') {
+			window.location="login.php?error_timeout=1&url_retour="+location.pathname+location.search;
+			return false;
 		}
-		container.innerHTML = response;
+		container.innerHTML = xhr.responseText;
 		container.style.display = 'block';
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		return true;

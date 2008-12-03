@@ -18,7 +18,11 @@ require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
 // accès seulement aux personnes autorisées
-authenticate(LEVEL_VISITOR);
+if(!authenticate(LEVEL_VISITOR, null, true) || !$lodeluser['visitor'])
+{
+	echo 'auth';
+	return;
+}
 // if no childs, we just escape
 $context['id'] = intval($_POST['id']);
 if(!$db->getOne("SELECT count(id) FROM {$GLOBALS['tableprefix']}entities WHERE idparent = '{$context['id']}'")) exit();

@@ -200,14 +200,15 @@ class UsersLogic extends Logic
 			break;
 		case "lang" :
 			// get the language available in the interface
-			
+			usemaindb();
 			$dao=&getDAO("translations");
 			$list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
+			usecurrentdb();
 			$arr=array();
 			foreach($list as $lang) {
-	$arr[$lang->lang]=$lang->title;
+				$arr[$lang->lang]=$lang->title;
 			}
-			if (!$arr) $arr['fr']="Francais";
+			if (!$arr) $arr['fr']=utf8_encode("Français");
 			renderOptions($arr,$context['lang']);
 		}
 	}

@@ -103,6 +103,10 @@ class Controler
 				$therequest = &$_GET;
 			}
 		}
+
+		// backup original context for multiple import
+		if(isset($therequest['next_entity']) && 'yes' === (string)$therequest['next_entity'])
+			$backupContext = $context;
 		
 		$do = $therequest['do'];
 		
@@ -115,8 +119,10 @@ class Controler
 		extract_post($therequest); // nettoyage des valeurs issues de formulaire
 
 		if ($do) {
-			if ($therequest['lo']) {
+		
+			if (isset($therequest['lo'])) {
 				$lo = $therequest['lo'];
+				unset($therequest['lo']);
 			}
 			if ($lo != 'texts' && !in_array($lo, $logics)) {
 				trigger_error("ERROR: unknown logic", E_USER_ERROR);
@@ -124,9 +130,9 @@ class Controler
 			$context['lo'] = $lo;
 
 			// get the various common parameters
-			require_once 'validfunc.php';
+			if(!function_exists('validfield')) require 'validfunc.php';
 			foreach (array('class', 'classtype', 'type', 'textgroups') as $var) {
-				if ($therequest[$var]) {
+				if (isset($therequest[$var])) {
 					if (!validfield($therequest[$var], $var))
 						die("ERROR: a valid $var name is required");
 					$context[$var] = $therequest[$var];
@@ -134,22 +140,24 @@ class Controler
 			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int.
-			foreach (array('id', 'idgroup', 'idclass', 'idparent') as $var) {
-				$context[$var] = intval($therequest[$var]);
+			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype') as $var) {
+				$context[$var] = isset($therequest[$var]) ? intval($therequest[$var]) : 0;
 			}
 
       			// dir
-			if ($therequest['dir'] && ($therequest['dir'] == 'up' || 
+			if (isset($therequest['dir']) && ($therequest['dir'] == 'up' || 
 					$therequest['dir'] == 'down' || 
 					is_numeric($therequest['dir']))) 
+			{
 				$context['dir'] = $therequest['dir'];
-
+			}
+			
 			// valid the request
 			if (!preg_match("/^[a-zA-Z]+$/", $do)) 
 				die("ERROR: invalid action");
 			$do = $do. 'Action';
-			
-			require_once 'logic.php';
+
+			if(!function_exists('getLogic')) require 'logic.php';
 			// que fait-on suivant l'action demandée
 			switch($do) {
 				case 'listAction' :
@@ -173,12 +181,19 @@ class Controler
 			if (!$ret) {
 				die('ERROR: invalid return from the logic.');
 			}
+			
+			// import multiple
+			if(isset($context['next_entity']) && 'yes' === (string)$context['next_entity'] && '_error' !== (string)$ret && !$error)
+				$ret = '_next';
 
 			//Appel de la vue nécessaire
 			require_once 'view.php';
 			$view = &View::getView();
 			switch($ret) {
-				case '_next' : // si le controleur est appelé par un script
+				case '_next' : 
+					// si le controleur est appelé par un script
+					// nettoyage
+					$GLOBALS['context'] = $backupContext;
 					return 'ok';
 				case '_back' :
 					$view->back();

@@ -148,8 +148,6 @@ ln tpl/edit_xml.html
 ln search.php
 ln tpl/search.html
 
-#sitemap
-ln tpl/site_map.html
 
 ###############################################################
 ############# admin
