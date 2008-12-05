@@ -154,6 +154,11 @@ class DataLogic
 	 * Tableau des noms des classes du ME XML
 	 */
 	private $_classes;
+	
+	/**
+	 * Tableau des types changés ayant une classe différente
+	 */
+	private $_typesClass;
 	/* FIN IMPORT ME XML */
 
 	/**
@@ -1133,11 +1138,33 @@ class DataLogic
 		} elseif(isset($context['checktypes'])) {
 			$this->_updateTypes($context['data'], $error);
 			if(!$error) {
+				if(!empty($this->_typesClass))
+				{
+					$i=0;
+					foreach($this->_typesClass as $old=>$new)
+					{
+						$context['typesclass']['old'][$i] = array('class'=>$old, 'fields'=>$this->_sqlStruct[$old], 'idtype'=>$new['idtype']); 
+
+						$context['typesclass']['new'][$i] = array('class'=>$new['class'], 'fields'=>$this->_sqlStruct[$new['class']]); 
+						unset($context['typesclass']['old'][$i]['fields']['keys'], $context['typesclass']['old'][$i]['fields']['tableOptions'],
+						$context['typesclass']['new'][$i]['fields']['keys'], $context['typesclass']['new'][$i]['fields']['tableOptions']);
+						$i++;
+					}
+					return 'importxml_checktypes_class';
+				}
 				$context['success'] = 1;
 			} else {
 				$context['error'] =& $error;
 				return 'importxml_checktypes';
 			}
+		} elseif(isset($context['checktypesclass'])) {
+			$this->_updateTypeClass($context['changedtypeclass'], $error);
+			if($error)
+			{
+				$context['error'] =& $error;
+				return 'importxmlmodel_checktypes_class';
+			}
+			$context['success'] = $context['checktypes'] = 1;				
 		} elseif(isset($file)) {
 			$this->_cleanDatabase();
 			if(!isset($context['checkcontent']) && TRUE === $this->_checkContents()) {
@@ -1197,6 +1224,48 @@ class DataLogic
 			unlink('CACHE/require_caching/ME.obj');
 		}		
 		return 'importxmlmodel';
+	}
+
+	private function _updateTypeClass($datas, $error)
+	{
+		global $db;
+		if(!is_array($datas)) return;
+		foreach($datas as $table)
+		{
+			$idtype = $table['idtype'];
+			unset($table['idtype']);
+			$equiv = array();
+			$keys = array_keys($table);
+
+			$newclass = $keys[1];
+			$oldclass = $keys[0];
+			unset($keys);
+			
+			$new = array_pop($table);
+			$old = array_pop($table);
+			$old = array_flip($old);
+			foreach($new as $key=>$val)
+			{
+				if(isset($old[$val]))
+				{
+					$equiv[$key] = $old[$val];
+				}	
+			}
+
+			if(!empty($equiv))
+			{
+				$fieldsFrom = join(',', array_keys($equiv));
+				$fieldsTo = join(',', array_values($equiv));
+				$entities = $db->GetArray("SELECT id FROM {$GLOBALS['tp']}entities__oldME where idtype = '{$idtype}'");
+				if(!is_array($entities)) continue;
+				foreach($entities as $entity)
+				{
+					$this->_sql[] = "INSERT INTO {$GLOBALS['tp']}{$newclass} (".join(',', array_keys($equiv)).") SELECT ".join(',', array_values($equiv))." FROM {$GLOBALS['tp']}{$oldclass} WHERE identity='{$entity['id']}'";
+					$this->_sql[] = "DELETE FROM {$GLOBALS['tp']}{$oldclass} WHERE identity = '{$entity['id']}'";
+				}
+			}
+		}
+		$error = $this->_executeSQL();
 	}
 
 	/**
@@ -1905,6 +1974,15 @@ class DataLogic
 						$db->execute("INSERT INTO `{$table}` ({$typesFields}) VALUES ('{$id}','".join("','", $field)."')") or dberror();
 						$fieldName = $db->getOne("SELECT type FROM `{$table}__oldME` WHERE id = '{$val}'") or dberror();
 						$db->execute("INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n") or dberror();
+					}
+					elseif('types' === (string)$table)
+					{
+						$originalClass = $db->GetOne("SELECT class FROM `{$table}__oldME` WHERE id = '{$val}'");
+						$newClass = $db->GetOne("SELECT class FROM `{$table}` WHERE id = '{$after[$k]}'");
+						if($originalClass != $newClass)
+						{ // we need to know what field from original class have to go to new class
+							$this->_typesClass[$originalClass] = array('class'=>$newClass, 'idtype'=>$val);
+						}
 					}
 					$idtype = isset($id) ? $id : $after[$k];
 					$result = $db->execute("SELECT id FROM `{$oldMETable}` WHERE idtype = '{$val}'");

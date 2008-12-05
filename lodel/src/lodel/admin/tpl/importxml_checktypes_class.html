@@ -28,47 +28,63 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@ADMIN.TITLE_IMPORTXML_CHECKTYPES]</title>
+<title>[@ADMIN.TITLE_IMPORTXML_CHECKCONTENT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO">
+<MACRO NAME="HEADER_LOGO"> 
+
+<form method="POST">
 
 <IF COND="[#ERROR]">
 	<p class="error">[#ERROR]</p>
 </IF>
-<form method="POST">
-<div class="importME_left">
-<LOOP NAME="foreach" ARRAY="[#MODIFIEDOLDTYPES]">
-	[@ADMIN.IMPORTXML_OLDTYPES]<br />
-	<strong>[@COMMON.CLASS] [#KEY]</strong>
-	<ul class="importXML">
-		<LET VAR="act">[#KEY]</LET>
-		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<LET ARRAY="fieldname">[#VALUE|array_values]</LET>
-			<LET ARRAY="fieldidtype">[#VALUE|array_keys]</LET>
-			<li><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="3" />&nbsp;[#FIELDNAME.0]</li>
+<LET VAR="i">0</LET>
+<LOOP NAME="foreach" ARRAY="[#TYPESCLASS.OLD]">
+	<div class="importME_left">
+	<input type="hidden" name="changedtypeclass[[#I]][idtype]" value="[#VALUE.IDTYPE]"/>
+	<LET ARRAY="oldtypeclass">[#VALUE.FIELDS]</LET>
+	<LET VAR="table">[#VALUE.CLASS]</LET>
+	<table class="importXML">
+		<tr><td colspan="2"><strong>[@ADMIN.IMPORTXML_OLDTYPES] - [#TABLE]</strong></td></tr>
+		<LOOP NAME="foreach" ARRAY="[#OLDTYPECLASS]">
+			<tr>
+				<LET ARRAY="field">[#VALUE|array_keys]</LET>
+				<td>
+				<input type="text" size="3" value="[#KEY]" name="changedtypeclass[[#I]][[#TABLE]][[#FIELD.0]]"/>
+				</td>
+				<LET ARRAY="field">[#VALUE|array_keys]</LET>
+				<td>[#FIELD.0]</td>
+			</tr>
 		</LOOP>
-	</ul>
-</LOOP>
-</div>
-<div class="importME_right">
-<strong>[@ADMIN.IMPORTXML_TYPESAVAILABLE]</strong><br />
-<LOOP NAME="foreach" ARRAY="[#MODIFIEDNEWTYPES]">
-	<strong>[@COMMON.CLASS] [#KEY]</strong>
-	<ul class="importXML">
-		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<li>[#VALUE.ID] => [#VALUE.TYPE]</li>
+	</table>
+	</div>
+	<div class="importME_right">
+	<LET ARRAY="newtypeclass">[#TYPESCLASS.NEW.#KEY.FIELDS]</LET>
+	<LET VAR="newclass">[#TYPESCLASS.NEW.#KEY.CLASS]</LET>
+	<table class="importXML">
+		<tr><td colspan="2"><strong>[@ADMIN.IMPORTXML_NEWTYPES] - [#TYPESCLASS.NEW.#KEY.CLASS]</strong></td></tr>
+		<LOOP NAME="foreach" ARRAY="[#NEWTYPECLASS]">
+			<tr>
+				<LET ARRAY="field">[#VALUE|array_keys]</LET>
+				<td>
+				<input type="text" size="3" value="" name="changedtypeclass[[#I]][[#NEWCLASS]][[#FIELD.0]]"/>
+				</td>
+				<td>[#FIELD.0]</td>
+			</tr>
 		</LOOP>
-	</ul>
+	</table>
+	</div>
+	<div class="spacer"></div>	
+	<LET VAR="i">[#I|lmath('+', 1)]</LET>
 </LOOP>
-</div>
+
 <div class="importMEXML_action">
 <input type="hidden" name="do" value="[#DO]" />
 <input type="hidden" name="lo" value="[#LO]" />
 <input type="hidden" name="file" value="[#FILE]" />
-<input type="hidden" name="checktypes" value="1" />
+<input type="hidden" name="checktypesclass" value="1" />
 <fieldset>
-<input class="button" type="submit" />&nbsp;&nbsp;
-<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+	<input class="button" type="submit" />&nbsp;&nbsp;
+	<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
 </fieldset>
 </div>
 </form>
