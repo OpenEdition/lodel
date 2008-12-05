@@ -1073,7 +1073,8 @@ class DataLogic
 			}
 			$up = true;
 		}
-		if(file_exists('CACHE/require_caching/ME.obj') && (isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']))) { // on a déjà parsé le XML
+		
+		if(file_exists('CACHE/require_caching/ME.obj') && (isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))) { // on a déjà parsé le XML
 			ob_start();
 			require 'CACHE/require_caching/ME.obj';
 			$meObj = unserialize(base64_decode($meObj));
@@ -1162,9 +1163,9 @@ class DataLogic
 			if($error)
 			{
 				$context['error'] =& $error;
-				return 'importxmlmodel_checktypes_class';
+				return 'importxml_checktypes_class';
 			}
-			$context['success'] = $context['checktypes'] = 1;				
+			$context['success'] = 1;
 		} elseif(isset($file)) {
 			$this->_cleanDatabase();
 			if(!isset($context['checkcontent']) && TRUE === $this->_checkContents()) {
@@ -1189,7 +1190,7 @@ class DataLogic
 				$context['error'] =& $error;
 				return 'importxmlmodel';
 			}
-			if(!isset($context['checktypes'])) {
+			if(!isset($context['checktypes']) && !isset($context['checktypesclass'])) {
 				$this->_updateTypes(false, $error);
 				if($error) {
 					$context['error'] =& $error;
