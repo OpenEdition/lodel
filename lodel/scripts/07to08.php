@@ -721,12 +721,12 @@ class exportfor08
 								$query .= "INSERT INTO _PREFIXTABLE_auteurs (idperson, nomfamille, prenom) VALUES ('".$id."', \"".$res['nomfamille']."\", \"".$res['prenom']."\");\n";
 
 								// puis on met à jour la table relations pour indiquer l'ID de l'entrée créée!
-								if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$t."'")) {
+								if(!$resul = mysql_query("SELECT * FROM ".$GLOBALS['tp']."entites_personnes__old WHERE idpersonne = '".$res['id']."' AND idtype = '".$type08[$r['idtype']]."'")) {
 									return mysql_error();
 								}
 
 								while($rr = mysql_fetch_array($resul)) {
-									$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$res['id']."';\n";
+									$query .= "UPDATE _PREFIXTABLE_relations SET id2 = '".$id."' WHERE id1 = '".$rr['identite']."' AND id2 = '".$rr['idpersonne']."';\n";
 								}
 								if(!empty($query) && $err = $this->__mysql_query_cmds($query)) {
 									return $err;
