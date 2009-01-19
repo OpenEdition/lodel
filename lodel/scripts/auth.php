@@ -88,33 +88,42 @@ function authenticate($level = 0, $mode = "", $return = false)
 			$name = addslashes($_COOKIE[$sessionname]);
 			if (!$name && !defined('backoffice') && !defined('backoffice-lodeladmin')) {
 				// check for restricted users by client IP address
-				$users = $db->getArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
+				$users = $db->getArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
 				if(!$users) break;
 				list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
+				
 				foreach($users as $user) {
-					$octs = explode('.', $user['ip']);
-					foreach($octs as $k=>$octet) {
-						if(FALSE !== strpos($octet, '[')) { // plage d'ip
-							$o = explode('-', substr($octet, 1, strlen($octet)-2));
-							if((int)$oct[$k] < (int)$o[0] || (int)$oct[$k] > (int)$o[1]) continue 2;
-						} elseif((int)$octet !== (int)$oct[$k]) continue 2;
-					}
-					$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
-					if(!function_exists('check_expiration')) require 'loginfunc.php';
-					$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
-					$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
-					$lodeluser['id'] = $row['id'];
-					$lodeluser['name'] = $context['login'] = $row['username'];
-					$lodeluser['groups'] = '';
-					$context['lodeluser'] = $lodeluser; // export info into the context
-					unset($row);
-					if(!check_expiration()) {
-						$context['lodeluser'] = $lodeluser = array();
+					$uuser = explode(' ', $user['ip']);
+					foreach($uuser as $ip)
+					{
+						$octs = explode('.', $ip);
+						foreach($octs as $k=>$octet) {
+							if(!$octet) continue;
+							if(FALSE !== strpos($octet, '[')) 
+							{ // plage d'ip
+								$o = explode('-', substr($octet, 1, strlen($octet)-2));
+								if((int)$oct[$k] < (int)$o[0] || (int)$oct[$k] > (int)$o[1]) continue 2;
+							} 
+							elseif((int)$octet !== (int)$oct[$k]) continue 2;
+						}
+						
+						$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
+						if(!function_exists('check_expiration')) require 'loginfunc.php';
+						$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
+						$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
+						$lodeluser['id'] = $row['id'];
+						$lodeluser['name'] = $context['login'] = $row['username'];
+						$lodeluser['groups'] = '';
+						$context['lodeluser'] = $lodeluser; // export info into the context
+						unset($row);
+						if(!check_expiration()) {
+							$context['lodeluser'] = $lodeluser = array();
+							break 3;
+						}
+						$name = open_session($context['login']);
+						// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
 						break 2;
 					}
-					$name = open_session($context['login']);
-					// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
-					break;
 				}
 				if(!$name || $name == 'error_opensession') break;
 			}

@@ -378,12 +378,13 @@ function manageDesk(shareurl, msgHide, msgShow, site, errorXHR, errorSave)
 		}
 		var xhr = getXMLHttpRequest();
 		if(xhr) {
-			xhr.open("POST", shareurl + '/ajax/desk.php', false);
+			xhr.errorSave = errorSave;
+			xhr.open("POST", shareurl + '/ajax/desk.php', true);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			xhr.send('site='+site);
-			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') {
-				alert(errorSave);
+			xhr.onreadystatechange = function(){
+				if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') { alert(xhr.errorSave); }
 			}
+			xhr.send('site='+site);
 		} else {
 			alert(errorXHR);
 		}

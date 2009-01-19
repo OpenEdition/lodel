@@ -91,10 +91,10 @@ class Controler
 	public function Controler($logics, $lo = '', $request = array())
 	{
 		global $home, $context;
-
+		
 		// si la requete provient d'un script qui appelle le controleur
 		if (!empty($request)) {
-			$therequest = $request;
+			$therequest =& $request;
 		// GET ou POST
 		} else {
 			if ($_POST) {
@@ -141,7 +141,10 @@ class Controler
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int.
 			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype') as $var) {
-				$context[$var] = isset($therequest[$var]) ? intval($therequest[$var]) : 0;
+				if(isset($therequest[$var]))
+					$context[$var] = (int)$therequest[$var];
+				else
+					$context[$var] = 0;
 			}
 
       			// dir
@@ -182,10 +185,6 @@ class Controler
 				die('ERROR: invalid return from the logic.');
 			}
 			
-			// import multiple
-			if(isset($context['next_entity']) && 'yes' === (string)$context['next_entity'] && '_error' !== (string)$ret && !$error)
-				$ret = '_next';
-
 			//Appel de la vue nécessaire
 			require_once 'view.php';
 			$view = &View::getView();
@@ -340,7 +339,7 @@ class Controler
 					// maybe a path to the document
 					$path = preg_split("#/#", $query, -1, PREG_SPLIT_NO_EMPTY);
 					$entity = end($path);
-					$id = intval($entity);
+					$id = (int)$entity;
 					if ($id) {
 						$this->_printEntities($id, '', $context);
 					}

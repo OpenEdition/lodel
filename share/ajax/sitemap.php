@@ -33,5 +33,5 @@ $context['currenturl'] = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_POR
 // get the block
 require 'view.php';
 $view =& View::getView();
-echo $view->renderTemplateFile($context, 'edition', '', '', false, 0, 1, true);
+echo _indent($view->renderTemplateFile($context, 'edition', '', '', false, 0, 1, true));
 ?>
