@@ -351,7 +351,10 @@ class GenericLogic extends Logic
 				case 'entities' :
 					$value = &$context['entities'][$name];
 					if (!$value) {
-						unset ($context['entities'][$name]);
+						// commented by pierre-alain
+						// if unset, aliases will not be remove if there were present in database
+						// see bug [#5796]
+						//unset ($context['entities'][$name]);
 						break;
 					}
 					$ids = array ();
