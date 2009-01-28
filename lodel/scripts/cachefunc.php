@@ -63,7 +63,7 @@ function clearcache($allCache=true)
 			removefilesincache(".");
 		}
 	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
-		if(!class_exists('Cache_Lite'))
+		if(!class_exists('Cache_Lite', false))
 			require 'Cache/Lite.php';
 		if (defined("SITEROOT")) {
 			$options = $GLOBALS['cacheOptions'];
@@ -88,6 +88,12 @@ function clearcache($allCache=true)
 			} else {
 				$cache->clean();
 			}
+		}
+		// clean ADODB cache files
+		if (defined("SITEROOT")) {
+			removefilesincache(SITEROOT.'/CACHE/adodb', SITEROOT."lodel/edition/CACHE/adodb", SITEROOT."lodel/admin/CACHE/adodb");
+		}	else {
+			removefilesincache("./CACHE/adodb");
 		}
 	}
 }
@@ -116,11 +122,11 @@ function removefilesincache()
 		$cacheDir = new RecursiveDirectoryIterator($rep);
 		$cache = new RecursiveIteratorIterator($cacheDir);
 		foreach($cache as $file) {
-			if($cache->isDot() || $cache->isDir() || ($dir = basename($cache->getPath())) == 'CVS' 
-				|| $dir == 'upload' || $dir == 'require_caching' || !$cache->isWritable()) continue;
+			if($cache->isDot() || $cache->isDir() || !$cache->isWritable() || ($dir = basename($cache->getPath())) == 'CVS' 
+				|| $dir == 'upload' || $dir == 'require_caching') continue;
 			unlink($file);
 		}
-// 		$fd = opendir($rep) or die("Impossible d'ouvrir $rep");
+// 		$fd = opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
 // 		while (($file = readdir($fd)) !== false) {
 // 			if (($file{0} == ".") || ($file == "CVS") || ($file == "upload") || ($file == 'require_caching'))
 // 				continue;

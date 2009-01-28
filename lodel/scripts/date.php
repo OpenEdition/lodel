@@ -299,7 +299,7 @@ function mysqldatetime($s, $type = 'datetime')
 	}	elseif ($type == 'timestamp') {
 		return $timestamp;
 	}	else {
-		die('type inconnu dans mysqldatetime');
+		trigger_error('type inconnu dans mysqldatetime', E_USER_ERROR);
 	}
 }
 ?>

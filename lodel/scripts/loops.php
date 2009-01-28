@@ -57,7 +57,7 @@ function loop_parentsentities(& $context, $funcname, $critere = "")
 	$id = intval($context['id']);
 	if (!$id)
 		return;
-	$result = $db->execute(lq("SELECT *  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>". ($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or dberror();
+	$result = $db->execute(lq("SELECT *  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>". ($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);
@@ -115,7 +115,7 @@ function loop_paragraphs($context, $funcname, $arguments)
 {
 	if (!isset ($arguments['text'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
 	preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is", $arguments['text'], $results, PREG_SET_ORDER);
@@ -132,7 +132,7 @@ function loop_extract_images($context, $funcname, $arguments)
 {
 	if (!isset ($arguments['text'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the loop \"paragraph\" requires a TEXT attribut");
+			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
 	if ($arguments['limit']) {
@@ -167,7 +167,7 @@ function previousnext($dir, $context, $funcname, $arguments)
 	global $db;
 	if (!isset ($arguments['id'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the loop \"previous\" requires a ID attribut");
+			trigger_error("ERROR: the loop \"previous\" requires a ID attribut", E_USER_ERROR);
 		return;
 	}
 
@@ -187,7 +187,7 @@ function previousnext($dir, $context, $funcname, $arguments)
 	do {
 		$row = $db->getRow($querybase);
 		if ($row === false)
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($row)	{ // found
 			$localcontext = array_merge($context, $row);
 			break;
@@ -198,7 +198,7 @@ function previousnext($dir, $context, $funcname, $arguments)
 		$quotedtypes = join("','", explode(",", addslashes($arguments['through'])));
 		if (!$quotedtypes)
 			break;
-		$result = $db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or dberror();
+		$result = $db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		while (!$result->EOF)	{
 			$idtypes[] = $result->fields['id'];
@@ -211,7 +211,7 @@ function previousnext($dir, $context, $funcname, $arguments)
 		// not found, well, we look for the next/previous parent above and it's first/last son.
 		$row = $db->getrow(lq("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin ORDER BY e2.rank ".$sort.", e3.rank ".$sort));
 		if ($row === false)
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		if ($row) {
 			$localcontext = array_merge($context, $row);
@@ -253,15 +253,16 @@ function loop_rss($context, $funcname, $arguments)
 	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the loop \"rss\" requires a URL attribut");
+			trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);
 		return;
 	}
 	if ($arguments['refresh'] && !is_numeric($arguments['refresh'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ");
+			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
-	require_once "magpierss/rss_fetch.inc";
+	if(!function_exists('fetch_rss'))
+		require "magpierss/rss_fetch.inc";
 	$rss = fetch_rss($arguments['url'], $arguments['refresh'] ? $arguments['refresh'] : 3600);
 	if (!$rss) {
 		if ($GLOBALS['lodeluser']['editor']) {
@@ -511,7 +512,7 @@ function loop_rightonentity(& $context, $funcname, $arguments)
 {
 	if (!isset ($arguments['action'])) {
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: the loop \"rightonentity\" requires an ACTION attribut");
+			trigger_error("ERROR: the loop \"rightonentity\" requires an ACTION attribut", E_USER_ERROR);
 		return;
 	}
 	if (rightonentity($arguments['action'], $context)) {
@@ -550,7 +551,7 @@ function loop_errors(& $context, $funcname, $arguments)
 function loop_fielderror(& $context, $funcname, $arguments)
 {
 	if (!$arguments['field'])
-		die("ERROR: loop fielderror require a field attribute");
+		trigger_error("ERROR: loop fielderror require a field attribute", E_USER_ERROR);
 	$localcontext = $context;
 	$localcontext['error'] = $context['error'][$arguments['field']];
 	if ($localcontext['error']) {
@@ -563,7 +564,7 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 	//Get values of the list in the editionparams field for the current field
 	// and if no editionparams call alter
 	if (!isset ($context['editionparams']))
-		die("ERROR: internal error in loop_field_selection_values");
+		trigger_error("ERROR: internal error in loop_field_selection_values", E_USER_ERROR);
 	$arr = explode(",", $context['editionparams']);
 	$choosenvalues = explode(",", $context['value']); //if field contains more than one value (comma separated)
 	foreach ($arr as $value) {
@@ -627,7 +628,8 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 {
 	global $db;
 	static $compatible_types;
-	require_once 'entitiesfunc.php';
+	if(!function_exists('checkTypesCompatibility'))
+		require 'entitiesfunc.php';
 	if(!$compatible_types) {
 		//selectionne tous les types de la classe
 		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
@@ -711,9 +713,10 @@ function loop_alphabet($context, $funcname)
 function loop_alphabetSpec($context, $funcname)
 {
 	global $db, $lodeluser;
-	require_once 'func.php';
+	if(!function_exists('makeSortKey'))
+		require 'func.php';
 	if(empty($context['table']) || empty($context['field']))
-		die("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.");
+		trigger_error("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.", E_USER_ERROR);
 	if(!empty($context['idtype'])) {
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
 		$whereCount = " idtype = '{$context['idtype']}' AND ";

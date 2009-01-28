@@ -2,7 +2,7 @@
 /**	
  * Logique des entités - avancée
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -65,14 +66,14 @@ class Entities_AdvancedLogic extends Logic
 	 *
 	 * @var array
 	 */
-	var $g_name;
+	public $g_name;
 
 	/**
 	 * Constructeur
 	 */
-	function Entities_AdvancedLogic()
+	public function __construct()
 	{
-		$this->Logic("entities");
+		parent::__construct("entities");
 	}
 
 
@@ -82,7 +83,7 @@ class Entities_AdvancedLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context, &$error)
+	public function viewAction(&$context, &$error)
 	{
 		if ($error) {
 			return;
@@ -91,16 +92,16 @@ class Entities_AdvancedLogic extends Logic
 
 		$id = $context['id'];
 		if (!$id) {
-			die("ERROR: give the id ");
+			trigger_error("ERROR: give the id ", E_USER_ERROR);
 		}
 		if (!rightonentity('advanced', $context)) {
-			die("ERROR: you don't have the right to perform this operation");
+			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->getById($id);
 		if (!$vo) {
-			die("ERROR: can't find object $id in the table ". $this->maintable);
+			trigger_error("ERROR: can't find object $id in the table ". $this->maintable, E_USER_ERROR);
 		}
 		$this->_populateContext($vo, $context);
 
@@ -126,15 +127,15 @@ class Entities_AdvancedLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeStatusAction(&$context, &$error)
+	public function changeStatusAction(&$context, &$error)
 	{
 		global $db;
-		$status = intval($context['status']);
+		$status = (int)$context['status'];
 		$this->_isAuthorizedStatus($status);
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->find("id='". $context['id']. "' AND status*$status>0 AND status<16", 'status,id');
 		if (!$vo) {
-			die("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ");
+			trigger_error("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ", E_USER_ERROR);
 		}
 		$vo->status = $status;
 		$dao->save($vo);
@@ -155,10 +156,10 @@ class Entities_AdvancedLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function prepareMoveAction(&$context, &$error)
+	public function prepareMoveAction(&$context, &$error)
 	{
 		if (!rightonentity('move', $context)) {
-			die("ERROR: you don't have the right to perform this operation");
+			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 		/**
 		 * Boucle permettant de savoir si on a le droit de déplacer l'entité IDDOCUMENT (identifiée
@@ -187,11 +188,12 @@ class Entities_AdvancedLogic extends Logic
 				$condition = $db->getOne(lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
 				$cache[$context['idtype']] = (boolean)$condition;
 				if ($db->errorno()) {
-					dberror();
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			}
 			//test2 : si l'entité courante est une descendante de l'entité IDDOCUMENT
-			require_once 'entitiesfunc.php';
+			if(!function_exists('isChild'))
+				require 'entitiesfunc.php';
 			$boolchild = isChild($context['iddocument'], $context['id']);
 			if ($cache[$context['idtype']] && $boolchild) { //si c'est ok
 				if (function_exists("code_do_$funcname")) {
@@ -212,19 +214,20 @@ class Entities_AdvancedLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function moveAction(&$context, &$error)
+	public function moveAction(&$context, &$error)
 	{
 		global $db,$home;
 		if (!rightonentity('move', $context)) {
-			die("ERROR: you don't have the right to perform this operation");
+			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
 		$id = $context['id']; // which entities
-		$idparent = intval($context['idparent']); // where to move it
+		$idparent = (int)$context['idparent']; // where to move it
 
-		require_once 'entitiesfunc.php';
+		if(!function_exists('checkTypesCompatibility'))
+			require 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent)) {
-			die("ERROR: Can move the entities $id into $idparent. Check the editorial model.");
+			trigger_error("ERROR: Can move the entities $id into $idparent. Check the editorial model.", E_USER_ERROR);
 		}
 
 		// yes we have the right, move the entities
@@ -237,7 +240,7 @@ class Entities_AdvancedLogic extends Logic
 
 		if ($db->affected_Rows()>0) { // effective change
 			// get the new parent hierarchy
-			$result=$db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='$idparent' AND nature='P'")) or dberror();
+			$result=$db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='$idparent' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			$values = '';
 			$dmax   = 0;
@@ -253,7 +256,7 @@ class Entities_AdvancedLogic extends Logic
 			}
 			$parents[0] = $idparent;
 			// search for the children
-			$result=$db->execute(lq("SELECT id2,degree FROM #_TP_relations WHERE id1='$id' AND nature='P'")) or dberror();
+			$result=$db->execute(lq("SELECT id2,degree FROM #_TP_relations WHERE id1='$id' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 			$delete = '';
 			while (!$result->EOF) {
@@ -272,10 +275,10 @@ class Entities_AdvancedLogic extends Logic
 	
 			// delete the relation to the parent 
 			if ($delete) {
-				$db->execute(lq("DELETE FROM #_TP_relations WHERE (".$delete.") AND nature='P'")) or dberror();
+				$db->execute(lq("DELETE FROM #_TP_relations WHERE (".$delete.") AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if ($values) {
-				$db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or dberror();
+				$db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 
@@ -289,12 +292,12 @@ class Entities_AdvancedLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function downloadAction(&$context, &$error)
+	public function downloadAction(&$context, &$error)
 	{
 		$id = $context['id'];
 		switch($context['type']) {
 		case 'xml':
-			die('a implementer');
+			trigger_error('a implementer', E_USER_ERROR);
 			$filename = "r2r-$id.xml";
 			$originalname = $filename;
 			$dir = '../txt';
@@ -308,18 +311,19 @@ class Entities_AdvancedLogic extends Logic
 			$dao = $this->_getMainTableDAO();
 			$vo  = $dao->getById($id,"creationmethod,creationinfo");
 			if ($vo->creationmethod!=($multidoc ? "servoo;multidoc" : "servoo")) {
-				die("ERROR: error creationmethod is not compatible with download");
+				trigger_error("ERROR: error creationmethod is not compatible with download", E_USER_ERROR);
 			}
 			$originalname = $vo->creationinfo ? basename($vo->creationinfo) : basename($filename);
 			break;
 		default:
-			die ("ERROR: unknow type of download in downloadAction");
+			trigger_error("ERROR: unknow type of download in downloadAction", E_USER_ERROR);
 		}
 		
 		if (!file_exists($dir."/".$filename)) {
-			die ("ERROR: the filename $filename does not exists");
+			trigger_error("ERROR: the filename $filename does not exists", E_USER_ERROR);
 		}
-		require_once 'func.php';
+		if(!function_exists('download'))
+			require 'func.php';
 		download ($dir. '/'. $filename, $originalname);
 		exit;
 	}
@@ -328,7 +332,7 @@ class Entities_AdvancedLogic extends Logic
 	/**
 	 * @access private
 	 */
-	function _publicfields() {
+	protected function _publicfields() {
 		return array();
 	}
 	// end{publicfields} automatic generation  //
@@ -339,5 +343,4 @@ class Entities_AdvancedLogic extends Logic
 
 
 } // class 
-
 ?>

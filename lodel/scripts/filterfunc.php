@@ -44,7 +44,6 @@
 */
 
 
-
 makefilterfunc();
 require_once 'CACHE/filterfunc.php';
 
@@ -55,9 +54,8 @@ require_once 'CACHE/filterfunc.php';
 function makefilterfunc()
 {
 	global $db;
-	require_once 'connect.php';
 	// cherche les champs a filtrer	
-	$result = $db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status > 0 AND filtering!=''")) or dberror();
+	$result = $db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status > 0 AND filtering!=''")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	while (!$result->EOF)	{
 		$row = $result->fields;
 		// convert filter into a function
@@ -77,7 +75,7 @@ function makefilterfunc()
 				}
 				$filterfunc = $funcname.'('.$filterfunc.$arg.')';
 			}	elseif ($filter)	{
-				die("invalid filter function: $filter");
+				trigger_error("invalid filter function: $filter", E_USER_ERROR);
 			} // do nothing if $filter is empty
 		}
 		$filterfunc = "return ". $filterfunc. ";";
@@ -91,20 +89,20 @@ function makefilterfunc()
 	fputs($fp, '<'.'?php 
 	function filtered_mysql_fetch_assoc($context, $result) {
 		$filters = array('.$filterstr.');
-		$count = mysql_num_fields($result);
-		$row = mysql_fetch_row($result);
+		$count = $result->getFieldNum();
+		$row = $result->FetchRow();
 		if (!$row) return array();
 		for($i = 0; $i < $count; $i++) {
-			$fieldname[$i] = mysql_field_name($result, $i);
-			$fullfieldname[$i] = mysql_field_table($result,$i). ".". $fieldname[$i];
+			$fieldname[$i] = $result->getFieldName($i);
+			$fullfieldname[$i] = $result->getFieldTable($i). ".". $fieldname[$i];
 			$ret[$fieldname[$i]] = $row[$i];
 		}
 		if(empty($filters)) return $ret;
 		$localcontext=array_merge($context, $ret);
 		for($i = 0; $i < $count; $i++) {
 			if ($filters[$fullfieldname[$i]]) {
-					$filter = create_function(\'$x, $context\', $filters[$fullfieldname[$i]]);
-					$ret[$fieldname[$i]] = $filter($ret[$fieldname[$i]], $localcontext);
+				$filter = create_function(\'$x, $context\', $filters[$fullfieldname[$i]]);
+				$ret[$fieldname[$i]] = $filter($ret[$fieldname[$i]], $localcontext);
 			}
 		}
 		return $ret;
@@ -132,6 +130,5 @@ function makefilterfunc()
 	}
 	?'.'>');
 	fclose($fp);
-
 }
 ?>

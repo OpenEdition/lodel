@@ -24,9 +24,11 @@
    * @access private
    */
 define(SERVOOLIBDIR,dirname(__FILE__)."/");
-
-require_once(SERVOOLIBDIR."nusoap.php");
-require_once(SERVOOLIBDIR."nusoapmime.php");
+if(!class_exists('soapclientmime', false))
+{
+	require(SERVOOLIBDIR."nusoap.php");
+	require(SERVOOLIBDIR."nusoapmime.php");
+}
 
 
 /**
@@ -219,7 +221,8 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
-    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
+    if(!class_exists('PclZip', false))
+    	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);
@@ -295,7 +298,8 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
-    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
+    if(!class_exists('PclZip', false))
+    	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);

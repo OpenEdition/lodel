@@ -56,7 +56,7 @@ function checkmailforattachments()
 {
 	$options = getoption(array ("lodelmail.host", "lodelmail.user", "lodelmail.passwd"), "");
 	if (count($options) != 3 || !$options['lodelmail.host']) {
-		die('ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ');
+		trigger_error('ERROR: To use this feature, you must create and fill the options host, user and passwd in the group lodelmail. See in the administration interface ', E_USER_ERROR);
 	}
 
 	list ($host, $port) = explode(":", $options['lodelmail.host']);
@@ -67,7 +67,7 @@ function checkmailforattachments()
 	$mbox = imap_open($mailserver, $user, $passwd);
 
 	if ($mbox === false) {
-		die(imap_last_error());
+		trigger_error(imap_last_error(), E_USER_ERROR);
 		return;
 	}
 

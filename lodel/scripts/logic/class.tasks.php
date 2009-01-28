@@ -2,7 +2,7 @@
 /**	
  * Logique des tâches
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -61,18 +62,14 @@ class TasksLogic extends Logic {
 	/**
 	* generic equivalent assoc array
 	*/
-	var $g_name;
+	public $g_name;
 
 
 	/** Constructor
 	*/
-	function TasksLogic() {
-		$this->Logic("tasks");
+	public function __construct() {
+		parent::__construct("tasks");
 	}
-
-
-
-
 
 	/**
 	 * Affichage d'un objet
@@ -80,9 +77,9 @@ class TasksLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context,&$error)
+	public function viewAction(&$context,&$error)
 	{
-		die("TasksLogic::viewAction");
+		trigger_error("TasksLogic::viewAction", E_USER_ERROR);
 	}
 
 
@@ -92,17 +89,17 @@ class TasksLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error)
 	{
-		die("TasksLogic::changeRankAction");
+		trigger_error("TasksLogic::changeRankAction", E_USER_ERROR);
 	}
 
 	/**
 		* add/edit Action
 		*/
 
-	function editAction(&$context,&$error)
-	{ die("TasksLogic::editAction"); }
+	public function editAction(&$context,&$error)
+	{ trigger_error("TasksLogic::editAction", E_USER_ERROR); }
 
 	/*---------------------------------------------------------------*/
 	//! Private or protected from this point
@@ -123,7 +120,7 @@ class TasksLogic extends Logic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0)
+	public function isdeletelocked($id,$status=0)
 
 	{
 		global $lodeluser;
@@ -142,7 +139,7 @@ class TasksLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array();
 	}
@@ -154,12 +151,4 @@ class TasksLogic extends Logic {
 
 
 } // class 
-
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
 ?>

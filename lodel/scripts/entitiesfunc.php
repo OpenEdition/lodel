@@ -67,17 +67,17 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 		$table = "#_TP_entitytypes_entitytypes";
 		$criteria = "identitytype='". $idtype. "'";
 	}	else {
-		die("ERROR: id=0 and idtype=0 in EntitiesLogic::_checkTypesCompatibility");
+		trigger_error("ERROR: id=0 and idtype=0 in EntitiesLogic::_checkTypesCompatibility", E_USER_ERROR);
 	}
 	if ($idparent > 0) { // there is a parent
 		$query = "SELECT cond FROM ". $table. " INNER JOIN #_TP_entities as parent ON identitytype2=parent.idtype  WHERE parent.id='". $idparent. "' AND ". $criteria;
 	}	else { // no parent, the base.
 		$query = "SELECT cond FROM ". $table. " WHERE identitytype2=0 AND ". $criteria;
 	}
-	#echo $query;
+// 	echo lq($query).'<br>';
 	$condition = $db->getOne(lq($query));
 	if ($db->errorno()) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 	return $condition;
 }
@@ -98,7 +98,7 @@ function isChild($idref, $idcurrent)
 	$sql = lq("SELECT idrelation FROM #_TP_relations where id2='$idcurrent' AND id1='$idref'");
 	$idrelation = $db->getOne($sql);
 	if ($db->errorno()) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 	return $idrelation ? false : true; // si on a une relation (descendance) retourne false
 }
@@ -124,8 +124,8 @@ function cleanEntities ()
 		}
 		
 		if (is_array($ids)) {
-			require_once 'logic.php';
-			require_once 'func.php';
+			if(!class_exists('Logic', false))
+				require 'logic.php';
 			$logic = &getLogic('entities');
 			foreach($ids as $id) {
 				$context['id'] = $id;

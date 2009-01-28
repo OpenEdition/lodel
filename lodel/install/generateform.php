@@ -195,7 +195,7 @@ foreach ($tables as $table) {
 		    );
 
   if (empty($html)) {
-    die('XSLT processing error: '. xslt_error($xsltproc));
+    trigger_error('XSLT processing error: '. xslt_error($xsltproc), E_USER_ERROR);
   }
 
 

@@ -2,7 +2,7 @@
 /**	
  * Logique des types d'entrées
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -62,8 +63,8 @@ class EntryTypesLogic extends Logic
 
 	/** Constructor
 	*/
-	function EntryTypesLogic() {
-		$this->Logic("entrytypes");
+	public function __construct() {
+		parent::__construct("entrytypes");
 	}
 
 
@@ -79,12 +80,12 @@ class EntryTypesLogic extends Logic
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
+	public function isdeletelocked($id,$status=0) 
 
 	{
 		global $db;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idtype='$id' AND status>-64"));
-		if ($db->errorno())  dberror();
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -98,7 +99,7 @@ class EntryTypesLogic extends Logic
 		* makeSelect
 		*/
 
-	function makeSelect(&$context,$var)
+	public function makeSelect(&$context,$var)
 
 	{
 		switch($var) {
@@ -110,7 +111,8 @@ class EntryTypesLogic extends Logic
 			break;
 		case 'g_type' :
 			#$g_typefields=array("DC.Subject");
-			require_once 'fieldfunc.php';
+			if(!function_exists('reservedByLodel'))
+				require 'fieldfunc.php';
 			$g_typefields = $GLOBALS['g_entrytypes_fields'];#array('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
 			$dao=$this->_getMainTableDAO();
 			$types=$dao->findMany('status > 0', '','g_type,title');
@@ -130,7 +132,8 @@ class EntryTypesLogic extends Logic
 			renderOptions($arr2,$context['g_type']);
 			break;
 		case 'gui_user_complexity' :
-			require_once 'commonselect.php';
+			if(!function_exists('makeSelectGuiUserComplexity'))
+				require 'commonselect.php';
 			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
 		case 'edition' :
@@ -157,12 +160,12 @@ class EntryTypesLogic extends Logic
 	* @param object $dao la DAO utilisée
 	* @param array &$context le context passé par référence
 	*/
-	function _prepareEdit($dao,&$context)
+	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
 		if ($context['id']) {
 			$this->oldvo=$dao->getById($context['id']);
-			if (!$this->oldvo) die("ERROR: internal error in EntryTypesLogic::_prepareEdit");
+			if (!$this->oldvo) trigger_error("ERROR: internal error in EntryTypesLogic::_prepareEdit", E_USER_ERROR);
 		}
 	}
 
@@ -175,11 +178,11 @@ class EntryTypesLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,$context) 
 	{
 		if ($vo->type!=$this->oldvo->type) {
 			// name has changed
-			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or dberror();
+			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 	/**
@@ -191,15 +194,15 @@ class EntryTypesLogic extends Logic
 	* @param object $dao la DAO utilisée
 	* @param array &$context le contexte passé par référénce
 	*/
-	function _prepareDelete($dao,&$context)
+	protected function _prepareDelete($dao,&$context)
 	{
 		// gather information for the following
 		$this->vo=$dao->getById($context['id']);
-		if (!$this->vo) die("ERROR: internal error in EntryTypesLogic::_prepareDelete");
+		if (!$this->vo) trigger_error("ERROR: internal error in EntryTypesLogic::_prepareDelete", E_USER_ERROR);
 	}
 
 
-	function _deleteRelatedTables($id)
+	protected function _deleteRelatedTables($id)
 	{
 		global $home;
 			
@@ -214,7 +217,7 @@ class EntryTypesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('type' => array('type', '+'),
 									'class' => array('class', '+'),
@@ -240,7 +243,7 @@ class EntryTypesLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('type'), );
 	}
@@ -254,11 +257,9 @@ class EntryTypesLogic extends Logic
 /* loops                             */
 
 function loop_entitytypes($context,$funcname)
-{ require_once 'typetypefunc.php'; 
+{
+	if(!function_exists('loop_typetable'))
+		require 'typetypefunc.php';
 	loop_typetable ('entitytype', 'entrytype', $context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
 }
-
-
-
-
 ?>

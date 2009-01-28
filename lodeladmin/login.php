@@ -45,85 +45,104 @@
  */
 define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
-require_once 'auth.php';
 
-$url_retour = strip_tags($url_retour);
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
 
-if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
-	require_once 'func.php';
-	extract_post();
-	require_once 'connect.php';
-	require_once 'loginfunc.php';
-	unset($retour);
-	$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
-	if($retour === "error_passwd") {
-		$context['suspended'] = 1;
-	} elseif($retour === false) {	
-		$context['error_login'] = 1;
-	} elseif($retour === true) {
-		// on relance la procédure d'identification
-		if (!check_auth($_POST['login'], $_POST['passwd'], $site)) {
-			$context['error_login'] = 1;
-		} else {
-			// et on ouvre une session
-			$err = open_session($_POST['login']);
-			if ((string)$err === 'error_opensession') {
-				$context[$err] = 1;
-				break;
-			} else {
-				check_internal_messaging();
-				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
-			}
-		}
-	}
-} elseif ($_POST['login']) {
-	require_once 'func.php';
-	extract_post();
-	do {
-		require_once 'connect.php';
-		require_once 'loginfunc.php';
-		if (!check_auth($context['login'], $context['passwd'], $site)) {
-			$context['error_login'] = 1; 
-			break;
-		}
-		
-		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
-		if(!check_suspended()) {
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+	require 'auth.php';
+	
+	$url_retour = strip_tags($url_retour);
+	
+	if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
+		require 'func.php';
+		extract_post();
+		require 'loginfunc.php';
+		unset($retour);
+		$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
+		if($retour === "error_passwd") {
 			$context['suspended'] = 1;
-			break;
-		}
-		else {
-			// ouvre une session
-			$err = open_session($context['login']);
-			if ((string)$err === 'error_opensession') {
-				$context[$err] = 1;
-				break;
+		} elseif($retour === false) {	
+			$context['error_login'] = 1;
+		} elseif($retour === true) {
+			// on relance la procédure d'identification
+			if (!check_auth($_POST['login'], $_POST['passwd'], $site)) {
+				$context['error_login'] = 1;
+			} else {
+				// et on ouvre une session
+				$err = open_session($_POST['login']);
+				if ((string)$err === 'error_opensession') {
+					$context[$err] = 1;
+					break;
+				} else {
+					check_internal_messaging();
+					header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+				}
 			}
 		}
-		check_internal_messaging();
-		header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
-		die ();
-	} while (0);
+	} elseif ($_POST['login']) {
+		require 'func.php';
+		extract_post();
+		do {
+			require 'loginfunc.php';
+			if (!check_auth($context['login'], $context['passwd'], $site)) {
+				$context['error_login'] = 1; 
+				break;
+			}
+			
+			//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
+			if(!check_suspended()) {
+				$context['suspended'] = 1;
+				break;
+			}
+			else {
+				// ouvre une session
+				$err = open_session($context['login']);
+				if ((string)$err === 'error_opensession') {
+					$context[$err] = 1;
+					break;
+				}
+			}
+			check_internal_messaging();
+			header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+			die ();
+		} while (0);
+	}
+	
+	$context['passwd'] = $passwd = 0;
+	// commenté le 13/11/08 par pierre-alain, aucune utilité trouvée ?
+	// variable: sitebloque
+	// if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
+	// 	$context['sitebloque'] = 1;
+	// } else { // test si la site est bloque dans la DB.
+	// 	require_once 'connect.php';
+	// 	usemaindb();
+	// 	$context['sitebloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
+	// 	usecurrentdb();
+	// }
+	
+	
+	$context['url_retour']      = $url_retour;
+	$context['error_timeout']   = $error_timeout;
+	$context['error_privilege'] = $error_privilege;
+	
+	require 'view.php';
+	$view = &View::getView();
+	$view->render($context, 'login');
 }
-
-$context['passwd'] = $passwd = 0;
-// commenté le 13/11/08 par pierre-alain, aucune utilité trouvée ?
-// variable: sitebloque
-// if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
-// 	$context['sitebloque'] = 1;
-// } else { // test si la site est bloque dans la DB.
-// 	require_once 'connect.php';
-// 	usemaindb();
-// 	$context['sitebloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
-// 	usecurrentdb();
-// }
-
-
-$context['url_retour']      = $url_retour;
-$context['error_timeout']   = $error_timeout;
-$context['error_privilege'] = $error_privilege;
-
-require_once 'view.php';
-$view = &View::getView();
-$view->render($context, 'login');
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

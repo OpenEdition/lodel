@@ -44,27 +44,27 @@
  */
 
 if (!function_exists("authenticate")) {
-	die("ERROR: invalid include of translationsexportinc.php");
+	trigger_error("ERROR: invalid include of translationsexportinc.php", E_USER_ERROR);
 }
-
-require_once 'func.php';
+if(!function_exists('lock_write'))
+	require 'func.php';
 require_once 'validfunc.php';
 
 //$context[importdir]=$importdir;
 if ($lang != "all" && !isvalidlang($lang))
-	die('ERROR: invalid lang');
+	trigger_error('ERROR: invalid lang', E_USER_ERROR);
 
 // lock the database
 lock_write("translations", "textes");
 
 $tmpfile = tempnam(tmpdir(), "lodeltranslation");
-
-require_once 'translationfunc.php';
+if(!class_exists('XMLDB_Translations'))
+	require 'translationfunc.php';
 
 $xmldb = new XMLDB_Translations($context['textgroups'], $lang);
 
 #$ret=$xmldb->saveToString();
-#die($ret);
+#trigger_error($ret, E_USER_ERROR);
 
 $xmldb->saveToFile($tmpfile);
 

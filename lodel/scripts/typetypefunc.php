@@ -56,7 +56,7 @@
 function typetype_delete($typetable, $critere)
 {
 	global $db;
-	$db->execute(lq("DELETE FROM #_TP_entitytypes_".$typetable."s WHERE $critere")) or dberror();
+	$db->execute(lq("DELETE FROM #_TP_entitytypes_".$typetable."s WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 /**
@@ -88,7 +88,7 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 	}
 	$table = $typetable != 'entitytype2' ? $typetable : 'entitytype';
 
-	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,cond) VALUES ".join(",", $values))) or dberror();
+	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,cond) VALUES ".join(",", $values))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 
@@ -105,7 +105,7 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		$rank = 'type';
 	}
 
-	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or dberror();
+	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);

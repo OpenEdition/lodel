@@ -45,7 +45,6 @@
  * @package lodel/install
  */
 
-
 require 'lodelconfig.php';
 require 'connect.php';
 require 'func.php';

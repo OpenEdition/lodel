@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,28 +75,30 @@ class tablefieldsVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $name;
-	var $class;
-	var $title;
-	var $altertitle;
-	var $gui_user_complexity;
-	var $idgroup;
-	var $type;
-	var $g_name;
-	var $style;
-	var $cond;
-	var $defaultvalue;
-	var $processing;
-	var $allowedtags;
-	var $edition;
-	var $editionparams;
-	var $weight;
-	var $filtering;
-	var $comment;
-	var $status;
-	var $rank;
-	var $upd;
+	public $id;
+	public $name;
+	public $class;
+	public $title;
+	public $altertitle;
+	public $gui_user_complexity;
+	public $idgroup;
+	public $type;
+	public $g_name;
+// 	public $g_name_tei;
+	public $style;
+	public $cond;
+	public $defaultvalue;
+	public $processing;
+	public $mask;
+	public $allowedtags;
+	public $edition;
+	public $editionparams;
+	public $weight;
+	public $filtering;
+	public $comment;
+	public $status;
+	public $rank;
+	public $upd;
 	/**#@-*/
 }
 
@@ -106,6 +110,7 @@ class tablefieldsVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -125,9 +130,9 @@ class tablefieldsDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function tablefieldsDAO()
+	public function __construct()
 	{
-		$this->DAO("tablefields", false);
+		parent::__construct("tablefields", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

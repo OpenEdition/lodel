@@ -44,8 +44,6 @@
  * @version CVS:$Id$
  */
 
-require_once 'auth.php';
-
 // {{{ class
 /**
  * Classe gérant la partie contrôleur du modèle MVC utilisé par Lodel 0.8
@@ -63,7 +61,7 @@ require_once 'auth.php';
  * @see logic.php
  * @see view.php
  */
-class Controler 
+class Controller 
 {
 
 	/**
@@ -88,7 +86,7 @@ class Controler
 	 * @param array $request La requête à traiter, si elle n'est passée ni en GET ni en POST (dans un script par ex.) : utilisé pour l'import massif de XML
 	 * 
 	 */
-	public function Controler($logics, $lo = '', $request = array())
+	public function __construct($logics, $lo = '', $request = array())
 	{
 		global $home, $context;
 		
@@ -111,11 +109,13 @@ class Controler
 		$do = $therequest['do'];
 		
 		if ($do == 'back') {
-			require_once 'view.php';
+			if(!class_exists('View', false))
+				require 'view.php';
 			View::back(2); //revient 2 rang en arrière dans l'historique.
 			return;
 		}
-		require_once 'func.php';
+		if(!function_exists('extract_post'))
+			require 'func.php';
 		extract_post($therequest); // nettoyage des valeurs issues de formulaire
 
 		if ($do) {
@@ -134,7 +134,7 @@ class Controler
 			foreach (array('class', 'classtype', 'type', 'textgroups') as $var) {
 				if (isset($therequest[$var])) {
 					if (!validfield($therequest[$var], $var))
-						die("ERROR: a valid $var name is required");
+						trigger_error("ERROR: a valid $var name is required", E_USER_ERROR);
 					$context[$var] = $therequest[$var];
 				}
 			}
@@ -157,7 +157,7 @@ class Controler
 			
 			// valid the request
 			if (!preg_match("/^[a-zA-Z]+$/", $do)) 
-				die("ERROR: invalid action");
+				trigger_error("ERROR: invalid action", E_USER_ERROR);
 			$do = $do. 'Action';
 
 			if(!function_exists('getLogic')) require 'logic.php';
@@ -174,7 +174,7 @@ class Controler
 						if ($do == 'listAction') {
 							$ret = '_ok';
 						} else {
-							die('ERROR: invalid action');
+							trigger_error('ERROR: invalid action', E_USER_ERROR);
 						}
 					} else {
 						// call the logic action
@@ -182,12 +182,15 @@ class Controler
 					}
 			}
 			if (!$ret) {
-				die('ERROR: invalid return from the logic.');
+				trigger_error('ERROR: invalid return from the logic.', E_USER_ERROR);
 			}
 			
+			if(isset($therequest['next_entity']) && 'yes' === (string)$therequest['next_entity'])
+			{
+				if(!$error && '_error' !== $ret) $ret = '_next';
+			}
+
 			//Appel de la vue nécessaire
-			require_once 'view.php';
-			$view = &View::getView();
 			switch($ret) {
 				case '_next' : 
 					// si le controleur est appelé par un script
@@ -195,6 +198,9 @@ class Controler
 					$GLOBALS['context'] = $backupContext;
 					return 'ok';
 				case '_back' :
+					if(!class_exists('View', false))
+						require 'view.php';
+					$view = &View::getView();
 					$view->back();
 					break;
       				case '_error' :
@@ -207,6 +213,9 @@ class Controler
 					$context['error'] = $error;
 					//print_r($error);
 				case '_ok' :
+					if(!class_exists('View', false))
+						require 'view.php';
+					$view = &View::getView();
 					if ($do == 'listAction') {
 						$view->renderCached($context, $lo);
 					} else {
@@ -218,6 +227,9 @@ class Controler
 					header(substr($ret, 1));
 					exit;
 				}
+				if(!class_exists('View', false))
+					require 'view.php';
+				$view = &View::getView();
 				$view->render($context, $ret);
 				break;
 			}
@@ -254,7 +266,8 @@ class Controler
 				}
 			}
 			if ($context['login']) {
-				require_once 'loginfunc.php';
+				if(!function_exists('check_auth_restricted'))
+					require 'loginfunc.php';
 				do {
 					if (!check_auth_restricted($context['login'], $context['passwd'], $GLOBALS['site'])) {
 						$context['error_login'] = $err = 1;
@@ -282,11 +295,10 @@ class Controler
 			// ID ou IDENTIFIER
 			if ($context['id'] || $context['identifier']) {
 				do { // exception block
-					require_once 'func.php';
 					if ($context['id']) {
 						$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='{$context['id']}'"));
 						if ($db->errorno() && $lodeluser['rights'] > LEVEL_VISITOR) {
-							dberror();
+							trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						}
 						if (!$class) { 
 							header("HTTP/1.0 404 Not Found");
@@ -302,7 +314,7 @@ class Controler
 					} elseif ($context['identifier']) {
 						$class = 'entities';
 					} else {
-						die("?? strange");
+						trigger_error("?? strange", E_USER_ERROR);
 					}
 					switch($class) {
 					case 'entities':
@@ -310,9 +322,10 @@ class Controler
 						break;
 					case 'entrytypes':
 					case 'persontypes':
-						$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) or dberror();
+						$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$context['type'] = $result->fields;
-						require_once 'view.php';
+						if(!class_exists('View', false))
+							require 'view.php';
 						$view = &View::getView();
 						$view->renderCached($context, $result->fields['tplindex']);
 						exit;
@@ -325,9 +338,10 @@ class Controler
 			//PAGE
 			} elseif ($context['page']) { // call a special page (and template)
 				if (strlen($context['page']) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $context['page'])) {
-					die('invalid page');
+					trigger_error('invalid page', E_USER_ERROR);
 				}
-				require_once 'view.php';
+				if(!class_exists('View', false))
+					require 'view.php';
 				$view = &View::getView();
 				$view->renderCached($context, $context['page']);
 				exit;
@@ -347,7 +361,8 @@ class Controler
 					// rien à faire.
 				}
 			}
-			require_once 'view.php';
+			if(!class_exists('View', false))
+				require 'view.php';
 			$view = &View::getView();
 			$view->renderCached($context, 'index');
 		}
@@ -378,7 +393,7 @@ class Controler
 			}
 			$row = $db->getRow(lq("SELECT #_TP_entities.*,tpl,type,class FROM #_entitiestypesjoin_ WHERE ". $where));
 			if ($row === false) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if (!$row) { 
 				header("HTTP/1.0 404 Not Found");
@@ -405,7 +420,7 @@ class Controler
 		$context = array_merge($context, $row);
 		$row = $db->getRow(lq("SELECT * FROM #_TP_". $row['class']. " WHERE identity='". $row['id']. "'"));
 		if ($row === false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if (!$row) {
 			header("HTTP/1.0 404 Not Found");
@@ -424,7 +439,8 @@ class Controler
 		//Merge $row et applique les filtres définis dans le ME
 		merge_and_filter_fields($context, $context['class'], $row);
 		getgenericfields($context); // met les champs génériques de l'entité dans le contexte
-		require_once 'view.php';
+		if(!class_exists('View', false))
+			require 'view.php';
 		$view=&View::getView();
 		$view->renderCached($context, $base);
 		exit;
@@ -453,14 +469,14 @@ class Controler
 			$longid    = 'identry';
 			break;
 		default:
-			die('ERROR: internal error in printIndex');
+			trigger_error('ERROR: internal error in printIndex', E_USER_ERROR);
 		}
 	
 		// get the index
 		$critere = $lodeluser['visitor'] ? 'AND status>-64' : 'AND status>0';
 		$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
 		if ($row === false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if (!$row) {
 			header("HTTP/1.0 404 Not Found");
@@ -477,7 +493,7 @@ class Controler
 		// get the type
 		$row = $db->getRow(lq("SELECT * FROM ". $typetable. " WHERE id='". $row['idtype']. "'". $critere));
 		if ($row === false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if (!$row) {
 			header("HTTP/1.0 404 Not Found");
@@ -496,16 +512,17 @@ class Controler
 		// get the associated table
 		$row = $db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE ".$longid."='".$id."'"));
 		if ($row === false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if (!$row) {
-			die("ERROR: internal error");
+			trigger_error("ERROR: internal error", E_USER_ERROR);
 		}
 		if (!(@include_once("CACHE/filterfunc.php"))) {
 			require_once "filterfunc.php";
 		}
 		merge_and_filter_fields($context, $row['class'], $row);
-		require_once 'view.php';
+		if(!class_exists('View', false))
+			require 'view.php';
 		$view = &View::getView();
 		$view->renderCached($context, $base);
 		exit;

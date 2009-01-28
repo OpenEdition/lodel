@@ -45,6 +45,14 @@
 
 define('backoffice', true);
 require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
 require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
@@ -54,7 +62,7 @@ $context['caller'] = $_REQUEST['caller'];
 $context['single'] = isset($_REQUEST['single']);
 
 $ids = explode(',', $_REQUEST['value']);
-$context['id'] = intval($_GET['id']);
+$context['id'] = (int)$_GET['id'];
 $nodesk = true;
 require 'view.php';
 $view = &View::getView();
@@ -64,5 +72,16 @@ function getchecked($id)
 {
   return in_array($GLOBALS['ids'], $id) ? "checked=\"checked\"" : '';
 }
-
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

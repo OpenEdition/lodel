@@ -2,7 +2,7 @@
 /**	
  * Logique des groupes d'options utilisateur
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -42,13 +43,11 @@
 
 
 function humanfieldtype($text)
-
 {
   return $GLOBALS['fieldtypes'][$text];
 }
 
 /***/
-
 
 
 /**
@@ -71,8 +70,8 @@ class UserOptionGroupsLogic extends Logic {
 
 	/** Constructor
 	*/
-	function UserOptionGroupsLogic() {
-		$this->Logic("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
+	public function __construct() {
+		parent::__construct("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
 	}
 
 	/**
@@ -81,13 +80,12 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context,$error) 
-
+	public function viewAction(&$context,$error) 
 	{
 		function loop_useroptions($context,$funcname)
 		{
 			global $db;
-			$result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or dberror();
+			$result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result->EOF) {
 				$localcontext=array_merge($context,$result->fields);
 				$name=$result->fields['name'];
@@ -96,23 +94,22 @@ class UserOptionGroupsLogic extends Logic {
 				$result->MoveNext();
 			}
 		}
-		return Logic::viewAction($context,$funcname);
+		return parent::viewAction($context,$funcname);
 	}
 
 
-	function editAction(&$context,&$error)
-
+	public function editAction(&$context,&$error)
 	{
 		global $lodeluser,$home;
 		// get the dao for working with the object
-		
 		$dao=&getDAO("options");
-		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");     
-		require_once("validfunc.php");
+		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
+		if(!function_exists('validfield'))
+			require("validfunc.php");
 		foreach ($options as $option) {
 			if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
 			$valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
-			if ($valid===false) die("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php");
+			if ($valid===false) trigger_error("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php", E_USER_ERROR);
 			if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context['data'][$option->name]) ) {
 				$dir=dirname($context['data'][$option->name]);
 				rename(SITEROOT.$dir,SITEROOT.preg_replace("/\/tmpdir-\d+$/","/option-".$option->id,$dir));
@@ -127,9 +124,8 @@ class UserOptionGroupsLogic extends Logic {
 			if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
 			if ($option->type!="boolean" && trim($context['data'][$option->name])==="") $context['data'][$option->name]=$option->defaultvalue; // default value
 			$option->value=$context['data'][$option->name];
-			if (!$dao->save($option)) die("You don't have the rights to modify this option");
+			if (!$dao->save($option)) trigger_error("You don't have the rights to modify this option", E_USER_ERROR);
 		}
-		touch(SITEROOT."CACHE/maj");
 		@unlink(SITEROOT."CACHE/options_cache.php");
 		return "_back";
 	}
@@ -138,9 +134,9 @@ class UserOptionGroupsLogic extends Logic {
 	/**
 		* Change rank action
 		*/
-	function copyAction(&$context,&$error)
+	public function copyAction(&$context,&$error)
 	{
-		die("ERROR: forbidden");
+		trigger_error("ERROR: forbidden", E_USER_ERROR);
 	}
 
 	/**
@@ -149,18 +145,18 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error)
 	{
-		die('ERROR: forbidden');
+		trigger_error('ERROR: forbidden', E_USER_ERROR);
 	}
 
 	/**
 		* Delete
 		*/
 
-	function deleteAction(&$context,&$error)
+	public function deleteAction(&$context,&$error)
 	{     
-		die("ERROR: forbidden");
+		trigger_error("ERROR: forbidden", E_USER_ERROR);
 	}
 
 	/**
@@ -169,10 +165,11 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @param string $var le nom de la variable du select
 	 */
-	function makeSelect(&$context, $var)
+	public function makeSelect(&$context, $var)
 	{
-			require_once 'lang.php';
-			makeselectlangs($context[$var]);
+		if(!function_exists('makeselectlangs'))
+			require("lang.php");
+		makeselectlangs($context[$var]);
 	}
 
 	/*---------------------------------------------------------------*/
@@ -182,13 +179,4 @@ class UserOptionGroupsLogic extends Logic {
 		*/
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
-
 ?>

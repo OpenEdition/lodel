@@ -16,12 +16,12 @@
 if (!defined('PMA_MYSQL_INT_VERSION') && isset($userlink)) {
     if (!empty($server)) {
         $result = PMA_mysql_query('SELECT VERSION() AS version');
-        if ($result != FALSE && @mysql_num_rows($result) > 0) {
+        if ($result != FALSE && $result->RecordCount() > 0) {
             $row   = PMA_mysql_fetch_array($result);
             $match = explode('.', $row['version']);
         } else {
             $result = @PMA_mysql_query('SHOW VARIABLES LIKE \'version\'');
-            if ($result != FALSE && @mysql_num_rows($result) > 0){
+            if ($result != FALSE && $result->RecordCount() > 0){
                 $row   = PMA_mysql_fetch_row($result);
                 $match = explode('.', $row[1]);
             }

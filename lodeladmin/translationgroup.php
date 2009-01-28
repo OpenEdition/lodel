@@ -53,7 +53,7 @@ require_once 'validfunc.php';
 // post-traitement
 $context['textgroup'] = mysql_escape_string($textgroup);
 if (!isvalidlang($lang)) {
-	die("ERROR: invalid lang");
+	trigger_error("ERROR: invalid lang", E_USER_ERROR);
 }
 $context['lang'] = $lang;
 posttraitement($context);

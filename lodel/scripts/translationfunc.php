@@ -43,8 +43,8 @@
  * @package lodel
  * @since Fichier ajouté depuis la version 0.8
  */
-
-require_once 'xmldbfunc.php';
+if(!class_exists('XMLDB', false))
+	require 'xmldbfunc.php';
 
 /**
  * Affichage des champs textes pour la traduction
@@ -81,7 +81,7 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 	//
 	// Translated texte
 	//
-	#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or dberror();
+	#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	# $divs=""; 
 	# while (list($text,$lang)=mysql_fetch_row($result)) { 
 	#    echo \'<a href="">[\'.$lang.\']</a> \'; 
@@ -211,7 +211,7 @@ class XMLDB_Translations extends XMLDB
 			// check the textgroup is ok
 			if (!in_array(strtolower($record['textgroup']), $GLOBALS['translations_textgroups'][$this->textgroups])) {
 				print_r($this);
-				die("ERROR: Invalid textgroup : ".$this->textgroups);
+				trigger_error("ERROR: Invalid textgroup : ".$this->textgroups, E_USER_ERROR);
 			}
 			// look for the translation
 			$dao = & getDAO("texts");

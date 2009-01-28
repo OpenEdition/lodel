@@ -270,7 +270,7 @@ if($install->checkDB() === "error_cnx")
 @include($install->get('lodelconfig'));
 // on cherche si on a une database
 if(!$install->get('installoption')) {
-	if(!$installoption) die('Internal error. Missing installoption value from lodelconfig.php !');
+	if(!$installoption) trigger_error('Internal error. Missing installoption value from lodelconfig.php !', E_USER_ERROR);
 	$install->set('installoption', $installoption);
 }
 if (!$database) {

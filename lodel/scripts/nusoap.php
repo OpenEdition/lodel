@@ -2073,7 +2073,7 @@ class soap_transport_http extends nusoap_base {
 		// add data
 		$this->outgoing_payload .= $data;
 
-###		die($this->outgoing_payload);
+###		trigger_error($this->outgoing_payload, E_USER_ERROR);
 	}
 
 	function sendRequest($data){
@@ -2545,7 +2545,7 @@ class soap_server extends nusoap_base {
 			$this->appendDebug($this->wsdl->getDebug());
 			$this->wsdl->clearDebug();
 			if($err = $this->wsdl->getError()){
-				die('WSDL ERROR: '.$err);
+				trigger_error('WSDL ERROR: '.$err, E_USER_ERROR);
 			}
 		}
 	}
@@ -3099,7 +3099,7 @@ class soap_server extends nusoap_base {
 	*/
 	function register($name,$in=array(),$out=array(),$namespace=false,$soapaction=false,$style=false,$use=false,$documentation=''){
 		if($this->externalWSDLURL){
-			die('You cannot bind to an external WSDL file, and register methods outside of it! Please choose either WSDL or no WSDL.');
+			trigger_error('You cannot bind to an external WSDL file, and register methods outside of it! Please choose either WSDL or no WSDL.', E_USER_ERROR);
 		}
 		if(false == $namespace) {
 		}
@@ -4017,7 +4017,7 @@ class wsdl extends nusoap_base {
 						        } 
 						    } 
 						    if (!isset($typePrefix)) {
-						        die("$partType has no namespace!");
+						        trigger_error("$partType has no namespace!", E_USER_ERROR);
 						    } 
 						} 
 						$xml .= '<part name="' . $partName . '" type="' . $typePrefix . ':' . $this->getLocalPart($partType) . '" />';

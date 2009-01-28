@@ -72,7 +72,7 @@
 		}
 
 		if (!move_uploaded_file($archive, "CACHE/".$file)) {
-			die("ERROR: a problem occurs while moving the uploaded file.");
+			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
 		}
 		$file = ""; // on repropose la page
 	} elseif ($_GET['file'] && 

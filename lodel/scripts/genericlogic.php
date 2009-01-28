@@ -2,7 +2,7 @@
 /**
  * Fichier de la classe Genericlogic
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -64,7 +65,6 @@
 
 class GenericLogic extends Logic
 {
-	var $_publicfields_array;
 	/** 
 	 * Constructeur de la classe
 	 *
@@ -72,7 +72,7 @@ class GenericLogic extends Logic
 	 *
 	 * @param string $classtype le type d'objet generique, parmis : entities, entries et persons.
 	 */
-	function GenericLogic($classtype)
+	public function __construct($classtype)
 	{
 		switch ($classtype) {
 		case 'entities' :
@@ -87,7 +87,7 @@ class GenericLogic extends Logic
 			$this->_typetable = "persontypes";
 			$this->_idfield = "idperson";
 		}
-		$this->Logic($classtype);
+		parent::__construct($classtype);
 	}
 
 	/**
@@ -101,15 +101,17 @@ class GenericLogic extends Logic
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function viewAction(&$context, &$error)
+	public function viewAction(&$context, &$error)
 	{
 		// define some loop functions
-		require_once 'lang.php';
+		if(!function_exists('makeSelectLang'))
+			require 'lang.php';
 		if(!function_exists('loop_edition_fields')) {
 			function loop_edition_fields($context, $funcname)
 			{
 				global $db, $home;
-				require_once 'validfunc.php';
+				if(!function_exists('validfield'))
+					require 'validfunc.php';
 				if ($context['class']) {
 					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
@@ -117,7 +119,7 @@ class GenericLogic extends Logic
 					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
 				}	else {
-					die("ERROR: internal error in loop_edition_fields");
+					trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 				}
 				if ($context['classtype'] == "persons")	{
 					$criteria = "class='".$class."'";
@@ -131,7 +133,7 @@ class GenericLogic extends Logic
 					$criteria = "idgroup='". $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
-				$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or dberror();
+				$result = $db->execute(lq("SELECT * FROM #_TP_tablefields WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'  AND edition!='importable' ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 				$haveresult = !empty ($result->fields);
 				if ($haveresult) {
@@ -154,7 +156,7 @@ class GenericLogic extends Logic
 			$dao = $this->_getMainTableDAO();
 			$vo = $dao->getById($id);
 			if (!$vo) {
-				die("ERROR: can't find object $id in the table ".$this->maintable);
+				trigger_error("ERROR: can't find object $id in the table ".$this->maintable, E_USER_ERROR);
 			}
 			$this->_populateContext($vo, $context);
 		}
@@ -162,7 +164,7 @@ class GenericLogic extends Logic
 		$daotype = &getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
-			die("ERROR: idtype must me known in GenericLogic::viewAction");
+			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
 		}
 		$this->_populateContext($votype, $context['type']);
 
@@ -170,13 +172,14 @@ class GenericLogic extends Logic
 			$gdao = &getGenericDAO($votype->class, $this->_idfield);
 			$gvo = $gdao->getById($id);
 			if (!$gvo) {
-				die("ERROR: can't find object $id in the associated table. Please report this bug");
+				trigger_error("ERROR: can't find object $id in the associated table. Please report this bug", E_USER_ERROR);
 			}
 			$this->_populateContext($gvo, $context['data']);
 			$ret = $this->_populateContextRelatedTables($vo, $context);
 		}
 		// nettoyage avant affichage
-		require_once('func.php');
+		if(!function_exists('postprocessing'))
+			require('func.php');
 		postprocessing($context);
 		return $ret ? $ret : "_ok";
 	}
@@ -192,12 +195,13 @@ class GenericLogic extends Logic
 	 * @param array $context le tableau des données passé par référence.
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 */
-	function validateFields(&$context, &$error)
+	public function validateFields(&$context, &$error)
 	{
 		global $home;
 
 		// get the fields of class
-		require_once "validfunc.php";
+		if(!function_exists('validfield'))
+			require "validfunc.php";
 		if ($context['class']) {
 			validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
@@ -205,7 +209,7 @@ class GenericLogic extends Logic
 			validfield($context['type']['class'], "class", '', '', 'data');
 			$class = $context['type']['class'];
 		}	else {
-			die("ERROR: internal error in loop_edition_fields");
+			trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 		}
 
 		$daotablefields = &getDAO("tablefields");
@@ -332,7 +336,7 @@ class GenericLogic extends Logic
 					}
 					$logic = &getLogic($type); // the logic is used to validate
 					if (!is_array($localcontext)) {
-						die("ERROR: internal error in GenericLogic::validateFields");
+						trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 					}
 
 					foreach (array_keys($localcontext) as $k)	{
@@ -366,15 +370,15 @@ class GenericLogic extends Logic
 					$value = $ids;
 					$count = $GLOBALS['db']->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE status>-64 AND id ".sql_in_array($value)));
 					if ($GLOBALS['db']->errorno()) {
-						dberror();
+						trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
 					if ($count != count($value)) {
-						die("ERROR: some entities in $name are invalid. Please report the bug");
+						trigger_error("ERROR: some entities in $name are invalid. Please report the bug", E_USER_ERROR);
 					}
 					// don't check they exists, the interface ensure it ! (... hum)
 					break;
 				default :
-					die("ERROR: unable to check the validity of the field ".$name." of type ".$type);
+					trigger_error("ERROR: unable to check the validity of the field ".$name." of type ".$type, E_USER_ERROR);
 				} // switch
 			} // if valid
  		} // foreach files
@@ -390,13 +394,13 @@ class GenericLogic extends Logic
 	 * @param array $files_to_move un tableau contenant les informations de tous les fichiers (nom et type)
 	 * @param object &$vo l'objet virtuel correspondant à l'objet passé par référence
 	 */
-	function _moveFiles($id, $files_to_move, &$vo)
+	protected function _moveFiles($id, $files_to_move, &$vo)
 	{
 		foreach ($files_to_move as $file)	{
 			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
-				die("ERROR: error in move_files");
+				trigger_error("ERROR: error in move_files", E_USER_ERROR);
 			}
 			// new path to the file
 			$dirdest = "docannexe/". $file['type']. "/". $id;
@@ -426,7 +430,7 @@ class GenericLogic extends Logic
 	 * @param string $name le nom du champ.
 	 * @param string $value la valeur associée au champ.
 	 */
-	function addGenericEquivalent($class, $name, $value)
+	protected function addGenericEquivalent($class, $name, $value)
 	{
 		global $genericlogic_g_name;
 		$genericlogic_g_name[$class][$name] = $value;
@@ -438,7 +442,7 @@ class GenericLogic extends Logic
 	 * @param string $class le nom de la classe de l'objet.
 	 * @param string $name le nom du champ.
 	 */
-	function getGenericEquivalent($class, $name)
+	protected function getGenericEquivalent($class, $name)
 	{
 		global $genericlogic_g_name;
 		return $genericlogic_g_name[$class][$name];
@@ -448,7 +452,7 @@ class GenericLogic extends Logic
 	 * Implémentation par défaut de _populateContextRelatedTables
 	 *
 	 */
-	function _populateContextRelatedTables($vo, $context)
+	protected function _populateContextRelatedTables($vo, $context)
 	{
 	}
 
@@ -460,7 +464,7 @@ class GenericLogic extends Logic
 	 * @param string $value la valeur associée au champ.
 	 * @return bool true si pas d'autre occurrence, false sinon
 	 */
-	function _is_unique($class, $name, $value, $id) {
+	protected function _is_unique($class, $name, $value, $id) {
 		global $db;
  
 		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
@@ -477,7 +481,7 @@ class GenericLogic extends Logic
 	 * @param object &$vo L'objet virtuel à remplir.
 	 * @param array &$context Le tableau contenant les données.
 	 */
-	function _populateObject(&$vo, &$context)
+	protected function _populateObject(&$vo, &$context)
 	{
 		//print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
@@ -492,7 +496,7 @@ class GenericLogic extends Logic
 	
 
 	// begin{publicfields} automatic generation  //
-	function _publicfields()
+	protected function _publicfields()
 	{
 		if (!isset ($this->_publicfields))
 			trigger_error("ERROR: publicfield has not be created in ". get_class($this). "::_publicfields", E_USER_ERROR);
@@ -530,7 +534,8 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 	} // for call via array_walk
 
 	global $home;
-	require_once "balises.php";
+	if(empty($GLOBALS['xhtmlgroups']))
+		require "balises.php";
 	static $accepted; // cache the accepted balise;
 	global $multiplelevel, $xhtmlgroups;
 

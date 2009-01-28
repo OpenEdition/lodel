@@ -2,7 +2,7 @@
 /**	
  * Logique des entités - indexation moteur de recherche
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -64,14 +65,14 @@ class Entities_IndexLogic extends Logic
 	 *
 	 * @var array
 	 */
-	var $g_name;
+	public  $g_name;
 
 	/**
 	 * Constructeur
 	 */
-	function Entities_IndexLogic ()
+	public function __construct()
 	{
-		$this->Logic ('search_engine');
+		parent::__construct('search_engine');
 	}
 
 	/**
@@ -81,12 +82,12 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	*/
-	function addIndexAction (&$context, &$error)
+	public function addIndexAction (&$context, &$error)
 	{
 		global $db;
 		//no object identity specified
-		$id = $context['id'];
-		if (!$id) die ("ERROR: no id given");
+		$id = (int)$context['id'];
+		if (!$id) trigger_error("ERROR: no id given", E_USER_ERROR);
 		//if this entity is already indexed ==> clean
 		$this->deleteIndexAction ($context, $error);
 
@@ -96,10 +97,10 @@ class Entities_IndexLogic extends Logic
 		//where
 		$sql .= " WHERE e.id='$id'";
 		$row = $db->getRow (lq ($sql)) ;
-		if (!$row['id']) die ("ERROR: can't find object $id ". $dao_temp->table);
+		if (!$row['id']) trigger_error("ERROR: can't find object $id ". $dao_temp->table, E_USER_ERROR);
 
 		$class= $row['class'];
-		if (!$class) die ("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction");
+		if (!$class) trigger_error("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction", E_USER_ERROR);
 		//if the field search is not equal to 1, dont index the entity
 		if ($row['search'] != 1) return "_back";
 
@@ -111,9 +112,9 @@ class Entities_IndexLogic extends Logic
 //no fields to index --> return
 		if (!$vos_fields) return ("_back");
 
-		$sql = "SELECT * FROM #_TP_$class WHERE identity='$id'";
+		$sql = "SELECT ".join(',',$vos_fields)." FROM #_TP_$class WHERE identity='$id'";
 		$row = $db->getRow(lq($sql)) ;
-		if (!$row) die ("ERROR: can't find object $id in table ". lq ("#_TP_$class"));
+		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
 		$daoIndex = &getDAO ("search_engine"); 	
 		foreach ( $vos_fields as $vo_field)
 			$this->_indexField ($id,$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
@@ -131,9 +132,9 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function deleteIndexAction(&$context,&$error) {
+	public function deleteIndexAction(&$context,&$error) {
 		$id = $context["id"];
-		if (!$id) die ("ERROR: give the id ");
+		if (!$id) trigger_error("ERROR: give the id ", E_USER_ERROR);
 		$dao = &getDAO("search_engine");
 		if ($dao->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
 			return '_back';
@@ -146,7 +147,7 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function cleanIndexAction(&$context,&$error)
+	public function cleanIndexAction(&$context,&$error)
 	{
 		$dao = &getDAO ("search_engine");
 		$dao->deleteObjects("1");    //delete all index lines and return
@@ -160,11 +161,11 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function rebuildIndexAction(&$context, &$error) 
+	public function rebuildIndexAction(&$context, &$error) 
 	{
 		global $db;
 		if (!isset ($context['clean'])) $context['clean'] = 1; # assumed its true
-		$context['clean'] = intval ($context['clean']);
+		$context['clean'] = (int)$context['clean'];
 		if ($context['clean'] == 1) {
 			#echo "cooucou".$context['clean'];
 			if($this->cleanIndexAction($context,$error) != '_ok')
@@ -177,7 +178,7 @@ class Entities_IndexLogic extends Logic
 		$sql = "SELECT e.id,t.class,t.search from (#_TP_entities e,#_TP_types t)";
 		$sql .=" LEFT OUTER JOIN #_TP_search_engine se ON e.id=se.identity ";
 		$sql .=" WHERE se.identity is null AND t.id=e.idtype AND t.search=1";
-		$result=$db->execute(lq($sql)) or dberror();
+		$result=$db->execute(lq($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		while (!$result->EOF) {
 			$context["id"] = $result->fields['id'];
 			$this->addIndexAction($context,$error);
@@ -185,9 +186,9 @@ class Entities_IndexLogic extends Logic
 			if ( ($current - $start) < $prudent_timeout)
 				$result->MoveNext();
 			else {
-	//80% du timeout est dépassé il faut rediriger.
-	header("Location: index.php?do=rebuildIndex&lo=entities_index&clean=0");
-			}  		
+				//80% du timeout est dépassé il faut rediriger.
+				header("Location: index.php?do=rebuildIndex&lo=entities_index&clean=0");
+			}
 		}
 		return "_back";
 	}
@@ -202,7 +203,7 @@ class Entities_IndexLogic extends Logic
 	 * @param $daoIndex : the dao to use to save the data
 	 * @param $prefixtablefield : empty by default but used to prefix the field 'tablefield' (for entries or persons for example)
 	 */
-	function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield = '') 
+	protected function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield = '') 
 	{
 
 		if (!$fieldValue) return;
@@ -226,7 +227,7 @@ class Entities_IndexLogic extends Logic
 	 * @return $text the text with HTML entities decoded
 	 * @access private
 	 */
-	function _decode_html_entities($text) 
+	protected function _decode_html_entities($text) 
 	{
 		$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
 		$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
@@ -240,7 +241,7 @@ class Entities_IndexLogic extends Logic
 	 * @return an array of tokens
 	 * @access private
 	*/
-	function _splitInTokens ($string, $regs = 0)
+	protected function _splitInTokens ($string, $regs = 0)
 	{
 		if(!$regs)
 			$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
@@ -256,7 +257,7 @@ class Entities_IndexLogic extends Logic
 	 * @return an array with for each word its count
 	 * @access private
 	 */
-	function _cleanAndcountTokens ($string, $regs=0) 
+	protected function _cleanAndcountTokens ($string, $regs=0) 
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
@@ -282,7 +283,7 @@ class Entities_IndexLogic extends Logic
 	 * @param $daoIndex the DAO object
 	 * @access private
 	 */
-	function _indexEntitiesRelations ($id, $nature, $daoIndex) 
+	protected function _indexEntitiesRelations ($id, $nature, $daoIndex) 
 	{
 		global $db;
 		if (!$id)return false;
@@ -291,15 +292,13 @@ class Entities_IndexLogic extends Logic
 		if ($nature == 'E') { $table1 = 'entries'; $table2 = 'entry';}
 
 		//build query to select the right fields to index for the entry or the person
-		if ($nature == 'G' || $nature == 'E') {
-			$sql = "SELECT DISTINCT tf.name, tf.weight, e.id, t.class
-							FROM #_TP_relations as r,#_TP_$table1 as e, #_TP_".$table2."types as t
-							INNER JOIN #_TP_tablefields as tf ON tf.class=t.class
-							WHERE r.id2= e.id AND r.id1='$id' AND r.nature='$nature' 
-							AND t.id=e.idtype
-							AND tf.weight > 0";
-		}
-		$result = $db->execute (lq ($sql)) or dberror ();
+		$sql = "SELECT DISTINCT tf.name, tf.weight, e.id, t.class
+						FROM #_TP_relations as r,#_TP_$table1 as e, #_TP_".$table2."types as t
+						INNER JOIN #_TP_tablefields as tf ON tf.class=t.class
+						WHERE r.id2= e.id AND r.id1='$id' AND r.nature='$nature' 
+						AND t.id=e.idtype
+						AND tf.weight > 0";
+		$result = $db->execute (lq ($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$arr = array();
 		while (!$result->EOF) {
 			$row = $result->fields;
@@ -310,7 +309,7 @@ class Entities_IndexLogic extends Logic
 		foreach($arr as $classe => $values)	{
 			$cols = implode (",", array_keys ($values['fieldname']));
 			$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array($values['id']);
-			$result2 = $db->execute (lq ($sql2)) or dberror ();
+			$result2 = $db->execute (lq ($sql2)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result2->EOF) {
 				foreach ($result2->fields as $field => $value)
 					$this->_indexField ($id, $value, $field, $values['fieldname'][$field], $daoIndex, $classe.".");
@@ -324,7 +323,7 @@ class Entities_IndexLogic extends Logic
 			$sql = "SELECT DISTINCT tf.name, tf.weight, tf.class, r.idrelation AS id 
 							FROM #_TP_relations AS r, #_TP_tablefields AS tf, #_TP_persontypes as t, #_TP_persons as p
 							WHERE r.nature='G' AND r.id1='$id' AND tf.weight > 0 AND t.id=p.idtype AND tf.class=CONCAT('entities_',t.class)";
-			$result = $db->execute(lq($sql)) or dberror();
+			$result = $db->execute(lq($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$arr = array();
 			while (!$result->EOF) {
 				$row = $result->fields;
@@ -335,7 +334,7 @@ class Entities_IndexLogic extends Logic
 			foreach ($arr as $classe => $values) {
 				$cols = implode (",", array_keys ($values['fieldname']));
 				$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array ($values['id']);
-	$result2 = $db->execute (lq ($sql2)) or dberror ();
+	$result2 = $db->execute (lq ($sql2)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	while (!$result2->EOF)	{
 					foreach ($result2->fields as $field => $value)
 						$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");

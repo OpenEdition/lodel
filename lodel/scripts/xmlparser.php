@@ -44,8 +44,8 @@
  * @since Fichier ajouté depuis la version 0.8
  */
 
-
-require_once 'func.php';
+if(!function_exists('translate_xmldata'))
+	require 'func.php';
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
 /**
@@ -73,7 +73,7 @@ function array_last(& $arr)
 function xml_parse_into_struct_ns(& $text, & $values, & $index)
 {
 	$parser = xml_parser_create();
-	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0) or die("Parser incorrect");
+	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0) or trigger_error("Parser incorrect", E_USER_ERROR);
 	xml_set_element_handler($parser, "xml_parse_into_struct_ns_startElement", "xml_parse_into_struct_ns_endElement");
 	xml_set_character_data_handler($parser, "xml_parse_into_struct_ns_characterHandler");
 

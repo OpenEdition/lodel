@@ -14,6 +14,14 @@ if(!file_exists('siteconfig.php')) {
 	exit();
 }
 require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
 require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
@@ -33,5 +41,11 @@ $context['currenturl'] = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_POR
 // get the block
 require 'view.php';
 $view =& View::getView();
-echo _indent($view->renderTemplateFile($context, 'edition', '', '', false, 0, 1, true));
+echo $view->renderTemplateFile($context, 'edition', '', '', false, 0, 1, true);
+}
+catch(Exception $e)
+{
+	echo 'error';
+	exit();
+}
 ?>

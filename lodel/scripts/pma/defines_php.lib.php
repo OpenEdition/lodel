@@ -42,8 +42,11 @@ if (!defined('PMA_PHP_INT_VERSION')) {
 
 // MySQL client API
 if (!defined('PMA_MYSQL_CLIENT_API')) {
-    if (function_exists('mysql_get_client_info')) {
-        $client_api = mysql_get_client_info();
+    if (function_exists('mysql_get_client_info') || function_exists('mysqli_get_client_info')) {
+	if('mysql' == DBDRIVER)
+        	$client_api = mysql_get_client_info();
+	else
+		$client_api = mysqli_get_client_info();
     } else {
         // for compatibility with php <= 4.0.5
         // expect the worst!

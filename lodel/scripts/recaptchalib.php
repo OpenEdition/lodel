@@ -78,7 +78,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 
         $response = '';
         if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
-                die ('Could not open socket');
+                trigger_error('Could not open socket', E_USER_ERROR);
         }
 
         fwrite($fs, $http_request);
@@ -106,7 +106,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
 {
 	if ($pubkey == null || $pubkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>");
+		trigger_error("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>", E_USER_ERROR);
 	}
 	
 	if ($use_ssl) {
@@ -152,11 +152,11 @@ class ReCaptchaResponse {
 function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array())
 {
 	if ($privkey == null || $privkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>");
+		trigger_error("To use reCAPTCHA you must get an API key from <a href='http://recaptcha.net/api/getkey'>http://recaptcha.net/api/getkey</a>", E_USER_ERROR);
 	}
 
 	if ($remoteip == null || $remoteip == '') {
-		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
+		trigger_error("For security reasons, you must pass the remote ip to reCAPTCHA", E_USER_ERROR);
 	}
 
 	
@@ -213,7 +213,7 @@ function _recaptcha_aes_pad($val) {
 
 function _recaptcha_aes_encrypt($val,$ky) {
 	if (! function_exists ("mcrypt_encrypt")) {
-		die ("To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.");
+		trigger_error("To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.", E_USER_ERROR);
 	}
 	$mode=MCRYPT_MODE_CBC;   
 	$enc=MCRYPT_RIJNDAEL_128;

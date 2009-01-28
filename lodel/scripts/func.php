@@ -50,7 +50,7 @@ function writefile ($filename,$text)
 {
 # echo "name de fichier : $filename";
    if (file_exists($filename)) { 
-     if (! (unlink($filename)) ) die ("Ne peut pas supprimer $filename. probleme de right contacter Luc ou Ghislain");
+     if (! (unlink($filename)) ) trigger_error("Ne peut pas supprimer $filename. probleme de right contacter Luc ou Ghislain", E_USER_ERROR);
    }
   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
    
@@ -79,15 +79,15 @@ function postprocessing(&$context)
  *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
  *   le tableau $context
  */
-function extract_post($arr=-1)
+function extract_post($arr=null)
 {
-  if (!is_array($arr)) $arr=&$_POST;
-  foreach ($arr as $key=>$val) {
-
-    if (!isset($GLOBALS['context'][$key])) // protege
-      $GLOBALS['context'][$key] = $val;
-  }
-  array_walk_recursive($GLOBALS['context'],"clean_request_variable");
+	if (is_null($arr)) $arr=&$_POST;
+	foreach ($arr as $key=>$val) {
+		if (!isset($GLOBALS['context'][$key])) // protege
+			$GLOBALS['context'][$key] = $val;
+	}
+	
+ 	array_walk_recursive($GLOBALS['context'],"clean_request_variable");
 }
 
 
@@ -97,7 +97,8 @@ function clean_request_variable(&$var, $key='')
 	if (!$filter) {
 // 		require_once 'class.inputfilter.php';
 // 		$filter = new InputFilter(array(), array(), 1, 1);
-		require_once 'htmlpurifier/library/HTMLPurifier.auto.php';
+		if(!class_exists('HTMLPurifier', false))
+			require 'htmlpurifier/library/HTMLPurifier.auto.php';
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', $GLOBALS['context']['charset']);
 		$config->set('HTML', 'TidyLevel', 'heavy' );
@@ -106,7 +107,7 @@ function clean_request_variable(&$var, $key='')
 				@mkdir('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
 				@chmod('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
 			} else {
-				die('ERROR : cannot write in CACHE directory in '.__FUNCTION__.'.');
+				trigger_error('ERROR : cannot write in CACHE directory in '.__FUNCTION__.'.', E_USER_ERROR);
 			}
 		}
 		$config->set('Cache', 'SerializerPath', realpath('./CACHE/htmlpurifier/') );
@@ -174,7 +175,7 @@ function get_max_rank ($table,$where="")
 
   #require_once ($GLOBALS[home]."connect.php");
   $rank=$db->getone("SELECT MAX(rank) FROM #_TP_$table $where");
-  if ($db->errorno()) dberror();
+  if ($db->errorno()) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
   return $rank+1;
 }
@@ -190,19 +191,19 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
     $jointables=",#_TP_".
       trim(join(",#_TP_",preg_split("/,\s*/",$jointables)));
   }
-  $result=$db->execute(lq("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc")) or dberror();
+  $result=$db->execute(lq("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-  $rank=$dir>0 ? 1 : mysql_num_rows($result);
+  $rank=$dir>0 ? 1 : $result->RecordCount();
 
   while ($row=$result->fetchrow($result)) {
     if ($row['id']==$id) {
       # intervertit avec le suivant s il existe
       if (!($row2=$result->fetchrow($result))) break;
-      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or dberror();
+      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
       $rank+=$dir;
     }
     if ($row['rank']!=$rank) {
-      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row[id]'")) or dberror();
+      $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row[id]'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
     }
     $rank+=$dir;
   }
@@ -296,7 +297,7 @@ function unlock()
 	// Déverrouille toutes les tables verrouillées
 	// fonction lock_write()
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) {
-		$db->execute(lq("UNLOCK TABLES")) or dberror();
+		$db->execute(lq("UNLOCK TABLES")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -307,7 +308,7 @@ function lock_write()
   // Verrouille toutes les tables MySQL en écriture
   $list = func_get_args();
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
-		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or dberror();
+		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 function prefix_keys($prefix,$arr)
@@ -343,7 +344,8 @@ function getoption($name)
 		if (file_exists($optionsfile)) {
 			require($optionsfile);
 		} else {
-			require_once('optionfunc.php');
+			if(!function_exists('cacheOptionsInFile'))
+				require('optionfunc.php');
 			$options_cache = cacheOptionsInFile($optionsfile);
 		}
 	}
@@ -369,12 +371,11 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			$group=substr($name,1,$dotpos); 
 			$name=substr($name,$dotpos+1,-1);
 		} else {
-			die("ERROR: unknow group for getlodeltext");
+			trigger_error("ERROR: unknow group for getlodeltext", E_USER_ERROR);
 		}
 	}
 	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
 	if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
-	require_once("connect.php");
 	global $db;
 	
 	if ($group!="site") {
@@ -386,29 +387,31 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	
 	$critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
 	$logic=false;
-	if(!$stmt[$prefix]) {
-		$stmt[$prefix] = $db->prepare("SELECT id,contents,status 
-						FROM {$prefix}texts 
-						WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
-						ORDER BY lang DESC");
-	}
+	$query = "SELECT id,contents,status 
+					FROM {$prefix}texts 
+					WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
+					ORDER BY lang DESC";
+	
 	do {
 		//$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-		$arr = $db->execute($stmt[$prefix], array((string)$name, (string)$group, (string)$lang));
-		if ($arr===false) dberror();
-		else {
-			$arr = $arr->fields;
-		}
-		if (!$GLOBALS['lodeluser']['admin'] || $logic) break;
-		
-		if (!$arr) {
+// 		$arr = $db->execute($stmt[$prefix], array((string)$name, (string)$group, (string)$lang));
+		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, $query, array((string)$name, (string)$group, (string)$lang));
+
+		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		elseif(!$arr) {
+			if (!$GLOBALS['lodeluser']['admin']) break;
 			if(!function_exists('getLogic')) require 'logic.php';
 			// create the textfield
-			$logic=getLogic("texts");
+			$logic=&getLogic("texts");
 			$logic->createTexts($name,$group);
+			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
+			$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, $query, array((string)$name, (string)$group, (string)$lang)) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
+
+		$arr = $arr->FetchRow();
 	} while(!$arr);
-	
+
 	if ($group!="site") usecurrentdb();
 	
 	$id=$arr['id'];
@@ -448,7 +451,7 @@ function makeurlwithid ($id, $base = 'index')
 	
 	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	if($class != 'entities')
 		$uri = '';*/
@@ -489,14 +492,14 @@ function getPath($id, $urltype,$base='index')
 		return;
 	}
 	$id = intval($id);
-	$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or dberror();
+	$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	while(!$result->EOF) {
 		$path.= '/'. $result->fields['identifier'];
 		$result->MoveNext();
 	}
 	$row = $GLOBALS['db']->getRow(lq("SELECT identifier FROM #_TP_entities WHERE id='$id'"));
 	if ($GLOBALS['db']->errorno()) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 	$path.= "/$id-". $row['identifier'];
 	if($urltype == 'path') {
@@ -541,7 +544,7 @@ function download($filename,$originalname="",$contents="")
   }
   if ($filename) {
     $fp=fopen($filename,"rb");
-    if (!$fp) die ("ERROR: The file \"$filename\" is not readable");
+    if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
   }
   // fix for IE catching or PHP bug issue
   header("Pragma: public");
@@ -641,23 +644,23 @@ function get_PMA_define()
 function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $docAnnexe=true) 
 {
 	if ($type != 'file' && $type != 'image') {
-		die("ERROR: type is not a valid file type");
+		trigger_error("ERROR: type is not a valid file type", E_USER_ERROR);
 	}
 	if (!$dir) {
-		die("Internal error in saveuploadedfile dir=$dir");
+		trigger_error("Internal error in saveuploadedfile dir=$dir", E_USER_ERROR);
 	}
 	if (is_numeric($dir)) {
 		$dir = "docannexe/$type/$dir";
 	}
 	if (!$file) {
-		die("ERROR: save_file file is not set");
+		trigger_error("ERROR: save_file file is not set", E_USER_ERROR);
 	}
 	if ($type == 'image') { // check this is really an image
 		if ($uploaded) { // it must be first moved if not it cause problem on some provider where some directories are forbidden
 			$tmpdir = tmpdir();
 			$newfile=$tmpdir."/".basename($file);
 			if ($file != $newfile && !move_uploaded_file($file, $newfile)) {
-				die("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.");
+				trigger_error("ERROR: a problem occurs while moving the uploaded file from $file to $newfile.", E_USER_ERROR);
 			}
 			$file = $newfile;
     		}
@@ -691,7 +694,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 		$dest = SITEROOT . $dest;	
 	}
 	if (!copy($file, $dest)) {
-		die("ERROR: a problem occurs while moving the file.");
+		trigger_error("ERROR: a problem occurs while moving the file.", E_USER_ERROR);
 	}
 	// and try to delete
 	if ($move) {
@@ -715,8 +718,9 @@ function checkdocannexedir($dir)
 		if(!file_exists(SITEROOT . "docannexe/image"))
 		{// il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
 			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
-				die("ERROR: impossible to create the directory \"docannexe/image\"");//peut rien faire
+				trigger_error("ERROR: impossible to create the directory \"docannexe/image\"", E_USER_ERROR);//peut rien faire
 			}
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
 		}
 	}
 	else
@@ -725,8 +729,9 @@ function checkdocannexedir($dir)
 		if(!file_exists("docannexe/image"))
 		{
 			if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
-				die("ERROR: impossible to create the directory \"docannexe\"");
+				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
 			}
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
 		}
 	}
 	if(defined("SITEROOT"))
@@ -734,8 +739,9 @@ function checkdocannexedir($dir)
 		if(!file_exists(SITEROOT . "docannexe/file"))
 		{//il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
 			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
-				die("ERROR: impossible to create the directory \"docannexe\"");//peut rien faire
+				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);//peut rien faire
 			}
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
 		}
 	}
 	else
@@ -743,14 +749,15 @@ function checkdocannexedir($dir)
 		if(!file_exists("docannexe/file"))
 		{
 			if (!@mkdir("docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
-				die("ERROR: impossible to create the directory \"docannexe\"");
+				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
 			}
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
 		}
 	}
 
 	if (!file_exists($rep)) {
 		if (!@mkdir($rep,0777 & octdec($GLOBALS['filemask']))) {
-			die("ERROR: impossible to create the directory \"$rep\"");
+			trigger_error("ERROR: impossible to create the directory \"$rep\"", E_USER_ERROR);
 		}
 		@chmod($rep,0777 & octdec($GLOBALS['filemask']));
 		writefile($rep. '/index.html', '');
@@ -785,7 +792,6 @@ function myhtmlentities($text)
 	return str_replace(array("&","<",">","\""),array("&amp;","&lt;","&gt;","&quot;"),$text);
 }
 
-
 //
 // Main function to add/modify records 
 //
@@ -805,7 +811,7 @@ function setrecord($table,$id,$set,$context=array())
 			$update.="$k=".$db->qstr($v);
 		}
 		if ($update)
-			$db->execute("UPDATE $table SET  $update WHERE id='$id'") or dberror();
+			$db->execute("UPDATE $table SET  $update WHERE id='$id'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	} else {
 		$insert="";$values="";
 		if (is_string($id) && $id=="unique") {
@@ -824,7 +830,7 @@ function setrecord($table,$id,$set,$context=array())
 	
 		if ($insert) {
 	
-			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or dberror();
+			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if (!$id) $id=$db->insert_id();
 		}
 	}
@@ -997,7 +1003,7 @@ function rightonentity ($action, $context)
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
-	if (!$row) die ("ERROR: internal error in rightonentity");
+	if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
 	$context = array_merge ($context, $row);
 	}
   // groupright ?
@@ -1037,7 +1043,7 @@ function rightonentity ($action, $context)
 		} 
 	default:
 		if ($GLOBALS['lodeluser']['visitor'])
-			die("ERROR: unknown action \"$action\" in the loop \"rightonentity\"");
+			trigger_error("ERROR: unknown action \"$action\" in the loop \"rightonentity\"", E_USER_ERROR);
 		return;
 	}
 }//end of rightonentity function
@@ -1057,31 +1063,35 @@ function sql_in_array($ids)
  *
  */
 
-function &getDAO($table)
+function getDAO($table)
 {
 	static $factory; // cache
 	if ($factory[$table]) {
 		return $factory[$table]; // cache
 	}
-  require_once 'dao.php' ;
-  require_once 'dao/class.'.$table.'.php';
-  $daoclass = $table. 'DAO';
-  $factory[$table] = new $daoclass;
-  return $factory[$table];
+	$daoclass = $table. 'DAO';
+	if(!class_exists('DAO', false))
+		require 'dao.php' ;
+	if(!class_exists($daoclass, false))
+		require 'dao/class.'.$table.'.php';
+	$factory[$table] = new $daoclass;
+	return $factory[$table];
 }
 
 /**
  * generic DAO factory
  *
  */
-function &getGenericDAO($table, $idfield)
+function getGenericDAO($table, $idfield)
 {
 	static $factory; // cache
 	if ($factory[$table]) {
 		return $factory[$table]; // cache
 	}
-	require_once 'dao.php';
-	require_once 'genericdao.php';
+	if(!class_exists('DAO', false))
+		require 'dao.php' ;
+	if(!class_exists('genericDAO', false))
+		require 'genericdao.php';
 	$factory[$table] = new genericDAO ($table,$idfield);
 	return $factory[$table];
 }
@@ -1124,7 +1134,8 @@ function _indent($source, $indenter = '  ')
 {
 	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
-			require_once 'xmlfunc.php';
+			if(!function_exists('indentXML'))
+				require 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
 	} elseif(!preg_match("/<[^><]+>/", $source)) {
@@ -1338,7 +1349,7 @@ function get_dc_fields($id, $dcfield)
 				$field = $id_class_fields[$id][$dcfield];
 				$result =$db->getOne(lq("SELECT $field FROM $class_table WHERE identity = '$id'"));
 				if ($result===false) {
-					dberror();
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
   				}
   			return $result;
@@ -1487,8 +1498,10 @@ function rewriteFilename($string) {
  */
 function send_mail($to, $body, $subject, $fromaddress, $fromname)
 {
-	require_once 'Mail/Mail.php';
-	require_once 'Mail/mime.php';
+	if(!class_exists('Mail', false))
+		require 'Mail/Mail.php';
+	if(!class_exists('Mail_mime, false'))
+		require 'Mail/mime.php';
 	$message = new Mail_mime();
 	
 	// body creation

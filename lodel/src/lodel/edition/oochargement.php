@@ -44,11 +44,19 @@
  * @package lodel/source/lodel/edition
  */
 define('backoffice', true);
-require_once 'siteconfig.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+require 'auth.php';
 authenticate(LEVEL_REDACTOR);
-require_once 'func.php';
-require_once 'utf8.php'; // conversion des caracteres
+require 'func.php';
+require 'utf8.php'; // conversion des caracteres
 
 if ($_POST) {
 	$therequest = &$_POST;
@@ -56,12 +64,13 @@ if ($_POST) {
 	$therequest = &$_GET;
 }
 
-$context['idparent']  = intval($therequest['idparent']);
-$context['identity']  = $therequest['identity'] ? intval($therequest['identity']) : intval($therequest['iddocument']);
-$context['idtask']    = $idtask = intval($therequest['idtask']);
-$context['idtype']    = intval($therequest['idtype']);
-$context['lodeltags'] = intval($therequest['lodeltags']);
-$context['reload']    = intval($therequest['reload']);
+$context['idparent']  = (int)$therequest['idparent'];
+$context['identity']  = $therequest['identity'] ? $therequest['identity'] : $therequest['iddocument'];
+$context['identity'] = (int)$context['identity'];
+$context['idtask']    = $idtask = (int)$therequest['idtask'];
+$context['idtype']    = (int)$therequest['idtype'];
+$context['lodeltags'] = (int)$therequest['lodeltags'];
+$context['reload']    = (int)$therequest['reload'];
 
 if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 	header("location: index.php?id=". $context['idparent']);
@@ -71,7 +80,7 @@ if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name'] != 'none') {
 	$file1 = $_FILES['file1']['tmp_name'];
 	if (!is_uploaded_file($file1)) {
-		die(utf8_encode("Le fichier n'est pas un fichier chargé"));
+		trigger_error(utf8_encode("Le fichier n'est pas un fichier chargé"), E_USER_ERROR);
 	}
 	$sourceoriginale = $_FILES['file1']['name'];
 	$tmpdir = tmpdir(); // use here and later.
@@ -89,7 +98,8 @@ if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tm
 	$source          = '';
 }
 
-require_once 'servoofunc.php';
+if(!class_exists('ServOO', false))
+	require 'servoofunc.php';
 $client = new ServOO;
 
 if ($client->error_message) {
@@ -141,7 +151,7 @@ if ($client->error_message) {
 				}
 			}
 		if ($sortieoo || $sortiexhtml) {
-			die(htmlentities($xhtml));
+			trigger_error(htmlentities($xhtml), E_USER_ERROR);
 		}
 
 		$err = lodelprocessing($xhtml);
@@ -152,7 +162,7 @@ if ($client->error_message) {
 		}
 
 		if ($sortiexmloo || $sortie) {
-			die(htmlentities($xhtml));
+			trigger_error(htmlentities($xhtml), E_USER_ERROR);
 		}
 
 		require_once 'balises.php';
@@ -175,21 +185,33 @@ if ($client->error_message) {
 			$row['idtype']        = $context['idtype'];
 		}
 		
-		require_once 'taskfunc.php';
+		if(!function_exists('maketask'))
+			require 'taskfunc.php';
 		$idtask = maketask("Import $file1_name", 3, $row);
 
-		header("Location: checkimport.php?reload=".intval($context['reload'])."&idtask=". $idtask);
+		header("Location: checkimport.php?reload=".$context['reload']."&idtask=". $idtask);
 		return;
 	} while (0); // exceptions
 }
 
 $context['url'] = 'oochargement.php';
 
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->render($context, 'oochargement', !(bool)$_POST);
 
-
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 
 function imagesnaming($filename, $index, $uservars)
 {

@@ -44,17 +44,25 @@
  */
 
 define('backoffice', true);
-require_once 'siteconfig.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
-require_once 'func.php';
-require_once 'taskfunc.php';
-require_once 'xmlimport.php';
-require_once 'class.checkImportHandler.php';
+require 'func.php';
+require 'taskfunc.php';
+require 'xmlimport.php';
+require 'class.checkImportHandler.php';
 $task              = gettask($idtask);
 $context['idtask'] = $idtask;
-$context['reload'] = intval($_GET['reload']);
+$context['reload'] = (bool)$_GET['reload'];
 gettypeandclassfromtask($task, $context);
 
 $textorig = $text = file_get_contents($task['fichier']);
@@ -67,9 +75,19 @@ $parser->parse($text, $handler);
 $context['tablecontents'] = $handler->contents();
 $context['multidoc']      = $handler->multidoc;
 
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->render($context, 'checkimport');
-
-
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

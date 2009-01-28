@@ -344,7 +344,8 @@ function vignette($text, $width)
 	if($widt <= $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-	require_once ("images.php");
+	if(!function_exists('resize_image'))
+		require("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
@@ -521,7 +522,7 @@ function notes($texte, $type)
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[0-9]+\]?)<\/a>/i', $results[0]);
 				break;
 			default:
-				die("unknown note type of tag num : \"$type\"");
+				trigger_error("unknown note type of tag num : \"$type\"", E_USER_ERROR);
 		}
 	} else {
 		switch ($type) {
@@ -538,7 +539,7 @@ function notes($texte, $type)
 				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
 				break;
 			default :
-				die("unknown note type \"$type\"");
+				trigger_error("unknown note type \"$type\"", E_USER_ERROR);
 		}
 	}
 	return join("", $notes);
@@ -585,15 +586,15 @@ function format($text, $creationmethod = "", $creationinfo = "")
 		case 'wiki' :
 			return wiki($text);
 		case 'bb' :
-			die("not yet implemented");
+			trigger_error("not yet implemented", E_USER_ERROR);
 		default :
-			die("ERROR: unknown creationinfo");
+			trigger_error("ERROR: unknown creationinfo", E_USER_ERROR);
 		}
 	}
 	if (substr($creationmethod, 0, 6) == "servoo")
 		return tocss($text);
 
-	die("ERROR: unknown creationmethod");
+	trigger_error("ERROR: unknown creationmethod", E_USER_ERROR);
 }
 
 /**
@@ -637,7 +638,8 @@ function strip_tags_keepnotes($text, $keeptags = "")
 function humanlang($text)
 {
 	global $home;
-	require_once ("lang.php");
+	if(!function_exists('makeSelectLang'))
+		require ("lang.php");
 	return $GLOBALS['languages'][strtoupper($text)];
 }
 
@@ -740,7 +742,8 @@ function wiki($text)
 	$parserOutput = $parser->internalParse($text);
 	print_r($parserOutput);
 	*/
-	require_once ('wikirenderer/WikiRenderer.lib.php');
+	if(!class_exists('WikiRenderer', false))
+		require ('wikirenderer/WikiRenderer.lib.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
@@ -1019,8 +1022,9 @@ function LSgmstrftime($time){
 */
 
 function formatIdentifier($str) {
-		require_once 'func.php';
-		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
+	if(!function_exists('makeSortKey'))
+		require 'func.php';
+	return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
 }
 
 /** Nettoyage des caractères windows illegaux + nettoyage pour flux XML
@@ -1351,14 +1355,13 @@ function HTML2XML($str, $reverse=false){
 */
 
 function getParentByType($id,$type, $return=false){
+	global $db;
         $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
-        $r = mysql_query($q);
-        if($idparent = @mysql_result($r, 0)){
+	$idparent = $db->GetOne($q);
+        if($idparent){
                 $q = "SELECT t.type FROM $GLOBALS[tp]entities e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
                 AND e.idtype = t.id";
-                $r2 = mysql_query($q);
-                $ltype = mysql_result($r2, 0);
-                //echo mysql_error();
+		$ltype = $db->GetOne($q);
                 if($ltype == $type){
 			if($return) return $idparent;
                         else echo $idparent;
@@ -1447,7 +1450,8 @@ function cleanCallNotes($text)
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
-	require_once SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
+	if(!class_exists('GeSHi', false))
+		require SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
 	$geshi =& new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);

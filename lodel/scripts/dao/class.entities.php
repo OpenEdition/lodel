@@ -55,6 +55,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -70,20 +71,20 @@ class entitiesVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $idparent;
-	var $idtype;
-	var $identifier;
-	var $entitytitle;
-	var $usergroup;
-	var $iduser;
-	var $rank;
-	var $status;
-	var $upd;
-	var $creationdate;
-	var $modificationdate;
-	var $creationmethod;
-	var $creationinfo;
+	public $id;
+	public $idparent;
+	public $idtype;
+	public $identifier;
+	public $entitytitle;
+	public $usergroup;
+	public $iduser;
+	public $rank;
+	public $status;
+	public $upd;
+	public $creationdate;
+	public $modificationdate;
+	public $creationmethod;
+	public $creationinfo;
 	/**#@-*/
 }
 
@@ -95,6 +96,7 @@ class entitiesVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -114,9 +116,9 @@ class entitiesDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function entitiesDAO()
+	public function __construct()
 	{
-		$this->DAO("entities", true);
+		parent::__construct("entities", true);
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
 
@@ -163,11 +165,14 @@ class entitiesDAO extends DAO
 
 
 
+
+
+
  // end{definitions} automatic generation  //
-	function _rightscriteria($access)
+	public function rightscriteria($access)
 	{
 		if (!isset($this->cache_rightscriteria[$access])) {
-			DAO::_rightscriteria($access);
+			parent::rightscriteria($access);
 			if (!$GLOBALS['lodeluser']['admin']) {
 				$this->cache_rightscriteria[$access].=" AND usergroup IN (".$GLOBALS['lodeluser']['groups'].")";
 			}

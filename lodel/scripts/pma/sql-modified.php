@@ -181,7 +181,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
     if (PMA_MYSQL_INT_VERSION >= 32321) {
         $result = PMA_mysql_query('SHOW TABLE STATUS FROM ' . PMA_backquote($db) . ' LIKE \'' . PMA_sqlAddslashes($table) . '\'');
         if ($result != FALSE) {
-            if (mysql_num_rows($result) > 0) {
+            if ($result->RecordCount() > 0) {
                 $tmpres        = PMA_mysql_fetch_array($result);
                 if (isset($GLOBALS['auto_increment']) && !empty($tmpres['Auto_increment'])) {
                     $auto_increment .= ' AUTO_INCREMENT=' . $tmpres['Auto_increment'] . ' ';
@@ -201,7 +201,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
                     $schema_create .= '# ' . $GLOBALS['strStatCheckTime'] . ': ' . PMA_localisedDate(strtotime($tmpres['Check_time'])) . $crlf;
                     $new_crlf = '#' . $crlf . $crlf;
                 }
-            mysql_free_result($result);
+            $result->Close();
             }
         }
     }
@@ -246,7 +246,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             PMA_mysql_query('SET SQL_QUOTE_SHOW_CREATE = 0');
         }
         $result = PMA_mysql_query('SHOW CREATE TABLE ' . PMA_backquote($db) . '.' . PMA_backquote($table));
-        if ($result != FALSE && mysql_num_rows($result) > 0) {
+        if ($result != FALSE && $result->RecordCount() > 0) {
             $tmpres        = PMA_mysql_fetch_array($result);
             // Fix for case problems with winwin, thanks to
             // Pawe³ Szczepañski <pauluz at users.sourceforge.net>
@@ -286,7 +286,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             }
             $schema_create .= $tmpres[1];
         } else {
-	  die(mysql_error());
+	  trigger_error($GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 
         $schema_create .= $auto_increment;
@@ -323,7 +323,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             $schema_create .= '*/';
         }
 
-        mysql_free_result($result);
+        $result->Close();
         return $schema_create;
     } // end if MySQL >= 3.23.21
 
@@ -351,7 +351,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
 
         $schema_create     .= ',' . $crlf;
     } // end while
-    mysql_free_result($result);
+    $result->Close();
     $schema_create         = ereg_replace(',' . $crlf . '$', '', $schema_create);
 
     $local_query = 'SHOW KEYS FROM ' . PMA_backquote($table) . ' FROM ' . PMA_backquote($db);
@@ -377,7 +377,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
             $index[$kname][] = PMA_backquote($row['Column_name'], $use_backquotes);
         }
     } // end while
-    mysql_free_result($result);
+    $result->Close();
 
     while (list($x, $columns) = @each($index)) {
         $schema_create     .= ',' . $crlf;
@@ -463,8 +463,8 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
 
     $result      = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     if ($result != FALSE) {
-        $fields_cnt = mysql_num_fields($result);
-        $rows_cnt   = mysql_num_rows($result);
+        $fields_cnt = $result->getFieldNum();
+        $rows_cnt   = $result->RecordCount();
 
         // get the real types of the table's fields (in an array)
         // the key of the array is the backquoted field name
@@ -556,7 +556,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
 
         } // end while
     } // end if ($result != FALSE)
-    mysql_free_result($result);
+    $result->Close();
 
     return TRUE;
 } // end of the 'PMA_getTableContentFast()' function
@@ -596,8 +596,8 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
 
     $result       = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     $current_row  = 0;
-    $fields_cnt   = mysql_num_fields($result);
-    $rows_cnt     = mysql_num_rows($result);
+    $fields_cnt   = $result->getFieldNum();
+    $rows_cnt     = $result->RecordCount();
 
 
     while ($row = PMA_mysql_fetch_row($result)) {
@@ -668,7 +668,7 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
 
         if (!PMA_exportOutputHandler($schema_insert . $eol_dlm . $crlf)) return FALSE;
     } // end while
-    mysql_free_result($result);
+    $result->Close();
 
     return TRUE;
 } // end of the 'PMA_getTableContentOld()' function

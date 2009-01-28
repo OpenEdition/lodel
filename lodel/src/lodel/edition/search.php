@@ -44,9 +44,29 @@
  */
 define('backoffice', true);
 require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
 require 'auth.php';
 authenticate(LEVEL_VISITOR);
 
 $class = 'search';
-include 'search.inc.php';
+require 'search.inc.php';
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

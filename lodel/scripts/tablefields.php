@@ -44,7 +44,6 @@
  */
 
 // build the arrays containing tables and fields
-require_once 'connect.php';
 
 // try first to get the cached array
 if (!(@include ("CACHE/tablefields.php"))) {
@@ -88,7 +87,7 @@ if (!function_exists("maketablefields"))	{
 			}
 			$result = $db->MetaTables();
 			foreach ($result as $table)	{
-				$fields = $db->MetaColumns($table) or dberror();
+				$fields = $db->MetaColumns($table) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$table = $prefix.$table;
 
 				$tablefields[$table] = array ();

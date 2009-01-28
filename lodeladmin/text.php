@@ -34,7 +34,7 @@
 /**
  @deprecated Déprécie depuis la version 0.8
 */
-die("desuet");
+trigger_error("desuet", E_USER_ERROR);
 require("lodelconfig.php");
 require("auth.php");
 authenticate(LEVEL_ADMINLODEL,NORECORDURL);

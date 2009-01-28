@@ -63,10 +63,6 @@ define("INTERFACE_ADVANCED", 64);
 define("INTERFACE_NORMAL", 32);
 define("INTERFACE_SIMPLE", 16);
 
-
-// les niveaux d'erreur à afficher
-error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
-
 /**
  * Gestion de l'authentification.
  *
@@ -209,7 +205,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			}
 			$myurl = $norecordurl ? "''" : $db->qstr($url);
 			$expire = $timeout + $time;
-			$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or die($db->errormsg());
+			$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or trigger_error($db->errormsg(), E_USER_ERROR);
 			$context['clearcacheurl'] = mkurl($url, "clearcache=oui");
 			usecurrentdb();
 			return true; // ok !!!
@@ -219,7 +215,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 		}
 	
 		// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
-		$_REQUEST['clearcache'] = false;
+		$_REQUEST['clearcache'] = $context['nocache'] = false;
 		$lodeluser = '';
 
 		// exception
@@ -227,7 +223,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			return; // les variables ne sont pas mises... on retourne
 		}
 		elseif ($mode == 'HTTP') {
-			require_once 'loginHTTP.php';
+			require 'loginHTTP.php';
 			return;
 		}
 		elseif($level == LEVEL_RESTRICTEDUSER) {
@@ -251,7 +247,7 @@ function recordurl()
 {
 	global $idsession, $norecordurl, $db;
 	if (!$norecordurl) {
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url) SELECT id,currenturl FROM #_MTP_session WHERE id='". $idsession."' AND currenturl!=''")) or dberror();
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url) SELECT id,currenturl FROM #_MTP_session WHERE id='". $idsession."' AND currenturl!=''")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -386,7 +382,8 @@ if (!((bool) ini_get('register_globals'))){
 $lodeluser = array ();
 $idsession = 0;
 $session   = '';
-require_once 'connect.php';
+if(!function_exists('lq'))
+	require 'connect.php';
 // tres important d'initialiser le context.
 $context = array ('version' => $GLOBALS['version'],
 			'shareurl' => $GLOBALS['shareurl'],
@@ -400,7 +397,8 @@ $context = array ('version' => $GLOBALS['version'],
 // Tableau des options du site dans le $context
 if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale (options définies pour un site)
 	$context['options'] = array ();
-	require_once 'optionfunc.php';
+	if(!function_exists('cacheOptionsInFile'))
+		require 'optionfunc.php';
 	$context['options'] = cacheOptionsInFile();
 }
 
@@ -420,15 +418,22 @@ if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])
 }
 // langue passée en GET ou POST : initialise le cookie
 else {
-	$GLOBALS['lang'] = $_GET['lang'] ? $_GET['lang'] : $_POST['lang'];
+	if(isset($_GET['lang']))
+		$GLOBALS['lang'] = (string)$_GET['lang'];
+	elseif(isset($_POST['lang']))
+		$GLOBALS['lang'] = (string)$_POST['lang'];
+	else
+		$GLOBALS['lang'] = 'fr';
+
 	if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['lang'])) {
 		// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-		$GLOBALS['lang'] = empty($context['options']['metadonneessite']['langueprincipale']) ? '' : $context['options']['metadonneessite']['langueprincipale'];
+		$GLOBALS['lang'] = empty($context['options']['metadonneessite']['langueprincipale']) ? 'fr' : $context['options']['metadonneessite']['langueprincipale'];
 	}
-	else {	setcookie('language', $GLOBALS['lang']); }
+	setcookie('language', $GLOBALS['lang']);
 }
 // tableaux des langues disponibles
-require_once 'lang.php';
+if(!function_exists('makeSelectLang'))
+	require 'lang.php';
 $context['defaultlang'] = $GLOBALS['languages'];
 // accès à la langue dans les templates
 $context['sitelang'] = $GLOBALS['lang'];

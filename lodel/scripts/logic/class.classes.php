@@ -2,7 +2,7 @@
 /**	
  * Logique des classes d'objets du système
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -61,9 +62,9 @@ class ClassesLogic extends Logic
 	/**
 	 * Constructeur
 	 */
-	function ClassesLogic()
+	public function __construct()
 	{
-		$this->Logic ('classes');
+		parent::__construct('classes');
 	}
 
 	/**
@@ -78,12 +79,12 @@ class ClassesLogic extends Logic
 	 * @param integer $status status de l'objet
 	 * @return false si l'objet n'est pas protégé en suppression, un message sinon
 	 */
-	function isdeletelocked($id, $status = 0)
+	public function isdeletelocked($id, $status = 0)
 	{
 		global $db;
 		$dao = $this->_getMainTableDAO ();
 		$vo  = $dao->getById ($id, 'classtype');
-		$types = ClassesLogic::typestable($vo->classtype);
+		$types = $this->typestable($vo->classtype);
 		switch ($vo->classtype) {
 			case 'entities':
 				$msg = 'cannot_delete_hasentities';
@@ -97,7 +98,7 @@ class ClassesLogic extends Logic
 		}
 		$count = $db->getOne (lq ("SELECT count(*) FROM #_TP_". $vo->classtype. " INNER JOIN #_TP_". $types. " ON idtype=#_TP_". $types. ".id INNER JOIN #_TP_classes ON #_TP_".$types. ".class=#_TP_classes.class WHERE #_TP_classes.id='$id' AND #_TP_". $vo->classtype. ".status>-64 AND #_TP_". $types. ".status>-64  AND #_TP_classes.status>-64"));
 		if ($db->errorno ()){
-			dberror ();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if ($count == 0) {
 			return false;
@@ -113,7 +114,7 @@ class ClassesLogic extends Logic
 	 * @param string $classtype le type de la classe
 	 * @return une valeur parmis : type, entrytypes et persontypes
 	*/
-	function typestable ($classtype) 
+	public function typestable ($classtype) 
 	{
 		switch ($classtype) {
 		case 'entities':
@@ -132,13 +133,13 @@ class ClassesLogic extends Logic
 	 * @param object $dao la DAO utilisée
 	 * @param array &$context le context passé par référence
 	 */
-	function _prepareEdit ($dao, &$context)
+	protected function _prepareEdit ($dao, &$context)
 	{
 		// gather information for the following
 		if ($context['id']) {
 			$this->oldvo = $dao->getById ($context['id']);
 			if (!$this->oldvo) {
-				die ("ERROR: internal error in Classes::deleteAction");
+				trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 			}
 		}
 	}
@@ -157,28 +158,29 @@ class ClassesLogic extends Logic
 	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function editAction(&$context, &$error, $clean = false)
+	public function editAction(&$context, &$error, $clean = false)
 	{
 		if ($clean != CLEAN) {      // validate the forms data
 			if (!$this->validateFields($context, $error)) {
 				return '_error';
 			}
 		}
-		require_once 'fieldfunc.php';
+		if(!function_exists('reservedByLodel'))
+			require 'fieldfunc.php';
 		if(reservedByLodel($context['class'])) {
 			$error['class'] = 'reservedsql';
 			return '_error';
 		}
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = $context['id'] = intval($context['id']);
+		$id = $context['id'] = (int)$context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
 			$dao->instantiateObject($vo);
 			$vo->id = $id;
 		} else {
-			$vo = $dao->createObject();
+			$vo =& $dao->createObject();
 		}
 		if ($dao->rights['protect']) {
 			$vo->protect = $context['protected'] ? 1 : 0;
@@ -188,7 +190,8 @@ class ClassesLogic extends Logic
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
 		
-		require_once 'func.php';
+		if(!function_exists('update'))
+			require 'func.php';
 		update();
 		return $ret ? $ret : "_back";
 	}
@@ -200,7 +203,7 @@ class ClassesLogic extends Logic
 	 * @param object $vo l'objet qui a été créé
 	 * @param array $context le contexte
 	 */
-	function _saveRelatedTables ($vo, $context) 
+	protected function _saveRelatedTables ($vo, $context) 
 	{
 		global $db;
 		//----------------new, create the table
@@ -214,18 +217,18 @@ class ClassesLogic extends Logic
 				break;
 			case 'persons' :
 				$create = "idperson	INTEGER UNSIGNED  UNIQUE, KEY index_idperson (idperson)";
-				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or dberror ();
+				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				break;
 			}
-			$db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_". $vo->class." ( ". $create." )")) or dberror ();
+			$db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_". $vo->class." ( ". $create." )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$alter=true;
 			//---------------- change class name ?
 		} elseif ($this->oldvo->class!=$vo->class) {
 			// change table name 
-			$db->execute (lq ("RENAME TABLE #_TP_". $this->oldvo->class. " TO #_TP_". $vo->class)) or dberror ();
+			$db->execute (lq ("RENAME TABLE #_TP_". $this->oldvo->class. " TO #_TP_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if ($vo->classtype=="persons") {
-				$db->execute (lq ("RENAME TABLE #_TP_entities_". $this->oldvo->class. " TO #_TP_entities_". $vo->class)) or dberror ();
-				$db->execute (lq ("UPDATE #_TP_tablefields SET class='entities_". $vo->class. "' WHERE class='entities_". $this->oldvo->class."'")) or dberror ();
+				$db->execute (lq ("RENAME TABLE #_TP_entities_". $this->oldvo->class. " TO #_TP_entities_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$db->execute (lq ("UPDATE #_TP_tablefields SET class='entities_". $vo->class. "' WHERE class='entities_". $this->oldvo->class."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			// update tablefields, objects and types
 			foreach (array ('objects',
@@ -233,12 +236,13 @@ class ClassesLogic extends Logic
 					'tablefields',
 					'tablefieldgroups')
 				as $table) {
-				$db->execute (lq ("UPDATE #_TP_". $table. " SET class='". $vo->class. "' WHERE class='". $this->oldvo->class."'")) or dberror ();
+				$db->execute (lq ("UPDATE #_TP_". $table. " SET class='". $vo->class. "' WHERE class='". $this->oldvo->class."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			$alter = true;
 		}
 		if ($alter) {        // update the CACHE ?
-			require_once 'cachefunc.php';
+			if(!function_exists('clearcache'))
+				require 'cachefunc.php';
 			clearcache();
 		}
 	}
@@ -252,12 +256,12 @@ class ClassesLogic extends Logic
 	 * @param object $dao la DAO utilisée
 	 * @param array &$context le contexte passé par référénce
 	 */
-	function _prepareDelete ($dao, &$context) 
+	protected function _prepareDelete ($dao, &$context) 
 	{
 		// gather information for the following
 		$this->vo = $dao->getById ($context['id']);
 		if (!$this->vo) {
-			die ("ERROR: internal error in Classes::deleteAction");
+			trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		}
 	}
 	/**
@@ -265,18 +269,18 @@ class ClassesLogic extends Logic
 	 *
 	 * @param integer $id identifiant numérique de l'objet supprimé
 	 */
-	function _deleteRelatedTables ($id) {
+	protected function _deleteRelatedTables ($id) {
 		global $db,$home;
-		if (!$this->vo) die ("ERROR: internal error in Classes::deleteAction");
-		$db->execute (lq ("DROP TABLE #_TP_".$this->vo->class)) or dberror ();
+		if (!$this->vo) trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
+		$db->execute (lq ("DROP TABLE #_TP_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($this->vo->classtype=="persons") {
-			$db->execute(lq("DROP TABLE #_TP_entities_".$this->vo->class)) or dberror();
+			$db->execute(lq("DROP TABLE #_TP_entities_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		// delete associated types
 		// collect the type to delete
-		$dao=&getDAO (ClassesLogic::typestable ($this->vo->classtype));
+		$dao=&getDAO ($this->typestable ($this->vo->classtype));
 		$types=$dao->findMany ("class='". $this->vo->class. "'", "id");
-		$logic=&getLogic (ClassesLogic::typestable ($this->vo->classtype));
+		$logic=&getLogic ($this->typestable ($this->vo->classtype));
 		foreach ($types as $type) {
 			$localcontext['id']=$type->id;
 			$logic->deleteAction ($localcontext, $err);
@@ -295,7 +299,8 @@ class ClassesLogic extends Logic
 		unset ($this->vo);
 
 		// should be in the view....
-		require_once("cachefunc.php");
+		if(!function_exists('clearcache'))
+			require 'cachefunc.php';
 		clearcache();
 		return "_back";
 	}
@@ -307,7 +312,7 @@ class ClassesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('class' => array('class', '+'),
 									'classtype' => array('text', '+'),
@@ -324,14 +329,11 @@ class ClassesLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('class'), );
 	}
 	// end{uniquefields} automatic generation  //
 
 } // class 
-
-/*-----------------------------------*/
-/* loops                             */
 ?>

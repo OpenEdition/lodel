@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 05-06-2008.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,25 +75,25 @@ class entrytypesVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $type;
-	var $class;
-	var $title;
-	var $altertitle;
-	var $lang;
-	var $icon;
-	var $gui_user_complexity;
-	var $edition;
-	var $flat;
-	var $g_type;
-	var $newbyimportallowed;
-	var $style;
-	var $tpl;
-	var $tplindex;
-	var $sort;
-	var $rank;
-	var $status;
-	var $upd;
+	public $id;
+	public $type;
+	public $class;
+	public $title;
+	public $altertitle;
+	public $lang;
+	public $icon;
+	public $gui_user_complexity;
+	public $edition;
+	public $flat;
+	public $g_type;
+	public $newbyimportallowed;
+	public $style;
+	public $tpl;
+	public $tplindex;
+	public $sort;
+	public $rank;
+	public $status;
+	public $upd;
 	/**#@-*/
 }
 
@@ -103,6 +105,7 @@ class entrytypesVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -122,9 +125,9 @@ class entrytypesDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function entrytypesDAO()
+	public function __construct()
 	{
-		$this->DAO("entrytypes", true);
+		parent::__construct("entrytypes", true);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

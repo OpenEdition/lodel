@@ -45,8 +45,16 @@
 
 
 define('backoffice', true);
-include ('siteconfig.php');
-require_once ('auth.php');
+require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+require 'auth.php';
 
 // Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
 if ($_GET['page'] == 'backend' && $_GET['format'] ) {
@@ -58,19 +66,21 @@ else {
 
 if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	if ($lodeluser['rights'] >= LEVEL_ADMIN) {
-		require_once ('entitiesfunc.php');
+		if(!function_exists('cleanEntities'))
+			require ('entitiesfunc.php');
 		cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
 	}
 	recordurl();
-	$context['id'] = $id = intval($_GET['id']);
-	require_once 'view.php';
+	$context['id'] = $id = (int)$_GET['id'];
+	if(!class_exists('View', false))
+		require 'view.php';
 	$view = &View::getView();
 
 	if ($id) {
 		do {
 			$row = $db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
 			if ($row === false) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if (!$row) {
 				header ("Location: not-found.html");
@@ -87,7 +97,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 		if ($_GET['page']) { // call a special page (and template)
 			$base = $_GET['page'];
 			if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {
-				die("invalid page");
+				trigger_error("invalid page", E_USER_ERROR);
 			}
 		} else {
 			$base = 'edition';
@@ -97,7 +107,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	return;
 } else {
 	
-	require_once 'controler.php';
+	require 'controller.php';
 	// automatic logic
 	$do = $_GET['do'] ? $_GET['do'] : $_POST['do'];
 	$lo = $_GET['lo'] ? $_GET['lo'] : $_POST['lo'];
@@ -124,10 +134,22 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 				break;
 			default :
 				$lo = 'entities';
+				break;
 		}
 	}
 	
-	$Controler = new controler(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
+	$Controler = new Controller(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
 }
-
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

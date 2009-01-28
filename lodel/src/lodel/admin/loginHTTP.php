@@ -39,9 +39,17 @@
  * @package lodel/source/lodel/admin
  */
 
-require_once 'siteconfig.php';
-require_once 'auth.php';
-require_once 'class.authHTTP.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+require 'auth.php';
+require 'class.authHTTP.php';
 
 $httpAuth = new AuthHTTP();
 if ($httpAuth->getHeader())
@@ -49,11 +57,10 @@ if ($httpAuth->getHeader())
 	// récupère les identifiants (login/password) du header
 	$identifiers = $httpAuth->getIdentifiers();
 
-	require_once 'func.php';
+	require 'func.php';
 	extract_post($identifiers);
 
-	require_once 'connect.php';
-	require_once 'loginfunc.php';
+	require 'loginfunc.php';
 
 	// les identifiants ne correspondent pas à un utilisateur Lodel
 	if (!check_auth($context['login'],$context['password'],$site))
@@ -71,4 +78,16 @@ if ($httpAuth->getHeader())
 }
 
 else $httpAuth->errorLogin();
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

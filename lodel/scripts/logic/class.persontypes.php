@@ -2,7 +2,7 @@
 /**	
  * Logique des types de personnes
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -63,9 +64,9 @@ class PersonTypesLogic extends Logic
 	/**
 	 * Constructeur
 	 */
-	function PersonTypesLogic() 
+	public function __construct() 
 	{
-		$this->Logic("persontypes");
+		parent::__construct("persontypes");
 	}
 
 	/**
@@ -80,12 +81,11 @@ class PersonTypesLogic extends Logic
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
-
+	public function isdeletelocked($id,$status=0) 
 	{
 		global $db;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_persons WHERE idtype='$id' AND status>-64"));
-		if ($db->errorno())  dberror();
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -100,15 +100,16 @@ class PersonTypesLogic extends Logic
 	 * @param string $var le nom de la variable du select
 	 */
 	function makeSelect(&$context, $var)
-
 	{
 		switch($var) {
 		case 'gui_user_complexity' :
-			require_once 'commonselect.php';
+			if(!function_exists('makeSelectGuiUserComplexity'))
+				require 'commonselect.php';
 			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
 		case 'g_type' :
-			require_once 'fieldfunc.php';
+			if(!function_exists('reservedByLodel'))
+				require 'fielfunc.php';
 			$g_typefields = $GLOBALS['g_persontypes_fields'];
 			$dao=$this->_getMainTableDAO();
 			$types = $dao->findMany('status > 0', '', 'g_type, title');
@@ -137,13 +138,12 @@ class PersonTypesLogic extends Logic
 	* @param object $dao la DAO utilisée
 	* @param array &$context le context passé par référence
 	*/
-	function _prepareEdit($dao,&$context)
-
+	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
 		if ($context['id']) {
 			$this->oldvo=$dao->getById($context['id']);
-			if (!$this->oldvo) die("ERROR: internal error in PersonTypesLogic::_prepareEdit");
+			if (!$this->oldvo) trigger_error("ERROR: internal error in PersonTypesLogic::_prepareEdit", E_USER_ERROR);
 		}
 	}
 
@@ -156,15 +156,11 @@ class PersonTypesLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-		function _saveRelatedTables($vo,$context) 
-
+	protected function _saveRelatedTables($vo,$context) 
 	{
-		#print_r($vo);
-		#print_r($this->oldvo);
-
 		if ($vo->type!=$this->oldvo->type) {
 			// name has changed
-			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='persons'")) or dberror();
+			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='persons'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 	/**
@@ -176,20 +172,16 @@ class PersonTypesLogic extends Logic
 	* @param object $dao la DAO utilisée
 	* @param array &$context le contexte passé par référénce
 	*/
-	function _prepareDelete($dao,&$context)
-
+	protected function _prepareDelete($dao,&$context)
 	{     
 		// gather information for the following
 		$this->vo=$dao->getById($context['id']);
-		if (!$this->vo) die("ERROR: internal error in PersonTypesLogic::_prepareDelete");
+		if (!$this->vo) trigger_error("ERROR: internal error in PersonTypesLogic::_prepareDelete", E_USER_ERROR);
 	}
 
-	function _deleteRelatedTables($id) {
+	protected function _deleteRelatedTables($id) {
 		global $home;
 
-		//require_once("typetypefunc.php"); 
-		//typetype_delete("persontype","idpersontype='".$id."'");
-			
 		$dao=&getDAO("tablefields");
 		$dao->delete("type='persons' AND name='".$this->vo->type."'");
 	}
@@ -201,7 +193,7 @@ class PersonTypesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('type' => array('type', '+'),
 									'class' => array('class', '+'),
@@ -222,7 +214,7 @@ class PersonTypesLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('type'), );
 	}
@@ -236,10 +228,9 @@ class PersonTypesLogic extends Logic
 /* loops                             */
 
 function loop_entitytypes($context,$funcname)
-{ require_once("typetypefunc.php"); 
-	loop_typetable ("entitytype","persontype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);}
-
-
-
-
+{
+	if(!function_exists('loop_typetable'))
+		require ("typetypefunc.php");
+	loop_typetable ("entitytype","persontype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
+}
 ?>

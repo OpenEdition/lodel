@@ -2,7 +2,7 @@
 /**
  * Fichier de classe pour les backups
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -45,7 +46,6 @@
  * @package lodel/logic
  * @author Jean Lamy
  * @author Sophie Malafosse
- * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -63,19 +63,19 @@ class DataLogic
 	 * Prefix du fichier (pour l'import de ME et l'import de données)
 	 * @var string
 	 */
-	var $filePrefix;
+	private $filePrefix;
 
 	/**
 	 * Expression utilisée pour filtrer les fichiers pour un import
 	 * @var string
 	 */
-	var $fileRegexp;
+	private $fileRegexp;
 
 	/**
 	 * Extension du fichier d'import
 	 * @var string
 	 */
-	var $fileExtension;
+	private $fileExtension;
 
 	/* IMPORT ME XML */
 	/**
@@ -166,15 +166,20 @@ class DataLogic
 	 *
 	 * Interdit l'accès aux utilisateurs qui ne sont pas ADMIN
 	 */
-	function DataLogic()
+	public function __construct()
 	{
  		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN
                 || ($GLOBALS['lodeluser']['rights'] == LEVEL_ADMIN && ($GLOBALS['context']['do'] == 'import'
                 || $GLOBALS['context']['do'] == 'backup'
                 || $GLOBALS['context']['do'] == 'importmodel'
                 || $GLOBALS['context']['do'] == 'importxmlmodel'))) {
-                        die("ERROR: you don't have the right to access this feature");
+                        trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
+
+		if(!function_exists('importFromZip'))
+			require 'backupfunc.php';
+		if(!function_exists('tmpdir'))
+			require 'func.php';
 
 		$this->fileExtension = 'zip';
 	}
@@ -187,10 +192,10 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreur, passées par référence
 	 */
-	function importAction(&$context, &$error)
+	public function importAction(&$context, &$error)
 	{
 		global $db;
-		require_once 'func.php';
+
 		$context['importdir'] = $GLOBALS['importdir'];
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
@@ -210,8 +215,6 @@ class DataLogic
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 				//noms des répertoires acceptés
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image');
-		
-				require_once 'backupfunc.php';
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
 					
 					$err = $error['error_extract'] = 'extract';
@@ -219,15 +222,16 @@ class DataLogic
 				}
 				#require_once 'connect.php';
 				// drop les tables existantes
-				//$db->execute(lq('DROP TABLE IF EXISTS '. join(',', $GLOBALS['lodelsitetables']))) or dberror();
+				//$db->execute(lq('DROP TABLE IF EXISTS '. join(',', $GLOBALS['lodelsitetables']))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				//execution du dump SQL
 				if (!$this->_execute_dump($sqlfile)) {
 					$error['error_execute_dump'] = $err = $db->errormsg();
 				}
 				@unlink($sqlfile);
 		
-				require_once 'cachefunc.php';
-				removefilesincache(SITEROOT, SITEROOT. 'lodel/edition', SITEROOT. 'lodel/admin');
+				if(!function_exists('clearcache'))
+					require 'cachefunc.php';
+				clearcache();
 		
 				// verifie les .htaccess dans le CACHE
 				$this->_checkFiles($context);
@@ -250,14 +254,12 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
-	function backupAction(&$context, &$error)
+	public function backupAction(&$context, &$error)
 	{
 		global $zipcmd;
 		$context['importdir'] = $GLOBALS['importdir'];
 		#print_r($context);
 		if ($context['backup']) { // si on a demandé le backup
-			require_once 'func.php';
-			require_once 'backupfunc.php';
 			$site = $context['site'];
 			$outfile = "site-$site.sql";
 
@@ -266,7 +268,7 @@ class DataLogic
 			$errors = array();
 			$fh = fopen($tmpdir. '/'. $outfile, 'w');
 			if (!$fh) {
-				die ("ERROR: unable to open a temporary file in write mode");
+				trigger_error("ERROR: unable to open a temporary file in write mode", E_USER_ERROR);
 			}
 			$this->_dump($site, $tmpdir. '/'. $outfile, $errors, $fh);
 			fclose($fh);
@@ -315,21 +317,21 @@ class DataLogic
 
 				if (!$context['sqlonly']) {
 					if (!chdir(SITEROOT)) {
-						die ("ERROR: can't chdir in SITEROOT");
+						trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
 					}
 					$prefixdir    = $tmpdir[0] == "/" ? '' : 'lodel/admin/';
 					$excludefiles = $excludes ? " -x ". join(" -x ", $excludes) : "";
 					system($zipcmd. " -q $prefixdir$archivetmp -r $dirs $excludefiles");
 					if (!chdir("lodel/admin")) {
-						die ("ERROR: can't chdir in lodel/admin");
+						trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
 					}
 					system($zipcmd. " -q -g $archivetmp -j $tmpdir/$outfile");
 				} else {
 					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
 				}
 			} else { // Comande PCLZIP
-
-				require_once 'pclzip/pclzip.lib.php';
+				if(!class_exists('PclZip', false))
+					require 'pclzip/pclzip.lib.php';
 				$archive = new PclZip($archivetmp);
 				if (!$context['sqlonly']) {
 					// function to exclude files and rename directories
@@ -360,9 +362,9 @@ class DataLogic
 					$archive->create($tmpdir. "/". $outfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 				}
 			} // end of pclzip option
-		
+
 			if (!file_exists($archivetmp)) {
-				die ("ERROR: the zip command or library does not produce any output");
+				trigger_error("ERROR: the zip command or library does not produce any output", E_USER_ERROR);
 			}
 			@unlink($tmpdir. '/'. $outfile); // delete the sql file
 			
@@ -395,13 +397,12 @@ class DataLogic
 	 * @return le nom du template utilisé pour cette action : backup
 	 * @todo Trouver une alternative à la commande système tar
 	 */
-	function globalbackupAction(&$context, &$error)
+	public function globalbackupAction(&$context, &$error)
 	{
 		global $db;
 		if($context['lodeluser']['rights'] < 128) {
-			die('ERROR : You d\'ont have the rights to use this feature');
+			trigger_error('ERROR : You d\'ont have the rights to use this feature', E_USER_ERROR);
 		}
-		require_once 'backupfunc.php';
 		$context['importdir'] = $GLOBALS['importdir'];
 		$operation = $context['operation'];
 		if ($context['backup']) {
@@ -413,21 +414,20 @@ class DataLogic
 			$fh = fopen($dirlocked. '/'. $outfile, 'w');
 			
 			if (!$fh) {
-				die ("ERROR: unable to open a temporary file in write mode");
+				trigger_error("ERROR: unable to open a temporary file in write mode", E_USER_ERROR);
 			}
 			// save the main database
 			if (fputs($fh, 'DROP DATABASE IF EXISTS '. DATABASE. ";\nCREATE DATABASE ". DATABASE. ";USE ". DATABASE. ";\n") === FALSE) {
-				die("ERROR: unable to write in the temporary file");
+				trigger_error("ERROR: unable to write in the temporary file", E_USER_ERROR);
 			}
 
 			$GLOBALS['currentprefix'] = '#_MTP_';
 			set_time_limit(60); // pas d'effet en safe mode
-			require_once 'backupfunc.php';
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
 			
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
-			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or dberror();
+			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			chdir(LODELROOT); 
 			set_time_limit(60); // pas d'effet en safe mode
 			$GLOBALS['currentprefix'] = '#_TP_';
@@ -435,7 +435,7 @@ class DataLogic
 				$name = $result->fields['name'];
 				$sitepath = $result->fields['path'];
 				if (fputs($fh, 'DROP DATABASE IF EXISTS '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
-				die("ERROR: unable to write in the temporary file");
+				trigger_error("ERROR: unable to write in the temporary file", E_USER_ERROR);
 			}
 				$this->_dump($name, $outfile, $errors, $fh);
 				if (!$context['sqlonly']) { 
@@ -460,7 +460,7 @@ class DataLogic
 			$archivetmp      = tempnam('/tmp', 'lodeldump_');
 			$archivefilename = 'lodel-'. date('dmy'). '.tar.gz';
 			// Attention ce qui suit ne fonctionnera que sous Linux
-			system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== false or die ("impossible d'executer tar");
+			system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== false or trigger_error("impossible d'executer tar", E_USER_ERROR);
 			unlink($dirlocked. '/'. $outfile);
 			rmdir($dirlocked);
 			chdir('lodeladmin'. ($GLOBALS['version'] ? '-'. $GLOBALS['version'] : ''));
@@ -482,7 +482,7 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 * @return le nom du template utilisé pour cette action : importmodel
 	 */
-	function importmodelAction(&$context, &$error)
+	public function importmodelAction(&$context, &$error)
 	{
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
@@ -505,8 +505,6 @@ class DataLogic
 				unlink($file);
 			}
 		} elseif ($file) {
-			require_once 'backupfunc.php';
-			require_once 'func.php';
 			$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
@@ -524,7 +522,8 @@ class DataLogic
 			$this->_reinitobjetstable();
 
 			//Vide le cache
-			require_once 'cachefunc.php';
+			if(!function_exists('clearcache'))
+				require 'cachefunc.php';
 			clearcache();
 			
 			if (!$err) {
@@ -559,7 +558,7 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 * @return le nom du template utilisé pour cette action : backupmodel
 	 */
-	function backupmodelAction(&$context, &$error)
+	public function backupmodelAction(&$context, &$error)
 	{
 		$context['importdir'] = $importdir;
 		if ($context['backup']) {
@@ -579,7 +578,7 @@ class DataLogic
 				$context['error'] =& $error;
 				return 'backupmodel';
 			}
-			require 'backupfunc.php';
+
 			$tmpfile        = tmpdir(). '/model.sql';
 			$fh             = fopen($tmpfile, 'w');
 			$description    = '<model>
@@ -649,7 +648,7 @@ class DataLogic
 			fclose($fh);
 			
 			if (filesize($tmpfile) <= 0) {
-				die ('ERROR: mysql_dump failed');
+				trigger_error('ERROR: mysql_dump failed', E_USER_ERROR);
 			}
 		
 			$dirs = array();
@@ -682,7 +681,7 @@ class DataLogic
 	 * @param resource $fh le descripteur de fichier (par défaut 0)
 	 * @param array $error tableau des erreurs
 	 */
-	function _dump($site, $outfile, &$error, $fh = 0)
+	private function _dump($site, $outfile, &$error, $fh = 0)
 	{
 		global $db;
 		if ($site && $GLOBALS['singledatabase'] != 'on') {
@@ -692,7 +691,7 @@ class DataLogic
 				$closefh = true;
 			}
 			if (!$fh)
-				die("ERROR: unable to open file $outfile for writing");
+				trigger_error("ERROR: unable to open file $outfile for writing", E_USER_ERROR);
 		}	else	{
 			$dbname = DATABASE;
 		}
@@ -714,7 +713,7 @@ class DataLogic
 		mysql_dump($dbname, $tables, $outfile, $fh);
 		// dump structure seulement
 		$tables_nodatadump = $GLOBALS['lodelsitetables_nodatadump'];
-		mysql_dump($dbname, $tables_nodatadump, $outfile, $fh, $create = true, $drop = true, $contents = false);
+		mysql_dump($dbname, $tables_nodatadump, $outfile, $fh, true, true,false);
 		if ($closefh)
 			fclose($fh);
 	}
@@ -727,7 +726,7 @@ class DataLogic
 	 * @param string $url le fichier SQL
 	 * @param boolean $ignoreerrors. false par défaut
 	 * @return true si le dump a bien été executé	 */
-	function _execute_dump($url, $ignoreerrors = false) 
+	private function _execute_dump($url, $ignoreerrors = false) 
 	{
 		global $db;
 		$file_content = file($url);
@@ -742,7 +741,7 @@ class DataLogic
 					//echo "query : ".lq($query)."";
 					$result = $db->execute(lq($query));
 					//$result = mysql_query(lq($query));
-					if (!$result && !$ignoreerrors) die(mysql_error());
+					if (!$result && !$ignoreerrors) trigger_error($query.' - '.$db->ErrorMsg(), E_USER_ERROR);
 					$query = '';
 				}
 			}
@@ -755,7 +754,7 @@ class DataLogic
 	 *
 	 * @param array $context le contexte passé par référence.
 	 */
-	function _checkFiles(&$context)
+	private function _checkFiles(&$context)
 	{
 		$dirs = array('CACHE', 'lodel/admin/CACHE', 'lodel/edition/CACHE', 'lodel/txt', 'lodel/rtf', 'lodel/sources');
 		foreach ($dirs as $dir) {
@@ -786,7 +785,7 @@ class DataLogic
 	 * @param array $dirs la liste des répertoires à inclure.
 	 * @return le nom du fichier ZIP
 	 */
-	function _backupME($sqlfile, $dirs = array())
+	private function _backupME($sqlfile, $dirs = array())
 	{
 		global $zipcmd;
 	
@@ -816,18 +815,18 @@ class DataLogic
 					}
 				}
 				if (!chdir(SITEROOT))
-					die("ERROR: can't chdir in SITEROOT");
+					trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
 				$prefixdir = $tmpdir[0] == '/' ? '' : 'lodel/admin/';
 				system($zipcmd." -q $prefixdir$archivetmp $files");
 				if (!chdir("lodel/admin"))
-					die("ERROR: can't chdir in lodel/admin");
+					trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
 				system($zipcmd." -q -g $archivetmp -j $sqlfile");
 			}	else {
 				system($zipcmd." -q $archivetmp -j $sqlfile");
 			}
 		}	else	{ // commande PCLZIP
-			//require_once "pclzip.lib.php";
-			require_once 'pclzip/pclzip.lib.php';
+			if(!class_exists('PclZip', false))
+				require 'pclzip/pclzip.lib.php';
 			$archive = new PclZip($archivetmp);
 			if ($zipdirs)	{
 				// function to exclude files and rename directories
@@ -847,7 +846,7 @@ class DataLogic
 				$GLOBALS['user_vars'] = array ('tmpdir' => $tmpdir, 'acceptedexts' => $acceptedexts);
 				$res = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, SITEROOT, PCLZIP_CB_PRE_ADD, 'preadd');
 				if (!$res)
-					die("ERROR: Error while creating zip archive: ".$archive->error_string);
+					trigger_error("ERROR: Error while creating zip archive: ".$archive->error_string, E_USER_ERROR);
 			}	else {
 				$archive->create($sqlfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 			}
@@ -865,7 +864,7 @@ class DataLogic
 	 * @access private
 	 * @return un booleen false si impossible, le nom de la table sinon
 	 */
-	function _isimportmodelallowed() 
+	private function _isimportmodelallowed() 
 	{
 		global $db;
 		// verifie qu'on peut importer le modele.
@@ -878,7 +877,7 @@ class DataLogic
 			if ($haveelements) {
 				return $table;
 			}
-			$db->execute(lq("DELETE FROM $table WHERE status<=-64")) or dberror();
+			$db->execute(lq("DELETE FROM $table WHERE status<=-64")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		return false;
 	}
@@ -892,7 +891,7 @@ class DataLogic
 	 * @param string $ext l'extension du fichier, par défaut .zip
 	 * @return le nom du fichier d'import
 	 */
-	function _extractImport(&$context)
+	private function _extractImport(&$context)
 	{
 		$archive = $_FILES['archive']['tmp_name'];
 		$context['error_upload'] = $_FILES['archive']['error'];
@@ -905,16 +904,16 @@ class DataLogic
 			}
 			
 			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
-				//die('ERROR: a problem occurs while moving the uploaded file.');
+				//trigger_error('ERROR: a problem occurs while moving the uploaded file.', E_USER_ERROR);
 				$context['error_upload'] = 1;
 				//return;
 			}
 			$file = ''; // on repropose la page
 		} elseif ($context['file']) {
-						if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
-							file_exists($context['file']))	{ // fichier sur le disque
-							$file = $context['file'];
-							$prefix = $result[1];}
+			if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
+				file_exists($context['file']))	{ // fichier sur le disque
+				$file = $context['file'];
+				$prefix = $result[1];}
 		}	else	{ // rien
 			$file = '';
 		}
@@ -925,10 +924,10 @@ class DataLogic
 	/**
 	 * Réinitialisation de la table des objets
 	 */
-	function _reinitobjetstable()
+	private function _reinitobjetstable()
 	{
 		global $db;
-		$db->execute(lq('DELETE FROM #_TP_objects')) or dberror();
+		$db->execute(lq('DELETE FROM #_TP_objects')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 		// ajoute un grand nombre a tous les id.
 		$offset = 2000000000;
@@ -941,7 +940,7 @@ class DataLogic
 			);
 		foreach ($tables as $table => $idsname) {
 			foreach ($idsname as $idname) {
-				$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $idname. '+'. $offset. ' WHERE '.$idname. '>0')) or dberror();
+				$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $idname. '+'. $offset. ' WHERE '.$idname. '>0')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 	
@@ -949,16 +948,16 @@ class DataLogic
 									'persontypes' => array(), 'entrytypes' => array(), 'classes' => array());
 	
 		foreach ($conv as $maintable => $changes) {
-			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or dberror();
+			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while ( ($id=$result->fields['id']) ) {
 				$newid=uniqueid($maintable);
-				$db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or dberror();
+				$db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				foreach ($changes as $table => $idsname) {
 					if (!is_array($idsname)) {
 						$idsname = array($idsname);
 					}
 					foreach ($idsname as $idname) {
-						$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $newid. ' WHERE '. $idname. '='. $id)) or dberror();
+						$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $newid. ' WHERE '. $idname. '='. $id)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
 				}
 				$result->MoveNext();
@@ -971,10 +970,10 @@ class DataLogic
 			foreach ($idsname as $idname) {
 				$count = $db->getOne(lq("SELECT count(*) FROM #_TP_$table WHERE $idname>$offset"));
 				if ($count === false) {
-					dberror();
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 				if ($count) {
-					die("<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n");
+					trigger_error("<strong>warning</strong>: reste $count $idname non converti dans $table. si vous pensez que ce sont des restes de bug, vous pouvez les detruire avec la requete SQL suivante: DELETE FROM $GLOBALS[tp]$table WHERE $idname>$offset<br />\n", E_USER_ERROR);
 				}
 			}
 		}
@@ -1011,7 +1010,7 @@ class DataLogic
 			return 'backupmodel';
 		}
 		$xml = $this->_generateXML($context);
-		require 'backupfunc.php';
+
 		$tmpfile = tmpdir(). '/model.xml';
 		file_put_contents($tmpfile, $xml);
 		$dirs = array();
@@ -1062,8 +1061,6 @@ class DataLogic
 				unlink($file);
 			}
 		} elseif ($file) {
-			require_once 'backupfunc.php';
-			require_once 'func.php';
 			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
@@ -1097,7 +1094,8 @@ class DataLogic
 			$meObj = null;
 		} elseif($xmlfile) {
 			// besoin des fonctions de bruno pour conversion entités
-			require_once 'textfunc.php';
+			if(!function_exists('HTML2XML'))
+				require 'textfunc.php';
 			$this->_changedTables['added'] = $this->_changedTables['dropped'] = array();
 			// on récupère les tables du ME
 			$this->_getEMTables();
@@ -1217,8 +1215,9 @@ class DataLogic
 
 		// Vide le cache
 		if(isset($context['success'])) {
-			require_once 'cachefunc.php';
-			clearcache(true);
+			if(!function_exists('clearcache'))
+				require 'cachefunc.php';
+			clearcache();
 		}
 
 		if(file_exists('CACHE/require_caching/ME.obj')) {
@@ -1442,7 +1441,6 @@ class DataLogic
 	private function _parseXML($file, &$error) {
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
-		require_once 'func.php';
 		$dtd = @copy(SITEROOT . '../share-'.$GLOBALS['version'].'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir "'.tmpdir().'". Aborted.';
@@ -1744,7 +1742,7 @@ class DataLogic
 		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
-				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") or dberror();
+				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				switch($classType) {
 					case 'entities': $typeTable = lq('#_TP_types'); break;
 					case 'entries': $typeTable = lq('#_TP_entrytypes'); break;
@@ -1859,7 +1857,7 @@ class DataLogic
 	 */
 	private function _updateDatabase(&$context, &$error) {
 		global $db;
-		$db->execute(lq("CREATE TABLE IF NOT EXISTS `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or dberror();
+		$db->execute(lq("CREATE TABLE IF NOT EXISTS `#_TP_entities__oldME` SELECT * FROM `#_TP_entities`")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
 		$entitiesTable = lq('#_TP_entities');
 		$typesTable = lq('#_TP_types');
@@ -1969,12 +1967,12 @@ class DataLogic
 							$toUpdate[] = $val;
 							$toUpNewId[] = $id;
 						}
-						$field = $db->GetRow("SELECT * FROM `{$table}__oldME` WHERE id = '{$val}'") or dberror();
+						$field = $db->GetRow("SELECT * FROM `{$table}__oldME` WHERE id = '{$val}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						unset($field['id']);
 						array_walk($field, create_function('&$f', '$f = addcslashes($f, "\'");'));
-						$db->execute("INSERT INTO `{$table}` ({$typesFields}) VALUES ('{$id}','".join("','", $field)."')") or dberror();
-						$fieldName = $db->getOne("SELECT type FROM `{$table}__oldME` WHERE id = '{$val}'") or dberror();
-						$db->execute("INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n") or dberror();
+						$db->execute("INSERT INTO `{$table}` ({$typesFields}) VALUES ('{$id}','".join("','", $field)."')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$fieldName = $db->getOne("SELECT type FROM `{$table}__oldME` WHERE id = '{$val}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$db->execute("INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
 					elseif('types' === (string)$table)
 					{
@@ -2268,7 +2266,8 @@ class DataLogic
 		global $db;
 		
 		// besoin des fonctions de bruno pour conversion entités
-		require_once 'textfunc.php';
+		if(!function_exists('HTML2XML'))
+			require 'textfunc.php';
 
 		// on récupère les tables du ME
 		$this->_getEMTables();
@@ -2416,7 +2415,8 @@ function loop_files_model(&$context, $funcname)
 				if ($unzipcmd && $unzipcmd != "pclzip") {
 	  				$line = `$unzipcmd $dir/$file -c $model`;
 				} else {
-					require_once "pclzip/pclzip.lib.php";
+					if(!class_exists('PclZip', false))
+						require "pclzip/pclzip.lib.php";
 					$archive = new PclZip("$dir/$file");
 					$arr = $archive->extract(PCLZIP_OPT_BY_NAME, $model,
 										PCLZIP_OPT_EXTRACT_AS_STRING);

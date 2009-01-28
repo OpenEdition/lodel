@@ -2,7 +2,7 @@
 /**	
  * Logique du navigateur de fichiers
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -39,11 +40,7 @@
  * @version CVS:$Id$
  */
 
-
 define("UPLOADDIR",SITEROOT."upload");
-
-$GLOBALS['nodesk']=true;
-
 
 /**
  * Classe de logique du navigateur de fichier
@@ -65,8 +62,9 @@ class FileBrowserLogic {
 
 	/** Constructor
 	*/
-	function FileBrowserLogic() {
-		if (!$GLOBALS['lodeluser']['redactor']) die("ERROR: you don't have the right to access this feature");
+	public function __construct() {
+		if (!$GLOBALS['lodeluser']['redactor']) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
+		$GLOBALS['nodesk']=true;
 	}
 
 	/**
@@ -75,8 +73,7 @@ class FileBrowserLogic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context,&$error)
-
+	public function viewAction(&$context,&$error)
 	{
 		return "filebrowser";
 	}
@@ -85,8 +82,7 @@ class FileBrowserLogic {
 		* dispatcher Action
 		*/
 
-	function submitAction(&$context,&$error)
-
+	public function submitAction(&$context,&$error)
 	{
 		if ($_POST['checkmail']) return $this->checkMailAction($context,$error);
 		if ($_POST['resize'] && $_POST['newsize']) return $this->resizeAction($context,$error);
@@ -97,10 +93,10 @@ class FileBrowserLogic {
 		* check Mail and store files in attachments
 		*/
 
-	function checkMailAction(&$context,&$error)
-
+	public function checkMailAction(&$context,&$error)
 	{
-		require_once("imapfunc.php");
+		if(!function_exists('checkmailforattachments'))
+			require ("imapfunc.php");
 		$context['nbattachments']=checkmailforattachments();
 		update();
 		return "filebrowser";
@@ -110,18 +106,18 @@ class FileBrowserLogic {
 		* delete files
 		*/
 
-	function deleteAction(&$context,&$error)
+	public function deleteAction(&$context,&$error)
 
 	{
 		$selectedfiles=is_array($context['file']) ? array_keys($context['file']) : false;
 		$dh=@opendir(UPLOADDIR);
-		if (!$dh) die("ERROR: can't open upload directory");
+		if (!$dh) trigger_error("ERROR: can't open upload directory", E_USER_ERROR);
 
 		while( ($file=readdir($dh))!==false ) {
 			if ($file[0]!="." || is_file(UPLOADDIR."/".$file)) {
-	if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
-		@unlink(UPLOADDIR."/".$file);
-	}
+				if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
+					@unlink(UPLOADDIR."/".$file);
+				}
 			}
 		}
 		update();
@@ -132,19 +128,20 @@ class FileBrowserLogic {
 		* 
 		*/
 
-	function resizeAction(&$context,&$error)
+	public function resizeAction(&$context,&$error)
 
 	{
 		$selectedfiles=is_array($context['file']) ? array_keys($context['file']) : false;
-		require_once("images.php");
+		if(!function_exists('resize_image'))
+			require("images.php");
 		$dh=@opendir(UPLOADDIR);
-		if (!$dh) die("ERROR: can't open upload directory");
+		if (!$dh) trigger_error("ERROR: can't open upload directory", E_USER_ERROR);
 		while( ($file=readdir($dh))!==false ) {
 			if ($file[0]!="." || is_file(UPLOADDIR."/".$file)) {
-	if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
-		$file=UPLOADDIR."/".$file;
-		resize_image($context['newsize'],$file,$file);
-	}
+				if (in_array($file,$selectedfiles)) { // quite safe way, not efficient !
+					$file=UPLOADDIR."/".$file;
+					resize_image($context['newsize'],$file,$file);
+				}
 			}
 		}
 		update();
@@ -159,10 +156,10 @@ function loop_filelist($context,$funcname)
 {
 	$dh=@opendir(UPLOADDIR);
 	if (!$dh) { // create the dir if needed
-		if (!@mkdir(UPLOADDIR,0777 & octdec($GLOBALS['filemask']))) die("ERROR: unable to create the directory \"UPLOADDIR\"");
+		if (!@mkdir(UPLOADDIR,0777 & octdec($GLOBALS['filemask']))) trigger_error("ERROR: unable to create the directory \"UPLOADDIR\"", E_USER_ERROR);
 		@chmod(UPLOADDIR,0777 & octdec($GLOBALS['filemask']));
 		$dh=@opendir(UPLOADDIR);
-		if (!$dh) die("ERROR: can't open \"UPLOADDIR\" dir");
+		if (!$dh) trigger_error("ERROR: can't open \"UPLOADDIR\" dir", E_USER_ERROR);
 	}
 
 	while( ($file=readdir($dh))!==false ) {
@@ -180,5 +177,4 @@ function loop_filelist($context,$funcname)
 		call_user_func("code_do_$funcname",$localcontext);
 	}
 }
-
 ?>

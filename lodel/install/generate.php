@@ -43,6 +43,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -51,7 +52,7 @@
  * @package lodel/install
  */
 
-require_once 'generatefunc.php';
+require 'generatefunc.php';
 ## to be launch from lodel/scripts
 
 $files = array("init-site.xml", "init.xml");
@@ -82,7 +83,7 @@ function startElement($parser, $name, $attrs)
 			break;
 		}
 		if (!$table) {
-			die('nom de table introuvable');
+			trigger_error('nom de table introuvable', E_USER_ERROR);
 		}
 		$uniqueid = isset($attrs['uniqueid']);
 		$rights=array();
@@ -147,7 +148,7 @@ foreach($files as $file) {
 	xml_set_element_handler($xml_parser, 'startElement', 'endElement');
 	xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0);
 	if (!($fp = fopen($file, "r"))) {
-		die("could not open XML input");
+		trigger_error("could not open XML input", E_USER_ERROR);
 	}
 
 	while ($data = fread($fp, 4096)) {
@@ -178,6 +179,7 @@ function buildDAO()
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -195,7 +197,7 @@ class '.$table.'VO
 	 */
 ';
       foreach ($varlist as $var) {
-	$text.= "\tvar $".$var.";\n";
+	$text.= "\tpublic $".$var.";\n";
       }
       $text.= '	/**#@-*/
 }
@@ -208,6 +210,7 @@ class '.$table.'VO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -227,9 +230,9 @@ class '. $table. 'DAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function '. $table. 'DAO()
+	public function __construct()
 	{
-		$this->DAO("'. $table. '", '. ($uniqueid ? "true" : "false"). ');
+		parent::__construct("'. $table. '", '. ($uniqueid ? "true" : "false"). ');
 		$this->rights = array('. join(", ", $rights).');
 	}
 ';
@@ -279,7 +282,7 @@ function buildLogic()
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('.join(",\n\t\t\t\t\t\t\t\t\t", $publicfields).");
 	}";
@@ -296,7 +299,7 @@ function buildLogic()
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(';
 			foreach ($uniquefields as $unique) {
@@ -320,7 +323,7 @@ function getnotice($table)
 /**
  * Fichier DAO de la table SQL '.$table.'.
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d\'Edition ELectronique.
  *
@@ -353,6 +356,7 @@ function getnotice($table)
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou

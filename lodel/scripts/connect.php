@@ -43,7 +43,7 @@
  * @package lodel
  */
 if (!(INC_LODELCONFIG)) {
-	die("inc lodelconfig please"); // security
+	trigger_error("inc lodelconfig please", E_USER_ERROR); // security
 }
 // compatibility 0.7
 if (!defined("DATABASE")) {
@@ -51,11 +51,12 @@ if (!defined("DATABASE")) {
 	define("DBUSERNAME", $GLOBALS['dbusername']);
 	define("DBPASSWD", $GLOBALS['dbpasswd']);
 	define("DBHOST", $GLOBALS['dbhost']);
-	define("DBDRIVER", "mysql");
+	define("DBDRIVER", $GLOBALS['dbDriver']);
 }
 
 // connect to the database server
-require_once "adodb/adodb.inc.php";
+require "adodb/adodb.inc.php";
+require 'adodb_hack.php';
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
 $GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
 
@@ -68,25 +69,30 @@ if ($GLOBALS['site'] && $GLOBALS['singledatabase'] != "on") {
 if (!defined("SINGLESITE")) {
 	define("SINGLESITE", $GLOBALS['singledatabase'] == "on"); // synonyme currently but may change in the future
 }
-
-$GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or dberror();
-if (DBDRIVER == 'mysql') {
-	$info_mysql = $GLOBALS['db']->ServerInfo();
-	$vs_mysql = explode(".", substr($info_mysql['version'], 0, 3));
-	$GLOBALS['version_mysql'] = $vs_mysql[0] . $vs_mysql[1];
-
-	if ($GLOBALS['version_mysql'] > 40) {
-		$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
-		if ($GLOBALS['db_charset'] === false) {
-			$GLOBALS['db_charset'] = 'utf8';
-		}
-		$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
-	}
+$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb/';
+if(!file_exists($GLOBALS['ADODB_CACHE_DIR']))
+{
+	if(!@mkdir($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask'])))
+		trigger_error('No way to write into cache directory', E_USER_ERROR);
+	@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
 }
+$GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+$info_mysql = $GLOBALS['db']->ServerInfo();
+$vs_mysql = explode(".", substr($info_mysql['version'], 0, 3));
+$GLOBALS['version_mysql'] = $vs_mysql[0] . $vs_mysql[1];
+unset($info_mysql, $vs_mysql);
+if ($GLOBALS['version_mysql'] > 40) {
+	$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
+	if ($GLOBALS['db_charset'] === false) {
+		$GLOBALS['db_charset'] = 'utf8';
+	}
+	$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
+}
+
 
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'];
-
 
 /**
  * Déclenche une erreur lors d'une erreur concernant la base de données
@@ -117,7 +123,7 @@ function usemaindb()
 	if (!$maindb)	{ // not connected
 		$maindb = ADONewConnection(DBDRIVER);
 		if (!$maindb->nconnect(DBHOST, DBUSERNAME, DBPASSWD, DATABASE)) {
-			die("ERROR: reconnection is not allow with the driver: ".DBDRIVER);
+			trigger_error("ERROR: reconnection is not allowed with the driver: ".DBDRIVER, E_USER_ERROR);
 		}
 	}
 
@@ -185,7 +191,7 @@ function lq($query)
 function uniqueid($table)
 {
 	global $db;
-	$db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')")) or dberror();
+	$db->execute(lq("INSERT INTO #_TP_objects (class) VALUES ('$table')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	return $db->insert_id();
 }
 
@@ -200,7 +206,10 @@ function uniqueid($table)
 function deleteuniqueid($id)
 {
 	global $db;
-	if (is_array($id) && $id)	{
+
+	if(empty($id)) return false;
+
+	if (is_array($id))	{
 		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id IN (". join(",", $id). ")"));
 	}	else {
 		$db->execute(lq("DELETE FROM $GLOBALS[tableprefix]objects WHERE id='$id'"));
@@ -215,11 +224,14 @@ function deleteuniqueid($id)
  * @return valeur de la variable
  */
 function mysql_find_db_variable ($database_name, $var = 'character_set_database') {
-	mysql_select_db($database_name) or die ("ERROR select database");
-	$result = mysql_query("SHOW VARIABLES LIKE '$var'");
-	if ($db_charset = mysql_fetch_row($result)) {
-		return $db_charset[1]; }
-	else return false;
+	global $db;
+	if($db->database != $database_name)
+		$dbname = $db->database;
+	$db->SelectDB($database_name) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$dbCharset = $db->GetRow("SHOW VARIABLES LIKE '$var'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	if(isset($dbname)) $db->SelectDB($dbname);
+
+	return ($dbCharset ? $dbCharset['Value'] : false);
 }
 
 ?>

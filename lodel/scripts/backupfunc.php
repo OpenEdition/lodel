@@ -85,7 +85,7 @@ function operation($operation, $archivetmp, $archivefilename, &$context)
 			return FALSE;
 		}
 	}	else	{
-		die("ERROR: unknonw operation");
+		trigger_error("ERROR: unknonw operation", E_USER_ERROR);
 	}
 }
 
@@ -111,7 +111,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	}	else {
 		$GLOBALS['mysql_dump_file_handle'] = fopen($output, "w");
 		if (!$GLOBALS['mysql_dump_file_handle'])
-			die("ERROR: unable to write file \"$output\"");
+			trigger_error("ERROR: unable to write file \"$output\"", E_USER_ERROR);
 	}
 
 	$GLOBALS['drop'] = $drop;
@@ -119,7 +119,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	$crlf = PMA_whichCrlf();
 
 	if (!$tables) {
-		die("ERROR: tables is not defined in mysql_dump");
+		trigger_error("ERROR: tables is not defined in mysql_dump", E_USER_ERROR);
 	}
 	$num_tables = count($tables);
 
@@ -154,6 +154,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
  */
 function parse_mysql_dump($url, $ignoreerrors = false) 
 {
+	global $db;
 	$file_content = file($url);
 	$query = '';
 	foreach($file_content as $sql_line) {
@@ -162,8 +163,8 @@ function parse_mysql_dump($url, $ignoreerrors = false)
 			$query .= $sql_line;
 			if(preg_match("/;\s*$/", $sql_line)) {
 				#echo "query:".lq($query)."<br />";
-				$result = mysql_query(lq($query));
-				if (!$result && !$ignoreerrors) die(mysql_error());
+				$result = $db->Execute(lq($query));
+				if (!$result && !$ignoreerrors) trigger_error($db->ErrorMsg(), E_USER_ERROR);
 				$query = '';
 			}
 		}
@@ -184,14 +185,14 @@ function lodelprefix($table)
 	// remove up to the dot
 	$table = preg_replace("/.*\./", "", $table);
 	if ($GLOBALS['tableprefix'] && strpos($table, $GLOBALS['tableprefix']) !== 0)
-		die("ERROR: table $table should be prefixed");
+		trigger_error("ERROR: table $table should be prefixed", E_USER_ERROR);
 
 	$table = substr($table, strlen($GLOBALS['tableprefix']));
 
 	if ($GLOBALS['currentprefix']) {
 		return $GLOBALS['currentprefix'].$table;
 	}	else {
-		die("ERROR: currentprefix is not defined");
+		trigger_error("ERROR: currentprefix is not defined", E_USER_ERROR);
 	}
 }
 
@@ -291,7 +292,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		}
 		system($unzipcmd." -oq $archive  $dirs -d ../..");
 		#if (!chdir("lodel/admin"))
-		#  die("ERROR: chdir 2 fails");
+		#  trigger_error("ERROR: chdir 2 fails", E_USER_ERROR);
 		if ($sqlfile)	{
 			$ext = $xml ? 'xml' : 'sql';
 			system($unzipcmd." -qp $archive  \*.$ext > $sqlfile");
@@ -300,7 +301,8 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		}
 	}	else {
 		// use PCLZIP library
-		require_once 'pclzip/pclzip.lib.php';
+		if(!class_exists('PclZip', false))
+			require 'pclzip/pclzip.lib.php';
 		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
@@ -340,7 +342,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#echo "ici $res";
 
 		if (!$res)
-			die("ERROR: unable to extract $archive.<br />".$archive->error_string);
+			trigger_error("ERROR: unable to extract $archive.<br />".$archive->error_string, E_USER_ERROR);
 		unset($archive);
 		if (filesize($sqlfile) <= 0)
 			return false;

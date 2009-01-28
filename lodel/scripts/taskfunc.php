@@ -58,7 +58,7 @@ function maketask($name, $etape, $context, $id = 0)
 	global $lodeluser, $db;
 	if (is_array($context))
 		$context = addslashes(serialize($context));
-	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or dberror();
+	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	return $db->insert_ID();
 }
 
@@ -74,9 +74,10 @@ function gettask(& $id)
 	$id = intval($id);
 	$row = $db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
 	if ($row === false)
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	if (!$row) {
-		require_once 'view.php';
+		if(!class_exists('View', false))
+			require 'view.php';
 		$view = &View::getView();
 		$view->back();
 		return;
@@ -101,16 +102,16 @@ function gettypeandclassfromtask($task, & $context)
 	if ($task['identity']) {
 		$row = $db->getRow(lq("SELECT class,idtype,idparent FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$task['identity']."'"));
 		if ($db->errorno())
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$context['class'] = $row['class'];
 		$context['idtype'] = $row['idtype'];
 		$context['idparent'] = $row['idparent'];
 		if (!$context['class'])
-			die("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask");
+			trigger_error("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask", E_USER_ERROR);
 	} else {
 		$idtype = $task['idtype'];
 		if (!$idtype)
-			die("ERROR: idtype must be given by task in gettypeandclassfromtask");
+			trigger_error("ERROR: idtype must be given by task in gettypeandclassfromtask", E_USER_ERROR);
 		// get the type 
 		$dao = & getDAO("types");
 		$votype = $dao->getById($idtype, "class");

@@ -49,13 +49,10 @@ require 'auth.php';
 authenticate(LEVEL_VISITOR);
 $name = addslashes($_COOKIE[$sessionname]);
 
-require_once 'connect.php';
 $time = time()-1;
 usemaindb();
-$db->execute(lq("DELETE FROM #_TP_session WHERE name='". $name. "'")) or dberror();
+$db->execute(lq("DELETE FROM #_TP_session WHERE name='". $name. "'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 setcookie($sessionname,"",$time,$urlroot);
-
-require_once 'func.php';
 
 header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $urlroot);
 exit;

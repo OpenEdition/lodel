@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,32 +75,32 @@ class usersVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $username;
-	var $passwd;
-	var $lastname;
-	var $firstname;
-	var $email;
-	var $lang;
-	var $userrights;
-	var $gui_user_complexity;
-	var $nickname;
-	var $biography;
-	var $photo;
-	var $professional_website;
-	var $url_professional_website;
-	var $rss_professional_website;
-	var $personal_website;
-	var $url_personal_website;
-	var $rss_personal_website;
-	var $pgp_key;
-	var $alternate_email;
-	var $phonenumber;
-	var $im_identifier;
-	var $im_name;
-	var $status;
-	var $rank;
-	var $upd;
+	public $id;
+	public $username;
+	public $passwd;
+	public $lastname;
+	public $firstname;
+	public $email;
+	public $lang;
+	public $userrights;
+	public $gui_user_complexity;
+	public $nickname;
+	public $biography;
+	public $photo;
+	public $professional_website;
+	public $url_professional_website;
+	public $rss_professional_website;
+	public $personal_website;
+	public $url_personal_website;
+	public $rss_personal_website;
+	public $pgp_key;
+	public $alternate_email;
+	public $phonenumber;
+	public $im_identifier;
+	public $im_name;
+	public $status;
+	public $rank;
+	public $upd;
 	/**#@-*/
 }
 
@@ -110,6 +112,7 @@ class usersVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -129,9 +132,9 @@ class usersDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function usersDAO()
+	public function __construct()
 	{
-		$this->DAO("users", false);
+		parent::__construct("users", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

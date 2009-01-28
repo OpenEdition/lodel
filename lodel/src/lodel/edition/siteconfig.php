@@ -47,7 +47,7 @@
 define('SITEROOT', '../../');
 
 if (!chdir(SITEROOT)) {
-	die ("ERROR: chdir fails");
+	trigger_error("ERROR: chdir fails", E_USER_ERROR);
 }
 require 'siteconfig.php';
 chdir('lodel/edition');

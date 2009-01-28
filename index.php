@@ -62,12 +62,32 @@ if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/index(\d*
 	include "../missing.html";
 	exit;
 }
-require_once $home. 'auth.php';
+
+require $home. 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
+require $home. 'auth.php';
 authenticate();
-require_once $home. 'connect.php';
 //on indique qu'on veut pas le desk
 $GLOBALS['nodesk'] = true;
 require $home. 'view.php';
 $view = &View::getView();
 $view->renderCached($context, 'index');
+}
+catch(Exception $e)
+{
+	if(!headers_sent())
+	{
+		header("HTTP/1.0 403 Internal Error");
+		header("Status: 403 Internal Error");
+		header("Connection: Close");
+	}
+	echo $e->getContent();
+	exit();
+}
 ?>

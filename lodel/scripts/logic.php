@@ -2,7 +2,7 @@
 /**
  * Fichier de la classe Logic
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -36,6 +36,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -76,14 +77,14 @@ class Logic
 	 * Table and class name of the central table
 	 * @var string
 	 */
-	var $maintable;
+	protected $maintable;
 
 	/**
 	 * critère SQL du rang
 	 * Give the SQL criteria which make a group from the ranking point of view.
 	 * @var string
 	 */
-	var $rankcriteria;
+	protected $rankcriteria;
 	/**#@-*/
 
 
@@ -93,7 +94,7 @@ class Logic
 	 * Positionne simplement le nom de la table principale.
 	 * @param string $maintable le nom de la table principale.
 	 */
-	function Logic($maintable) 
+	public function __construct($maintable) 
 	{
 		$this->maintable = $maintable;
 	}
@@ -110,7 +111,7 @@ class Logic
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function viewAction(&$context, &$error)
+	public function viewAction(&$context, &$error)
 	{
 		if ($error) return; // nothing to do if it is an error.
 		$id = intval($context['id']);
@@ -118,7 +119,7 @@ class Logic
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->getById($id);
 		if (!$vo) //erreur critique
-			die("ERROR: can't find object $id in the table ". $this->maintable);
+			trigger_error("ERROR: can't find object $id in the table ". $this->maintable, E_USER_ERROR);
 		$this->_populateContext($vo, $context); //rempli le context
 		if('tablefields' == $this->maintable && $context['mask']) {
 			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
@@ -139,7 +140,7 @@ class Logic
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function copyAction(&$context, &$error)
+	public function copyAction(&$context, &$error)
 	{
 		$ret = $this->viewAction($context, $error);
 		$copyof = getlodeltextcontents("copyof", "common");
@@ -171,7 +172,7 @@ class Logic
 	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function editAction(&$context, &$error, $clean = false)
+	public function editAction(&$context, &$error, $clean = false)
 	{
 		if ($clean != CLEAN) {      // validate the forms data
 			if (!$this->validateFields($context, $error)) {
@@ -189,7 +190,7 @@ class Logic
 			$vo->id = $id;
 		} else {
 			$create = true;
-			$vo = $dao->createObject();
+			$vo =& $dao->createObject();
 		}
 		if ($dao->rights['protect']) {
 			$vo->protect = $context['protected'] ? 1 : 0;
@@ -201,7 +202,8 @@ class Logic
 		if($create && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
 			$this->_sendPrivateInformation($context);
 		}
-		require_once 'func.php';
+		if(!function_exists('update'))
+			require 'func.php';
 		update();
 		return $ret ? $ret : "_back";
 	}
@@ -221,7 +223,7 @@ class Logic
 	 * @param string $status utilisé pour changer le rang d'objets ayant un status particulier. il s'agit d'une condition. Par défaut est : status>0
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		$criterias = array();
 		$id = $context['id'];
@@ -237,7 +239,8 @@ class Logic
 		$criteria = join(" AND ", $criterias);
 		$this->_changeRank($id, $context['dir'], $criteria);
 
-		require_once 'func.php';
+		if(!function_exists('update'))
+			require 'func.php';
 		update();
 		return '_back';
 	}
@@ -252,7 +255,7 @@ class Logic
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
 	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
-	function deleteAction(&$context, &$error)
+	public function deleteAction(&$context, &$error)
 	{
 		global $db, $home;
 		$id = $context['id'];
@@ -266,7 +269,8 @@ class Logic
 
 		$ret=$this->_deleteRelatedTables($id);
 
-		require_once 'func.php';
+		if(!function_exists('update'))
+			require 'func.php';
 		update();
 		return $ret ? $ret : '_back';
 	}
@@ -281,7 +285,7 @@ class Logic
 	 * @param string $access le niveau d'accès
 	 * @return integer entier représentant le droit pour l'accès demandé.
 	 */
-	function rights($access) 
+	public function rights($access) 
 	{
 		$dao = $this->_getMainTableDAO();
 		return $dao->rights[$access];
@@ -297,7 +301,7 @@ class Logic
 	 * @param integer $status status de l'objet. Par défaut vaut 0.
 	 * @return boolean un booléen indiquant si l'objet peut être supprimé.
 	 */
-	function isdeletelocked($id, $status=0)
+	public function isdeletelocked($id, $status=0)
 	{
 		global $lodeluser;
 		// basic
@@ -319,16 +323,17 @@ class Logic
 	 * @access private
 	 */
 	
-	function &_getMainTableDAO() 
+	protected function _getMainTableDAO() 
 	{
-		return getDAO($this->maintable);
+		$dao =& getDAO($this->maintable);
+		return $dao;
 	}
    
 
 	/**
 	 * Change the rank of an Object
 	 */
-	function _changeRank($id, $dir, $criteria)
+	protected function _changeRank($id, $dir, $criteria)
 	{
 		global $db;
 		if (is_numeric($dir)) {
@@ -369,7 +374,7 @@ class Logic
 	 * Validated the public fields and the unicity.
 	 * @return return an array containing the error and warning, null otherwise.
 	 */
-	function validateFields(&$context, &$error) 
+	public function validateFields(&$context, &$error) 
 	{
 		global $db;
 		
@@ -377,7 +382,8 @@ class Logic
 		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
 		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
-		require_once "validfunc.php";
+		if(!function_exists('validfield'))
+			require "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
 			list($type, $condition) = $fielddescr;
@@ -401,7 +407,7 @@ class Logic
 					$valid = validfield($context[$field], $type, "",$field, '', '', $context);
 				}
 				if ($valid === false) {
-					die("ERROR: \"$type\" can not be validated in logic.php");
+					trigger_error("ERROR: \"$type\" can not be validated in logic.php", E_USER_ERROR);
 				}
 				if (is_string($valid)) {
 					$error[$field]=$valid;
@@ -424,7 +430,7 @@ class Logic
 			// check
 			$ret = $db->getOne("SELECT 1 FROM ". lq("#_TP_". $this->maintable). " WHERE status>-64 AND id!='". $context['id']. "' AND ". join(" AND ", $conditions));
 			if ($db->errorno()) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if ($ret) {
 				$error[$fields[0]] = "1"; // report the error on the first field
@@ -434,8 +440,10 @@ class Logic
 		return empty($error);
 	}
 
-	function _makeMask(&$context, &$error)
+	protected function _makeMask(&$context, &$error)
 	{
+		if(!defined('PONCTUATION')) require 'utf8_file.php';
+
 		if($context['mask']['user'] == '') return;
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {
@@ -577,13 +585,13 @@ class Logic
 		}
 	}
 
-	function _publicfields() 
+	protected function _publicfields() 
 	{
-		die("call to abstract publicfields");
+		trigger_error("call to abstract publicfields", E_USER_ERROR);
 		return array();
 	}
 
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{
 		return array();
 	}
@@ -592,7 +600,7 @@ class Logic
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * @private
 	 */
-	function _populateObject(&$vo, &$context) 
+	protected function _populateObject(&$vo, &$context) 
 	{
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -604,7 +612,7 @@ class Logic
 	 * Populate the context from the object. All fields are outputted.
 	 * @protected
 	 */
-	function _populateContext(&$vo, &$context) 
+	protected function _populateContext(&$vo, &$context) 
 	{
 		foreach ($vo as $k=>$v) {
 			//Added by Jean - Be carefull using it
@@ -621,28 +629,28 @@ class Logic
 	 * Used in editAction to do extra operation before the object is saved.
 	 * Usually it gather information used after in _saveRelatedTables
 	 */
-	function _prepareEdit($dao, &$context) {}
+	protected function _prepareEdit($dao, &$context) {}
 
 	/**
 	 * Used in deleteAction to do extra operation before the object is saved.
 	 * Usually it gather information used after in _deleteRelatedTables
 	 */
-	function _prepareDelete($dao, &$context) {}
+	protected function _prepareDelete($dao, &$context) {}
 
 	/**
 	 * Used in editAction to do extra operation after the object has been saved
 	 */
-	function _saveRelatedTables($vo, &$context) {}
+	protected function _saveRelatedTables($vo, &$context) {}
 
 	/**
 	 * Used in deleteAction to do extra operation after the object has been deleted
 	 */
-	function _deleteRelatedTables($id) {}
+	protected function _deleteRelatedTables($id) {}
 
 	/**
 	 * Used in viewAction to do extra populate in the context 
 	 */
-	function _populateContextRelatedTables(&$vo, &$context) {}
+	protected function _populateContextRelatedTables(&$vo, &$context) {}
 	
 	/**
 	 * process of particular type of fields
@@ -650,7 +658,7 @@ class Logic
 	 * @param array $context the context
 	 * @param int $status the status; by default 0 if no status changed
 	 */
-	function _processSpecialFields($type, $context, $status = 0) 
+	protected function _processSpecialFields($type, $context, $status = 0) 
 	{
 		global $db;
 		$daoentities = &getDAO('entities');
@@ -683,7 +691,7 @@ class Logic
 	 * @param string $value the current value of the field
 	 * @param array $context the current context
 	 */
-	function _calculateHistoryField(&$value, &$context, $status = 0) 
+	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
 	{
 		$dao = &getDAO('users');
 		if($context['lodeluser']['adminlodel'] == 1) {
@@ -730,7 +738,7 @@ class Logic
 	 * @param int $status la valeur du statut à insérer dans la base
 	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
 	 */
-	function _isAuthorizedStatus($status)
+	protected function _isAuthorizedStatus($status)
 	{
 	//echo $this->maintable . '<p>' . $status . '<p>';
 			switch ($this->maintable) {
@@ -764,14 +772,15 @@ class Logic
  * Logic factory
  *
  */
-function &getLogic($table) 
+function getLogic($table) 
 {
 	static $factory; // cache
-	if ($factory[$table]) {
+	if (isset($factory[$table])) {
 		return $factory[$table]; // cache
 	}
-	require_once "logic/class.$table.php";
 	$logicclass = $table. 'Logic';
+	if(!class_exists($logicclass, false))
+		require "logic/class.$table.php";
 	$factory[$table] = new $logicclass;
 	//return $factory[$table]= new $logicclass;
 	return $factory[$table];

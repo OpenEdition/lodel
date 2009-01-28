@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,16 +75,16 @@ class sitesVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $name;
-	var $title;
-	var $subtitle;
-	var $path;
-	var $url;
-	var $langdef;
-	var $status;
-	var $upd;
-	var $creationdate;
+	public $id;
+	public $name;
+	public $title;
+	public $subtitle;
+	public $path;
+	public $url;
+	public $langdef;
+	public $status;
+	public $upd;
+	public $creationdate;
 	/**#@-*/
 }
 
@@ -94,6 +96,7 @@ class sitesVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -113,9 +116,9 @@ class sitesDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function sitesDAO()
+	public function __construct()
 	{
-		$this->DAO("sites", true);
+		parent::__construct("sites", true);
 		$this->rights = array('write'=>LEVEL_ADMINLODEL, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

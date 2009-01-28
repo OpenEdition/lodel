@@ -192,7 +192,7 @@ function getfields($table,$database="")
 
 {
   if (!$database) $database=$GLOBALS['currentdb'];
-  $fields = mysql_list_fields($database,$GLOBALS[tp].$table) or die (mysql_error());
+  $fields = mysql_list_fields($database,$GLOBALS[tp].$table) or trigger_error(mysql_error(), E_USER_ERROR);
   $columns = mysql_num_fields($fields);
   $arr=array();
   for ($i = 0; $i < $columns; $i++) {
@@ -254,7 +254,7 @@ function isotoutf8 ($tables)
 
      $report.="conversion en utf8 de  la table $table<br />\n";
     // On parcours toutes les enregistrements de chaque table
-    $resultselect = mysql_query("SELECT * FROM $table") or die(mysql_error());
+    $resultselect = mysql_query("SELECT * FROM $table") or trigger_error(mysql_error(), E_USER_ERROR);
     while($valeurs = mysql_fetch_row($resultselect)) {
       $nbchamps = mysql_num_fields($resultselect);
 
@@ -282,7 +282,7 @@ function isotoutf8 ($tables)
       // S'il y a une modification à faire on lance la requete
       if($set) {
 	$requete="UPDATE $table SET ".join(", ",$set)." WHERE ".join(" AND ",$where);
-	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; die(mysql_error()); }
+	if (!mysql_query($requete)) { echo htmlentities($requete),"<br>"; trigger_error(mysql_error(), E_USER_ERROR); }
       }
     } // parcourt les lignes
   } // parcourt les tables
@@ -313,14 +313,14 @@ function extractnom($personne) {
 function extract_meta($classe)
 
 {
-  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or die(mysql_error());
+  $result=mysql_query("SELECT id,meta FROM $GLOBALS[tp]$classe WHERE meta LIKE '%meta_image%'") or trigger_error(mysql_error(), E_USER_ERROR);
 
   while (list($id,$meta)=mysql_fetch_row($result)) {
     $meta=unserialize($meta);
     if (!$meta[meta_image]) continue;
     $file=SITEROOT.$meta[meta_image];
     $info=getimagesize($file);
-    if (!is_array($info)) die("ERROR: the image format has not been recognized");
+    if (!is_array($info)) trigger_error("ERROR: the image format has not been recognized", E_USER_ERROR);
     $exts=array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
     $ext=$exts[$info[2]-1];
     
@@ -333,7 +333,7 @@ function extract_meta($classe)
     chmod(SITEROOT.$dest, 0666  & octdec($GLOBALS[filemask]));
     unlink($file);
 
-    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or die(mysql_error());
+    mysql_query("UPDATE $GLOBALS[tp]$classe SET icone='$dest' WHERE id='$id'") or trigger_error(mysql_error(), E_USER_ERROR);
   }
 
   return TRUE;
@@ -360,7 +360,7 @@ function convertHTMLtoXHTML ($field,$contents)
 	    preg_match('/^<a\s+name="FN(\d+)"><\/a><a\s+href="#FM(\d+)">(.*?)<\/a>/s',$arr[$i],$result2)) { // c'est bien le debut d'un note
 	  $arr[$i]='<div class="footnotebody"><a class="footnotedefinition" id="ftn'.$result2[1].'" href="#bodyftn'.$result2[2].'">'.$result2[3].'</a>'.substr($arr[$i],strlen($result2[0])).'</div>';
 	} else {
-	  die("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]));
+	  trigger_error("La ".($i+1)."eme note mal forme dans le document $row[identite]:<br>".htmlentities($arr[$i]), E_USER_ERROR);
 	}
       } // toutes les notes
       $contents=join("",$arr);
@@ -397,7 +397,7 @@ function addfield($classe)
 {
   $fields=getfields($classe);
 
-  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe'") or die(mysql_error());
+  $result=mysql_query("SELECT $GLOBALS[tp]champs.nom,type FROM $GLOBALS[tp]champs,$GLOBALS[tp]groupesdechamps WHERE idgroupe=$GLOBALS[tp]groupesdechamps.id AND classe='$classe'") or trigger_error(mysql_error(), E_USER_ERROR);
 
   #echo "classe:$classe<br/>";
   while (list($champ,$type)=mysql_fetch_row($result)) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Fichier Parser
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -53,74 +53,74 @@ function parse($in, $out)
 class Parser
 {
 	
-	var $infilename; // nom du template
-	var $signature;
-	var $variable_regexp = "[A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*";
-	var $variablechar; // list of prefix for the variables
+	protected $infilename; // nom du template
+	protected $signature;
+	protected $variable_regexp = "[A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*";
+	protected $variablechar; // list of prefix for the variables
 
-	var $loops = array ();
-	var $funcs = array ();
-	var $macrocode = array ();
+	protected $loops = array ();
+	protected $funcs = array ();
+	protected $macrocode = array ();
 
-	var $charset;
+	protected $charset;
 
-	var $commands = array ();
-	var $codepieces = array (); // code piece definition
-	var $macros_txt;
-	var $fct_txt;
+	protected $commands = array ();
+	protected $codepieces = array (); // code piece definition
+	protected $macros_txt;
+	protected $fct_txt;
 
 	#  var $wantedvars;
-	var $looplevel = 0;
+	protected $looplevel = 0;
 
-	var $arr;
-	var $countarr;
-	var $linearr;
-	var $currentline;
-	var $ind;
-	var $refresh = "";
-	var $denied = array();
-	var $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
+	protected $arr;
+	protected $countarr;
+	protected $linearr;
+	protected $currentline;
+	protected $ind;
+	protected $refresh = "";
+	protected $denied = array();
+	protected $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
-	var $id = "";
-	var $tpl; // actual name of tpl
-	var $blocks; // possibles blocks in template
+	protected $id = "";
+	protected $tpl; // actual name of tpl
+	protected $blocks; // possibles blocks in template
 
-	function errmsg($msg, $ind = 0)
+	protected function _errmsg($msg, $ind = 0)
 	{
 		// À REVOIR : déterminer le numéro de ligne dans le template
 		//if ($ind)
 		//$line = "line ".$this->linearr[$ind];
-		//die("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg");
+		//trigger_error("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg", E_USER_ERROR);
 		if (!headers_sent()) {
 			header("HTTP/1.0 403 Internal Error");
 			header("Status: 403 Internal Error");
 			header("Connection: Close");
 		}
-		die("LODELSCRIPT ERROR in file ".$this->infilename." : $msg");
+		trigger_error("LODELSCRIPT ERROR in file ".$this->infilename." : $msg", E_USER_ERROR);
 	}
 
-	function parse_loop_extra(& $tables, & $tablesinselect, & $extrainselect, & $selectparts)
+	protected function parse_loop_extra(& $tables, & $tablesinselect, & $extrainselect, & $selectparts)
 	{
 	}
 
-	function parse_variable_extra($prefix, $name)
+	public function parse_variable_extra($prefix, $name)
 	{
 		return FALSE;
 	}
 	
-	function parse_before($contents)
+	protected function parse_before($contents)
 	{
 	}
 	
-	function parse_after($contents)
+	protected function parse_after($contents)
 	{
 	}
 	
-	function decode_loop_content_extra($balise, & $content, & $options, $tables)
+	protected function decode_loop_content_extra($balise, & $content, & $options, $tables)
 	{
 	}
 
-	function Parser()
+	public function __construct()
 	{ // constructor
 		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE", "BLOCK");
 
@@ -129,11 +129,11 @@ class Parser
 		$this->blocks = array();
 	}
 
-	function parse($in, $include, $blockId=0, $cache_rep='')
+	public function parse($in, $include, $blockId=0, $cache_rep='')
 	{
 		global $sharedir;
 		if (!file_exists($in))
-			$this->errmsg("Unable to read file $in");
+			$this->_errmsg("Unable to read file $in");
 		$this->infilename = $in;
 		preg_match("/^(.*?\/)?([^\/]+)\.html$/", $in, $m);
 		$this->tpl = $m[2];
@@ -152,7 +152,7 @@ class Parser
 		$this->parse_main(); // parse the commands
 		
 		if ($this->ind != $this->countarr)
-			$this->errmsg("this file contains more closing tags than opening tags");
+			$this->_errmsg("this file contains more closing tags than opening tags");
 
 		$contents = join("", $this->arr); // recompose the file
 
@@ -255,7 +255,7 @@ PHP;
 		return $contents;
 	}
 
-	function parse_variable(& $text, $escape = 'php')
+	protected function parse_variable(& $text, $escape = 'php')
 	{
 		global $context;
 		$i = strpos($text, '[');
@@ -393,7 +393,7 @@ PHP;
 		} // while there are some variable
 	}
 
-	function _make_variable_code($prefix, $name, $pipefunction, $escape)
+	protected function _make_variable_code($prefix, $name, $pipefunction, $escape)
 	{
 		$variable = $this->parse_variable_extra($prefix, $name);
 		if ($variable === false) { // has the variable being processed ?
@@ -450,7 +450,7 @@ PHP;
 						$args = '';
 					} else {
 						// error
-						$this->errmsg("The name of the pipe function \"$fct\" is invalid");
+						$this->_errmsg("The name of the pipe function \"$fct\" is invalid");
 					}
 					//$variable = $fct. '('. $variable.$args. ')';
 					//si la variable est contenue dans les arguments :
@@ -483,7 +483,7 @@ PHP;
 		return $code;
 	}
 
-	function countlines($ind)
+	protected function countlines($ind)
 	{
 		if ($ind == 0) {
 			$this->currentline += substr_count($this->arr[$ind], "\n");
@@ -493,7 +493,7 @@ PHP;
 		}
 	}
 
-	function parse_main()
+	protected function parse_main()
 	{	
 		global $home;
 		while ($this->ind < $this->countarr) {
@@ -517,7 +517,7 @@ PHP;
 				} elseif (file_exists($GLOBALS['home']."../tpl/".$macrofilename)) {
 					$path = $GLOBALS['home']."../tpl/";
 				} else {
-					$this->errmsg("the macro file \"$macrofilename\" doesn't exist");
+					$this->_errmsg("the macro file \"$macrofilename\" doesn't exist");
 				}
 				$this->macros_txt .= stripcommentandcr(file_get_contents($path.$macrofilename));
 				$this->_clearposition();
@@ -568,7 +568,7 @@ PHP;
 				if ($this->arr[$this->ind]{0}	== '/')	{
 					// closing tag ?
 					if ($this->arr[$this->ind + 1])
-						$this->errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
+						$this->_errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
 					return;
 				}	else {
 					$methodname = 'parse_'. $this->arr[$this->ind];
@@ -576,7 +576,7 @@ PHP;
 						$this->$methodname ();
 						#call_user_func(array(&$this,$methodname));
 					}	else {
-						$this->errmsg('Unexpected tags "'. htmlentities($this->arr[$this->ind]) . '" on ind ' . $this->ind. ". No method to call");
+						$this->_errmsg('Unexpected tags "'. htmlentities($this->arr[$this->ind]) . '" on ind ' . $this->ind. ". No method to call");
 					}
 				}
 				break;
@@ -585,7 +585,7 @@ PHP;
 		}
 	}
 
-	function parse_LOOP()
+	protected function parse_LOOP()
 	{
 		static $tablefields;
 		$attrs = $this->arr[$this->ind + 1];
@@ -608,7 +608,7 @@ PHP;
 		foreach ($attrs_arr as $attr)	{
 			if ($attr['name'] == 'NAME') {
 				if ($name)
-					$this->errmsg("name already defined in loop $name", $this->ind);
+					$this->_errmsg("name already defined in loop $name", $this->ind);
 				$name = trim($attr['value']);
 			} elseif ($attr['name'] == 'TABLE') {
 				$issqldef = true;
@@ -651,31 +651,31 @@ PHP;
 					break;
 				case 'LIMIT' :
 					if ($selectparts['split'])
-						$this->errmsg("Attribut SPLIT cannot be used with LIMIT", $this->ind);
+						$this->_errmsg("Attribut SPLIT cannot be used with LIMIT", $this->ind);
 					if ($selectparts['limit'])
-						$this->errmsg("Attribut LIMIT should occur only once in loop $name", $this->ind);
+						$this->_errmsg("Attribut LIMIT should occur only once in loop $name", $this->ind);
 					$selectparts['limit'] = $value;
 					break;
 				case 'SPLIT' :
 					if ($selectparts['limit'])
-						$this->errmsg("Attribut SPLIT cannot be used with LIMIT", $this->ind);
+						$this->_errmsg("Attribut SPLIT cannot be used with LIMIT", $this->ind);
 					if ($selectparts['split'])
-						$this->errmsg("Attribut SPLIT should occur only once in loop $name", $this->ind);
+						$this->_errmsg("Attribut SPLIT should occur only once in loop $name", $this->ind);
 					$selectparts['split'] = $value;
 					break;
 				case 'GROUPBY' :
 					if ($selectparts['groupby'])
-						$this->errmsg("Attribut GROUPY should occur only once in loop $name", $this->ind);
+						$this->_errmsg("Attribut GROUPY should occur only once in loop $name", $this->ind);
 					$selectparts['groupby'] = $value;
 					break;
 				case 'HAVING' :
 					if ($selectparts['having'])
-						$this->errmsg("Attribut HAVING should occur only once in loop $name", $this->ind);
+						$this->_errmsg("Attribut HAVING should occur only once in loop $name", $this->ind);
 					$selectparts['having'] = $value;
 					break;
 				case 'SELECT' :
 					if ($dontselect)
-						$this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name", $this->ind);
+						$this->_errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name", $this->ind);
 					#$select=array_merge($select,preg_split("/\s*,\s*/",$value));
 					if ($selectparts['select'])
 						$selectparts['select'] .= ",";
@@ -683,7 +683,7 @@ PHP;
 					break;
 				case 'DONTSELECT' :
 					if ($selectparts['select'])
-						$this->errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name", $this->ind);
+						$this->_errmsg("Attributs SELECT and DONTSELECT are exclusive in loop $name", $this->ind);
 					$dontselect = array_merge($dontselect, preg_split("/\s*,\s*/", $value));
 					break;
 				case 'REQUIRE' :
@@ -692,7 +692,7 @@ PHP;
 					$options['showsql'] = true;
 					break;
 				default :
-					$this->errmsg("unknown attribut \"".$attr['name']."\" in the loop $name", $this->ind);
+					$this->_errmsg("unknown attribut \"".$attr['name']."\" in the loop $name", $this->ind);
 				}
 			} // loop on the attributs
 			// end of definition of a SQL loop
@@ -710,7 +710,7 @@ PHP;
 		#  echo "enter loop $name:",$this->ind,"<br>\n";
 
 		if (!$name)	{
-			$this->errmsg("the name of the loop on table(s) \"".join(" ", $tables)."\" is not defined", $this->ind);
+			$this->_errmsg("the name of the loop on table(s) \"".join(" ", $tables)."\" is not defined", $this->ind);
 		}
 
 		$selectparts['where'] = join(" AND ", $wheres);
@@ -735,7 +735,7 @@ PHP;
 		if ($tables) { // loop SQL
 			// check if the loop is not already defined with a different contents.
 			if ($issql && $attrs != $this->loops[$name]['attr']){
-				$this->errmsg("loop $name cannot be defined more than once", $this->ind);}
+				$this->_errmsg("loop $name cannot be defined more than once", $this->ind);}
 
 			// get the contents
 			$looplevel = 1;
@@ -768,7 +768,7 @@ PHP;
 					$this->ind += 3;
 				} while ($this->ind < $iclose);
 			} else {
-				$this->errmsg("loop $name cannot be defined more than once with different contents", $this->ind);
+				$this->_errmsg("loop $name cannot be defined more than once with different contents", $this->ind);
 			}
 			$code = 
 <<<PHP
@@ -801,20 +801,20 @@ PHP;
 PHP;
 				$this->ind += 3;
 				if ($this->arr[$this->ind] != '/LOOP')
-					$this->errmsg("loop $name cannot be defined more than once");
+					$this->_errmsg("loop $name cannot be defined more than once");
 				$this->loops[$name]['recursive'] = true;
 			}
 		}
 		if ($this->arr[$this->ind] != '/LOOP') {
 			echo ":::: $this->ind ".$this->arr[$this->ind]."<br />\n";
 			print_r($this->arr);
-			$this->errmsg("internal error in parse_loop. Report the bug");
+			$this->_errmsg("internal error in parse_loop. Report the bug");
 		}
 		$this->arr[$this->ind]     = '';
 		$this->arr[$this->ind + 1] = $code;
 	}
 
-	function decode_loop_content($name, & $content, & $options, $tables = array ())
+	protected function decode_loop_content($name, & $content, & $options, $tables = array ())
 	{
 		$balises = array ('DOFIRST' => 1, 'DOLAST' => 1, 'DO' => 1, 'AFTER' => 0, 'BEFORE' => 0, 'ALTERNATIVE' => 0);
 		$loopind = $this->ind;
@@ -824,7 +824,7 @@ PHP;
 			if (isset ($balises[$this->arr[$this->ind]])) { // opening
 				$state = $this->arr[$this->ind];
 				if ($content[$state])
-					$this->errmsg("In loop $name, the block $state is defined more than once", $this->ind);
+					$this->_errmsg("In loop $name, the block $state is defined more than once", $this->ind);
 				$istart = $this->ind;
 				$this->arr[$this->ind] = '';
 				$this->arr[$this->ind + 1] = '';
@@ -844,20 +844,20 @@ PHP;
 				$isendloop = 1;
 				break;
 			}	elseif ($state)	{ // error
-				$this->errmsg("&lt;$state&gt; not closed in the loop $name", $this->ind);
+				$this->_errmsg("&lt;$state&gt; not closed in the loop $name", $this->ind);
 			}	else { // another error
-				$this->errmsg("unexpected &lt;".$this->arr[$this->ind]."&gt; in the loop $name", $this->ind);
+				$this->_errmsg("unexpected &lt;".$this->arr[$this->ind]."&gt; in the loop $name", $this->ind);
 			}
 		}	while ($this->ind < $this->countarr);
 
 		if (!$isendloop)
-			$this->errmsg("end of loop $name not found", $this->ind);
+			$this->_errmsg("end of loop $name not found", $this->ind);
 
 		if ($content['DO']) {
 			// check that the remaining content is empty
 			for ($j = $loopind; $j < $this->ind; $j ++)
 				if (trim($this->arr[$j])) {
-					$this->errmsg("In the loop $name, a part of the content is outside the tag DO", $j);
+					$this->_errmsg("In the loop $name, a part of the content is outside the tag DO", $j);
 				}
 		} else {
 			for ($j = $loopind; $j < $this->ind; $j += 3) {
@@ -870,7 +870,7 @@ PHP;
 		}
 	}
 
-	function make_loop_code($name, $tables, $tablesinselect, $extrainselect, $dontselect, $selectparts, $contents, $options)
+	protected function make_loop_code($name, $tables, $tablesinselect, $extrainselect, $dontselect, $selectparts, $contents, $options)
 	{
 		static $tablefields; // charge qu'une seule fois
 		if ($selectparts['where'])
@@ -929,7 +929,7 @@ PHP;
 			if (!$tablefields)
 				require 'tablefields.php';
 			if (!$tablefields)
-				die("ERROR: internal error in decode_loop_content: table $table");
+				trigger_error("ERROR: internal error in decode_loop_content: table $table", E_USER_ERROR);
 
 			$selectarr = array ();
 			foreach ($tablesinselect as $t) {
@@ -963,36 +963,18 @@ PHP;
 if(!function_exists("loop_{$name}")) {
 	function loop_{$name}(\$context)
 	{
+		global \$db;
 		{$preprocesslimit}
-		\$query =	"SELECT count(*) as nbresults 
-					FROM {$table} 
-					{$selectparts['where']} 
-					{$selectparts['groupby']} {$selectparts['having']}";
-		\$result = mysql_query(\$query) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
-PHP;
-		if($selectparts['groupby']) {
-			$this->fct_txt .= 
-<<<PHP
-		\$context['nbresults'] = 0;
-		while(\$row = {$sqlfetchassoc}) { \$context['nbresults']++; }
-		\$context['nbresultats'] = \$context['nbresults'];
-PHP;
-		} else {
-			$this->fct_txt .= 
-<<<PHP
-		\$row = {$sqlfetchassoc};
-		\$context['nbresultats'] = \$context['nbresults'] = \$row['nbresults'];
-PHP;
-		}
-		$this->fct_txt .= 
-<<<PHP
-		\$context['nblignes']=mysql_num_rows(\$result);
-		mysql_free_result(\$result);
 		\$query =	"SELECT {$select} 
 					FROM {$table} 
 					{$selectparts['where']} 
 					{$selectparts['groupby']} {$selectparts['having']} {$selectparts['order']} 
 					{$limit}";
+
+		\$queryCount =	"SELECT count(*) as nbresults 
+					FROM {$table} 
+					{$selectparts['where']} 
+					{$selectparts['groupby']} {$selectparts['having']}";
 PHP;
 		if($options['showsql']) { 
 			$this->fct_txt .= 
@@ -1000,13 +982,37 @@ PHP;
 		echo htmlentities(\$query);
 PHP;
 		}
+		$this->fct_txt.=
+<<<PHP
+		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], \$queryCount) or mymysql_error(\$queryCount,'{$name}',__LINE__,__FILE__);
+PHP;
+		if($selectparts['groupby']) {
+			$this->fct_txt .= 
+<<<PHP
+		\$context['nbresults'] = 0;
+		while(\$row = \$result->FetchRow()) { \$context['nbresults']++; }
+		\$context['nbresultats'] = \$context['nbresults'];
+PHP;
+		} else {
+			$this->fct_txt .= 
+<<<PHP
+		\$row = \$result->FetchRow();
+		\$context['nbresultats'] = \$context['nbresults'] = \$row['nbresults'];
+PHP;
+		}
 		$this->fct_txt .= 
 <<<PHP
-		\$result=mysql_query(\$query) or mymysql_error(\$query, '{$name}', __LINE__, __FILE__);
+		\$context['nblignes']=\$result->RecordCount(\$result);
+		\$result->Close();
+PHP;
+
+		$this->fct_txt .= 
+<<<PHP
+		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], \$query) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
 		{$processlimit}
 		\$generalcontext=\$context;
 		\$count=0;
-		if(\$row={$sqlfetchassoc}) {?>{$contents['BEFORE']}<?php 
+		if(\$row=\$result->FetchRow()) {?>{$contents['BEFORE']}<?php 
 			do {
 			\$context=array_merge (\$generalcontext,\$row);
 			\$context['count'] = ++\$count;
@@ -1032,7 +1038,7 @@ PHP;
 		$this->fct_txt .= 
 <<<PHP
 {$contents['PRE_DO']}?>{$contents['DO']}<?php 
-			} while (\$count<\$generalcontext['nbresults'] && \$row={$sqlfetchassoc}); 
+			} while (\$count<\$generalcontext['nbresults'] && \$row=\$result->FetchRow()); 
 ?>{$contents['AFTER']}<?php 
 		}
 PHP;
@@ -1046,13 +1052,13 @@ PHP;
 		}
 		$this->fct_txt .= 
 <<<PHP
-		mysql_free_result(\$result);
+		\$result->Close();
 	}
 }
 PHP;
 	}
 
-	function make_userdefined_loop_code($name, $contents)
+	protected function make_userdefined_loop_code($name, $contents)
 	{
 		// cree la fonction loop
 		#echo "infilename=".$this->infilename;
@@ -1106,7 +1112,7 @@ PHP;
 	 * Un simple appel à parse_MACRO.
 	 * @see parse_MACRO
 	 */
-	function parse_FUNC()
+	protected function parse_FUNC()
 	{
 		$this->parse_MACRO('FUNC');
 	}
@@ -1119,14 +1125,14 @@ PHP;
 	 * @param string $tag définit la macro ou la func Lodelscript
 	 * @see parse_MACRO
 	 */
-	function parse_MACRO($tag = 'MACRO')
+	protected function parse_MACRO($tag = 'MACRO')
 	{
 		// decode attributs
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 
 		$name = trim($attrs['NAME']);
 		if (!$name) {
-			$this->errmsg("$tag without NAME attribut");
+			$this->_errmsg("$tag without NAME attribut");
 		}
 
 		if (!isset ($this->macrocode[$name]))	{
@@ -1135,7 +1141,7 @@ PHP;
 
 			#if (!preg_match_all($searchstr,$text,$defs,PREG_SET_ORDER)) 
 			if (!preg_match_all($searchstr, $this->macros_txt, $defs, PREG_SET_ORDER)) {
-				$this->errmsg("the macro $name is not defined");
+				$this->_errmsg("the macro $name is not defined");
 			}
 			$def = array_pop($defs); // get the last definition of the macro
 			$code = preg_replace("/(^\n|\n$)/", "", $def[2]); // remove first and last line break
@@ -1153,7 +1159,7 @@ PHP;
 				// check the validity of the call
 				foreach ($required as $arg) {
 					if (!isset ($attrs[$arg])) {
-						$this->errmsg("the macro $name required the attribut $arg");
+						$this->_errmsg("the macro $name required the attribut $arg");
 					}
 				}
 			}
@@ -1203,7 +1209,7 @@ PHP;
 		}
 	}
 
-	function parse_BLOCK($block=array())
+	protected function parse_BLOCK($block=array())
 	{
 		if(!empty($block)) {
 			$attrs = $this->_decode_attributs($block[1]);
@@ -1211,10 +1217,10 @@ PHP;
 			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 		}
 		if(!($attrs['ID'] = (int)$attrs['ID']))
-			$this->errmsg("Incorrect ID for block number ".count($this->blocks)+1);
+			$this->_errmsg("Incorrect ID for block number ".count($this->blocks)+1);
 		if(empty($block)) {
 			if(in_array($attrs['ID'], $this->blocks))
-				$this->errmsg("Duplicate ID for block number ".count($this->blocks)+1);
+				$this->_errmsg("Duplicate ID for block number ".count($this->blocks)+1);
 			$this->blocks[] = $attrs['ID'];
 			$this->_clearposition();
 		}
@@ -1255,7 +1261,7 @@ PHP;
 	
 			$this->parse_main();
 			if ($this->arr[$this->ind] != "/BLOCK")
-				$this->errmsg("&lt;/BLOCK&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
+				$this->_errmsg("&lt;/BLOCK&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
 	
 			$this->_clearposition();
 			if(isset($attrs['REFRESH'])) {
@@ -1287,11 +1293,11 @@ PHP;
 	/**
 	 * Traite les conditions avec IF
 	 */
-	function parse_IF()
+	protected function parse_IF()
 	{
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 		if (!$attrs['COND'])
-			$this->errmsg("Expecting a COND attribut in the IF tag");
+			$this->_errmsg("Expecting a COND attribut in the IF tag");
 		$cond = $attrs['COND'];
 		$this->parse_variable($cond, false); // parse the attributs
 		$cond = replace_conditions($cond, "php");
@@ -1304,14 +1310,14 @@ PHP;
 			$this->parse_main();
 			if ($this->arr[$this->ind] == "ELSE") {
 				if ($elsefound)
-					$this->errmsg("ELSE found twice in IF condition", $this->ind);
+					$this->_errmsg("ELSE found twice in IF condition", $this->ind);
 				$elsefound = 1;
 				$this->_clearposition();
 				$this->arr[$this->ind + 1] = '<?php } else { ?>';
 			}	elseif ($this->arr[$this->ind] == "ELSEIF") {
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if (!$attrs['COND'])
-					$this->errmsg("Expecting a COND attribut in the ELSEIF tag");
+					$this->_errmsg("Expecting a COND attribut in the ELSEIF tag");
 				$cond = $attrs['COND'];
 				$this->parse_variable($cond, false); // parse the attributs
 				$cond = replace_conditions($cond, "php");
@@ -1320,11 +1326,11 @@ PHP;
 			}	elseif ($this->arr[$this->ind] == "/IF") {
 				$isendif = 1;
 			}	else
-				$this->errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in IF condition", $this->ind);
+				$this->_errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in IF condition", $this->ind);
 		}	while (!$isendif && $this->ind < $this->countarr);
 
 		if (!$isendif)
-			$this->errmsg("IF not closed", $this->ind);
+			$this->_errmsg("IF not closed", $this->ind);
 
 		$this->_clearposition();
 		$this->arr[$this->ind + 1] = '<?php } ?>';
@@ -1333,11 +1339,11 @@ PHP;
 	/**
 	 * Traite les conditions avec SWITCH
 	 */
-	function parse_SWITCH()
+	protected function parse_SWITCH()
 	{
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 		if (!$attrs['TEST'])
-			$this->errmsg("Expecting a TEST attribut in the SWITCH tag");
+			$this->_errmsg("Expecting a TEST attribut in the SWITCH tag");
 		$test = quote_code($attrs['TEST']);
 		$this->parse_variable($test, false); // parse the attributs
 		$test = replace_conditions($test, 'php');
@@ -1346,7 +1352,7 @@ PHP;
 		$toput = $this->ind + 1;
 
 		if (trim($this->arr[$this->ind + 2]))
-			$this->errmsg("Expecting a CASE tag after the SWITCH tag");
+			$this->_errmsg("Expecting a CASE tag after the SWITCH tag");
 		// PHP ne veut aucun espace entre le switch et le premier case !
 		$begin = true;
 		do {
@@ -1386,7 +1392,7 @@ PHP;
 							$this->arr[$this->ind + 1] .= '<?php case "'.quote_code($case).'":'.($k==$nbCases ? ' { ?>' : ' ?>');
 					}
 				} else {
-					$this->errmsg("missing attribute 'CASE(S)' in SWITCH condition", $this->ind);
+					$this->_errmsg("missing attribute 'CASE(S)' in SWITCH condition", $this->ind);
 				}
 			} elseif ($this->arr[$this->ind] == "/DO") {
 				$this->_clearposition();
@@ -1394,11 +1400,11 @@ PHP;
 			} elseif ($this->arr[$this->ind] == "/SWITCH") {
 				$endswitch = true;
 			} else
-				$this->errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in SWITCH condition", $this->ind);
+				$this->_errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in SWITCH condition", $this->ind);
 		} while (!$endswitch && $this->ind < $this->countarr);
 
 		if (!$endswitch)
-			$this->errmsg("SWITCH block is not closed", $this->ind);
+			$this->_errmsg("SWITCH block is not closed", $this->ind);
 
 		$this->_clearposition();
 		$this->arr[$this->ind + 1] = '<?php } ?>';
@@ -1410,17 +1416,17 @@ PHP;
 	 * pendant l'évaluation des templates
 	 * @see View::resetContext()
 	 */
-	function parse_LET()
+	protected function parse_LET()
 	{
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
-			$this->errmsg("LET have no VAR|ARRAY attribut");
+			$this->_errmsg("LET have no VAR|ARRAY attribut");
 		$regexpVarName = ('ARRAY' == $result[1]) ? '('.$this->variable_regexp.')(\[[a-zA-Z0-9_]*\])?' : '('.$this->variable_regexp.')';
 		if (!preg_match("/^{$regexpVarName}$/i", $result[2], $res))
-			$this->errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
+			$this->_errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
 		
 		$var = strtolower($res[1]);
 		if(isset($this->denied[$var]))
-			$this->errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
+			$this->_errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
 		if('VAR' == $result[1]) {
 			// commenté septembre 2008 par pierre-alain car pas d'utilité trouvée ?!?
 			//$this->parse_variable($result[2], false); // parse the attributs
@@ -1431,7 +1437,7 @@ PHP;
 			#$this->parse_main2();
 			$this->parse_main();
 			if ($this->arr[$this->ind] != "/LET")
-				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
+				$this->_errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 			$this->_clearposition();
 			$this->arr[$this->ind + 1] = $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>';
@@ -1455,7 +1461,7 @@ PHP;
 			$this->arr[$this->ind] = '';
 			$this->ind++;
 			if ($this->arr[$this->ind] != "/LET")
-				$this->errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
+				$this->_errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 			$this->_clearposition();
 			$merge = (count($vars)>1 || !$res[2]) ? 'array_merge('.join(',',$vars).')' : $originalVar;
 			unset($values,$originalVar, $vars);
@@ -1468,7 +1474,7 @@ PHP;
 	/**
 	 * Traite les ESCAPE
 	 */
-	function parse_ESCAPE()
+	protected function parse_ESCAPE()
 	{
 		$escapeind = $this->ind;
 		$this->_clearposition();
@@ -1477,7 +1483,7 @@ PHP;
 
 		$this->parse_main();
 		if ($this->arr[$this->ind] != "/ESCAPE")
-			$this->errmsg("&lt;/ESCAPE&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
+			$this->_errmsg("&lt;/ESCAPE&gt; expected, ".$this->arr[$this->ind]." found", $this->ind);
 
 		for ($i = $escapeind; $i < $this->ind; $i += 3)	{
 			if (trim($this->arr[$i +2]))
@@ -1491,7 +1497,7 @@ PHP;
 	 *
 	 * @access private
 	 */
-	function _checkforrefreshattribut($mixed)
+	protected function _checkforrefreshattribut($mixed)
 	{
 		if(empty($mixed))
 			return;
@@ -1508,7 +1514,7 @@ PHP;
 		$refresh = trim($attrs['REFRESH']);
 		$timere = "(?:\d+(:\d\d){0,2})"; // time regexp
 		if (!is_numeric($refresh) && !preg_match("/^$timere(?:,$timere)*$/", $refresh))
-			$this->errmsg("Invalid refresh time \"".$refresh."\"");
+			$this->_errmsg("Invalid refresh time \"".$refresh."\"");
 
 		if (!$this->refresh || (is_numeric($refresh) && is_numeric($this->refresh) && $refresh < $this->refresh)) {
 			$this->refresh = $refresh;
@@ -1517,7 +1523,7 @@ PHP;
 		}
 	}
 
-	function prefixTablesInSQL($sql) 
+	protected function prefixTablesInSQL($sql) 
 	{
 		if (!method_exists($this, 'prefixTableName'))
 			return $sql;
@@ -1552,7 +1558,7 @@ PHP;
 		return $str;
 	}
 
-	function _decode_attributs($text, $options = '')
+	protected function _decode_attributs($text, $options = '')
 	{
 		// decode attributs
 		$arr = explode('"', $text);
@@ -1570,14 +1576,14 @@ PHP;
 		return $ret;
 	}
 
-	function _clearposition()
+	protected function _clearposition()
 	{
 		$this->arr[$this->ind] = $this->arr[$this->ind + 1] = "";
 		$this->arr[$this->ind + 2] = preg_replace(array("/^[\t\n]+/", "/[\t\n]+$/"), "", $this->arr[$this->ind + 2]);
 	}
 
 	// bug [#4454]
-	function _checkSplit(&$arr, $nbArr)
+	protected function _checkSplit(&$arr, $nbArr)
 	{
 		for($i=2;$i<$nbArr;$i+=3) {
 			$nbQuotes = substr_count($arr[$i], '"');
@@ -1594,11 +1600,11 @@ PHP;
 		}
 	}
 
-	function _split_file($contents, $action = 'insert', $blockId=0)
+	protected function _split_file($contents, $action = 'insert', $blockId=0)
 	{
 		if($blockId>0) {
 			if(!preg_match("/<BLOCK\b ([^>]*ID=\"".$blockId."\"[^>]*)>.*?<\/BLOCK>/s", $contents, $matches)) {
-				$this->errmsg('No block number '.$blockId.' found in file '.$this->infilename);
+				$this->_errmsg('No block number '.$blockId.' found in file '.$this->infilename);
 			}
 			$attrs = $this->_decode_attributs($matches[1]);
 			$this->_checkforrefreshattribut($attrs);

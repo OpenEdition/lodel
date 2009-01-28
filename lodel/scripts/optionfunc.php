@@ -54,14 +54,15 @@
  * @param string $optionsfile le nom du fichier cache des options
  * @return array le tableau des options
  */
-
-require_once 'func.php';
+if(!function_exists('clean_request_variable'))
+	require 'func.php';
 function cacheOptionsInFile($optionsfile='')
 {
 	global $db;
+	$ids = array();
 	do {
 		$sql = lq('SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent '.sql_in_array($ids)." ORDER BY rank");
-		$result = $db->execute($sql) or dberror();
+		$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array ();
 		$i = 1;
 		$l = 1;
@@ -87,7 +88,7 @@ function cacheOptionsInFile($optionsfile='')
 		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
 	}
 
-	$result = $db->execute($sql) or dberror();
+	$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	$txt = "<"."?php\n\$options_cache=array(\n";
 	while (!$result->EOF)	{
 		$id = $result->fields['id'];

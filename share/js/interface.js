@@ -382,7 +382,10 @@ function manageDesk(shareurl, msgHide, msgShow, site, errorXHR, errorSave)
 			xhr.open("POST", shareurl + '/ajax/desk.php', true);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 			xhr.onreadystatechange = function(){
-				if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') { alert(xhr.errorSave); }
+				if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText != 'ok') { 
+					if(xhr.responseText == 'auth') window.location = "lodel/admin/login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
+					else alert(xhr.errorSave); 
+				}
 			}
 			xhr.send('site='+site);
 		} else {

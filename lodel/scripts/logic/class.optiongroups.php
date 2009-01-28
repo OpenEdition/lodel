@@ -2,7 +2,7 @@
 /**	
  * Logique des groupes d'options
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -62,9 +63,9 @@ class OptiongroupsLogic extends Logic {
 	/**
 	 * Constructor
 	 */
-	function OptiongroupsLogic() 
+	public function __construct() 
 	{
-		$this->Logic("optiongroups");
+		parent::__construct("optiongroups");
 	}
 
 	/**
@@ -73,7 +74,7 @@ class OptiongroupsLogic extends Logic {
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @param string $var le nom de la variable du select
 	 */
-	function makeSelect(&$context, $var)
+	public function makeSelect(&$context, $var)
 	{
 		global $db;
 
@@ -85,7 +86,7 @@ class OptiongroupsLogic extends Logic {
 			$ids=array(0);
 			$l=1;
 			do {
-				$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or dberror();
+				$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$ids=array();
 				$i=1;
 				while(!$result->EOF) {
@@ -122,9 +123,9 @@ class OptiongroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
+		return parent::changeRankAction(&$context, &$error, 'idparent', '');
 	}
 
 	/**
@@ -139,13 +140,13 @@ class OptiongroupsLogic extends Logic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id, $status = 0)
+	public function isdeletelocked($id, $status = 0)
 	{
 		global $db;
 		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_options WHERE idgroup='$id' AND status>-64"));
 		$countgroups = $db->getOne(lq("SELECT count(*) FROM #_TP_optiongroups WHERE idparent='$id' AND status>-64"));
 		$count = $count + $countgroups;
-		if ($db->errorno())  dberror();
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -161,16 +162,16 @@ class OptiongroupsLogic extends Logic {
 	* @param object $dao la DAO utilisée
 	* @param array &$context le context passé par référence
 	*/
-	function _prepareEdit($dao,&$context)
+	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
 		if ($context['id']) //it is an edition
 		{
 			$this->oldvo=$dao->getById($context['id']);
 			if (!$this->oldvo)
-				die("ERROR: internal error in OptionGroups::_prepareEdit");
+				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
 			if($context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
-				die("ERROR : Changing the parent of a group is forbidden");
+				trigger_error("ERROR : Changing the parent of a group is forbidden", E_USER_ERROR);
 			
 		}
 		else //it is an add
@@ -193,11 +194,11 @@ class OptiongroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction(&$context, &$error, $clean = false)
+	public function editAction(&$context, &$error, $clean = false)
 	{
-		$ret = Logic::editAction($context, $error);
+		$ret = parent::editAction($context, $error);
 		if (!$error) $this->clearCache();
-				return $ret;
+		return $ret;
 	}
 	
 	/**
@@ -208,7 +209,7 @@ class OptiongroupsLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,&$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 		global $db;
 		//if the exportpolicy has been changed update the optiongroups children	
@@ -238,10 +239,9 @@ class OptiongroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function deleteAction(&$context,&$error)
-
+	public function deleteAction(&$context,&$error)
 	{
-		$ret=Logic::deleteAction($context,$error);
+		$ret=parent::deleteAction($context,$error);
 		if (!$error) $this->clearCache();
 		return $ret;
 
@@ -249,7 +249,7 @@ class OptiongroupsLogic extends Logic {
 	/**
 	 * Effacement du cache
 	 */
-	function clearCache()
+	public function clearCache()
 	{
 		@unlink(SITEROOT. "CACHE/options_cache.php");
 	}
@@ -260,7 +260,7 @@ class OptiongroupsLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('idparent' => array('select', '+'),
 									'name' => array('text', '+'),
@@ -278,7 +278,7 @@ class OptiongroupsLogic extends Logic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('name'), );
 	}
@@ -286,5 +286,4 @@ class OptiongroupsLogic extends Logic {
 		
 
 } // class 
-
 ?>

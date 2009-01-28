@@ -43,8 +43,6 @@
  * @package lodel/source
  */
 
-touch('CACHE/maj');
-
 if ($PHP_AUTH_PW) {
   Header("WWW-authenticate:  basic  realm=\"Revues.org\"");
   Header('HTTP/1.0  401  Unauthorized');
