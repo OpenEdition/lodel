@@ -202,8 +202,6 @@ class Logic
 		if($create && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
 			$this->_sendPrivateInformation($context);
 		}
-		if(!function_exists('update'))
-			require 'func.php';
 		update();
 		return $ret ? $ret : "_back";
 	}
@@ -239,8 +237,6 @@ class Logic
 		$criteria = join(" AND ", $criterias);
 		$this->_changeRank($id, $context['dir'], $criteria);
 
-		if(!function_exists('update'))
-			require 'func.php';
 		update();
 		return '_back';
 	}
@@ -269,8 +265,6 @@ class Logic
 
 		$ret=$this->_deleteRelatedTables($id);
 
-		if(!function_exists('update'))
-			require 'func.php';
 		update();
 		return $ret ? $ret : '_back';
 	}

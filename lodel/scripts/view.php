@@ -71,8 +71,6 @@
 // needed functions
 if(!function_exists('getCachedFileName'))
 	require 'cachefunc.php';
-if(!function_exists('_indent'))
-	require 'func.php';
 
 class View
 {

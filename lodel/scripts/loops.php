@@ -713,8 +713,6 @@ function loop_alphabet($context, $funcname)
 function loop_alphabetSpec($context, $funcname)
 {
 	global $db, $lodeluser;
-	if(!function_exists('makeSortKey'))
-		require 'func.php';
 	if(empty($context['table']) || empty($context['field']))
 		trigger_error("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.", E_USER_ERROR);
 	if(!empty($context['idtype'])) {

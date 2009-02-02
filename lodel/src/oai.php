@@ -64,8 +64,6 @@ try
 require 'auth.php';
 authenticate();
 
-require 'func.php';
-
 define('TOKENVALID', 24); // tokens lifetime in hours
 define('MAXIDS', 10); // max delivered identifiers
 define('MAXRECORDS', 10); // max delivered records
@@ -318,8 +316,6 @@ function dc_rename($str)
  */
 function strip_set($str)
 {
-	if(!function_exists('makeSortKey'))
-		require 'func.php';
 	$str = makeSortKey($str);
 	return preg_replace("/[^a-zA-Z0-9_.!~*\'()]/", "_", $str);
 }

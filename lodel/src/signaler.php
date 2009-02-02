@@ -127,8 +127,6 @@ if ($envoi) {
 		$content = ob_get_clean();
 
 		// envoie le mail
-		if(!function_exists('send_mail'))
-			require 'func.php';
 		if (false === send_mail ($context['to'], $content, $context['subject'], $context['from'], $context['nom_expediteur'])) {
 			$context['error_mail']=1;
 			break;

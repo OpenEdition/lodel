@@ -239,8 +239,6 @@ function _array_slice_key($array, $offset, $len = -1)
  * Results page script - Lodel part
  * 
  */
-if(!function_exists('extract_post'))
-	require ("func.php");
 if(!class_exists('View', false))
 	require "view.php";
 $view = &View::getView();

@@ -54,8 +54,7 @@
  * @param string $optionsfile le nom du fichier cache des options
  * @return array le tableau des options
  */
-if(!function_exists('clean_request_variable'))
-	require 'func.php';
+	
 function cacheOptionsInFile($optionsfile='')
 {
 	global $db;

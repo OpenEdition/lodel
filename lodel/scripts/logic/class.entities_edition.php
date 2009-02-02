@@ -213,8 +213,6 @@ class Entities_EditionLogic extends GenericLogic
 		if ($context['check'] && !$error) {
 			$context['status'] = -1;
 			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
-			if(!function_exists('clean_request_variable'))
-				require('func.php');
 			clean_request_variable($context);
 			return $this->editAction($context, $error);
 		}

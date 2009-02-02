@@ -43,8 +43,6 @@
  * @package lodel
  */
 
-require_once "func.php";
-
 /**
  * Retire les pièces jointes des mails sur une boîte mail donnée
  *

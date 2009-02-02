@@ -114,8 +114,6 @@ class Controller
 			View::back(2); //revient 2 rang en arrière dans l'historique.
 			return;
 		}
-		if(!function_exists('extract_post'))
-			require 'func.php';
 		extract_post($therequest); // nettoyage des valeurs issues de formulaire
 
 		if ($do) {

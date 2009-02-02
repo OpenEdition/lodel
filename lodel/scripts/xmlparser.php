@@ -44,9 +44,6 @@
  * @since Fichier ajouté depuis la version 0.8
  */
 
-if(!function_exists('translate_xmldata'))
-	require 'func.php';
-
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
 /**
  * Retourne le dernier élément d'un tableau

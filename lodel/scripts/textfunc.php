@@ -1022,8 +1022,6 @@ function LSgmstrftime($time){
 */
 
 function formatIdentifier($str) {
-	if(!function_exists('makeSortKey'))
-		require 'func.php';
 	return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
 }
 

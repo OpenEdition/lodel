@@ -178,8 +178,6 @@ class GenericLogic extends Logic
 			$ret = $this->_populateContextRelatedTables($vo, $context);
 		}
 		// nettoyage avant affichage
-		if(!function_exists('postprocessing'))
-			require('func.php');
 		postprocessing($context);
 		return $ret ? $ret : "_ok";
 	}

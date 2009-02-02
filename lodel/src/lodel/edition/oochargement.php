@@ -55,7 +55,7 @@ try
 {
 require 'auth.php';
 authenticate(LEVEL_REDACTOR);
-require 'func.php';
+// require 'func.php';
 require 'utf8.php'; // conversion des caracteres
 
 if ($_POST) {

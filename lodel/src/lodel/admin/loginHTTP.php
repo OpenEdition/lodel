@@ -57,7 +57,6 @@ if ($httpAuth->getHeader())
 	// récupère les identifiants (login/password) du header
 	$identifiers = $httpAuth->getIdentifiers();
 
-	require 'func.php';
 	extract_post($identifiers);
 
 	require 'loginfunc.php';

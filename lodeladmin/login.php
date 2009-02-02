@@ -59,7 +59,6 @@ try
 	$url_retour = strip_tags($url_retour);
 	
 	if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
-		require 'func.php';
 		extract_post();
 		require 'loginfunc.php';
 		unset($retour);
@@ -85,7 +84,6 @@ try
 			}
 		}
 	} elseif ($_POST['login']) {
-		require 'func.php';
 		extract_post();
 		do {
 			require 'loginfunc.php';

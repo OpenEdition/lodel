@@ -361,8 +361,6 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				unset ($text);
 				return 'upload';
 			}
-			if(!function_exists('save_file'))
-				require 'func.php';
 
 			if (!empty($directory)) {
 				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
@@ -384,10 +382,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			return true;
 		case 'serverfile' :
 			// check if the tmpdir is defined
-			if(!function_exists('save_file'))
-				require 'func.php';
-			
-				if (!empty($directory)) {
+			if (!empty($directory)) {
 				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
 				$text = basename($text['localfilename']);
 				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);

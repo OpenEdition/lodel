@@ -46,8 +46,7 @@
 if (!function_exists("authenticate")) {
 	trigger_error("ERROR: invalid include of translationsexportinc.php", E_USER_ERROR);
 }
-if(!function_exists('lock_write'))
-	require 'func.php';
+
 require_once 'validfunc.php';
 
 //$context[importdir]=$importdir;

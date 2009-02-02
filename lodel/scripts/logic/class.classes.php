@@ -190,8 +190,6 @@ class ClassesLogic extends Logic
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
 		
-		if(!function_exists('update'))
-			require 'func.php';
 		update();
 		return $ret ? $ret : "_back";
 	}

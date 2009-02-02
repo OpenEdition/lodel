@@ -357,8 +357,6 @@ class Internal_MessagingLogic extends Logic
 		}
 		unset($context['id'], $id);
 		if(!isset($context['escape']) || true !== $context['escape']) {
-			if(!function_exists("update"))
-				require 'func.php';
 			update();
 			return "_location: index.php?do=list&lo=internal_messaging&deleted=1&directory=".$context['directory'];
 		}
@@ -449,8 +447,6 @@ class Internal_MessagingLogic extends Logic
 		$requetes = substr_replace($requetes, '', -1);
 		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, addressee, addressees, subject, body, cond, incom_date, status) VALUES {$requetes}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		unset($context['idparent']);
-		if(!function_exists('update'))
-			require 'func.php';
 		update();
 		return "_location: index.php?do=list&lo=internal_messaging&msgsended=1&directory=".$context['directory'];
 	}

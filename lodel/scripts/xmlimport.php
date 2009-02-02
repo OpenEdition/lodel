@@ -400,8 +400,8 @@ class XMLImportParser
 	function _init_class($class, $criteria = '')
 	{
 		global $phpversion;
-		if(!function_exists('clone')) // pour pouvoir utiliser clone en php5
-			require 'php4.inc.php';
+// 		if(!function_exists('clone')) // pour pouvoir utiliser clone en php5
+// 			require 'php4.inc.php';
 	
 		if ($this->contextstyles[$class])
 			return; // already done

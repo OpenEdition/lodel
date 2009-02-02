@@ -48,8 +48,6 @@
 // en general etre ajouter ici
 //
 
-if(!function_exists('getDAO'))
-	require "func.php";
 require_once "balises.php";
 if(!class_exists('Parser', false))
 	require 'parser.php';

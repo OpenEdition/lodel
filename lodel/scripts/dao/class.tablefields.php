@@ -84,7 +84,6 @@ class tablefieldsVO
 	public $idgroup;
 	public $type;
 	public $g_name;
-// 	public $g_name_tei;
 	public $style;
 	public $cond;
 	public $defaultvalue;

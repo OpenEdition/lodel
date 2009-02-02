@@ -178,8 +178,6 @@ class DataLogic
 
 		if(!function_exists('importFromZip'))
 			require 'backupfunc.php';
-		if(!function_exists('tmpdir'))
-			require 'func.php';
 
 		$this->fileExtension = 'zip';
 	}

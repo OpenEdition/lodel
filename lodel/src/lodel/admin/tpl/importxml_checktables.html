@@ -42,7 +42,7 @@
 		<strong><IF COND="[#ACTION] EQ 'dropped'">[@ADMIN.IMPORTXML_DROPPEDTABLE]<ELSE/>[@ADMIN.IMPORTXML_ADDEDTABLE]</IF></strong>
 		<ul class="importXML_<IF COND="'added' == [#KEY]">right<ELSE />left</IF>">
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
-			<li><input type="text" value="<IF COND="[#ACTION] EQ 'dropped'">[#KEY]</IF>" name="data[[#ACTION]][[#VALUE]]" size="3" /> - [#VALUE]</li>
+			<li><input class="input_formulaire" type="text" value="<IF COND="[#ACTION] EQ 'dropped'">[#KEY]</IF>" name="data[[#ACTION]][[#VALUE]]" size="3" /> - [#VALUE]</li>
 		</LOOP>
 		</ul>
 	</div>
@@ -54,8 +54,8 @@
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checktables" value="1" />
 <fieldset>
-<input class="button" type="submit" />&nbsp;&nbsp;
-<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+<input class="button" type="submit"/>&nbsp;&nbsp;
+<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php';" />
 </fieldset>
 </div>
 </form>

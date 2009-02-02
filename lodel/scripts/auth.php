@@ -384,6 +384,7 @@ $idsession = 0;
 $session   = '';
 if(!function_exists('lq'))
 	require 'connect.php';
+require 'func.php';
 // tres important d'initialiser le context.
 $context = array ('version' => $GLOBALS['version'],
 			'shareurl' => $GLOBALS['shareurl'],

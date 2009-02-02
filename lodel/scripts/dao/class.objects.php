@@ -2,7 +2,7 @@
 /**
  * Fichier DAO de la table SQL objects.
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *

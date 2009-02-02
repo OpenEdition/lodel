@@ -129,8 +129,6 @@ class UsersLogic extends Logic
 		}
 
 		usecurrentdb();
-		if(!function_exists('update'))
-			require("func.php");
 		update();
 		return '_back';
 	}
@@ -442,8 +440,6 @@ class UsersLogic extends Logic
 		$body = ob_get_contents();
 		ob_end_clean();
 		unset($context['tmppasswd']);
-		if(!function_exists('send_mail'))
-			require 'func.php';
 		return send_mail($context['email'], $body, "Votre compte Lodel sur le site '{$context['sitetitle']}' ({$context['siteurl']})", $email, '');
 	}
 

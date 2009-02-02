@@ -322,8 +322,6 @@ class Entities_AdvancedLogic extends Logic
 		if (!file_exists($dir."/".$filename)) {
 			trigger_error("ERROR: the filename $filename does not exists", E_USER_ERROR);
 		}
-		if(!function_exists('download'))
-			require 'func.php';
 		download ($dir. '/'. $filename, $originalname);
 		exit;
 	}

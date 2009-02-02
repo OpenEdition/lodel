@@ -119,8 +119,7 @@ function removefilesincache()
 
 		clearstatcache();
 
-		$cacheDir = new RecursiveDirectoryIterator($rep);
-		$cache = new RecursiveIteratorIterator($cacheDir);
+		$cache = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rep));
 		foreach($cache as $file) {
 			if($cache->isDot() || $cache->isDir() || !$cache->isWritable() || ($dir = basename($cache->getPath())) == 'CVS' 
 				|| $dir == 'upload' || $dir == 'require_caching') continue;

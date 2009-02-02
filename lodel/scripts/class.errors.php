@@ -19,6 +19,7 @@ class LodelException extends Exception
 					E_CORE_WARNING => 'Core Warning',
 					E_COMPILE_ERROR => 'Compile Error',
 					E_COMPILE_WARNING => 'Compile Warning',
+					E_USER_WARNING => 'Internal Warning',
 					E_USER_ERROR => 'Internal Error',
 					E_STRICT => 'Strict Error',
 // 					E_DEPRECATED => 'Deprecated' PHP 5.3

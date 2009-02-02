@@ -56,7 +56,6 @@ try
 require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
-require 'func.php';
 require 'taskfunc.php';
 require 'xmlimport.php';
 require 'class.checkImportHandler.php';

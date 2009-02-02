@@ -112,7 +112,7 @@ class Entities_IndexLogic extends Logic
 //no fields to index --> return
 		if (!$vos_fields) return ("_back");
 
-		$sql = "SELECT ".join(',',$vos_fields)." FROM #_TP_$class WHERE identity='$id'";
+		$sql = "SELECT * FROM #_TP_$class WHERE identity='$id'";
 		$row = $db->getRow(lq($sql)) ;
 		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
 		$daoIndex = &getDAO ("search_engine"); 	
