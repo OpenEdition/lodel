@@ -337,8 +337,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		global $authorizedFiles; // white list dispo dans le lodelconfig.php
 		// on récupère l'extension du fichier	
-   		$extension = explode(".", $_FILES['data']['name'][$name][$text['radio']]);
-		$extension = ".".$extension[count($extension)-1];
+		$extension = strtolower(strrchr($_FILES['data']['name'][$name][$text['radio']],'.'));
 		// on évite la possibilité d'uploader des fichiers non désirés
 		if($text['radio'] == 'upload' && !in_array($extension, $authorizedFiles)) {
 			return $text['radio'];
