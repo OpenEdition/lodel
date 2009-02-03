@@ -232,9 +232,24 @@ class View
 		} elseif($caching && !$context['nocache'] && ($cachedTplMtime = myfilemtime(getCachedFileName("tpl_{$base}", $this->_site.'_tpl', $this->_cacheOptions))) 
 			>= ($tplMtime = @filemtime('./tpl/'.$base.'.html')) && ($content = $cache->get($this->_cachedfile, $this->_site))) 
 		{
+			if(preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m))
+			{
+				if(is_numeric($m[1]))
+				{
+					$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+					$GLOBALS['sqlCacheTime'] = $m[1];
+				}
+				else
+				{
+					$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+					$GLOBALS['sqlCacheTime'] = 0;
+				}
+			}
 			if(FALSE !== ($content = $this->_isCacheValid($content, $context))) 
 			{
 				echo $this->_eval($content, $context, true);
+				if(isset($sqlCacheTime))
+					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
 				flush();
 				$cache->extendLife();
 				// reset the context
@@ -246,6 +261,8 @@ class View
 				$this->_toRefresh = true;
 				unset($content);
 			}
+			if(isset($sqlCacheTime))
+				$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
 		} 
 		elseif($cachedTplMtime < $tplMtime) 
 		{
@@ -262,6 +279,7 @@ class View
 		if(empty($_POST)) {
 			$cache->save($content, $this->_cachedfile, $this->_site);
 		}
+
 		echo $this->_eval($content, $context, true);
 		flush();
 		// reset the context
@@ -356,14 +374,31 @@ class View
 				{
 					$cache->extendLife();
 				}
+
+				if($refreshTime !== 0)
+				{
+					if(is_numeric($refreshTime))
+					{
+						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+						$GLOBALS['sqlCacheTime'] = $refreshTime;
+					}
+					else
+					{
+						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+						$GLOBALS['sqlCacheTime'] = 0;
+					}
+				}
+
 				$content = _indent($this->_eval($content, $context, true));
 				$cache->save($content, $cachedTemplateFileName, $this->_site.'_TemplateFileEvalued');
-				return $content;
-			} 
-			else 
-			{
-				return $content;
+
+				if(isset($sqlCacheTime))
+				{
+					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
+				}
 			}
+
+			return $content;
 		}
 
 		if(!($content = $cache->get($tplName, $this->_site.'_TemplateFile'))) 
@@ -421,7 +456,8 @@ PHP;
 		{
 			$content = $this->_eval($content, $context, true);
 		}
-		return _indent($content);
+
+		return $content;
 	}
 
 	/**
@@ -637,15 +673,40 @@ PHP;
 		} 
 		else 
 		{
-			// execute le template php
-			if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) 
+			if($include)
 			{
-				require 'showhtml.php';
-				// on affiche la source
-				return show_html($this->_eval($content, $context));
+				return $content;
 			}
-			// utf-8 c'est le charset natif, donc on sort directement la chaine.
-			return ($include ? $content : $this->_eval($content, $context));
+			else
+			{
+				if(preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m))
+				{
+					if(is_numeric($m[1]))
+					{
+						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+						$GLOBALS['sqlCacheTime'] = $m[1];
+					}
+					else
+					{
+						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
+						$GLOBALS['sqlCacheTime'] = 0;
+					}
+				}
+				
+				$content = $this->_eval($content, $context);
+
+				if(isset($sqlCacheTime))
+					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
+
+				if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) 
+				{
+					if(!function_exists('show_html'))
+						require 'showhtml.php';
+					// on affiche la source
+					return show_html($content);
+				}
+				return $content;
+			}
 		}
 	}
 

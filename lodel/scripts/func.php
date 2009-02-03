@@ -388,28 +388,30 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	$critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
 	$logic=false;
 	$query = "SELECT id,contents,status 
-					FROM {$prefix}texts 
-					WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
-					ORDER BY lang DESC";
+			FROM {$prefix}texts 
+			WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
+			ORDER BY lang DESC";
 	
+	$create = false;
 	do {
 		//$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
 // 		$arr = $db->execute($stmt[$prefix], array((string)$name, (string)$group, (string)$lang));
-		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, $query, array((string)$name, (string)$group, (string)$lang));
 
+		// cache SQL des requetes de texte mis à un an .. à priori ça change pas beaucoup, et le clearcache nettoiera si besoin
+		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, $query, array((string)$name, (string)$group, (string)$lang));
 		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		elseif(!$arr) {
+
+		$arr = $arr->FetchRow();
+		if(!$arr) {
+			if($create) break;
 			if (!$GLOBALS['lodeluser']['admin']) break;
 			if(!function_exists('getLogic')) require 'logic.php';
 			// create the textfield
 			$logic=&getLogic("texts");
 			$logic->createTexts($name,$group);
 			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
-			$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, $query, array((string)$name, (string)$group, (string)$lang)) 
-				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$create = true;
 		}
-
-		$arr = $arr->FetchRow();
 	} while(!$arr);
 
 	if ($group!="site") usecurrentdb();

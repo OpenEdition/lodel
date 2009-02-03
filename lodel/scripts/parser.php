@@ -181,6 +181,7 @@ PHP;
 			if(!$include) {
 				$code = 
 <<<PHP
+#LODELREFRESH {$this->refresh}#
 <?php 
 if (\$GLOBALS['cachedfile'] && (\$cachetime=myfilemtime(\$GLOBALS['cachedfile']))) { 
 PHP;

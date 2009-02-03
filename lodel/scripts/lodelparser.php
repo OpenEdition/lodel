@@ -446,7 +446,7 @@ class LodelParser extends Parser
 	protected function maketext($name, $group, $tag)
 	{
 		global $db;
-		static $stmt;
+
 		$name = strtolower($name);
 		$group = strtolower($group);
 
@@ -458,7 +458,7 @@ class LodelParser extends Parser
 				$prefix = lq("#_TP_");
 			}
 			if(!isset($this->nbLangs[$prefix]))
-				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations");
 
 			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, "SELECT count(id) as nb FROM {$prefix}texts WHERE name=? AND textgroup=? LIMIT 1", array((string)$name, (string)$group));
 			if ($db->errorno()) {
