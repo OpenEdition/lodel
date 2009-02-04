@@ -420,7 +420,7 @@ class UsersLogic extends Logic
 		global $db;
 		if(!$context['tmppasswd']) return;
 		if(!empty($GLOBALS['site'])) {
-			$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
+			$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$GLOBALS['site']}'"));
 			if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 			$context['siteurl'] = str_replace(":80", "", $row['url']);
 			$context['sitetitle'] = $row['title'];

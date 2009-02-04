@@ -30,7 +30,8 @@
 	<body>
 <p>
 Bonjour,
-<br /><br />
+</p>
+<p>
 <IF COND="[#RESTRICTED]">
 Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous permettant d'accéder aux publications sous accès restreint du site "[#SITETITLE]" ([#SITEURL]).
 </p>
@@ -42,20 +43,20 @@ Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous per
 Ce compte sera actif jusqu'au [#EXPIRATION|humandate].
 </p>
 <ELSE />
-Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous permettant d'accéder à l'interface d'édition du site "[#SITETITLE]" ([#SITEURL]), ainsi que quelques recommandations à lire attentivement.
+Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous permettant d'accéder à l'interface d'édition du site "[#SITETITLE]" ([#SITEURL]).
 </p>
 <h3>-- Accès Lodel</h3>
 <p>
-Pour accéder à l'interface d'édition de votre site, une authentification est nécessaire. Il faut utiliser un compte d'accès Lodel :
-<br />
-<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br />
-<strong>Votre mot de passe</strong> : [#TMPPASSWD]<br />
+<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br/>
+<strong>Votre mot de passe</strong> : [#TMPPASSWD]<br/>
 L'url de connexion est la suivante : [#SITEURL]<IF COND="![#ISLODELADMIN]">/lodel/edition/</IF>
 </p>
 </IF>
-<br />
+<p>
 Cordialement,
-<br /><br />
+</p>
+<p>
 Les administrateurs du site.
+</p>
 </body>
 </html>

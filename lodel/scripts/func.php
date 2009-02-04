@@ -115,7 +115,7 @@ function clean_request_variable(&$var, $key='')
 		$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
 		$config->set('HTML', 'DefinitionRev', 1);
 		if($GLOBALS['debugMode'])
-			$config->set('Core', 'DefinitionCache', null);
+			$config->set('Cache', 'DefinitionImpl', null);
 		$def = $config->getHTMLDefinition(true);
 		$r2r = $def->addElement(
 			'r2r',   // name
