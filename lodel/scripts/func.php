@@ -1502,7 +1502,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname)
 {
 	if(!class_exists('Mail', false))
 		require 'Mail/Mail.php';
-	if(!class_exists('Mail_mime, false'))
+	if(!class_exists('Mail_mime', false))
 		require 'Mail/mime.php';
 	$message = new Mail_mime();
 	
