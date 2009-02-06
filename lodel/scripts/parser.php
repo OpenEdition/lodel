@@ -474,19 +474,77 @@ PHP;
 		}
 
 		# parse the filter
-		if ($pipefunction) { // traitement particulier ?
+		if ($pipefunction) 
+		{ // traitement particulier ?
 			//echo $pipefunction."<br />";
-			
-			$array = preg_split('/(?=\|[a-z]*[^\'|^\"]+)/',$pipefunction);
+			$length = strlen($pipefunction);
+			$filter = $args = '';
+			$currentQuote = false;
+			$open = false;
+			$quote = false;
+			$funcArray = array();
+			$argsArray = array();
+			$new = false;
+			for($i=1;$i<$length;$i++)
+			{
+				if(!$new)
+				{
+					if(!preg_match('/[A-Za-z]/', $pipefunction{$i}))
+						$this->_errmsg("The pipe functions \"$pipefunction\" are invalid");
+					$new = true;
+					$open = false;
+					$quote = false;
+					$currentQuote = '';
+				}
+				elseif($open && '\\' !== $pipefunction{$i-1} && ('"' === $pipefunction{$i} || "'" === $pipefunction{$i}))
+				{
+					if(!$quote)
+					{
+						$quote = true;
+						$currentQuote = $pipefunction{$i};
+					}
+					elseif($currentQuote === $pipefunction{$i})
+					{
+						$quote = false;
+						$currentQuote = '';
+					}
+				}
+				elseif('\\' !== $pipefunction{$i-1} && !$quote && '(' === $pipefunction{$i})
+				{
+					$open = true;
+					continue;
+				} 
+				elseif('\\' !== $pipefunction{$i-1} && $open && !$quote && ')' === $pipefunction{$i})
+				{
+					$open = false;
+					continue;
+				}
+				elseif('|' === $pipefunction{$i} && !$open)
+				{
+					$funcArray[] = $filter;
+					$argsArray[] = $args;
+					$filter = $args = '';
+					$new = false;
+					continue;
+				}
 
-			foreach($array as $fct) {
+				if(!$open)
+					$filter .= $pipefunction{$i};
+				else
+					$args .= $pipefunction{$i};
+			}
+			$funcArray[] = $filter;
+			$argsArray[] = $args;
+
+			foreach($funcArray as $k=>$fct) {
 				if(!$fct) continue;
 			//foreach (explode("|", $pipefunction) as $fct)	{
-				if($fct{0} == '|') {
-					$fct = substr($fct, 1);
-				}
+// 				if($fct{0} == '|') {
+// 					$fct = substr($fct, 1);
+// 				}
 				#foreach (preg_split ('/(?<!")(\|)(?!")/', $pipefunction) as $fct) {
 				// note that explode is a little bit radical. It should be more advanced parser
+				// edit : done on 06/02/09 par pierre-alain
 				if ($fct == "false" || $fct == "true" || $fct == "else") {
 					$fct .= "function";
 				}
@@ -494,22 +552,27 @@ PHP;
 					$fct = "falsefunction";
 				}
 				if ($fct) {
-					// get the args if any 
-					if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/", $fct, $result))	{
-						$args = ','. $result[2];
-						$fct = $result[1];
-					} elseif (preg_match("/^([A-Za-z][A-Za-z_0-9]*)$/", $fct)) {
-						$args = '';
-					} else {
-						// error
-						$this->_errmsg("The name of the pipe function \"$fct\" is invalid");
+					if('' !== $argsArray[$k])
+					{
+						$argsArray[$k] = ','.$argsArray[$k];
 					}
+					// get the args if any 
+// 					if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)\((.*?)\)$/", $fct, $result))	{
+// 						$args = ','. $result[2];
+// 						$fct = $result[1];
+// 					} elseif (preg_match("/^([A-Za-z][A-Za-z_0-9]*)$/", $fct)) {
+// 						$args = '';
+// 					} else {
+// 						// error
+// 						$this->_errmsg("The name of the pipe function \"$fct\" is invalid");
+// 					}
 					//$variable = $fct. '('. $variable.$args. ')';
 					//si la variable est contenue dans les arguments :
-					$variable = "{$fct}({$variable}{$args})";
+					$variable = "{$fct}({$variable}{$argsArray[$k]})";
 				}
 			}
-			unset($array);
+			
+			unset($funcArray, $argsArray);
 		}
 		$vars[$prefix][$name][$pipefunction] = $variable;
 		return $this->_escapeVar($variable, $escape);
@@ -1518,7 +1581,7 @@ PHP;
 				$this->_errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 			$this->_clearposition();
-			$this->arr[$this->ind + 1] = isset($result[4]) && $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_contents();ob_end_clean(); ?>';
+			$this->arr[$this->ind + 1] = isset($result[4]) && $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_clean(); ?>';
 		} else {
 			$this->_clearposition();
 			$this->ind += 2;
