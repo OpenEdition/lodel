@@ -85,12 +85,11 @@ class TranslationsLogic extends Logic {
 			$tplDirs = array('./tpl/', '../tpl/', '../share-'.$context['version'].'/macros/', '../lodel-'.$context['version'].'/tpl/');
 		}
 		if(!class_exists('LodelParser', false)) require 'lodelparser.php';
-		$lodelparser = new LodelParser();
+		$lodelparser =& LodelParser::getParser();
 		$vars = array();
 		if(is_array($tplDirs)) {
 			foreach($tplDirs as $tplDir) {
-				$cacheDir = new RecursiveDirectoryIterator($tplDir);
-				$cache = new RecursiveIteratorIterator($cacheDir);
+				$cache = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDir));
 				foreach($cache as $file) {
 					if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
 					if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {
@@ -105,8 +104,7 @@ class TranslationsLogic extends Logic {
 				}
 			}
 		} else {
-			$cacheDir = new RecursiveDirectoryIterator($tplDirs);
-			$cache = new RecursiveIteratorIterator($cacheDir);
+			$cache = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($tplDirs));
 			foreach($cache as $file) {
 				if($cache->isDot() || $cache->isDir() || substr($file, -5) !== '.html') continue;
 				if(preg_match_all("/\[@([A-Z][A-Z_0-9]*(?:\.[A-Z][A-Z_0-9]*)*)\]/", file_get_contents($file), $matches)>0) {

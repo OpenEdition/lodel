@@ -320,7 +320,7 @@ function tocable($text, $level = 10)
 function multilingue($text, $lang)
 {
 	preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s", $text, $result);
-	return $result[1];
+	return isset($result[1]) ? $result[1] : null;
 }
 
 function vignette($text, $width)
@@ -1450,7 +1450,7 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
 {
 	if(!class_exists('GeSHi', false))
 		require SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
-	$geshi =& new GeSHi($text, $language);
+	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 	$geshi->set_header_type(GESHI_HEADER_DIV);

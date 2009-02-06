@@ -766,7 +766,7 @@ class Logic
  * Logic factory
  *
  */
-function getLogic($table) 
+function &getLogic($table) 
 {
 	static $factory; // cache
 	if (isset($factory[$table])) {

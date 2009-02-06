@@ -60,14 +60,14 @@ class LodelException extends Exception
 			case E_NOTICE:
 			//case E_DEPRECATED: pour PHP 5.3
 			//case E_USER_DEPRECATED: pour PHP 5.3
-			case E_USER_NOTICE:
 			case E_RECOVERABLE_ERROR:
 			case E_STRICT:
-			//echo $errno.': '.$errstr.' on line '.$errline.' in file '.$errfile.'<br>';
+// 			echo $errno.': '.$errstr.' on line '.$errline.' in file '.$errfile.'<br>';
 			break;
 			
 			case E_WARNING:
 			case E_USER_WARNING:
+			case E_USER_NOTICE:
 			/* TODO ? */
 			break;
 			

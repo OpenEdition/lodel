@@ -58,26 +58,32 @@ authenticate(LEVEL_REDACTOR);
 // require 'func.php';
 require 'utf8.php'; // conversion des caracteres
 
-if ($_POST) {
+if (!empty($_POST)) {
 	$therequest = &$_POST;
  } else {
 	$therequest = &$_GET;
 }
 
-$context['idparent']  = (int)$therequest['idparent'];
-$context['identity']  = $therequest['identity'] ? $therequest['identity'] : $therequest['iddocument'];
-$context['identity'] = (int)$context['identity'];
-$context['idtask']    = $idtask = (int)$therequest['idtask'];
-$context['idtype']    = (int)$therequest['idtype'];
-$context['lodeltags'] = (int)$therequest['lodeltags'];
-$context['reload']    = (int)$therequest['reload'];
+foreach(array('idparent', 'identity', 'idtask', 'idtype', 'lodeltags', 'reload') as $var)
+{
+	if(isset($therequest[$var]))
+		$context[$var] = (int)$therequest[$var];
+	else $context[$var] = 0;
+}
+
+if(!isset($context['identity']) && isset($therequest['iddocument']))
+	$context['identity'] = (int)$therequest['iddocument'];
 
 if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 	header("location: index.php?id=". $context['idparent']);
 	return;
 }
+$context['id'] = $context['identity'];
+$task = $context['idtask'];
+$fileorigin = isset($_POST['fileorigin']) ? $_POST['fileorigin'] : null;
+$localfile = isset($_POST['localfile']) ? $_POST['localfile'] : null;
 
-if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name'] != 'none') {
+if ($fileorigin == 'upload' && isset($_FILES['file1']) && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name'] != 'none') {
 	$file1 = $_FILES['file1']['tmp_name'];
 	if (!is_uploaded_file($file1)) {
 		trigger_error(utf8_encode("Le fichier n'est pas un fichier chargé"), E_USER_ERROR);
@@ -86,8 +92,8 @@ if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tm
 	$tmpdir = tmpdir(); // use here and later.
 	$source = $tmpdir. "/". basename($file1). '-source';
 	move_uploaded_file($file1, $source); // move first because some provider does not allow operation in the upload dir
-} elseif ($_POST['fileorigin'] == 'serverfile' && $_POST['localfile']) {
-	$sourceoriginale = basename($_POST['localfile']);
+} elseif ($fileorigin == 'serverfile' && $localfile) {
+	$sourceoriginale = basename($localfile);
 	$file1           = SITEROOT. 'upload/'. $sourceoriginale;
 	$tmpdir          = tmpdir(); // use here and later.
 	$source          = $tmpdir. "/". basename($file1). '-source';
@@ -112,18 +118,21 @@ if ($client->error_message) {
 			@chmod($source, 0666 & octdec($GLOBALS['filemask'])); 
 
 			// get the extension...it's indicative only !
-			preg_match("/\.(\w+)$/", $sourceoriginale, $result);
-			$ext = $result[1];
+			$ext = strrchr($sourceoriginale, '.');
+			if($ext)
+				$ext = substr($ext, 1);
+			else
+				$ext = '';
 
 			$options = array('block' => true,	'inline' => true);
-			$outformat = $sortiexhtml ? 'W2L-XHTML' : 'W2L-XHTMLLodel';
+			$outformat = isset($therequest['sortiexhtml']) ? 'W2L-XHTML' : 'W2L-XHTMLLodel';
 			$xhtml = $client->convertToXHTML($source, $ext, $outformat, $tmpdir, '',
 													$options, array('allowextensions' => 'xhtml|jpg|png|gif'),
 													'imagesnaming', // callback
 													SITEROOT. 'docannexe/tmp'. rand()); // base name for the images
 			if ($xhtml === FALSE) {
 				if (strpos($client->error_message, 'Not well-formed XML') !== false) {
-					$arr = preg_split("/\n/", $client->error_message);
+					$arr = explode("/\n/", $client->error_message);
 					$l = -3;
 					foreach ($arr as $t) {
 						echo $l++," ",$t,"\n";
@@ -150,8 +159,8 @@ if ($client->error_message) {
 					}
 				}
 			}
-		if ($sortieoo || $sortiexhtml) {
-			trigger_error(htmlentities($xhtml), E_USER_ERROR);
+		if (isset($therequest['sortieoo']) || isset($therequest['sortiexhtml'])) {
+			die(htmlentities($xhtml));
 		}
 
 		$err = lodelprocessing($xhtml);
@@ -160,9 +169,9 @@ if ($client->error_message) {
 			$context['error'] = 'error in the lodelprocessing function';
 			break;
 		}
-
-		if ($sortiexmloo || $sortie) {
-			trigger_error(htmlentities($xhtml), E_USER_ERROR);
+		
+		if (isset($therequest['sortiexmloo']) || isset($therequest['sortie'])) {
+			die($xhtml);
 		}
 
 		require_once 'balises.php';
@@ -177,7 +186,7 @@ if ($client->error_message) {
 		$row['source']          = $source;
 		$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
 		// build the import
-		$row['importversion']   =magic_stripslashes($convertretvar['version']). "; oochargement $version;";
+		$row['importversion']   ="oochargement {$GLOBALS['version']};";
 		if ($context['identity']) {
 			$row['identity']      = $context['identity'];
 		} else {
@@ -187,7 +196,7 @@ if ($client->error_message) {
 		
 		if(!function_exists('maketask'))
 			require 'taskfunc.php';
-		$idtask = maketask("Import $file1_name", 3, $row);
+		$idtask = maketask("Import $file1", 3, $row);
 
 		header("Location: checkimport.php?reload=".$context['reload']."&idtask=". $idtask);
 		return;
@@ -215,8 +224,8 @@ catch(Exception $e)
 
 function imagesnaming($filename, $index, $uservars)
 {
-	preg_match("/\.\w+$/", $filename, $result); // get extension
-	return $uservars. "_". $index. $result[0];
+	$ext = strrchr($filename, '.');
+	return $uservars. "_". $index. $ext;
 }
 
 function lodelprocessing(&$xhtml)

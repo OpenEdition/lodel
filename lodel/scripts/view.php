@@ -107,6 +107,12 @@ class View
 	private static $_context;
 	
 	/**
+	 * LodelParser
+	 * Référence vers l'objet
+	*/
+	private $_parser;
+
+	/**
 	 * nom du site en cours
 	 * @var string
 	 */
@@ -128,6 +134,7 @@ class View
 		$this->_site = $GLOBALS['site'];
 		$this->_toRefresh = false;
 		$this->_evalCalled = false;
+		$this->_parser = null;
 	}
 
 	/**
@@ -146,7 +153,7 @@ class View
 	 *
 	 * @return object l'instance de la classe view
 	 */
-	public static function getView()
+	public static function &getView()
 	{
 		if (!isset(self::$_instance)) 
 		{
@@ -226,10 +233,10 @@ class View
 
 		$base = $tpl.($format ? '_'.$format : '');
 
-		if($_REQUEST['clearcache']) 
+		if(isset($_REQUEST['clearcache']) && $_REQUEST['clearcache'])
 		{
 			clearcache(true);
-		} elseif($caching && !$context['nocache'] && ($cachedTplMtime = myfilemtime(getCachedFileName("tpl_{$base}", $this->_site.'_tpl', $this->_cacheOptions))) 
+		} elseif($caching && (!isset($context['nocache']) || !$context['nocache']) && ($cachedTplMtime = myfilemtime(getCachedFileName("tpl_{$base}", $this->_site.'_tpl', $this->_cacheOptions))) 
 			>= ($tplMtime = @filemtime('./tpl/'.$base.'.html')) && ($content = $cache->get($this->_cachedfile, $this->_site))) 
 		{
 			if(preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m))
@@ -264,7 +271,7 @@ class View
 			if(isset($sqlCacheTime))
 				$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
 		} 
-		elseif($cachedTplMtime < $tplMtime) 
+		elseif(isset($cachedTplMtime) && isset($tplMtime) && $cachedTplMtime < $tplMtime) 
 		{
 			$cache->remove('tpl_'.$base, $this->_site.'_tpl', true);
 			$this->_toRefresh = true;
@@ -418,6 +425,7 @@ class View
 		if(!empty($refreshTime)) 
 		{
 			unset($content);
+			$tmpcode = '';
 			// template manager
 			if (!is_numeric($refreshTime)) 
 			{
@@ -590,13 +598,16 @@ PHP;
 
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= filemtime($tpl) || !$cache->get($template_cache, $group)) 
+		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= @filemtime($tpl) || !$cache->get($template_cache, $group)) 
 		{
+			if(!$this->_parser)
+			{
+				if(!class_exists('LodelParser', false))
+					require 'lodelparser.php';
+				$this->_parser =& LodelParser::getParser();
+			}
 			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
-			if(!class_exists('LodelParser', false))
-				require 'lodelparser.php';
-			$parser = new LodelParser;
-			$contents = $parser->parse($tpl, $include, $blockId, $cache_rep);
+			$contents = $this->_parser->parse($tpl, $include, $blockId, $cache_rep);
 			if($include) $contents = $this->_eval($contents, $context);
 			$cache->save($contents, $template_cache, $group);
 		} 
@@ -698,7 +709,7 @@ PHP;
 				if(isset($sqlCacheTime))
 					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
 
-				if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) 
+				if (isset($GLOBALS['showhtml']) && $GLOBALS['lodeluser']['visitor']) 
 				{
 					if(!function_exists('show_html'))
 						require 'showhtml.php';

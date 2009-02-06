@@ -329,7 +329,7 @@ function mouseUp(ev){
 					}
 				}
 			}
-			xhr.send('tabids='+tabDiffIds+'&site=<?php echo $GLOBALS[site]; ?>');
+			xhr.send('tabids='+tabDiffIds+"&site=<?php echo $GLOBALS['site']; ?>");
 		} else {
 			alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
 		}

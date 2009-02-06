@@ -55,7 +55,7 @@ try
 require 'auth.php';
 
 authenticate(LEVEL_VISITOR);
-if ($_GET['page']) { // call a special page (and template)
+if (isset($_GET['page'])) { // call a special page (and template)
 	$page = $_GET['page'];
   	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
 		trigger_error('invalid page', E_USER_ERROR);
@@ -76,7 +76,7 @@ $authorized_logics = array('entrytypes', 'persontypes',
 				'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 				'internalstyles', 'characterstyles', 'entities_index',
 				'filebrowser', 'xml', 'data', 'internal_messaging');
-$Controler = new Controller($authorized_logics);
+$Controller = new Controller($authorized_logics);
 
 }
 catch(Exception $e)

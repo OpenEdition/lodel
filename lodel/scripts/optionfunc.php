@@ -61,7 +61,7 @@ function cacheOptionsInFile($optionsfile='')
 	$ids = array();
 	do {
 		$sql = lq('SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent '.sql_in_array($ids)." ORDER BY rank");
-		$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array ();
 		$i = 1;
 		$l = 1;
@@ -87,7 +87,7 @@ function cacheOptionsInFile($optionsfile='')
 		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
 	}
 
-	$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	$txt = "<"."?php\n\$options_cache=array(\n";
 	while (!$result->EOF)	{
 		$id = $result->fields['id'];
@@ -96,12 +96,11 @@ function cacheOptionsInFile($optionsfile='')
 		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
 		if (!empty($optionsfile)) {
 			$optname = $arr[$idgroup].".".$name;
-			clean_request_variable($value);
+			$value = clean_request_variable($value);
 			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
 			$options_cache[$optname] = addslashes($value);
 		} else {
 			$optname = $name;
-			clean_request_variable($value);
 			//$txt .= "'".$optname."'=>'".$value."',\n";
 			$papa = $arr[$idgroup];
 			$options_cache[$papa][$optname] = $value;
@@ -109,6 +108,8 @@ function cacheOptionsInFile($optionsfile='')
 		$result->MoveNext();
 	}
 	$txt .= ");?".">";
+	
+	clean_request_variable($options_cache);
 	#echo "<textarea cols=100 rows=10>$txt</textarea>";
 	if (!empty($optionsfile)) { $ret = writefile($optionsfile, $txt); }
 	return $options_cache; 

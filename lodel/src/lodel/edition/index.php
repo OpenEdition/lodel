@@ -57,21 +57,24 @@ try
 require 'auth.php';
 
 // Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
-if ($_GET['page'] == 'backend' && $_GET['format'] ) {
+if (isset($_GET['page']) && ($_GET['page'] == 'backend' && isset($_GET['format']))) {
 	authenticate(LEVEL_VISITOR, 'HTTP');
 	}
 else {
 	authenticate(LEVEL_VISITOR);
 	}
 
-if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
+if (!isset($_GET['do']) && !isset($_POST['do']) && !isset($_GET['lo']) && !isset($_POST['lo'])) {
 	if ($lodeluser['rights'] >= LEVEL_ADMIN) {
 		if(!function_exists('cleanEntities'))
 			require ('entitiesfunc.php');
 		cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
 	}
 	recordurl();
-	$context['id'] = $id = (int)$_GET['id'];
+	if(isset($_GET['id']))
+		$context['id'] = $id = (int)$_GET['id'];
+	else
+		$context['id'] = $id = 0;
 	if(!class_exists('View', false))
 		require 'view.php';
 	$view = &View::getView();
@@ -88,13 +91,13 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 			}
 			$base              = $row['tpledition'];
 			$idparent          = $row['idparent'];
-			$context['idtype'] =$row['idtype'];
+			$context['idtype'] = $row['idtype'];
 			if (!$base) {
 				$context['id'] = $id = $idparent;
 			}
 		} while (!$base && $idparent);
 	} else {
-		if ($_GET['page']) { // call a special page (and template)
+		if (isset($_GET['page'])) { // call a special page (and template)
 			$base = $_GET['page'];
 			if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {
 				trigger_error("invalid page", E_USER_ERROR);
@@ -109,8 +112,8 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 	
 	require 'controller.php';
 	// automatic logic
-	$do = $_GET['do'] ? $_GET['do'] : $_POST['do'];
-	$lo = $_GET['lo'] ? $_GET['lo'] : $_POST['lo'];
+	$do = isset($_GET['do']) ? $_GET['do'] : (isset($_POST['do']) ? $_POST['do'] : '');
+	$lo = isset($_GET['lo']) ? $_GET['lo'] : (isset($_POST['lo']) ? $_POST['lo'] : '');
 	
 	if(!$lo) {
 		switch ($do) { // Detection automatique de la logique en fonction de l'action
@@ -138,7 +141,7 @@ if (!$_GET['do'] && !$_POST['do'] && !$_GET['lo'] && !$_POST['lo']) {
 		}
 	}
 	
-	$Controler = new Controller(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser',	'tasks', 'xml', 'users'), $lo);
+	$Controler = new Controller(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser', 'tasks', 'xml', 'users'), $lo);
 }
 }
 catch(Exception $e)

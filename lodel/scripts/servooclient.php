@@ -23,7 +23,7 @@
   /** 
    * @access private
    */
-define(SERVOOLIBDIR,dirname(__FILE__)."/");
+define('SERVOOLIBDIR',dirname(__FILE__)."/");
 if(!class_exists('soapclientmime', false))
 {
 	require(SERVOOLIBDIR."nusoap.php");
@@ -330,9 +330,9 @@ class ServOO_Client {
       } else {
 	// others files
 	// check the extensions...
-	if ($zipoptions['denyextensions'] && 
+	if (isset($zipoptions['denyextensions']) && 
 	    preg_match("/\.(".$zipoptions['denyextensions'].")$/i",$entry['stored_filename'])) continue;
-	if ($zipoptions['allowextensions'] && 
+	if (isset($zipoptions['allowextensions']) && 
 	    !preg_match("/\.(".$zipoptions['allowextensions'].")$/i",$entry['stored_filename'])) continue;
 
 	// make here an option to check further with GD.

@@ -351,7 +351,8 @@ function getoption($name)
 	}
 	if (is_array($name)) {
 		foreach ($name as $n) {
-			if ($options_cache[$n]) $ret[$n]=stripslashes($options_cache[$n]);
+			if (isset($options_cache[$n])) $ret[$n]=stripslashes($options_cache[$n]);
+			else $ret[$n] = null;
 		}    
 		return  ($ret);
 	} else {
@@ -425,7 +426,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 function getlodeltextcontents($name,$group="",$lang=-1)
 {
 	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
-	if ($GLOBALS['langcache'][$lang][$group.".".$name]) {
+	if (isset($GLOBALS['langcache'][$lang][$group.".".$name])) {
 		return $GLOBALS['langcache'][$lang][$group.".".$name];
 	} else {
 		#echo "name=$name,group=$group,id=$id,contents=$contents,status=$status,lang=$lang<br />";
@@ -459,9 +460,9 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
-		return $base. intval($id). '.'. $GLOBALS['extensionscripts'];
+		return $base. (int)$id. '.'. $GLOBALS['extensionscripts'];
 	case 'singleid':
-		return ('index' != $base ? $base. intval($id) : intval($id));
+		return ('index' != $base ? $base. (int)$id : (int)$id);
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
 		$path = getPath($id,'path');
@@ -470,7 +471,7 @@ function makeurlwithid ($id, $base = 'index')
 		$path = getPath($id,'querystring');
 		return $path;
 	default:
-		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. intval($id);
+		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. (int)$id;
 	}
 }
 
@@ -1065,7 +1066,7 @@ function sql_in_array($ids)
  *
  */
 
-function getDAO($table)
+function &getDAO($table)
 {
 	static $factory; // cache
 	if ($factory[$table]) {
@@ -1084,7 +1085,7 @@ function getDAO($table)
  * generic DAO factory
  *
  */
-function getGenericDAO($table, $idfield)
+function &getGenericDAO($table, $idfield)
 {
 	static $factory; // cache
 	if ($factory[$table]) {
@@ -1169,18 +1170,18 @@ function _indent($source, $indenter = '  ')
 				continue;
 			}
 			for ($i = 1 ; $i < $nbarr ; $i += 3) {
-				if ($arr[$i +1]) {
+				if (!empty($arr[$i +1])) {
 					$tab = substr($tab, 2); // closing tag
 				}
 				if (substr($arr[$i], -2) == "/>") { // opening closing tag
 					$out = $tab.$arr[$i].$arr[$i +2]."\n";
 				} else {
-					if (!$arr[$i +1] && $arr[$i +4]) { // opening follow by a closing tags
+					if (empty($arr[$i +1]) && !empty($arr[$i +4])) { // opening follow by a closing tags
 						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
 						$i += 3;
 					}	else {
 						$out = $tab.$arr[$i]."\n";
-						if (!$arr[$i +1]) {
+						if (empty($arr[$i +1])) {
 							$tab .= "$indenter";
 						}
 						if (trim($arr[$i +2])) {
