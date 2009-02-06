@@ -480,7 +480,7 @@ PHP;
 			$length = strlen($pipefunction);
 			$filter = $args = '';
 			$currentQuote = false;
-			$open = false;
+			$open = 0;
 			$quote = false;
 			$funcArray = array();
 			$argsArray = array();
@@ -492,7 +492,7 @@ PHP;
 					if(!preg_match('/[A-Za-z]/', $pipefunction{$i}))
 						$this->_errmsg("The pipe functions \"$pipefunction\" are invalid");
 					$new = true;
-					$open = false;
+					$open = 0;
 					$quote = false;
 					$currentQuote = '';
 				}
@@ -511,13 +511,15 @@ PHP;
 				}
 				elseif('\\' !== $pipefunction{$i-1} && !$quote && '(' === $pipefunction{$i})
 				{
-					$open = true;
-					continue;
+					$open++;
+					if($open === 1)
+						continue;
 				} 
 				elseif('\\' !== $pipefunction{$i-1} && $open && !$quote && ')' === $pipefunction{$i})
 				{
-					$open = false;
-					continue;
+					$open--;
+					if($open === 0)
+						continue;
 				}
 				elseif('|' === $pipefunction{$i} && !$open)
 				{
