@@ -414,12 +414,15 @@ class Entities_EditionLogic extends GenericLogic
 		if ($ret=="_error") {
 			return "_error";
 		}
-		if ($votype->search) {
-			if(!class_exists('Entities_IndexLogic'))
-				require "class.entities_index.php";
-			$lo_entities_index = new Entities_IndexLogic();
-			$lo_entities_index->addIndexAction($context, $error);
-		}
+		// désactivé le 06/02/09 par pierre-alain
+		// ça prend beaucoup trop de ressources et de temps !!
+		// pour indexer aller dans lodel/admin/ et cliquer sur réindexer
+// 		if ($votype->search) {
+// 			if(!class_exists('Entities_IndexLogic'))
+// 				require "class.entities_index.php";
+// 			$lo_entities_index = new Entities_IndexLogic();
+// 			$lo_entities_index->addIndexAction($context, $error);
+// 		}
 		update();
 
 		// pour import de plusieurs entités à la suite
