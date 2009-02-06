@@ -30,7 +30,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-if(!class_exists('ServOO_Client'))
+if(!class_exists('ServOO_Client', false))
 	require("servooclient.php");
 
 class ServOO extends ServOO_Client {

@@ -224,8 +224,7 @@ catch(Exception $e)
 
 function imagesnaming($filename, $index, $uservars)
 {
-	$ext = strrchr($filename, '.');
-	return $uservars. "_". $index. $ext;
+	return $uservars. "_". $index. strrchr($filename, '.');
 }
 
 function lodelprocessing(&$xhtml)
