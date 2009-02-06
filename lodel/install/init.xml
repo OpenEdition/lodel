@@ -144,6 +144,10 @@
         type="VARCHAR"
         size="4096"
         required="true"/>
+<column name="site"
+	type="VARCHAR"
+	size="64"
+        required="true"/>
 <index name="index_idsession">
 <index-column name="idsession" />
 </index>

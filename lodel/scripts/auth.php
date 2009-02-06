@@ -247,7 +247,8 @@ function recordurl()
 {
 	global $idsession, $norecordurl, $db;
 	if (!$norecordurl) {
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url) SELECT id,currenturl FROM #_MTP_session WHERE id='". $idsession."' AND currenturl!=''")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$row = $db->GetRow(lq("SELECT id,currenturl FROM #_MTP_session WHERE id='". $idsession."' AND currenturl!=''"));
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '{$GLOBALS['site']}')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 

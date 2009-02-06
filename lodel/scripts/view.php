@@ -182,14 +182,14 @@ class View
 		usemaindb();
 		// selectionne les urls dans la pile grâce à l'idsession et suivant la
 		// la profondeur indiquée (offset)
-		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='{$idsession}' ORDER BY id DESC"), 1, $offset) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='{$idsession}' AND site='{$GLOBALS['site']}' ORDER BY id DESC"), 1, $offset) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
 
 		$id = $row['id'];	
 		$newurl = $row['url'];
 		
 		if ($id) {
-			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='{$id}' AND idsession='{$idsession}'")) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='{$id}' AND idsession='{$idsession}' AND site='{$GLOBALS['site']}'")) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
 			$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
