@@ -318,27 +318,28 @@ function getacceptedcharset($charset)
  */
 function maintenance()
 {
-	global $urlroot, $tableprefix, $dbhost, $dbpasswd, $dbusername, $database, $lodeluser, $sessionname, $db, $site;
+	global $urlroot, $lodeluser, $sessionname, $db, $site;
 	$name = addslashes($_COOKIE[$sessionname]);
 	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
 	$reg = "`/lodeladmin`";
-	$query = "SELECT status FROM ".$tableprefix."sites where name = '".$site."' LIMIT 1";
+	$query = lq("SELECT status FROM #_MTP_sites where name = '".$site."'");
+	usemaindb();
 	if ($name) {
-		$db->selectDB($database);
 		$row = $db->getRow(lq("SELECT context,expire,expire2 FROM #_MTP_session WHERE name='$name'"));
-		usecurrentdb();
 		// verifie que la session n'est pas expiree
 		$time = time();
 
-		if (($row['expire'] < $time || $row['expire2'] < $time) && preg_match($reg, $_SERVER['SCRIPT_NAME'])) {		
+		if (($row['expire'] < $time || $row['expire2'] < $time) && FALSE !== strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) {
+			usecurrentdb();
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			$db->selectDB($database);
-			$row = $db->getRow($query);
-			usecurrentdb();
-			if($row['status'] == -64 || $row['status'] == -65) {
+			$status = $db->getRow($query);
+			if($status == -64 || $status == -65) {
 				if($lodeluser['rights'] <= LEVEL_RESTRICTEDUSER ) {
-					header("Location: $path?error_timeout=1");
+					if(file_exists($urlroot."maintenance.html"))
+						die(include($urlroot."maintenance.html"));
+					else
+						die('Site is under maintenance.');
 				}
 				$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
 				header("Location: ".$path);
@@ -348,27 +349,33 @@ function maintenance()
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);
 		if($lodeluser['rights'] < 128) {
-			if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
-				$db->selectDB($database);
-				$row = $db->getRow($query);
-				usecurrentdb();
-				if($row['status'] == -64 || $row['status'] == -65) {
-					header('Location: '.$path);
+			if(FALSE !== strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) 
+			{
+				$status = $db->getOne($query);
+				if($status == -64 || $status == -65) {
+					if(file_exists("../maintenance.html"))
+						die(include("../maintenance.html"));
+					elseif(file_exists("maintenance.html"))
+						die(include("maintenance.html"));
+					else
+						die('Site is under maintenance.');
 				}
 			}
 		}
-	} elseif(!preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
-		if($database != '' && $dbusername != '' && !preg_match($reg, $_SERVER['SCRIPT_NAME'])) {
-			$db->selectDB($database);
-			$row = $db->getRow($query);
-			usecurrentdb();
-			if($row['status'] == -64 || $row['status'] == -65) {
-				header('Location: '.$path);
-			}
+	} 
+	elseif(FALSE === strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) 
+	{
+		$status = $db->getOne($query);
+		if($status == -64 || $status == -65) {
+			if(file_exists("../maintenance.html"))
+				die(include("../maintenance.html"));
+			elseif(file_exists("maintenance.html"))
+				die(include("maintenance.html"));
+			else
+				die('Site is under maintenance.');
 		}
-		
 	}
-	
+	usecurrentdb();
 }
 
 // import Posted variables for the Register Off case.

@@ -210,12 +210,15 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 	$log = addslashes($login);
 	$datab = addslashes($datab);
 	$old_pass = md5($old_passwd . $login);
+	$currentdb = $db->database;
 	$db->SelectDB($datab);
 	$res = $db->getRow("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
 
 	if(!$res)
+	{
+		$db->SelectDB($currentdb);
 		return false;
-	else {
+	} else {
 		if($passwd == $passwd2 && $passwd != $old_passwd && strlen($passwd) > 3 && strlen($passwd) < 256 && preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd)) {
 			$passwd = md5($passwd . $login);
 			if($res['status'] == 10)
@@ -223,10 +226,14 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 			elseif($res['status'] == 11)
 				$status = 32; 
 			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res['id']."'");
+			$db->SelectDB($currentdb);
 			return true;
 		}
 		else
+		{
+			$db->SelectDB($currentdb);
 			return "error_passwd";
+		}
 	}
 }
 

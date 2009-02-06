@@ -35,6 +35,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -48,7 +49,7 @@
 // en general etre ajouter ici
 //
 
-require_once "balises.php";
+// require_once "balises.php";
 if(!class_exists('Parser', false))
 	require 'parser.php';
 /**
@@ -68,6 +69,10 @@ if(!class_exists('Parser', false))
  */
 class LodelParser extends Parser
 {
+	/**
+	 * booléen indiquant si l'on a déjà charger le générateur de filtres
+	 * @var bool
+	 */
 	protected $filterfunc_loaded = FALSE;
 	/**
 	 * Tableau associatif concernant le status des textes
@@ -140,10 +145,10 @@ class LodelParser extends Parser
 		require('tablefields.php');
 		$this->tablefields =& $tablefields;
 
-		if($GLOBALS['currentdb'] == $db->database && $this->tablefields[$GLOBALS['tp']."classes"])
+		if($GLOBALS['currentdb'] == $db->database && isset($this->tablefields[$GLOBALS['tp']."classes"]))
 		{
 			$dao = &getDAO("classes");
-			$this->classes = $dao->findMany("status > 0");
+			$this->classes = $dao->findMany("status > 0", '', 'class, classtype');
 			foreach ($this->classes as $class) {
 				$this->classesName[] = $class->class;
 			}
@@ -174,7 +179,7 @@ class LodelParser extends Parser
 		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
 		#		    ),$where);
 		//
-		if ($GLOBALS['currentdb'] == $db->database && $this->tablefields[$GLOBALS['tp']."classes"]) {
+		if (!empty($this->classes)) {
 			foreach ($this->classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
@@ -327,7 +332,7 @@ class LodelParser extends Parser
 					preg_replace_sql("/\b($regexp)\b/", $alias.".id2", $where);
 					$where[count($where) - 1] .= " AND ".$alias.".id1=". ($aliasbyclasstype['entities'] ? $aliasbyclasstype['entities'] : "entities").".id";
 
-					if ($table == "persons" && $classbyclasstype['persons']) { // related table for persons only
+					if ($table == "persons" && isset($classbyclasstype['persons'])) { // related table for persons only
 						$relatedtable = "entities_".$classbyclasstype['persons'];
 						if (!in_array($relatedtable, $tables)) {
 							array_push($tables, $relatedtable);
@@ -376,7 +381,8 @@ class LodelParser extends Parser
 			if ($varname == "GROUPRIGHT") {
 				return '($GLOBALS[\'lodeluser\'][\'admin\'] || in_array($context[\'usergroup\'],explode(\',\',$GLOBALS[\'lodeluser\'][\'groups\'])))';
 			}
-			if (preg_match("/^OPTION[_.]/", $varname)) { // options
+			if(0 === strpos($varname, 'OPTION') && ('.' === $varname{6} || '_' === $varname{6})) {
+			//if (preg_match("/^OPTION[_.]/", $varname)) { // options
 				return "getoption('".strtolower(substr($varname, 7))."')";
 			}
 		}

@@ -103,8 +103,6 @@ function dberror()
 	$ret = trigger_error($db->errormsg(), E_USER_ERROR);
 }
 
-$GLOBALS['maindb'] = '';
-$GLOBALS['savedb'] = '';
 
 /**
  * Positionne la connexion de la base de données sur la table principale (en cas d'installation 
@@ -112,24 +110,11 @@ $GLOBALS['savedb'] = '';
  */
 function usemaindb()
 {
-	global $db, $maindb, $savedb;
-	if (DATABASE == $GLOBALS['currentdb']) {
+	if (DATABASE == $GLOBALS['currentdb'] || $GLOBALS['db']->database == DATABASE) {
 		return false; // nothing to do
 	}
-	if ($db->selectDB(DATABASE)) {
-		return true; // try to selectdb
-	}
 
-	if (!$maindb)	{ // not connected
-		$maindb = ADONewConnection(DBDRIVER);
-		if (!$maindb->nconnect(DBHOST, DBUSERNAME, DBPASSWD, DATABASE)) {
-			trigger_error("ERROR: reconnection is not allowed with the driver: ".DBDRIVER, E_USER_ERROR);
-		}
-	}
-
-	// set $db as $maindb
-	$savedb = &$db;
-	$db = &$maindb;
+	$GLOBALS['db']->SelectDB(DATABASE);
 	return true;
 }
 
@@ -139,14 +124,11 @@ function usemaindb()
  */
 function usecurrentdb()
 {
-	if (DATABASE == $GLOBALS['currentdb']) {
-		return; // nothing to do
+	if ($GLOBALS['db']->database == $GLOBALS['currentdb']) {
+		return false; // nothing to do
 	}
-	global $db, $savedb;
-	if ($db->selectDB($GLOBALS['currentdb'])) {
-		return; // try to selectdb
-	}
-	$db = &$savedb;
+
+	$GLOBALS['db']->SelectDB($GLOBALS['currentdb']);
 }
 
 /**

@@ -975,14 +975,13 @@ class siteManage {
 	{
 		global $db;
  		if($this->id > 0) {
-			$res = $db->Execute(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere."")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			$row = $res->FetchRow();
-			if($row[0] == 32) {
+			$status = $db->GetOne(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere."")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if($status == 32) {
 				$status = -65;
-			} elseif($row[0] == -65) {
+			} elseif($status == -65) {
 				$status = 32;
 			} else {
-				$status = $row[0] == -64 ? 1 : -64;
+				$status = $status == -64 ? 1 : -64;
 			}
 			$db->Execute(lq("UPDATE #_TP_sites SET status = ".$status." WHERE ".$this->critere."")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
