@@ -54,6 +54,7 @@ if (file_exists("siteconfig.php")) {
 	require 'siteconfig.php';
 } else {
 	require 'lodelconfig.php';
+	ini_set('include_path', $home. PATH_SEPARATOR. ini_get('include_path'));
 }
 if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/index(\d*).$extensionscripts(\?[^\/]*)?(\/.+)$/", $_SERVER['REQUEST_URI'])>0) {
 	header("HTTP/1.0 403 Bad Request");
@@ -63,7 +64,7 @@ if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/index(\d*
 	exit;
 }
 
-require $home. 'class.errors.php';
+require 'class.errors.php';
 set_error_handler(array('LodelException', 'exception_error_handler'));
 
 // les niveaux d'erreur à afficher
@@ -71,11 +72,11 @@ error_reporting(E_ALL);
 
 try
 {
-require $home. 'auth.php';
+require 'auth.php';
 authenticate();
 //on indique qu'on veut pas le desk
 $GLOBALS['nodesk'] = true;
-require $home. 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->renderCached($context, 'index');
 }
