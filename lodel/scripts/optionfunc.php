@@ -96,7 +96,7 @@ function cacheOptionsInFile($optionsfile='')
 		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
 		if (!empty($optionsfile)) {
 			$optname = $arr[$idgroup].".".$name;
-			$value = clean_request_variable($value);
+			clean_request_variable($value);
 			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
 			$options_cache[$optname] = addslashes($value);
 		} else {
