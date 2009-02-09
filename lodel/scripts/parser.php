@@ -1014,7 +1014,7 @@ PHP;
 			$processlimit = 
 <<<PHP
 \$currenturl=basename(\$_SERVER['SCRIPT_NAME'])."?";
-\$cleanquery=preg_replace("/(^|&){$offsetname}=\d+/","",\$_SERVER['QUERY_STRING']);
+\$cleanquery=preg_replace(array("/(^|&){$offsetname}=\d+/","/(^|&)clearcache=[^&]+/"), "", \$_SERVER['QUERY_STRING']);
 if(\$cleanquery[0]=="&") \$cleanquery=substr(\$cleanquery,1);
 if(\$cleanquery) \$currenturl.=\$cleanquery."&";
 if(\$context['nbresults']>{$split}) {
@@ -1041,7 +1041,7 @@ PHP;
 
 		// reverse the order in order the first is select in the last.
 		$tablesinselect = array_reverse(array_unique($tablesinselect));
-		$table = join(', ', array_reverse(array_unique($tables)));
+		$tables = join(', ', array_reverse(array_unique($tables)));
 
 		$select = $selectparts['select'];
 		if ($dontselect) { // DONTSELECT
@@ -1049,7 +1049,7 @@ PHP;
 			if (!$tablefields)
 				require 'tablefields.php';
 			if (!$tablefields)
-				trigger_error("ERROR: internal error in decode_loop_content: table $table", E_USER_ERROR);
+				trigger_error("ERROR: internal error in decode_loop_content: table $tables", E_USER_ERROR);
 
 			$selectarr = array ();
 			foreach ($tablesinselect as $t) {
@@ -1095,13 +1095,13 @@ PHP;
 		$this->fct_txt .=
 <<<PHP
 		\$query =	"SELECT {$select} 
-					FROM {$table} 
+					FROM {$tables} 
 					{$selectparts['where']} 
 					{$selectparts['groupby']} {$selectparts['having']} {$selectparts['order']} 
 					{$limit}";
 
 		\$queryCount =	"SELECT count(*) as nbresults 
-					FROM {$table} 
+					FROM {$tables} 
 					{$selectparts['where']} 
 					{$selectparts['groupby']} {$selectparts['having']}";
 PHP;
@@ -1118,20 +1118,16 @@ PHP;
 		if($selectparts['groupby']) {
 			$this->fct_txt .= 
 <<<PHP
-		\$context['nbresults'] = 0;
-		while(\$row = \$result->FetchRow()) { \$context['nbresults']++; }
-		\$context['nbresultats'] = \$context['nbresults'];
+		\$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->RecordCount();
 PHP;
 		} else {
 			$this->fct_txt .= 
 <<<PHP
-		\$row = \$result->FetchRow();
-		\$context['nbresultats'] = \$context['nbresults'] = \$row['nbresults'];
+		\$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->fields['nbresults'];
 PHP;
 		}
 		$this->fct_txt .= 
 <<<PHP
-		\$context['nblignes']=\$result->RecordCount(\$result);
 		\$result->Close();
 PHP;
 
@@ -1148,37 +1144,31 @@ PHP;
 		}
 		$this->fct_txt .=
 <<<PHP
+		\$context['recordcount'] = (int)\$result->RecordCount();
 		\$generalcontext=\$context;
 		\$count=0;
-		if(\$row=\$result->FetchRow()) {?>{$contents['BEFORE']}<?php 
+		if(\$context['recordcount']) {?>{$contents['BEFORE']}<?php 
 			do {
-			\$context=array_merge (\$generalcontext,\$row);
+			\$context = array_merge(\$generalcontext,\$result->fields);
 			\$context['count'] = ++\$count;
 PHP;
 		// gere le cas ou il y a un premier
 		if (!empty($contents['DOFIRST'])) {
 			$this->fct_txt .= 
 <<<PHP
-			if(\$count==1) {?>{$contents['DOFIRST']}<?php 
-				continue;
-			}
+			if(\$count===1) {?>{$contents['DOFIRST']}<?php continue; }
 PHP;
 		}
 		// gere le cas ou il y a un dernier
 		if (!empty($contents['DOLAST'])) {
 			$this->fct_txt .= 
 <<<PHP
-			if(\$count==\$generalcontext['nbresults']) {?>{$contents['DOLAST']}<?php 
-				continue;
-			}
+			if(\$count===\$generalcontext['recordcount']) {?>{$contents['DOLAST']}<?php break; }
 PHP;
 		}
 		$this->fct_txt .= 
 <<<PHP
-?>{$contents['DO']}<?php 
-			} while (\$count<\$generalcontext['nbresults'] && \$row=\$result->FetchRow()); 
-?>{$contents['AFTER']}<?php 
-		}
+?>{$contents['DO']}<?php } while (\$result->MoveNext());?>{$contents['AFTER']}<?php }
 PHP;
 
 		if(!empty($contents['ALTERNATIVE'])) {

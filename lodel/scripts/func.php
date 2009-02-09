@@ -82,21 +82,16 @@ function postprocessing(&$context)
 function extract_post($arr=null)
 {
 	if (is_null($arr)) $arr=&$_POST;
-	foreach ($arr as $key=>$val) {
-		if (!isset($GLOBALS['context'][$key])) // protege
-			$GLOBALS['context'][$key] = $val;
-	}
-	
- 	array_walk_recursive($GLOBALS['context'],"clean_request_variable");
+	array_walk_recursive($arr, 'clean_request_variable');
+	$GLOBALS['context'] = array_merge($arr, $GLOBALS['context']);
 }
 
 
 function clean_request_variable(&$var, $key='')
 {
 	static $filter;
+
 	if (!$filter) {
-// 		require_once 'class.inputfilter.php';
-// 		$filter = new InputFilter(array(), array(), 1, 1);
 		if(!class_exists('HTMLPurifier', false))
 			require 'htmlpurifier/library/HTMLPurifier.auto.php';
 		$config = HTMLPurifier_Config::createDefault();
@@ -130,24 +125,14 @@ function clean_request_variable(&$var, $key='')
   	}
 
 	if (is_array($var)) {
-// 		#print_r($var);
-		foreach(array_keys($var) as $k) {
-			clean_request_variable($var[$k]);
-		}
+		array_walk_recursive($var, 'clean_request_variable');
 	} else {
 		$var = trim(magic_stripslashes($var));
 		// htmlpurifier n'est pas encore compatible avec les namespaces, chiant pour les balises r2r:ml
 		$var = strtr($var, array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>'));
 		$var = $filter->purify($var);
 		$var = strtr($var, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
-		//ici on regle un bug : lors qu'on insere un espace insécable, l'appel à la fonction PHP 'chr' plante sur le &#160; dans la fonction $filter->decode
-		/*if(preg_match("`&#160;`me", $var))
-			$var = str_replace("&#160;", "&nbsp;", $var);
-		$var = $filter->process(trim($var));
-		// le process nettoie un peu trop : remplace les br fermés par des br ouverts : document plus valide..
-		$var = str_replace("<br>", "<br />", $var);
-		$var = str_replace(array("\n", "&nbsp;"), array("", "Â\240"), $var);*/
-  	}
+	}
 }
 
 function magic_addslashes($var) 

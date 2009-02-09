@@ -334,7 +334,7 @@ function maintenance()
 			usecurrentdb();
 			return;
 		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			$status = $db->getRow($query);
+			$status = $db->getOne($query);
 			if($status == -64 || $status == -65) {
 				if($lodeluser['rights'] <= LEVEL_RESTRICTEDUSER ) {
 					if(file_exists($urlroot."maintenance.html"))
@@ -418,6 +418,7 @@ if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale
 		require $optionsfile;
 		$context['options'] = !isset($options_cache) ? cacheOptionsInFile($optionsfile) : $options_cache;
 	}
+	unset($options_cache);
 }
 
 if (!$GLOBALS['filemask']) {

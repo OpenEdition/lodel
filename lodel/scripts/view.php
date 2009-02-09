@@ -496,8 +496,8 @@ PHP;
 	*/
 	private function _eval($content, $context, $escapeRefreshManager=false) 
 	{
-		global $home, $tmpoutdir;
-		static $i=0;
+		global $home;
+
 		if(FALSE !== strpos($content, '<?php')) 
 		{ // PHP to be evaluated
 			if(FALSE === $this->_evalCalled) 
@@ -523,15 +523,10 @@ PHP;
 
 			ob_start();
 			$refresh = require $filename;
-			$ret = ob_get_contents();
-			ob_end_clean();
+			$content =& ob_get_clean();
 			unlink($filename);
 			if('refresh' === (string)$refresh) 
-			{
 				return 'refresh';
-			}
-			$content = $ret;
-			unset($ret);
 		}
 		
 		if(TRUE === $escapeRefreshManager) 
