@@ -27,7 +27,7 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-$version = '0.9';
+$version = '0.7';
 
 if (!file_exists("lodelconfig.php")) { header("location: lodeladmin-$version/install.php"); exit; }
 
