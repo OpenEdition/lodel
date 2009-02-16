@@ -253,9 +253,6 @@ class siteManage {
 	{
 		global $db;
 		//on extrait les variables contenues dans $_POST
-		extract_post();
-		//on les alloue à notre contexte
-		$this->context = $GLOBALS['context'];
 		if ($this->maindefault) { // site par defaut ?
 			$this->context['title']  = 'Site principal';
 			$this->context['name']   = 'principal';
@@ -276,19 +273,14 @@ class siteManage {
 	
 			// verifie qu'on a qu'un site si on est en singledatabase
 			if (!$this->id && $this->singledatabase == 'on') {
-				$result = $db->Execute("SELECT COUNT(*) FROM `$GLOBALS[tp]sites` WHERE status>-32 AND name!='". $this->context['name']. "'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				list($numsite) = $result->FetchRow($result);
+				$numsite = $db->GetOne("SELECT COUNT(*) FROM `$GLOBALS[tp]sites` WHERE status>-32 AND name!='". $this->context['name']. "'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if ($numsite >= 1) {
 					trigger_error("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données : il faut utiliser plusieurs bases de données.", E_USER_ERROR);
 				}
 			}
 	
 			// édition d'un site : lit les informations options, status, etc.
-			if ($this->id) {
-				$result = $db->Execute("SELECT status,name,path FROM `$GLOBALS[tp]sites` WHERE id='".$this->id."'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				list($status,$name,$this->context['path']) = $result->FetchRow();
-				$this->context['name'] = $name;
-			} else { // création d'un site
+			if (!$this->id) { // création d'un site
 				// vérifie que le nom (base de données + répertoire du site) n'est pas déjà utilisé
 				$result = $db->Execute("SELECT name FROM `$GLOBALS[tp]sites`") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				while ($row = $result->FetchRow()) {
@@ -615,7 +607,7 @@ class siteManage {
 	{
 		global $db;
 		// creation de la DataBase si besoin
-		if (!$this->context['name']) {
+		if (!$this->context['id'] && !$this->context['name']) {
 			trigger_error('probleme interne 1', E_USER_ERROR);
 		}
 		
@@ -623,7 +615,7 @@ class siteManage {
 			if ($this->singledatabase == 'on') {
 				break;
 			}
-	
+
 			// check if the database existe
 			$db_list = $db->MetaDatabases();
 			$i = 0;

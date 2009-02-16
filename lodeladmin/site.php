@@ -60,9 +60,10 @@ try
 	if(empty($_GET) && empty($_POST))
 		header('Location:index.php?do=list&lo=sites');
 	
+	extract_post();
 	$context['installoption'] = (int)$installoption;
 	$context['version']       = '0.8';
-	
+
 	require 'class.siteManage.php';
 	$context['shareurl'] = $shareurl;
 	$website = new siteManage($id, $context);
@@ -82,6 +83,13 @@ try
 		elseif($restore)
 			$website->restore();
 	}
+
+	// on récupère les infos du site (url, path, status, etc..)
+	if ($id > 0 || $website->get('id') > 0) {
+		$result = $db->GetRow("SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$website->context = array_merge($website->context, $result);
+	
+	}
 	
 	// reinstall all the sites
 	if ($reinstall == 'all') {
@@ -92,14 +100,6 @@ try
 	if ($edit || $maindefault) { 
 		if($website->manageSite())
 			$task = 'version';
-	}
-	
-	// on récupère les infos du site (url, path, status, etc..)
-	if ($id > 0 || $website->get('id') > 0) {
-		$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], "SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		$res = $result->FetchRow();
-		$website->context = array_merge($website->context, (array)$res);
-	
 	}
 	
 	if ($task === 'version') {
@@ -130,7 +130,7 @@ try
 	
 	if($website->context['name'] && !$website->context['dbname'])
 		$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $website->context['name'];
-	
+
 	unset($t);
 	if ($task === 'createdb') {
 	
