@@ -97,6 +97,7 @@ function clean_request_variable(&$var, $key='')
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', $GLOBALS['context']['charset']);
 		$config->set('HTML', 'TidyLevel', 'heavy' );
+        	$config->set('Attr', 'EnableID', true);
 		if(!is_dir('./CACHE/htmlpurifier/')) {
 			if(is_writeable('./CACHE/')) {
 				@mkdir('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
