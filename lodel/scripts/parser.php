@@ -91,11 +91,6 @@ class Parser
 		//if ($ind)
 		//$line = "line ".$this->linearr[$ind];
 		//trigger_error("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg", E_USER_ERROR);
-		if (!headers_sent()) {
-			header("HTTP/1.0 403 Internal Error");
-			header("Status: 403 Internal Error");
-			header("Connection: Close");
-		}
 		trigger_error("LODELSCRIPT ERROR in file ".$this->infilename." : $msg", E_USER_ERROR);
 	}
 
@@ -146,7 +141,15 @@ class Parser
 	{
 		global $sharedir;
 		if (!file_exists($in))
-			$this->_errmsg("Unable to read file $in");
+		{
+			if (!headers_sent()) {
+				header("HTTP/1.0 400 Bad Request");
+				header("Status: 400 Bad Request");
+				header("Connection: Close");
+				flush();
+			}
+			trigger_error("Unable to read file $in", E_USER_ERROR);
+		}
 		$this->infilename = $in;
 		preg_match("/^(.*?\/)?([^\/]+)\.html$/", $in, $m);
 		$this->tpl = $m[2];

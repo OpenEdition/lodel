@@ -582,11 +582,11 @@ PHP;
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) 
 		{
-			if (!headers_sent()) 
-			{
-				header("HTTP/1.0 403 Internal Error");
-				header("Status: 403 Internal Error");
+			if (!headers_sent()) {
+				header("HTTP/1.0 400 Bad Request");
+				header("Status: 400 Bad Request");
 				header("Connection: Close");
+				flush();
 			}
 			$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, true);
 		}

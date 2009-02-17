@@ -69,7 +69,7 @@ set_error_handler(array('LodelException', 'exception_error_handler'));
 
 // les niveaux d'erreur à afficher
 // error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 try
 {
@@ -86,7 +86,7 @@ try
 	} else {
 		$request = &$_GET;
 	}
-	
+
 	$request['idtype'] = (isset($_POST['idtype']) ? $_POST['idtype'] : $_GET['idtype']);
 	$request['idtype'] = (int)$request['idtype'];
 	$request['do'] = ($_POST['do'] ? $_POST['do'] : $_GET['do']);
@@ -132,12 +132,6 @@ try
 }
 catch(Exception $e)
 {
-	if(!headers_sent())
-	{
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
-	}
 	echo $e->getContent();
 	exit();
 }

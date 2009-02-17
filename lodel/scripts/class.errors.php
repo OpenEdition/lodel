@@ -22,23 +22,25 @@ class LodelException extends Exception
 					E_USER_WARNING => 'Internal Warning',
 					E_USER_ERROR => 'Internal Error',
 					E_STRICT => 'Strict Error',
-// 					E_DEPRECATED => 'Deprecated' PHP 5.3
+					E_RECOVERABLE_ERROR => 'Recoverable Error',
+					E_DEPRECATED => 'Deprecated'
 					);
-					
-/*		if(TRUE === $request->get('CONFIG', 'log')) { // doit-on logger ?
-			if(E_USER_ERROR == $this->errno) { // erreur appli
-				$errorType = "[INTERNAL]";
-			} else { // erreur php
-				$errorType = "[PHP ".$this->type[$this->errno]."]";
-			}
-			$logMsg = $errorType." ".$this->errfile.":".$this->errline." : ".$this->errstr.".";
-			require_once 'log.php';
-			$logObj =& CLog::singleton();
-			$ret = $logObj->log($logMsg, $errorType);
-			if(TRUE !== $ret) { // erreur pendant l'enregistrement des logs
-				$this->errstr .= "<p style=\"background-color:white;color:red;\">[INTERNAL Logs]:</p>".$ret."<p style=\"background-color:white;color:red;\">[/INTERNAL]</p>";
-			}
-		}*/	
+
+		if(!headers_sent())
+		{
+			header("HTTP/1.0 500 Internal Error");
+			header("Status: 500 Internal Error");
+			header("Connection: Close");
+		}
+
+		if($GLOBALS['contactbug'])
+		{
+			$sujet = "[BUG] LODELEXCEPTION - ".$GLOBALS['version']." - ".$GLOBALS['currentdb'];
+			$contenu = "Erreur de requete sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
+			$contenu .= (E_USER_ERROR == $this->errno ? 'Internal' : 'PHP');
+			$contenu .= " error (type ".$this->type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : \n".$this->errstr;
+			@mail($GLOBALS['contactbug'], $sujet, $contenu);
+		}	
 	}
 
 	public function getContent() 
@@ -56,21 +58,24 @@ class LodelException extends Exception
 	
 	public static function exception_error_handler($errno, $errstr, $errfile, $errline) 
 	{
-		switch($errno) {
+		// if error was triggered by @function, juste ignore it
+		if(error_reporting() === 0) 
+		{
+    			return true;
+  		}
+
+		switch($errno) 
+		{
 			case E_NOTICE:
-			//case E_DEPRECATED: pour PHP 5.3
-			//case E_USER_DEPRECATED: pour PHP 5.3
-			case E_RECOVERABLE_ERROR:
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
 			case E_STRICT:
-// 			echo $errno.': '.$errstr.' on line '.$errline.' in file '.$errfile.'<br>';
+			case E_USER_NOTICE:
 			break;
-			
+
+			case E_RECOVERABLE_ERROR:
 			case E_WARNING:
 			case E_USER_WARNING:
-			case E_USER_NOTICE:
-			/* TODO ? */
-			break;
-			
 			case E_USER_ERROR:
 			case E_ERROR:
 			case E_PARSE:

@@ -48,7 +48,7 @@ require 'class.errors.php';
 set_error_handler(array('LodelException', 'exception_error_handler'));
 
 // les niveaux d'erreur à afficher
-error_reporting(E_ALL);
+error_reporting(E_ALL ^ E_NOTICE);
 
 try
 {
@@ -78,18 +78,6 @@ $authorized_logics = array('entrytypes', 'persontypes',
 				'filebrowser', 'xml', 'data', 'internal_messaging');
 $Controller = new Controller($authorized_logics);
 
-}
-catch(Exception $e)
-{
-	if(!headers_sent())
-	{
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
-	}
-	echo $e->getContent();
-	exit();
-}
 
 function loop_classtypes($context, $funcname)
 {
@@ -100,5 +88,12 @@ function loop_classtypes($context, $funcname)
 		$localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
     		call_user_func("code_do_$funcname", $localcontext);
  	}
+}
+
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
 }
 ?>

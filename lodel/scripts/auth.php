@@ -407,18 +407,9 @@ $context = array ('version' => $GLOBALS['version'],
 // Tableau des options du site dans le $context
 if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale (options définies pour un site)
 	$context['options'] = array ();
-	$optionsfile = SITEROOT."CACHE/options_cache.php";
-	if(!file_exists($optionsfile))
-	{
-		if(!function_exists('cacheOptionsInFile'))
-			require 'optionfunc.php';
-		$context['options'] = cacheOptionsInFile($optionsfile);
-	}
-	else
-	{
-		require $optionsfile;
-		$context['options'] = !isset($options_cache) ? cacheOptionsInFile($optionsfile) : $options_cache;
-	}
+	if(!function_exists('cacheOptionsInFile'))
+		require 'optionfunc.php';
+	$context['options'] = cacheOptionsInFile();
 	unset($options_cache);
 }
 

@@ -55,10 +55,17 @@
  * @return array le tableau des options
  */
 	
-function cacheOptionsInFile($optionsfile='')
+function cacheOptionsInFile($optionsfile=null)
 {
+	if(is_null($optionsfile) && file_exists(SITEROOT."CACHE/options_cache.php"))
+	{
+		require SITEROOT."CACHE/options_cache.php";
+		if(isset($options_cache_return))
+			return $options_cache_return;
+	}
+
 	global $db;
-	$ids = array();
+	$ids = $arr = array();
 	do {
 		$sql = lq('SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent '.sql_in_array($ids)." ORDER BY rank");
 		$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -81,7 +88,7 @@ function cacheOptionsInFile($optionsfile='')
 		}
 	}	while ($ids);
 
-	if (!empty($optionsfile)) {
+	if (!is_null($optionsfile)) {
 		$sql = lq('SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 ORDER BY rank');
 	} else { // pas les username et passwd dans le context
 		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
@@ -89,29 +96,32 @@ function cacheOptionsInFile($optionsfile='')
 
 	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	$txt = "<"."?php\n\$options_cache=array(\n";
+	$txt2 = "\n\$options_cache_return=";
 	while (!$result->EOF)	{
 		$id = $result->fields['id'];
 		$name = $result->fields['name'];
 		$idgroup = $result->fields['idgroup'];
 		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
-		if (!empty($optionsfile)) {
-			$optname = $arr[$idgroup].".".$name;
-			clean_request_variable($value);
-			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
-			$options_cache[$optname] = addslashes($value);
-		} else {
-			$optname = $name;
-			//$txt .= "'".$optname."'=>'".$value."',\n";
-			$papa = $arr[$idgroup];
-			$options_cache[$papa][$optname] = $value;
-		}
+		clean_request_variable($value);
+		$options_cache_return[$arr[$idgroup]][$name] = $value;
+		$optname = $arr[$idgroup].".".$name;
+		$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+		$options_cache[$optname] = addslashes($value);
 		$result->MoveNext();
 	}
-	$txt .= ");?".">";
+	$txt .= ");\n";
+	$txt2 .= var_export($options_cache_return, true).";?".">";
 	
-	clean_request_variable($options_cache);
 	#echo "<textarea cols=100 rows=10>$txt</textarea>";
-	if (!empty($optionsfile)) { $ret = writefile($optionsfile, $txt); }
-	return $options_cache; 
+	if (!is_null($optionsfile)) 
+	{ 
+		writefile($optionsfile, $txt.$txt2); 
+		return $options_cache;
+	}
+	else
+	{
+		writefile(SITEROOT."CACHE/options_cache.php", $txt.$txt2);
+		return $options_cache_return;
+	}
 }
 ?>
