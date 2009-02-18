@@ -1,4 +1,12 @@
 <?php
+// 5.3
+if(!defined('E_DEPRECATED'))
+	define('E_DEPRECATED', 8192);
+if(!defined('E_USER_DEPRECATED'))
+	define('E_USER_DEPRECATED', 16384);
+// 5.2
+if(!defined('E_RECOVERABLE_ERROR'))
+	define('E_RECOVERABLE_ERROR', 4096);
 
 class LodelException extends Exception 
 {

@@ -59,6 +59,63 @@ authenticate(LEVEL_REDACTOR);
 // require 'func.php';
 require 'utf8.php'; // conversion des caracteres
 
+function lodelprocessing(&$xhtml)
+{
+	$xhtml = str_replace(array("&#39;", "&apos;"), array("'", "'"), $xhtml);
+	return false;
+}
+
+function imagesnaming($filename, $index, $uservars)
+{
+	return $uservars. "_". $index. strrchr($filename, '.');
+}
+
+function cleanList($text)
+{
+	$arr = preg_split("/(<\/?(?:ul|ol)\b[^>]*>)/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$count = count($arr);
+	$arr[0] = addList($arr[0]);
+	$inlist = 0;
+	$start = 0;
+	for($i = 1; $i < $count; $i+= 2) {
+		if ($arr[$i][1] == "/") { // closing
+			$inlist--;
+			if ($inlist == 0) {
+				$arr[$i].= "</r2r:puces>"; 
+			} // end of a list
+		} else { // opening
+			if ($inlist == 0) {
+				$arr[$i] = "<r2r:puces>". $arr[$i];
+			} // beginning of a list
+			$inlist++;
+		}
+		if ($inlist > 0) { // in a list
+			$arr[$i+1] = preg_replace("/<\/?r2r:[^>]+>/", " ", $arr[$i+1]);
+		} else { // out of any list
+			$arr[$i+1] = addList($arr[$i+1]);
+		}
+	}
+	$text = join("", $arr);
+	return preg_replace("/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
+					"", $text);
+}
+
+function addList($text)
+{ // especially for RTF file where there are some puces but no li
+	return preg_replace(array(
+				"/<r2r:(puces?)>(.*?)<\/r2r:\\1>/", // put li
+				"/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
+				"/(<r2r:puces?>)/",  // add ul
+				"/(<\/r2r:puces?>)/" // add /ul
+				),
+				array("<r2r:\\1><li>\\2</li></r2r:\\1>",
+				"",
+				"\\1<ul>",
+				"</ul>\\1"
+				), $text);
+}
+
+
 if (!empty($_POST)) {
 	$therequest = &$_POST;
  } else {
@@ -209,63 +266,6 @@ $context['url'] = 'oochargement.php';
 require 'view.php';
 $view = &View::getView();
 $view->render($context, 'oochargement', !(bool)$_POST);
-
-
-function imagesnaming($filename, $index, $uservars)
-{
-	return $uservars. "_". $index. strrchr($filename, '.');
-}
-
-function lodelprocessing(&$xhtml)
-{
-	$xhtml = str_replace(array("&#39;", "&apos;"), array("'", "'"), $xhtml);
-	return false;
-}
-
-function cleanList($text)
-{
-	$arr = preg_split("/(<\/?(?:ul|ol)\b[^>]*>)/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
-	$count = count($arr);
-	$arr[0] = addList($arr[0]);
-	$inlist = 0;
-	$start = 0;
-	for($i = 1; $i < $count; $i+= 2) {
-		if ($arr[$i][1] == "/") { // closing
-			$inlist--;
-			if ($inlist == 0) {
-				$arr[$i].= "</r2r:puces>"; 
-			} // end of a list
-		} else { // opening
-			if ($inlist == 0) {
-				$arr[$i] = "<r2r:puces>". $arr[$i];
-			} // beginning of a list
-			$inlist++;
-		}
-		if ($inlist > 0) { // in a list
-			$arr[$i+1] = preg_replace("/<\/?r2r:[^>]+>/", " ", $arr[$i+1]);
-		} else { // out of any list
-			$arr[$i+1] = addList($arr[$i+1]);
-		}
-	}
-	$text = join("", $arr);
-	return preg_replace("/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
-					"", $text);
-}
-
-function addList($text)
-{ // especially for RTF file where there are some puces but no li
-	return preg_replace(array(
-				"/<r2r:(puces?)>(.*?)<\/r2r:\\1>/", // put li
-				"/<\/r2r:(puces?)>((?:<\/?(p|br)(?:\s[^>]*)?\/?>|\s)*)<r2r:\\1(?:\s[^>]*)?>/s", // process couple 
-				"/(<r2r:puces?>)/",  // add ul
-				"/(<\/r2r:puces?>)/" // add /ul
-				),
-				array("<r2r:\\1><li>\\2</li></r2r:\\1>",
-				"",
-				"\\1<ul>",
-				"</ul>\\1"
-				), $text);
-}
 
 }
 catch(Exception $e)

@@ -45,12 +45,15 @@ semblent ne pas être utilisée
         if ($type != FALSE) {
 	    $datas = $result->FetchRow();
 	    $data = array();
-	    foreach($datas as $d) $data[] = $d;
+	    if($datas) {
+	        foreach($datas as $d) $data[] = $d;
+	    }
 //             $data = mysql_fetch_array($result, $type);
         } else {
 	    $data = $result->FetchRow();
-	    
-	    foreach($data as $d) $data[] = $d;
+	    if($data) {
+	        foreach($data as $d) $data[] = $d;
+	    }
 //             $data = mysql_fetch_array($result);
         }
         if (!(isset($cfg['AllowAnywhereRecoding']) && $cfg['AllowAnywhereRecoding'] && $allow_recoding)) {

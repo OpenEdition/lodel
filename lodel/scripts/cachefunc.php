@@ -123,7 +123,7 @@ function removefilesincache()
 		foreach($cache as $file) {
 			if($cache->isDot() || $cache->isDir() || !$cache->isWritable() || ($dir = basename($cache->getPath())) == 'CVS' 
 				|| $dir == 'upload' || $dir == 'require_caching') continue;
-			unlink($file);
+			@unlink($file);
 		}
 // 		$fd = opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
 // 		while (($file = readdir($fd)) !== false) {
