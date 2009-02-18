@@ -47,10 +47,6 @@ define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
 
 require 'class.errors.php';
-set_error_handler(array('LodelException', 'exception_error_handler'));
-
-// les niveaux d'erreur à afficher
-error_reporting(E_ALL);
 
 try
 {
