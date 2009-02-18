@@ -65,11 +65,6 @@ if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/(index|si
 }
 
 require 'class.errors.php';
-set_error_handler(array('LodelException', 'exception_error_handler'));
-
-// les niveaux d'erreur à afficher
-// error_reporting(E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR);
-error_reporting(E_ALL ^ E_NOTICE);
 
 try
 {
