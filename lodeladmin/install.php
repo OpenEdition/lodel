@@ -60,7 +60,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	}
 }
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ALL ^ E_NOTICE);
 
 if($test) {
 	// Version of lodel to be installed.
@@ -96,8 +96,8 @@ ini_set('include_path',LODELROOT. "lodel".$install->get('versionsuffix')."/scrip
 //
 if($option1) { $installoption=1; }
 elseif($option2){ $installoption=2; }
-elseif ($erase_and_option1) { $installoption=1; @unlink($install->get('lodelconfig')); }
-elseif ($erase_and_option2) { $installoption=2; @unlink($install->get('lodelconfig')); }
+elseif ($erase_and_option1) { $installoption=1; unlink($install->get('lodelconfig')); }
+elseif ($erase_and_option2) { $installoption=2; unlink($install->get('lodelconfig')); }
 if(isset($installoption))
 	$install->set('installoption', $installoption);
 
@@ -115,47 +115,34 @@ if (!version_compare(PHP_VERSION,'5.0.0','>=')) {
 // Verifie qu'on peut ecrire dans le cache
 //
 $install->set('plateformdir', LODELROOT."lodel".$install->get('versionsuffix')."/install/plateform");
+$install->set('protecteddir', array("lodel".$install->get('versionsuffix'),
+		    "CACHE",
+		    "tpl",
+		    "lodeladmin".$install->get('versionsuffix')."/CACHE",
+		    "lodeladmin".$install->get('versionsuffix')."/tpl"));
 
-if ($tache=="plateform") {
-	$install->set('plateform', $plateform);
-	$install->installConf($testfile);
-}
-
-//
-// gestion de mysql / maj configuration
-//
-
-if ($tache=="mysql") {
-	$install->majConfDB($newdbusername, $newdbpasswd, $newdbhost);
-}
-
-//
-// gestion de la database
-//
-
-if ($tache=="database") {
-	if ($continue) {
-		$tache="continue";
-		// nothing to do
-	}
-	else
-	{
-		if(!$install->manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase))
+switch($tache)
+{
+	case 'plateform':
+		$install->set('plateform', $plateform);
+		$install->installConf($testfile);
+	break;
+	case 'mysql':
+		$install->majConfDB($newdbusername, $newdbpasswd, $newdbhost);
+	break;
+	case 'database':
+		if ($continue) {
+			$tache="continue";
+			// nothing to do
+		}
+		elseif(!$install->manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase))
 		{
 			$erreur_createdatabase=1;
 			$install->include_tpl("install-database.html");
-			return;
 		}
-	}
-}
-
-// création de l'admin
-if ($tache=="admin") {
-
-	unset($t);
-	$t = $install->manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail);
-
-	if($t !== true)
+	break;
+	case 'admin':
+	if(($t = $install->manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail)) !== true)
 	{
 		if($t === "error_user")
 			$erreur_empty_user_or_passwd=true;
@@ -172,7 +159,7 @@ if ($tache=="admin") {
 	}
 	else
 	{
-		@include($install->get('lodelconfig'));	
+		require($install->get('lodelconfig'));	
 		$GLOBALS['tableprefix'] = $tableprefix;
 		// log this user in 
 		require_once("connect.php");
@@ -186,64 +173,50 @@ if ($tache=="admin") {
 		// on vire le MDP de la mémoire
 		unset($adminpasswd);
 	}
-
- }
-
-$install->set('protecteddir', array("lodel".$install->get('versionsuffix'),
-		    "CACHE",
-		    "tpl",
-		    "lodeladmin".$install->get('versionsuffix')."/CACHE",
-		    "lodeladmin".$install->get('versionsuffix')."/tpl"));
-
-// mise en place htaccess
-if ($tache=="htaccess") {
-	$erreur_htaccesswrite = $install->set_htaccess($verify, $write, $nohtaccess);
-}
-
-// maj des options lodel
-if ($tache=="options") {
-	$install->maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri);
-}
-
-// téléchargement du fichier de conf ?
-if ($tache=="downloadlodelconfig") {
-	if($install->downloadlodelconfig($log_version))
-		return;
-}
-
-// affichage du contenu du fichier lodelconfig ?
-if ($tache=="showlodelconfig") {
-	if($install->showlodelconfig())
-		return;
-}
-
-
-/////////////////////////////////////////////////////////////////
-//                              TESTS                          //
-/////////////////////////////////////////////////////////////////
-
-//
-// Vérifie les droits sur les fichiers, (verifie juste les droits d'apache, pas les droits des autres users, et verifie les droits minimum, pas de verification de la securite) dans la zone admin
-//
-
-// les fonctions de tests existent, donc on peut faire des tests sur les droits
-if($tache == 'droits') {
-	$t = $install->testRights();
-	if($t !== true)
-	{
-		$erreur['functions'] = array();	
-		$erreur['functions'] = $t;
-		$install->include_tpl("install-php.html");
-		return;
-	}
-}
-
-// pas de tache ? ok on est donc au début de l'installation
-if (!$tache) {
-	if(!is_bool($installing))
-		$installing = $install->startInstall();
-	$install->include_tpl("install-bienvenue.html");
-	return;
+	break;
+	case 'htaccess': // mise en place htaccess
+		$erreur_htaccess = $install->set_htaccess($verify, $write, $nohtaccess);
+		if(!empty($erreur_htaccess))
+		{
+			$install->include_tpl("install-htaccess.html");
+		}
+	break;
+	case 'options': // maj des options lodel
+		$install->maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri);
+	break;
+	case 'downloadlodelconfig': // téléchargement du fichier de conf ?
+		$install->downloadlodelconfig($log_version);
+	break;
+	case 'showlodelconfig': // affichage du contenu du fichier lodelconfig ?
+		$install->showlodelconfig();
+	break;
+	case 'droits': // les fonctions de tests existent, donc on peut faire des tests sur les droits
+		$t = $install->testRights();
+		if($t !== true)
+		{
+			$erreur['functions'] = array();	
+			$erreur['functions'] = $t;
+			$install->include_tpl("install-php.html");
+		}
+	break;
+	case 'lodelconfig':
+		//
+		// Vérifie maintenant que les lodelconfig sont les meme que celui qu'on vient de produire
+		//
+		if($install->verifyLodelConfig() === "error")
+		{
+			$erreur_exists_but_not_readable=1;
+			$install->include_tpl('install-lodelconfig.html');
+		}
+		
+		// enfin fini !
+		$install->finish();
+	break;
+	default:
+		if(!is_bool($installing))
+			$installing = $install->startInstall();
+		$install->include_tpl("install-bienvenue.html");
+	break;
 }
 
 // include: lodelconfig
@@ -267,7 +240,7 @@ if($install->checkDB() === "error_cnx")
 	$install->include_tpl("install-mysql.html");
 }
 
-@include($install->get('lodelconfig'));
+require($install->get('lodelconfig'));
 // on cherche si on a une database
 if(!$install->get('installoption')) {
 	if(!$installoption) trigger_error('Internal error. Missing installoption value from lodelconfig.php !', E_USER_ERROR);
@@ -286,79 +259,51 @@ if($t !== true)
 	{
 		$erreur_usedatabase=1;
 		$install->include_tpl("install-database.html");
-		return;
 	}
 	elseif($t === "error_tableexist")
 	{
 		$erreur_tablesexist=1;
 		$install->include_tpl("install-database.html");
-		return;
 	}
 	else
 	{
 		$erreur_createtables = $t;
 		$install->include_tpl("install-database.html");
-		return;
 	}
 }
 
 //
 // Vérifie qu'il y a un administrateur Lodel, sinon demande la creation
 //
-unset($t);
-$t = $install->verifyAdmin();
-
-if($t === false)
+if($install->verifyAdmin() === false)
 {
 	$install->include_tpl("install-admin.html");
-	return;
 }
 
 //
 // Vérifie la présence des htaccess
 //
-
 if ($htaccess!="non") {
 
-	if(!$install->checkHtaccess())
+	if(!$erreur_htaccess = $install->checkHtaccess())
 	{
-		$erreur_htaccess = $install->checkHtaccess();
 		$install->include_tpl("install-htaccess.html");
-		return;
 	}
 }
 
 //
 // Demander des options generales
 //
-unset($t);
 $t = $install->askOptions($importdir, $chooseoptions);
-
 if($t === "error")
 {
 	$erreur_importdir=1;
 	$install->include_tpl("install-options.html");
-	return;
 }
 elseif($t === false)
 {
 	$install->include_tpl("install-options.html");
-	return;
 }
-
-//
-// Vérifie maintenant que les lodelconfig sont les meme que celui qu'on vient de produire
-//
-unset($t);
-$t = $install->verifyLodelConfig();
-
-if($t === "error")
-{
-	$erreur_exists_but_not_readable=1;
-	$install->include_tpl('install-lodelconfig.html');
-	return;
-}
-
-// enfin fini !
-$install->finish();
+// install lodelconfig
+$install->include_tpl('install-lodelconfig.html');
 ?>

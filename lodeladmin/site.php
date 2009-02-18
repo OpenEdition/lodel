@@ -58,7 +58,7 @@ try
 	
 	extract_post();
 	$context['installoption'] = (int)$installoption;
-	$context['version']       = '0.8';
+	$context['version']       = $GLOBALS['version'];
 
 	require 'class.siteManage.php';
 	$context['shareurl'] = $shareurl;
@@ -70,10 +70,11 @@ try
 	$website->set('downloadsiteconfig',$downloadsiteconfig);
 	
 	if($maintenance > 0)
+	{
 		$website->maintenance($maintenance);
-	
-	// suppression et restauration
-	if ($id>0 && ($delete || $restore)) {
+	} 
+	elseif ($id>0 && ($delete || $restore)) 
+	{ // suppression et restauration
 		if($delete)
 			$website->remove();
 		elseif($restore)
@@ -81,9 +82,9 @@ try
 	}
 
 	// on récupère les infos du site (url, path, status, etc..)
-	if ($id > 0 || $website->get('id') > 0) {
+	if ($id > 0) {
 		$result = $db->GetRow("SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		$website->context = array_merge($website->context, $result);
+		$website->context = array_merge($result,$website->context);
 	
 	}
 	
@@ -127,42 +128,29 @@ try
 	if($website->context['name'] && !$website->context['dbname'])
 		$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $website->context['name'];
 
-	unset($t);
-	if ($task === 'createdb') {
-	
-		$t = $website->createDB($lodeldo);
-	
-		if($t === true)
-		{
-			$task = 'createtables';
-		}
-		else
-		{
-			return;
-		}
+	if ($task === 'createdb') 
+	{
+		$website->createDB($lodeldo);
+		$task = 'createtables';
 	}
 	
 	// creation des tables des sites
-	if ($task === 'createtables') {
-		if($website->createTables())
-			$task = 'createdir';
-		else
-			return;
+	if ($task === 'createtables') 
+	{
+		$website->createTables();
+		$task = 'createdir';
 	}
 	
 	// Creer le repertoire principale du site
 	if ($task === 'createdir'){
-		if($website->createDir($lodeldo, $mano, $filemask))
-			$task = 'file';
-		else
-			return;
+		$website->createDir($lodeldo, $mano, $filemask);
+		$task = 'file';
 	}
 	
 	// verifie la presence ou copie les fichiers necessaires
 	// cherche dans le fichier install-file.dat les fichiers a copier
 	if ($task === 'file') {
-		if(!$website->manageFiles($lodeldo))
-			return;
+		$website->manageFiles($lodeldo);
 	}
 	
 	$context = $website->context;

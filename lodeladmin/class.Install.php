@@ -157,8 +157,8 @@ class Install {
 	 */
 	public function testInstallDB()
 	{
-		require_once "../lodel".$this->versionsuffix."/scripts/auth.php";
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
+		require "../lodel".$this->versionsuffix."/scripts/auth.php";
 		if (@mysql_connect($dbhost,$dbusername,$dbpasswd)) {
 			@mysql_select_db($database);
 			$this->set_mysql_charset();
@@ -198,7 +198,7 @@ class Install {
 				$chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
 			}
 			@chmod($this->lodelconfig,$chmod);
-			@include($this->lodelconfig);
+			require($this->lodelconfig);
 			$this->maj_lodelconfig(array("home"=>'$pathroot/lodel'.$this->versionsuffix.'/scripts/'));
 		} else {
 			trigger_error("ERROR: ".$this->lodelconfigplatform." does not exist. Internal error, please report this bug.", E_USER_ERROR);
@@ -279,13 +279,13 @@ class Install {
 	{
 		if($erasetables)
 		{
-			@include($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
-			@mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+			require($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
+			mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
 			
 			/*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
 			if ($version_mysql_num[0].$version_mysql_num[1] > 40)
 					{ mysql_query('SET NAMES UTF8'); }*/
-			@mysql_select_db($database); // selectionne la database
+			mysql_select_db($database); // selectionne la database
 
 			$this->set_mysql_charset();
 			// erase the table of each site
@@ -316,7 +316,7 @@ class Install {
 		} else { // normal case
 			$set=array();
 			
-			@include($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
+			require($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
 			
 			if ($installoption>1) {
 				$set['singledatabase']=$newsingledatabase ? "on" : "";
@@ -333,15 +333,15 @@ class Install {
 
 			$this->maj_lodelconfig($set);
 			if ($createdatabase) { // il faut creer la database
-				@mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
-					$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
-					if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
-						mysql_query('SET NAMES UTF8');
-						$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
-					} else { 
-						$db_charset = '';
-					}
-				if (!@mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
+				mysql_connect($dbhost,$dbusername,$dbpasswd); // connect
+				$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+				if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
+					mysql_query('SET NAMES UTF8');
+					$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+				} else { 
+					$db_charset = '';
+				}
+				if (!mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
 					return false;
 				}
 			} else {
@@ -368,7 +368,7 @@ class Install {
 	 */
 	public function manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail)
 	{
-		@include($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
+		require($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
 
 		if(empty($adminusername) || empty($adminpasswd)) {
 			return "error_user";
@@ -415,12 +415,12 @@ class Install {
 		if ($verify || $write) $this->maj_lodelconfig("htaccess","on");
 		if ($nohtaccess) $this->maj_lodelconfig("htaccess","off");
 		if ($write) {
-			$erreur_htaccesswrite=0;
+			$erreur_htaccesswrite=array();
 			foreach ($this->protecteddir as $dir) {
 				if (file_exists(LODELROOT.$dir) && !file_exists(LODELROOT.$dir."/.htaccess")) {
 					$file=@fopen(LODELROOT.$dir."/.htaccess","w");
 					if (!$file) {
-						$erreur_htaccesswrite=1;
+						array_push($erreur_htaccesswrite,$dir);
 					} else {
 						fputs($file,"deny from all\n");
 						fclose($file);
@@ -499,7 +499,7 @@ class Install {
 	 */
 	public function showlodelconfig()
 	{
-		@include($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
+		require($this->lodelconfig); // insere lodelconfig, normalement pas de probleme
 		$this->include_tpl("install-showlodelconfig.html");
 		return true;
 	}
@@ -589,7 +589,7 @@ class Install {
 	 */
 	public function checkConfig()
 	{
-		if (!file_exists($this->lodelconfig) || !(@include($this->lodelconfig))) {
+		if (!file_exists($this->lodelconfig) || !(require($this->lodelconfig))) {
 			$this->include_tpl("install-plateform.html");
 			return false;
 		}
@@ -604,7 +604,7 @@ class Install {
 	 */
 	public function checkFunc()
 	{
-		if ((@include("../lodel".$this->versionsuffix."/scripts/func.php"))!=568) { // on accede au fichier func.php
+		if ((require_once(LODELROOT."lodel".$this->versionsuffix."/scripts/func.php"))!=568) { // on accede au fichier func.php
 			trigger_error("ERROR: unable to access the ../lodel".$this->versionsuffix."/scripts/func.php file. Check the file exists and the rights and/or report the bug.", E_USER_ERROR);
 		}
 	}
@@ -617,7 +617,7 @@ class Install {
 	 */
 	public function checkDB()
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		if (!$dbusername || !$dbhost) {
 			$this->include_tpl("install-mysql.html");
 			return false;
@@ -648,10 +648,10 @@ class Install {
 	 */
 	public function installDB($erasetables, $tache)
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		$sitesexistsrequest="SELECT id,status FROM ".$tableprefix."sites LIMIT 1";
 
-		if (!@mysql_select_db($database)) { // ok, database est defini, on tente la connection
+		if (!mysql_select_db($database)) { // ok, database est defini, on tente la connection
 			return "error_dbselect";
 		} elseif ($erasetables || !@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
 			// non, alors on cree les tables
@@ -698,7 +698,7 @@ class Install {
 	 */
 	public function verifyAdmin()
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		$result=mysql_query("SELECT id FROM ".$tableprefix."users LIMIT 1") or trigger_error(mysql_error(), E_USER_ERROR);
 		if (!mysql_num_rows($result)) { // il faut demander la creation d'un admin
 			return false;
@@ -752,7 +752,7 @@ class Install {
 	 */
 	public function verifyLodelConfig()
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		$textlc=file_get_contents($this->lodelconfig);
 		$file="lodelconfig.php";
 		
@@ -763,13 +763,13 @@ class Install {
 		}
 		// compare the two config files
 		if (!$rootlodelconfig_exists || $textlc!=file_get_contents(LODELROOT.$file)) { // are they different ?
-			@unlink(LODELROOT.$file);
+			if(!is_writeable(LODELROOT.$file)) $this->include_tpl("install-lodelconfig.html");
+			unlink(LODELROOT.$file);
 			if (@copy($this->lodelconfig,LODELROOT.$file)) { // let copy
 				@chmod(LODELROOT.$file,0666 & octdec($filemask));
 			} else { // error
 				$this->include_tpl("install-lodelconfig.html");
-				return "error";
-			}  
+			}
 		}
 		return true;
 	}
@@ -782,7 +782,7 @@ class Install {
 	 */
 	public function finish()
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		if (!defined("DATABASE")){
 			define("DATABASE", $database);
 			define("DBUSERNAME", $dbusername);
@@ -791,7 +791,7 @@ class Install {
 			define("DBDRIVER", 'mysql');
 			define("SINGLEDATABASE", $singledatabase);
 		}
-
+		unlink($this->lodelconfig);
 		// finish !
 		if ($this->installoption=='1') { // essaie de creer automatiquement le site
 			header("location: site.php?maindefault=1");
@@ -865,7 +865,7 @@ class Install {
 	 */		
 	private function mysql_query_file($filename,$droptables=false, $db)
 	{
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		$table_charset = $this->find_mysql_db_charset($db);
 		// commenté par P.A. le 09/10/08, UTF8 uniquement à partir de Lodel > 0.8.7
 // 		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
@@ -961,7 +961,8 @@ class Install {
 	 */	
 	public function include_tpl($file)
 	{
-		@include($this->lodelconfig);
+		if(file_exists($this->lodelconfig))
+			require($this->lodelconfig);
 		extract($GLOBALS,EXTR_SKIP);
 		
 		$plateformdir = $this->plateformdir;
@@ -970,7 +971,7 @@ class Install {
 		if($installlang != $this->installlang)
 			$installlang = $this->installlang;
 		if (!$langcache) {
-			if (!(@include ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
+			if (!(require_once ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
 		}
 		$text=@file_get_contents("tpl/".$file);
 		if ($text===false) $this->problem_include("tpl/".$file);
@@ -1017,14 +1018,15 @@ class Install {
 	 */	
 	public function problem($msg)
 	{
-		@include($this->lodelconfig);
+		if(file_exists($this->lodelconfig))
+			require($this->lodelconfig);
 		extract($GLOBALS,EXTR_SKIP);
 
 		//$installlang = $_REQUEST['installlang'];
 		if (!$this->installlang) $this->installlang="fr";
 
 		if (!$langcache) {
-			if (!(@include ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
+			if (!(require_once ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
 		}
 		global $langcache;
 		$messages=array(
@@ -1068,12 +1070,11 @@ class Install {
 	 */		
 	private function probleme_droits($missing_dirs, $not_writable_dirs, $not_readable_dirs)
 	{
-		@include($this->lodelconfig);
-		extract($GLOBALS,EXTR_SKIP);
+		require($this->lodelconfig);
 		if (!$this->installlang) $this->installlang="fr";
 
 		if (!$langcache) {
-			if (!(@include ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
+			if (!(require_once ("tpl/install-lang-".$this->installlang.".html"))) $this->problem_include("tpl/install-lang-".$this->installlang.".html");
 		}
 		global $langcache;
 		include 'tpl/install-openhtml.html';
@@ -1174,13 +1175,13 @@ class Install {
 	public function makeSelectLang($tpr)
 	{
 		global $db;
-		@include($this->lodelconfig);
+		require($this->lodelconfig);
 		$text_lang = "";
 		$GLOBALS['database'] = $database;
 		$GLOBALS['dbusername'] = $dbusername;
 		$GLOBALS['dbpasswd'] = $dbpasswd;
 		$GLOBALS['dbhost'] = $dbhost;
- 		@require_once("../lodel".$this->versionsuffix."/scripts/connect.php");
+ 		require("../lodel".$this->versionsuffix."/scripts/connect.php");
  		$result=$db->execute(lq("SELECT lang,title FROM ".$tpr."translations WHERE status>0 AND textgroups='interface'")) or trigger_error("ERROR : error during selecting lang", E_USER_ERROR);
  		$lang=$this->installlang;
  		while(!$result->EOF) {

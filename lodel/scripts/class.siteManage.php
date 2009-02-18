@@ -261,7 +261,6 @@ class siteManage {
 		
 		// validation
 		do {
-
 			if (!$this->context['title']) {
 				$this->context['error_title'] = $err = 1;
 			}
@@ -302,7 +301,7 @@ class siteManage {
 					$this->context['path'] = '/'. $this->context['name'];
 				}
 			}
-			if (!isset($this->context['url'])) {
+			if (empty($this->context['url'])) {
 				$this->context['url'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr($this->context['path'], 1);
 			}
 			
@@ -396,7 +395,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-version');
-				return false;
+				exit();
 			}
 		}
 		$this->context['versiondir'] =  $this->versiondir;
@@ -652,7 +651,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdb');
-				return false;
+				exit();
 			}
 			if (!$db->Execute($this->context['command1']) || !$db->Execute($this->context['command2']. $pass)) {
 				$this->context['error']      = $db->ErrorMsg();
@@ -661,7 +660,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdb');
-				return false;
+				exit();
 			}
 
 		} while (0);
@@ -732,7 +731,7 @@ class siteManage {
 			require 'view.php';
 			$view = &View::getView();
 			$view->render($this->context, 'site-createtables');
-			return false;
+			exit();
 			}
 		$db->SelectDB($this->database) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		return true;
@@ -765,7 +764,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdir');
-				return false;
+				exit();
 			}
 			// on essaie
 			if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec($filemask))) {
@@ -774,7 +773,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdir');
-				return false;
+				exit();
 			}
 			@chmod($dir, 0777 & octdec($filemask));
 		}
@@ -787,7 +786,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-createdir');
-				return false;
+				exit();
 			} else {
 				unlink(LODELROOT. 'tpl/testecriture');
 			}
@@ -861,7 +860,7 @@ class siteManage {
 		$siteconfigcache = 'CACHE/siteconfig.php';
 		if ($this->downloadsiteconfig) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
-			return false;
+			exit();
 		}
 		if (file_exists($siteconfigcache)) {
 			unlink($siteconfigcache);
@@ -871,7 +870,12 @@ class siteManage {
 			trigger_error("ERROR: unable to write in CACHE.", E_USER_ERROR);
 		}
 		if(!$this->maj_siteconfig($siteconfigcache, array('site' => $this->context['name'])))
-			return false;
+		{
+			require 'view.php';
+			$view = &View::getView();
+			$view->render($this->context, 'site-file');
+			exit();
+		}
 		$siteconfigdest = $root. 'siteconfig.php';
 
 		// cherche si le fichier n'existe pas ou s'il est different de l'original
@@ -880,7 +884,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-file');
-				return false;
+				exit();
 			}
 			@unlink($siteconfigdest); // try to delete before copying.
 			// try to copy now.
@@ -891,7 +895,7 @@ class siteManage {
 				require 'view.php';
 				$view = &View::getView();
 				$view->render($this->context, 'site-file');
-				return false;
+				exit();
 			}
 			@chmod ($siteconfigdest, 0666 & octdec($GLOBALS['filemask']));
 		}
@@ -939,6 +943,9 @@ class siteManage {
 		if (!$this->context['path']) {
 			$this->context['path'] = '/'. $this->context['rep'];
 		}
+		// clean siteconfig
+		unlink($siteconfigcache);
+
 		if ($import) {
 			$go = $this->context['url']. "/lodel/admin/index.php?do=importmodel&lo=data";
 		} else {
