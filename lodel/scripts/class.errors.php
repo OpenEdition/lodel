@@ -56,7 +56,7 @@ class LodelException extends Exception
 		if(TRUE === $this->debug) {
 			$ret = '</body><p class="error">';
 			$ret .= (E_USER_ERROR == $this->errno ? 'Internal' : 'PHP');
-			$ret .= " error in file '".$this->errfile."' on line ".$this->errline." : <br />";
+			$ret .= " error (type ".$this->type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : <br />";
 			$ret .= $this->errstr.'</p>';
 		} else {
 			$ret = "Internal error. Please contact the webmaster.";

@@ -93,7 +93,7 @@ function couper($texte, $long)
 /**
  * Cut text keeping whole words
  */
-function cuttext($text, $length)
+function cuttext($text, $length, $dots=false)
 {
 	$GLOBALS['textfunc_hasbeencut'] = false;
 	$open = strpos($text, "<");
@@ -105,14 +105,19 @@ function cuttext($text, $length)
 		$close = strpos($text, ">", $open);
 		if ($text[$open +1] == "/") {
 			array_pop($stack); // fermante
-		}	elseif ($tags[$close -1] != "/") {
-			array_push($stack, "</".preg_replace("/\s.*/", "", substr($text, $open +1, $close -1 - $open)).">"); // ouvrante
+		}	elseif ($text[$close -1] != "/") {
+			$tag = substr($text, $open +1, $close -1 - $open);
+			if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
+			else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
 		}
 		$open = strpos($text, "<", $close);
 		$piecelen = $open -1 - $close;
 		if ($open === FALSE || $piecelen > $length)
+		{
+			if($dots) array_push($stack, ' (...)');
 			return substr($text, 0, $close +1).cut_without_tags(substr($text, $close +1, $length +2), $length).// 2 pour laisser de la marge
 			join("", array_reverse($stack));
+		}
 		$length -= $piecelen;
 	}
 	return $text;
@@ -131,7 +136,7 @@ function cut_without_tags($text, $length)
 		//$text2 = substr($text2, 0, $last_space_position);
 		$text2 = preg_replace("/\S+$/", "", $text2);
 	}
-		return $text2;
+	return $text2;
 }
 
 function hasbeencut()
