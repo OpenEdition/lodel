@@ -92,6 +92,8 @@ function authenticate($level = 0, $mode = "", $return = false)
 					$uuser = explode(' ', $user['ip']);
 					foreach($uuser as $ip)
 					{
+						$ip = trim($ip);
+						if(!$ip) continue 2;
 						$octs = explode('.', $ip);
 						foreach($octs as $k=>$octet) {
 							if(!$octet) continue;

@@ -603,7 +603,7 @@ PHP;
 			}
 			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
 			$contents = $this->_parser->parse($tpl, $include, $blockId, $cache_rep);
-			if($include) $contents = $this->_eval($contents, $context);
+			if($include && $this->_parser->refresh) $contents = $this->_eval($contents, $context);
 			$cache->save($contents, $template_cache, $group);
 		} 
 		else 

@@ -77,7 +77,7 @@ class Parser
 	protected $linearr;
 	protected $currentline;
 	protected $ind;
-	protected $refresh = "";
+	public $refresh = "";
 	protected $denied = array();
 	protected $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
