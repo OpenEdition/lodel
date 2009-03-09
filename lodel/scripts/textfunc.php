@@ -96,26 +96,27 @@ function couper($texte, $long)
 function cuttext($text, $length, $dots=false)
 {
 	$GLOBALS['textfunc_hasbeencut'] = false;
-	$open = strpos($text, "<");
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$open = mb_strpos($text, "<", 0, $encoding);
 	if ($open === false || $open > $length){
 		return cut_without_tags($text, $length);}
 	$length -= $open;
 	$stack = array ();
 	while ($open !== FALSE) {
-		$close = strpos($text, ">", $open);
-		if ($text[$open +1] == "/") {
+		$close = mb_strpos($text, ">", $open, $encoding);
+		if (mb_substr($text, $open+1, 1, $encoding) == "/") {
 			array_pop($stack); // fermante
-		}	elseif ($text[$close -1] != "/") {
-			$tag = substr($text, $open +1, $close -1 - $open);
+		}	elseif (mb_substr($text, $close-1, 1, $encoding) != "/") {
+			$tag = mb_substr($text, $open +1, $close -1 - $open, $encoding);
 			if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
 			else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
 		}
-		$open = strpos($text, "<", $close);
+		$open = mb_strpos($text, "<", $close, $encoding);
 		$piecelen = $open -1 - $close;
 		if ($open === FALSE || $piecelen > $length)
 		{
 			if($dots) array_push($stack, ' (...)');
-			return substr($text, 0, $close +1).cut_without_tags(substr($text, $close +1, $length +2), $length).// 2 pour laisser de la marge
+			return mb_substr($text, 0, $close +1, $encoding).cut_without_tags(mb_substr($text, $close +1, $length +2, $encoding), $length).// 2 pour laisser de la marge
 			join("", array_reverse($stack));
 		}
 		$length -= $piecelen;
@@ -125,11 +126,12 @@ function cuttext($text, $length, $dots=false)
 
 function cut_without_tags($text, $length)
 {
-	$text2 = substr($text." ", 0, $length);
-	if (strlen($text2) < strlen($text)) {
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$text2 = mb_substr($text." ", 0, $length, $encoding);
+	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
 	}
-	$last_space_position = strrpos($text2, " ");
+	$last_space_position = mb_strrpos($text2, " ", $encoding);
 	
 	if (!($last_space_position === false)) {
 		// supprime le dernier espace et tout ce qu'il y a derrière
