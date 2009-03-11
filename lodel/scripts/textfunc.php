@@ -99,7 +99,7 @@ function cuttext($text, $length, $dots=false)
 	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$open = mb_strpos($text, "<", 0, $encoding);
 	if ($open === false || $open > $length){
-		return cut_without_tags($text, $length);}
+		return cut_without_tags($text, $length, $dots);}
 	$length -= $open;
 	$stack = array ();
 	while ($open !== FALSE) {
@@ -124,7 +124,7 @@ function cuttext($text, $length, $dots=false)
 	return $text;
 }
 
-function cut_without_tags($text, $length)
+function cut_without_tags($text, $length, $dots=false)
 {
 	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$text2 = mb_substr($text." ", 0, $length, $encoding);
@@ -138,7 +138,8 @@ function cut_without_tags($text, $length)
 		//$text2 = substr($text2, 0, $last_space_position);
 		$text2 = preg_replace("/\S+$/", "", $text2);
 	}
-	return $text2;
+	
+	return (($GLOBALS['textfunc_hasbeencut'] && $dots) ? $text2.' (...)' : $text2);
 }
 
 function hasbeencut()

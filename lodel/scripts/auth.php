@@ -426,15 +426,16 @@ if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])
 	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) {
 		$GLOBALS['lang'] = $_COOKIE['language']; }
 	else {
-		setcookie('language');
-		$GLOBALS['lang'] = '';}
+		$GLOBALS['lang'] = 'fr'; // fr by default
+		setcookie('language', $GLOBALS['lang']);
+	}
 }
 // langue passée en GET ou POST : initialise le cookie
 else {
 	if(isset($_GET['lang']))
-		$GLOBALS['lang'] = (string)$_GET['lang'];
+		$GLOBALS['lang'] = trim($_GET['lang']);
 	elseif(isset($_POST['lang']))
-		$GLOBALS['lang'] = (string)$_POST['lang'];
+		$GLOBALS['lang'] = trim($_POST['lang']);
 	else
 		$GLOBALS['lang'] = 'fr';
 
@@ -444,6 +445,16 @@ else {
 	}
 	setcookie('language', $GLOBALS['lang']);
 }
+
+// do we have to set another locale ?
+if(stripos($GLOBALS['lang'], 'fr') !== 0)
+{
+	$l = strtolower(substr($GLOBALS['lang'], 0,2));
+	$lu = 'en' === $l ? 'US' : strtoupper($l);
+	setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
+	unset($l);
+}
+
 // tableaux des langues disponibles
 if(!function_exists('makeSelectLang'))
 	require 'lang.php';
