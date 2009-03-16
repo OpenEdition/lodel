@@ -1116,7 +1116,7 @@ PHP;
 		}
 		$this->fct_txt.=
 <<<PHP
-		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], \$queryCount) or mymysql_error(\$queryCount,'{$name}',__LINE__,__FILE__);
+		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], lq(\$queryCount)) or mymysql_error(\$queryCount,'{$name}',__LINE__,__FILE__);
 PHP;
 		if($selectparts['groupby']) {
 			$this->fct_txt .= 
@@ -1136,7 +1136,7 @@ PHP;
 
 		$this->fct_txt .= 
 <<<PHP
-		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], \$query) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
+		\$result = \$db->CacheExecute(\$GLOBALS['sqlCacheTime'], lq(\$query)) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
 PHP;
 		if(isset($processlimit))
 		{
