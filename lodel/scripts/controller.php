@@ -194,6 +194,7 @@ class Controller
 					// si le controleur est appelé par un script
 					// nettoyage
 					$GLOBALS['context'] = $backupContext;
+					unset($backupContext);
 					return 'ok';
 				case '_back' :
 					if(!class_exists('View', false))
