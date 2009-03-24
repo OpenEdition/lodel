@@ -109,7 +109,7 @@ class PersonTypesLogic extends Logic
 			break;
 		case 'g_type' :
 			if(!function_exists('reservedByLodel'))
-				require 'fielfunc.php';
+				require 'fieldfunc.php';
 			$g_typefields = $GLOBALS['g_persontypes_fields'];
 			$dao=$this->_getMainTableDAO();
 			$types = $dao->findMany('status > 0', '', 'g_type, title');
