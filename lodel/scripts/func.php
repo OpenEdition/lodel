@@ -110,6 +110,8 @@ function clean_request_variable(&$var, $key='')
 		$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 		$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
 		$config->set('HTML', 'DefinitionRev', 1);
+		$config->set('HTML', 'SafeObject', true);
+		$config->set('HTML', 'SafeEmbed', true);	
 		if($GLOBALS['debugMode'])
 			$config->set('Cache', 'DefinitionImpl', null);
 		$def = $config->getHTMLDefinition(true);
