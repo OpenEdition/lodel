@@ -93,7 +93,7 @@ function clean_request_variable(&$var, $key='')
 
 	if (!$filter) {
 		if(!class_exists('HTMLPurifier', false))
-			require 'htmlpurifier/library/HTMLPurifier.auto.php';
+			require 'htmlpurifier/HTMLPurifier.standalone.php';
 		$config = HTMLPurifier_Config::createDefault();
 		$config->set('Core', 'Encoding', $GLOBALS['context']['charset']);
 		$config->set('HTML', 'TidyLevel', 'heavy' );
