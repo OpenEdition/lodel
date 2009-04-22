@@ -1078,7 +1078,16 @@ PHP;
 // 				$options[$piece] = $this->codepieces[$piece];
 // 		}
 
-		$sqlfetchassoc = !is_null($options['sqlfetchassoc']) ? sprintf($options['sqlfetchassoc'], '$result') : sprintf($this->codepieces['sqlfetchassoc'], '$result');
+		if(isset($options['sqlfetchassoc']))
+		{
+			$sqlfetchassoc = sprintf($options['sqlfetchassoc'], '$result');
+			$while = '!$result->EOF';
+		}
+		else
+		{
+			$sqlfetchassoc = '$result->fields';
+			$while = '$result->MoveNext()';
+		}
 		#### $t=microtime();  echo "<br>requete (".((microtime()-$t)*1000)."ms): $query <br>";
 		//
 		// genere le code pour parcourir la loop
@@ -1152,7 +1161,7 @@ PHP;
 		\$count=0;
 		if(\$context['recordcount']) {?>{$contents['BEFORE']}<?php 
 			do {
-			\$context = array_merge(\$generalcontext,\$result->fields);
+			\$context = array_merge(\$generalcontext,{$sqlfetchassoc});
 			\$context['count'] = ++\$count;
 PHP;
 		// gere le cas ou il y a un premier
@@ -1171,7 +1180,7 @@ PHP;
 		}
 		$this->fct_txt .= 
 <<<PHP
-?>{$contents['DO']}<?php } while (\$result->MoveNext());?>{$contents['AFTER']}<?php }
+?>{$contents['DO']}<?php } while ({$while});?>{$contents['AFTER']}<?php }
 PHP;
 
 		if(!empty($contents['ALTERNATIVE'])) {
