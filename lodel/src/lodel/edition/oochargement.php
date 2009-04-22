@@ -158,50 +158,6 @@ if ($fileorigin == 'upload' && isset($_FILES['file1']) && $_FILES['file1']['tmp_
 	$source          = '';
 }
 
-if($_FILES)
-{
-	if(!class_exists('ServOOClient', false))
-		require 'servooclient.class.php';
-	
-	$request['request'] = $sourceoriginale;
-	$request['attachment'] = file_get_contents($source);
-	$request['schema'] = array(); // todo
-	$request['lodel_user'] = $GLOBALS['lodeluser']['name'];
-	$request['lodel_site'] = $GLOBALS['site'];
-	$request['mode'] = 'lodel';
-	
-	$client = new ServOOClient();
-	$error = array();
-	$i = 0;
-	do
-	{
-		$options = $client->selectServer($i++);
-		if(!$options) break;
-
-		$request = array_merge($request, $options);
-		$client->instantiate($request);
-		if($client->error)
-		{
-			$error[] = $client->status;
-		}
-	} while (1);
-
-	if(!$client->error)
-	{
-		header("content-type: application/xml");
-		echo $client->xml;
-	}
-	else
-	{
-		print_r($error);
-		var_dump($i);
-		var_dump($client->status);
-	}
-	
-	die();
-}
-
-
 if(!class_exists('ServOO', false))
 	require 'servoofunc.php';
 $client = new ServOO;
