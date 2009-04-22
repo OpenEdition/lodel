@@ -1659,30 +1659,18 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere, drag">
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
-		<ul class="listEntities" id="DragContainer[#ID]">
-	<ELSE />
-		<ul class="listEntities">
-	</IF>
+	<ul class="listEntities">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
-		<IF COND="[#COUNT] % 2">
-			<IF COND="[#DRAG] EQ 'true'">
-				<li class="line1_entity" id="[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE />
-				<li class="line1_entity"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndropDisabled.png" title="Drag'n'Drop Off" alt="Drag'n'Drop" class="dragger"/></a></div>
+			<IF COND="[#COUNT] % 2">
+				<li class="line1_entity">
+			<ELSE/>
+				<li class="line2_entity">
 			</IF>
-		<ELSE/>
-			<IF COND="[#DRAG] EQ 'true'">
-				<li class="line2_entity" id="[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE />
-				<li class="line2_entity"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndropDisabled.png" title="Drag'n'Drop Off" alt="Drag'n'Drop" class="dragger"/></a></div>
-			</IF>
-		</IF>
 			<div class="entityIcons">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
@@ -1705,11 +1693,6 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
-		<script type="text/javascript">
-			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
-		</script>
-	</IF>
 </DEFFUNC>
 
 <DEFFUNC NAME="GET_ALIASES" REQUIRED="id">
