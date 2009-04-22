@@ -52,7 +52,7 @@
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<tr>
 				<td>
-				<input type="text" size="3" value="[#KEY]" name="changedcontent[[#TABLE]]['oldcontent'][[#KEY]]" class="input_formulaire"/>
+				<input type="text" size="3" value="[#KEY]" name="changedcontent[[#TABLE]][oldcontent][[#KEY]]" class="input_formulaire"/>
 				</td>
 				<LOOP NAME="foreach" ARRAY="[#VALUE]">
 					<td>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</td>
@@ -75,7 +75,7 @@
 		<LOOP NAME="foreach" ARRAY="[#NEWCONTENT]">
 			<tr>
 				<td>
-				<input type="text" size="3" value="[#CHANGEDCONTENT.#TABLE.NEWCONTENT.#KEY]" name="changedcontent[[#TABLE]]['newcontent'][[#KEY]]" class="input_formulaire"/>
+				<input type="text" size="3" value="[#CHANGEDCONTENT.#TABLE.NEWCONTENT.#KEY]" name="changedcontent[[#TABLE]][newcontent][[#KEY]]" class="input_formulaire"/>
 				</td>
 				<LOOP NAME="foreach" ARRAY="[#VALUE]">
 					<td>[#VALUE|htmlentities(ENT_NOQUOTES, [#CHARSET])]</td>
