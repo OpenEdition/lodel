@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,13 +75,13 @@ class textsVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $name;
-	var $contents;
-	var $lang;
-	var $textgroup;
-	var $status;
-	var $upd;
+	public $id;
+	public $name;
+	public $contents;
+	public $lang;
+	public $textgroup;
+	public $status;
+	public $upd;
 	/**#@-*/
 }
 
@@ -91,6 +93,7 @@ class textsVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -110,9 +113,9 @@ class textsDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function textsDAO()
+	public function __construct()
 	{
-		$this->DAO("texts", false);
+		parent::__construct("texts", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

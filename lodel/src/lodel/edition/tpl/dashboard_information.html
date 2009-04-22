@@ -124,7 +124,7 @@
 		<th class="type">PHP</th><td><?php echo phpversion();?></td>
 	</tr>
 	<tr>
-		<th class="type">MySql</th><td><?php echo mysql_get_server_info();?></td>
+		<th class="type">MySql</th><td><?php $version = $GLOBALS['db']->ServerInfo(); echo $version['version']; ?></td>
 	</tr>
 
 	</table>

@@ -60,13 +60,13 @@ function replaceInFile($filename, $beginre, $endre, $contents)
 		return false;
 	}
 	$file = file_get_contents($filename);
-	if (!$file)	die("probleme avec le fichier $filename");
+	if (!$file)	trigger_error("probleme avec le fichier $filename", E_USER_ERROR);
 
 	if (!preg_match("/$beginre/", $file)) {
-		die("impossible de trouver les begin pour publicfields dans $filename");
+		trigger_error("impossible de trouver les begin pour publicfields dans $filename", E_USER_ERROR);
 	}
 	if (!preg_match("/$endre/", $file)) {
-		die("impossible de trouver les end pour publicfields dans $filename");
+		trigger_error("impossible de trouver les end pour publicfields dans $filename", E_USER_ERROR);
 	}
 
   $file = preg_replace("/($beginre\n?).*?(\n?$endre)/s", "\\1". $contents. "\\2", $file);

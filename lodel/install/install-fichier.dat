@@ -37,10 +37,6 @@ ln search.php
 #gestion du module OAI
 ln oai.php
 
-#Sitemap
-dirsource $homelodel/lodel-0.9
-ln tpl/sitemap.html
-
 ### desuet. cp tpl
 
 dirsource $homesite/lodel/admin
@@ -148,6 +144,8 @@ ln tpl/edit_xml.html
 ln search.php
 ln tpl/search.html
 
+# sitemap
+ln tpl/sitemap.html
 
 ###############################################################
 ############# admin
@@ -244,4 +242,5 @@ ln tpl/importxml_checkcontent.html
 ln tpl/importxml_checkfields.html
 ln tpl/importxml_checktables.html
 ln tpl/importxml_checktypes.html
+ln tpl/importxml_checktypes_class.html
 ln tpl/importxmlmodel.html

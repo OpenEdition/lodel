@@ -51,14 +51,14 @@
 					<LET VAR="kkey">[#KEY]</LET>
 					<LOOP NAME="foreach" ARRAY="[#VALUE]">
 						<IF COND="![#VALUE|is_array]">
-							<tr><td><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="3" /></td>
+							<tr><td><input type="text" value="[#KKEY]" name="data[[#TABLE]][[#ACT]][[#KEY]]" size="3" class="input_formulaire"/></td>
 							<td>[#KEY]</td><td>[#VALUE]</td></tr>
 						<ELSE />
 							<IF COND="'value' == [#KEY]">
 								<tr>
 								<LET ARRAY="fieldname" GLOBAL="1">[#VALUE|array_keys]</LET>
 								<LET ARRAY="fieldtype" GLOBAL="1">[#VALUE|array_values]</LET>
-								<td><input type="text" value="" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="3" /></td>
+								<td><input type="text" value="" name="data[[#TABLE]][[#ACT]][[%FIELDNAME.0]]" size="3" class="input_formulaire" /></td>
 								<td>[%FIELDNAME.0]</td>
 								<td>[%FIELDTYPE.0]</td>
 								</tr>
@@ -94,8 +94,8 @@
 <input type="hidden" name="file" value="[#FILE]" />
 <input type="hidden" name="checkfields" value="1" />
 <fieldset>
-	<input class="button" type="submit" />&nbsp;&nbsp;
-	<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+	<input class="button" type="submit"/>&nbsp;&nbsp;
+	<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php';" />
 </fieldset>
 </div>
 </form>

@@ -2,7 +2,7 @@
 /**
  * Logique des fonctionnalités XML
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -60,18 +61,18 @@ class XMLLogic extends Logic {
 	/** 
 	* Constructor
 	*/
-	function XMLLogic () {
-		$this->Logic ("translations");
+	public function __construct() {
+		parent::__construct("translations");
 	}
 	
 	/**
 	* Generate the XML for an entity.
 	* Must have context['id'] given
 	*/
-	function generateXMLAction (&$context, &$error) {
+	public function generateXMLAction (&$context, &$error) {
 
 		if (!$context['id'])
-			die ('ERROR : no id given. Id attribute is required to generate XML file');
+			trigger_error('ERROR : no id given. Id attribute is required to generate XML file', E_USER_ERROR);
 
 		global $db;
 		$id=$context['id'];
@@ -81,13 +82,14 @@ class XMLLogic extends Logic {
 			header ("Location: not-found.html"); return;
 		}
 		$row = $db->getRow(lq("SELECT e.id,t.type,t.class FROM #_TP_entities as e, #_TP_types as t WHERE e.id='$id' AND e.idtype=t.id"));
-		if (!$row) die("Error. Type and Class unknown for this entity");
+		if (!$row) trigger_error("Error. Type and Class unknown for this entity", E_USER_ERROR);
 		
 		$context['class'] = $class = $row['class'];
 		$context['type'] = $row['type'];
 		$context['identity'] = $id;
 
-		require_once ("xmlfunc.php");
+		if(!function_exists('calculateXML'))
+			require 'xmlfunc.php';
 		$context['contents'] =  $contents = calculateXML ($context);
 		// !! BEWARE !!
 		// validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
@@ -104,13 +106,13 @@ class XMLLogic extends Logic {
 //	$errfile=$tmpfile.".err";
 //	system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$errfile");
 //	if (filesize($errfile)>0) 
-//	  die ("ERROR: $errormsg<br />".str_replace ("\n","<br>", htmlentities (@join ("", @file ($errfile)))));
+//	  trigger_error("ERROR: $errormsg<br />".str_replace ("\n","<br>", htmlentities (@join ("", @file ($errfile)))), E_USER_ERROR);
 //	@unlink("$tmpfile.err");
 //      }	else {// PCLZIP library. 
 //	require ("pclzip.lib.php");
 //	$archive = new PclZip ($tmpfile.".zip");
 //	$v_list = $archive->create (array($tmpfile.".xsd", $tmpfile.".xml"));
-//	if ($v_list == 0) die ("ERROR : ".$archive->errorInfo(true));
+//	if ($v_list == 0) trigger_error("ERROR : ".$archive->errorInfo(true), E_USER_ERROR);
 //      }
 //      require ("servoofunc.php");
 //      $client = new ServOO ();
@@ -141,11 +143,12 @@ class XMLLogic extends Logic {
 	* Generate the XSD Schema for a class
 	* Must have context['class'] given
 	*/
-	function generateXSDAction (&$context, &$error) {
+	public function generateXSDAction (&$context, &$error) {
 		
 		if (!$context['class'])
-			die ('ERROR: no class given. Class attribute is required to generate XSD Schema');
-		require('xmlfunc.php');
+			trigger_error('ERROR: no class given. Class attribute is required to generate XSD Schema', E_USER_ERROR);
+		if(!function_exists('calculateXML'))
+			require 'xmlfunc.php';
 		//verif if the given class is OK
 		global $db;
 		$class = $context['class'];

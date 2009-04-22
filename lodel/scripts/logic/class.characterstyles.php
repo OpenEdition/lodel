@@ -2,7 +2,7 @@
 /**
  * Logique des styles de caractères
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -61,9 +62,9 @@ class CharacterstylesLogic extends Logic
 	/**
 	 *Constructeur de classe
 	 */
-	function CharacterstylesLogic() 
+	public function __construct() 
 	{
-		$this->Logic('characterstyles');
+		parent::__construct('characterstyles');
 	}
 
 	/**#@+
@@ -76,10 +77,10 @@ class CharacterstylesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
-		return array('style' => array('type', '+'),
-									'conversion' => array('text', ''));
+		return array(	'style' => array('type', '+'),
+				'conversion' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -89,21 +90,12 @@ class CharacterstylesLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
-		return array(array('style'), );
+		return array(array('style'));
 	}
 	// end{uniquefields} automatic generation  //
 	/**#@-*/
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
-
 ?>

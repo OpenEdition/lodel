@@ -2,7 +2,7 @@
 /**	
  * Logique des textes lodel
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -39,9 +40,8 @@
  * @version CVS:$Id$
  */
 
-
-
-require_once("translationfunc.php");
+if(!function_exists('mkeditlodeltext'))
+	require("translationfunc.php");
 
 /**
  * Classe de logique des textes lodel
@@ -64,19 +64,19 @@ class TextsLogic extends Logic
 
 	/** Constructor
 	*/
-	function TextsLogic() 
+	public function __construct() 
 	{
-		$this->Logic("texts");
+		parent::__construct("texts");
 	}
 
 	/**
 		* add/edit Action
 		*/
-	function editAction(&$context, &$error, $clean = false)
+	public function editAction(&$context, &$error, $clean = false)
 	{
 		if ($context['id']) {
 			// normal edit
-			return Logic::editAction($context,$error);
+			return parent::editAction($context,$error);
 		}
 		// Sauvegarde massive
 		if (is_array($context['contents'])) {
@@ -93,7 +93,7 @@ class TextsLogic extends Logic
 				$dao->instantiateObject($vo);
 				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
 				$vo->id       = $id;
-				$status = intval($context['status'][$id]);
+				$status = (int)$context['status'][$id];
 				$this->_isAuthorizedStatus($status);
 				$vo->status   = $status;
 				if (!$vo->status) {
@@ -108,7 +108,8 @@ class TextsLogic extends Logic
 			}
 			update();
 		}
-		require_once 'cachefunc.php';
+		if(!function_exists('clearcache'))
+			require("cachefunc.php");
 		clearcache();
 		return '_back';
 	}
@@ -117,7 +118,7 @@ class TextsLogic extends Logic
 	/**
 		* Function to create the text entry for all the languages
 		*/
-	function createTexts($name, $textgroup = '')
+	public function createTexts($name, $textgroup = '')
 	{
 		global $db;
 
@@ -130,7 +131,7 @@ class TextsLogic extends Logic
 			usemaindb();
 		}
 
-		$result = $db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND ".$criteria." WHERE #_TP_texts.lang is NULL")) or dberror();
+		$result = $db->execute(lq("SELECT #_TP_translations.lang FROM #_TP_translations LEFT JOIN #_TP_texts ON #_TP_translations.lang=#_TP_texts.lang AND ".$criteria." WHERE #_TP_texts.lang is NULL")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$dao = $this->_getMainTableDAO();
 
 		while (!$result->EOF) {
@@ -161,7 +162,7 @@ class TextsLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo, $context)
+	protected function _saveRelatedTables($vo, $context)
 	{
 		if ($vo->id) {
 			$this->createTexts($vo->id);
@@ -170,7 +171,7 @@ class TextsLogic extends Logic
 		}
 	}
 
-	function _deleteRelatedTables($id) 
+	protected function _deleteRelatedTables($id) 
 	{
 		// reinitialise le cache surement.
 	}
@@ -181,7 +182,7 @@ class TextsLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('contents' => array('longtext', ''),
 									'lang' => array('lang', '+'),

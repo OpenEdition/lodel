@@ -2,7 +2,7 @@
 /**	
  * Logique des champs d'index
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -39,8 +39,8 @@
  * @version CVS:$Id$
  */
 
-
-require_once("logic/class.tablefields.php");
+if(!class_exists('TableFieldsLogic', false))
+	require("logic/class.tablefields.php");
 
 /**
  * Classe de logique des champs d'indexs
@@ -62,28 +62,23 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 	/** Constructor
 	*/
-	function IndexTableFieldsLogic() {
-		$this->Logic("tablefields");
+	public function __construct() {
+		parent::__construct();
 	}
-
 
 	/**
 		* edit/add an object Action
 		*/
-	function editAction(&$context,&$error)
-
+	public function editAction(&$context,&$error)
 	{
 		$context['condition']="*";
-		return TableFieldsLogic::editAction($context,$error);
+		return parent::editAction($context,$error);
 	}
-
 
 	/**
 		*
 		*/
-
-	function makeSelect(&$context,$var)
-
+	public function makeSelect(&$context,$var)
 	{
 		global $home;
 
@@ -92,7 +87,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 			$dao=&getDAO($context['type']=='entries' ? "entrytypes" : "persontypes");
 			$vos=$dao->findMany("status>0","rank,title","type,title");
 			foreach($vos as $vo) {
-	$arr[$vo->type]=$vo->title;
+				$arr[$vo->type]=$vo->title;
 			}
 			renderOptions($arr,$context['name']);
 			break;
@@ -106,7 +101,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 			renderOptions($arr,$context['edition']);
 			break;
 		default:
-			TableFieldsLogic::makeSelect($context,$var);
+			parent::makeSelect($context,$var);
 			break;
 		}
 	}
@@ -124,8 +119,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	* @param object $dao la DAO utilisée
 	* @param array &$context le context passé par référence
 	*/
-	function _prepareEdit($dao,&$context)
-
+	protected function _prepareEdit($dao,&$context)
 	{
 	}
 	/**
@@ -136,8 +130,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
-
+	protected function _saveRelatedTables($vo,$context) 
 	{
 	}
 
@@ -150,13 +143,11 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	* @param object $dao la DAO utilisée
 	* @param array &$context le contexte passé par référénce
 	*/
-	function _prepareDelete($dao,&$context)
-
+	protected function _prepareDelete($dao,&$context)
 	{     
 	}
 
-	function _deleteRelatedTables($id)
-
+	protected function _deleteRelatedTables($id)
 	{
 	}
 
@@ -167,16 +158,16 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('name' => array('select', '+'),
 									'class' => array('class', '+'),
 									'title' => array('text', '+'),
 									'altertitle' => array('mltext', ''),
-									'type' => array('class', '+'),
 									'edition' => array('select', ''),
-									'comment' => array('longtext', ''),
-									'idgroup' => array('select', '+'));
+									'idgroup' => array('select', '+'),
+									'type' => array('class', '+'),
+									'comment' => array('longtext', ''));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -186,7 +177,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('name', 'class'), );
 	}
@@ -194,9 +185,4 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
 ?>

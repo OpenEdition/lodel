@@ -17,6 +17,14 @@ if(!file_exists('siteconfig.php')) {
 }
 
 require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
 require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
@@ -39,4 +47,10 @@ foreach($tabIds as $v) {
 require 'cachefunc.php';
 removefilesincache('.', './lodel/edition/');
 echo 'ok';
+}
+catch(Exception $e)
+{
+	echo 'error';
+	exit();
+}
 ?>

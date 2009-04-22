@@ -2,7 +2,7 @@
 /**	
  * Logique des personnes
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -29,6 +29,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -40,7 +41,8 @@
  * @version CVS:$Id$
  */
 
-require_once("class.entries.php");
+if(!class_exists('EntriesLogic', false))
+	require("class.entries.php");
 
 /**
  * Classe de logique des personnes
@@ -63,8 +65,8 @@ class PersonsLogic extends EntriesLogic
 
 	/** Constructor
 	 */
-	function PersonsLogic () {
-		$this->EntriesLogic('persons');
+	public function __construct() {
+		parent::__construct('persons');
 		$this->daoname = 'persontypes';
 		$this->idtype = 'idperson';
 	}
@@ -78,12 +80,12 @@ class PersonsLogic extends EntriesLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction (&$context, &$error, $clean=false) 
+	public function editAction (&$context, &$error, $clean=false) 
 	{
 		global $lodeluser, $home;
-		$id=$context['id'];
+		$id=(int)$context['id'];
 		$idtype=$context['idtype'];
-		if (!$idtype) die ("ERROR: internal error in PersonsLogic::editAction");
+		if (!$idtype) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
 		$status=$context['status'];
 #echo "status=$status"; print_r ($context);
 		// get the class 
@@ -129,7 +131,7 @@ class PersonsLogic extends EntriesLogic
 				$vo->id=$id;
 			} else { //create
 				$new=true;
-				$vo=$dao->createObject();
+				$vo=&$dao->createObject();
 				$vo->status=$status ? $status : -1;
 			}
 		}
@@ -154,12 +156,12 @@ class PersonsLogic extends EntriesLogic
 		// save the entities_class table
 		if ($context['identity']) {
 			$dao=&getDAO ("relations");
-			$vo=$dao->find ("id1='".intval ($context['identity']). "' AND id2='". $id. "' AND nature='G' AND degree='".intval ($context['degree']). "'", "idrelation");
+			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
-				$vo->id1=intval ($context['identity']);
+				$vo->id1=(int)$context['identity'];
 				$vo->id2=$id;
-				$vo->degree=intval ($context['degree']);
+				$vo->degree=(int)$context['degree'];
 				$vo->nature='G';
 				$idrelation=$context['idrelation'] = $dao->save($vo);
 			} else {
@@ -178,12 +180,4 @@ class PersonsLogic extends EntriesLogic
 	}
 
 }// class 
-
-/*------------------------------------*/
-/* special function                   */
-
-
-
-/*-----------------------------------*/
-/* loops                             */
 ?>

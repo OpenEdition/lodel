@@ -2,7 +2,7 @@
 /**	
  * Logique des options du servOO
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -39,8 +40,8 @@
  * @version CVS:$Id$
  */
 
-
-require("logic/class.useroptiongroups.php");
+if(!class_exists('UserOptionGroupsLogic', false))
+	require("logic/class.useroptiongroups.php");
 
 /**
  * Classe de logique de la configuration de ServOO
@@ -63,43 +64,40 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 	/** Constructor
 	*/
-	function ServOOConfLogic() {
-		UserOptionGroupsLogic::UserOptionGroupsLogic();
+	public function __construct() {
+		parent::__construct();
 	}
 
 
 	/**
 		* list Action
 		*/
-
-	function listAction(&$context,&$error)
+	public function listAction(&$context,&$error)
 	{ 
 		$this->_getGroup($context);
-		return UserOptionGroupsLogic::listAction($context,$error);
+		return parent::listAction($context,$error);
 	}
 
 	/**
 		* view Action
 		*/
-
-	function viewAction(&$context,&$error)
+	public function viewAction(&$context,&$error)
 	{ 
 		$this->_getGroup($context);
-		return UserOptionGroupsLogic::viewAction($context,$error);
+		return parent::viewAction($context,$error);
 	}
 
 	/**
 		* add/edit Action
 		*/
-
-	function editAction(&$context,&$error)
+	public function editAction(&$context,&$error)
 	{ 
 		$this->_getGroup($context);
-		$ret=UserOptionGroupsLogic::editAction($context,$error);
+		$ret=parent::editAction($context,$error);
 
 		if ($ret=="_error") return $ret;
-
-		require("servoofunc.php");
+		if(!class_exists('ServOO', false))
+			require("servoofunc.php");
 		$client=new ServOO();
 		if ($client->error_message) {
 			if ($context['url']) $error['url']='+';
@@ -123,9 +121,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 	/**
 		* @private
 		*/
-
 	function _getGroup(&$context)
-
 	{
 		$dao=&getDAO("optiongroups");
 		$vo=$dao->find("name='servoo'");
@@ -133,10 +129,10 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 #    if (!$context['id']) {
 #      // little hack... should be in the model anyway
-#      $db->execute(lq("INSERT INTO #_TP_optiongroups (name,title,logic,status,exportpolicy) VALUES ('servoo','Servoo','servooconf',1,1)")) or dberror();
+#      $db->execute(lq("INSERT INTO #_TP_optiongroups (name,title,logic,status,exportpolicy) VALUES ('servoo','Servoo','servooconf',1,1)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 #      $context['id']=$db->Insert_ID();
 #
-#      $db->execute(lq("INSERT INTO #_TP_options (name,title,type,userrights,idgroup,status,rank) VALUES ('url','url','url',40,".$context['id'].",32,1),('username','username','tinytext',40,".$context['id'].",32,2),(3,1,'passwd','password','passwd',40,".$context['id'].",32,3)")) or dberror();
+#      $db->execute(lq("INSERT INTO #_TP_options (name,title,type,userrights,idgroup,status,rank) VALUES ('url','url','url',40,".$context['id'].",32,1),('username','username','tinytext',40,".$context['id'].",32,2),(3,1,'passwd','password','passwd',40,".$context['id'].",32,3)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 #    }
 	}
 
@@ -159,13 +155,4 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
-
 ?>

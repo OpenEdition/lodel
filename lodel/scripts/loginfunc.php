@@ -71,7 +71,7 @@ function open_session($login)
 		// name de la session
 		$name = md5($login.microtime());
 		// enregistre la session, si ca marche sort de la boucle
-		$result = $db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2, userrights) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2', '{$lodeluser['rights']}')")) or dberror();
+		$result = $db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2, userrights) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2', '{$lodeluser['rights']}')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($result)
 			break; // ok, it's working fine
 	}
@@ -79,11 +79,11 @@ function open_session($login)
 	if ($i == 5)
 		return "error_opensession";
 	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
-		die("Probleme avec setcookie... probablement du texte avant");
+		trigger_error("Probleme avec setcookie... probablement du texte avant", E_USER_ERROR);
 	// nettoyage des tables session et urlstack
 	if($lodeluser['rights'] == LEVEL_ADMINLODEL) {
-		$db->execute(lq("DELETE FROM #_MTP_session WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) or dberror();
-		$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) or dberror();
+		$db->execute(lq("DELETE FROM #_MTP_session WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 	usecurrentdb();
 	return $name;
@@ -113,7 +113,7 @@ function check_auth($login, & $passwd, & $site)
 		// cherche d'abord dans la base generale.
 
 		usemaindb();
-		$result = $db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
+		$result = $db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		usecurrentdb();
 
 		if (($row = $result->fields))	{
@@ -124,7 +124,7 @@ function check_auth($login, & $passwd, & $site)
 			if (!$site)
 				break; // si $site n'est pas definie on s'ejecte
 			// cherche ensuite dans la base du site
-			$result = $db->execute(lq("SELECT * FROM #_TP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
+			$result = $db->execute(lq("SELECT * FROM #_TP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if (!($row = $result->fields))
 				break;
 		}	else {
@@ -139,7 +139,7 @@ function check_auth($login, & $passwd, & $site)
 
 		// cherche les groupes pour les non administrateurs
 		if (defined("LEVEL_ADMIN") && $lodeluser['rights'] < LEVEL_ADMIN)	{ // defined is useful only for the install.php
-			$result = $db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or dberror();
+			$result = $db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$lodeluser['groups'] = "1"; // sont tous dans le groupe "tous"
 			while (($row = $result->fields)) {
 				$lodeluser['groups'] .= ",".$row['idgroup'];
@@ -210,12 +210,15 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 	$log = addslashes($login);
 	$datab = addslashes($datab);
 	$old_pass = md5($old_passwd . $login);
-	mysql_select_db($datab);
+	$currentdb = $db->database;
+	$db->SelectDB($datab);
 	$res = $db->getRow("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
 
 	if(!$res)
+	{
+		$db->SelectDB($currentdb);
 		return false;
-	else {
+	} else {
 		if($passwd == $passwd2 && $passwd != $old_passwd && strlen($passwd) > 3 && strlen($passwd) < 256 && preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $passwd)) {
 			$passwd = md5($passwd . $login);
 			if($res['status'] == 10)
@@ -223,10 +226,14 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 			elseif($res['status'] == 11)
 				$status = 32; 
 			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res['id']."'");
+			$db->SelectDB($currentdb);
 			return true;
 		}
 		else
+		{
+			$db->SelectDB($currentdb);
 			return "error_passwd";
+		}
 	}
 }
 
@@ -252,7 +259,7 @@ function check_auth_restricted($login, & $passwd)
 		$pass = md5($passwd. $login);
 
 		usecurrentdb();
-		$row = $db->getRow(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or dberror();
+		$row = $db->getRow(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if (!$row)	{
 			break;
 		}
@@ -303,7 +310,7 @@ function check_internal_messaging($site='')
 	
 	if(defined('backoffice')) {
 		if(!preg_match("/^[a-z0-9\-]+$/",$site))
-			die('Error: incorrect variable site in '.__FILE__.' function '.__FUNCTION__);
+			trigger_error('Error: incorrect variable site in '.__FILE__.' function '.__FUNCTION__, E_USER_ERROR);
 		$url_retour .= $site.'/lodel/admin/index.php?do=list&lo=internal_messaging';
 	} elseif(defined('backoffice-lodeladmin')) {
 		$url_retour .= 'lodeladmin-'.$context['version'].'/index.php?do=list&lo=internal_messaging';

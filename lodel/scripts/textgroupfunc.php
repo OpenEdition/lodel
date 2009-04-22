@@ -52,11 +52,11 @@ $GLOBALS['textgroups'] = array ('interface' => array ('common', 'edition', 'admi
 function textgroupswhere($textgroups)
 {
 	if (!$textgroups)
-		die("ERROR: which textgroups ?");
+		trigger_error("ERROR: which textgroups ?", E_USER_ERROR);
 	if ($GLOBALS['textgroups'][$textgroups]) {
 		return "textgroup IN ('".join("','", $GLOBALS['textgroups'][$textgroups])."')";
 	} else {
-		die("ERROR: unkown textgroup");
+		trigger_error("ERROR: unkown textgroup", E_USER_ERROR);
 	}
 }
 ?>

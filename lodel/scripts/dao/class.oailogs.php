@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -43,12 +44,12 @@
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
- * @version CVS:$Id: generate.php 2821 2006-01-05 14:44:33Z lamy $
+ * @version CVS:$Id: generate.php 4006 2007-10-05 11:53:41Z malafosse $
  * @package lodel/dao
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,10 +75,10 @@ class oailogsVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $host;
-	var $date;
-	var $denied;
+	public $id;
+	public $host;
+	public $date;
+	public $denied;
 	/**#@-*/
 }
 
@@ -88,6 +90,7 @@ class oailogsVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -107,9 +110,9 @@ class oailogsDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function oailogsDAO()
+	public function __construct()
 	{
-		$this->DAO("oailogs", false);
+		parent::__construct("oailogs", false);
 		$this->rights = array();
 	}
 

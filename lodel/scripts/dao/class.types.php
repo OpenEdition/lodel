@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,25 +75,25 @@ class typesVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $type;
-	var $title;
-	var $altertitle;
-	var $class;
-	var $icon;
-	var $gui_user_complexity;
-	var $tpledition;
-	var $display;
-	var $tplcreation;
-	var $import;
-	var $creationstatus;
-	var $search;
-	var $oaireferenced;
-	var $public;
-	var $tpl;
-	var $rank;
-	var $status;
-	var $upd;
+	public $id;
+	public $type;
+	public $title;
+	public $altertitle;
+	public $class;
+	public $icon;
+	public $gui_user_complexity;
+	public $tpledition;
+	public $display;
+	public $tplcreation;
+	public $import;
+	public $creationstatus;
+	public $search;
+	public $oaireferenced;
+	public $public;
+	public $tpl;
+	public $rank;
+	public $status;
+	public $upd;
 	/**#@-*/
 }
 
@@ -103,6 +105,7 @@ class typesVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -122,9 +125,9 @@ class typesDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function typesDAO()
+	public function __construct()
 	{
-		$this->DAO("types", true);
+		parent::__construct("types", true);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

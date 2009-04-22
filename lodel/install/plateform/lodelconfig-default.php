@@ -91,6 +91,10 @@ $dbusername="";
 $dbpasswd="";
 # Hote de la BD
 $dbhost="";
+# temps de cache des résultats SQL
+$sqlCacheTime = 3600*24;
+# driver mysql
+$dbDriver = 'mysql';
 
 # contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
 $contactbug="";

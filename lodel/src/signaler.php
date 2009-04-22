@@ -45,33 +45,34 @@
  */
 
 require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
 //gestion de l'authentification
-require_once 'auth.php';
+require 'auth.php';
 authenticate();
 // record the url if logged
 if ($lodeluser['rights'] >= LEVEL_VISITOR) {
 	recordurl();
 }
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 
 $context['signaler_recaptcha'] = $signaler_recaptcha;
 $context['recaptcha_publickey'] = $recaptcha_publickey;
-require_once 'recaptchalib.php';
-
-require 'textfunc.php';
+require 'recaptchalib.php';
 
 $context['id'] = $id = intval($id);
-
-require_once 'connect.php';
 
 // identifié ? accès à tous les documents
 $critere = $lodeluser['rights'] > LEVEL_VISITOR ? '' : "AND $GLOBALS[tp]entities.status>0 AND $GLOBALS[tp]types.status>0";
 if (!(@include_once('CACHE/filterfunc.php'))) {
 	require_once 'filterfunc.php';
 }
-$result = mysql_query(lq("SELECT $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity WHERE $GLOBALS[tp]entities.id='$id' $critere")) or dberror();
-if (mysql_num_rows($result) < 1) {
+global $db;
+$result = $db->Execute(lq("SELECT $GLOBALS[tp]textes.*, $GLOBALS[tp]entities.*,type FROM #_entitiestypesjoin_ JOIN $GLOBALS[tp]textes ON $GLOBALS[tp]entities.id = $GLOBALS[tp]textes.identity WHERE $GLOBALS[tp]entities.id='$id' $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+if ($result->RecordCount() < 1) {
 	$context['notfound'] = 1;
 	$view->renderCached($context, 'signaler');
 	return;
@@ -122,7 +123,6 @@ if ($envoi) {
 		$content = ob_get_clean();
 
 		// envoie le mail
-		require_once 'func.php';
 		if (false === send_mail ($context['to'], $content, $context['subject'], $context['from'], $context['nom_expediteur'])) {
 			$context['error_mail']=1;
 			break;
@@ -133,4 +133,10 @@ if ($envoi) {
 }
 
 $view->renderCached($context, 'signaler');
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

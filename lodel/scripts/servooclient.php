@@ -23,10 +23,12 @@
   /** 
    * @access private
    */
-define(SERVOOLIBDIR,dirname(__FILE__)."/");
-
-require_once(SERVOOLIBDIR."nusoap.php");
-require_once(SERVOOLIBDIR."nusoapmime.php");
+define('SERVOOLIBDIR',dirname(__FILE__)."/");
+if(!class_exists('soapclientmime', false))
+{
+	require(SERVOOLIBDIR."nusoap.php");
+	require(SERVOOLIBDIR."nusoapmime.php");
+}
 
 
 /**
@@ -219,12 +221,13 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
-    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
+    if(!class_exists('PclZip', false))
+    	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);
     // 
-    if ($zipoptions['denyextensions']) $GLOBALS['user_vars']['denyextensions']=$zipoptions['denyextensions'];
+    if (isset($zipoptions['denyextensions'])) $GLOBALS['user_vars']['denyextensions']=$zipoptions['denyextensions'];
     if (isset($zipoptions['allowextensions'])) {
       $GLOBALS['user_vars']['allowextensions']=$zipoptions['allowextensions'];
     } else {
@@ -295,7 +298,8 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
-    require_once(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
+    if(!class_exists('PclZip', false))
+    	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
     // create Zip object
     $zip=new PclZip($outfilename);
@@ -326,10 +330,11 @@ class ServOO_Client {
       } else {
 	// others files
 	// check the extensions...
-	if ($zipoptions['denyextensions'] && 
-	    preg_match("/\.(".$zipoptions['denyextensions'].")$/i",$entry['stored_filename'])) continue;
-	if ($zipoptions['allowextensions'] && 
-	    !preg_match("/\.(".$zipoptions['allowextensions'].")$/i",$entry['stored_filename'])) continue;
+	$ext = strtolower(strrchr($entry['stored_filename'],'.'));
+	if (isset($zipoptions['denyextensions']) && FALSE !== strpos($zipoptions['denyextensions'], $ext)) continue;
+// 	    preg_match("/\.(".$zipoptions['denyextensions'].")$/i",$entry['stored_filename'])) continue;
+	if (isset($zipoptions['allowextensions']) && FALSE !== strpos($zipoptions['allowextensions'], $ext)) continue;
+// 	    !preg_match("/\.(".$zipoptions['allowextensions'].")$/i",$entry['stored_filename'])) continue;
 
 	// make here an option to check further with GD.
 
@@ -348,8 +353,8 @@ class ServOO_Client {
 	  } else {
 	    $name=".";
 	  }
-	  preg_match("/\.\w+$/",$entry['stored_filename'],$result); // get extension
-	  $name.="/img-".(++$count).$result[0];
+// 	  preg_match("/\.\w+$/",$entry['stored_filename'],$result); // get extension
+	  $name.="/img-".(++$count).$ext;
 	}
 
 	$this->_images[$entry['index']]=$name;
@@ -548,10 +553,11 @@ function _convertUnpack_Pre_Extract_CB($p_event, &$p_header)
 
 {
   global $user_vars;
-  if ($user_vars['denyextensions'] && 
-      preg_match("/\.(".$user_vars['denyextensions'].")$/i",$p_header['stored_filename'])) return 0;
-  if ($user_vars['allowextensions'] && 
-      !preg_match("/\.(".$user_vars['allowextensions'].")$/i",$p_header['stored_filename'])) { return 0; }
+  $ext = strtolower(strrchr($p_header['stored_filename'], '.'));
+  if (isset($user_vars['denyextensions']) && FALSE !== strpos($zipoptions['denyextensions'], $ext)) return 0; 
+//       preg_match("/\.(".$user_vars['denyextensions'].")$/i",$p_header['stored_filename'])) return 0;
+  if (isset($user_vars['allowextensions']) && FALSE !== strpos($zipoptions['allowextensions'], $ext)) return 0; 
+//       !preg_match("/\.(".$user_vars['allowextensions'].")$/i",$p_header['stored_filename'])) { return 0; }
   return 1;
 }
 
@@ -565,7 +571,7 @@ function _convertToXML_Pre_Extract_CB($p_event, &$p_header)
 
 {
   global $user_vars;
-  if ($user_vars[$p_header['index']]) {
+  if (isset($user_vars[$p_header['index']])) {
     $p_header['filename']=$user_vars[$p_header['index']];
     return 1; // extract with the new name
   } else {

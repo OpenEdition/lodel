@@ -2,7 +2,7 @@
 /**
  * Fichier de la classe DAO
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -42,10 +43,6 @@
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id:
  */
-
-require_once 'connect.php';
-
-
 
 /**
  * Classe gérant la DAO (Database Abstraction Object)
@@ -67,6 +64,7 @@ require_once 'connect.php';
  * @package lodel
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -85,33 +83,40 @@ class DAO
 	 * Nom et classe de la table SQL
 	 * @var string
 	 */
-	var $table;
+	public $table;
 
 	/**
 	 * Nom de la table avec et préfixe et éventuellement la jointure pour le SELECT
 	 * Table name with the prefix, and potential join for views.
 	 * @var string
 	 */
-	var $sqltable;
+	public $sqltable;
 
 	/**
 	 * Uniqueid. Vrai si la table utilise une clé primaire (clé unique).
 	 * @var integer
 	 */
-	var $uniqueid;
+	public $uniqueid;
 
 	/**
 	 * Tableau associatif avec les droits requis pour lire, écrire et protéger
 	 * Assoc array with the right level required to read, write, protect
 	 * @var array
 	 */
-	var $rights;
+	public $rights;
 
 	/**
 	 * Champ identifiant
 	 * @var string
 	 */
-	var $idfield;
+	public $idfield;
+
+	/**
+	 * Tableau de cache stockant les critères SQL correspondants aux droit d'accès sur les objets
+	 * @see rightsCriteria()
+	 * @access private
+	 */
+	protected $cache_rightscriteria;
 	/**#@-*/
 
 	/**
@@ -123,7 +128,7 @@ class DAO
 	 * @param boolean $uniqueid Par défaut à 'false'. Indique si la table utilise une clé primaire.
 	 * @param string $idfield Par défaut à 'id'. Indique le nom du champ identifiant
 	 */
-	function DAO($table, $uniqueid = false, $idfield = "id")
+	public function __construct($table, $uniqueid = false, $idfield = "id")
 	{
 		$this->table = $table;
 		$this->sqltable = lq("#_TP_"). $table;
@@ -139,25 +144,25 @@ class DAO
 	 * @param boolean $forcecreate Par défaut à false. Indique si on doit forcer la création.
 	 * @return $idfield l'identifiant de l'enregistrement créé ou modifié.
 	 */
-	function save(&$vo, $forcecreate = false) // $set,$context=array())
+	public function save(&$vo, $forcecreate = false) // $set,$context=array())
 	{
 		global $db, $lodeluser;
 		$idfield = $this->idfield;
 		#print_r($vo);
 		// check the user has the basic right for modifying/creating an object
 		if ($lodeluser['rights'] < $this->rights['write']) {
-			die('ERROR: you don\'t have the right to modify objects from the table '. $this->table);
+			trigger_error('ERROR: you don\'t have the right to modify objects from the table '. $this->table, E_USER_ERROR);
 		}
 		// check the user has the right to protect the object
 		if (((isset ($vo->status) && ($vo->status >= 32 || $vo->status <= -32)) || $vo->protect) && 
 					$lodeluser['rights'] < $this->rights['protect']) {
-			die('ERROR: you don\'t have the right to protect objects from the table '. $this->table);
+			trigger_error('ERROR: you don\'t have the right to protect objects from the table '. $this->table, E_USER_ERROR);
 		}
 
 		if (isset ($vo->rank) && $vo->rank == 0) { // initialize the rank
 			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64');
 			if ($db->errorno()) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			$vo->rank = $rank +1;
 		}
@@ -180,7 +185,7 @@ class DAO
 			}
 			if ($update) {
 				$update = 
-				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or dberror();
+				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}	else	{ // new  - Ajout
 			if (isset ($vo->protect))	{ // special processing for the protection
@@ -204,7 +209,7 @@ class DAO
 				$values .= "'". $v. "'";
 			}
 			if ($insert) {
-				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or dberror();
+				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!$vo->$idfield) {
 					$vo->$idfield = $db->insert_id();
 				}
@@ -220,7 +225,7 @@ class DAO
 	 *
 	 * @param object &$vo Objet virtuel passé par référence
 	 */
-	function quote(&$vo)
+	public function quote(&$vo)
 	{
 		foreach ($vo as $k => $v) {
 			if (isset ($v)){
@@ -239,7 +244,7 @@ class DAO
 	 * @return object un objet virtuel contenant les champs de l'objet
 	 * @see fonction find()
 	 */
-	function getById($id, $select = "*")
+	public function getById($id, $select = "*")
 	{
 		return $this->find($this->idfield. "='$id'", $select);
 	}
@@ -253,7 +258,7 @@ class DAO
 	 * @return array un tableau d'objet virtuels
 	 * @see fonction find(), getById()
 	 */
-	function getByIds($ids, $select = "*")
+	public function getByIds($ids, $select = "*")
 	{
 		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", $ids). "')" : "='".$ids."'"), '', $select);
 	}
@@ -267,7 +272,7 @@ class DAO
 	 * @param string $select les critères SQL de sélection (par défaut : SELECT *)
 	 * @return l'objet virtuel trouvé sinon null
 	 */
-	function find($criteria, $select = "*")
+	public function find($criteria, $select = "*")
 	{
 		global $db;
 
@@ -276,7 +281,7 @@ class DAO
 		$row = $db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read"));
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 		if ($row === false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		if (!$row) {
 			return null;
@@ -298,7 +303,7 @@ class DAO
 	 * @param string $select les champs à sélectionner. (par défaut *).
 	 * @return array Un tableau de VO correspondant aux résultats de la requête
 	 */
-	function findMany($criteria, $order = '', $select = '*')
+	public function findMany($criteria, $order = '', $select = '*')
 	{
 		global $db;
 
@@ -309,7 +314,7 @@ class DAO
 		}
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
 		# echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
-		$result = $db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) or dberror();
+		$result = $db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
 		$i = 0;
@@ -333,12 +338,12 @@ class DAO
 	 *
 	 * @param string $criteria Les critères SQL de la requête.
 	 */
-	function count($criteria)
+	public function count($criteria)
 	{
 		global $db;
 		$ret = $db->getOne('SELECT count(*) FROM '.$this->sqltable.' WHERE '.$criteria);
 		if ($db->errorno()) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		return $ret;
 	}
@@ -349,7 +354,7 @@ class DAO
 	 *
 	 * @return object Le VO instancié
 	 */
-	function &createObject()
+	public function createObject()
 	{
 		$this->instantiateObject($vo);
 		if (array_key_exists("status", $vo)) {
@@ -366,7 +371,7 @@ class DAO
 	 *
 	 * Instantiate a new object
 	 */
-	function instantiateObject(& $vo)
+	public function instantiateObject(& $vo)
 	{
 		$classname = $this->table. 'VO';
 		$vo = new $classname; // the same name as the table. We don't use factory...
@@ -378,7 +383,7 @@ class DAO
 	 * @param mixed object or numeric id or an array of ids or criteria
 	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
 	 */
-	function delete($mixed)
+	public function delete($mixed)
 	{
 		return $this->deleteObject($mixed);
 	}
@@ -387,7 +392,7 @@ class DAO
 	 * @param mixed object or numeric id or an array of ids or criteria
 	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
 	 */
-	function deleteObject(&$mixed)
+	public function deleteObject(&$mixed)
 	{
 		global $db;
 
@@ -414,7 +419,7 @@ class DAO
 			$criteria = lq($mixed);
 			if ($this->uniqueid) {
 				// select before deleting
-				$result = $db->execute('SELECT id FROM '.$this->sqltable."WHERE ($criteria) ". $this->rightscriteria('write')) or dberror();
+				$result = $db->execute('SELECT id FROM '.$this->sqltable."WHERE ($criteria) ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				// collect the ids
 				$id = array ();
 				foreach ($result as $row) {
@@ -425,10 +430,10 @@ class DAO
 				$nbid = 0; // check we have delete at least one
 			}
 		}	else {
-			die('ERROR: DAO::deleteObject does not support the type of mixed variable');
+			trigger_error('ERROR: DAO::deleteObject does not support the type of mixed variable', E_USER_ERROR);
 		}
 		//execute delete statement
-		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) or dberror();
+		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($db->affected_Rows() < $nbid) {
 			trigger_error("ERROR: you don't have the right to delete some objects in table ". $this->table, E_USER_ERROR);
 		}
@@ -439,7 +444,7 @@ class DAO
 		//delete the uniqueid entry if required
 		if ($this->uniqueid) {
 			if ($nbid != count($id)) {
-				die("ERROR: internal error in DAO::deleteObject. Please report the bug");
+				trigger_error("ERROR: internal error in DAO::deleteObject. Please report the bug", E_USER_ERROR);
 			}
 			deleteuniqueid($id);
 		}
@@ -453,20 +458,20 @@ class DAO
 	 * @param string critères SQL pour la suppression
 	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
 	 */
-	function deleteObjects($criteria)
+	public function deleteObjects($criteria)
 	{
 		global $db;
 
 		// check the rights
 		if ($GLOBALS['lodeluser']['rights'] < $this->rights['write']) {
-			die("ERROR: you don't have the right to delete object from the table ".$this->table);
+			trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table, E_USER_ERROR);
 		}
 		$where = " WHERE (".$criteria.") ".$this->rightscriteria("write");
 
 		// delete the uniqueid entry if required
 		if ($this->uniqueid) {
 			// select before deleting
-			$result = $db->execute("SELECT id FROM ".$this->sqltable.$where) or dberror();
+			$result = $db->execute("SELECT id FROM ".$this->sqltable.$where) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			// collect the ids
 			$ids = array ();
 			foreach ($result as $row) {
@@ -477,7 +482,7 @@ class DAO
 		}
 	
 		//execute delete statement
-		$db->execute("DELETE FROM ". $this->sqltable. $where) or dberror();
+		$db->execute("DELETE FROM ". $this->sqltable. $where) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($db->Affected_Rows() <= 0) {
 			return false; // not the rights
 		}
@@ -492,7 +497,7 @@ class DAO
 	 * @param string $access le niveau d'accès pour lequel on souhaite avoir le critère SQL
 	 * @return string Le critère SQL correspond au droit d'accès
 	 */
-	function rightsCriteria($access)
+	public function rightscriteria($access)
 	{
 		if (!isset($this->cache_rightscriteria[$access])) {
 			$classvars = get_class_vars($this->table. "VO");
@@ -511,20 +516,13 @@ class DAO
 	}
 
 	/**
-	 * Tableau de cache stockant les critères SQL correspondants aux droit d'accès sur les objets
-	 * @see rightsCriteria()
-	 * @access private
-	 */
-	var $cache_rightscriteria;
-
-	/**
 	 * Remplit un VO depuis une ligne d'un ResultSet SQL
 	 *
 	 * @param objet $vo Le VO à remplir passé par référence
 	 * @param array $row La ligne du ResultSet SQL
 	 * @access private
 	 */
-	function _getFromResult(&$vo, $row)
+	protected function _getFromResult(&$vo, $row)
 	{
 		foreach ($row as $k => $v) {//fill vo from the database result set
 			$vo->$k = $v;

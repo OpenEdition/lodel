@@ -2,7 +2,7 @@
 /**	
  * Logique des styles internes
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -61,12 +62,12 @@ class InternalstylesLogic extends Logic {
 
 	/** Constructor
 	*/
-	function InternalstylesLogic() {
-		$this->Logic("internalstyles");
+	public function __construct() {
+		parent::__construct("internalstyles");
 	}
 
 
-	function makeSelect(&$context,$var)
+	public function makeSelect(&$context,$var)
 
 	{
 		switch($var) {
@@ -79,9 +80,9 @@ class InternalstylesLogic extends Logic {
 			$dao=&getDAO("tablefields");
 			$vos=$dao->findMany("style!=''","style","style");
 			foreach($vos as $vo) {
-	if (strpos($vo->style,".")!==false || strpos($vo->style,":")!==false) continue;
-	$style=preg_replace("/[;,].*/","",$vo->style); // remove the synonyms
-	$arr[$style]=$style;
+				if (strpos($vo->style,".")!==false || strpos($vo->style,":")!==false) continue;
+				$style=preg_replace("/[;,].*/","",$vo->style); // remove the synonyms
+				$arr[$style]=$style;
 			}
 			renderOptions($arr,$context['surrounding']);
 			break;
@@ -104,7 +105,7 @@ class InternalstylesLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('style' => array('style', '+'),
 									'conversion' => array('text', ''),
@@ -119,7 +120,7 @@ class InternalstylesLogic extends Logic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('style'), );
 	}
@@ -127,13 +128,4 @@ class InternalstylesLogic extends Logic {
 
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
-
 ?>

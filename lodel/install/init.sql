@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS #_MTP_urlstack (
 	id		INT UNSIGNED NOT NULL auto_increment, # faudrait generer le probleme du overflow
 	idsession	INT UNSIGNED DEFAULT '0' NOT NULL,
 	url		MEDIUMBLOB NOT NULL, # url de retour de l'url en cours
-
+	site		VARCHAR(64) BINARY NOT NULL,
 	PRIMARY KEY (id),
 	KEY index_idsession (idsession)
 ) _CHARSET_;

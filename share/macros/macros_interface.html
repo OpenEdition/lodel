@@ -856,10 +856,12 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFFUNC>
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
-	<IF COND="![#CURRENTURL|strpos('lodel/edition')]">
+	<IF COND="![#CURRENTURL|strpos('lodel/edition')] AND ![#CURRENTURL|strpos('lodel/admin')]">
 		<form id="lightSearchForm" action="[#CURRENTURL|dirname]/lodel/edition/search.[#EXTENSIONSCRIPTS]" method="get">
-	<ELSE />
-		<form id="lightSearchForm" action="search.[#EXTENSIONSCRIPTS]" method="get">
+	<ELSEIF COND="[#CURRENTURL|strpos('lodel/admin')]" />
+		<form id="lightSearchForm" action="../edition/search.php" method="get">
+	<ELSE/>
+		<form id="lightSearchForm" action="search.php" method="get">
 	</IF>
 		<fieldset>
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
@@ -1487,7 +1489,7 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 		<IF COND="defined('backoffice')">
 		<li>
 			<ul class="actions">
-				<li class="isolated"><a href="#" id="displayButton" onclick="javascript:displayAll(this, true);">[@COMMON.DISPLAY_ALL_SITEMAP]</a></li>
+				<li class="isolated"><a href="#" id="displayButton" onclick="javascript:displayAll(this, true, false, null);">[@COMMON.DISPLAY_ALL_SITEMAP]</a></li>
 			</ul>
 		</li>
 		</IF>
@@ -1656,31 +1658,19 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 	</ul>
 </DEFFUNC>
 
-<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere, drag">
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
-		<ul class="listEntities" id="DragContainer[#ID]">
-	<ELSE />
-		<ul class="listEntities">
-	</IF>
+<DEFFUNC NAME="LIST_ENTITIES" REQUIRED="id" OPTIONAL="folder,displaywhere">
+	<ul class="listEntities">
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LOOP NAME="series" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
-		<IF COND="[#COUNT] % 2">
-			<IF COND="[#DRAG] EQ 'true'">
-				<li class="line1_entity" id="[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE />
-				<li class="line1_entity"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndropDisabled.png" title="Drag'n'Drop Off" alt="Drag'n'Drop" class="dragger"/></a></div>
+			<IF COND="[#COUNT] % 2">
+				<li class="line1_entity">
+			<ELSE/>
+				<li class="line2_entity">
 			</IF>
-		<ELSE/>
-			<IF COND="[#DRAG] EQ 'true'">
-				<li class="line2_entity" id="[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE />
-				<li class="line2_entity"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndropDisabled.png" title="Drag'n'Drop Off" alt="Drag'n'Drop" class="dragger"/></a></div>
-			</IF>
-		</IF>
 			<div class="entityIcons">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
@@ -1703,11 +1693,6 @@ Macros rapatri�es de lodel/src/lodel/edition/tpl
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
-		<script type="text/javascript">
-			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
-		</script>
-	</IF>
 </DEFFUNC>
 
 <DEFFUNC NAME="GET_ALIASES" REQUIRED="id">

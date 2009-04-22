@@ -2,7 +2,7 @@
 /**	
  * Logique des entités - import
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -39,8 +40,8 @@
  * @version CVS:$Id$
  */
 
-
-require_once 'logic/class.entities_edition.php';
+if(!class_exists('Entities_EditionLogic', false))
+	require 'logic/class.entities_edition.php';
 
 /**
  * Classe de logique des entités (gestion de l'import)
@@ -65,20 +66,20 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 *
 	 * @var array
 	 */
-	var $g_name;
+	public $g_name;
 	
-	var $prefixregexp="Pr\.|Dr\.|Mr\.|Ms\.";
+	protected $prefixregexp="Pr\.|Dr\.|Mr\.|Ms\.";
 	
-  var $context; // save the current context
-
-  var $task;
+	protected $context; // save the current context
+	protected $_localcontext;
+	protected $task;
 
   /**
 	 * Constructeur
 	 */
-	function Entities_ImportLogic()
+	public function __construct()
 	{
-		Entities_EditionLogic::Entities_EditionLogic();
+		parent::__construct();
 	}
 
 	/**
@@ -86,20 +87,22 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function importAction (&$context, &$error) 
+	public function importAction (&$context, &$error) 
 	{
 		global $db;
 		$this->context=&$context;
-		$idtask = intval ($context['idtask']);
-		require_once ("taskfunc.php");
+		$idtask = (int)$context['idtask'];
+		if(!function_exists('gettask'))
+			require ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
 		if ($task['identity']) $context['id'] = $task['identity'];
-		require_once("xmlimport.php");
+		if(!class_exists('XMLImportParser', false))
+			require("xmlimport.php");
 		$parser=new XMLImportParser();
 		$parser->init ($context['class']);
 		$parser->parse (file_get_contents ($task['fichier']), $this);
-		if (!$this->id) die("ERROR: internal error in Entities_ImportLogic::importAction");		
+		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
 		if ($this->nbdocuments>1) { // save the file
 			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".$task['idparent'].".source";
 		} else {
@@ -126,14 +129,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 * method to move img link when the new id is known
 	 * @access private
 	 */
-	function _moveImages (&$context)
+	protected function _moveImages (&$context)
 	{ 
 		$count = 1;
 		$dir = '';
 		$this->_moveImages_rec ($context, $dir, $count); 
 	}
 
-	function _moveImages_rec (&$context, &$dir, &$count) 
+	protected function _moveImages_rec (&$context, &$dir, &$count) 
 	{
 		foreach (array_keys ($context) as $k) {
 			if (is_array ($context[$k])) {
@@ -141,7 +144,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			continue;
 			}
 			$text=&$context[$k];
-       preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
+       			preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
 			foreach ($results as $result) {
 				$imgfile=$result[1];	   $ext=$result[2];
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
@@ -169,14 +172,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
  
-	function _checkdir ($dir) 
+	protected function _checkdir ($dir) 
 	{
 		if (!is_dir (SITEROOT.$dir)) {
 			mkdir (SITEROOT.$dir, 0777 & octdec($GLOBALS['filemask']));
 			@chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
 		} else { // clear the directory the first time.
 			$fd=opendir(SITEROOT.$dir);
-			if (!$fd) die ("ERROR: cannot open the directory $dir");
+			if (!$fd) trigger_error("ERROR: cannot open the directory $dir", E_USER_ERROR);
 			while ($file=readdir($fd)) {
 				if ($file{0}=="." || !preg_match("/^(img-\d+(-small\d+)?|\w+-small\d+).(jpg|gif|png)$/i", $file)) continue;
 				$file=SITEROOT.$dir."/".$file;
@@ -185,9 +188,9 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
 
-	var $_localcontext;
 
-	function openClass ($class, $obj=null, $multidoc=false) 
+
+	public function openClass ($class, $obj=null, $multidoc=false) 
 	{
 		switch ($class[1]) { // classtype
 			case 'entries':
@@ -201,7 +204,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
 
-	function closeClass ($class, $multidoc=false) 
+	public function closeClass ($class, $multidoc=false) 
 	{
 		global $db;
 		switch ($class[1]) { // classtype
@@ -215,7 +218,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
 			if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
 			if ($multidoc) { // try to find the id
-				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".intval($this->nbdocuments).",1")) or dberror ();
+				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".(int)$this->nbdocuments.",1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!$result->EOF) $localcontext['id']=$result->fields['id'];
 				$this->nbdocuments++;
 			} else if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
@@ -234,12 +237,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
 
-	function processData($data) 
+	public function processData($data) 
 	{
 		return $data;
 	}
 
-	function processTableFields ($obj, $data) 
+	public function processTableFields ($obj, $data) 
 	{
 		global $db;
 		static $styles_string;
@@ -282,7 +285,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		return $data;
 	}
 
-	function processEntryTypes ($obj, $data) 
+	public function processEntryTypes ($obj, $data) 
 	{
 		foreach (preg_split ("/<\/p>/", $data) as $data2) {
 			foreach (preg_split ("/,/", strip_tags ($data2)) as $entry) {
@@ -294,7 +297,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
 
-	function processPersonTypes ($obj, $data) 
+	public function processPersonTypes ($obj, $data) 
 	{
 		static $g_name_cache;
 		if (!$g_name_cache[$obj->class]) {  // get the generic type     
@@ -340,12 +343,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
   }
 
-	function processCharacterStyles ($obj, $data) 
+	public function processCharacterStyles ($obj, $data) 
 	{
 		return $obj->conversion.$data.closetags ($obj->conversion);
 	}
 
-	function processInternalStyles ($obj, $data) 
+	public function processInternalStyles ($obj, $data) 
 	{
 		if (strpos ($obj->conversion, '<li>') !== false) {
 			$conversion = str_replace ('<li>', '', $obj->conversion);
@@ -366,12 +369,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		return $conversion.$data.closetags ($conversion);
 	}
 
-	function unknownParagraphStyle ($style, $data) 
+	public function unknownParagraphStyle ($style, $data) 
 	{
 		// nothing to do ?
 	}
 
-	function unknownCharacterStyle ($style, $data) 
+	public function unknownCharacterStyle ($style, $data) 
 	{
 		// nothing... let's clean it.
 		return preg_replace(array("/^<span\b[^>]*>/","/<\/span>$/"),"",$data);

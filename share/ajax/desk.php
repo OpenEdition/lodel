@@ -14,13 +14,31 @@ if(!file_exists('siteconfig.php')) {
 	return;
 }
 require 'siteconfig.php';
+require 'class.errors.php';
+set_error_handler(array('LodelException', 'exception_error_handler'));
+
+// les niveaux d'erreur à afficher
+error_reporting(E_ALL);
+
+try
+{
 require 'auth.php';
 // pas de log de l'url dans la base
 $GLOBALS['norecordurl'] = true;
 // accès seulement aux personnes autorisées
 if(!authenticate(LEVEL_VISITOR, null, true) || !$lodeluser['visitor'])
+{
+	echo 'auth';
 	return;
-require_once 'loginfunc.php';
+}
+
+require 'loginfunc.php';
 echo updateDeskDisplayInSession();
 return;
+}
+catch(Exception $e)
+{
+	echo 'error';
+	exit();
+}
 ?>

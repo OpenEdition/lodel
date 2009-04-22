@@ -2,7 +2,7 @@
 /**	
  * Logique des options
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -59,8 +60,8 @@ class OptionsLogic extends Logic {
 
 	/** Constructor
 	*/
-	function OptionsLogic() {
-		$this->Logic("options");
+	public function __construct() {
+		parent::__construct("options");
 	}
 
 
@@ -70,10 +71,9 @@ class OptionsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
-
+	public function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'idgroup');
+		return parent::changeRankAction(&$context, &$error, 'idgroup');
 	}
 
 
@@ -85,12 +85,12 @@ class OptionsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction(&$context, &$error, $clean = false)
+	public function editAction(&$context, &$error, $clean = false)
 	{ 
 		if (!$context['title']) {
 			$context['title'] = $context['name'];
 		}
-		$ret = Logic::editAction($context,$error);
+		$ret = parent::editAction($context,$error);
 		if (!$error) {
 			$this->clearCache();
 		}
@@ -103,10 +103,9 @@ class OptionsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function deleteAction(&$context,&$error)
-
+	public function deleteAction(&$context,&$error)
 	{
-		$ret=Logic::deleteAction($context,$error);
+		$ret=parent::deleteAction($context,$error);
 		if (!$error) $this->clearCache();
 		return $ret;
 
@@ -114,7 +113,7 @@ class OptionsLogic extends Logic {
 	/**
 	 * Effacement du cache
 	 */
-	function clearCache()
+	public function clearCache()
 	{
 		@unlink(SITEROOT. "CACHE/options_cache.php");
 	}
@@ -126,21 +125,23 @@ class OptionsLogic extends Logic {
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @param string $var le nom de la variable du select
 	 */
-	function makeSelect(&$context,$var)
+	public function makeSelect(&$context,$var)
 	{
-
 		switch($var) {
 		case "userrights":
-			require_once("commonselect.php");
+			if(!function_exists('makeSelectUserRights'))
+				require("commonselect.php");
 			$lodeladmin = ((!$GLOBALS['site'] || SINGLESITE) && (FALSE !== strpos(dirname($_SERVER['REQUEST_URI']), '/lodeladmin'))) ? TRUE : FALSE;
 			makeSelectUserRights($context['userrights'], $lodeladmin);
 			break;
 		case "type" :
-			require_once("commonselect.php");
+			if(!function_exists('makeSelectFieldTypes'))
+				require("commonselect.php");
 			makeSelectFieldTypes($context['type']);
 			break;
 		case "edition" :
-			require_once("commonselect.php");
+			if(!function_exists('makeSelectEdition'))
+				require("commonselect.php");
 			makeSelectEdition($context['edition']);
 			break;
 		}
@@ -154,7 +155,7 @@ class OptionsLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context)
+	protected function _saveRelatedTables($vo,$context)
 	{
 		// reinitialise le cache surement.
 	}
@@ -165,7 +166,7 @@ class OptionsLogic extends Logic {
 	 *
 	 * @param integer $id identifiant numérique de l'objet supprimé
 	 */
-	function _deleteRelatedTables($id) 
+	protected function _deleteRelatedTables($id) 
 	{
 		// reinitialise le cache surement.
 	}
@@ -177,7 +178,7 @@ class OptionsLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('name' => array('text', '+'),
 									'title' => array('text', '+'),
@@ -198,7 +199,7 @@ class OptionsLogic extends Logic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('name', 'idgroup'), );
 	}

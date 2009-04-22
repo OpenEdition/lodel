@@ -43,21 +43,30 @@
  * @package lodel/source/lodel/admin
  */
 
-require_once 'siteconfig.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
 
 $name = addslashes($_COOKIE[$sessionname]);
 $url_retour = strip_tags($_GET['url_retour']);
-include_once 'connect.php';
 $time = time()-1;
 usemaindb();
-$db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or dberror();
-$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or dberror();
+$db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 setcookie($sessionname, "", $time,$urlroot);
 
 if($url_retour)
 	header('Location: '.$url_retour);
 else
 	header('Location: '.SITEROOT); // la norme ne supporte pas les chemins relatifs !!
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

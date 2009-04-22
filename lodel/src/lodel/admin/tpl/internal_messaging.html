@@ -38,12 +38,12 @@
 <li>
 	<ul class="actions">
 		<IF COND="[#DIRECTORY] EQ 'inbox'">
-		<LET ARRAY="actions[view]">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
-		<ELSEIF COND="[#DIRECTORY] EQ 'trash'">
-		<LET ARRAY="actions[rest]">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
+			<LET ARRAY="actions.view">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
+		<ELSEIF COND="[#DIRECTORY] EQ 'trash'"/>
+			<LET ARRAY="actions.rest">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
 		</IF>
-		<LET ARRAY="actions[delSelected]">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
-		<LET ARRAY="actions[delAll]">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
+		<LET ARRAY="actions.delSelected">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
+		<LET ARRAY="actions.delAll">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
 		<li class="isolated">
 			<label for="actions">[@COMMON.ACTIONS] :</label>
 			<select class="barInfo" id="actions">
@@ -57,13 +57,9 @@
 </li>
 </ul>
 <br />
-<IF COND="[#ERROR]">
-	<p class="error">[#ERROR]</span>
-<ELSE />
-<IF COND="[#MSGSENDED]" />
-	<p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
-<ELSEIF COND="[#DELETED]" />
-	<p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+<IF COND="[#ERROR]"><p class="error">[#ERROR]</p>
+<ELSEIF COND="[#MSGSENDED]"/><p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
+<ELSEIF COND="[#DELETED]"/><p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
 </IF>
 
 <IF COND="[#ID]">
@@ -103,28 +99,24 @@
 		<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
-	<DO CASE="inbox">
-		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
-		<LET VAR="im_groupby">id</LET>
-	</DO>
-	<DO CASE="default">
+	<DO CASES="inbox,default">
 		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
 	</SWITCH>
 	<LET VAR="inside" GLOBAL="1">0</LET>
 	<LET VAR="level" GLOBAL="1">0</LET>
-<form method="POST" id="im_form">
-<IF COND="[#DIRECTORY] EQ 'trash'">
-<input type="hidden" id="im_restore" name="restore" value="0"/>
-</IF>
-<input type="hidden" name="lo" value="internal_messaging"/>
-<input type="hidden" name="do" value="delete"/>
-<input type="hidden" name="directory" value="[#DIRECTORY]"/>
-<IF COND="![#SORT|isset]">
+	<form method="POST" id="im_form">
+	<IF COND="[#DIRECTORY] EQ 'trash'">
+		<input type="hidden" id="im_restore" name="restore" value="0"/>
+	</IF>
+	<input type="hidden" name="lo" value="internal_messaging"/>
+	<input type="hidden" name="do" value="delete"/>
+	<input type="hidden" name="directory" value="[#DIRECTORY]"/>
+	<IF COND="![#SORT|isset]">
 	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="incom_date ASC" GROUPBY="[#IM_GROUPBY]">
 		<BEFORE>
-			<IF COND="[%INSIDE|intval] GT 0"><?php $GLOBALS['context']['level']++; ?><tr><ELSE/>
+			<IF COND="[%INSIDE|intval] GT 0"><LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+',1)]</LET><tr><ELSE/>
 			<table class="internal_messaging" id="internal_messaging">
 				<th class="im_select"><input type="checkbox" name="im_select_all" onclick="javascript:im_selectAll();"/></th>
 				<IF COND="[#DIRECTORY] NE 'sent'">
@@ -202,7 +194,7 @@
 				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
 				</a>
 			</td>
-			<?php $GLOBALS['context']['inside']++; ?>
+			<LET VAR="inside" GLOBAL="1">[%INSIDE|lmath('+',1)]</LET>
 			<IF COND="[#DIRECTORY] NE 'sent'">
 				<LET VAR="idpar">[#ID]</LET>
 				<SWITCH TEST="[#DIRECTORY]">
@@ -224,20 +216,13 @@
 			</tr>
 		</DO>
 		<AFTER>
-			<IF COND="[%INSIDE] GT 0"></tr><?php $GLOBALS['context']['level']--; ?><ELSE/></table></IF>
+			<IF COND="[%INSIDE] GT 0"></tr><LET VAR="inside" GLOBAL="1">[%INSIDE|lmath('-',1)]</LET><ELSE/></table></IF>
 		</AFTER>
 		<ALTERNATIVE><IF COND="[#IDPARENT] EQ [#IDPAR]">[@ADMIN.INTERNAL_MESSAGING_NO_MAILS]</IF></ALTERNATIVE>
 	</LOOP>	
 
 <ELSE/>
-
-	<LET VAR="dir">
-	<IF COND="[#DIR|strtolower] EQ 'desc'">
-		DESC
-	<ELSE/>
-		ASC
-	</IF>
-	</LET>
+	<LET VAR="dir"><IF COND="[#DIR|strtolower] EQ 'desc'">DESC<ELSE/>ASC</IF></LET>
 	<LET VAR="orderby">
 	<IF COND="[#SORT]">
 		<SWITCH TEST="[#SORT|strtolower]">
@@ -250,7 +235,6 @@
 		</SWITCH>
 	<ELSE/>incom_date</IF>
 	</LET>
-	<LET VAR="dir">[#DIR|trim]</LET>
 	<LET VAR="orderby">[#ORDERBY|trim]</LET>
 	<LOOP NAME="getMessagesWithSort" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="[#ORDERBY] [#DIR]" GROUPBY="[#IM_GROUPBY]">
 		<BEFORE>
@@ -367,6 +351,5 @@
 	</LOOP>
 </IF>
 </form>
-</IF>
 </IF>
 <MACRO NAME="CLOSE_HTML">

@@ -68,7 +68,7 @@ function checkfile($filename, $error = 0)
 function checkstring(&$text, $error = 0)
 {
 	$xml_parser = xml_parser_create();
-	xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0) or die("Parser incorrect");
+	xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, 0) or trigger_error("Parser incorrect", E_USER_ERROR);
 	if ($error)	{
 		xml_set_element_handler($xml_parser, "startElementCHECK", "endElementCHECK");
 		xml_set_character_data_handler($xml_parser, "characterHandlerCHECK");

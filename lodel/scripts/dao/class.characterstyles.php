@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 13-12-2006.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,12 +75,12 @@ class characterstylesVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $style;
-	var $conversion;
-	var $rank;
-	var $status;
-	var $upd;
+	public $id;
+	public $style;
+	public $conversion;
+	public $rank;
+	public $status;
+	public $upd;
 	/**#@-*/
 }
 
@@ -90,6 +92,7 @@ class characterstylesVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -109,9 +112,9 @@ class characterstylesDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function characterstylesDAO()
+	public function __construct()
 	{
-		$this->DAO("characterstyles", false);
+		parent::__construct("characterstyles", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

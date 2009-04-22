@@ -93,45 +93,53 @@ function couper($texte, $long)
 /**
  * Cut text keeping whole words
  */
-function cuttext($text, $length)
+function cuttext($text, $length, $dots=false)
 {
 	$GLOBALS['textfunc_hasbeencut'] = false;
-	$open = strpos($text, "<");
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$open = mb_strpos($text, "<", 0, $encoding);
 	if ($open === false || $open > $length){
-		return cut_without_tags($text, $length);}
+		return cut_without_tags($text, $length, $dots);}
 	$length -= $open;
 	$stack = array ();
 	while ($open !== FALSE) {
-		$close = strpos($text, ">", $open);
-		if ($text[$open +1] == "/") {
+		$close = mb_strpos($text, ">", $open, $encoding);
+		if (mb_substr($text, $open+1, 1, $encoding) == "/") {
 			array_pop($stack); // fermante
-		}	elseif ($tags[$close -1] != "/") {
-			array_push($stack, "</".preg_replace("/\s.*/", "", substr($text, $open +1, $close -1 - $open)).">"); // ouvrante
+		}	elseif (mb_substr($text, $close-1, 1, $encoding) != "/") {
+			$tag = mb_substr($text, $open +1, $close -1 - $open, $encoding);
+			if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
+			else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
 		}
-		$open = strpos($text, "<", $close);
+		$open = mb_strpos($text, "<", $close, $encoding);
 		$piecelen = $open -1 - $close;
 		if ($open === FALSE || $piecelen > $length)
-			return substr($text, 0, $close +1).cut_without_tags(substr($text, $close +1, $length +2), $length).// 2 pour laisser de la marge
+		{
+			if($dots) array_push($stack, ' (...)');
+			return mb_substr($text, 0, $close +1, $encoding).cut_without_tags(mb_substr($text, $close +1, $length +2, $encoding), $length).// 2 pour laisser de la marge
 			join("", array_reverse($stack));
+		}
 		$length -= $piecelen;
 	}
 	return $text;
 }
 
-function cut_without_tags($text, $length)
+function cut_without_tags($text, $length, $dots=false)
 {
-	$text2 = substr($text." ", 0, $length);
-	if (strlen($text2) < strlen($text)) {
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$text2 = mb_substr($text." ", 0, $length, $encoding);
+	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
 	}
-	$last_space_position = strrpos($text2, " ");
+	$last_space_position = mb_strrpos($text2, " ", $encoding);
 	
 	if (!($last_space_position === false)) {
 		// supprime le dernier espace et tout ce qu'il y a derrière
 		//$text2 = substr($text2, 0, $last_space_position);
 		$text2 = preg_replace("/\S+$/", "", $text2);
 	}
-		return $text2;
+	
+	return (($GLOBALS['textfunc_hasbeencut'] && $dots) ? $text2.' (...)' : $text2);
 }
 
 function hasbeencut()
@@ -320,7 +328,7 @@ function tocable($text, $level = 10)
 function multilingue($text, $lang)
 {
 	preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s", $text, $result);
-	return $result[1];
+	return isset($result[1]) ? $result[1] : null;
 }
 
 function vignette($text, $width)
@@ -344,7 +352,8 @@ function vignette($text, $width)
 	if($widt <= $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-	require_once ("images.php");
+	if(!function_exists('resize_image'))
+		require("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
@@ -521,7 +530,7 @@ function notes($texte, $type)
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[0-9]+\]?)<\/a>/i', $results[0]);
 				break;
 			default:
-				die("unknown note type of tag num : \"$type\"");
+				trigger_error("unknown note type of tag num : \"$type\"", E_USER_ERROR);
 		}
 	} else {
 		switch ($type) {
@@ -538,7 +547,7 @@ function notes($texte, $type)
 				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
 				break;
 			default :
-				die("unknown note type \"$type\"");
+				trigger_error("unknown note type \"$type\"", E_USER_ERROR);
 		}
 	}
 	return join("", $notes);
@@ -585,15 +594,15 @@ function format($text, $creationmethod = "", $creationinfo = "")
 		case 'wiki' :
 			return wiki($text);
 		case 'bb' :
-			die("not yet implemented");
+			trigger_error("not yet implemented", E_USER_ERROR);
 		default :
-			die("ERROR: unknown creationinfo");
+			trigger_error("ERROR: unknown creationinfo", E_USER_ERROR);
 		}
 	}
 	if (substr($creationmethod, 0, 6) == "servoo")
 		return tocss($text);
 
-	die("ERROR: unknown creationmethod");
+	trigger_error("ERROR: unknown creationmethod", E_USER_ERROR);
 }
 
 /**
@@ -637,7 +646,8 @@ function strip_tags_keepnotes($text, $keeptags = "")
 function humanlang($text)
 {
 	global $home;
-	require_once ("lang.php");
+	if(!function_exists('makeSelectLang'))
+		require ("lang.php");
 	return $GLOBALS['languages'][strtoupper($text)];
 }
 
@@ -740,7 +750,8 @@ function wiki($text)
 	$parserOutput = $parser->internalParse($text);
 	print_r($parserOutput);
 	*/
-	require_once ('wikirenderer/WikiRenderer.lib.php');
+	if(!class_exists('WikiRenderer', false))
+		require ('wikirenderer/WikiRenderer.lib.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
@@ -1019,8 +1030,7 @@ function LSgmstrftime($time){
 */
 
 function formatIdentifier($str) {
-		require_once 'func.php';
-		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
+	return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
 }
 
 /** Nettoyage des caractères windows illegaux + nettoyage pour flux XML
@@ -1351,14 +1361,13 @@ function HTML2XML($str, $reverse=false){
 */
 
 function getParentByType($id,$type, $return=false){
+	global $db;
         $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
-        $r = mysql_query($q);
-        if($idparent = @mysql_result($r, 0)){
+	$idparent = $db->GetOne($q);
+        if($idparent){
                 $q = "SELECT t.type FROM $GLOBALS[tp]entities e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
                 AND e.idtype = t.id";
-                $r2 = mysql_query($q);
-                $ltype = mysql_result($r2, 0);
-                //echo mysql_error();
+		$ltype = $db->GetOne($q);
                 if($ltype == $type){
 			if($return) return $idparent;
                         else echo $idparent;
@@ -1447,8 +1456,9 @@ function cleanCallNotes($text)
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
-	require_once SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
-	$geshi =& new GeSHi($text, $language);
+	if(!class_exists('GeSHi', false))
+		require SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
+	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 	$geshi->set_header_type(GESHI_HEADER_DIV);

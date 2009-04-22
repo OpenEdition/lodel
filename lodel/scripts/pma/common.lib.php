@@ -113,6 +113,6 @@ function PMA_mysqlDie($error_message = '', $the_query = '',
 		      $is_modify_link = TRUE, $back_url = '',
 		      $exit = TRUE)
 {
-	 dberror();
+	 trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 ?>

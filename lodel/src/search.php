@@ -44,7 +44,17 @@
  */
 
 require 'siteconfig.php';
-require_once 'auth.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 authenticate();
-require_once 'search.inc.php';
+require 'search.inc.php';
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

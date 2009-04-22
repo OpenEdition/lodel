@@ -45,7 +45,7 @@
 		<LOOP NAME="foreach" ARRAY="[#VALUE]">
 			<LET ARRAY="fieldname">[#VALUE|array_values]</LET>
 			<LET ARRAY="fieldidtype">[#VALUE|array_keys]</LET>
-			<li><input type="text" value="" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="3" />&nbsp;[#FIELDNAME.0]</li>
+			<li><input type="text" value="" class="input_formulaire" name="data[[#ACT]][[#FIELDIDTYPE.0]]" size="3" />&nbsp;[#FIELDNAME.0]</li>
 		</LOOP>
 	</ul>
 </LOOP>
@@ -68,7 +68,7 @@
 <input type="hidden" name="checktypes" value="1" />
 <fieldset>
 <input class="button" type="submit" />&nbsp;&nbsp;
-<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php';" />
+<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php';" />
 </fieldset>
 </div>
 </form>

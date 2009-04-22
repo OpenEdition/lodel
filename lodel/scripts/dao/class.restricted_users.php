@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -48,7 +49,7 @@
  */
 
 //
-// Fichier généré automatiquement le 26-03-2008.
+// Fichier généré automatiquement le 20-01-2009.
 //
 
 
@@ -58,6 +59,7 @@
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -73,19 +75,19 @@ class restricted_usersVO
 	/**#@+
 	 * @access public
 	 */
-	var $id;
-	var $username;
-	var $passwd;
-	var $lastname;
-	var $firstname;
-	var $email;
-	var $expiration;
-	var $lang;
-	var $userrights;
-	var $site;
-	var $status;
-	var $rank;
-	var $upd;
+	public $id;
+	public $username;
+	public $passwd;
+	public $lastname;
+	public $firstname;
+	public $email;
+	public $expiration;
+	public $ip;
+	public $lang;
+	public $userrights;
+	public $status;
+	public $rank;
+	public $upd;
 	/**#@-*/
 }
 
@@ -97,6 +99,7 @@ class restricted_usersVO
  * @package lodel/dao
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -116,9 +119,9 @@ class restricted_usersDAO extends DAO
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
-	function restricted_usersDAO()
+	public function __construct()
 	{
-		$this->DAO("restricted_users", false);
+		parent::__construct("restricted_users", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
 

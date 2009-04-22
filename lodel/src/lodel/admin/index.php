@@ -43,15 +43,18 @@
  * @package lodel/source/lodel/admin
  */
 define('backoffice', true);
-require_once 'siteconfig.php';
-require_once 'lang.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 
 authenticate(LEVEL_VISITOR);
-if ($_GET['page']) { // call a special page (and template)
+if (isset($_GET['page'])) { // call a special page (and template)
 	$page = $_GET['page'];
   	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-		die('invalid page');
+		trigger_error('invalid page', E_USER_ERROR);
 	}
 	require 'view.php';
 	$view = &View::getView();
@@ -59,7 +62,7 @@ if ($_GET['page']) { // call a special page (and template)
 	exit;
 }
 
-require 'controler.php';
+require 'controller.php';
 $authorized_logics = array('entrytypes', 'persontypes',
 				'entries', 'persons',
 				'tablefieldgroups', 'tablefields', 'indextablefields',
@@ -69,7 +72,8 @@ $authorized_logics = array('entrytypes', 'persontypes',
 				'options', 'optiongroups', 'useroptiongroups', 'servooconf',
 				'internalstyles', 'characterstyles', 'entities_index',
 				'filebrowser', 'xml', 'data', 'internal_messaging');
-$Controler = new controler($authorized_logics);
+$Controller = new Controller($authorized_logics);
+
 
 function loop_classtypes($context, $funcname)
 {
@@ -80,5 +84,12 @@ function loop_classtypes($context, $funcname)
 		$localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
     		call_user_func("code_do_$funcname", $localcontext);
  	}
+}
+
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
 }
 ?>

@@ -2,7 +2,7 @@
 /**	
  * Logique des utilisateurs restreints
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -59,11 +59,10 @@
  */
 class Restricted_UsersLogic extends Logic 
 {
-
 	/** Constructor
 	*/
-	function Restricted_UsersLogic() {
-		$this->Logic('restricted_users');
+	public function __construct() {
+		parent::__construct('restricted_users');
 	}
 
 	/**
@@ -78,11 +77,11 @@ class Restricted_UsersLogic extends Logic
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
+	public function isdeletelocked($id,$status=0) 
 	{
 		global $lodeluser;
 		if ($lodeluser['id']==$id && 
-	( ($GLOBALS['site'] && $lodeluser['rights']<LEVEL_ADMINLODEL) ||
+		( ($GLOBALS['site'] && $lodeluser['rights']<LEVEL_ADMINLODEL) ||
 		(!$GLOBALS['site'] && $lodeluser['rights']==LEVEL_ADMINLODEL))) {
 			return getlodeltextcontents("cannot_delete_current_user","common");
 		} else {
@@ -102,16 +101,15 @@ class Restricted_UsersLogic extends Logic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les erreur éventuelles par référence
 	 */
-	function deletesessionAction(&$context, &$error)
+	public function deletesessionAction(&$context, &$error)
 	{
 		global $db;
-		require_once 'func.php';
-		$id = intval($context['id']);
-		$session     = intval($context['session']);
+		$id = (int)$context['id'];
+		$session     = (int)$context['session'];
 		usemaindb(); // les sessions sont stockés dans la base principale
 		$ids = array();
 		if ($id) { //suppression de toutes les sessions
-			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or dberror();
+			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$ids[] = $result->fields['id'];
 				$result->MoveNext();
@@ -119,15 +117,15 @@ class Restricted_UsersLogic extends Logic
 		} elseif ($session) { //suppression d'une session
 			$ids[] = $session;
 		} else {
-			die ('ERROR: unknown operation');
+			trigger_error('ERROR: unknown operation', E_USER_ERROR);
 		}
 		
 		if ($ids) {
 			$idstr = join(',', $ids);
 			// remove the session
-			$db->execute(lq("DELETE FROM #_MTP_session WHERE id IN ($idstr)")) or dberror();
+			$db->execute(lq("DELETE FROM #_MTP_session WHERE id IN ($idstr)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			// remove the url related to the session
-			$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession IN ($idstr)")) or dberror();
+			$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession IN ($idstr)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 
 		usecurrentdb();
@@ -143,16 +141,16 @@ class Restricted_UsersLogic extends Logic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les erreur éventuelles par référence
 	 */
-	function setAction(&$context, &$error)
+	public function setAction(&$context, &$error)
 	{
 		global $db;
 		$lang = $context['lang'];
 		$translationmode = $context['translationmode'];
 		if ($lang) {
 			if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) {
-				die("ERROR: invalid lang");
+				trigger_error("ERROR: invalid lang", E_USER_ERROR);
 			}
-			$db->execute(lq("UPDATE #_TP_restricted_users SET lang='$lang'")) or dberror();
+			$db->execute(lq("UPDATE #_TP_restricted_users SET lang='$lang'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$this->_setcontext('lang', 'setvalue', $lang);
 		}
 
@@ -168,8 +166,8 @@ class Restricted_UsersLogic extends Logic
 			}
 		}
 
-	update();
-	return '_back';
+		update();
+		return '_back';
 	}
 
 
@@ -177,12 +175,12 @@ class Restricted_UsersLogic extends Logic
 	/**
 		* make the select for this logic
 		*/
-	function makeSelect(&$context,$var)
-
+	public function makeSelect(&$context,$var)
 	{
 		switch($var) {
 		case 'userrights':
-			require_once 'commonselect.php';
+			if(!function_exists('makeSelectUserRights'))
+				require 'commonselect.php';
 			makeSelectUserRights($context['userrights'],!$GLOBALS['site'] || SINGLESITE);
 			break;
 		case "lang" :
@@ -208,14 +206,14 @@ class Restricted_UsersLogic extends Logic
 	 *
 	 *
 	 */
-	function _setcontext($var, $operation, $value = '')
+	protected function _setcontext($var, $operation, $value = '')
 	{
 		global $db;
 		usemaindb();
 		$where = "name='". addslashes($_COOKIE[$GLOBALS['sessionname']]). "' AND iduser='". $GLOBALS['lodeluser']['id']. "'";
 		$context = $db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
 		if ($db->errorno()) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		$arr = unserialize($context);
 		switch ($operation) {
@@ -230,7 +228,7 @@ class Restricted_UsersLogic extends Logic
 			break;
 		}
 	
-		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) or dberror();
+		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		usecurrentdb();
 	}
 
@@ -241,7 +239,7 @@ class Restricted_UsersLogic extends Logic
 	* @param object $dao la DAO utilisée
 	* @param array &$context le context passé par référence
 	*/
-	function _prepareEdit($dao,&$context) 
+	protected function _prepareEdit($dao,&$context) 
 	{
 		// encode the password
 		if ($context['passwd']) {
@@ -252,8 +250,7 @@ class Restricted_UsersLogic extends Logic
 
 
 
-	function _populateContextRelatedTables(&$vo,&$context)
-
+	protected function _populateContextRelatedTables(&$vo,&$context)
 	{
 	/*	if ($vo->userrights<=LEVEL_EDITOR) {
 			$dao=&getDAO("users_usergroups");
@@ -273,8 +270,7 @@ class Restricted_UsersLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
-
+	protected function _saveRelatedTables($vo,$context) 
 	{/*
 		global $db;
 		if ($vo->userrights<=LEVEL_EDITOR) {
@@ -286,26 +282,26 @@ class Restricted_UsersLogic extends Logic
 			// now add the usergroups
 			foreach ($context['usergroups'] as $usergroup) {
 	$usergroup=intval($usergroup);
-	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or dberror();
+	$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}*/
 	}
 
-	function _deleteRelatedTables($id) {/*
+	protected function _deleteRelatedTables($id) {/*
 		global $db;
 		if ($GLOBALS['site']) { // only in the site table
-			$db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or dberror();
+			$db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}*/
 	}
 
 
-	function validateFields(&$context,&$error) {
+	public function validateFields(&$context,&$error) {
 		global $db,$lodeluser;
 
-		if (!Logic::validateFields($context,$error)) return false;
+		if (!parent::validateFields($context,$error)) return false;
 
 		// check the user has the right equal or higher to the new user
-		if ($lodeluser['rights']<$context['userrights']) die("ERROR: You don't have the right to create a user with rights higher than yours");
+		if ($lodeluser['rights']<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		usecurrentdb();
 
@@ -330,16 +326,16 @@ class Restricted_UsersLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('username' => array('username', '+'),
 									'passwd' => array('passwd', ''),
 									'lastname' => array('text', ''),
 									'firstname' => array('text', ''),
-									'email' => array('email', '+'),
+									'email' => array('email', ''),
 									'expiration' => array('date', '+'),
-									'lang' => array('lang', '+'),
-									'ip' => array('text', ''));
+									'ip' => array('text', ''),
+									'lang' => array('lang', '+'));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -349,7 +345,7 @@ class Restricted_UsersLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('username'), );
 	}
@@ -358,17 +354,18 @@ class Restricted_UsersLogic extends Logic
 	/**
 	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
 	 */
-	function _sendPrivateInformation(&$context) {
+	protected function _sendPrivateInformation(&$context) {
 		global $db;
 		if(!$context['tmppasswd']) return;
 		$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
-		if(!$row) die('Error while getting url and title of site for new user mailing');
+		if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 		$context['siteurl'] = str_replace(":80", "", $row['url']);
 		$context['sitetitle'] = $row['title'];
 		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
-		if(!$email) die('Error while getting your email for new user mailing');
-		require_once 'view.php';
+		if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
+		if(!class_exists('View', false))
+			require 'view.php';
 		$GLOBALS['nodesk'] = true;
 		$context['restricted'] = true;
 		ob_start();
@@ -376,13 +373,7 @@ class Restricted_UsersLogic extends Logic
 		$body = ob_get_contents();
 		ob_end_clean();
 		unset($context['tmppasswd']);
-		require_once 'func.php';
 		return send_mail($context['email'], $body, utf8_encode("Votre compte abonné sur le site "). $context['sitetitle'] ." ({$context['siteurl']})", $email, '');
 	}
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
 ?>

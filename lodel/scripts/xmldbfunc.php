@@ -248,7 +248,7 @@ class XMLDB
 	{
 		$this->fp = fopen($filename, "w");
 		if (!$this->fp)
-			die("ERROR: can't open filename $filename for writing");
+			trigger_error("ERROR: can't open filename $filename for writing", E_USER_ERROR);
 		$this->saveToString();
 	}
 
@@ -303,7 +303,7 @@ class XMLDB
 		//
 		// Query
 
-		$result = $db->execute(lq("SELECT $select FROM ".$this->tp.$table.$where)) or dberror();
+		$result = $db->execute(lq("SELECT $select FROM ".$this->tp.$table.$where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		if ($result->recordcount() <= 0)
 			return;
@@ -377,7 +377,7 @@ class XMLDB
 		$xml_parser = $this->_initparser();
 
 		if (!xml_parse($xml_parser, $xml, true)) {
-			die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
+			trigger_error(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)), E_USER_ERROR);
 		}
 	}
 	
@@ -391,12 +391,12 @@ class XMLDB
 	{
 		$xml_parser = $this->_initparser();
 		if (!($fp = fopen($filename, "r"))) {
-			die("ERROR: could not open XML input");
+			trigger_error("ERROR: could not open XML input", E_USER_ERROR);
 		}
 
 		while ($data = fread($fp, 4096)) {
 			if (!xml_parse($xml_parser, $data, feof($fp))) {
-				die(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)));
+				trigger_error(sprintf("XML error: %s at line %d", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser)), E_USER_ERROR);
 			}
 		}
 		xml_parser_free($xml_parser);
@@ -430,7 +430,7 @@ class XMLDB
 	 */
 	function insertRow($currentable, $rows)
 	{
-		die("Redefined insertRow in a child class. insertRow must return the field used for joining");
+		trigger_error("Redefined insertRow in a child class. insertRow must return the field used for joining", E_USER_ERROR);
 		return null;
 	}
 
@@ -445,7 +445,7 @@ class XMLDB
 
 		switch ($this->state) {
 		case "inrecord" :
-			die("ERROR: Invalid XML. Expecting data only");
+			trigger_error("ERROR: Invalid XML. Expecting data only", E_USER_ERROR);
 			break;
 		case "record" :
 			// going into a element ?
@@ -461,7 +461,7 @@ class XMLDB
 				$this->state = "row"; // look for a row now
 				break;
 			} else {// not good.
-				die("ERROR: Invalid XML. Expecting for a element. Got &lt;$name&gt;");
+				trigger_error("ERROR: Invalid XML. Expecting for a element. Got &lt;$name&gt;", E_USER_ERROR);
 			}
 			break;
 		case "row" :
@@ -470,7 +470,7 @@ class XMLDB
 			foreach ($attrs as $attrname => $val) {
 				$field = array_search($attrname, $this->tables[$currenttable]['attr']);
 				if (!$field)
-					die("ERROR: Invalid XML. Unexpected attribute $attrname in tag &lt;$name&gt;");
+					trigger_error("ERROR: Invalid XML. Unexpected attribute $attrname in tag &lt;$name&gt;", E_USER_ERROR);
 				$this->records[$field] = $val;
 			}
 			// add the parent join field if we are a child
@@ -484,13 +484,13 @@ class XMLDB
 					$this->state = "inrecord";
 					$this->_newrecord($name);
 				}	else {
-					die("ERROR: Invalid XML. Expecting &lt;$tag&gt; but got &lt;$name&gt;");
+					trigger_error("ERROR: Invalid XML. Expecting &lt;$tag&gt; but got &lt;$name&gt;", E_USER_ERROR);
 				}
 			}	else {
 				if ($name == $this->tables[$currenttable]['rowtag']) {
 					$this->state = "record";
 				} else {
-					die("ERROR: Invalid XML. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; but got &lt;$name&gt;");
+					trigger_error("ERROR: Invalid XML. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; but got &lt;$name&gt;", E_USER_ERROR);
 				}
 			}
 			break;
@@ -500,12 +500,12 @@ class XMLDB
 				$this->state = "row";
 				$this->_newtable($name);
 			} else {
-				die("ERROR: Invalid XML. Expecting a table name. Found &lt;$name&gt;");
+				trigger_error("ERROR: Invalid XML. Expecting a table name. Found &lt;$name&gt;", E_USER_ERROR);
 			}
 			break;
 		default :
 			if ($name != $this->documentroot)
-				die("ERROR: Invalid XML. Expecting a documentroot. Found &lt;$name&gt;");
+				trigger_error("ERROR: Invalid XML. Expecting a documentroot. Found &lt;$name&gt;", E_USER_ERROR);
 			$this->state = "table";
 		} // end swith }}}
 	}
@@ -528,11 +528,11 @@ class XMLDB
 						$this->_endrow();
 						$this->state = "row";
 					}	else {
-						die("ERROR: XML Invalid. Hum... XML parser should have crash");
+						trigger_error("ERROR: XML Invalid. Hum... XML parser should have crash", E_USER_ERROR);
 					}
 				}
 			}	else {
-				die("ERROR: Invalid XML. Expecting &lt;/".$this->currentrecord."&gt; element. Found &lt;/$name&gt;");
+				trigger_error("ERROR: Invalid XML. Expecting &lt;/".$this->currentrecord."&gt; element. Found &lt;/$name&gt;", E_USER_ERROR);
 			}
 			break;
 		case "record" :
@@ -544,7 +544,7 @@ class XMLDB
 				}
 				$this->state = "row";
 			} else {
-				die("EROR: XML Invalid. Expecting &lt;/".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;");
+				trigger_error("EROR: XML Invalid. Expecting &lt;/".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;", E_USER_ERROR);
 			}
 			break;
 		case "row" :
@@ -554,7 +554,7 @@ class XMLDB
 					#####$this->state="table";
 					$this->state = "row"; // stay in the row state
 				} else {
-					die("EROR: XML Invalid. Expecting &lt;/".$currenttable.".&gt; element. Found &lt;/$name&gt;");
+					trigger_error("EROR: XML Invalid. Expecting &lt;/".$currenttable.".&gt; element. Found &lt;/$name&gt;", E_USER_ERROR);
 				}
 			} else {
 				if ($name == $this->tables[$currenttable]['rowtag']) {
@@ -564,7 +564,7 @@ class XMLDB
 					$this->_endtable();
 					$this->state = "table";
 				} else {
-					die("EEEROR: XML Invalid. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;");
+					trigger_error("EEEROR: XML Invalid. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; element. Found &lt;/$name&gt;", E_USER_ERROR);
 				}
 			}
 			break;
@@ -586,7 +586,7 @@ class XMLDB
 	{
 		$this->currentrecord = $name;
 		if (!$this->data)
-			die("ERROR: data should be empty here");
+			trigger_error("ERROR: data should be empty here", E_USER_ERROR);
 	}
 	/**
 	 * @access private

@@ -1,7 +1,7 @@
 <?php
 /**
  * Fichier LodelParser
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -35,6 +35,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -48,10 +49,9 @@
 // en general etre ajouter ici
 //
 
-require_once "func.php";
-require_once "balises.php";
-require_once "parser.php";
-
+// require_once "balises.php";
+if(!class_exists('Parser', false))
+	require 'parser.php';
 /**
  * Classe LodelParser
  * 
@@ -69,61 +69,95 @@ require_once "parser.php";
  */
 class LodelParser extends Parser
 {
-	var $filterfunc_loaded = FALSE;
+	/**
+	 * booléen indiquant si l'on a déjà charger le générateur de filtres
+	 * @var bool
+	 */
+	protected $filterfunc_loaded = FALSE;
 	/**
 	 * Tableau associatif concernant le status des textes
 	 *
 	 * @var array
 	 */
-	var $textstatus = array ('-1' => ' traduire', '1' => ' revoir', '2' => 'traduit');
+	protected $textstatus = array ('-1' => ' traduire', '1' => ' revoir', '2' => 'traduit');
 	
 	/**
 	 * Tableau associatif concernant le status associé à la couleur
 	 *
 	 * @var array
 	 */
-	var $colorstatus = array ('-1' => 'red', '1' => 'orange', 2 => 'green');
+	protected $colorstatus = array ('-1' => 'red', '1' => 'orange', 2 => 'green');
 
 	/**
 	 * Liste des langues de la traduction
 	 *
 	 * @var array
 	 */
-	var $translationlanglist = "'fr','en','es','de'";
+	protected $translationlanglist = "'fr','en','es','de'";
 
 	/**
 	 * Nombre de langues disponibles
 	 * Tient compte de la base utilisée
 	 * @var array
 	 */
-	var $nbLangs = array();
+	protected $nbLangs = array();
+
+	/**
+	 * Tableau contenant les VO des classes
+	 */
+	protected $classes = array();
+
+	/**
+	 * Tableau contenant les noms des classes
+	 */
+	protected $classesName = array();
+
+	/**
+	 * Tableau des tables/champs, référence vers $tablefields
+	 */
+	protected $tablefields;
+
+	/** singleton */
+	static public function &getParser()
+	{
+		if(!isset(self::$_instance))
+		{
+			$c = __CLASS__;
+			self::$_instance = new $c;
+		}
+		return parent::getParser();
+	}
 
 	/**
 	 * Constructeur.
 	 */
-	function LodelParser()
+	protected function __construct()
 	{ // constructor
-		$this->Parser();
+		global $db;
+		parent::__construct();
 		$this->commands[] = 'TEXT'; // catch the text
 		$this->variablechar = '@'; // catch the @
 
-		if (DBDRIVER == 'mysql') {
-			$this->codepieces['sqlquery'] = "mysql_query(lq(%s))";
-		}	else { // call the ADODB driver
-			die("DBDRIVER not supported currently for the parser");
-			$this->codepieces['sqlerror'] = "or die($GLOBALS[db]->errormsg())";
-			$this->codepieces['sqlquery'] = "$GLOBALS[db]->execute(%s)";
-			$this->codepieces['sqlfetch'] = '';
+		if (DBDRIVER != 'mysqli' && DBDRIVER != 'mysql') {
+			trigger_error("DBDRIVER not supported by the parser", E_USER_ERROR);
+		}
+
+		require('tablefields.php');
+		$this->tablefields =& $tablefields;
+
+		if($GLOBALS['currentdb'] == $db->database && isset($this->tablefields[$GLOBALS['tp']."classes"]))
+		{
+			$dao = &getDAO("classes");
+			$this->classes = $dao->findMany("status > 0", '', 'class, classtype');
+			foreach ($this->classes as $class) {
+				$this->classesName[] = $class->class;
+			}
 		}
 	}
 
-	function parse_loop_extra(& $tables, & $tablesinselect, & $extrainselect, & $selectparts)
+	protected function parse_loop_extra(& $tables, & $tablesinselect, & $extrainselect, & $selectparts)
 	{
 		global $site, $home, $db;
-		static $tablefields, $classes; // charge qu'une seule fois
-		if (!$tablefields) {
-			require ('tablefields.php');
-		}
 
 		// split the SQL parts into quoted/non-quoted par
 		foreach ($selectparts as $k => $v) {
@@ -145,12 +179,8 @@ class LodelParser extends Parser
 		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
 		#		    ),$where);
 		//
-		if ($GLOBALS['currentdb'] == $db->database && $tablefields[lq("#_TP_classes")]) {
-			if(!$classes) {
-				$dao = &getDAO("classes");
-				$classes = $dao->findMany("status > 0");
-			}
-			foreach ($classes as $class) {
+		if (!empty($this->classes)) {
+			foreach ($this->classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
 				$ind = array_search($class->class, $tables);
@@ -180,7 +210,7 @@ class LodelParser extends Parser
 					$longid = "idperson";
 					break;
 				default :
-					die("ERROR: internal error in lodelparser");
+					trigger_error("ERROR: internal error in lodelparser", E_USER_ERROR);
 				}
 
 				array_push($tables, $class->classtype. " AS ". $alias, typestable($class->classtype). " AS ". $aliastype);
@@ -193,8 +223,7 @@ class LodelParser extends Parser
 				$where[] = "";
 				$extrainselect .= ", ".$aliastype. ".type , ". $aliastype. ".class";
 
-				if (preg_match_sql("/\bparent\b/", $where) && 
-						($class->classtype == "entities" || $class->classtype == "entries")) {
+				if (($class->classtype == "entities" || $class->classtype == "entries") && preg_match_sql("/\bparent\b/", $where)) {
 					array_push($tables, $class->classtype. " AS ". $alias. "_parent");
 					$fullid = $class->classtype == "entries" ? "g_name" : "identifier";
 					preg_replace_sql("/\bparent\b/", $alias. "_parent.".$fullid, $where);
@@ -224,13 +253,17 @@ class LodelParser extends Parser
 		// verifie le status
 		if (!preg_match_sql("/\bstatus\b/i", $where)) { // test que l'element n'est pas a la poubelle
 			foreach ($tables as $table) {
-				list ($table, $alias) = preg_split("/\s+AS\s+/i", $table);
+				$splitted = preg_split("/\s+AS\s+/i", $table);
+				$table = $splitted[0];
+				if(isset($splitted[1]))
+					$alias = $splitted[1];
+				else $alias = null;
 				$realtable = $this->prefixTableName($table);
 				$main = (FALSE === strpos($table, 'lodelmain')) ? false : true;
 				if (!$alias){
 					$alias = $main ? $realtable : $table;
 				}
-				if (!$tablefields[$realtable] || !in_array("status", $tablefields[$realtable]) || $table == "session") {
+				if (!isset($this->tablefields[$realtable]) || !in_array("status", $this->tablefields[$realtable]) || $table == "session") {
 					continue;
 				}
 				// test for ambiguous column name
@@ -239,8 +272,8 @@ class LodelParser extends Parser
 						? '`'.DATABASE."_".$site.'`.'.$alias : $alias;
 				}
 
-				$lowstatus = ($table == "entities") ? '"-64".($GLOBALS[lodeluser][admin] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[lodeluser][groups]."))")' : "-64";
-				$where[count($where) - 1] .= " AND (".$alias.".status>\".(\$GLOBALS[lodeluser][visitor] ? $lowstatus : \"0\").\")";
+				$lowstatus = ($table == "entities") ? '"-64". ($GLOBALS[\'lodeluser\'][\'admin\'] ? "" : "*('.$alias.'.usergroup IN (".$GLOBALS[\'lodeluser\'][\'groups\']."))")' : "-64";
+				$where[count($where) - 1] .= " AND (".$alias.".status>\".(\$GLOBALS['lodeluser']['visitor'] ? $lowstatus : \"0\").\")";
 			}
 		}
 		#  echo "where 2:",htmlentities($where),"<br>";
@@ -258,8 +291,8 @@ class LodelParser extends Parser
 					$where[count($where) - 1] .= " AND ".$table.".idtype=".$typetable.".id";
 				}
 
-				if (in_array($table, $tables) || $aliasbyclasstype[$table])	{
-					if ($aliasbyclasstype[$table]) {
+				if (in_array($table, $tables) || isset($aliasbyclasstype[$table]))	{
+					if (isset($aliasbyclasstype[$table])) {
 						$class = $classbyclasstype[$table];
 						$table = $aliasbyclasstype[$table];
 					}	else {
@@ -287,7 +320,7 @@ class LodelParser extends Parser
 				}
 			}
 
-			if ($aliasbyclasstype['entities'] || in_array("entities", $tables))	{
+			if (isset($aliasbyclasstype['entities']) || in_array("entities", $tables))	{
 				foreach (array ("persons" => "idperson", "entries" => "identry") as $table => $regexp) {
 
 					if (!preg_match_sql("/\b($regexp)\b/", $where)) {
@@ -299,7 +332,7 @@ class LodelParser extends Parser
 					preg_replace_sql("/\b($regexp)\b/", $alias.".id2", $where);
 					$where[count($where) - 1] .= " AND ".$alias.".id1=". ($aliasbyclasstype['entities'] ? $aliasbyclasstype['entities'] : "entities").".id";
 
-					if ($table == "persons" && $classbyclasstype['persons']) { // related table for persons only
+					if ($table == "persons" && isset($classbyclasstype['persons'])) { // related table for persons only
 						$relatedtable = "entities_".$classbyclasstype['persons'];
 						if (!in_array($relatedtable, $tables)) {
 							array_push($tables, $relatedtable);
@@ -329,7 +362,7 @@ class LodelParser extends Parser
 		}
 
 		$selectparts['where'] = lq($selectparts['where']);
-		if (preg_match("/\b(count|min|max|avg|bit_and|bit_or|bit_xor|group_concat|std|stddev|stddev_pop|stddev_samp|sum|var_pop|var_samp|variance)\s*\(/i", $selectparts['select']))
+		if (isset($selectparts['select']) && preg_match("/\b(count|min|max|avg|bit_and|bit_or|bit_xor|group_concat|std|stddev|stddev_pop|stddev_samp|sum|var_pop|var_samp|variance)\s*\(/i", $selectparts['select']))
 			$extrainselect = ""; // group by function
 
 		$extrainselect = lq($extrainselect);
@@ -341,14 +374,15 @@ class LodelParser extends Parser
 	//
 	// Traitement special des variables
 	//
-	function parse_variable_extra($prefix, $varname)
+	public function parse_variable_extra($prefix, $varname)
 	{
 		// VARIABLES SPECIALES
 		if ($prefix == "#") {
 			if ($varname == "GROUPRIGHT") {
-				return '($GLOBALS[lodeluser][admin] || in_array($context[usergroup],explode(\',\',$GLOBALS[lodeluser][groups])))';
+				return '($GLOBALS[\'lodeluser\'][\'admin\'] || in_array($context[\'usergroup\'],explode(\',\',$GLOBALS[\'lodeluser\'][\'groups\'])))';
 			}
-			if (preg_match("/^OPTION[_.]/", $varname)) { // options
+			if(0 === strpos($varname, 'OPTION') && ('.' === $varname{6} || '_' === $varname{6})) {
+			//if (preg_match("/^OPTION[_.]/", $varname)) { // options
 				return "getoption('".strtolower(substr($varname, 7))."')";
 			}
 		}
@@ -372,12 +406,23 @@ class LodelParser extends Parser
 	// d'une loop (DO*)
 	// fonction speciale pour lodel 
 	//
-	function decode_loop_content_extra($balise, & $content, & $options, $tables)
+	protected function decode_loop_content_extra($balise, & $content, & $options, $tables)
 	{
 		global $home;
 
-		$havepublications = in_array("publications", $tables);
-		$havedocuments = in_array("textes", $tables);
+		$filtered = false;
+
+		foreach($tables as $table)
+		{
+			if(in_array($table, $this->classesName))
+			{
+				$filtered = true;
+				break;
+			}
+		}
+
+// 		$havepublications = in_array("publications", $tables);
+// 		$havedocuments = in_array("textes", $tables);
 		//
 		// est-ce qu'on veut le prev et next publication ?
 		//
@@ -387,16 +432,20 @@ class LodelParser extends Parser
 		//    $content["PRE_".$balise]='include_once("$GLOBALS[home]/func.php"); export_prevnextpublication($context);';
 		//  }
 		// les filtrages automatiques
-		if ($havedocuments || $havepublications) {
+		if ($filtered) {
 			$options['sqlfetchassoc'] = 'filtered_mysql_fetch_assoc($context,%s)';
 			if (!$this->filterfunc_loaded){
 				$this->filterfunc_loaded = TRUE;
 				$this->fct_txt .= 'if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");';
 			}
 		}
+		else
+		{
+			$options['sqlfetchassoc'] = null;
+		}
 	}
 
-	function parse_TEXT()
+	protected function parse_TEXT()
 	{
 		$attr = $this->_decode_attributs($this->arr[$this->ind + 1]);
 
@@ -414,16 +463,14 @@ class LodelParser extends Parser
 		$this->arr[$this->ind] = $this->maketext($name, $group, "text");
 	}
 
-	function maketext($name, $group, $tag)
+	protected function maketext($name, $group, $tag)
 	{
 		global $db;
-		static $stmt;
+		static $done = array();
 		$name = strtolower($name);
 		$group = strtolower($group);
 
-		if ($GLOBALS['lodeluser']['editor']) { // cherche si le texte existe
-			if(!defined('DATABASE')) require 'connect.php';
-
+		if ($GLOBALS['lodeluser']['editor'] && !isset($done[$tag][$group][$name])) { // cherche si le texte existe
 			if ($group != "site") {
 				usemaindb();
 				$prefix = lq("#_MTP_");
@@ -431,12 +478,11 @@ class LodelParser extends Parser
 				$prefix = lq("#_TP_");
 			}
 			if(!isset($this->nbLangs[$prefix]))
-				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations") or dberror();
-			if(!isset($stmt[$prefix]))
-				$stmt[$prefix] = $db->prepare("SELECT count(id) as nb FROM {$prefix}texts WHERE name=? AND textgroup=? LIMIT 1");
-			$textexists = $db->execute($stmt[$prefix], array((string)$name, (string)$group));
+				$this->nbLangs[$prefix] = $db->getOne("SELECT count(distinct(lang)) FROM {$prefix}translations");
+
+			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*30, "SELECT count(id) as nb FROM {$prefix}texts WHERE name=? AND textgroup=? LIMIT 1", array((string)$name, (string)$group));
 			if ($db->errorno()) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if ($textexists->fields['nb'] < $this->nbLangs[$prefix]) { 
 				// text does not exists or not available in every langs
@@ -450,6 +496,7 @@ class LodelParser extends Parser
 			if ($group != "site") {
 				usecurrentdb();
 			}
+			$done[$tag][$group][$name] = true;
 		}
 
 		$fullname = $group.'.'.$name;
@@ -467,7 +514,7 @@ class LodelParser extends Parser
 			// modify at the end of the file
 			##$modify=' if ($context[\'lodeluser\'][\'translationmode\'] && !$text) $text=\'@'.strtoupper($name).'\'; ';
 			$modify = "";
-			if (!$this->translationform[$fullname])
+			if (!isset($this->translationform[$fullname]))
 			{ // make the modify form
 				$this->translationform[$fullname] = '<?php mkeditlodeltext("'.$name.'","'.$group.'"); ?>';
 			}
@@ -475,7 +522,7 @@ class LodelParser extends Parser
 		}
 	}
 
-	function parse_after(& $text)
+	protected function parse_after(& $text)
 	{
 		// add the translation system when in translation mode
 		if ($this->translationform) {
@@ -485,8 +532,8 @@ class LodelParser extends Parser
 				return; // no idea what to do...
 			$tf = join("", $this->translationform);
 			$code = <<<PHP
-<?php if (\$context['lodeluser']['translationmode']=="interface") { 
-require_once("translationfunc.php"); mkeditlodeltextJS(); ?>
+<?php if (\$context['lodeluser']['translationmode']=="interface") {
+if(!function_exists('mkeditlodeltextJS')) require("translationfunc.php"); mkeditlodeltextJS(); ?>
 <hr />
 <form method="post" action="index.php">
 <input type="hidden" name="edit" value="1" />
@@ -521,7 +568,7 @@ PHP;
 		}
 
 		// add the code for the desk
-		if (!$GLOBALS['nodesk']) {
+		if (!isset($GLOBALS['nodesk'])) {
 			$deskbegin = <<<PHP
 <?php if (\$GLOBALS['lodeluser']['visitor']) { // insert the desk
 	echo \$this->renderTemplateFile(\$context,"desk","",\$GLOBALS['home']."../tpl/");
@@ -566,13 +613,10 @@ PHP;
 	#function prefixTableNameRef(&$table) { 
 	#  $table2=$this->prefixTableName($table); $table=$table2; // necessaire de passer par table2... sinon ca crash PHP
 	#}
-	function prefixTableName($table)
+	protected function prefixTableName($table)
 	{
 		global $home;
-		static $tablefields;
-		if (!$tablefields) {
-			require ('tablefields.php');
-		}
+		$dbname = $alias = "";
 		$table = str_replace('`', '', $table);
 		if (preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i", $table, $result))	{
 			$table = $result[1];
@@ -588,9 +632,9 @@ PHP;
 
 		$prefixedtable = lq("#_TP_".$table);
 		$mprefixedtable = lq("#_MTP_".$table);
-		if ($tablefields[$prefixedtable] && ($dbname == "" || $dbname == $GLOBALS['currentdb'].".")) {
+		if (isset($this->tablefields[$prefixedtable]) && ($dbname == "" || $dbname == $GLOBALS['currentdb'].".")) {
 			return $prefixedtable.$alias;
-		} elseif ($tablefields[$mprefixedtable] && ($dbname == "" || $dbname == DATABASE.".")) {
+		} elseif (isset($this->tablefields[$mprefixedtable]) && ($dbname == "" || $dbname == DATABASE.".")) {
 			return $mprefixedtable.$alias;
 		} else {
 			return ($dbname ? '`'.substr($dbname, 0, strlen($dbname)-1).'`.'.$table.$alias : $table.$alias);
@@ -598,10 +642,11 @@ PHP;
 
 	}
 
-	function sqlsplit($sql)
+	protected function sqlsplit($sql)
 	{
 		$inquote = false;
 		$inphp = false;
+		$escaped = false;
 		$n = strlen($sql);
 		$arr = array ();
 		$ind = 0;
@@ -622,7 +667,8 @@ PHP;
 				}
 			}
 			$escaped = $c == "\\" && !$escaped;
-			$arr[$ind] .= $c;
+			if(!isset($arr[$ind])) $arr[$ind] = $c;
+			else $arr[$ind] .= $c;
 		}
 		if ($inphp || $inquote) {
 			$this->errmsg("incorrect quoting");
@@ -637,6 +683,7 @@ function protect(& $sql, $table, $fields)
 	foreach ($sql as $k => $v) {
 		$n = count($v);
 		for ($i = 0; $i < $n; $i += 2) {
+			if(!isset($v[$i])) { $sql[$k][$i]=''; continue; }
 			$sql[$k][$i] = preg_replace("/\b(?<!\.)($fields)\b/", "$table.\\1", $v[$i]);
 		}
 	}

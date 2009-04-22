@@ -2,7 +2,7 @@
 /**	
  * Logique des sites
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -63,9 +64,9 @@ class SitesLogic extends Logic
 	/**
 	 * Constructeur
 	 */
-	function SitesLogic()
+	public function __construct()
 	{
-		$this->Logic('sites');
+		parent::__construct('sites');
 	}
 
 	/**
@@ -74,7 +75,7 @@ class SitesLogic extends Logic
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @param string $var le nom de la variable du select
 	 */
-	function makeSelect(&$context, $var)
+	public function makeSelect(&$context, $var)
 	{
 		switch($var) {
 		}
@@ -88,7 +89,7 @@ class SitesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function lockAction(&$context, &$error)
+	public function lockAction(&$context, &$error)
 	{
 		$ret = $this->_lockOrUnlock($context['id'], 'lock');
 		return $ret;
@@ -102,7 +103,7 @@ class SitesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function unlockAction(&$context, &$error)
+	public function unlockAction(&$context, &$error)
 	{
 		$ret = $this->_lockOrUnlock($context['id'],'unlock');
 		return $ret;
@@ -116,7 +117,7 @@ class SitesLogic extends Logic
 	 * @param integer $id identifiant du site
 	 * @param string $action lock ou unlock
 	 */
-	function _lockOrUnlock($id, $action = 'lock')
+	protected function _lockOrUnlock($id, $action = 'lock')
 	{
 		global $db;
 		if(!$id) {
@@ -137,23 +138,24 @@ class SitesLogic extends Logic
 				return '_error';
 			}
 			// delogue tout le monde sauf l'utilisateur courant
-			$db->execute(lq("DELETE FROM #_MTP_session WHERE site='$site' AND iduser!='$iduser'")) or dberror();
+			$db->execute(lq("DELETE FROM #_MTP_session WHERE site='$site' AND iduser!='$iduser'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			// change le statut du site
-			$db->execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE $critere")) or dberror();
+			$db->execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			unlock();
 
 		} else if ($action == 'unlock') { // Déverouillage du site
 
-			$db->execute(lq("UPDATE #_MTP_sites SET status = 1 WHERE $critere")) or dberror();
+			$db->execute(lq("UPDATE #_MTP_sites SET status = 1 WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			//deverouille les tables
 			unlock();
 
 		} else {
-			die();
+			trigger_error('Invalid action', E_USER_ERROR);
 		}
 
 		usecurrentdb();
-		require_once 'cachefunc.php';
+		if(!function_exists('clearcache'))
+			require 'cachefunc.php';
 		clearcache();
 		return '_back';
 	}
@@ -164,7 +166,7 @@ class SitesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('title' => array('text', '+'),
 									'subtitle' => array('text', '+'),

@@ -2,7 +2,7 @@
 /**	
  * Logique des entrées et des personnes
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -29,6 +29,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -40,8 +41,8 @@
  * @version CVS:$Id$
  */
 
-
-require_once 'genericlogic.php';
+if(!class_exists('GenericLogic', false))
+	require 'genericlogic.php';
 
 /**
  * Classe de logique des entrées
@@ -65,9 +66,9 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Constructeur
 	 */
-	function EntriesLogic ($logicname = 'entries')
+	public function __construct($logicname = 'entries')
 	{
-		$this->GenericLogic ($logicname);
+		parent::__construct($logicname);
 		$this->daoname = 'entrytypes';
 		$this->idtype = 'identry';
 	}
@@ -78,11 +79,11 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction (&$context, &$error) 
+	public function viewAction (&$context, &$error) 
 	{
 		if (!$context['id']) $context['status']=32; //why ?
 		$context['classtype']=$this->maintable;
-		return GenericLogic::viewAction ($context, $error); //call the parent method
+		return parent::viewAction ($context, $error); //call the parent method
 	}
 
 
@@ -92,13 +93,13 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function publishAction(&$context, &$error)
+	public function publishAction(&$context, &$error)
 	{
 		global $db;
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->find('id=' . $context['id'], 'status,id');
 		if (!$vo) {
-			die("ERROR: interface error in EntriesLogic::publishAction ");
+			trigger_error("ERROR: interface error in EntriesLogic::publishAction ", E_USER_ERROR);
 		}
 		
 		if ($vo->status <= 0) {
@@ -125,18 +126,15 @@ class EntriesLogic extends GenericLogic
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked ($id, $status = 0)
+	public function isdeletelocked ($id, $status = 0)
 	{
-		/*if ($this->maintable == 'persons') {
-			die("ERROR in EntriesLogic:: function isdeletelocked is not valid for persons logic");
-		}*/
 		global $db;
 
 		// if this entry has child
 		// OR is published AND permanent (status=32)
 		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_" . $this->maintable . " WHERE idparent ".sql_in_array($id)." AND status >-64"));
-		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_" . $this->maintable . " WHERE id='".$id."' AND status=32"));
-		if ($db->errorno())  dberror();
+		$count += $db->getOne(lq("SELECT count(*) FROM #_TP_" . $this->maintable . " WHERE id ".sql_in_array($id)." AND status=32"));
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -150,12 +148,12 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function listAction (&$context, &$error, $clean = false)
+	public function listAction (&$context, &$error, $clean = false)
 	{
 		$daotype = &getDAO ($this->daoname);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
-			die ("ERROR: idtype must me known in GenericLogic::viewAction");
+			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
 		}
 		$this->_populateContext ($votype, $context['type']);
 		return '_ok';
@@ -169,16 +167,13 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction (&$context, &$error, $clean=false) 
+	public function editAction (&$context, &$error, $clean=false) 
 	{
-	if ($this->maintable == 'persons') {
-			die("ERROR in EntriesLogic:: function isdeletelocked is not valid for persons logic");
-		}
 		global $home;
 		$id = $context['id'];
 		$idtype=$context['idtype'];
 		if (!$idtype) {
-			die ("ERROR: internal error in EntriesLogic::editAction");
+			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
 		}
 		$status = $context['status'];
 		// get the class 
@@ -197,7 +192,7 @@ class EntriesLogic extends GenericLogic
 		}
 		$g_index_key = $this->getGenericEquivalent($class,'index key');
 		if (!$g_index_key) {
-			die ("ERROR: The generic field 'index key' is required. Please edit your editorial model.");
+			trigger_error("ERROR: The generic field 'index key' is required. Please edit your editorial model.", E_USER_ERROR);
 		}
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
@@ -237,7 +232,7 @@ class EntriesLogic extends GenericLogic
 			} else {
 				if (!$votype->newbyimportallowed && $context['lo']!="entries") { return "_error"; }
 				$new=true;
-				$vo=$dao->createObject();
+				$vo=&$dao->createObject();
 				$vo->status=$status ? $status : -1;
 			}
 		}
@@ -245,7 +240,7 @@ class EntriesLogic extends GenericLogic
 		if ($votype->flat) {
 			$vo->idparent=0; // force the entry to be at root
 		} else {
-			$vo->idparent=intval($context['idparent']);
+			$vo->idparent=(int)$context['idparent'];
 		}
 		// populate the entry table
 		if ($idtype) $vo->idtype=$idtype;
@@ -273,12 +268,9 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction (&$context, &$error) 
+	public function changeRankAction (&$context, &$error) 
 	{
-		if ($this->maintable == 'persons') {
-			die("ERROR in EntriesLogic:: function changeRankAction is not valid for persons logic");
-		}
-		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
+		return parent::changeRankAction(&$context, &$error, 'idparent', '');
 	}
 
 	/**
@@ -288,11 +280,8 @@ class EntriesLogic extends GenericLogic
 	 * @param string $var le nom de la variable du select
 	 * @param string $edittype le type d'édition
 	 */
-	function makeSelect (&$context, $var) 
+	public function makeSelect (&$context, $var) 
 	{
-		if ($this->maintable == 'persons') {
-			die("ERROR in EntriesLogic:: function makeSelect is not valid for persons logic");
-		}
 		global $db;
 		switch($var) {
 		case 'idparent':
@@ -302,7 +291,7 @@ class EntriesLogic extends GenericLogic
 			$ids=array (0);
 			$l=1;
 			do {
-				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) or dberror();
+				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$ids=array();
 				$i=0;
 				while (!$result->EOF) {
@@ -342,14 +331,14 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référénce
 	 * @access private
 	 */
-	function _prepareDelete($dao, &$context) {
+	protected function _prepareDelete($dao, &$context) {
 		global $db;
 		// get the classes
 		$this->classes = array ();
 
 		// $this->daoname = persontypes OU entrytypes
 		// $this->maintable = persons OU entries
-		$result = $db->execute (lq ("SELECT DISTINCT class FROM #_TP_". $this->daoname . " INNER JOIN #_TP_" . $this->maintable . " ON idtype=#_TP_" . $this->daoname . ".id WHERE #_TP_" .$this->maintable. ".id ".sql_in_array ($context['id']))) or dberror ();
+		$result = $db->execute (lq ("SELECT DISTINCT class FROM #_TP_". $this->daoname . " INNER JOIN #_TP_" . $this->maintable . " ON idtype=#_TP_" . $this->daoname . ".id WHERE #_TP_" .$this->maintable. ".id ".sql_in_array ($context['id']))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		while (!$result->EOF) {
 			$this->classes[] = $result->fields['class'];
@@ -372,7 +361,7 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Used in deleteAction to do extra operation after the object has been deleted (index ET persons)
 	 */
-	function _deleteRelatedTables($id) 
+	protected function _deleteRelatedTables($id) 
 	{
 		global $db;
 		foreach ($this->classes as $class) {

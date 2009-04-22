@@ -52,12 +52,13 @@
  * @version CVS:$Id:
  * @package lodel/source
  */
-require_once 'siteconfig.php';
-require_once 'auth.php';
-require_once 'func.php';
-authenticate();
+require 'siteconfig.php';
+require 'class.errors.php';
 
-require_once 'connect.php';
+try
+{
+require 'auth.php';
+authenticate();
 
 define('TOKENVALID', 24); // tokens lifetime in hours
 define('MAXIDS', 10); // max delivered identifiers
@@ -82,7 +83,7 @@ function getOut($hostname)
 function log_access($hostname, $denied = 0) 
 {
 	global $db;
-	$db->execute(lq("INSERT INTO #_TP_oailogs (host, denied) VALUES ('". $hostname. "','". $denied. "')")) or dberror();
+	$db->execute(lq("INSERT INTO #_TP_oailogs (host, denied) VALUES ('". $hostname. "','". $denied. "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 
@@ -210,7 +211,7 @@ function get_token_info($token)
 	global $db;
 	$result = $db->getrow(lq("SELECT * FROM #_TP_oaitokens WHERE token ='". $token. "'"));
 	if ($result === false) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 	return $result;
 }
@@ -227,7 +228,7 @@ function del_token($token)
 	global $db;
 	$result = $db->execute(lq("DELETE FROM #_TP_oaitokens WHERE token ='". $token. "'"));
 	if ($result === false) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -252,7 +253,7 @@ function insert_token($token, $where, $metadataprefix, $deliveredrecords, $expir
 	$result = $db->execute(lq($q));
 
 	if ($result === false) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -268,7 +269,7 @@ function clean_expired_tokens()
 	global $db;
 	$result = $db->execute(lq("DELETE FROM #_TP_oaitokens WHERE expirationdatetime < ". date('YmdHis', time() - (TOKENVALID*3600))));
 	if ($result === false) {
-		dberror();
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -311,7 +312,6 @@ function dc_rename($str)
  */
 function strip_set($str)
 {
-	require_once 'func.php';
 	$str = makeSortKey($str);
 	return preg_replace("/[^a-zA-Z0-9_.!~*\'()]/", "_", $str);
 }
@@ -336,7 +336,7 @@ function get_dc_description($id)
 		$field = $id_class_fields[$id]['dc.description'];
 		$result =$db->getOne(lq("SELECT $field FROM $class_table WHERE identity = '$id'"));
 		if ($result===false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
   }
   return $result;
@@ -365,7 +365,7 @@ function get_dc_description($id)
 		$field = $id_class_fields[$id]['dc.language'];
 		$result = $db->getone(lq("SELECT $class_table.$field FROM $class_table WHERE $class_table.identity = $id"));
 		if ($result===false) {
-			dberror();
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
   }
   return $result;
@@ -445,7 +445,7 @@ function verbs_processing()
 				$query = "SELECT  #_TP_entities.id FROM #_entitiestypesjoin_ WHERE ".$context[oai_where];
 				$result =$db->execute(lq($query));
 				if ($result === false) {
-					dberror();
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 				$context['oai_nbtot'] = $result->RowCount();
 
@@ -472,7 +472,7 @@ function verbs_processing()
 				$query .= " LIMIT ". $context['oai_offset'].", $MAX";
 				$result =$db->execute(lq($query));
 				if ($result === false) {
-					dberror();
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 
 				$deliveredrecords += $result->RowCount();
@@ -569,7 +569,7 @@ function check_records ()
 
 			$result =$db->execute(lq("SELECT id FROM #_TP_entities, #_TP_relations WHERE id2 = '".substr($args['set'], 4)."'"));
 			if ($result === false) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 
 			while (!$result->EOF) {		
@@ -724,7 +724,7 @@ $context['oai_maxrecords'] = MAXRECORDS;
  */
 $result = $db->execute(lq("SELECT #_TP_entities.id FROM #_entitiestypesjoin_ WHERE #_TP_entities.idtype = #_TP_types.id AND #_TP_types.oaireferenced = 1"));
 if ($result === false) {
-	dberror();
+	trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 while (!$result->EOF) {
@@ -736,7 +736,6 @@ while (!$result->EOF) {
 if(!$context['oai_ids']) {
 	$errors .= oai_error('noRecordsMatch');
 	header("Content-type: application/xml");
-	require_once('func.php');
 	echo _indent($oai_open. $errors. $oai_close);
 	exit;
 }
@@ -757,7 +756,7 @@ $result = $db->execute(lq("SELECT #_TP_entities.id, #_TP_types.class, #_TP_table
   AND #_TP_types.oaireferenced = '1'
   AND #_TP_entities.idtype = #_TP_types.id"));
 if ($result === false) {
-	dberror();
+	trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 while (!$result->EOF) {
@@ -823,7 +822,6 @@ verbs_processing();
  */
 if(isset($errors)) {
 	header("Content-type: application/xml");
-	require_once('func.php');
 	echo _indent($oai_open.$errors.$oai_close);
   exit;
 }
@@ -846,8 +844,8 @@ $context['oai_responsedate'] = gmstrftime('%Y-%m-%dT%TZ', time());
  */
 
 $base = 'oai20';
-
-require_once 'view.php';
+if(!class_exists('View', false))
+	require 'view.php';
 $view = &View::getView();
 //$view->renderCached($context,$base);
 $view->render($context, $base);
@@ -860,7 +858,10 @@ $view->render($context, $base);
  */
 
 clean_expired_tokens();
-
-
-
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

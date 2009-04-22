@@ -2,7 +2,7 @@
 /**	
  * Logique des groupes de champs
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -61,8 +62,8 @@ class TablefieldgroupsLogic extends Logic {
 
 	/** Constructor
 	*/
-	function TablefieldgroupsLogic() {
-		$this->Logic("tablefieldgroups");
+	public function __construct() {
+		parent::__construct("tablefieldgroups");
 	}
 
 	/**
@@ -77,12 +78,11 @@ class TablefieldgroupsLogic extends Logic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
-
+	public function isdeletelocked($id,$status=0) 
 	{
 		global $db;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_tablefields WHERE idgroup='$id' AND status>-64"));
-		if ($db->errorno())  dberror();
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -98,9 +98,9 @@ class TablefieldgroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'class');
+		return parent::changeRankAction(&$context, &$error, 'class');
 	}
 
 	// begin{publicfields} automatic generation  //
@@ -109,7 +109,7 @@ class TablefieldgroupsLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('name' => array('text', '+'),
 									'class' => array('class', '+'),
@@ -125,7 +125,7 @@ class TablefieldgroupsLogic extends Logic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('name', 'class'), );
 	}
@@ -133,13 +133,4 @@ class TablefieldgroupsLogic extends Logic {
 
 
 } // class 
-
-
-/*-----------------------------------*/
-/* loops                             */
-
-
-
-
-
 ?>

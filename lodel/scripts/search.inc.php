@@ -40,10 +40,7 @@
 
 function search(&$context, $funcname, $arguments)
 {
-
-	require_once ("dao.php");
 	global $db;
-	require_once ("func.php");
 	if (!$context['query'])
 		return;
 	$query = $context['query'];
@@ -116,7 +113,7 @@ function search(&$context, $funcname, $arguments)
 		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
 		#echo "hey :".$sql;
 		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);
-		$result = $db->execute($sql) or dberror();
+		$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$we_temp = array ();
 		while (!$result->EOF) {
 			$row = $result->fields;
@@ -242,10 +239,8 @@ function _array_slice_key($array, $offset, $len = -1)
  * Results page script - Lodel part
  * 
  */
-include_once ("connect.php");
-require_once ("func.php");
-
-require_once "view.php";
+if(!class_exists('View', false))
+	require "view.php";
 $view = &View::getView();
 $base = "search";
 extract_post($_GET);

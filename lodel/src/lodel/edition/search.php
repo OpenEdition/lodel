@@ -44,9 +44,19 @@
  */
 define('backoffice', true);
 require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
 require 'auth.php';
 authenticate(LEVEL_VISITOR);
 
 $class = 'search';
-include 'search.inc.php';
+require 'search.inc.php';
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

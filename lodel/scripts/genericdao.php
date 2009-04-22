@@ -2,7 +2,7 @@
 /**
  * Fichier de la classe GenericDAO
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -35,6 +35,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -67,9 +68,9 @@ class genericDAO extends DAO
 	 * @param string $table la table SQL de la DAO
 	 * @param string $idfield Indique le nom du champ identifiant
 	 */
-	function genericDAO($table, $idfield)
+	public function __construct($table, $idfield)
 	{
-		$this->DAO($table, false, $idfield); // create the class
+		parent::__construct($table, false, $idfield); // create the class
 	}
 
 	/**
@@ -79,7 +80,7 @@ class genericDAO extends DAO
 	 *
 	 * @param object &$vo l'objet virtuel qui sera instancié
 	 */
-	function instantiateObject(&$vo)
+	public function instantiateObject(&$vo)
 	{
 		static $def;
 		$classname = $this->table."VO";
@@ -96,7 +97,7 @@ class genericDAO extends DAO
 	 * @param string $access l'accès pour lequel on veut les droits
 	 * @return Retourne une chaîne vide.
 	 */
-	function _rightscriteria($access)
+	protected function _rightscriteria($access)
 	{
 		return '';
 	}

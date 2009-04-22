@@ -65,7 +65,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	global $db;
 	static $tmpdir;
 	static $masks = array();
-	require_once 'fieldfunc.php';
+
 	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
@@ -93,7 +93,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			
 			if(isset($masks[$context['class']][$name]['lodel'])) {
 				$ret = @preg_match($masks[$context['class']][$name]['lodel'], $text);
-				if(FALSE === $ret) die('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.');
+				if(FALSE === $ret) trigger_error('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.', E_USER_ERROR);
 				// doesn't validate mask
 				if(0 === $ret) return 'mask: '.getlodeltextcontents('field_doesnt_match_mask', 'common').' ("'.htmlentities($masks[$context['class']][$name]['user']).'")';
 			}
@@ -115,6 +115,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
+		if(!function_exists('reservedword'))
+			require 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql'; // if the class is a reservedword -> error
 		}
@@ -124,7 +126,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
-		require_once 'fieldfunc.php';
+		if(!function_exists('reservedword'))
+			require 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql';
 		}
@@ -134,7 +137,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-z0-9]{2,}$/", $text)) {
 			return $type;
 		}
-		require_once 'fieldfunc.php';
+		if(!function_exists('reservedword'))
+			require 'fieldfunc.php';
 		if (reservedword($text))
 			return 'reservedsql';
 		break;
@@ -193,7 +197,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'date' :
-		require_once 'date.php';
+		if(!function_exists('mysqldatetime'))
+			require 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -205,12 +210,13 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			if ($dt) {
 				$text = $dt;
 			} else {
-				die("ERROR: default value not a date or time: \"$default\"");
+				trigger_error("ERROR: default value not a date or time: \"$default\"", E_USER_ERROR);
 			}
 		}
 		break;
 	case 'datetime' :
-		require_once 'date.php';
+		if(!function_exists('mysqldatetime'))
+			require 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -222,12 +228,13 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			if ($dt) {
 				$text = $dt;
 			} else {
-				die("ERROR: default value not a date or time: \"$default\"");
+				trigger_error("ERROR: default value not a date or time: \"$default\"", E_USER_ERROR);
 			}
 		}
 		break;
 	case 'time' : 
-		require_once 'date.php';
+		if(!function_exists('mysqldatetime'))
+			require 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -239,15 +246,15 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			if ($dt) {
 				$text = $dt;
 			} else {
-				die("ERROR: default value not a date or time: \"$default\"");
+				trigger_error("ERROR: default value not a date or time: \"$default\"", E_USER_ERROR);
 			}
 		}
 		break;
 	case 'int' :
 		if ((!isset ($text) || $text === "") && $default !== "") {
-			$text = intval($default);
+			$text = (int)$default;
 		}
-		if (isset ($text) && (!is_numeric($text) || intval($text) != $text)) {
+		if (isset ($text) && (!is_numeric($text) || (int)$text != $text)) {
 			return 'int';
 		}
 		break;
@@ -274,7 +281,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if ($text) {
 			$parsedurl = @parse_url($text);
 			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
-				return 'url';
+	//			return 'url';
 			}
 		}
 		break;
@@ -330,8 +337,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		global $authorizedFiles; // white list dispo dans le lodelconfig.php
 		// on récupère l'extension du fichier	
-   		$extension = explode(".", $_FILES['data']['name'][$name][$text['radio']]);
-		$extension = ".".$extension[count($extension)-1];
+		$extension = strtolower(strrchr($_FILES['data']['name'][$name][$text['radio']],'.'));
 		// on évite la possibilité d'uploader des fichiers non désirés
 		if($text['radio'] == 'upload' && !in_array($extension, $authorizedFiles)) {
 			return $text['radio'];
@@ -354,8 +360,6 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				unset ($text);
 				return 'upload';
 			}
-			
-			require_once 'func.php';
 
 			if (!empty($directory)) {
 				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
@@ -377,9 +381,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			return true;
 		case 'serverfile' :
 			// check if the tmpdir is defined
-			require_once 'func.php';
-			
-				if (!empty($directory)) {
+			if (!empty($directory)) {
 				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
 				$text = basename($text['localfilename']);
 				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);
@@ -412,11 +414,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				$directory= str_replace('/', '\/', $directory);//echo $directory;
 				
 				if (!preg_match("/^$directory\/[^\/]+$/", $text)) {
-					die("ERROR: invalid filename of type $type");
+					trigger_error("ERROR: invalid filename of type $type", E_USER_ERROR);
 				}
 			} else {
 				if (!preg_match("/^docannexe\/(image|file|fichier)\/[^\.\/]+\/[^\/]+$/", $text)) {
-					die("ERROR: invalid filename of type $type");
+					trigger_error("ERROR: invalid filename of type $type", E_USER_ERROR);
 				}
 			}
 			if ($filetodelete) {
@@ -426,7 +428,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 			return true;
 		default :
-			die("ERROR: unknow radio value for $name");
+			trigger_error("ERROR: unknow radio value for $name", E_USER_ERROR);
 		} // switch
 	default :
 		return false; // pas de validation

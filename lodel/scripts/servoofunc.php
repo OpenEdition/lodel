@@ -30,8 +30,8 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-
-require_once("servooclient.php");
+if(!class_exists('ServOO_Client', false))
+	require("servooclient.php");
 
 class ServOO extends ServOO_Client {
 	
@@ -60,10 +60,14 @@ class ServOO extends ServOO_Client {
 			}
 			
 			// proxy
-			if (!$this->options['servoo.proxyhost']) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'];
-			if ($this->options['servoo.proxyhost']) {
-				if (!$this->options['servoo.proxyport']) $this->options['servoo.proxyport']=$GLOBALS['proxyport'];
-				if (!$this->options['servoo.proxyport']) $this->options['servoo.proxyport']="8080";
+			if (empty($this->options['servoo.proxyhost']) && !empty($GLOBALS['proxyhost'])) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'];
+			if (!empty($this->options['servoo.proxyhost'])) {
+				if (empty($this->options['servoo.proxyport'])) 
+				{
+					if(!empty($GLOBALS['proxyport']))
+						$this->options['servoo.proxyport']=$GLOBALS['proxyport'];
+					else $this->options['servoo.proxyport']="8080";
+				}
 			}
 		}
 			
@@ -87,10 +91,14 @@ class ServOO extends ServOO_Client {
 		}
 
 		// proxy
-		if (!$this->options['servoo.proxyhost']) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'.$i];
-		if ($this->options['servoo.proxyhost']) {
-			if (!$this->options['servoo.proxyport']) $this->options['servoo.proxyport']=$GLOBALS['proxyport'.$i];
-			if (!$this->options['servoo.proxyport']) $this->options['servoo.proxyport']="8080";
+		if (empty($this->options['servoo.proxyhost']) && !empty($GLOBALS['proxyhost'.$i])) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'.$i];
+		if (!empty($this->options['servoo.proxyhost'])) {
+			if (empty($this->options['servoo.proxyport'])) 
+			{
+				if(!empty($GLOBALS['proxyport'.$i]))
+					$this->options['servoo.proxyport']=$GLOBALS['proxyport'.$i];
+				else $this->options['servoo.proxyport']="8080";
+			}
 		}
 		if(!empty($this->options['servoo.url']) && !empty($this->options['servoo.username']) && !empty($this->options['servoo.passwd'])) {
 			$this->error_message = "";

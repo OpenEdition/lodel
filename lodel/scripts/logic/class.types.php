@@ -2,7 +2,7 @@
 /**	
  * Logique des types
  *
- * PHP versions 4 et 5
+ * PHP versions 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -38,19 +39,6 @@
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
-
-
-/*$GLOBALS['importdocument']=array(
-				 0=>array("url"=>"document.php",
-					  "title"=>"[@COMMON.FORM]"),
-
-				 1=>array("url"=>"oochargement.php",
-					  "title"=>"[@COMMON.IMPORT_FROM_SERVOO]")
-
-				 //				 100=>array("url"=>"biblioimport.php",
-				 //					    "titre"=>"BibImport")
-				 );*/
-
 
 /**
  * Classe de logique des types
@@ -72,8 +60,8 @@ class TypesLogic extends Logic {
 
 	/** Constructor
 	*/
-	function TypesLogic() {
-		$this->Logic("types");
+	public function __construct() {
+		parent::__construct("types");
 	}
 
 
@@ -83,8 +71,7 @@ class TypesLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context,&$error)
-
+	public function viewAction(&$context,&$error)
 	{
 		if ($error) return;
 		if (!$context['id']) {
@@ -96,7 +83,7 @@ class TypesLogic extends Logic {
 			return "_ok";
 		}
 
-		return Logic::viewAction($context,$error);
+		return parent::viewAction($context,$error);
 	}
 
 	/**
@@ -111,12 +98,11 @@ class TypesLogic extends Logic {
 	* @param integer $status status de l'objet
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
-	function isdeletelocked($id,$status=0) 
-
+	public function isdeletelocked($id,$status=0) 
 	{
 		global $db;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE idtype='$id' AND status>-64"));
-		if ($db->errorno())  dberror();
+		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
 			return false;
 		} else {
@@ -132,10 +118,9 @@ class TypesLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
-
+	public function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'class');
+		return parent::changeRankAction(&$context, &$error, 'class');
 	}
 
 
@@ -143,16 +128,10 @@ class TypesLogic extends Logic {
 		*
 		*/
 
-	function makeSelect(&$context,$var)
-
+	public function makeSelect(&$context,$var)
 	{
 		switch($var) {
 		case "import" :
-			/* foreach($GLOBALS['importdocument'] as $n=>$v) {
-			#echo "bla :".strpos($v['title'],"[@"); 
-	$arr[]=strpos($v['title'],"[@")!==false ? getlodeltextcontents($v['title']) : $v['title']; 
-			}*/
-			#	print_r($arr);
 			$arr[] = getlodeltextcontents('form','common');
 			$arr[] = getlodeltextcontents('import_from_servoo','common');
 			renderOptions($arr,$context['import']);
@@ -173,7 +152,8 @@ class TypesLogic extends Logic {
 			renderOptions($arr,$context['creationstatus']);
 			break;
 		case 'gui_user_complexity' :
-			require_once 'commonselect.php';
+			if(!function_exists('makeSelectGuiUserComplexity'))
+				require("commonselect.php");
 			makeSelectGuiUserComplexity($context['gui_user_complexity']);
 			break;
 		}
@@ -194,27 +174,24 @@ class TypesLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	function _saveRelatedTables($vo,$context) 
-
+	protected function _saveRelatedTables($vo,$context) 
 	{
-		require_once("typetypefunc.php");
+		if(!function_exists('typetype_delete'))
+			require("typetypefunc.php");
 
 		if ($context['id']) {
-			//typetype_delete("entrytype","identitytype='".$context['id']."'");
-			//typetype_delete("persontype","identitytype='".$context['id']."'");
 			typetype_delete("entitytype","identitytype='".$context['id']."'");
 		}
-		//typetype_insert($vo->id,$context['entrytype'],"entrytype");
-		//typetype_insert($vo->id,$context['persontype'],"persontype");
 		typetype_insert($vo->id,$context['entitytype'],"entitytype2");
 	}
 
 
 
-	function _deleteRelatedTables($id) {
+	protected function _deleteRelatedTables($id) {
 		global $home;
 
-		require_once("typetypefunc.php"); 
+		if(!function_exists('typetype_delete'))
+			require("typetypefunc.php");
 		$criteria="(identitytype ".sql_in_array($id)." OR identitytype2 ".sql_in_array($id).")";
 		typetype_delete("entitytype",$criteria);
 	}
@@ -227,7 +204,7 @@ class TypesLogic extends Logic {
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array('type' => array('type', '+'),
 									'title' => array('text', '+'),
@@ -253,7 +230,7 @@ class TypesLogic extends Logic {
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	function _uniqueFields() 
+	protected function _uniqueFields() 
 	{ 
 		return array(array('type', 'class'), );
 	}
@@ -266,26 +243,10 @@ class TypesLogic extends Logic {
 /*-----------------------------------*/
 /* loops                             */
 
-
-//function loop_persontypes($context,$funcname)
-//{ require_once("typetypefunc.php"); 
-//  loop_typetable ("persontype","entitytype",$context,$funcname,$_POST['edit'] ? $context['persontype'] : -1);}
-//
-//function loop_entrytypes($context,$funcname)
-//{ require_once("typetypefunc.php"); 
-//  loop_typetable ("entrytype","entitytype",$context,$funcname,$_POST['edit'] ? $context['entrytype'] : -1);}
-
-
 function loop_entitytypes($context,$funcname)
-{ require_once("typetypefunc.php"); 
-	#loop_typetable ("entitytype2","entitytype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
-
-loop_typetable ("entitytype2","entitytype",$context,$funcname,$context['entitytype']);
+{ 
+	if(!function_exists('loop_typetable'))
+		require ("typetypefunc.php"); 
+	loop_typetable ("entitytype2","entitytype",$context,$funcname,$context['entitytype']);
 }
-
-
-
-
-
-
 ?>

@@ -46,13 +46,22 @@
  */
 
 require 'siteconfig.php';
-require_once 'auth.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 authenticate();
 
-require_once 'view.php';
-require_once 'textfunc.php';
+require 'view.php';
 
 $view = &View::getView();
 $view->renderCached($context, 'backend');
 exit;
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

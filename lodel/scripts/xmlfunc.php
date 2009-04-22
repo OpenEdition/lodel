@@ -159,7 +159,7 @@ function loop_fields_values(& $context, $funcname)
 {
 	global $error;
 	global $db;
-	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or dberror();
+	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	$haveresult = $result->NumRows() > 0;
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);

@@ -383,7 +383,7 @@ class XMLImportParser
 				}
 				break;
 			default :
-				die("ERROR: internal error in XMLImportParser::parse. Unknown class $class");
+				trigger_error("ERROR: internal error in XMLImportParser::parse. Unknown class $class", E_USER_ERROR);
 		}
 	} //end of _parse_step_one
 
@@ -400,9 +400,8 @@ class XMLImportParser
 	function _init_class($class, $criteria = '')
 	{
 		global $phpversion;
-		if ($phpversion[0]<=4) { // pour pouvoir utiliser clone en php5
-			require_once 'php4.inc.php';
-		}
+// 		if(!function_exists('clone')) // pour pouvoir utiliser clone en php5
+// 			require 'php4.inc.php';
 	
 		if ($this->contextstyles[$class])
 			return; // already done
@@ -470,7 +469,7 @@ class XMLImportParser
 			$opening = $arr[$i] != "/";
 			if ($opening) { // opening tag
 				if (!preg_match("/class=\"([^\"]*)\"/", $arr[$i +1], $result))
-					die("ERROR: in _objectize");
+					trigger_error("ERROR: in _objectize", E_USER_ERROR);
 				$name = preg_replace("/\W/", "", makeSortKey($result[1]));
 				$obj = & $this->commonstyles[$blockstyle ? $name : ".".$name];
 				if ($obj) {
@@ -487,7 +486,7 @@ class XMLImportParser
 		if ($stylesstack) {
 			print_r($arr);
 			print_r($stylesstack);
-			die("ERROR: XML is likely invalid in XMLImportParser::_objectize");
+			trigger_error("ERROR: XML is likely invalid in XMLImportParser::_objectize", E_USER_ERROR);
 		}
 	}
 } // end of class XMLImportParser

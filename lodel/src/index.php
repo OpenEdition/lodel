@@ -54,68 +54,80 @@
  * @version CVS:$Id:
  * @package lodel/source
  */
-
 require 'siteconfig.php';
 // vérifie l'intégrité de l'url demandée
 if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/(index|signaler|backend|logout|oai|search)(\d*)\.$extensionscripts(\?[^\/]*)?(\/.*)$/", $_SERVER['REQUEST_URI'])>0) {
-	header("HTTP/1.0 403 Bad Request");
-	header("Status: 403 Bad Request");
+	header("HTTP/1.0 400 Bad Request");
+	header("Status: 400 Bad Request");
 	header("Connection: Close");
 	include "../missing.html";
 	exit;
 }
-//gestion de l'authentification
-require 'auth.php';
-authenticate();
-// record the url if logged
-if ($lodeluser['rights'] >= LEVEL_VISITOR) {
-	recordurl();
-}
 
-if (!empty($_POST)) {
-	$request = &$_POST;
-} else {
-	$request = &$_GET;
-}
+require 'class.errors.php';
 
-$request['idtype'] = (isset($_POST['idtype']) ? intval($_POST['idtype']) : intval($_GET['idtype']));
-$request['do'] = ($_POST['do'] ? $_POST['do'] : $_GET['do']);
-$request['tpl'] = 'index'; // template by default.
-$request['url_retour'] = isset($url_retour) ? strip_tags($url_retour) : null;
-// GET ONLY
-$request['id'] = intval($_GET['id']);
-$request['identifier'] = isset($_GET['identifier']) ? $_GET['identifier'] : null;
-$request['file'] = isset($_GET['file']) ? true : false;
-$request['page'] = isset($_GET['page']) ? $_GET['page'] : null;
-// POST ONLY
-$request['login'] = isset($_POST['login']) ? $_POST['login'] : null;
-$request['passwd'] = isset($_POST['passwd']) ? $_POST['passwd'] : null;
-
-if ($request['do']) {
-	if ($request['do'] == 'edit' || $request['do'] == 'view') {
-		// check for the right to change this document
-		if (!$request['idtype']) {
-			die('ERROR: idtype must be given');
-		}
-
-		require 'dao.php';
-		$dao = &getDAO('types');
-		$vo = $dao->find("id='{$request['idtype']}' and public>0 and status>0");
-		if (!$vo) {
-			die("ERROR: you are not allowed to add this kind of document");
-		}
-
-		$lodeluser['rights']  = LEVEL_EDITOR; // grant temporary
-		$lodeluser['editor']  = 1;
-		$context['lodeluser'] = $lodeluser;
-		$accepted_logic = array('entities_edition');
-		$called_logic = 'entities_edition';
-	} else {
-		die('ERROR: unknown action');
+try
+{
+	//gestion de l'authentification
+	require 'auth.php';
+	authenticate();
+	// record the url if logged
+	if ($lodeluser['rights'] >= LEVEL_VISITOR) {
+		recordurl();
 	}
-}
+	
+	if (!empty($_POST)) {
+		$request = &$_POST;
+	} else {
+		$request = &$_GET;
+	}
 
-require 'controler.php';
-$controler = new controler(isset($accepted_logic) ? $accepted_logic : array(), isset($called_logic) ? $called_logic : '', $request);
-exit();
+	$request['idtype'] = (isset($_POST['idtype']) ? $_POST['idtype'] : $_GET['idtype']);
+	$request['idtype'] = (int)$request['idtype'];
+	$request['do'] = ($_POST['do'] ? $_POST['do'] : $_GET['do']);
+	$request['tpl'] = 'index'; // template by default.
+	$request['url_retour'] = isset($url_retour) ? strip_tags($url_retour) : null;
+	// GET ONLY
+	$request['id'] = (int)$_GET['id'];
+	$request['identifier'] = isset($_GET['identifier']) ? $_GET['identifier'] : null;
+	$request['file'] = isset($_GET['file']) ? true : false;
+	$request['page'] = isset($_GET['page']) ? $_GET['page'] : null;
+	$request['format'] = isset($_GET['format']) ? $_GET['format'] : null;
+	// POST ONLY
+	$request['login'] = isset($_POST['login']) ? $_POST['login'] : null;
+	$request['passwd'] = isset($_POST['passwd']) ? $_POST['passwd'] : null;
+	
+	if ($request['do']) {
+		if ($request['do'] == 'edit' || $request['do'] == 'view') {
+			// check for the right to change this document
+			if (!$request['idtype']) {
+				trigger_error('ERROR: idtype must be given', E_USER_ERROR);
+			}
+	
+			require 'dao.php';
+			$dao = &getDAO('types');
+			$vo = $dao->find("id='{$request['idtype']}' and public>0 and status>0");
+			if (!$vo) {
+				trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
+			}
+	
+			$lodeluser['rights']  = LEVEL_EDITOR; // grant temporary
+			$lodeluser['editor']  = 1;
+			$context['lodeluser'] = $lodeluser;
+			$accepted_logic = array('entities_edition');
+			$called_logic = 'entities_edition';
+		} else {
+			trigger_error('ERROR: unknown action', E_USER_ERROR);
+		}
+	}
+	
+	require 'controller.php';
+	$controler = new controller(isset($accepted_logic) ? $accepted_logic : array(), isset($called_logic) ? $called_logic : '', $request);
+	exit();
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

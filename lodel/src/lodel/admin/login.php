@@ -43,16 +43,18 @@
  * @package lodel/source/lodel/admin
  */
 define('backoffice', true);
-require_once 'siteconfig.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 
 $url_retour = strip_tags($url_retour);
 
 if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
-	require_once 'func.php';
 	extract_post();
-	require_once 'connect.php';
-	require_once 'loginfunc.php';
+	require 'loginfunc.php';
 	unset($retour);
 	$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
 	if($retour === "error_passwd") {
@@ -73,10 +75,8 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 		}
 	}
 } elseif ($_POST['login']) {
-	require_once 'func.php';
 	extract_post();
-	require_once 'connect.php';
-	require_once 'loginfunc.php';
+	require 'loginfunc.php';
 	do {
 		$currentSite = $site;
 		if (!check_auth($context['login'], $context['passwd'], $site)) {
@@ -112,7 +112,6 @@ if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
 	} while (0);
 }
 
-require_once 'connect.php';
 $context['passwd'] = $passwd = 0;
 // variable: sitebloque
 /*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
@@ -128,8 +127,13 @@ $context['url_retour']      = $url_retour;
 $context['error_timeout']   = $error_timeout;
 $context['error_privilege'] = $error_privilege;
 
-
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->render($context, 'login');
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

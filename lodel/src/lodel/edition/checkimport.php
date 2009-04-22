@@ -44,17 +44,20 @@
  */
 
 define('backoffice', true);
-require_once 'siteconfig.php';
-require_once 'auth.php';
+require 'siteconfig.php';
+require 'class.errors.php';
+
+try
+{
+require 'auth.php';
 authenticate(LEVEL_REDACTOR);
 
-require_once 'func.php';
-require_once 'taskfunc.php';
-require_once 'xmlimport.php';
-require_once 'class.checkImportHandler.php';
+require 'taskfunc.php';
+require 'xmlimport.php';
+require 'class.checkImportHandler.php';
 $task              = gettask($idtask);
 $context['idtask'] = $idtask;
-$context['reload'] = intval($_GET['reload']);
+$context['reload'] = (bool)$_GET['reload'];
 gettypeandclassfromtask($task, $context);
 
 $textorig = $text = file_get_contents($task['fichier']);
@@ -67,9 +70,13 @@ $parser->parse($text, $handler);
 $context['tablecontents'] = $handler->contents();
 $context['multidoc']      = $handler->multidoc;
 
-require_once 'view.php';
+require 'view.php';
 $view = &View::getView();
 $view->render($context, 'checkimport');
-
-
+}
+catch(Exception $e)
+{
+	echo $e->getContent();
+	exit();
+}
 ?>

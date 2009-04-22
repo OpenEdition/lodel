@@ -2,7 +2,7 @@
 /**	
  * Logique des entités
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -27,6 +27,7 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -62,14 +63,14 @@ class EntitiesLogic extends Logic
 	/**
 	* generic equivalent assoc array
 	*/
-	var $g_name;
+	public $g_name;
 
 	/**
 	 * Constructor
 	 */
-	function EntitiesLogic()
+	public function __construct()
 	{
-		$this->Logic("entities");
+		parent::__construct("entities");
 	}
 
 
@@ -79,9 +80,9 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context, &$error)
+	public function viewAction(&$context, &$error)
 	{
-		die("EntitiesLogic::viewAction");
+		trigger_error("EntitiesLogic::viewAction", E_USER_ERROR);
 	}
 
 
@@ -91,10 +92,10 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error)
 	{
 		global $db;
-		$id  = intval($context['id']);
+		$id  = (int)$context['id'];
 		$dao = $this->_getMainTableDAO();
 		$vo  = $dao->getById($id,"idparent");
 		$this->_changeRank($id,$context['dir'], "status<64 AND idparent='". $vo->idparent. "'");
@@ -111,9 +112,9 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction(&$context,&$error)
+	public function editAction(&$context,&$error)
 	{
-		die("EntitiesLogic::editAction");
+		trigger_error("EntitiesLogic::editAction", E_USER_ERROR);
 	}
 
 
@@ -123,14 +124,14 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function massAction(&$context,&$error)
+	public function massAction(&$context,&$error)
 	{
 		if (!$context['entity']) {
 			return "_back";
 		}
 		$context['id'] = array();
 		foreach(array_keys($context['entity']) as $id) {
-			$context['id'][] = intval($id);
+			$context['id'][] = (int)$id;
 		}
 
 		if ($context['delete']) {
@@ -152,17 +153,17 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function deleteAction(&$context, &$error)
+	public function deleteAction(&$context, &$error)
 	{
 		global $db;
 		// get the entities to modify and ancillary information
-		if (!rightonentity("delete",$context)) die("ERROR: you don't have the right to perform this operation");
+		if (!rightonentity("delete",$context)) trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		$this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
 		if (!$ids) {
 			return '_back';
 		}
 		if ($lockedids)  {
-			die("ERROR: some entities are locked in the family. No operation is allowed");
+			trigger_error("ERROR: some entities are locked in the family. No operation is allowed", E_USER_ERROR);
 		}
 
 		// needs confirmation ?
@@ -178,17 +179,17 @@ class EntitiesLogic extends Logic
 
 		// delete in the joint table
 		foreach(array_keys($classes) as $class) {
-			$db->execute(lq("DELETE FROM #_TP_$class WHERE identity ".sql_in_array($ids))) or dberror();
+			$db->execute(lq("DELETE FROM #_TP_$class WHERE identity ".sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 
 		// delete the relations
 		$this->_deleteSoftRelation($ids);
 
 		// delete other relations
-		$db->execute(lq("DELETE FROM #_TP_relations WHERE id1 ".sql_in_array($ids)." OR id2 ".sql_in_array($ids))) or dberror();
+		$db->execute(lq("DELETE FROM #_TP_relations WHERE id1 ".sql_in_array($ids)." OR id2 ".sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		// delete the entity from the search_engine table
-		$db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity ".sql_in_array($ids))) or dberror();
+		$db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity ".sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		update();
 		return '_back';
@@ -205,16 +206,16 @@ class EntitiesLogic extends Logic
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
 
-	function publishAction (&$context, &$error) 
+	public function publishAction (&$context, &$error) 
 	{
 		global $db;
-		$status = intval ($context['status']);
+		$status = (int)$context['status'];
 		$this->_isAuthorizedStatus($status);
 		if ($status == 0) {
-			die ("error in publishAction");
+			trigger_error("error in publishAction", E_USER_ERROR);
 		}
 		if (!rightonentity ($status > 0 ? 'publish' : 'unpublish', $context)) {
-			die ("ERROR: you don't have the right to perform this operation");
+			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
 		// get the entities to modify and ancillary information
@@ -226,7 +227,7 @@ class EntitiesLogic extends Logic
 		}
 
 		if ($lockedids && $status < 0) {
-			die("ERROR: some entities are locked in the family. No operation is allowed");
+			trigger_error("ERROR: some entities are locked in the family. No operation is allowed", E_USER_ERROR);
 		}
 
 		// depublish protected entity ? need confirmation.
@@ -242,7 +243,7 @@ class EntitiesLogic extends Logic
 			$criteria.= " AND status < '$status'";
 		}
 		//mise à jour des entités
-		$db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ". $criteria)) or dberror();
+		$db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		// check if the entities have an history field defined
 		$this->_processSpecialFields('history', $context, $status);
@@ -263,12 +264,12 @@ class EntitiesLogic extends Logic
 	 * @access private
 	 * @param array $ids les identifiants numériques des entités
 	 */
-	function _deleteSoftRelation($ids) 
+	protected function _deleteSoftRelation($ids) 
 	{
 		// most of this should be transfered in the entries and persons logic
 		global $db;
 		$criteria = 'id1 '. sql_in_array($ids);
-		$result = $db->execute(lq("SELECT idrelation,nature FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or dberror();
+		$result = $db->execute(lq("SELECT idrelation,nature FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$idrelation = array();
 		while(!$result->EOF) {
 			$nature = $result->fields['nature'];
@@ -282,9 +283,9 @@ class EntitiesLogic extends Logic
 		foreach(array_keys($idrelation) as $nature) {
 			$idlist=join(",",$idrelation[$nature]);
 			$table=$nature=='G' ? "persons" : "entries";
-			$db->execute(lq("DELETE FROM #_TP_relations WHERE idrelation IN (".$idlist.")")) or dberror();
+			$db->execute(lq("DELETE FROM #_TP_relations WHERE idrelation IN (".$idlist.")")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-			$result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
+			$result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			$idstodelete=array();
 			$idstounpublish=array();
@@ -306,7 +307,7 @@ class EntitiesLogic extends Logic
 
 			if ($idstounpublish) {
 			// should be in $table dao or logic
-			$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or dberror(); 
+			$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR); 
 			}
 		} // tables
 	}
@@ -325,12 +326,12 @@ class EntitiesLogic extends Logic
 	 * @param integer le status de l'entité concernée ou des entités concernées
 	 * @access private
 	 */
-	function _publishSoftRelation($ids, $status)
+	public function _publishSoftRelation($ids, $status)
 	{
 		global $db;
 		$criteria = "id1 IN (". join(",", $ids). ")";
 		$status = $status > 0 ? 1 : -1; // dans les tables le status est seulement a +1 ou -1
-		$result = $db->execute(lq("SELECT id2,nature FROM #_TP_relations WHERE nature IN ('E','G') AND ". $criteria)) or dberror();
+		$result = $db->execute(lq("SELECT id2,nature FROM #_TP_relations WHERE nature IN ('E','G') AND ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array();
 		while (!$result->EOF) {
 			$ids[$result->fields['nature']][$result->fields['id2']] = true;
@@ -348,12 +349,12 @@ class EntitiesLogic extends Logic
 				// simple : on doit mettre le status à positif : +32 ou +1 si l'entree ou la personne
 				// est permanente ou non
 				
-				$db->execute(lq("UPDATE #_TP_$table SET status=abs(status) WHERE id IN ($idlist)")) or dberror();
+				$db->execute(lq("UPDATE #_TP_$table SET status=abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			//------- UNPUBLISH ---------
 			} else { // status < 0
 				// plus difficile. On vérifie si les entries ou persons sont attachés à des entités publiées.
-				$result =  $db->execute(lq("SELECT id1,id2 FROM #_TP_relations INNER JOIN #_TP_entities ON id1=id WHERE #_TP_entities.status>0 AND id2 IN (". $idlist. ") AND nature='".$nature."' GROUP BY id2")) or dberror();
+				$result =  $db->execute(lq("SELECT id1,id2 FROM #_TP_relations INNER JOIN #_TP_entities ON id1=id WHERE #_TP_entities.status>0 AND id2 IN (". $idlist. ") AND nature='".$nature."' GROUP BY id2")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				while (!$result->EOF) {
 					unset($ids[$nature][$result->fields['id2']]); // remove the id from the list to unpublish
 					$result->MoveNext();
@@ -361,7 +362,7 @@ class EntitiesLogic extends Logic
 				if ($ids[$nature]) {
 					$idlist = join(',', array_keys($ids[$nature]));
 					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités :
-					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or dberror();
+					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			} // status < 0
 		} // foreach
@@ -383,7 +384,7 @@ class EntitiesLogic extends Logic
 	 * @param array &$softprotectedids les entités protégés de $ids, tableau passé par référence
 	 * @param array &$lockedids les entités verrouillées de $ids, tableau passé par référence
 	 */
-	function _getEntityHierarchy($id, $access, $criteria, &$ids, &$classes, &$softprotectedids, &$lockedids)
+	protected function _getEntityHierarchy($id, $access, $criteria, &$ids, &$classes, &$softprotectedids, &$lockedids)
 	{
 		global $db;
 
@@ -413,7 +414,7 @@ class EntitiesLogic extends Logic
 		
 		// check the rights to delete the sons and get their ids
 		// criteria to determin if one of the sons is locked
-		$result = $db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1 ". sql_in_array($id). " AND nature='P' ". $criteria)) or dberror();
+		$result = $db->execute(lq("SELECT #_TP_entities.id,#_TP_entities.status,$hasrights,class FROM #_entitiestypesjoin_ INNER JOIN #_TP_relations ON id2=#_TP_entities.id WHERE id1 ". sql_in_array($id). " AND nature='P' ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		while (!$result->EOF) {
 			if (!$result->fields['hasrights']) trigger_error("This object is locked. Please report the bug",E_USER_ERROR);
@@ -425,11 +426,11 @@ class EntitiesLogic extends Logic
 		}
 	}
 	
-	function define_loop_protectedentities()
+	protected function define_loop_protectedentities()
 	{
 		function loop_protectedentities($context,$funcname) {
 			global $db;
-			$result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or dberror();
+			$result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$localcontext=array_merge($context,$result->fields);
 				call_user_func("code_do_$funcname",$localcontext);
@@ -444,7 +445,7 @@ class EntitiesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	function _publicfields() 
+	protected function _publicfields() 
 	{
 		return array();
 	}

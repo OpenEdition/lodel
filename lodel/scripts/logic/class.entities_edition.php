@@ -2,7 +2,7 @@
 /**	
  * Logique des entités - edition
  *
- * PHP versions 4 et 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -28,6 +28,7 @@
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
@@ -39,7 +40,8 @@
  * @version CVS:$Id$
  */
 
-require_once 'genericlogic.php';
+if(!class_exists('GenericLogic', false))
+	require 'genericlogic.php';
 /**
  * Classe de logique des entités (gestion de l'édition)
  * 
@@ -64,14 +66,14 @@ class Entities_EditionLogic extends GenericLogic
 	 *
 	 * @var array
 	 */
-	var $g_name;
+	public $g_name;
 
 	/**
 	 * Constructeur
 	 */
-	function Entities_EditionLogic()
+	public function __construct()
 	{
-		$this->GenericLogic('entities');
+		parent::__construct('entities');
 	}
 
 	/**
@@ -80,13 +82,13 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function viewAction(&$context, &$error)
+	public function viewAction(&$context, &$error)
 	{
 		if ($context['check'] && $error) {
 			return '_error';
 		}
 		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
-			die('ERROR: you don\'t have the right to perform this operation');
+			trigger_error('ERROR: you don\'t have the right to perform this operation', E_USER_ERROR);
 		}
 
 		// define some loop functions
@@ -97,7 +99,7 @@ class Entities_EditionLogic extends GenericLogic
 
 			$idtype = $context['idtype'];
 			if (!$idtype) {
-				die("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities");
+				trigger_error("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities", E_USER_ERROR);
 			}
 			if (!is_numeric($idtype)) {
 				return;
@@ -143,7 +145,7 @@ class Entities_EditionLogic extends GenericLogic
 			$dao = &getDAO("entrytypes");
 			$votype = $dao->getById($idtype, "id,sort,flat");
 			if (!$votype) {
-				die("ERROR: internal error in loop_entries_in_entities");
+				trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
 			}
 			if ($context['entries'][$idtype]) {
 				foreach ($context['entries'][$idtype] as $entry) {
@@ -159,7 +161,7 @@ class Entities_EditionLogic extends GenericLogic
 			global $db;
 
 			// get the entries
-			$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or dberror();
+			$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result->EOF) {
 				$localcontext = array_merge($context, $result->fields);
 				$localcontext['selected'] = $checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
@@ -183,7 +185,7 @@ class Entities_EditionLogic extends GenericLogic
 				return;
 			}
 			$ids = preg_split("/,/", $context['entities'][$varname], -1, PREG_SPLIT_NO_EMPTY);
-			$result = $db->execute(lq("SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) or dberror();
+			$result = $db->execute(lq("SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result->EOF) {
 				$localcontext = array_merge($context, $result->fields);
 				call_user_func("code_do_$funcname", $localcontext);
@@ -196,7 +198,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 		}
 		/////
-		$ret = GenericLogic::viewAction($context, $error);
+		$ret = parent::viewAction($context, $error);
 
 		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
 		if (!$context['id'] && !$error) { // add : récupération des valeurs par défaut
@@ -211,7 +213,6 @@ class Entities_EditionLogic extends GenericLogic
 		if ($context['check'] && !$error) {
 			$context['status'] = -1;
 			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
-			require_once('func.php');
 			clean_request_variable($context);
 			return $this->editAction($context, $error);
 		}
@@ -231,10 +232,10 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	function editAction (&$context, &$error, $opt = false)
+	public function editAction (&$context, &$error, $opt = false)
 	{
 		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
-			die ("ERROR: you don't have the right to perform this operation");
+			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 		if ($context['cancel']) {
 			return '_back';
@@ -249,11 +250,12 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		$idparent = $context['idparent'];
 		$idtype   = $context['idtype'];
-		$status   = intval($context['status']);
+		$status   = (int)$context['status'];
 		$this->_isAuthorizedStatus($status);
 		// iduser
 		$context['iduser'] = !SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
-		require_once 'entitiesfunc.php';
+		if(!function_exists('checkTypesCompatibility'))
+			require 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
 			$error['idtype'] = 'types_compatibility';
 			return '_error';
@@ -264,7 +266,7 @@ class Entities_EditionLogic extends GenericLogic
 		$votype = $daotype->getById($context['idtype'], "class,creationstatus,search");
 		$class = $context['class']=$votype->class;
 		if (!$class) {
-			die ("ERROR: idtype is not valid in Entities_EditionLogic::editAction");
+			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
 		}
 		
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
@@ -297,7 +299,7 @@ class Entities_EditionLogic extends GenericLogic
 			$new = false;
 			$vo = $dao->getById($id, "id,identifier,status, g_title");
 			if ($vo->status >= 16) {
-				die("ERROR: entity is locked. No operation is allowed");
+				trigger_error("ERROR: entity is locked. No operation is allowed", E_USER_ERROR);
 			}
 			// possibly document reloading
 			if($context['reload']) {
@@ -345,7 +347,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 			// change the usergroup of the entity ?
 			if ($lodeluser['admin'] && $context['usergroup']) {
-				$vo->usergroup = intval ($context['usergroup']);
+				$vo->usergroup = (int)$context['usergroup'];
 			}
 			if ($vo->status<=-64) {  // like a creation
 				$vo->status = $votype->creationstatus;
@@ -353,7 +355,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 		} else { //create the entity
 			$new = true;
-			$vo = $dao->createObject ();
+			$vo =& $dao->createObject ();
 			$vo->idparent       = $idparent;
 			$vo->usergroup      = $this->_getUserGroup ($context, $idparent);
 			$vo->iduser         = $context['iduser'];
@@ -412,11 +414,15 @@ class Entities_EditionLogic extends GenericLogic
 		if ($ret=="_error") {
 			return "_error";
 		}
-		if ($votype->search) {
-			require_once "class.entities_index.php";
-			$lo_entities_index = new Entities_IndexLogic();
-			$lo_entities_index->addIndexAction($context, $error);
-		}
+		// désactivé le 06/02/09 par pierre-alain
+		// ça prend beaucoup trop de ressources et de temps !!
+		// pour indexer aller dans lodel/admin/ et cliquer sur réindexer
+// 		if ($votype->search) {
+// 			if(!class_exists('Entities_IndexLogic'))
+// 				require "class.entities_index.php";
+// 			$lo_entities_index = new Entities_IndexLogic();
+// 			$lo_entities_index->addIndexAction($context, $error);
+// 		}
 		update();
 
 		// pour import de plusieurs entités à la suite
@@ -439,12 +445,12 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param string $var le nom de la variable du select
 	 * @param string $edittype le type d'édition
 	 */
-	function makeSelect(&$context, $var, $edittype)
+	public function makeSelect(&$context, $var, $edittype)
 	{
 		switch($var) {
 		case 'creationinfo':
 			if ($context['creationmethod'] && $context['creationmethod']!='form') {
-				die("ERROR: error creationmethod must be 'form' to choose the creationinfo");
+				trigger_error("ERROR: error creationmethod must be 'form' to choose the creationinfo", E_USER_ERROR);
 			}
 			$arr = array("xhtml"=>"XHTML", "wiki"=>"Wiki", "bb"=>"BB");
 			renderOptions($arr, $context['creationinfo']);
@@ -452,7 +458,8 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		switch($edittype) {
 		case 'lang':
-			require_once 'lang.php';
+			if(!function_exists('makeselectlangs'))
+				require 'lang.php';
 			makeselectlangs($context[$var]);
 			break;
 		}
@@ -466,7 +473,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array &$context le contexte, tableau passé par référence
 	 * @access private
 	 */
-	function _moveImages(&$context) {}
+	protected function _moveImages(&$context) {}
 
 	/**
 	 * Sauve des données dans des tables liées éventuellement
@@ -476,7 +483,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param object $vo l'objet qui a été créé
 	 * @param array $context le contexte
 	 */
-	function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,$context) 
 	{
 		global $db;
 		if (!$vo->status) {
@@ -508,6 +515,10 @@ class Entities_EditionLogic extends GenericLogic
 				if (!$itemscontext) {
 					continue;
 				}
+				if(!is_array($itemscontext))
+				{
+					echo $idtype.' : '.$table.' :: '. $itemscontext.' - '.$context['class'].'<br>';
+				}
 				$degree = 1;
 				foreach ($itemscontext as $k => $itemcontext) {
 					if (!is_numeric($k)) {
@@ -537,7 +548,7 @@ class Entities_EditionLogic extends GenericLogic
 				foreach ($ids as $ids2) {
 					$degree = 1;
 					foreach ($ids2 as $id) {
-						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or dberror ();
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$idrelations[] = $db->insert_id();
 					}
 				}
@@ -549,7 +560,7 @@ class Entities_EditionLogic extends GenericLogic
 		} // foreach entries and persons
 		// Entities
 		if ($context['entities']) {
-			$dao = getDAO('tablefields');
+			$dao =& getDAO('tablefields');
 			foreach (array_keys ($context['entities']) as $name) {
 				$name = addslashes ($name);
 				$vofield = $dao->find("class='". $context['class']. "' AND name='". $name. "' AND type='entities'");
@@ -559,7 +570,7 @@ class Entities_EditionLogic extends GenericLogic
 				$idrelations = array ();
 				if (is_array($context['entities'][$name])) {
 					foreach ($context['entities'][$name] as $id) {
-						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "','0')")) or dberror ();
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "','0')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$idrelations[] = $db->insert_id();
 					}
 				}
@@ -578,7 +589,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param string $nature la nature des objets liés
 	 */
 	//most of this should be transfered in the entries and persons logic
-	function _deleteSoftRelation ($ids, $nature = '')
+	protected function _deleteSoftRelation ($ids, $nature = '')
 	{
 		global $db;
 		if (is_array ($ids)) {
@@ -618,17 +629,17 @@ class Entities_EditionLogic extends GenericLogic
 				$tables = $dao->findMany("classtype='persons'", '', 'class');
 				$where  = "idrelation IN ('".join("','",$ids)."')";
 				foreach($tables as $table) {
-					$db->execute(lq("DELETE FROM #_TP_entities_". $table->class. " WHERE ". $where)) or dberror();
+					$db->execute(lq("DELETE FROM #_TP_entities_". $table->class. " WHERE ". $where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			}
 		}
-		$db->execute(lq("DELETE FROM #_TP_relations WHERE ". $criteria. $naturecriteria)) or dberror();
+		$db->execute(lq("DELETE FROM #_TP_relations WHERE ". $criteria. $naturecriteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		// select all the items not in entities_$table
 		// those with status<=1 must be deleted
 		// thise with status> must be depublished
 		foreach(array('entries', 'persons') as $table) {
-			$result = $db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or dberror();
+			$result = $db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$idstodelete    = array();
 			$idstounpublish = array();
 			while (!$result->EOF) {
@@ -648,7 +659,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 
 			if ($idstounpublish) {
-				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or dberror();
+				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		} //end of foreach tables
 	}
@@ -662,11 +673,11 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array $contextle contexte
 	 * @param integer $idparent identifiant du parent
 	 */
-	function _getUserGroup($context, $idparent)
+	protected function _getUserGroup($context, $idparent)
 	{
 		global $lodeluser, $db;
 		if ($lodeluser['admin']) { // take it from the context.
-			$usergroup = intval($context['usergroup']);
+			$usergroup = (int)$context['usergroup'];
 			if ($usergroup > 0) {
 				return $usergroup;
 			}
@@ -676,14 +687,14 @@ class Entities_EditionLogic extends GenericLogic
 			$vo = $dao->getById($idparent, 'id, usergroup');
 			$usergroup = $vo->usergroup;
 			if ($db->errorno()) {
-				dberror();
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if (!$usergroup) {
-				die("ERROR: You have not the rights: (2)");
+				trigger_error("ERROR: You have not the rights: (2)", E_USER_ERROR);
 			}
 		} else {
 			$usergroup = 1;
-			# die("ERROR: Only administrator have the rights to add an entity at this level");
+			# trigger_error("ERROR: Only administrator have the rights to add an entity at this level", E_USER_ERROR);
 		}
 		return $usergroup;
 	}
@@ -696,17 +707,17 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param integer identifiant de la nouvelle entité
 	 * @param integer identifiant du parent direct de la nouvelle entité
 	*/
-	function _createRelationWithParents($id, $idparent)
+	protected function _createRelationWithParents($id, $idparent)
 	{
 		global $db;
 		// can't do INSERT SELECT because work on the same table... support for old MySQL version
-		$result = $db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='".$idparent."' AND nature='P'")) or dberror();
+		$result = $db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='".$idparent."' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		while (!$result->EOF) {
 			$values.= "('". $result->fields['id1']. "','$id','P','". ($result->fields['degree']+1). "'),";
 			$result->MoveNext();
 		}
 		$values.= "('". $idparent. "','". $id. "','P',1)";
-		$db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or dberror();
+		$db->execute(lq("REPLACE INTO #_TP_relations (id1,id2,nature,degree) VALUES ".$values)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		//if ($lock) unlock();
 	}
 
@@ -716,7 +727,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param object &$vo l'objet utilisé dans viewAction
 	 * @param array &$context le contexte, tableau passé par référence
 	 */
-	function _populateContextRelatedTables(&$vo, &$context)
+	protected function _populateContextRelatedTables(&$vo, &$context)
 	{
 		global $db;
 		foreach (array('entries' => array('E', 'identry', 'entrytypes'),
@@ -724,7 +735,7 @@ class Entities_EditionLogic extends GenericLogic
 			list($nature, $idfield, $type) = $info;
 			$degree = 0;
 			
-			$result = $db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id. "' AND nature='". $nature. "'  ORDER BY degree")) or dberror();
+			$result = $db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id. "' AND nature='". $nature. "'  ORDER BY degree")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$relatedtable         = array();
 			$relatedrelationtable = array();
 			while (!$result->EOF) {
@@ -743,7 +754,7 @@ class Entities_EditionLogic extends GenericLogic
 			// load related table
 			if ($relatedtable) {
 				foreach ($relatedtable as $class => $ids) {
-					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or dberror();
+					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields[$idfield];
 						settype($ids[$id]['data'], "array");
@@ -755,7 +766,7 @@ class Entities_EditionLogic extends GenericLogic
 			// load relation related table
 			if ($relatedrelationtable) {
 				foreach ($relatedrelationtable as $class=>$ids) {
-					$result2 = $db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation ".sql_in_array(array_keys($ids)))) or dberror();
+					$result2 = $db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields['idrelation'];
 						settype($ids[$id]['data'], "array");
@@ -768,7 +779,7 @@ class Entities_EditionLogic extends GenericLogic
 		} // foreach classtype
 		
 		// Entities
-		$result = $db->execute(lq("SELECT * FROM #_TP_relations WHERE  id1='". $vo->id. "' AND LENGTH(nature)>1")) or dberror();
+		$result = $db->execute(lq("SELECT * FROM #_TP_relations WHERE  id1='". $vo->id. "' AND LENGTH(nature)>1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$relations = array();
 		while(!$result->EOF) {
 			$relations[$result->fields['nature']][] = $result->fields['id2'];
@@ -788,7 +799,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param integer $id identifiant numérique de l'entité
 	 * @param string $title titre générique de l'entité
 	 */
-	function _calculateIdentifier($id, $title)
+	protected function _calculateIdentifier($id, $title)
 	{
 		global $db, $error;
 		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
@@ -802,5 +813,4 @@ class Entities_EditionLogic extends GenericLogic
 	// end{uniquefields} automatic generation  //
 
 } // class
-
 ?>

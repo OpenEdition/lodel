@@ -58,6 +58,8 @@ var lastTarget  = null;
 var rootParent  = null;
 var rootSibling = null;
 var interval	= [];
+var ids			= [];
+var xhrs		= [];
 
 Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
 
@@ -307,15 +309,27 @@ function mouseUp(ev){
 		}
 		var xhr = getXMLHttpRequest();
 		if(xhr) {
-			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', false);
+			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', true);
 			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			xhr.send('tabids='+tabDiffIds+'&site=<?php echo $GLOBALS[site]; ?>');
-			if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText == 'error') {
-				alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
-			} else if(xhr.responseText == 'auth') {
-				window.location="login.php?error_timeout=1&url_retour="+location.pathname+location.search;
-				return false;
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState == 4 && xhr.status == 200)
+				{
+					if (xhr.responseText == 'error') 
+					{
+						alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
+						return false;
+					}
+					else 
+					{
+						if (xhr.responseText == 'auth') 
+						{
+							window.location = "login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
+							return false;
+						}
+					}
+				}
 			}
+			xhr.send('tabids='+tabDiffIds+"&site=<?php echo $GLOBALS['site']; ?>");
 		} else {
 			alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
 		}
@@ -417,19 +431,19 @@ function autoScroll(e){
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
-		<IF COND="[#COUNT] % 2">
-			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+			<IF COND="[#COUNT] % 2">
+				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+				<ELSE/>
+					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				</IF>
 			<ELSE/>
-				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+				<ELSE/>
+					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				</IF>
 			</IF>
-		<ELSE/>
-			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE/>
-				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
-			</IF>
-		</IF>
 			<div class="entityIconsEdition">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
@@ -437,9 +451,9 @@ function autoScroll(e){
 			<IF COND="[#TPLEDITION]">
 			<div id="unfolder">
 			<IF COND="[#DISPLAY] eq 'unfolded'">
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID], false);" />
+			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], false);" />
 			<ELSE/>
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true);changeIcon([#ID], true);" />
+			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], true);" />
 			</IF>
 			</div>
 			</IF>
@@ -449,10 +463,11 @@ function autoScroll(e){
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<div id="container[#ID]" style="display:<IF COND="[#DISPLAY] eq 'unfolded'">block<ELSE/>none</IF>;">
 			<IF COND="[#DISPLAY] eq 'unfolded'">
+				<LET VAR="oldfolder">[#FOLDER]</LET>
 				<LET VAR="folder">yes</LET>
 				<USE TEMPLATEFILE="edition" BLOCKID="1"/>
-				<LET VAR="folder"></LET>
-				
+				<LET VAR="folder">[#OLDFOLDER]</LET>
+				<LET VAR="oldfolder"></LET>
 			</IF>
 			</div>
 			</li>
@@ -474,27 +489,48 @@ function autoScroll(e){
 	<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
 </div>
 <script type="text/javascript">
-function loadTemplate(id,displayWarner)
+function loadTemplate(id, displayWarner, recursive)
 {
 	var container = document.getElementById('container'+id);
 	if(!container || container.innerHTML.length > 0) return true;
 	if(displayWarner) document.getElementById('warner').style.display = "block";
-	var xhr = getXMLHttpRequest();
-	if(xhr) {
-		xhr.open("POST", '[#SHAREURL]/ajax/sitemap.php', false);
-		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-		xhr.send('site=<?php echo $GLOBALS[site]; ?>&id='+id);
-		if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseText == 'error') {
-			alert("[@INSTALL.ERROR]");
-			return false;
-		} else if(xhr.responseText == 'auth') {
-			window.location="login.php?error_timeout=1&url_retour="+location.pathname+location.search;
-			return false;
+	var l = xhrs.length;
+	xhrs[l] = getXMLHttpRequest();
+	if(xhrs[l]) {
+		xhrs[l].open("POST", '[#SHAREURL]/ajax/sitemap.php', true);
+		xhrs[l].setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+		xhrs[l].container = container;
+		xhrs[l].displayWarner = displayWarner;
+		xhrs[l].currentId = id;
+		xhrs[l].recursive = recursive;
+		xhrs[l].onreadystatechange = function() {
+			if(xhrs[l].readyState == 4 && xhrs[l].status == 200)
+			{
+				if (xhrs[l].responseText == 'error') 
+				{
+					alert("[@INSTALL.ERROR]");
+					return false;
+				}
+				else if (xhrs[l].responseText == 'auth') {
+					window.location = "login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
+					return false;
+				}
+				else 
+				{
+					if(xhrs[l].responseText == '') {
+						xhrs[l].container.innerHTML = '&nbsp;';
+						finish(true);
+						return true;
+					}
+					xhrs[l].container.innerHTML = xhrs[l].responseText;
+					xhrs[l].container.style.display = 'block';
+					if (xhrs[l].displayWarner) document.getElementById('warner').style.display = "none";
+					if (xhrs[l].recursive) displayAll(document.getElementById('displayButton'), true, true, xhrs[l].currentId);
+					return true;
+				}
+			}
 		}
-		container.innerHTML = xhr.responseText;
-		container.style.display = 'block';
-		if(displayWarner) document.getElementById('warner').style.display = "none";
-		return true;
+		xhrs[l].send('site=<?php echo $GLOBALS[site]; ?>&id='+id);
 	} else {
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
@@ -502,59 +538,65 @@ function loadTemplate(id,displayWarner)
 	}
 	return true;
 }
-function displayAll(obj, statut) 
+function finish(statut)
+{
+	var finish = true;
+	for(var i=0;i<xhrs.length; i++)
+	{
+		if(xhrs[i].readyState != 4){
+			finish = false;
+			break;
+		}
+	}
+	if (finish) {
+		var obj = document.getElementById('displayButton');
+		if (statut) {
+			obj.onclick = function(){
+				displayAll(this, false, false, null);
+			};
+			obj.innerHTML = '[@COMMON.HIDE_ALL_SITEMAP]';
+		}
+		else {
+			obj.onclick = function(){
+				displayAll(this, true, false, null);
+			};
+			obj.innerHTML = '[@COMMON.DISPLAY_ALL_SITEMAP]';
+		}
+		document.getElementById('warner').style.display = "none";
+	}
+}
+
+function displayAll(obj, statut, recursive, id) 
 {
 	document.getElementById('warner').style.display = "block";
-	obj.onclick = function(){return false;};
+	if (!recursive) {
+		ids = [];
+		obj.onclick = function(){
+			return false;
+		};
+	}
+
 	var tabIds = [];
 	var c=0;
-	var lis = document.getElementsByTagName('li');
-	for(var i=0;i<lis.length;i++) {
-		if(lis[i].id.indexOf('container_') != -1)
-			tabIds[c++] = lis[i].id.substr(10);
-	}
-	
-	do {
-		var ids = [];
-		var c = 0;
-		for(var i=0;i<tabIds.length;i++) {
-			if(!loadTemplate(tabIds[i], false)) continue;
-	
-			var currentBlock = document.getElementById('childContainer'+tabIds[i]);
-			if(!currentBlock) {
-				var currentBlock = document.getElementById('container'+tabIds[i]);
-				if(!currentBlock) continue;
-			}
-	
-			changeIcon(tabIds[i], statut);
-			
-			for(var j=0;j<currentBlock.childNodes.length;j++) {
-				if(currentBlock.childNodes[j].nodeName != 'LI') continue;
+	var j = 0;
+	var id = 0;
+	var ret = false;
+	if(id != null) ids[id] = true;
 
-				var li = currentBlock.childNodes[j];
-				for(var k=0;k<li.childNodes.length;k++) {
-					if(li.childNodes[k].nodeName != 'UL') continue;
-
-					var ul = li.childNodes[k];
-					for(var l=0;l<ul.childNodes.length;l++) {
-						if(ul.childNodes[l].nodeName != 'LI' || ul.childNodes[l].id.indexOf('container_') == -1) continue;
-						ids[c] = ul.childNodes[l].id.substr(10);
-						c++;
-					}
-				}
+	lis = document.getElementsByTagName('li');
+	for (i = 0; i < lis.length; i++) {
+		if (lis[i].id.indexOf('container_') != -1) id = lis[i].id.substr(10);
+		if(ids[id] != true) { 
+			tabIds[c++] = id;
+			ids[id] = true;
+			if (statut && !loadTemplate(id, false, true, obj)) {
+				document.getElementById('warner').style.display = "none";
+				return false;
 			}
+			changeIcon(id, statut);
 		}
-		tabIds = ids;
-	} while(tabIds.length > 0);
-
-	if(statut) {
-		document.getElementById('displayButton').innerHTML = '[@COMMON.HIDE_ALL_SITEMAP]';
-		obj.onclick = function(){displayAll(this, false);};
-	} else {
-		document.getElementById('displayButton').innerHTML = '[@COMMON.DISPLAY_ALL_SITEMAP]';
-		obj.onclick = function(){displayAll(this, true);};
 	}
-	document.getElementById('warner').style.display = "none";
+	finish(statut);
 }
 
 function changeIcon(id, statut) 
@@ -575,14 +617,14 @@ function changeIcon(id, statut)
 		var container = document.getElementById('container'+id);
 		if(container) container.style.display='none';
 	}
-	img.onclick = function(){loadTemplate(id, true);changeIcon(id, !statut);}
+	img.onclick = function(){loadTemplate(id, true, false);changeIcon(id, !statut);}
 }
-</script>
 <IF COND="[#LODELUSER.EDITOR]">
-<script type="text/javascript">
+
 	document.onmousemove = mouseMove;
 	document.onmousedown = mouseDown;
 	document.onmouseup   = mouseUp;
-</script>
+
 </IF>
+</script>
 <MACRO NAME="CLOSE_HTML">
