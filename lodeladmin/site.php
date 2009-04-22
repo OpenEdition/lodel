@@ -50,7 +50,7 @@ require 'class.errors.php';
 
 try
 {
-	require 'auth.php';
+	include 'auth.php';
 	authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 	// pas de paramètres ? rien à faire ici. redirige vers la liste des sites
 	if(empty($_GET) && empty($_POST))
@@ -60,7 +60,7 @@ try
 	$context['installoption'] = (int)$installoption;
 	$context['version']       = $GLOBALS['version'];
 
-	require 'class.siteManage.php';
+	include 'class.siteManage.php';
 	$context['shareurl'] = $shareurl;
 	$website = new siteManage($id, $context);
 	$website->set('reinstall', $reinstall);
@@ -158,7 +158,7 @@ try
 	// post-traitement
 	postprocessing($context);
 	
-	require 'view.php';
+	include 'view.php';
 	$view = &View::getView();
 	$view->render($context, 'site');
 }

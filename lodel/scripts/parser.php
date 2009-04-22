@@ -425,16 +425,10 @@ PHP;
 		switch ($escape) {
 		case 'php' :
 			// traitement normal, php espace
-			$variable = 
-<<<PHP
-<?php echo {$variable}; ?>
-PHP;
+			$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){ \$isSerialized=true;print serialize(\$tmp); }else{ print \$tmp; } unset(\$tmp); ?>";
 			break;
 		case 'quote' :
-				$variable = 
-<<<PHP
-".{$variable}."
-PHP;
+			$variable = "\".{$variable}.\"";
 			break;
 		default : break;
 		}
@@ -1565,13 +1559,12 @@ PHP;
 	{
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->_errmsg("LET have no VAR|ARRAY attribut");
-		$regexpVarName = ('ARRAY' == $result[1]) ? '('.$this->variable_regexp.')(\[[a-zA-Z0-9_]*\])?' : '('.$this->variable_regexp.')';
-		if (!preg_match("/^{$regexpVarName}$/i", $result[2], $res))
+		
+		if (!preg_match("/^{$this->variable_regexp}$/i", $result[2], $res))
 			$this->_errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
 		
-		$var = strtolower($res[1]);
-		if(isset($this->denied[$var]))
-			$this->_errmsg("Variable '{$var}' is not accessible in templates scope in function ".__FUNCTION__);
+        	$var = strtolower($res[0]);
+        
 		if('VAR' == $result[1]) {
 			// commenté septembre 2008 par pierre-alain car pas d'utilité trouvée ?!?
 			//$this->parse_variable($result[2], false); // parse the attributs
@@ -1585,34 +1578,34 @@ PHP;
 				$this->_errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
 
 			$this->_clearposition();
-			$this->arr[$this->ind + 1] = isset($result[4]) && $result[4] ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_clean(); ?>' : '<?php $context[\''.$var.'\']=ob_get_clean(); ?>';
+			$this->arr[$this->ind + 1] = !empty($result[4]) ? '<?php $GLOBALS[\'context\'][\''.$var.'\']=ob_get_clean(); ?>' : 
+                                                                '<?php $context[\''.$var.'\']=ob_get_clean(); ?>';
 		} else {
 			$this->_clearposition();
-			$this->ind += 2;
-			preg_match_all("/(<\?php\s+echo\s+(.*?);\s+\?>|[^,]+)*/", $this->arr[$this->ind], $values);
-			$vars = $originalVars = array();
-			foreach($values[0] as $k=>$value) {
-				if('' === (string)$value) continue;
-				if($values[2][$k]) { // variable LS déjà parsée
-					if(!isset($originalVar)) $originalVar = $values[2][$k];
-					$vars[$k] = "array_values((array){$values[2][$k]})";
-				} else {
-					$value = quote_code(trim($value));
-					if(!isset($originalVar)) $originalVar = "'{$value}'";
-					$vars[$k] = "(array)'{$value}'";
-				}
-			}
-			
-			$this->arr[$this->ind] = '';
-			$this->ind++;
+			$this->arr[$this->ind + 1] = '<?php ob_start();$isSerialized=false; ?>';
+			$this->ind += 3;
+			$this->parse_main();
 			if ($this->arr[$this->ind] != "/LET")
 				$this->_errmsg("&lt;/LET&gt; expected, '".$this->arr[$this->ind]."' found", $this->ind);
-			$this->_clearposition();
-			$merge = (count($vars)>1 || !$res[2]) ? 'array_merge('.join(',',$vars).')' : $originalVar;
-			unset($values,$originalVar, $vars);
-			$this->arr[$this->ind + 1] = isset($result[4]) && $result[4] ? 
-				'<?php $GLOBALS[\'context\'][\''.$var.'\']'.$res[2].'='.$merge.'; ?>' : 
-				'<?php $context[\''.$var.'\']'.$res[2].'='.$merge.'; ?>';
+			
+            		$this->_clearposition();
+			// @ is bad, but we need to avoid notice error from PHP if multi dimensional array is not defined
+			// be carefull on variable erasing !!
+			$this->arr[$this->ind + 1] = !empty($result[4]) ? '<?php @$GLOBALS[\'context\']' : '<?php @$context';
+			if(false !== strpos($var, '.'))
+			{
+				$vars = explode('.', $var);
+				foreach($vars as $v)
+				{
+					$this->arr[$this->ind + 1] .= '[\''.$v.'\']';
+				}
+			}
+			else
+			{
+				$this->arr[$this->ind + 1] .= '[\''.$var.'\']';
+			}
+			
+			$this->arr[$this->ind + 1] .= '=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false; ?>';
 		}
 	}
 
