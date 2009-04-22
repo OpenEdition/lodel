@@ -42,219 +42,143 @@
  * @package lodel
  */
 
-if('mysql' == DBDRIVER)
+if('mysql' === DBDRIVER)
 {
-	if(!class_exists('ADODB_mysql', false))
-		require 'adodb/drivers/adodb-mysql.inc.php';
-	class lodel_mysql extends ADODB_mysql 
-	{
-		public $rsPrefix = 'lodel_rs_';
-	
-		public function __construct()
-		{
-			parent::__construct();
-		}
-	
-		public function getFieldName($i)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_field_name($this->_queryID, $i);
-		}
-	
-		public function getFieldTable($i)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_field_table($this->_queryID, $i);
-		}
-		
-		public function getFieldNum()
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_num_fields($this->_queryID);
-		}
-
-		public function fetchField($i=null)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_fetch_field($this->_queryID, $i);
-		}
-	}
-	
-	class lodel_rs_mysql extends ADORecordSet_mysql 
-	{
-		public function __construct($queryID,$mode=false)
-		{
-			parent::__construct($queryID,$mode);
-		}
-	
-		public function getFieldName($i)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_field_name($this->_queryID, $i);
-		}
-	
-		public function getFieldTable($i)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_field_table($this->_queryID, $i);
-		}
-		
-		public function getFieldNum()
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_num_fields($this->_queryID);
-		}
-
-		public function fetchField($i=null)
-		{
-			if(!is_resource($this->_queryID))
-				return false;
-
-			return mysql_fetch_field($this->_queryID, $i);
-		}
-	}
+    if(!class_exists('ADODB_mysql', false))
+        include 'adodb/drivers/adodb-mysql.inc.php';
+    class lodel_mysql extends ADODB_mysql 
+    {
+        public $rsPrefix = 'lodel_rs_';
+    
+        public function __construct()
+        {
+            parent::__construct();
+        }
+    
+        public function getFieldName(&$result, $i)
+        {
+            if(!is_object($result))
+                return false;
+    
+            return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->name : false;
+        }
+    
+        public function getFieldTable(&$result, $i)
+        {
+            if(!is_object($result))
+                return false;
+    
+            return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->table : false;
+        }
+        
+        public function getFieldNum(&$result)
+        {
+            if(!is_object($result))
+                return false;
+    
+            return sizeof($result->_fieldobjects);
+        }
+    
+        public function fetchField(&$result, $i=null)
+        {
+            if(!is_object($result))
+                return false;
+    
+            if(isset($i))
+            {
+                return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i] : false;
+            }
+            return $result->_fieldobjects;
+        }
+    }
+    
+    class lodel_rs_mysql extends ADORecordSet_mysql 
+    {
+        public function __construct($queryID,$mode=false)
+        {
+            parent::__construct($queryID,$mode);
+        }
+    }
 }
-elseif('mysqli' == DBDRIVER)
+elseif('mysqli' === DBDRIVER)
 {
-	if(!class_exists('ADODB_mysqli', false))
-		require 'adodb/drivers/adodb-mysqli.inc.php';
-	class lodel_mysqli extends ADODB_mysqli 
-	{
-		public $rsPrefix = 'lodel_rs_';
-	
-		private $_transaction;
+    if(!class_exists('ADODB_mysqli', false))
+        include 'adodb/drivers/adodb-mysqli.inc.php';
+    class lodel_mysqli extends ADODB_mysqli 
+    {
+        public $rsPrefix = 'lodel_rs_';
+    
+        private $_transaction;
+    
+	public $_fields;
 
-		public function __construct()
-		{
-			parent::__construct();
-			$this->_transaction = false;
-		}
-	
-		public function getFieldName($i)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
-			if(!isset($fields[$i]))
-				return false;
+        public function __construct()
+        {
+            parent::__construct();
+        }
+    
+        public function getFieldName(&$result, $i)
+        {
+            if(!is_object($result))
+                return false;
 
-			return $fields[$i]->name;
-		}
-	
-		public function getFieldTable($i)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
-			if(!isset($fields[$i]))
-				return false;
+            if(!isset($result->_fieldobjects[$i]))
+                return false;
+    
+            return $result->_fieldobjects[$i]->name;
+        }
+    
+        public function getFieldTable(&$result, $i)
+        {
+            if(!is_object($result))
+                return false;
 
-			return $fields[$i]->table;
-		}
-		
-		public function getFieldNum()
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
+            if(!isset($result->_fieldobjects[$i]))
+                return false;
+    
+            return $result->_fieldobjects[$i]->table;
+        }
+        
+        public function getFieldNum(&$result)
+        {
+            if(!is_object($result))
+                return false;
 
-			return count($fields);
-		}
+            return sizeof($result->_fieldobjects);
+        }
+    
+        public function fetchField(&$result, $i=null)
+        {
+            if(!is_object($result))
+                return false;
 
-		public function fetchField($i=null)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-
-			$fields = $this->_queryID->fetch_fields();
-			if(!is_null($i))
-			{
-				return isset($fields[$i]) ? $fields[$i] : false;
-			}
-			return $fields;
-		}
-	}
-	
-	class lodel_rs_mysqli extends ADORecordSet_mysqli 
-	{
-		public function __construct($queryID,$mode=false)
-		{
-			parent::__construct($queryID,$mode);
-		}
-	
-		public function getFieldName($i)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
-			if(!isset($fields[$i]))
-				return false;
-
-			return $fields[$i]->name;
-		}
-	
-		public function getFieldTable($i)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
-			if(!isset($fields[$i]))
-				return false;
-
-			return $fields[$i]->table;
-		}
-		
-		public function getFieldNum()
-		{
-			if(!is_object($this->_queryID))
-				return false;
-			$fields = $this->_queryID->fetch_fields();
-
-			return count($fields);
-		}
-
-		public function fetchField($i=null)
-		{
-			if(!is_object($this->_queryID))
-				return false;
-
-			$fields = $this->_queryID->fetch_fields();
-			if(!is_null($i))
-			{
-				return isset($fields[$i]) ? $fields[$i] : false;
-			}
-			return $fields;
-		}
-	}
+            if(isset($i))
+            {
+                return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i] : false;
+            }
+            return $result->_fieldobjects;
+        }
+    }
+    
+    class lodel_rs_mysqli extends ADORecordSet_mysqli 
+    {
+        public function __construct($queryID,$mode=false)
+        {
+            parent::__construct($queryID,$mode);
+        }
+    }
 }
-else
-{
-	trigger_error('Invalid DB driver, allowed mysql or mysqli', E_USER_ERROR);
-}
+else trigger_error('Invalid DB driver, allowed mysql or mysqli', E_USER_ERROR);
 
 $GLOBALS['ADODB_NEWCONNECTION'] = 'lodelADODB_factory';
 
 function &lodelADODB_factory($driver)
 {
-	if ($driver !== 'mysql' && $driver !== 'mysqli') return false;
-	
-	$driver = 'lodel_'.$driver;
-	$obj = new $driver();
-	return $obj;
+    if ($driver !== 'mysql' && $driver !== 'mysqli') return false;
+    
+    $driver = 'lodel_'.$driver;
+    $obj = new $driver();
+    return $obj;
 }
 
 ?>
