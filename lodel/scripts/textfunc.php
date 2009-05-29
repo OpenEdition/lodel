@@ -43,8 +43,8 @@
  * @package lodel
  */
 
-if (is_readable($home.'textfunc_local.php'))
-	require_once 'textfunc_local.php';
+if (is_readable(C::get('home', 'cfg').'textfunc_local.php'))
+	include 'textfunc_local.php';
 
 # fonction largement reprises de SPIP
 
@@ -52,7 +52,7 @@ if (is_readable($home.'textfunc_local.php'))
 
 function pluriel($texte)
 {
-	return intval($texte) > 1 ? "s" : "";
+	return isset($texte{1}) ? "s" : "";
 }
 
 function lettrine($texte)
@@ -66,7 +66,7 @@ function nbsp($texte)
 }
 
 /**
- * Upercase the first letter of Texte
+ * Uppercase the first letter of Texte
  */
 function majuscule($texte)
 {
@@ -76,9 +76,7 @@ function majuscule($texte)
 function textebrut($letexte)
 {
 	//$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", "", $letexte);
-	$letexte = preg_replace("/(&nbsp;|[\n\r\t])+/", " ", $letexte);
-	$letexte = strip_tags($letexte);
-	return $letexte;
+	return strip_tags(preg_replace("/(&nbsp;|[\n\r\t])+/", " ", $letexte));
 }
 
 // for compatibility
@@ -136,7 +134,7 @@ function cut_without_tags($text, $length, $dots=false)
 	if (!($last_space_position === false)) {
 		// supprime le dernier espace et tout ce qu'il y a derrière
 		//$text2 = substr($text2, 0, $last_space_position);
-		$text2 = preg_replace("/\S+$/", "", $text2);
+		$text2 = rtrim($text2);
 	}
 	
 	return (($GLOBALS['textfunc_hasbeencut'] && $dots) ? $text2.' (...)' : $text2);
@@ -149,12 +147,13 @@ function hasbeencut()
 
 function couperpara($texte, $long)
 {
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$pos = -1;
 	do {
-		$pos = strpos($texte, "</p>", $pos +1);
+		$pos = mb_strpos($texte, "</p>", $pos +1, $encoding);
 		$long --;
 	} while ($pos !== FALSE && $long > 0);
-	return $pos > 0 ? substr($texte, 0, $pos +4) : $texte;
+	return $pos > 0 ? mb_substr($texte, 0, $pos +4, $encoding) : $texte;
 }
 
 function spip($letexte)
@@ -265,6 +264,8 @@ function formatedtime($time, $format)
 
 function humandate($s)
 {
+    if(!$s) return $s;
+    $ret = false;
 	// date
 	if (preg_match("/(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
 		if ($result[1] > 9000)
@@ -273,9 +274,10 @@ function humandate($s)
 			return "";
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
-		$dat = intval($result[1])."-".intval($result[2])."-".intval($result[3]);
+		$dat = (int)$result[1]."-".(int)$result[2]."-".(int)$result[3];
 		$ret = formateddate($dat, "%d %B %Y");
 	}
+    
 	// time
 	if (preg_match("/(\d\d):(\d\d)/", $s, $res)) {
 		if($res[1] != "00" || $res[2] != "00")
@@ -302,7 +304,8 @@ function tocable($text, $level = 10)
 		function tocable_callback($result)
 		{
 			static $tocid = array ();
-			$level = intval($result[5]);
+			$level = (int)$result[5];
+            		if(!isset($tocid[$level])) $tocid[$level] = 0;
 			$sig = $level."n". (++ $tocid[$level]);
 			$aopen = '<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
 			$aclose = '</a>';
@@ -333,7 +336,6 @@ function multilingue($text, $lang)
 
 function vignette($text, $width)
 {
-	global $home;
 	if (!$text)
 		return;
 	/*if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
@@ -348,12 +350,12 @@ function vignette($text, $width)
 	$vignettefile = $result[1]."-small$width.".$result[2];
 	if (file_exists($vignettefile) && filemtime($vignettefile) >= filemtime($text))
 		return $vignettefile;
-	list($widt, $height, $type, $attr) = getImageSize($text);
-	if($widt <= $width)
+	list($widt, $height, $type, $attr) = @getImageSize($text);
+	if($widt && $widt <= $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	if(!function_exists('resize_image'))
-		require("images.php");
+		include("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
@@ -362,8 +364,8 @@ function vignette($text, $width)
 # renvoie les attributs pour une image
 function sizeattributs($text)
 {
-	$result = getImageSize($text);
-	return $result[3];
+	$result = @getImageSize($text);
+    	return isset($result[3]) ? $result[3] : null;
 }
 
 /**
@@ -388,7 +390,7 @@ function falsefunction($text, $text2)
 
 function removefootnotes($text)
 {
-	return preg_replace('/<a\s+class="footnotecall"[^>]*>.*?<\/a>/s', "", $text);
+	return preg_replace('/<a\b[^>]+class="footnotecall"[^>]*>.*?<\/a>/s', "", $text);
 }
 /** 
  * Supprimer les appels de notes de fin de document.
@@ -396,7 +398,7 @@ function removefootnotes($text)
 
 function removeendnotes($text)
 {
-	return preg_replace('/<a\s+class="endnotecall"[^>]*>.*?<\/a>/s', "", $text);
+	return preg_replace('/<a\b[^>]+class="endnotecall"[^>]*>.*?<\/a>/s', "", $text);
 }
 
 /** 
@@ -405,7 +407,7 @@ function removeendnotes($text)
 
 function removenotes($text)
 {
-	return preg_replace('/<a\s+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
+	return preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
 }
 
 /** 
@@ -423,7 +425,8 @@ function removeimages($text)
 
 function removetags($text, $tags)
 {
-	foreach (explode(',', $tags) as $v) {
+	$tags = explode(',', $tags);
+	foreach ($tags as $v) {
 		$find[] = '/<'.trim($v).'\b[^>]*>/';
 		$find[] = '/<\/'.trim($v).'>/';
 	}
@@ -444,7 +447,7 @@ function removelinks($text)
  */
 function isadate($text)
 {
-	return ($text != "0000-00-00" && $text != NULL);
+	return (isset($text) && (string)$text !== "0000-00-00");
 }
 
 /**
@@ -483,7 +486,7 @@ function yes($texte)
 
 function no($texte)
 {
-	return !$texte ? "checked" : "";
+	return !yes($texte);
 }
 
 function eq($str, $texte)
@@ -505,7 +508,7 @@ function notes($texte, $type)
 	// be cool... just select the paragraph or division.
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
-	$notere = '<a [^>]*class="(foot|end)note(definition|symbol)[^>]*>';
+	$notere = '<a\b[^>]+class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
 			case 1: // seulement les astérisques
@@ -559,8 +562,6 @@ function notes($texte, $type)
 
 function tocss($text, $options = "")
 {
-	global $home;
-	include_once ("balises.php");
 	$srch = array ();
 	$rpl = array ();
 	if ($options == "heading") {
@@ -583,9 +584,9 @@ function tocss($text, $options = "")
 function format($text, $creationmethod = "", $creationinfo = "")
 {
 	if (!$creationmethod)
-		$creationmethod = $GLOBALS['context']['creationmethod'];
+		$creationmethod = C::get('creationmethod');
 	if (!$creationinfo)
-		$creationinfo = $GLOBALS['context']['creationinfo'];
+		$creationinfo = C::get('creationinfo');
 
 	if ($creationmethod == "form") {
 		switch ($creationinfo) {
@@ -632,7 +633,7 @@ function isabsolute($lien)
 
 function strip_tags_keepnotes($text, $keeptags = "")
 {
-	$arr = preg_split('/(<a class="(foot|end)notecall"[^>]*>.*?<\/a>)/s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+	$arr = preg_split('/(<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>)/s', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$count = count($arr);
 	for ($i = 0; $i < $count; $i += 2)
 		$arr[$i] = strip_tags($arr[$i], $keeptags);
@@ -645,10 +646,10 @@ function strip_tags_keepnotes($text, $keeptags = "")
 
 function humanlang($text)
 {
-	global $home;
 	if(!function_exists('makeSelectLang'))
-		require ("lang.php");
-	return $GLOBALS['languages'][strtoupper($text)];
+		include ("lang.php");
+	$text = strtoupper($text);
+	return (isset($GLOBALS['languages'][$text]) ? $GLOBALS['languages'][$text] : '');
 }
 
 /**
@@ -689,8 +690,8 @@ function hideifearlier($text, $date)
 function imagewidth($image)
 {
 	if ($image)	{
-		$result = getImageSize($image);
-		return $result[0];
+		$result = @getImageSize($image);
+		return isset($result[0]) ? $result[0] : 0;
 	}	else
 		return 0;
 }
@@ -702,8 +703,8 @@ function imagewidth($image)
 function imageheight($image)
 {
 	if ($image)	{
-		$result = getImageSize($image);
-		return $result[1];
+		$result = @getImageSize($image);
+        return isset($result[1]) ? $result[1] : 0;
 	}	else
 		return 0;
 }
@@ -733,7 +734,7 @@ function nicefilesize($lien)
 		if ($size < 10)
 			return sprintf("%.1f".$unit, $size);
 		if ($size < 1024)
-			return intval($size).$unit;
+			return (int)$size.$unit;
 	}
 }
 
@@ -751,7 +752,7 @@ function wiki($text)
 	print_r($parserOutput);
 	*/
 	if(!class_exists('WikiRenderer', false))
-		require ('wikirenderer/WikiRenderer.lib.php');
+		include ('wikirenderer/WikiRenderer.lib.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
@@ -783,7 +784,7 @@ function formatstring($text, $format)
 
 function ishtml($text)
 {
-	return preg_match("/<(p|br|span|ul|li|dl|strong|em|table|tr|td|th|sup|sub|h[0-9]|a|blockquote|code|del|img)\b[^><]*>/i", $text);
+	return preg_match("/<(p|br|span|ul|li|dl|strong|em|table|tr|td|th|sup|sub|h[1-9]|a|blockquote|code|del|img|ol|dd|dt|div|code)\b[^><]*>/i", $text);
 }
 
 /*
@@ -797,7 +798,7 @@ function lodeltextcolor($status)
 }
 
 /**
- * Return the value in parameter if the variable si empty/null
+ * Return the value in parameter if the variable is empty/null
  */
 
 function defaultvalue($var1, $var2)
@@ -813,7 +814,7 @@ function defaultvalue($var1, $var2)
 function replacement($arg0, $arg1, $arg2, $arg3)
 {
 	static $count=0;
-	
+
 	++$count;
 	$repl = $arg0. ' id="pn'.$count.'"'.$arg1;
 	$repl .= '<span class="paranumber">'.$count.'</span>';
@@ -850,7 +851,7 @@ function paranumber($texte, $styles='texte')
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
 	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p class=('.$chaine_classes.'))([^>]*>)(.*)(<\/p>)/eiU';
+	$regexp = '/(<p class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
 
 	// on récupère les paragraphes à numéroter
 	preg_match_all($regexp, $tmpTexte, $m);
@@ -862,112 +863,19 @@ function paranumber($texte, $styles='texte')
 	}
 	return $texte;
 }
-/*
-function paranumber(&$texte, $styles='texte')
-{
-  	static $paranum_count;
-
-	$tab_classes = explode(";", $styles);
-
-	$length_tab_classes = count($tab_classes);
-
-	$chaine_classes = '"'.$tab_classes[0].'"';
-
-	for($i=1; $i < $length_tab_classes; $i++) {
-		$chaine_classes .= '|"'.$tab_classes[$i].'"';
-	}
-
-	// filtre très capricieux : on va réorganiser les attributs des balises 'p' pour correspondre aux regexp. attribut class en premier
- 	preg_match_all('`<p([^>]*)(class="[^"]*")([^>]*)>(.*)</p>`Us', $texte, $match);
-  	foreach($match[0] as $k=>$m) {
-		if(!empty($match[1][$k])) {
-   			$texte = str_replace($m, "<p ".$match[2][$k]." ".$match[1][$k]." ".$match[3][$k].">".$match[4][$k]."</p>", $texte);
-		}
-  	}
-
-	global $attrs;
-	$attrs = array();
-	// on modifie les attributs contenus dans les table td pour faciliter la regexp
-	$texte = preg_replace_callback("`<td([^>]*)>(.*)</td>`Us", 
-									create_function(
-									// Les guillemets simples sont très importants ici
-									// ou bien il faut protéger les caractères $ avec \$
-									'$matches',
-									'static $cpt=10000;$cpt++;global $attrs;$attrs[$cpt] = $matches[1]; return "<td id=\"$cpt\">$matches[2]</td>";'
-									), $texte);
-
-	/* Regexp : cherche les paragraphes à numéroter, en ignorant les paragraphes contenant une image ou un tableau
-	 *  ignore aussi les cellules d'un tableau
-	 * ignore tous les styles attribués à la balise <p> sauf "texte" ; on peut rajouter un style à <p> comme l'exemple suivant : (<p\b class=(\"texte\"|\"citation\"). On a ajouté le style "citation" avec un "|" (OU exclusif).
-	 * ignore les puces
-	 */
-/*
-	if ($length_tab_classes != 1) {
-		$regexp = '/(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class=('.$chaine_classes.' )[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)/ie';
-	} else {
-		$regexp = '`(?:(?<!(<td id="\d\d\d\d\d">)))(?:(?<!(<li>)))(<p class='.$chaine_classes.'[^>]*)(>)(?!(<a\b[^>]*><\/a>)?<img|<table)`ie';
-	}
-
-	// on formate les balises de tableau et <li> pour faciliter la reconnaissance de la balise dans la regex
-	$search = array ('/<table[^>]*>/', '/<tr[^>]*>/', '/<li[^>]*>/');
-	$replace = array ('<table>', '<tr>', '<li>');
-	$texte = preg_replace($search, $replace, $texte);
-
-	// presence de 2 voir 3 paragraphes dans une cellule de tableau ? on nettoie tout ca
-	$regex = '`(<td id="\d\d\d\d\d">)((<p[^>]*>)(.*)(</p>))+(</td>)`Uis';
-	preg_match_all($regex, $texte, $m);
-	foreach($m[0] as $k=>$match) {
-		preg_match_all("/(<p[^>]*>(.*)<\/p>)+/iUs", $match, $mm);
-		if(($nb = count($mm[0])) > 1) {
-			$i=0;
-			$t .= $mm[2][$i++];
-			while($i<$nb) 
-				$t .= " ".$mm[2][$i++];
-			
-			$texte = str_replace($match, $m[1][$k].$m[3][$k].$t.$m[5][$k].$m[6][$k], $texte);
-			unset($t);
-		}
-	}
-
-	// on numérote les paragraphes
-	$texte = preg_replace($regexp, 'replacement("\\1","\\2","\\3","\\4","\\5",1)', $texte);
-
-	// formatage des styles des cellules
-	foreach($attrs as &$attr) {
-		unset( $tmpattr );
-		// background
-		preg_match("`background(-color)?:[^;]*;`", $attr, $r);
-		if(!empty($r[0]))
-			$tmpattr = ' style="'.$r[0].'" ';
-		// fusion
-		preg_match("`colspan=\"[^\"]*\"`", $attr, $r2);
-		if(!empty($r2[0]))
-			$tmpattr .= " ".$r2[0];
-		preg_match("`rowspan=\"[^\"]*\"`", $attr, $r3);
-		if(!empty($r3[0]))
-			$tmpattr .= " ".$r3[0];
-		$attr = $tmpattr;
-	}
-	// on remplace les id="xxxxx" par les attributs des balises <td> préformaté juste au dessus
-	$texte = preg_replace_callback("`<td id=\"(\d\d\d\d\d)\">(.*)</td>`iuUs", 
-									create_function(
-									// Les guillemets simples sont très importants ici
-									// ou bien il faut protéger les caractères $ avec \$
-									'$matches',
-									'global $attrs;return "<td ".$attrs[$matches[1]].">".$matches[2]."</td>";'
-									), $texte);
-
-	return $texte;
-}*/
-
 
 
 /** renvoie le type mime d'un fichier par le système (a+ windows)
 * @author Bruno Cénou
 * @param  string $filename le nom du fichier
+* @param bool $return 
 */
-function getFileMime($filename){
-	system('file -i -b '.escapeshellarg($filename));
+function getFileMime($filename, $return=false){
+	$mime = null;
+	exec('file -i -b '.escapeshellarg($filename), $mime);
+	if($return) return join('',$mime);
+	foreach($mime as $l)
+		echo $l;
 }
 
 
@@ -977,12 +885,8 @@ function getFileMime($filename){
 */
 
 function getFileType($filename){
-	ob_start();
-	getFileMime($filename);
-	$str = ob_get_contents();
-	ob_end_clean();
-	$tmp = explode('/', $str);
-	return trim($tmp[1]) ? trim($tmp[1]) : 'unknown';
+	$tmp = explode('/', getFileMime($filename));
+	return (!isset($tmp[1]) || !($tmp[1] = trim($tmp[1]))) ? 'unknown' : $tmp[1];
 }
 
 
@@ -1039,52 +943,44 @@ function formatIdentifier($str) {
 */
 
 function cleanBadChars($str){
-	$replace = array(
-			129 => "",
-			130 => "#8218",
-			131 => "#402",
-			132 => "#8222",
-			133 => "#8230",
-			134 => "#8224",
-			135 => "#8225",
-			136 => "#710",
-			137 => "#8240",
-			138 => "#352",
-			139 => "#8249",
-			140 => "#338",
-			141 => "",
-			142 => "#381",
-			143 => "",
-			144 => "",
-			145 => "#8216",
-			146 => "#8217",
-			147 => "#8220",
-			148 => "#8221",
-			149 => "#8226",
-			150 => "#8211",
-			151 => "#8212",
-			152 => "#732",
-			153 => "#8482",
-			154 => "#353",
-			155 => "#8250",
-			156 => "#339",
-			157 => "",
-			158 => "#382",
-			159 => "#376"
+	$replace = array (
+		"\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
+		"\xc2\x81" => "",
+		"\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
+		"\xc2\x83" => "\xc6\x92",     /* LATIN SMALL LETTER F WITH HOOK */
+		"\xc2\x84" => "\xe2\x80\x9e", /* DOUBLE LOW-9 QUOTATION MARK */
+		"\xc2\x85" => "\xe2\x80\xa6", /* HORIZONTAL ELLIPSIS */
+		"\xc2\x86" => "\xe2\x80\xa0", /* DAGGER */
+		"\xc2\x87" => "\xe2\x80\xa1", /* DOUBLE DAGGER */
+		"\xc2\x88" => "\xcb\x86",     /* MODIFIER LETTER CIRCUMFLEX ACCENT */
+		"\xc2\x89" => "\xe2\x80\xb0", /* PER MILLE SIGN */
+		"\xc2\x8a" => "\xc5\xa0",     /* LATIN CAPITAL LETTER S WITH CARON */
+		"\xc2\x8b" => "\xe2\x80\xb9", /* SINGLE LEFT-POINTING ANGLE QUOTATION */
+		"\xc2\x8c" => "\xc5\x92",     /* LATIN CAPITAL LIGATURE OE */
+		"\xc2\x8d" => "",
+		"\xc2\x8e" => "\xc5\xbd",     /* LATIN CAPITAL LETTER Z WITH CARON */
+		"\xc2\x8f" => "",
+		"\xc2\x90" => "",
+		"\xc2\x91" => "\xe2\x80\x98", /* LEFT SINGLE QUOTATION MARK */
+		"\xc2\x92" => "\xe2\x80\x99", /* RIGHT SINGLE QUOTATION MARK */
+		"\xc2\x93" => "\xe2\x80\x9c", /* LEFT DOUBLE QUOTATION MARK */
+		"\xc2\x94" => "\xe2\x80\x9d", /* RIGHT DOUBLE QUOTATION MARK */
+		"\xc2\x95" => "\xe2\x80\xa2", /* BULLET */
+		"\xc2\x96" => "\xe2\x80\x93", /* EN DASH */
+		"\xc2\x97" => "\xe2\x80\x94", /* EM DASH */
+		"\xc2\x98" => "\xcb\x9c",     /* SMALL TILDE */
+		"\xc2\x99" => "\xe2\x84\xa2", /* TRADE MARK SIGN */
+		"\xc2\x9a" => "\xc5\xa1",     /* LATIN SMALL LETTER S WITH CARON */
+		"\xc2\x9b" => "\xe2\x80\xba", /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
+		"\xc2\x9c" => "\xc5\x93",     /* LATIN SMALL LIGATURE OE */
+		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
+		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+		'&#39;'    => "'",
 	);
 	$str = HTML2XML($str);
-	$str = str_replace(array('&#39;', utf8_encode(chr(146))) ,"'", $str);
-	//$str = ereg_replace('&([A-Za-z0-9]|[:punct:]| )+', '&amp;', $str);
 	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
-	//$str = htmlspecialchars($str);
-        foreach($replace as $k=>$v){
-                $replace_str = $v != '' ? '&'.$v.';' : '';
-                $str = preg_replace("/".utf8_encode(chr($k))."/", $replace_str, $str);
-                //echo "$k = $replace_str\n";
-        }
-
-
-return $str;
+	$str = strtr($str, $replace);
+	return $str;
 }
 
 /** convertit entités html en entités xml 
@@ -1349,6 +1245,7 @@ function HTML2XML($str, $reverse=false){
 		"&hearts;" => "&#9829;",
 		"&diams;" => "&#9830;"
 		);
+
 	$str = $reverse ? strtr($str, array_flip($replace)) : strtr($str, $replace);
 	return $str;
 }
@@ -1362,10 +1259,10 @@ function HTML2XML($str, $reverse=false){
 
 function getParentByType($id,$type, $return=false){
 	global $db;
-        $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
+        $q = "SELECT idparent FROM {$GLOBALS['tp']}entities WHERE id = '$id'";
 	$idparent = $db->GetOne($q);
         if($idparent){
-                $q = "SELECT t.type FROM $GLOBALS[tp]entities e, $GLOBALS[tp]types t WHERE e.id = '$idparent'
+                $q = "SELECT t.type FROM {$GLOBALS['tp']}entities e, {$GLOBALS['tp']}types t WHERE e.id = '$idparent'
                 AND e.idtype = t.id";
 		$ltype = $db->GetOne($q);
                 if($ltype == $type){
@@ -1412,7 +1309,7 @@ function cryptEmails($texte, $codeInclude = FALSE)
 		$domain = substr($name[1], 0, strrpos($name[1], '.'));
 
 		// email dans le contenu du lien ?
-		if(array(0=>$matches[2][$k]) != $content = explode("@", $matches[2][$k])) { 
+		if(array(0=>$matches[2][$k]) != ($content = explode("@", $matches[2][$k]))) { 
 			/* 
 			on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
 			résultat dans le code source de la page avec test@domaine.com : 
@@ -1423,7 +1320,7 @@ function cryptEmails($texte, $codeInclude = FALSE)
 		}
 
 		// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
-		$newLink = "<a href=\"#\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
+		$newLink = "<a href=\"javascript:;\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
 		$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
 		$newLink .= "</a>";
 
@@ -1457,7 +1354,7 @@ function cleanCallNotes($text)
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
 	if(!class_exists('GeSHi', false))
-		require SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
+		include C::get('sharedir', 'cfg') . "/plugins/geshi/geshi.php";
 	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
@@ -1487,13 +1384,32 @@ function lexplode($text, $delimiter)
  */
 function lmath($text, $operator, $var) 
 {
-	switch($operator) {
-	case '+': $text += $var; break;
-	case '-': $text -= $var; break;
-	case '/': $text /= $var; break;
-	case '*': $text *= $var; break;
-	default:break;
+	switch($operator) 
+	{
+		case '+': $text += $var; break;
+		case '-': $text -= $var; break;
+		case '/': $text /= $var; break;
+		case '*': $text *= $var; break;
+		default:break;
 	}
 	return $text;
 }
+
+/**
+ * implémente empty()
+ */
+function lempty($var)
+{
+    return empty($var);
+}
+
+/**
+ * implémente isset()
+ */
+function lisset($var)
+{
+    return isset($var);
+}
+
+define('INC_TEXTFUNC', 1);
 ?>

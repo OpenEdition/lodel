@@ -46,68 +46,72 @@
 define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
 
-require 'class.errors.php';
-
 try
 {
-	require 'auth.php';
+	include 'auth.php';
 	
-	$url_retour = strip_tags($url_retour);
-	
-	if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
-		extract_post();
-		require 'loginfunc.php';
-		unset($retour);
-		$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
-		if($retour === "error_passwd") {
-			$context['suspended'] = 1;
-		} elseif($retour === false) {	
-			$context['error_login'] = 1;
-		} elseif($retour === true) {
-			// on relance la procédure d'identification
-			if (!check_auth($_POST['login'], $_POST['passwd'], $site)) {
-				$context['error_login'] = 1;
-			} else {
-				// et on ouvre une session
-				$err = open_session($_POST['login']);
-				if ((string)$err === 'error_opensession') {
-					$context[$err] = 1;
-					break;
-				} else {
-					check_internal_messaging();
-					header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
-				}
-			}
-		}
-	} elseif ($_POST['login']) {
-		extract_post();
+    $login = C::get('login');
+    
+	if($login && C::get('passwd') && C::get('passwd2')) {
+		include 'loginfunc.php';
+		
+        $retour = change_passwd(C::get('datab'), $login, C::get('old_passwd'), C::get('passwd'), C::get('passwd2'));
+        switch($retour)
+        {
+            case true:
+                // on relance la procédure d'identification
+                if (!check_auth($login, C::get('passwd'), C::get('site', 'cfg'))) {
+                    C::set('error_login', 1);
+                } else {
+                    // et on ouvre une session
+                    $err = open_session($login);
+                    if ((string)$err === 'error_opensession') {
+                        C::set($err, 1);
+                        break;
+                    } else {
+                        check_internal_messaging();
+                        header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
+                        die();
+                    }
+                }
+                break;
+            case 'error_passwd':
+                C::set('suspended', 1);
+                break;
+            case false: // bad login/passwd
+            default: 
+                C::set('error_login', 1);
+                break;
+        }
+	} elseif (C::get('login')) {
 		do {
-			require 'loginfunc.php';
-			if (!check_auth($context['login'], $context['passwd'], $site)) {
-				$context['error_login'] = 1; 
+			include 'loginfunc.php';
+			if (!check_auth($login, C::get('passwd'), C::get('site', 'cfg'))) {
+                C::set('error_login', 1);
 				break;
 			}
 			
 			//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
 			if(!check_suspended()) {
-				$context['suspended'] = 1;
+                C::set('suspended', 1);
 				break;
 			}
 			else {
 				// ouvre une session
-				$err = open_session($context['login']);
+				$err = open_session(C::get('login'));
 				if ((string)$err === 'error_opensession') {
-					$context[$err] = 1;
+                    C::set($err, 1);
 					break;
 				}
 			}
 			check_internal_messaging();
-			header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $context['url_retour']);
+			header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
 			die ();
 		} while (0);
 	}
-	
-	$context['passwd'] = $passwd = 0;
+	C::set('passwd', null);
+    C::set('passwd2', null);
+    C::set('old_passwd', null);
 	// commenté le 13/11/08 par pierre-alain, aucune utilité trouvée ?
 	// variable: sitebloque
 	// if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
@@ -118,24 +122,12 @@ try
 	// 	$context['sitebloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status>=32"));
 	// 	usecurrentdb();
 	// }
-	
-	
-	$context['url_retour']      = $url_retour;
-	$context['error_timeout']   = $error_timeout;
-	$context['error_privilege'] = $error_privilege;
-	
-	require 'view.php';
-	$view = &View::getView();
-	$view->render($context, 'login');
+//     C::set('error_timeout', C::clean($_GET['error_timeout']));
+//     C::set('error_privilege', C::clean($_GET['error_privilege']));
+	View::getView()->render('login');
 }
 catch(Exception $e)
 {
-	if(!headers_sent())
-	{
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
-	}
 	echo $e->getContent();
 	exit();
 }

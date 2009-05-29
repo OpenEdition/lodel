@@ -84,6 +84,25 @@ function calculateXMLSchema($context)
  */
 function indentXML($contents, $output = false, $indenter= '  ')
 {
+    // on vire toute l'indentation existante
+    $contents = trim(strtr(preg_replace("/[\t\n\r]+/", '', $contents), array(
+                    "\n"    => '',
+                    "\r"    => '',
+                    "\t"    => '')));
+    $dom = new DomDocument;
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $dom->loadXML($contents);
+    $contents = $dom->saveXML();
+    unset($dom);
+    if($output)
+    { 
+        echo $contents;
+        return;
+    }
+    else return $contents;
+    
+    
 	$arr = preg_split("/\s*(<(\/?)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)\s*/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$ret = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	if ($output)
@@ -132,13 +151,13 @@ function loop_xsdtypes(&$context, $funcname)
 	if ($balises) {
 		call_user_func("code_before_$funcname", $context);
 	}
+	$count = 0;
 	foreach ($balises as $name) {
 		if (is_numeric($name)) {
 			continue;
 		}
 		$localcontext = $context;
-		$localcontext['count'] = $count;
-		$count ++;
+		$localcontext['count'] = ++$count;
 		$localcontext['name'] = preg_replace("/\s/", "_", $name);
 		call_user_func("code_do_$funcname", $localcontext);
 	}
@@ -183,7 +202,7 @@ function loop_fields_values(& $context, $funcname)
 		$localcontext['name'] = $row['name'];
 		$localcontext['type'] = $row['type'];
 		$localcontext['identity'] = $context['identity'];
-		if ($rowsvalued[$row['name']]) {
+		if (isset($rowsvalued[$row['name']])) {
 			$localcontext['value'] = $rowsvalued[$row['name']];
 		}
 		call_user_func("code_do_$funcname", $localcontext);

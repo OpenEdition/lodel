@@ -46,18 +46,14 @@
  */
 
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate();
-
-require 'view.php';
-
-$view = &View::getView();
-$view->renderCached($context, 'backend');
-exit;
+    include 'auth.php';
+    authenticate();
+    
+    View::getView()->renderCached('backend');
+    exit;
 }
 catch(Exception $e)
 {

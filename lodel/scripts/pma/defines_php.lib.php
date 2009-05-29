@@ -109,9 +109,9 @@ function PMA_dl($module) {
 
 // Whether GD2 is present
 if (!defined('PMA_IS_GD2')) {
-    if ($cfg['GD2Available'] == 'yes') {
+    if ($GLOBALS['cfg']['GD2Available'] == 'yes') {
         define('PMA_IS_GD2', 1);
-    } elseif ($cfg['GD2Available'] == 'no') {
+    } elseif ($GLOBALS['cfg']['GD2Available'] == 'no') {
         define('PMA_IS_GD2', 0);
     } else {
         if (!@extension_loaded('gd')) {

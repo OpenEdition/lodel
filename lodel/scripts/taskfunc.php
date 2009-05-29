@@ -55,10 +55,10 @@
  */
 function maketask($name, $etape, $context, $id = 0)
 {
-	global $lodeluser, $db;
+	global $db;
 	if (is_array($context))
 		$context = addslashes(serialize($context));
-	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".$lodeluser['id']."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	return $db->insert_ID();
 }
 
@@ -71,15 +71,12 @@ function maketask($name, $etape, $context, $id = 0)
 function gettask(& $id)
 {
 	global $db;
-	$id = intval($id);
+	$id = (int)$id;
 	$row = $db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
 	if ($row === false)
 		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	if (!$row) {
-		if(!class_exists('View', false))
-			require 'view.php';
-		$view = &View::getView();
-		$view->back();
+		View::getView()->back();
 		return;
 	}
 	$row = array_merge($row, unserialize($row['context']));
@@ -99,7 +96,7 @@ function gettask(& $id)
 function gettypeandclassfromtask($task, & $context)
 {
 	global $db;
-	if ($task['identity']) {
+	if (isset($task['identity']) && $task['identity']) {
 		$row = $db->getRow(lq("SELECT class,idtype,idparent FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$task['identity']."'"));
 		if ($db->errorno())
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -109,12 +106,11 @@ function gettypeandclassfromtask($task, & $context)
 		if (!$context['class'])
 			trigger_error("ERROR: can't find entity ".$task['identity']." in gettypeandclassfromtask", E_USER_ERROR);
 	} else {
-		$idtype = $task['idtype'];
-		if (!$idtype)
+		if (!isset($task['idtype']) || !($idtype = $task['idtype']))
 			trigger_error("ERROR: idtype must be given by task in gettypeandclassfromtask", E_USER_ERROR);
 		// get the type 
-		$dao = & getDAO("types");
-		$votype = $dao->getById($idtype, "class");
+		if(!defined('INC_FUNC')) include 'func.php';
+		$votype = getDAO("types")->getById($idtype, "class");
 		$context['class'] = $votype->class;
 	}
 }

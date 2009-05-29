@@ -45,15 +45,26 @@
  */
 
 require 'lodelconfig.php';
-require 'auth.php';
-authenticate(LEVEL_VISITOR);
-$name = addslashes($_COOKIE[$sessionname]);
+try
+{
+    require 'auth.php';
+    authenticate();
+    
+    if(isset($_COOKIE[C::get('sessionname', 'cfg')]))
+    {
+        $name = addslashes($_COOKIE[C::get('sessionname', 'cfg')]);
+        $time = time()-1;
+        usemaindb();
+        $db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        $db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='".C::get('idsession', 'lodeluser')."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        setcookie(C::get('sessionname', 'cfg'), "", $time,C::get('urlroot', 'cfg'));
+    }
 
-$time = time()-1;
-usemaindb();
-$db->execute(lq("DELETE FROM #_TP_session WHERE name='". $name. "'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-setcookie($sessionname,"",$time,$urlroot);
-
-header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). $urlroot);
-exit;
+    header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('urlroot', 'cfg'));
+    exit;
+}
+catch(LodelException $e)
+{
+    die($e->getMessage());
+}
 ?>

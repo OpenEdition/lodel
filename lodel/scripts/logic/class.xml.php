@@ -89,7 +89,7 @@ class XMLLogic extends Logic {
 		$context['identity'] = $id;
 
 		if(!function_exists('calculateXML'))
-			require 'xmlfunc.php';
+			include 'xmlfunc.php';
 		$context['contents'] =  $contents = calculateXML ($context);
 		// !! BEWARE !!
 		// validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
@@ -133,10 +133,11 @@ class XMLLogic extends Logic {
 //      calcul_page ($context,"xml-valid");
 //      exit (0);
 //    }	else 
-		if ($context['view'])	{
+		if (isset($context['view']))	{
 			return "_ok";
 		} else  {// "download"
 			download ("", "$class-$id.xml", $contents);
+            		exit();
 		}
 	}
 	/**
@@ -145,20 +146,21 @@ class XMLLogic extends Logic {
 	*/
 	public function generateXSDAction (&$context, &$error) {
 		
-		if (!$context['class'])
+		if (empty($context['class']))
 			trigger_error('ERROR: no class given. Class attribute is required to generate XSD Schema', E_USER_ERROR);
 		if(!function_exists('calculateXML'))
-			require 'xmlfunc.php';
+			include 'xmlfunc.php';
 		//verif if the given class is OK
 		global $db;
-		$class = $context['class'];
+		$class = addslashes($context['class']);
 		$row = $db->getOne (lq ("SELECT id FROM #_TP_classes WHERE class='$class'"));
 		if (!$row) {
 			header ("Location: not-found.html"); return;
 		}
-		$originalname = $context['site']. '-'.$context['class']. '-schema-xml.xsd';
+		$originalname = C::get('site', 'cfg'). '-'.$context['class']. '-schema-xml.xsd';
 		$ret = calculateXMLSchema ($context);
 		download ("", $originalname, $ret);
+        	exit();
 	}
 }
 ?>

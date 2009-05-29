@@ -54,40 +54,23 @@ if (file_exists("siteconfig.php")) {
 	require 'siteconfig.php';
 } else {
 	require 'lodelconfig.php';
-	ini_set('include_path', $home. PATH_SEPARATOR. ini_get('include_path'));
+	ini_set('include_path', $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
+    include 'context.php';
+    C::setCfg($cfg);
+    include 'class.errors.php';
 }
-if('path' != URI && preg_match("/^".preg_quote($urlroot.$site, '/')."\/index(\d*).$extensionscripts(\?[^\/]*)?(\/.+)$/", $_SERVER['REQUEST_URI'])>0) {
-	header("HTTP/1.0 403 Bad Request");
-	header("Status: 403 Bad Request");
-	header("Connection: Close");
-	include "../missing.html";
-	exit;
-}
-
-require 'class.errors.php';
-set_error_handler(array('LodelException', 'exception_error_handler'));
-
-// les niveaux d'erreur à afficher
-error_reporting(E_ALL);
 
 try
 {
-require 'auth.php';
-authenticate();
-//on indique qu'on veut pas le desk
-$GLOBALS['nodesk'] = true;
-require 'view.php';
-$view = &View::getView();
-$view->renderCached($context, 'index');
+    include 'auth.php';
+    authenticate();
+    //on indique qu'on veut pas le desk
+    $GLOBALS['nodesk'] = true;
+    include 'view.php';
+    View::getView()->renderCached('index');
 }
 catch(Exception $e)
 {
-	if(!headers_sent())
-	{
-		header("HTTP/1.0 403 Internal Error");
-		header("Status: 403 Internal Error");
-		header("Connection: Close");
-	}
 	echo $e->getContent();
 	exit();
 }

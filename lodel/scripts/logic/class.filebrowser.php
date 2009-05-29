@@ -63,7 +63,7 @@ class FileBrowserLogic {
 	/** Constructor
 	*/
 	public function __construct() {
-		if (!$GLOBALS['lodeluser']['redactor']) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		$GLOBALS['nodesk']=true;
 	}
 
@@ -84,9 +84,9 @@ class FileBrowserLogic {
 
 	public function submitAction(&$context,&$error)
 	{
-		if ($_POST['checkmail']) return $this->checkMailAction($context,$error);
-		if ($_POST['resize'] && $_POST['newsize']) return $this->resizeAction($context,$error);
-		if ($_POST['delete']) return $this->deleteAction($context,$error);
+		if (isset($_POST['checkmail'])) return $this->checkMailAction($context,$error);
+		if (isset($_POST['resize']) && isset($_POST['newsize'])) return $this->resizeAction($context,$error);
+		if (isset($_POST['delete'])) return $this->deleteAction($context,$error);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class FileBrowserLogic {
 	public function checkMailAction(&$context,&$error)
 	{
 		if(!function_exists('checkmailforattachments'))
-			require ("imapfunc.php");
+			include ("imapfunc.php");
 		$context['nbattachments']=checkmailforattachments();
 		update();
 		return "filebrowser";
@@ -107,9 +107,8 @@ class FileBrowserLogic {
 		*/
 
 	public function deleteAction(&$context,&$error)
-
 	{
-		$selectedfiles=is_array($context['file']) ? array_keys($context['file']) : false;
+		$selectedfiles= (isset($context['file']) && is_array($context['file'])) ? array_keys($context['file']) : false;
 		$dh=@opendir(UPLOADDIR);
 		if (!$dh) trigger_error("ERROR: can't open upload directory", E_USER_ERROR);
 
@@ -131,9 +130,9 @@ class FileBrowserLogic {
 	public function resizeAction(&$context,&$error)
 
 	{
-		$selectedfiles=is_array($context['file']) ? array_keys($context['file']) : false;
+		$selectedfiles= (isset($context['file']) && is_array($context['file'])) ? array_keys($context['file']) : false;
 		if(!function_exists('resize_image'))
-			require("images.php");
+			include("images.php");
 		$dh=@opendir(UPLOADDIR);
 		if (!$dh) trigger_error("ERROR: can't open upload directory", E_USER_ERROR);
 		while( ($file=readdir($dh))!==false ) {
@@ -156,8 +155,8 @@ function loop_filelist($context,$funcname)
 {
 	$dh=@opendir(UPLOADDIR);
 	if (!$dh) { // create the dir if needed
-		if (!@mkdir(UPLOADDIR,0777 & octdec($GLOBALS['filemask']))) trigger_error("ERROR: unable to create the directory \"UPLOADDIR\"", E_USER_ERROR);
-		@chmod(UPLOADDIR,0777 & octdec($GLOBALS['filemask']));
+		if (!@mkdir(UPLOADDIR,0777 & octdec(C::get('filemask', 'cfg')))) trigger_error("ERROR: unable to create the directory \"UPLOADDIR\"", E_USER_ERROR);
+		@chmod(UPLOADDIR,0777 & octdec(C::get('filemask', 'cfg')));
 		$dh=@opendir(UPLOADDIR);
 		if (!$dh) trigger_error("ERROR: can't open \"UPLOADDIR\" dir", E_USER_ERROR);
 	}
@@ -166,7 +165,7 @@ function loop_filelist($context,$funcname)
 		if ($file[0]=="." || !is_file(UPLOADDIR."/".$file)) continue;
 		$localcontext=$context;
 		// is it an image ?
-		list($w,$h)=getimagesize(UPLOADDIR."/".$file);
+		list($w,$h)=@getimagesize(UPLOADDIR."/".$file);
 		if ($w && $h) {
 			$localcontext['imagesize']="$w x $h";
 		}

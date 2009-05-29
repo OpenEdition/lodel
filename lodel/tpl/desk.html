@@ -26,7 +26,6 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
-<LET VAR="sitedesk"><?php echo $GLOBALS['site'];?></LET>
 <script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
 
 <style type="text/css">
@@ -58,7 +57,7 @@
 		background-position: 0 .5ex;
 		background-repeat: no-repeat;
 	}
-<IF COND="FALSE SEQ [#CURRENTURL|strpos('lodel/edition')]">
+<IF COND="defined('backoffice') AND FALSE SEQ [#CURRENTURL|strpos('lodel/edition')]">
 	#lodel-container{
 		position: relative;
 	}
@@ -75,23 +74,25 @@
 	}
 <IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin')">
 	div#lodelGlobalDeskDisplayer {
-		text-align:left;
+		text-align:middle;
 		background-color:#E5E8E3;
 		width:100%;
 	}
+	div#lodelGlobalDeskDisplayer a {
+		display:block;
+	}
 </IF>
 </style>
-
 <div id="lodel-globalDesk" style="<IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin') AND ![#LODELUSER.DESK]">display:none;<ELSE/>display:block;</IF>">
 <div id="lodel-desk">
 	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
 	<ul  class="group1">
-	<IF COND="[#SITEDESK]">
+	<IF COND="[#SITE]">
 		<li>
 			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')] AND [#LO] NE 'internal_messaging'">
-			<a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 			<ELSE/>
-			<a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
 			</IF>
 			[@COMMON.EDITION]
 			</a>
@@ -129,7 +130,7 @@
 			<IF COND="![#LODELUSER.REDACTOR]">	
 				<a href="#" onclick="return(false)" title="[@COMMON.ADMINISTRATION]" >
 			<ELSE/>
-				<IF COND="[#CURRENTURL|strpos('lodel/admin')] AND ![#CURRENTURL|strpos('lo=internal_messaging')] AND [#LO] NE 'internal_messaging' AND !(([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')])">	
+				<IF COND="[#CURRENTURL|strpos('lodel/admin')] AND [#LO] NE 'internal_messaging' AND !(([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')])">	
 					<a class="actif" href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
 				<ELSE/>
 					<a href="[#SITEROOT]lodel/admin/index.php" title="[@COMMON.ADMINISTRATION]">
@@ -146,7 +147,7 @@
 			[#SITE]-[#LODELUSER.ID]
 		</IF>
 		</LET>
-		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status EQ 1">
+		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
@@ -165,7 +166,7 @@
 		</li>
 		<li>
 		<LET VAR="lodeluserid">lodelmain-[#LODELUSER.ID]</LET>
-		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="addressee EQ '[#LODELUSERID|trim]' AND status EQ 1">
+		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] OR [#LO] EQ 'internal_messaging'">
@@ -292,23 +293,24 @@
 			</IF>
 			<li><a href="[#SITEROOT]lodel/edition/index.php?page=sitemap" target="_blank" title="[@COMMON.SITE_MAP]">[@COMMON.SITE_MAP]</a></li>
 		</IF>
-		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')]">
+		<IF COND="[#CURRENTURL|strpos('lo=internal_messaging')] AND [#DO]">
+            		<LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
 			<li>
-				<IF COND="([#DIRECTORY|empty] OR [#CURRENTURL|strpos('directory=inbox')]) AND [#DO] EQ 'list'">
+				<IF COND="('inbox' EQ [#DIRECTORY]) AND [#DO] EQ 'list'">
 					<strong>[@ADMIN.INTERNAL_MESSAGING_INBOX]</strong>
 				<ELSE/>
 					<a href="index.php?lo=internal_messaging&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_INBOX]">[@ADMIN.INTERNAL_MESSAGING_INBOX]</a>
 				</IF>
 			</li>
 			<li>
-				<IF COND="[#CURRENTURL|strpos('directory=sent')] AND [#DO] EQ 'list'">
+				<IF COND="[#CURRENTURL|stripos('directory=sent')] AND [#DO] EQ 'list'">
 					<strong>[@ADMIN.INTERNAL_MESSAGING_SENT]</strong>
 				<ELSE/>
 					<a href="index.php?lo=internal_messaging&amp;directory=sent&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_SENT]">[@ADMIN.INTERNAL_MESSAGING_SENT]</a>
 				</IF>
 			</li>
 			<li>
-				<IF COND="[#CURRENTURL|strpos('directory=trash')] AND [#DO] EQ 'list'">
+				<IF COND="[#CURRENTURL|stripos('directory=trash')] AND [#DO] EQ 'list'">
 					<strong>[@ADMIN.INTERNAL_MESSAGING_TRASH]</strong>
 				<ELSE/>
 					<a href="index.php?lo=internal_messaging&amp;directory=trash&amp;do=list" title="[@ADMIN.INTERNAL_MESSAGING_TRASH]">[@ADMIN.INTERNAL_MESSAGING_TRASH]</a>
@@ -318,14 +320,14 @@
 			<li><a>&nbsp;</a></li>
 			
 				<li>
-					<IF COND="[#SITEDESK]">
+					<IF COND="[#SITE]">
 						<FUNC NAME="LIGHT_SEARCH_ENGINE" QUERY="[#QUERY]">
 					<ELSE />
-						<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status gt 0">
+						<LOOP NAME="nom_des_sites_pour_desk" TABLE="sites" WHERE="status GT 0">
 							<BEFORE>
 							<fieldset class="bar">
 								<label for="sites">[@LODELADMIN.SITE] :</label>
-								<select onchange="select_url(this)" class="barInfo" id="sites">		
+								<select onchange="select_url(this);" class="barInfo" id="sites">		
 								<option>--</option>	
 								</BEFORE>
 								<DO>
@@ -346,7 +348,7 @@
 	
 	<table class="infos">
 	
-	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITEDESK]' AND status GT 0">
+	<LOOP NAME="nom_site_for_desk" TABLE="sites" WHERE="name='[#SITE]' AND status GT 0">
 		<BEFORE>
 		<tr>
 		<th>[@COMMON.SITE]</th>
@@ -373,42 +375,46 @@
 	)</em>
 	</td>
 	</tr>
-	<!--[<tr>
-	
+    <IF COND="defined('backoffice-lodeladmin')">
+	<tr>
 	<th>[@COMMON.INTERFACE_LANGUAGE]</th>
 	<td>
 	<select title="[@COMMON.SELECT_AN_ITEM_TO_CHANGE_THE_LANGUAGE_USED]" onchange="change_language(this)">
 		<LOOP NAME="translations_interface" DATABASE="lodelmain" TABLE="translations" WHERE="textgroups='interface'" ORDER="rank">
-		<IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected="selected"><ELSE/><option value="[#LANG]"></IF>[#TITLE]</option>
+		<IF COND="[#LODELUSER.LANG] eq [#LANG]"><option value="[#LANG]" selected="selected"><ELSE/><option value="[#LANG]"></IF>
+        <LET VAR="lang">[#LANG|strtoupper]</LET>
+        <IF COND="[#DEFAULTLANG.#LANG]">[#DEFAULTLANG.#LANG]<ELSE/>[#TITLE]</IF>
+        </option>
 		</LOOP>
 	</select>
 	</td>
-	</tr>]-->
+	</tr>
+    </IF>
 	</table>
 
 </div>
 
-<IF COND="[#LODELUSER.RIGHTS] EQ 128">
+<IF COND="[#LODELUSER.ADMINLODEL]">
 	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>
 		</DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
-		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
-<ELSEIF COND="[#LODELUSER.RIGHTS] GT 10">
+<ELSEIF COND="[#LODELUSER.REDACTOR]">
 	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5 AND lodelmain.session.userrights LT '128'">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="![%USERSNAME|empty]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 </IF>
-<IF COND="![%USERSNAME|empty]">
+<IF COND="[%USERSNAME]">
 <div class="loggedUsers">
-<a href="#" onclick="if(document.getElementById('loggedUsers').style.display=='' || document.getElementById('loggedUsers').style.display=='none') document.getElementById('loggedUsers').style.display='inline';else document.getElementById('loggedUsers').style.display='none';">
+<a href="javascript:;" onclick="if(document.getElementById('loggedUsers').style.display=='' || document.getElementById('loggedUsers').style.display=='none') document.getElementById('loggedUsers').style.display='inline';else document.getElementById('loggedUsers').style.display='none';">
 <img src="[#SHAREURL]/images/personne.gif" width="17px" height="20px" title="[@COMMON.LOGGED_USERS]" alt="[@COMMON.LOGGED_USERS]"/>
 </a>
 &nbsp;<span id="loggedUsers">[@COMMON.LOGGED_USERS] : [%USERSNAME]</span>
@@ -424,7 +430,7 @@
 </div>
 <IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin')">
 <div id="lodelGlobalDeskDisplayer">
-<a href="#" onclick="javascript:manageDesk('[#SHAREURL]', '[@COMMON.HIDE_DESK]', '[@COMMON.SHOW_DESK]', '[#SITEDESK]', '[@ADMIN.NAVIGATOR_NOT_AJAX|addslashes]', '[@ADMIN.DESK_NOT_SAVED]');return false;">
+<a href="#" onclick="javascript:manageDesk('[#SHAREURL]', '[@COMMON.HIDE_DESK]', '[@COMMON.SHOW_DESK]', '[#SITE]', '[@ADMIN.NAVIGATOR_NOT_AJAX|addslashes]', '[@ADMIN.DESK_NOT_SAVED]');return false;">
 <IF COND="![#LODELUSER.DESK]">
 <img src="[#SHAREURL]/images/fleche_bas_gris.png" id="lodelGlobalDeskDisplayer-img" alt="[@COMMON.SHOW_DESK]" title="[@COMMON.SHOW_DESK]" />
 <ELSE/>

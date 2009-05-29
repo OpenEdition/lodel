@@ -44,13 +44,12 @@
  */
 
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate();
-require 'search.inc.php';
+    include 'auth.php';
+    authenticate();
+    include 'search.inc.php';
 }
 catch(Exception $e)
 {

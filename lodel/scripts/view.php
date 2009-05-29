@@ -50,8 +50,10 @@
  * 
  * Exemple d'utilisation de ce singleton :
  * <code>
- * $view =& getView();
- * $view->render($context,$tpl);
+ * $view = getView();
+ * $view->render($tpl);
+ * OU
+ * View::getView->render($tpl);
  * </code>
  *
  * @package lodel
@@ -68,10 +70,6 @@
  * @see controler.php
  */
 
-// needed functions
-if(!function_exists('getCachedFileName'))
-	require 'cachefunc.php';
-
 class View
 {
 	/** 
@@ -79,6 +77,12 @@ class View
 	 * @var string 
 	 */
 	private $_cachedfile;
+    
+	/**
+	* Le nom réel du fichier mis dans le cache par Cache_Lite
+	* @var string
+	*/
+	private $_cachedfilename;
 
 	/** 
 	 * Les options du cache
@@ -97,44 +101,66 @@ class View
 	 * @var object
 	 */
 	private static $_instance;
-
+    
 	/**
-	 * le $context sauvegardé
-	 * @var array
-	 * @see $this->_eval()
-	 * @see insert_template()
-	 */
-	private static $_context;
-	
-	/**
-	 * LodelParser
-	 * Référence vers l'objet
+	* site courant
+	* @var string
 	*/
-	private $_parser;
+	private $_site;
 
 	/**
-	 * nom du site en cours
+	* lien relatif vers le répertoire lodel/scripts/
+	* @var string
+	*/
+	private $_home;
+	
+    	/**
+	* timestamp correspondant à l'appel de la vue
+	* @var int
+	*/
+	static public $time;
+
+    	/**
+	* micro time correspondant à l'appel de la vue
+	* @var int
+	*/
+	static public $microtime;
+
+	/**
+	* instance of Cache_Lite
+	* @var object
+	*/
+	private $_cache;
+
+	/**
+	 * page which will be displayed
+	 * cached for trigger postview
 	 * @var string
 	 */
-	private $_site;
-	
+	static public $page;
+    
 	/**
-	 * doit-on rafraichir les templates/block inclus dynamiquement
-	 * @var bool
-	 */
-	private $_toRefresh;
-	
+	* no cache
+	* used to indicates that we must NOT use cache at all (read/save)
+	* @var bool
+	*/
+	static public $nocache;
+    
 	/** 
 	 * Constructeur privé
 	 * @access private
 	 */
 	private function __construct() 
 	{
-		$this->_cacheOptions = $GLOBALS['cacheOptions'];
-		$this->_site = $GLOBALS['site'];
-		$this->_toRefresh = false;
+		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
 		$this->_evalCalled = false;
-		$this->_parser = null;
+		$this->_cachedfile = null;
+		$this->_cache = null;
+		$this->_site = C::get('site', 'cfg');
+		$this->_home = C::get('home', 'cfg');
+        	self::$time = time();
+		self::$microtime = microtime(true);
+        	self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg'));
 	}
 
 	/**
@@ -143,7 +169,7 @@ class View
 	 */ 
 	public function __clone()
 	{ 
-		return View::getView();
+		return self::getView();
 	}
 
 	/**
@@ -153,13 +179,12 @@ class View
 	 *
 	 * @return object l'instance de la classe view
 	 */
-	public static function &getView()
+	public static function getView()
 	{
 		if (!isset(self::$_instance)) 
 		{
 			$c = __CLASS__;
 			self::$_instance = new $c;
-			self::$_context = $GLOBALS['context'];
 		}
 		return self::$_instance;
 	}
@@ -176,23 +201,34 @@ class View
 	 */
 	public function back($back = 1)
 	{
-		global $db, $idsession;
+		global $db;
 
+		$idsession = C::get('idsession', 'lodeluser');
 		$offset = $back-1;
 		usemaindb();
 		// selectionne les urls dans la pile grâce à l'idsession et suivant la
 		// la profondeur indiquée (offset)
-		$result = $db->selectLimit(lq("SELECT id, url FROM #_MTP_urlstack WHERE url!='' AND idsession='{$idsession}' AND site='{$GLOBALS['site']}' ORDER BY id DESC"), 1, $offset) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->selectLimit(lq("
+              SELECT id, url 
+                FROM #_MTP_urlstack 
+                WHERE url!='' AND idsession='{$idsession}' AND site='".$this->_site."' 
+                ORDER BY id DESC"), 1, $offset) 
+            		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
-
+        	$result->Close();
 		$id = $row['id'];	
 		$newurl = $row['url'];
 		
 		if ($id) {
-			$db->execute(lq("DELETE FROM #_TP_urlstack WHERE id>='{$id}' AND idsession='{$idsession}' AND site='{$GLOBALS['site']}'")) or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$db->execute(lq("
+                 DELETE FROM #_TP_urlstack 
+                    WHERE id>='{$id}' AND idsession='{$idsession}' AND site='".$this->_site."'")) 
+                		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
 			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
-			$newurl = "index.". ($GLOBALS['extensionscripts'] ? $GLOBALS['extensionscripts'] : 'php');
+			$ext = defined('backoffice') || defined('backoffice-lodeladmin') ? 'php' : C::get('extensionscripts');
+			$newurl = "index.". $ext;
 		}
 
 		if (!headers_sent()) {
@@ -212,85 +248,66 @@ class View
 	 * Cette fonction gère la mise en cache et le recalcule si nécessaire. C'est-à-dire si celui-ci
 	 * n'existe pas, si celui-ci n'est plus à jour, n'est plus valide,...
 	 * 
-	 * @param array $context Le tableau de toutes les variables du contexte
 	 * @param string $tpl Le nom du template utilisé pour l'affichage
 	 * @param boolean $caching Si on doit utiliser le cache ou non (par défaut à false)
 	 *
 	 */
-	public function render(&$context, $tpl, $caching = false)
+	public function render($tpl, $caching = false)
 	{
-		global $home, $format;
-		// if we are in lodel/edition or lodel/admin or /lodeladmin
-		// we need to specify the tpl name
-		// because logic is not all time specified in uri
-		if(defined('backoffice') || defined('backoffice-lodeladmin'))
-			$this->_makeCachedFileName($tpl);
-		else
+		C::set('tpl', $tpl);
+		
+		if(!isset($this->_cachedfile))
+		{	
 			$this->_makeCachedFileName();
-		if(!class_exists('Cache_Lite', false))
-			require 'Cache/Lite.php';
-		$cache = new Cache_Lite($this->_cacheOptions);
+		}
 
+		C::trigger('preview');
+		$tpl = C::get('tpl');
+
+		$format = C::get('format');
 		$base = $tpl.($format ? '_'.$format : '');
+	
+		$context =& C::getC();
 
-		if(isset($_REQUEST['clearcache']) && $_REQUEST['clearcache'])
+		// we try to reach the cache only if asked and no POST datas
+		if($caching && !self::$nocache) 
 		{
-			clearcache(true);
-		} elseif($caching && (!isset($context['nocache']) || !$context['nocache']) && ($cachedTplMtime = myfilemtime(getCachedFileName("tpl_{$base}", $this->_site.'_tpl', $this->_cacheOptions))) 
-			>= ($tplMtime = @filemtime('./tpl/'.$base.'.html')) && ($content = $cache->get($this->_cachedfile, $this->_site))) 
-		{
-			if(preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m))
+			if(!isset($this->_cache))
 			{
-				if(is_numeric($m[1]))
-				{
-					$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-					$GLOBALS['sqlCacheTime'] = $m[1];
-				}
-				else
-				{
-					$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-					$GLOBALS['sqlCacheTime'] = 0;
-				}
+				$this->_cache = new Cache_Lite($this->_cacheOptions);
 			}
-			if(FALSE !== ($content = $this->_isCacheValid($content, $context))) 
-			{
-				echo $this->_eval($content, $context, true);
-				if(isset($sqlCacheTime))
-					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
-				flush();
-				$cache->extendLife();
-				// reset the context
-				self::resetContext();
-				return true;
-			} 
-			else 
-			{
-				$this->_toRefresh = true;
-				unset($content);
-			}
-			if(isset($sqlCacheTime))
-				$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
-		} 
-		elseif(isset($cachedTplMtime) && isset($tplMtime) && $cachedTplMtime < $tplMtime) 
-		{
-			$cache->remove('tpl_'.$base, $this->_site.'_tpl', true);
-			$this->_toRefresh = true;
-		} 
-		else 
-		{
-			$this->_toRefresh = true;
-		}
-		// pas de fichier dispo dans le cache ou fichier cache à recompiler
-		// on le calcule, l'enregistre, l'execute et affiche le résultat
-		$content = _indent($this->_calcul_page($context, $tpl));
-		if(empty($_POST)) {
-			$cache->save($content, $this->_cachedfile, $this->_site);
-		}
 
-		echo $this->_eval($content, $context, true);
-		flush();
-		// reset the context
-		self::resetContext();
+			$recalcul = false;
+			$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
+
+			if(!$contents) $recalcul = true;
+			elseif(C::get('debugMode', 'cfg'))
+			{ // if in debug mode we compare the last modified time of both template and cache files
+				if($this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html'))
+					$recalcul = true;
+			}
+
+			if(!$recalcul)
+			{
+				$pos = strpos($contents, "\n");
+				$timestamp = (int)substr($contents, 0, $pos);
+				if(0 === $timestamp || $timestamp > self::$time)
+				{
+					self::$page = $this->_eval(substr($contents, $pos+1), $context);
+					$this->_print();
+					return true;
+				}
+				
+				unset($timestamp, $pos);
+			}
+            
+            		unset($contents);
+		} 
+
+		// empty cache, let's calculate and display it
+		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
+        	$this->_print();
+        
 		return true;
 	}
 
@@ -299,173 +316,166 @@ class View
 	 * 
 	 * Alternative à la fonction render.
 	 *
-	 * @param array $context Le tableau de toutes les variables du contexte
 	 * @param string $tpl Le nom du template utilisé pour l'affichage
 	 * @return retourne la même chose que la fonction render
 	 * @see render()
 	 */
-	public function renderCached(&$context, $tpl)
+	public function renderCached($tpl)
 	{
-		return $this->render($context, $tpl, true);
+		return $this->render($tpl, true);
 	}
 
 	/**
-	* Fonction qui affiche un template inclus en LodelScript
-	*
-	* @param array $context le context
-	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
-	* @param string $base_rep chemin vers répertoire tpl
-	* @param bool $escRefresh doit-on rafraichir le template
-	* @param string $refreshTime (optionnel) temps de refresh pour le manager
-	* @param int $blockId (optionnel) identifiant du block
-	* @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
+	* Print the page 
+	* This function tries to compress the page with gz_handler
+	* It also call the triggers postview
 	*/
-	public function renderTemplateFile(&$context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
+	private function _print()
 	{
-		global $lodeluser, $home;
-		
-		if(!$base_rep)
-			$base_rep = './tpl/';
-		if (!file_exists("tpl/{$tpl}.html") && file_exists($home. "../tpl/{$tpl}.html")) {
-			$base_rep = $home. '../tpl/';
+		C::trigger('postview');
+		@ob_start('ob_gzhandler'); // try to gzip
+		echo self::$page;
+		@ob_end_flush();
+		self::$page = null; // memory
+	}
+
+	/**
+	* Fonction essayant de retourner le cache si celui-ci est valide
+	* utilisée uniquement côté site
+	*/
+	public function renderIfCacheIsValid()
+	{
+        	if(self::$nocache) return false;
+        	C::trigger('preview');
+		$this->_makeCachedFileName();
+		if(!isset($this->_cache))
+		{
+			$this->_cache = new Cache_Lite($this->_cacheOptions);
+		}
+		$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
+		if(!$contents) return false;
+		$pos = strpos($contents, "\n");
+		$timestamp = (int)substr($contents, 0, $pos);
+		if(0 === $timestamp || $timestamp > self::$time)
+		{
+			self::$page = $this->_eval(substr($contents, $pos+1), C::getC());
+			$this->_print();
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Fonction qui affiche une template inclus
+	 * 
+	 * @param array $context le contexte passé par référence
+	 * @param string $tpl Le nom du template utilisé pour l'affichage
+	 * @param string $cache_rep répertoire cache (optionnel)
+	 * @param string $base_rep lien vers le répertoire contenant le tpl
+	 * @param int $blockId numéro du block (optionnel)
+	 * @param string $loopName nom de la loop (optionnel)
+	 * @return string le template html
+	 */
+	public function getIncTpl(&$context, $tpl, $cache_rep='', $base_rep='tpl/', $blockId=0, $loopName=null)
+	{
+		$sum = null;
+		if(is_string($context))
+		{
+			$sum = crc32($context);
+			$context = unserialize(base64_decode($context));
 		}
 
+		if(!$base_rep) $base_rep = './tpl/';
+		if (!file_exists("tpl/{$tpl}.html") && file_exists($this->_home. "../tpl/{$tpl}.html")) {
+			$base_rep = $this->_home. '../tpl/';
+		}
+	
 		$tplFile = $base_rep. $tpl. '.html';
 		$blockId = (int)$blockId;
 		$idcontext = (int)$context['id'];
-		$cachedTemplateFileName = str_replace('?id=0', '',
-					preg_replace(array("/#[^#]*$/",
-					"/[\?&]clearcache=[^&]*/","/(index\.{$GLOBALS['extensionscripts']}\??|\?)$/"), 
-					"", $_SERVER['REQUEST_URI']))
-					. "//". $GLOBALS['lang'] . "//". $lodeluser['name']. "//". $lodeluser['rights']
-					."//".$tpl.($blockId ? '//'.$blockId.'//'.$idcontext : '');
-		$tplName = ($blockId>0) ? "tpl_{$tpl}_block{$blockId}_{$idcontext}" : "tpl_".$tpl;
+        	$recalcul = true;
 
-		if(!class_exists('Cache_Lite', false)) require 'Cache/Lite.php';
-		
-		if(!empty($cache_rep)) 
-		{
-			$cacheDir = $this->_cacheOptions['cacheDir'];
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-		}
-
-		$cache = new Cache_Lite($this->_cacheOptions);
-		
-		if(myfilemtime(getCachedFileName($tplName, $this->_site.'_TemplateFile', $this->_cacheOptions)) <= 
-			@filemtime($tplFile)) 
-		{
-			$cache->remove($tplName, $this->_site.'_TemplateFile', true);
-			$cache->remove($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued', true);
-		} 
-		elseif($escRefresh || $this->_toRefresh) 
-		{
-			$cache->remove($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued', true);
-		}
-
-		if(isset($cacheDir)) 
-		{
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cachedir;
-			unset($cacheDir);
-		}
-
-		if($echo) 
-		{
-			if(!($content = $cache->get($cachedTemplateFileName, $this->_site.'_TemplateFileEvalued'))) 
+		if(!self::$nocache)
+        	{
+			if($blockId > 0)
 			{
-				if(!($content = $cache->get($tplName, $this->_site.'_TemplateFile'))) 
-				{
-					$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $blockId);
-				} 
-				else 
-				{
-					$cache->extendLife();
-				}
-
-				if($refreshTime !== 0)
-				{
-					if(is_numeric($refreshTime))
-					{
-						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-						$GLOBALS['sqlCacheTime'] = $refreshTime;
-					}
-					else
-					{
-						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-						$GLOBALS['sqlCacheTime'] = 0;
-					}
-				}
-
-				$content = _indent($this->_eval($content, $context, true));
-				$cache->save($content, $cachedTemplateFileName, $this->_site.'_TemplateFileEvalued');
-
-				if(isset($sqlCacheTime))
-				{
-					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
-				}
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+				$blockId.$sum.'//'.C::get('qs', 'cfg');
 			}
-
-			return $content;
-		}
-
-		if(!($content = $cache->get($tplName, $this->_site.'_TemplateFile'))) 
-		{
-			$content = $this->_calcul_page($context, $tpl, $cache_rep, $base_rep, true, $blockId);
-		} 
-		else 
-		{
-			$cache->extendLife();
-		}
-		
-		if(empty($refreshTime) && preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m)>0) 
-		{
-			$refreshTime = $m[1];
-		}
-
-		if(!empty($refreshTime)) 
-		{
-			unset($content);
-			$tmpcode = '';
-			// template manager
-			if (!is_numeric($refreshTime)) 
+			elseif(isset($loopName))
 			{
-				$refreshtimes = explode(",", $refreshTime);
-				foreach ($refreshtimes as $k=>$refreshtim) 
-				{
-					$refreshtim = explode(":", $refreshtim);
-					$tmpcode .= '$refreshtime['.$k.']=mktime('.(int)$refreshtim[0].','.(int)$refreshtim[1].','.(int)$refreshtim[2].',$date[\'mon\'],$date[\'mday\'],$date[\'year\']);';
-					$code.= ($k>0 ? ' || ' : '').'($cachetime<$refreshtime['.$k.'] && $refreshtime['.$k.']<$now)';
-				}
-				$tmpcode = '$now=time();$date=getdate($now);'.$tmpcode;
-				unset($refreshtimes, $refreshtim);
-			} 
-			else 
-			{
-				$code = '($cachetime + '.$refreshTime.') < time()';
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+				$loopName.$sum.'//'.C::get('qs', 'cfg');
 			}
-			// $escapeRefreshManager
-			// @see $this->_eval()
-			$content = 
-<<<PHP
-<?php 
-{$tmpcode}
-\$cachetime=myfilemtime(getCachedFileName("{$cachedTemplateFileName}", \$this->_site."_TemplateFileEvalued", \$this->_cacheOptions));
-if(({$code}) && !\$escapeRefreshManager){ 
-	echo \$this->renderTemplateFile(\$context, "{$tpl}", "{$cache_rep}", "{$base_rep}", true, "{$refreshTime}", '{$blockId}', true);
-}else{ 
-	echo \$this->renderTemplateFile(\$context, "{$tpl}", "{$cache_rep}", "{$base_rep}", false, "{$refreshTime}", '{$blockId}', true);
-}
-unset(\$cachetime,\$now,\$date,\$refreshtime);
-?>
-PHP;
-			unset($code, $tmpcode);
-		} 
-		else 
+			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+				C::get('qs', 'cfg');
+		
+			if(!empty($cache_rep)) 
+			{
+				$cacheDir = $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+			}
+			
+			$group = $this->_site.'_tpl_inc';
+			
+			if(!isset($this->_cache))
+			{
+				$this->_cache = new Cache_Lite($this->_cacheOptions);
+			}
+			elseif(isset($cacheDir))
+			{
+				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
+			}
+			
+			$recalcul = false;
+			
+			if($contents = $this->_cache->get($template_cache, $group))
+			{
+				$pos = strpos($contents, "\n");
+				$timestamp = (int)substr($contents, 0, $pos);
+				if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
+				else $contents = substr($contents, $pos+1);
+			}
+			else
+			{
+				$recalcul = true;
+			}
+		}
+        
+		if($recalcul)
 		{
-			$content = $this->_eval($content, $context, true);
+			$template = $this->_calcul_template($tpl, $cache_rep, $base_rep, $blockId, $loopName);
+			$template['contents'] = _indent($this->_eval($template['contents'], $context));
+
+			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60))
+			{
+				if(!isset($this->_cache))
+				{
+					$this->_cache = new Cache_Lite($this->_cacheOptions);
+				}
+				elseif(isset($cacheDir))
+				{
+					$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
+				}
+
+				$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
+				$this->_cache->save($timestamp."\n".$template['contents'], $template_cache, $group);
+				unset($timestamp);
+			}
+			$contents = $template['contents'];
+			unset($template);
+		}
+	
+		if(!self::$nocache && isset($cacheDir))
+		{
+			$this->_cache->setOption('cacheDir', $cacheDir);
 		}
 
-		return $content;
+		return $contents;
 	}
 
 	/**
@@ -473,87 +483,58 @@ PHP;
 	 *
 	 * Cette fonction calcule le nom du fichier mis en cache uniquement pour la page principale
 	 * et non pour les templates inclus dynamiquement
-	 * @param string $tpl nom du template appellé, optionnel
-	 * @see render()
 	 */
-	private function _makeCachedFileName($tpl='') 
+	private function _makeCachedFileName() 
 	{
-		global $lodeluser;
 		// Calcul du nom du fichier en cache
-		$this->_cachedfile = str_replace('?id=0', '',
-					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/", "/(index\.{$GLOBALS['extensionscripts']}\??|\?)$/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//". $lodeluser['name']. "//". $lodeluser['rights'].($tpl!='' ? '//'.$tpl : '');
-		$GLOBALS['cachedfile'] = getCachedFileName($this->_cachedfile, $this->_site, $this->_cacheOptions);
+		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('lang') .
+			"//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
 	}
 
 	/**
 	* Fonction qui execute le code PHP (si présent)
+    	* Evaluate the contents only if PHP code inside
 	*
-	* @param string $content contenu à évaluer
+	* @param string $contents contenu à évaluer
 	* @param array $context le context
-	* @param bool $escapeRefreshManager utilisé pour virer les balises de refresh si jamais page recalculée à la volée
 	* @return le contenu du code évalué
 	*/
-	private function _eval($content, $context, $escapeRefreshManager=false) 
+	private function _eval($contents, &$context) 
 	{
-		global $home;
-
-		if(FALSE !== strpos($content, '<?php')) 
+		if(false !== strpos($contents, '<?php')) 
 		{ // PHP to be evaluated
-			if(FALSE === $this->_evalCalled) 
+			if(!$this->_evalCalled) 
 			{
-				if(!function_exists('loop_errors'))
-					require 'loops.php';
-				if(!function_exists('textebrut'))
-					require 'textfunc.php';
-
-				if(!file_exists("./CACHE/require_caching/")) 
-				{
-					if(!mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask'])))
-						$this->_error("CACHE directory is not writeable.", __FUNCTION__, false);
-					@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
-				}
-
+				// needed funcs
+				if(!defined('INC_LOOPS')) include 'loops.php';
+				if(!defined('INC_TEXTFUNC')) include 'textfunc.php';
+				if(!defined('INC_FUNC')) include 'func.php'; 
+				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
+			
+            		$filename = './CACHE/require_caching/'.uniqid(mt_rand(), true);
 
-			$filename = './CACHE/require_caching/'.uniqid(mt_rand(), true);
-			if(!file_put_contents($filename, $content, LOCK_EX))
-				$this->_error("Error while writing CACHE required file ".$filename, __FUNCTION__, false);
+			$fh = @fopen($filename, 'w+b');
+			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
+		
+			@flock($fh, LOCK_EX);
+			$ret = @fwrite($fh, $contents);
+		
+			if(false === $ret)
+			{
+				@fclose($fh);
+				trigger_error('Cannot write in file '.$filename, E_USER_ERROR);
+			}
 
 			ob_start();
-			$refresh = require $filename;
-			$content =& ob_get_clean();
-			unlink($filename);
-			if('refresh' === (string)$refresh) 
-				return 'refresh';
+			include $filename;
+			$contents = ob_get_clean();
+            		@fclose($fh);
+			@unlink($filename);
 		}
 		
-		if(TRUE === $escapeRefreshManager) 
-		{
-			// escape the refresh
-			$content = preg_replace("/#LODELREFRESH\s+[^#]+#/", "", $content);
-		}
-		return $content;
-	}
-
-	/**
-	* Fonction qui vérifie qu'il ne faut pas rafraichir le template
-	*
-	* @param string $content contenu à évaluer
-	* @param array $context le context
-	*/
-	private function _isCacheValid($content, &$context) 
-	{
-		if(FALSE !== strpos($content, '<?php')) 
-		{
-			$content = $this->_eval($content, $context);
-			if('refresh' === (string)$content) 
-			{
-				return false;
-			}
-		}
-		return $content;
+		return $contents;
 	}
 
 	/**
@@ -563,58 +544,89 @@ PHP;
 	* @param string $base le nom du fichier template
 	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
 	* @param string $base_rep chemin vers répertoire tpl
-	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
-	* @param int $blockId (optionnel) numéro du block
+	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
+	* @param int $blockId (optionnel) numero du block
+	* @param string $loopName (optionnel) nom de la loop
 	*/
-	private function _calcul_template(&$context, $base, $cache_rep = '', $base_rep = './tpl/', $include=false, $blockId) 
+	private function _calcul_template($base, $cache_rep = '', $base_rep = './tpl/', $blockId=0, $loopName=null) 
 	{
-		global $home;
-		if(!empty($cache_rep)) 
-		{
-			$cacheDir = $this->_cacheOptions['cacheDir'];
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-		}
-
-		$group = $this->_site.'_'.($include ? 'TemplateFile' : 'tpl');
-		$idcontext = (int)$context['id'];
-		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}_{$idcontext}" : "tpl_$base";
-		
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) 
 		{
-			if (!headers_sent()) {
-				header("HTTP/1.0 400 Bad Request");
-				header("Status: 400 Bad Request");
-				header("Connection: Close");
-				flush();
-			}
-			$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, true);
-		}
-
-		$cache = new Cache_Lite($this->_cacheOptions);
-
-		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= @filemtime($tpl) || !$cache->get($template_cache, $group)) 
-		{
-			if(!$this->_parser)
+			$base_rep = C::get('base_rep.'.$base);
+            		$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
+			if(!$base_rep || !file_exists($tpl = $plugin_base_rep.$base_rep.'/tpl/'.$base.'.html'))
 			{
-				if(!class_exists('LodelParser', false))
-					require 'lodelparser.php';
-				$this->_parser =& LodelParser::getParser();
+				if (!headers_sent()) {
+					header("HTTP/1.0 400 Bad Request");
+					header("Status: 400 Bad Request");
+					header("Connection: Close");
+					flush();
+				}
+				$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, true);
 			}
-			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
-			$contents = $this->_parser->parse($tpl, $include, $blockId, $cache_rep);
-			if($include && $this->_parser->refresh) $contents = $this->_eval($contents, $context);
-			$cache->save($contents, $template_cache, $group);
-		} 
-		else 
-		{
-			$cache->extendLife();
 		}
-		// si jamais le path a été modifié on remet par défaut
-		if(isset($cacheDir)) 
+        
+        	$contents = false;
+        
+		if(!self::$nocache)
+		{
+			if(!empty($cache_rep)) 
+			{
+				$cacheDir = $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+			}
+		
+			$group = $this->_site.'_tpl';
+			
+			if($blockId>0)
+			{
+				$template_cache = "tpl_{$base}_block_{$blockId}";
+			}
+			elseif(isset($loopName))
+			{
+				$template_cache = "tpl_{$base}_loop_{$loopName}";
+			}
+			else
+			{
+				$template_cache = "tpl_{$base}";
+			}
+		
+			if(!isset($this->_cache))
+			{
+				$this->_cache = new Cache_Lite($this->_cacheOptions);
+			}
+			elseif(isset($cacheDir))
+			{
+				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
+			}
+		
+			$contents = $this->_cache->get($template_cache, $group);
+		}
+        
+		if($contents && !(C::get('debugMode', 'cfg') && $this->_cache->lastModified() < @filemtime($tpl)) )
+		{
+			$pos = strpos($contents, "\n");
+			$template['refresh'] = (int)substr($contents, 0, $pos);
+			$template['contents'] = substr($contents, $pos+1);
+		}
+        	else
+		{
+			// le tpl cache n'existe pas ou n'est pas a jour compare au fichier de maquette
+            		$template = LodelParser::getParser()->parse($tpl, $blockId, $cache_rep, $loopName);
+            		if(!self::$nocache)
+			    $this->_cache->save($template['refresh']."\n".$template['contents'], $template_cache, $group);
+		}
+        	unset($contents);
+
+		// si jamais le path a ete modifie on remet par defaut
+		if(!self::$nocache && isset($cacheDir)) 
 		{
 			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
+			$this->_cache->setOption('cacheDir', $cacheDir);
 		}
+
+        	return $template;
 	}
 
 	/**
@@ -624,96 +636,61 @@ PHP;
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
-	* @param string $base_rep chemin vers répertoire tpl
-	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
+	* @param string $cache_rep chemin vers repertoire cache si different de ./CACHE/
+	* @param string $base_rep chemin vers repertoire tpl
+	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
 	* @param int $blockId (optionnel) 
 	*/
-	private function _calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/', $include=false, $blockId=0)
+	private function _calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
 	{
-		global $format;
-		
-		if(!empty($cache_rep)) 
-		{
-			$cacheDir = $this->_cacheOptions['cacheDir'];
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-		}	
+		$format = C::get('format');
 
-		$group = $this->_site.'_'.($include ? 'TemplateFile' : 'tpl');
-		
 		if ($format && !preg_match("/\W/", $format)) 
 		{
-			$base .= "_$format";
+			$base .= "_{$format}";
 		}
+		C::set('format', null); // en cas de nouvel appel a calcul_page
 		
-		$idcontext = (int)$context['id'];
-		$template_cache = ($blockId>0) ? "tpl_{$base}_block{$blockId}_{$idcontext}" : "tpl_$base";
-		$i=0;
-		$cache = new Cache_Lite($this->_cacheOptions);
-		
-		// si jamais le path a été modifié on remet par défaut
-		if(isset($cacheDir)) 
-		{
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
-		}
-		
-		// on va essayer 10 fois (!!!) de récupérer ou générer le fichier mis en cache
-		do 
-		{
-			$content = $cache->get($template_cache, $group);
-			if(is_string($content))
-				break;
-			$this->_calcul_template($context, $base, $cache_rep, $base_rep, $include, $blockId);
-			$i++;
-		} while (10>$i);
+		$template_cache = "tpl_{$base}";
+			
+		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
+		$template['contents'] = _indent($this->_eval($template['contents'], $context));
 
-		$format = ''; // en cas de nouvel appel a calcul_page
-		if(!$content || is_object($content)) 
-		{	
-			// si cache_lite est configuré en 'pearErrorMode' => CACHE_LITE_ERROR_RETURN, on récupère l'erreur générée par raiseError()
-			include_once 'PEAR/PEAR.php';
-			$msg = 'Impossible to get cached TPL. Is the cache directory accessible ? (read/write)';
-			if(PEAR::isError($content))
-				$msg .= ". Cache_Lite says: ".$content->getMessage();
-			$this->_error($msg, __FUNCTION__, true);
-		} 
-		else 
+		if(!self::$nocache && 
+        		(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
 		{
-			if($include)
+			if(!empty($cache_rep)) 
 			{
-				return $content;
+				$cacheDir = $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
 			}
-			else
+
+			if(!isset($this->_cache))
 			{
-				if(preg_match("/#LODELREFRESH ([^#]+)#/", $content, $m))
-				{
-					if(is_numeric($m[1]))
-					{
-						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-						$GLOBALS['sqlCacheTime'] = $m[1];
-					}
-					else
-					{
-						$sqlCacheTime = $GLOBALS['sqlCacheTime'];
-						$GLOBALS['sqlCacheTime'] = 0;
-					}
-				}
-				
-				$content = $this->_eval($content, $context);
+				$this->_cache = new Cache_Lite($this->_cacheOptions);
+			}
+			elseif(isset($cacheDir))
+				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 
-				if(isset($sqlCacheTime))
-					$GLOBALS['sqlCacheTime'] = $sqlCacheTime;
-
-				if (isset($GLOBALS['showhtml']) && $GLOBALS['lodeluser']['visitor']) 
-				{
-					if(!function_exists('show_html'))
-						require 'showhtml.php';
-					// on affiche la source
-					return show_html($content);
-				}
-				return $content;
+			$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
+			$this->_cache->save($timestamp."\n".$template['contents'], $this->_cachedfile, $this->_site.'_page');
+			unset($timestamp);
+			// si jamais le path a été modifié on remet par défaut
+			if(isset($cacheDir)) 
+			{
+				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
+				$this->_cache->setOption('cacheDir', $cacheDir);
 			}
 		}
+        
+		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
+		{
+			if(!function_exists('show_html')) include 'showhtml.php';
+			// on affiche la source
+			return show_html($template['contents']);
+		}
+        
+		return $template['contents'];
 	}
 
 	/**
@@ -729,33 +706,33 @@ PHP;
 	private function _error($msg, $func, $clearcache) 
 	{
 		// we are maybe buffering, so clear it
-		if(!$GLOBALS['debugMode'])
+		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(ob_get_status()) ob_end_clean();
 		
-		global $db, $home;
+		global $db;
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages si demandé
 		if($clearcache)
+		{
 			clearcache(true);
-		$error = "Error: " . $msg . "\n";
-		$err = $error."\nFunction '".$func."' in file '".__FILE__."' (requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ')\n";
-		if($db->ErrorMsg())
+		}
+		$err = "ERROR:\nFunction '".$func."' in file '".__FILE__."' ";
+        	$err .= "(requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ') :\n";
+        	$err .= $msg."\n";
+		if(is_object($db) && $db->ErrorMsg())
 			$err .= "SQL ERROR ".$db->ErrorMsg()."\n";
-			
-		if($GLOBALS['lodeluser']['editor'] || $GLOBALS['debugMode']) 
+
+		if(!C::get('editor', 'lodeluser')) 
 		{
-			$msg = nl2br($err."\n\n\n");
-		} 
-		else 
-		{
-			$msg = "<code>An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>";
-			if($GLOBALS['contactbug']) 
+			if(C::get('contactbug', 'cfg'))
 			{
-				$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$GLOBALS['currentdb']." / ".$this->_site;
-				@mail($GLOBALS['contactbug'], $sujet, $err);
+				$sujet = "[BUG] LODEL - ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb']." / ".$this->_site;
+				@mail(C::get('contactbug', 'cfg'), $sujet, $err);
 			}
+			if(!(bool)C::get('debugMode', 'cfg'))
+				$err = '<code>Sorry, an error occured during the calcul of this page.</code>';
 		}
 		
-		trigger_error($msg, E_USER_ERROR);
+		trigger_error($err, E_USER_ERROR);
 	}
 
 	/**
@@ -770,11 +747,11 @@ PHP;
 	{
 		global $db;
 		// we are maybe buffering, so clear it
-		if(!$GLOBALS['debugMode'])
+		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(ob_get_status()) ob_end_clean();
-		// on efface le cache on a pu enregistré tout et n'importe quoi
+		// on efface le cache on a pu enregistre tout et n'importe quoi
 		clearcache(true);
-		if ($GLOBALS['lodeluser']['editor'] || $GLOBALS['debugMode'])
+		if (C::get('editor', 'lodeluser') || C::get('debugMode', 'cfg'))
 		{
 			if ($tablename) 
 			{
@@ -784,24 +761,15 @@ PHP;
 		}
 		else 
 		{
-			if ($GLOBALS['contactbug']) 
+			if (C::get('contactbug', 'cfg')) 
 			{
-				$sujet = "[BUG] LODEL - ".$GLOBALS['version']." - ".$GLOBALS['currentdb'];
+				$sujet = "[BUG] LODEL - ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb'];
 				$contenu = "Erreur de requete sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n\nQuery : ". $query . "\n\nErreur : ".$db->ErrorMsg()."\n\nBacktrace :\n\n".print_r(debug_backtrace(), true);
-				@mail($GLOBALS['contactbug'], $sujet, $contenu);
+				@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
 			}
-			trigger_error("</body><code>An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>", E_USER_ERROR);
+			trigger_error("<code>An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>", E_USER_ERROR);
 		}
 	}
-
-	/**
-	 * Fonction permettant de remettre le context original
-	 */
-	static public function resetContext()
-	{
-		$GLOBALS['context'] = self::$_context;
-	}
-
 } // end class
 
 
@@ -811,32 +779,14 @@ PHP;
  *
  * @param array $context le context
  * @param string $tpl le nom du fichier template
- * @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
- * @param string $base_rep chemin vers répertoire tpl
- * @param bool $escRefresh appel de la fonction par le refresh manager (défaut à false)
- * @param string $refreshTime temps après lequel le tpl est à recompiler
- * @param int $blockId (optionnel) numéro d'un block de template
- * @param bool $echo (optionnel) doit-on afficher le contenu d'un template évalué
+ * @param string $cache_rep chemin vers repertoire cache si different de ./CACHE/
+ * @param string $base_rep chemin vers repertoire tpl
+ * @param int $blockId (optionnel) numero d'un block de template
+ * @param string $loopName (optionnel) nom de la loop
  */
-function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $escRefresh=false, $refreshTime=0, $blockId=0, $echo=false) 
+function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $blockId=0, $loopName=null) 
 {
-	if(!isset($context['noreset'])) 
-	{
-		$reset = true;
-	} 
-	else 
-	{
-		$reset = false;
-		unset($context['noreset']);
-	}
-	
-	$view =& View::getView();
-	echo _indent($view->renderTemplateFile($context, $tpl, $cache_rep, $base_rep, $escRefresh, $refreshTime, $blockId, $echo));
-	
-	if($reset) 
-	{
-		View::resetContext();
-	}
+	echo View::getView()->getIncTpl($context, $tpl, $cache_rep, $base_rep, $blockId, $loopName);
 }
 
 /**
@@ -844,38 +794,38 @@ function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $es
  * Wrapper de la fonction View::mymysql_error
  *
  * @param string $query la requete SQL
- * @param string $tablename le nom de la table SQL (par défaut vide)
+ * @param string $tablename le nom de la table SQL (par defaut vide)
+ * @param int $line ligne de l'erreur
+ * @param string $file nom du fichier declenchant l'erreur
  */
 function mymysql_error($query, $tablename = '', $line, $file)
 {
-	$view =& View::getView();
-	$view->myMysqlError($query, $tablename, $line, $file);
+	View::getView()->myMysqlError($query, $tablename, $line, $file);
 }
 
-// REMARQUE : Les fonctions suivantes n'ont rien à faire ici il me semble
+// REMARQUE : Les fonctions suivantes n'ont rien a faire ici il me semble
 /**
- * Appelle la bonne fonction makeSelect suivant la logique appelée
- * Cette fonction est utilisée dans le calcul de la page
+ * Appelle la bonne fonction makeSelect suivant la logique appelee
+ * Cette fonction est utilisee dans le calcul de la page
  *
  * @param array $context Le tableau de toutes les variables du contexte
  * @param string $varname Le nom de la variable du select
- * @param string $lo Le nom de la logique appelée
- * @param string $edittype Le type d'édition (par défaut vide)
+ * @param string $lo Le nom de la logique appelee
+ * @param string $edittype Le type d'edition (par defaut vide)
  */
 function makeSelect(&$context, $varname, $lo, $edittype = '')
 {
-	$logic = &getLogic($lo);
-	$logic->makeSelect($context, $varname, $edittype);
+	getLogic($lo)->makeSelect($context, $varname, $edittype);
 }
 
 
 /**
  * Affiche le tag HTML <option> pour les select normaux et multiples
  * Cette fonction positionne l'attribut selected="selected" das tags options d'un select suivant
- * les éléments qui sont effectivements sélectionnés.
+ * les elements qui sont effectivements selectionnes.
  *
  * @param array $arr la liste des options
- * @param array $selected la liste des éléments sélectionnés.
+ * @param array $selected la liste des elements selectionnes.
  */
 function renderOptions($arr, $selected)
 {
@@ -888,39 +838,236 @@ function renderOptions($arr, $selected)
 		}
 		$k = htmlentities($k);
 		
-		// si la clé commence par optgroup, on génère une balise <optgroup>
+		// si la cle commence par optgroup, on genere une balise <optgroup>
 		// Cf. la fonction makeSelectEdition($value), in commonselect.php
 		if(substr($k, 0, 8) == "OPTGROUP") { echo "<optgroup label=\"$v\">";}
 		elseif (substr($k, 0, 11) == "ENDOPTGROUP") { echo '</optgroup>';}
-		//sinon on génère une balise <option>
+		//sinon on genere une balise <option>
 		else { echo '<option value="'. $k. '" '. $s. '>'. $v. '</option>'; }
 	}
 }
 
 /**
- * Genère le fichier de CACHE d'une page dans une autre langue.
+ * Genere le fichier de CACHE d'une page dans une autre langue.
  *
- * @param string $lang la langue dans laquelle on veut générer le cache
+ * @param string $lang la langue dans laquelle on veut generer le cache
  * @param string $file le fichier de cache
- * @param array $tags la liste des tags à internationaliser.
+ * @param array $tags la liste des tags a internationaliser.
  *
  */
 function generateLangCache($lang, $file, $tags)
 {
+    	$txt = '';
 	foreach($tags as $tag) {
 		$dotpos = strpos($tag, '.');
 		$group  = substr($tag, 0, $dotpos);
 		$name   = substr($tag, $dotpos+1);
 
-		$txt.= "'". $tag. "'=>'". str_replace("'", "\'",(getlodeltextcontents($name, $group, $lang))). "',";
+		$txt[$tag] = getlodeltextcontents($name, $group, $lang);
 	}
-	$dir = dirname($file);
-	if (!is_dir($dir)) {
-		@mkdir($dir, 0777 & octdec($GLOBALS['filemask']));
-		@chmod($dir, 0777 & octdec($GLOBALS['filemask']));
-	}
-
-	writefile($file, '<'.'?php if (!$GLOBALS[\'langcache\'][\''. $lang. '\']) $GLOBALS[\'langcache\'][\''. $lang. '\']=array(); $GLOBALS[\'langcache\'][\''. $lang. '\']+=array('. $txt. '); ?'. '>');
+	
+    	writeToCache($file, $txt, false);
+	return $txt;
 }
 
+/**
+ * Indentation de code HTML, XML
+ *
+ * @param string $source le code a indenter
+ * @param string $indenter les caracteres a utiliser pour l'indentation. Par defaut deux espaces.
+ * @return le code indente proprement
+ */
+function _indent($source, $indenter = '  ')
+{
+	if(false !== strpos($source, '<?xml')) {
+			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
+			if(!function_exists('indentXML'))
+				include 'xmlfunc.php';
+			$source = indentXML($source, false, $indenter);
+			return $source;
+	} elseif(!preg_match("/<[^><]+>/", $source)) {
+		$source = _indent_xhtml($source,$indenter);
+		return $source;
+	}
+	// on touche pas a l'indentation du code JS, CSS
+	$tmp = preg_split("/(<(?:script|noscript|style)[^>]*>)(.*?)(<\/(?:script|noscript|style)>)/s", 
+                   $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+	$source = $tab = '';
+	$iscode = 0;
+	$nbOpPar = $nbCloPar = 0;
+	foreach($tmp as $k=>$texte)
+	{
+		if(0 === strpos($texte, '<script') || 0 === strpos($texte, '<noscript') || 0 === strpos($texte, '<style')) 
+		{
+			$texte = $tab.$texte;
+            if(isset($tmp[$k+1]) && ($tmp[$k+1] != '</script>' && $tmp[$k+1] != '</noscript>' && $tmp[$k+1] != '</style>'))
+                $texte = $texte."\n";
+			$iscode++;
+		} 
+		elseif('</script>' === $texte || '</noscript>' === $texte || '</style>' === $texte) 
+		{
+			$texte = $tab.$texte."\n";
+			$iscode--;
+		} 
+		elseif($iscode === 0 && ($nbOpPar === $nbCloPar)) 
+		{
+ 			// on vire toute l'indentation existante
+            		$texte = strtr($texte, array(
+                            "\n"    => '',
+                            "\r"    => '',
+                            "\t"    => '',
+                            '  '    => ' '));
+
+			// c'est parti on indente
+			$arr = preg_split("/(<(\/?|!?)(?!a\b|strong\b|title\b|h[1-6]\b|b\b|em\b|i\b|abbr\b|acronym\b|code\b|cite\b|span\b|sub\b|sup\b|u\b|s\b|br\b|pre\b|textarea\b)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$texte = '';
+			$nbarr = count($arr);
+			if($nbarr<=1) {
+				$source .= $arr[0];
+				continue;
+			}
+			$arr[0] = trim($arr[0]);
+			if($arr[0]) $source .= $arr[0];
+			for ($i = 1 ; $i < $nbarr ; $i += 3) {
+				if (!empty($arr[$i +1]) && '!' !== $arr[$i+1]) {
+					$tab = substr($tab, 2); // closing tag
+				}
+				if (substr($arr[$i], -2) == "/>") { // opening closing tag
+					$out = $tab.$arr[$i].$arr[$i +2]."\n";
+				} elseif (empty($arr[$i +1]) && !empty($arr[$i +4])) { // opening follow by a closing tags
+						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
+						$i += 3;
+				} else {
+					$out = $tab.$arr[$i]."\n";
+					if (empty($arr[$i +1])) {
+						$tab .= "$indenter";
+					}
+					if (trim($arr[$i +2])) {
+						$out .= $tab.$arr[$i +2]."\n";
+					}
+				}
+				if(trim($out))
+					$texte .= $out;
+			}
+		} elseif($iscode>0) {
+			$nbOpPar += substr_count($texte, '{');
+			$nbCloPar += substr_count($texte, '}');
+		}
+		if(trim($texte))
+			$source .= $texte;
+	}
+	return $source;
+}
+
+// Function to seperate multiple tags one line (used by function _indent_xhtml)
+function fix_newlines_for_clean_html($fixthistext)
+{
+	$fixthistext_array = explode("\n", $fixthistext);
+    	$fixedtext_array = array();
+	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
+
+ 		// Exception for fckeditor
+		if (preg_match("/fck_.+editor/", $unfixedtextvalue))
+		{
+			$fixedtext_array[$unfixedtextkey] = $unfixedtextvalue;
+		}
+		
+		//Makes sure empty lines are ignores
+		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
+		{
+			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
+			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
+		}
+		
+	}
+	
+	if (!empty($fixedtext_array)) {
+		return implode("\n", $fixedtext_array);
+	} else {
+		return false;
+	}
+}
+
+/**
+ * Indentation de code XHTML
+ *
+ * @param string $uncleanhtml le code a indenter
+ * @param string $indent les caracteres a utiliser pour l'indentation. Par defaut deux espaces.
+ * @return le code indente proprement
+ */
+function _indent_xhtml ($uncleanhtml, $indent = "  ")
+{
+	//Set wanted indentation
+	//$indent = "    ";
+	//Uses previous function to seperate tags
+	if ($fixed_uncleanhtml = fix_newlines_for_clean_html($uncleanhtml)) {
+
+		$uncleanhtml_array = explode("\n", $fixed_uncleanhtml);
+	
+		//Sets no indentation
+		$indentlevel = 0;
+		foreach ($uncleanhtml_array as $uncleanhtml_key => $currentuncleanhtml)
+		{
+			//Removes all indentation
+			$currentuncleanhtml = preg_replace("/\t+/", "", $currentuncleanhtml);
+			$currentuncleanhtml = preg_replace("/^\s+/", "", $currentuncleanhtml);
+		
+			$replaceindent = "";
+		
+			//Sets the indentation from current indentlevel
+			for ($o = 0; $o < $indentlevel; $o++)
+			{
+				$replaceindent .= $indent;
+			}
+		
+			//If self-closing tag, simply apply indent
+			if (preg_match("/<(.+)\/>/", $currentuncleanhtml))
+			{ 
+				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			}
+			//If doctype declaration, simply apply indent
+			else if (preg_match("/<!(.*)>/", $currentuncleanhtml))
+			{ 
+				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			}
+			//If opening AND closing tag on same line, simply apply indent
+			else if (preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && preg_match("/<\/(.*)>/", $currentuncleanhtml))
+			{ 
+				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			}
+			//If closing HTML tag or closing JavaScript clams, decrease indentation and then apply the new level
+			else if (preg_match("/<\/(.*)>/", $currentuncleanhtml) || preg_match("/^(\s|\t)*\}{1}(\s|\t)*$/", $currentuncleanhtml))
+			{
+				$indentlevel--;
+				$replaceindent = "";
+				for ($o = 0; $o < $indentlevel; $o++)
+				{
+					$replaceindent .= $indent;
+				}
+			
+				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			}
+			//If opening HTML tag AND not a stand-alone tag, or opening JavaScript clams, increase indentation and then apply new level
+			else if ((preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && !preg_match("/<(link|meta|base|br|img|hr)(.*)>/", $currentuncleanhtml)) || preg_match("/^(\s|\t)*\{{1}(\s|\t)*$/", $currentuncleanhtml))
+			{
+				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
+			
+				$indentlevel++;
+				$replaceindent = "";
+				for ($o = 0; $o < $indentlevel; $o++)
+				{
+					$replaceindent .= $indent;
+				}
+			}
+			else
+			//Else, only apply indentation
+			{$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;}
+		}
+		//Return single string seperated by newline
+
+		return implode("\n", $cleanhtml_array);	
+	} else {
+			return '';
+		}
+}
 ?>

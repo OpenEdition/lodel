@@ -53,7 +53,7 @@
 class XmlImportHandler
 {
 
-	var $_contents; /** the table content */
+	protected $_contents; /** the table content */
 	function contents()
 	{
 		return $this->_contents;
@@ -80,7 +80,7 @@ class XmlImportHandler
 			return '<span style="background-color: violet;">'.$data.'</span>';
 		}
 		$title = $obj->title;
-		if ($obj->lang) {
+		if (isset($obj->lang) && $obj->lang) {
 			$title.= '<br />('. $obj->lang. ')';
 		}
 		$this->_contents.= '<tr><th class="sideInfo">'. $title. '</th><td>'. $data. '</td></tr>';
@@ -104,7 +104,7 @@ class XmlImportHandler
 	 */
 	function openClass ($class, $obj = null) 
 	{
-	$this->_contents.= '<tr><td colspan="2" class="openclass '. $class[1]. '">'. $class[0].' &darr;</td></tr>';
+		$this->_contents.= '<tr><td colspan="2" class="openclass '. $class[1]. '">'. $class[0].' &darr;</td></tr>';
 	}
 
 	function closeClass ($class, $multidoc=false) 

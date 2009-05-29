@@ -2,7 +2,7 @@
 /**
  * Fichier de la classe GenericDAO
  *
- * PHP versions 5
+ * PHP version 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -82,11 +82,9 @@ class genericDAO extends DAO
 	 */
 	public function instantiateObject(&$vo)
 	{
-		static $def;
 		$classname = $this->table."VO";
-		if (!$def[$classname]) {
-			eval ("class ". $classname. " { var $". $this->idfield. "; } ");
-			$def[$classname] = true;
+		if (!class_exists($this->table."VO", false)) {
+			eval ("class ". $classname. " { public $". $this->idfield. "; } ");
 		}
 		$vo = new $classname; // the same name as the table. We don't use factory...
 	}

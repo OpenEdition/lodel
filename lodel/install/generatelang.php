@@ -81,8 +81,8 @@ foreach($files as $file) {
 	}
 }
 
-$dao = &getDAO('translations');
-$daotexts = &getDAO('texts');
+$dao = getDAO('translations');
+$daotexts = getDAO('texts');
 
 require 'view.php';
 

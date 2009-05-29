@@ -2090,4 +2090,25 @@
 		required="true" />
 </table>
 
+<table name="plugins"
+       description="Table contenant les configurations des plugins"
+       writeright="adminlodel">
+	<column name="id"
+		type="INTEGER(10)"
+		required="true"
+		primaryKey="true" />
+	<column name="name"
+		type="VARCHAR(64)"
+		default=""
+		required="true" />
+	<column name="upd"
+        	type="TIMESTAMP" />
+	<column name="status"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="config"
+		type="LONGVARCHAR" 
+		required="true"/>
+</table>
 </database>

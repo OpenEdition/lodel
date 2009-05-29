@@ -98,15 +98,13 @@ class Entities_AdvancedLogic extends Logic
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
-		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->getById($id);
+		$vo  = $this->_getMainTableDAO()->getById($id);
 		if (!$vo) {
 			trigger_error("ERROR: can't find object $id in the table ". $this->maintable, E_USER_ERROR);
 		}
 		$this->_populateContext($vo, $context);
 
-		$daotype = &getDAO('types');
-		$votype  = $daotype->getById($vo->idtype);
+		$votype  = getDAO('types')->getById($vo->idtype);
 		$this->_populateContext($votype, $context['type']);
 
 		// look for the source
@@ -173,27 +171,27 @@ class Entities_AdvancedLogic extends Logic
 		function loop_move_right(&$context,$funcname)
 		{
 			static $cache,$idtypes;
-			global $db,$home;
+			global $db;
 
 			//test1 : si le type de l'entité courante peut contenir ce type d'entité
 			if (!isset($cache[$context['idtype']])) {
 				//mise en cache du type du document
 				$idtype = $idtypes[$context['iddocument']];
 				if (!$idtype) { // get the type, we don't have it!
-					$dao = &getDAO("entities");
+					$dao = getDAO("entities");
 					$vo = $dao->getById($context['iddocument'],"idtype");
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}
 				// récupère la condition sur les deux types testé.
 				$condition = $db->getOne(lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
-				$cache[$context['idtype']] = (boolean)$condition;
+				$cache[$context['idtype']] = (bool)$condition;
 				if ($db->errorno()) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			}
 			//test2 : si l'entité courante est une descendante de l'entité IDDOCUMENT
 			if(!function_exists('isChild'))
-				require 'entitiesfunc.php';
+				include 'entitiesfunc.php';
 			$boolchild = isChild($context['iddocument'], $context['id']);
 			if ($cache[$context['idtype']] && $boolchild) { //si c'est ok
 				if (function_exists("code_do_$funcname")) {
@@ -216,7 +214,7 @@ class Entities_AdvancedLogic extends Logic
 	 */
 	public function moveAction(&$context, &$error)
 	{
-		global $db,$home;
+		global $db;
 		if (!rightonentity('move', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
@@ -225,7 +223,7 @@ class Entities_AdvancedLogic extends Logic
 		$idparent = (int)$context['idparent']; // where to move it
 
 		if(!function_exists('checkTypesCompatibility'))
-			require 'entitiesfunc.php';
+			include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent)) {
 			trigger_error("ERROR: Can move the entities $id into $idparent. Check the editorial model.", E_USER_ERROR);
 		}
@@ -308,8 +306,7 @@ class Entities_AdvancedLogic extends Logic
 			$filename = $multidoc ? "entite-multidoc-$id.source" : "entite-$id.source";
 			$dir = "../sources";
 			// get the official name 
-			$dao = $this->_getMainTableDAO();
-			$vo  = $dao->getById($id,"creationmethod,creationinfo");
+			$vo  = $this->_getMainTableDAO()->getById($id,"creationmethod,creationinfo");
 			if ($vo->creationmethod!=($multidoc ? "servoo;multidoc" : "servoo")) {
 				trigger_error("ERROR: error creationmethod is not compatible with download", E_USER_ERROR);
 			}

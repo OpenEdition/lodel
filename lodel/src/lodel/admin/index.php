@@ -44,48 +44,31 @@
  */
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
+    include 'auth.php';
+    authenticate(LEVEL_VISITOR);
 
-authenticate(LEVEL_VISITOR);
-if (isset($_GET['page'])) { // call a special page (and template)
-	$page = $_GET['page'];
-  	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-		trigger_error('invalid page', E_USER_ERROR);
-	}
-	require 'view.php';
-	$view = &View::getView();
-	$view->renderCached($context, $page);
-	exit;
-}
+    if (isset($_GET['page'])) { // call a special page (and template)
+        $page = $_GET['page'];
+        if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
+            trigger_error('invalid page', E_USER_ERROR);
+        }
+        View::getView()->renderCached($page);
+        exit;
+    }
 
-require 'controller.php';
-$authorized_logics = array('entrytypes', 'persontypes',
-				'entries', 'persons',
-				'tablefieldgroups', 'tablefields', 'indextablefields',
-				'translations', 'texts',
-				'usergroups', 'users', 'restricted_users',
-				'types', 'classes',
-				'options', 'optiongroups', 'useroptiongroups', 'servooconf',
-				'internalstyles', 'characterstyles', 'entities_index',
-				'filebrowser', 'xml', 'data', 'internal_messaging');
-$Controller = new Controller($authorized_logics);
-
-
-function loop_classtypes($context, $funcname)
-{
-	global $db;
-	foreach(array('entities', 'entries', 'persons') as $classtype) {
-		$localcontext = $context;
-		$localcontext['classtype'] = $classtype;
-		$localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
-    		call_user_func("code_do_$funcname", $localcontext);
- 	}
-}
-
+    $authorized_logics = array('entrytypes', 'persontypes',
+                    'entries', 'persons',
+                    'tablefieldgroups', 'tablefields', 'indextablefields',
+                    'translations', 'texts',
+                    'usergroups', 'users', 'restricted_users',
+                    'types', 'classes',
+                    'options', 'optiongroups', 'useroptiongroups', 'servooconf',
+                    'internalstyles', 'characterstyles', 'entities_index',
+                    'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
+    Controller::getController()->execute($authorized_logics);
 }
 catch(Exception $e)
 {

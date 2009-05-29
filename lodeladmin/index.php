@@ -50,17 +50,14 @@ if (!file_exists('../lodelconfig.php')) {
 define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
 
-require 'class.errors.php';
-
 try
 {
-	require 'auth.php';
+	include 'auth.php';
 	authenticate(LEVEL_ADMINLODEL);
 	
-	$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data', 'internal_messaging');
+	$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data', 'internal_messaging', 'mainplugins');
 	
-	require 'controller.php';
-	$Controller = new Controller($accepted_logics);
+	Controller::getController()->execute($accepted_logics);
 }
 catch(Exception $e)
 {

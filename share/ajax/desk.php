@@ -1,7 +1,7 @@
 <?php
 
-if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
-	in_array($_POST['site'], array('lodel-0.8', 'share-0.8', 'lodeladmin-0.8', 'lodel', 'share', 'lodeladmin')) || 
+if(!isset($_POST['site']) || !preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
+	in_array($_POST['site'], array('lodel-0.9', 'share-0.9', 'lodeladmin-0.9', 'lodel', 'share', 'lodeladmin')) || 
 	!is_dir('../../'.$_POST['site'])) {
 	// tentative ?
 	echo 'error';
@@ -14,27 +14,21 @@ if(!file_exists('siteconfig.php')) {
 	return;
 }
 require 'siteconfig.php';
-require 'class.errors.php';
-set_error_handler(array('LodelException', 'exception_error_handler'));
-
-// les niveaux d'erreur à afficher
-error_reporting(E_ALL);
 
 try
 {
-require 'auth.php';
-// pas de log de l'url dans la base
-$GLOBALS['norecordurl'] = true;
-// accès seulement aux personnes autorisées
-if(!authenticate(LEVEL_VISITOR, null, true) || !$lodeluser['visitor'])
-{
-	echo 'auth';
-	return;
-}
-
-require 'loginfunc.php';
-echo updateDeskDisplayInSession();
-return;
+    require 'auth.php';
+    // pas de log de l'url dans la base
+    C::set('norecordurl', true);
+    // accès seulement aux personnes autorisées
+    if(!authenticate(LEVEL_VISITOR, null, true) || !C::get('visitor', 'lodeluser'))
+    {
+        echo 'auth';
+        return;
+    }
+    
+    echo updateDeskDisplayInSession();
+    return;
 }
 catch(Exception $e)
 {

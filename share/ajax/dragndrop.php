@@ -1,8 +1,7 @@
 <?php
-$tabIds = explode(',', $_POST['tabids']);
 
-if(!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
-	in_array($_POST['site'], array('lodel-0.8', 'share-0.8', 'lodeladmin-0.8', 'lodel', 'share', 'lodeladmin')) || 
+if(!isset($_POST['site']) || !preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
+	in_array($_POST['site'], array('lodel-0.9', 'share-0.9', 'lodeladmin-0.9', 'lodel', 'share', 'lodeladmin')) || 
 	!is_dir('../../'.$_POST['site'])) {
 	// tentative ?
 	echo 'error';
@@ -17,36 +16,32 @@ if(!file_exists('siteconfig.php')) {
 }
 
 require 'siteconfig.php';
-require 'class.errors.php';
-set_error_handler(array('LodelException', 'exception_error_handler'));
-
-// les niveaux d'erreur à afficher
-error_reporting(E_ALL);
 
 try
 {
-require 'auth.php';
-// pas de log de l'url dans la base
-$GLOBALS['norecordurl'] = true;
-// accès seulement aux personnes autorisées
-if(!authenticate(LEVEL_VISITOR, null, true) || !$lodeluser['visitor'])
-{
-	echo 'auth';
-	return;
-}
-
-$table = lq("#_TP_entities");
-$i=1;
-foreach($tabIds as $v) {
-	$id = (int)str_replace('container_','',$v);
-	if($id>0) {
-		$db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or dberror();
-	}
-	$i++;
-}
-require 'cachefunc.php';
-removefilesincache('.', './lodel/edition/');
-echo 'ok';
+    require 'auth.php';
+    // pas de log de l'url dans la base
+    C::set('norecordurl', true);
+    // accès seulement aux personnes autorisées
+    if(!authenticate(LEVEL_VISITOR, null, true) || !C::get('visitor', 'lodeluser'))
+    {
+        echo 'auth';
+        return;
+    }
+    
+    $table = lq("#_TP_entities");
+    $i=1;
+    $tabIds = explode(',',C::get('tabids'));
+    foreach($tabIds as $v) {
+        $id = (int)str_replace('container_','',$v);
+        if($id>0) {
+            $db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or trigger_error('', E_USER_ERROR);
+        }
+        $i++;
+    }
+    require 'cachefunc.php';
+    removefilesincache('.', './lodel/edition/');
+    echo 'ok';
 }
 catch(Exception $e)
 {

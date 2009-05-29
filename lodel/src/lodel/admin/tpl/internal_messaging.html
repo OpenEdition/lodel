@@ -33,14 +33,14 @@
 </title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
 <ul id="actionsOnEntitiesPath"><li><span class="intit">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></span></li>
 <li>
 	<ul class="actions">
+        <LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
 		<IF COND="[#DIRECTORY] EQ 'inbox'">
-			<LET ARRAY="actions.view">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
-		<ELSEIF COND="[#DIRECTORY] EQ 'trash'"/>
-			<LET ARRAY="actions.rest">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
+		  <LET ARRAY="actions.view">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
+		<ELSEIF COND="[#DIRECTORY] EQ 'trash'">
+		  <LET ARRAY="actions.rest">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
 		</IF>
 		<LET ARRAY="actions.delSelected">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
 		<LET ARRAY="actions.delAll">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
@@ -57,9 +57,10 @@
 </li>
 </ul>
 <br />
-<IF COND="[#ERROR]"><p class="error">[#ERROR]</p>
+<IF COND="[#ERROR]"><p class="error">[#ERROR]</span>
 <ELSEIF COND="[#MSGSENDED]"/><p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
 <ELSEIF COND="[#DELETED]"/><p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+<ELSEIF COND="[#RESTORED]"/><p>[@ADMIN.MSG_CORRECTLY_RESTORED]</p>
 </IF>
 
 <IF COND="[#ID]">
@@ -69,7 +70,7 @@
 	<IF COND="[#DIRECTORY] NE 'sent'">
 	<p><strong>[@ADMIN.INTERNAL_MESSAGING_SENDER] :</strong> [#DATA.SENDER]</p>
 	<ELSE/>
-	<p><strong>[@ADMIN.INTERNAL_MESSAGING_TO] :</strong> [#DATA.ADDRESSEE]</p>
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_TO] :</strong> [#DATA.RECIPIENT]</p>
 	</IF>
 	<p><strong>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :</strong><br>[#DATA.BODY|nl2br]</p>
 	</fieldset>
@@ -79,14 +80,12 @@
 	<MACRO NAME="DELETE_BUTTON">&nbsp;&nbsp;&nbsp;&nbsp;
 	<input class="button" type="button" value="[@LODELADMIN.BACK]" onclick="javascript:window.location='index.php?do=list&amp;lo=internal_messaging&amp;directory=[#DIRECTORY]'" />
 	</fieldset>
-
 <ELSE/>
-
 	<LET VAR="lodeluserid">
 	<IF COND="[#LODELUSER.ADMINLODEL]">
-		lodelmain-[#LODELUSER.ID]
+		lodelmain-<?php echo C::get('id', 'lodeluser'); ?>
 	<ELSE />
-		[#SITE]-[#LODELUSER.ID]
+		[#SITE]-<?php echo C::get('id', 'lodeluser'); ?>
 	</IF>
 	</LET>
 	<LET VAR="idpar">0</LET>
@@ -96,24 +95,24 @@
 		<LET VAR="im_groupby">incom_date, subject</LET>
 	</DO>
 	<DO CASE="trash">
-		<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_where">in (-1, -2, -8, -16) AND recipient = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
 	<DO CASES="inbox,default">
-		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_where">in (0, 1, 16, 32) AND recipient = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
 	</SWITCH>
 	<LET VAR="inside" GLOBAL="1">0</LET>
 	<LET VAR="level" GLOBAL="1">0</LET>
-	<form method="POST" id="im_form">
-	<IF COND="[#DIRECTORY] EQ 'trash'">
-		<input type="hidden" id="im_restore" name="restore" value="0"/>
-	</IF>
-	<input type="hidden" name="lo" value="internal_messaging"/>
-	<input type="hidden" name="do" value="delete"/>
-	<input type="hidden" name="directory" value="[#DIRECTORY]"/>
-	<IF COND="![#SORT|isset]">
+<form method="POST" id="im_form">
+<IF COND="[#DIRECTORY] EQ 'trash'">
+<input type="hidden" id="im_restore" name="restore" value="0"/>
+</IF>
+<input type="hidden" name="lo" value="internal_messaging"/>
+<input type="hidden" name="do" value="delete"/>
+<input type="hidden" name="directory" value="[#DIRECTORY]"/>
+<IF COND="![#SORT]">
 	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="incom_date ASC" GROUPBY="[#IM_GROUPBY]">
 		<BEFORE>
 			<IF COND="[%INSIDE|intval] GT 0"><LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+',1)]</LET><tr><ELSE/>
@@ -122,7 +121,7 @@
 				<IF COND="[#DIRECTORY] NE 'sent'">
 				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=iduser&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_FROM]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_FROM]"/></a></th>
 				<ELSE/>
-				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a></th>
+				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a></th>
 				</IF>
 				<th class="im_subject"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=subject&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"/></a></th>
 				<th class="im_date"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=incom_date&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_DATE]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_DATE]"/></a></th></tr>
@@ -147,7 +146,7 @@
 			</LOOP>
 			</td>
 			<ELSE/>
-				<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+				<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 				<LET VAR="tos" GLOBAL="1"></LET>
 				<LOOP NAME="foreach" ARRAY="[#USERS]">
 				<IF COND="[#VALUE] LIKE /(\w+)\-(\d+)/">
@@ -202,13 +201,10 @@
 					<LET VAR="im_where">in (-32, -8, -1, 0, 1) AND iduser = '[#LODELUSERID|trim]'</LET>
 				</DO>
 				<DO CASE="trash">
-					<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+					<LET VAR="im_where">in (-1, -2, -8, -16) AND recipient = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
 				</DO>
-				<DO CASE="inbox">
-					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
-				</DO>
-				<DO CASE="default">
-					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+				<DO CASES="inbox,default">
+					<LET VAR="im_where">in (0, 1, 16, 32) AND recipient = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
 				</DO>
 				</SWITCH>
 				<LOOP NAME="getMessages"></LOOP>
@@ -222,11 +218,12 @@
 	</LOOP>	
 
 <ELSE/>
+
 	<LET VAR="dir"><IF COND="[#DIR|strtolower] EQ 'desc'">DESC<ELSE/>ASC</IF></LET>
 	<LET VAR="orderby">
 	<IF COND="[#SORT]">
 		<SWITCH TEST="[#SORT|strtolower]">
-			<DO CASES="iduser,subject,addressees">
+			<DO CASES="iduser,subject,recipients">
 				[#SORT|strtolower]
 			</DO>
 			<DO CASE="default">
@@ -250,10 +247,10 @@
 		</IF>
 		<ELSE/>
 		<IF COND="[#ORDERBY] EQ 'iduser' AND [#DIR] EQ 'DESC'">
-			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;
 			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
 		<ELSE/>
-			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
 		</IF>
 		</IF>
 		</th>
@@ -295,7 +292,7 @@
 			</LOOP>
 			</td>
 		<ELSE/>
-			<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+			<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 			<LET VAR="tos" GLOBAL="1"></LET>
 			<LOOP NAME="foreach" ARRAY="[#USERS]">
 			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">

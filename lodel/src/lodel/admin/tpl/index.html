@@ -88,13 +88,15 @@
 					<ELSE/>
 						<option value="[#LANG]">
 					</IF>
-					[#TITLE]</option>
+                    <LET VAR="lang">[#LANG|strtoupper]</LET>
+                    <IF COND="[#DEFAULTLANG.#LANG]">[#DEFAULTLANG.#LANG]<ELSE/>[#TITLE]</IF>
+                </option>
 				</LOOP>
 				</select>
 			</li>
 			<IF COND="[#LODELUSER.ADMINLODEL]">
 				<li>
-				<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($GLOBALS['version'] ? "-".$GLOBALS['version'] : ""); // this is not wonderfull..... 
+				<?php $context['lodeladminpath']=C::get('home', 'cfg')."../../lodeladmin-".C::get('version'); // this is not wonderfull..... 
 				?>
 				<a href="[#LODELADMINPATH]/index.php">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</a>
 				</li>
@@ -103,6 +105,9 @@
 				<ELSE/>
 					<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
 				</IF>
+				<li>
+					<a href="index.php?lo=plugins&amp;do=list">[@ADMIN.PLUGINS]</a>
+				</li>
 			</IF>
 		</ul>
 	</div>

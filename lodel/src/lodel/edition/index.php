@@ -46,99 +46,83 @@
 
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
+	include 'auth.php';
 
-// Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
-if (isset($_GET['page']) && ($_GET['page'] == 'backend' && isset($_GET['format']))) {
-	authenticate(LEVEL_VISITOR, 'HTTP');
+	// Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
+	if (C::get('page') == 'backend' && C::get('format')) {
+		authenticate(LEVEL_VISITOR, 'HTTP');
 	}
-else {
-	authenticate(LEVEL_VISITOR);
+	else {
+		authenticate(LEVEL_VISITOR);
 	}
 
-if (!isset($_GET['do']) && !isset($_POST['do']) && !isset($_GET['lo']) && !isset($_POST['lo'])) {
-	if ($lodeluser['rights'] >= LEVEL_ADMIN) {
-		if(!function_exists('cleanEntities'))
-			require ('entitiesfunc.php');
-		cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
-	}
-	recordurl();
-	if(isset($_GET['id']))
-		$context['id'] = $id = (int)$_GET['id'];
-	else
-		$context['id'] = $id = 0;
-	if(!class_exists('View', false))
-		require 'view.php';
-	$view = &View::getView();
-
-	if ($id) {
-		do {
-			$row = $db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
-			if ($row === false) {
-				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			}
-			if (!$row) {
-				header ("Location: not-found.html");
-				return;
-			}
-			$base              = $row['tpledition'];
-			$idparent          = $row['idparent'];
-			$context['idtype'] = $row['idtype'];
-			if (!$base) {
-				$context['id'] = $id = $idparent;
-			}
-		} while (!$base && $idparent);
-	} else {
-		if (isset($_GET['page'])) { // call a special page (and template)
-			$base = $_GET['page'];
-			if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {
-				trigger_error("invalid page", E_USER_ERROR);
-			}
+	if (!C::get('do') && !C::get('lo')) 
+	{
+		recordurl();
+	
+		$id = C::get('id');
+		if ($id) {
+			do {
+				$row = $db->getRow(lq("SELECT tpledition,idparent,idtype FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='$id'"));
+				if ($row === false) {
+					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+				if (!$row) {
+					header ("Location: not-found.html");
+					return;
+				}
+				$base              = $row['tpledition'];
+				$idparent          = $row['idparent'];
+				$context['idtype'] = $row['idtype'];
+				if (!$base) {
+					$context['id'] = $id = $idparent;
+				}
+			} while (!$base && $idparent);
 		} else {
-			$base = 'edition';
+			if ($base = C::get('page')) { // call a special page (and template)
+				if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {
+					trigger_error("invalid page", E_USER_ERROR);
+				}
+			} else {
+				$base = 'edition';
+			}
 		}
-	}
-	$view->renderCached($context, $base);
-	return;
-} else {
-	
-	require 'controller.php';
-	// automatic logic
-	$do = isset($_GET['do']) ? $_GET['do'] : (isset($_POST['do']) ? $_POST['do'] : '');
-	$lo = isset($_GET['lo']) ? $_GET['lo'] : (isset($_POST['lo']) ? $_POST['lo'] : '');
-	
-	if(!$lo) {
-		switch ($do) { // Detection automatique de la logique en fonction de l'action
-			case 'move':
-			case 'preparemove':
-			case 'changestatus':
-			case 'download':
-				$lo = 'entities_advanced';
-				break;
-			case 'cleanIndex':
-			case 'deleteIndex':
-			case 'addIndex':
-				$lo = 'entities_index';
-				break;
-			case 'view':
-			case 'edit':
-				$lo = 'entities_edition';
-				break;
-			case 'import':
-				$lo = 'entities_import';
-				break;
-			default :
-				$lo = 'entities';
-				break;
+		View::getView()->renderCached($base);
+		return;
+	} else {
+		// automatic logic
+		if(!C::get('lo')) {
+			switch (C::get('do')) { // Detection automatique de la logique en fonction de l'action
+				case 'move':
+				case 'preparemove':
+				case 'changestatus':
+				case 'download':
+					$lo = 'entities_advanced';
+					break;
+				case 'cleanIndex':
+				case 'deleteIndex':
+				case 'addIndex':
+					$lo = 'entities_index';
+					break;
+				case 'view':
+				case 'edit':
+					$lo = 'entities_edition';
+					break;
+				case 'import':
+					$lo = 'entities_import';
+					break;
+				default :
+					$lo = 'entities';
+					break;
+			}
+			C::set('lo', $lo);
 		}
-	}
 	
-	$Controler = new Controller(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser', 'tasks', 'xml', 'users'), $lo);
-}
+		Controller::getController()->execute(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser', 'tasks', 'xml', 'users', 'plugins'), C::get('lo'));
+	}
 }
 catch(Exception $e)
 {

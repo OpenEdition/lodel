@@ -45,34 +45,31 @@
 
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate(LEVEL_REDACTOR);
-
-require 'taskfunc.php';
-require 'xmlimport.php';
-require 'class.checkImportHandler.php';
-$task              = gettask($idtask);
-$context['idtask'] = $idtask;
-$context['reload'] = (bool)$_GET['reload'];
-gettypeandclassfromtask($task, $context);
-
-$textorig = $text = file_get_contents($task['fichier']);
-
-$handler = new XMLImportHandler();
-$parser  = new XMLImportParser();
-$parser->init($context['class']);
-$parser->parse($text, $handler);
-
-$context['tablecontents'] = $handler->contents();
-$context['multidoc']      = $handler->multidoc;
-
-require 'view.php';
-$view = &View::getView();
-$view->render($context, 'checkimport');
+    include 'auth.php';
+    authenticate(LEVEL_REDACTOR);
+    
+    include 'taskfunc.php';
+    include 'xmlimport.php';
+    include 'class.checkImportHandler.php';
+    $idtask = (int)C::get('idtask');
+    $task              = gettask($idtask);
+    $context['reload'] = (bool)C::get('reload');
+    gettypeandclassfromtask($task, $context);
+    
+    $text = file_get_contents($task['fichier']);
+    
+    $handler = new XMLImportHandler();
+    $parser  = new XMLImportParser();
+    $parser->init($context['class']);
+    $parser->parse($text, $handler);
+    
+    $context['tablecontents'] = $handler->contents();
+    $context['multidoc']      = isset($handler->multidoc) ? $handler->multidoc : false;
+    
+    View::getView()->render('checkimport');
 }
 catch(Exception $e)
 {

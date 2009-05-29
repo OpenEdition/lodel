@@ -316,6 +316,7 @@ function mouseUp(ev){
 				{
 					if (xhr.responseText == 'error') 
 					{
+						document.getElementById('warner').style.display = "none";
 						alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
 						return false;
 					}
@@ -329,7 +330,7 @@ function mouseUp(ev){
 					}
 				}
 			}
-			xhr.send('tabids='+tabDiffIds+"&site=<?php echo $GLOBALS['site']; ?>");
+			xhr.send('tabids='+tabDiffIds+"&site=[#SITE]");
 		} else {
 			alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
 		}
@@ -431,19 +432,19 @@ function autoScroll(e){
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
-			<IF COND="[#COUNT] % 2">
-				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-				<ELSE/>
-					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
-				</IF>
+		<IF COND="[#COUNT] % 2">
+			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
 			<ELSE/>
-				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-				<ELSE/>
-					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
-				</IF>
+				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
 			</IF>
+		<ELSE/>
+			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+			<ELSE/>
+				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+			</IF>
+		</IF>
 			<div class="entityIconsEdition">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
@@ -463,11 +464,9 @@ function autoScroll(e){
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<div id="container[#ID]" style="display:<IF COND="[#DISPLAY] eq 'unfolded'">block<ELSE/>none</IF>;">
 			<IF COND="[#DISPLAY] eq 'unfolded'">
-				<LET VAR="oldfolder">[#FOLDER]</LET>
 				<LET VAR="folder">yes</LET>
 				<USE TEMPLATEFILE="edition" BLOCKID="1"/>
-				<LET VAR="folder">[#OLDFOLDER]</LET>
-				<LET VAR="oldfolder"></LET>
+				<LET VAR="folder"></LET>
 			</IF>
 			</div>
 			</li>
@@ -508,6 +507,7 @@ function loadTemplate(id, displayWarner, recursive)
 			{
 				if (xhrs[l].responseText == 'error') 
 				{
+                    			document.getElementById('warner').style.display = "none";
 					alert("[@INSTALL.ERROR]");
 					return false;
 				}
@@ -530,7 +530,7 @@ function loadTemplate(id, displayWarner, recursive)
 				}
 			}
 		}
-		xhrs[l].send('site=<?php echo $GLOBALS[site]; ?>&id='+id);
+		xhrs[l].send('site=[#SITE]&id='+id);
 	} else {
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");

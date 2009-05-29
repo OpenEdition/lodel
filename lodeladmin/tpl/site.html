@@ -73,7 +73,7 @@
 <ALTERNATIVE>
 <label for="atroot">[@LODELADMIN.INSTALL_WEBSITE_IN_LODELROOT] :</label><br class="nobr" />
 <IF COND="[#NAME] || [#TITLE]">
-<input type="checkbox"  class="noText" name="atroot"  id="atroot" [(#ATROOT|true)checked] />
+<input type="checkbox"  class="noText" name="atroot"  id="atroot" <IF COND="[#ATROOT]">checked="checked"</IF> />
 <ELSE/> <!--[ valeur par defaut ]-->
 <input type="checkbox" name="atroot" id="atroot" class="noText" />
 </IF>

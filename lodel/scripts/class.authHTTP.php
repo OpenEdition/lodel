@@ -108,8 +108,8 @@ class AuthHTTP
 	{
 		header('WWW-Authenticate: Basic realm="Authentification requise"');
 	        header('HTTP/1.0 401 Unauthorized');
-		echo "L'accès à cette ressource requiert une authentification : veuillez entrer le nom d'utilisateur
-		et le mot de passe que vous utilisez sous Lodel";
+		echo utf8_encode("L'accès à cette ressource requiert une authentification : veuillez entrer le nom d'utilisateur
+		et le mot de passe que vous utilisez sous Lodel");
 		exit;
 	}
 

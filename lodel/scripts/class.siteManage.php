@@ -40,7 +40,7 @@
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @version CVS:$this->id:
+ * @version CVS:$id:
  * @package lodeladmin
  */
 
@@ -126,12 +126,12 @@ class siteManage {
 	 * @param int $id identifiant du site
 	 * @param array $context le contexte passé par référence
 	 */
-	public function __construct($id, &$context)
+	public function __construct()
 	{
-		$this->id = (int)$id;
-		$this->critere = "id='$id'";
+		$this->critere = "id='".C::get('id')."'";
 		$this->lodelhomere = "/^lodel(-[\w.]+)$/";
-		$this->context =& $context;
+        	$this->versiondir = 'lodel-'.C::get('version', 'cfg');
+		if(!defined('INC_FUNC')) include 'func.php';
 	}
 
 	/**
@@ -141,7 +141,7 @@ class siteManage {
 	 *
 	 * @param var $_v variable à renvoyer
 	 */
-        public function get( $_v )
+    	public function get( $_v )
 	{
 		return $this->$_v;
 	}
@@ -154,10 +154,10 @@ class siteManage {
 	 * @param var $_v variable à modifier
 	 * @param var $_a valeur à allouer
 	 */
-        public function set( $_v, $_a )
+    	public function set( $_v, $_a )
 	{
 		$this->$_v = $_a;
-        }
+    	}
 
 	/**
 	 * Restoration d'un site supprimé
@@ -167,11 +167,13 @@ class siteManage {
 	public function restore()
 	{
 		global $db;
-		$db->Execute(lq("UPDATE #_TP_sites SET status=abs(status) WHERE ".$this->critere)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->Execute(lq("
+            UPDATE #_MTP_sites 
+                SET status=abs(status) 
+                WHERE ".$this->critere)) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		update();
-		require 'view.php';
-		$view = &View::getView();
-		$view->back(); // on revient
+		View::getView()->back();// on revient
 	}
 
 	/**
@@ -182,27 +184,13 @@ class siteManage {
 	function remove()
 	{
 		global $db;
-		$db->Execute(lq("UPDATE #_TP_sites SET status=-abs(status) WHERE ".$this->critere)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->Execute(lq("
+            UPDATE #_MTP_sites 
+                SET status=-abs(status) 
+                WHERE ".$this->critere)) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		update();
-		require 'view.php';
-		$view = &View::getView();
-		$view->back(); // on revient
-	}
-
-	/**
-	 * Version du site
-	 *
-	 * Cette fonction retourne la version de lodel du site en cours de traitement
-	 *
-	 * @param var $dir répertoire à traiter
-	 */	
-	function getsiteversion($dir)
-	{ 
-		if (!file_exists($dir. 'siteconfig.php')) {
-			trigger_error("ERROR: internal error while reinstalling every site. dir is $dir", E_USER_ERROR);
-		}
-		include ($dir. 'siteconfig.php');
-		return $version;
+        	View::getView()->back();// on revient
 	}
 
 	/**
@@ -212,11 +200,15 @@ class siteManage {
 	 *
 	 * @param var $dir répertoire à traiter
 	 */	
-	function reinstall($dir)
+	function reinstall()
 	{
 		global $db;
 	
-		$result = $db->execute(lq("SELECT path,name FROM #_MTP_sites WHERE status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->execute(lq("
+            SELECT path,name 
+                FROM #_MTP_sites 
+                WHERE status>0")) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		
 		while(!$result->EOF) {
 			$row = $result->fields;
@@ -224,17 +216,16 @@ class siteManage {
 			if (!$row['path']) {
 				$row['path'] = '/'. $row['name'];
 			}
-			$root    = str_replace('//', '/', LODELROOT. $row['path']). '/';
-			$this->version = $this->getsiteversion($root);
+            		$root = str_replace('//', '/', LODELROOT. $row['path']). '/'; 
 			if ($row['path'] == '/') { // c'est un peu sale ca.
-				$this->install_file($root, "lodel-".$this->version."/src", '');
+				$this->install_file($root, "lodel-".C::get('version', 'cfg')."/src", '');
 			} else {
-				$this->install_file($root, "../lodel-".$this->version."/src", LODELROOT);
+				$this->install_file($root, "../lodel-".C::get('version', 'cfg')."/src", LODELROOT);
 			}
 	
 			// clear the CACHEs
 			if(!function_exists('removefilesincache'))
-				require 'cachefunc.php';
+				include 'cachefunc.php';
 			removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
 	
 			$result->MoveNext();
@@ -253,153 +244,92 @@ class siteManage {
 	{
 		global $db;
 		//on extrait les variables contenues dans $_POST
-		if ($this->maindefault) { // site par defaut ?
-			$this->context['title']  = 'Site principal';
-			$this->context['name']   = 'principal';
-			$this->context['atroot'] = true;
+		if (C::get('maindefault')) { // site par defaut ?
+			C::set('title', 'Site principal');
+			C::set('name', 'principal');
+			C::set('atroot', true); 
 		}
 		
 		// validation
 		do {
-			if (!$this->context['title']) {
-				$this->context['error_title'] = $err = 1;
-			}
-			if (!$this->id && (!$this->context['name'] || !preg_match("/^[a-z0-9\-]+$/",$this->context['name']))) { $this->context['error_name'] = $err = 1;
-			}
-			if (isset($err)) {
+            		$title = C::get('title');
+			if (!$title) {
+                		C::set('error_title', 1);
 				break;
+			}
+            
+            		$id = C::get('id');
+            		$name = C::get('name');
+			if (!$id && (!$name || !preg_match("/^[a-z0-9\-]+$/",$name))) { 
+                		C::set('error_name', 1);
+                		break;
 			}
 	
 			// verifie qu'on a qu'un site si on est en singledatabase
-			if (!$this->id && $this->singledatabase == 'on') {
-				$numsite = $db->GetOne("SELECT COUNT(*) FROM `$GLOBALS[tp]sites` WHERE status>-32 AND name!='". $this->context['name']. "'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if (!$name && C::get('singledatabase', 'cfg') == 'on') {
+				$numsite = $db->GetOne(lq("
+                    SELECT COUNT(*) 
+                        FROM #_MTP_sites 
+                        WHERE status>-32 AND name!='". magic_addslashes($name). "'"));
+                    
 				if ($numsite >= 1) {
 					trigger_error("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données : il faut utiliser plusieurs bases de données.", E_USER_ERROR);
 				}
 			}
-	
+            	
+            		$status = C::get('status');
+                
 			// édition d'un site : lit les informations options, status, etc.
-			if (!$this->id) { // création d'un site
+			if (!$id) { // création d'un site
 				// vérifie que le nom (base de données + répertoire du site) n'est pas déjà utilisé
-				$result = $db->Execute("SELECT name FROM `$GLOBALS[tp]sites`") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				while ($row = $result->FetchRow()) {
-					$sites[] = $row['name'];
-				}
-				if(is_array($sites)) {
-					if(in_array($this->context['name'], $sites)) {
-						$this->context['error_unique_name'] = $err = 1;
-						break;
-					}
+				$result = $db->GetOne(lq("
+                    SELECT id
+                        FROM #_MTP_sites
+                        WHERE name='".magic_addslashes($name)."'"));
+                    
+				if($result>0)
+				{
+					C::set('error_unique_name', 1);
+					break;
 				}
 	
 				$options = '';
 				$status  = -32; // -32 signifie en creation
-				if (isset($this->context['atroot'])) {
-					$this->context['path'] = '/';
-				}
-				if (!isset($this->context['path'])) {
-					$this->context['path'] = '/'. $this->context['name'];
+				if (C::get('atroot')) {
+                    			C::set('path', '/'); 
+				}elseif (!C::get('path')) {
+                    			C::set('path', '/'. $name);
 				}
 			}
-			if (empty($this->context['url'])) {
-				$this->context['url'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr($this->context['path'], 1);
+            
+			if (!C::get('url')) {
+				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
 			}
 			
-			if ($this->reinstall) {
+			if (C::get('reinstall')) {
 				$status = -32;
 			}
 	
 			//suppression de l'eventuel / a la fin de l'url
-			$this->context['url'] = preg_replace("/\/$/", '', $this->context['url']);
+			C::set('url', preg_replace("/\/$/", '', C::get('url')));
 
 			// Ajout de slashes pour autoriser les guillemets dans le titre et le sous-titre du site
-			$this->context['title'] = magic_addslashes($this->context['title']);
-			$this->context['subtitle'] = magic_addslashes($this->context['subtitle']);
-	
-			$db->Execute("REPLACE INTO `$GLOBALS[tp]sites` (id,title,name,path,url,subtitle,status) VALUES ('".$this->id."','".$this->context['title']."','".$this->context['name']."','".$this->context['path']."','".$this->context['url']."','".$this->context['subtitle']."','".$status."')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            		$title = magic_addslashes($title);
+            		$subtitle = magic_addslashes(C::get('subtitle'));
+	        
+			$db->Execute("REPLACE INTO `{$GLOBALS['tp']}sites` (id,title,name,path,url,subtitle,status) VALUES ('".C::get('id')."','".$title."','".C::get('name')."','".C::get('path')."','".C::get('url')."','".$subtitle."','".$status."')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			update();
 
 			if ($status>-32) {
-				require 'view.php';
-				$view = &View::getView();
-				$view->back(); // on revient, le site n'est pas en creation
+				View::getView()->back(); // on revient, le site n'est pas en creation
 			}
 	
-			if (!$this->id) {
-				$this->context['id'] = $this->id = $db->insert_id();
+			if (!C::get('id')) {
+                		C::set('id', (int)$db->insert_id()); 
 			}
 			return true;
-		} while (0);		
-	}
-
-	/**
-	 * Versions installées sur le serveur web
-	 *
-	 * Cette fonction cherche et alloue à la variable $versions les différentes versions installées sur le serveur web
-	 */	
-	function cherche_version () 
-	{
-		$dir = opendir(LODELROOT);
-		if (!$dir) {
-			trigger_error("impossible d'acceder en ecriture sur le repertoire racine", E_USER_ERROR);
-		}
-		$this->versions = array();
-		while ($file = readdir($dir)) {
-			if ($file[0] === '.') {
-				continue;
-			}
-			if (is_dir(LODELROOT.$file) && preg_match($this->lodelhomere,$file) && is_dir(LODELROOT. $file. '/src')) {
-				if (!(@include(LODELROOT. "$file/src/siteconfig.php"))) {
-					echo "ERROR: Unable to open the file: $file/src/siteconfig.php<br />";
-				} else {
-					$this->versions[$file]=$this->version ? $this->version : "devel";
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sélection de la version de lodel à installer
-	 *
-	 * Cette fonction affiche les différentes versions installées sur le serveur web
-	 * Et permet de choisir celle que l'on veut installer
-	 */	
-	function makeselectversion()
-	{
-		foreach ($this->versions as $dir => $ver) {
-			$selected = $this->versiondir == $dir ? "selected=\"selected\"" : '';
-			echo "<option value=\"$dir\"$selected>$dir  ($ver)</option>\n";
-		}
-	}
-
-	/**
-	 * Sélection de notre version de lodel
-	 *
-	 * Cette fonction sélectionne la version de lodel du site que l'on veut installer
-	 */	
-	function selectVersion()
-	{
-		if  (!$this->versiondir) {
-			$this->cherche_version();
-			
-			// ok, maintenant on connait les versions
-			$this->context['countversions'] = count($this->versions);
-			if ($this->context['countversions'] == 1) {// ok, une seule version, on la choisit
-				list($this->versiondir) = array_keys($this->versions);
-			} elseif ($this->context['countversions'] == 0) { // aie, aucune version on crach
-				trigger_error ("Verifiez le package que vous avez, il manque le repertoire lodel/src. L'installation ne peut etre poursuivie !", E_USER_ERROR);
-			} else { // il y en a plusieurs, faut choisir
-				$this->context['count'] = count($this->versions);
-				$this->makeselectversion();
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-version');
-				exit();
-			}
-		}
-		$this->context['versiondir'] =  $this->versiondir;
-		return true;
+		} while (0);
 	}
 
 	/**
@@ -413,23 +343,24 @@ class siteManage {
 	 */	
 	function install_file($root, $homesite, $homelodel)
 	{
-		@include 'lodelconfig.php';
-		$file = "$root$homesite/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
+		$file = "{$root}{$homesite}/../install/install-fichier.dat"; // homelodel est necessaire pour choper le bon fichier d'install
 		if (!file_exists($file)) {
 			trigger_error("Fichier $file introuvable. Verifiez votre pactage", E_USER_ERROR);
 		}
 		$lines = file($file);
 		$dirsource = '.';
 		$dirdest   = '.';
-	
+    		$filemask = C::get('filemask', 'cfg');
 		$search = array("/\#.*$/", '/\$homesite/', '/\$homelodel/');
 		$rpl    = array ('', $homesite, $homelodel);
+		$usesymlink = C::get('usesymlink', 'cfg');
+		$extensionscripts = C::get('extensionscripts', 'cfg');
 		foreach ($lines as $line) {
 			$line = rtrim(preg_replace($search, $rpl, $line));
 			if (!$line) {
 				continue;
 			}
-			list ($cmd, $arg1, $arg2) = preg_split ("/\s+/", $line);
+			@list ($cmd, $arg1) = preg_split ("/\s+/", $line);
 			$dest1 = "$root$dirdest/$arg1";
 			# quelle commande ?
 			if ($cmd == 'dirsource') {
@@ -439,15 +370,13 @@ class siteManage {
 			} elseif ($cmd == 'mkdir') {
 				$arg1 = $root. $arg1;
 				if (!file_exists($arg1)) {
-					if(!@mkdir($arg1, 0777 & octdec($GLOBALS['filemask']))) {
-						$this->context['error_mkdir'] = $arg1;
-						require 'view.php';
-						$view = &View::getView();
-						$view->render($this->context, 'site-createdir');
+					if(!@mkdir($arg1, 0777 & octdec($filemask))) {
+						C::set('error_mkdir', $arg1);
+						View::getView()->render('site-createdir');
 						exit;	
 					}
 				}
-				@chmod($arg1, 0777 & octdec($GLOBALS['filemask']));
+				@chmod($arg1, 0777 & octdec($filemask));
 			} elseif ($cmd == 'ln' && $usesymlink && $usesymlink != 'non') {
 				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
@@ -466,7 +395,7 @@ class siteManage {
 				if (!file_exists($dest1)) {
 					writefile($dest1, '');
 				}
-				@chmod($dest1, 0666 & octdec($GLOBALS['filemask']));
+				@chmod($dest1, 0666 & octdec($filemask));
 			} elseif ($cmd == 'htaccess') {
 				if (!file_exists("$dest1/.htaccess")) {
 					$this->htaccess($dest1);
@@ -492,7 +421,7 @@ class siteManage {
 			return;
 		}
 		writefile ("$dir/.htaccess", $text);
-		@chmod ("$dir/.htaccess", 0666 & octdec($GLOBALS['filemask']));
+		@chmod ("$dir/.htaccess", 0666 & octdec(C::get('filemask', 'cfg')));
 	}
 
 	/**
@@ -505,14 +434,14 @@ class siteManage {
 	 */	
 	function slink($src, $dest)
 	{
-		if (file_exists($dest) && file_get_contents($dest)==file_get_contents($src)) {
+		if (file_exists($dest) && md5_file($dest)==md5_file($src)) {
 			return;
 		}
 	
 		// le lien n'existe pas ou on n'y accede pas.
 		@unlink($dest); // detruit le lien s'il existe
 		if (!(@symlink($src,$dest))) {
-			@chmod(basename($dest), 0777 & octdec($GLOBALS['filemask']));
+			@chmod(basename($dest), 0777 & octdec(C::get('filemask', 'cfg')));
 			symlink($src, $dest);
 		}
 		if (!file_exists($dest)) {
@@ -535,10 +464,10 @@ class siteManage {
 				unlink($dest);
 			}
 			if (!file_exists($dest)) {
-				mkdir($dest, 0777 & octdec($GLOBALS['filemask']));
+				mkdir($dest, 0777 & octdec(C::get('filemask', 'cfg')));
 			}
-			@chmod($dest, 0777 & octdec($GLOBALS['filemask']));
-			$dir = opendir($src);
+			@chmod($dest, 0777 & octdec(C::get('filemask', 'cfg')));
+			$dir = opendir($src) or trigger_error('Cannot open dir '.$src, E_USER_ERROR);
 			while ($file = readdir($dir)) {
 				if ($file == '.' || $file == '..') {
 					continue;
@@ -566,17 +495,17 @@ class siteManage {
 	 */	
 	function mycopy($src,$dest) 
 	{
-		if (file_exists ($dest) && file_get_contents($dest) == file_get_contents($src)) {
+		if (file_exists ($dest) && md5_file($dest) == md5_file($src)) {
 			return;
 		}
 		if (file_exists ($dest)) {
 			unlink($dest);
 		}
 		if (!(@copy($src,$dest))) {
-			@chmod(basename($dest), 0777 & octdec($GLOBALS['filemask']));
+			@chmod(basename($dest), 0777 & octdec(C::get('filemask', 'cfg')));
 			copy($src, $dest);
 		}
-		@chmod($dest, 0666 & octdec($GLOBALS['filemask']));
+		@chmod($dest, 0666 & octdec(C::get('filemask', 'cfg')));
 	}
 	
 	/**
@@ -587,8 +516,8 @@ class siteManage {
 	 * @param var $database nom de la base de donnée à traiter
 	 */		
 	function find_mysql_db_charset($database) {
-		$db_collation = mysql_find_db_variable($this->database, 'collation_database');
-		if (is_string($GLOBALS['db_charset']) && is_string($db_collation)) {
+		$db_collation = mysql_find_db_variable($database, 'collation_database');
+		if (isset($GLOBALS['db_charset']) && is_string($db_collation)) {
 			$db_charset = ' CHARACTER SET ' . $GLOBALS['db_charset'] . ' COLLATE ' . $db_collation;
 		} else {
 			$db_charset = '';
@@ -602,64 +531,56 @@ class siteManage {
 	 * Cette fonction crée la base de données si celle-ci n'existe pas déjà
 	 *
 	 */	
-	function createDB($lodeldo)
+	function createDB()
 	{
 		global $db;
 		// creation de la DataBase si besoin
-		if (!$this->context['id'] && !$this->context['name']) {
+		if (!C::get('id') && !C::get('name')) {
 			trigger_error('probleme interne 1', E_USER_ERROR);
 		}
 		
 		do { // bloc de controle
-			if ($this->singledatabase == 'on') {
+			if (C::get('singledatabase', 'cfg') == 'on') {
 				break;
 			}
-
+            		$dbname = C::get('dbname');
 			// check if the database existe
 			$db_list = $db->MetaDatabases();
 			$i = 0;
 			$cnt = count($db_list);
 			while ($i < $cnt) {
-				if ($this->context['dbname'] == $db_list[$i]) {
+				if ($dbname == $db_list[$i]) {
 					return true; // la database existe
 				}
 				$i++;
 			}
 			// well, it does not exist, let's create it.
-			if (defined('DBUSERNAME')) {
-				$dbusername = DBUSERNAME;
-			}
-			if (defined('DBHOST')) {
-				$dbhost     = DBHOST;
-			}
-			if (defined('DBPASSWD')) {
-				$dbpasswd   = DBPASSWD;
-			}
-	
-			if ($GLOBALS['version_mysql'] > 40) {
+			$dbusername = C::get('dbusername', 'cfg');
+			$dbhost = C::get('dbhost', 'cfg');
+			$dbpasswd = C::get('dbpasswd', 'cfg');
+			
+            		if ($GLOBALS['version_mysql'] > 40) {
 				$db_charset = $this->find_mysql_db_charset($GLOBALS['currentdb']);
 			} else { 
 				$db_charset = '';
 			}
-			$this->context['command1']="CREATE DATABASE `".$this->context['dbname']."`$db_charset";
-			$this->context['command2'] = "GRANT ALL ON `".$this->context['dbname']."`.* TO $dbusername@$dbhost";
-			$pass = $dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : '';
 			
-			if ($this->context['installoption'] == '2' && !$lodeldo) {
-				$this->context['dbusername'] = $dbusername;
-				$this->context['dbhost']     = $dbhost;
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-createdb');
+            		C::set('command1', "CREATE DATABASE `".$dbname."` $db_charset");
+			C::set('command2', "GRANT ALL ON `".$dbname."`.* TO \"$dbusername\"@\"$dbhost\"".($dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : ''));
+			$installoption = C::get('installoption', 'cfg');
+			if(false === $installoption)
+				$installoption = C::get('installoption');
+			if ($installoption == '2' && !C::get('lodeldo')) {
+                		C::set('dbusername', $dbusername);
+                		C::set('dbhost', $dbhost);
+				View::getView()->render('site-createdb');
 				exit();
 			}
-			if (!$db->Execute($this->context['command1']) || !$db->Execute($this->context['command2']. $pass)) {
-				$this->context['error']      = $db->ErrorMsg();
-				$this->context['dbusername'] = $dbusername;
-				$this->context['dbhost']     =$dbhost;
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-createdb');
+			if (!$db->Execute(C::get('command1')) || !$db->Execute(C::get('command2'))) {
+				C::set('error', $db->ErrorMsg());
+                		C::set('dbusername', $dbusername);
+                		C::set('dbhost', $dbhost);
+				View::getView()->render('site-createdb');
 				exit();
 			}
 
@@ -677,11 +598,12 @@ class siteManage {
 	 */	
 	function loop_errors_createtables(&$context, $funcname)
 	{
-		$error = $this->context['error_createtables'];
+		$error = C::get('error_createtables');
 		do {
+            		$localcontext = array();
 			$localcontext['command'] = array_shift($error);
 			$localcontext['error']   = array_shift($error);
-			call_user_func("code_do_$funcname", array_merge($this->context, $localcontext));
+			call_user_func("code_do_$funcname", array_merge(C::getC(), $localcontext));
 		} while ($error);
 	}
 
@@ -694,11 +616,17 @@ class siteManage {
 	function createTables()
 	{
 		global $db;
-		if (!$this->context['name']) {
+        
+        	$name = C::get('name');
+		if (!$name) {
 				trigger_error("probleme interne 2", E_USER_ERROR);
 		}
 
-		$db->SelectDB($this->context['dbname']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR); //selectionne la base de donnée du site
+        	$dbname = C::get('dbname');
+
+		$db->SelectDB($dbname) //selectionne la base de donnée du site
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR); 
+            
 		if (!file_exists(LODELROOT. $this->versiondir."/install/init-site.sql")) {
 			trigger_error("impossible de faire l'installation, le fichier init-site.sql est absent", E_USER_ERROR);
 		}
@@ -707,19 +635,19 @@ class siteManage {
 		$text.= "\n";
 			
 		if ($GLOBALS['version_mysql'] > 40) {
-			$db_charset = $this->find_mysql_db_charset($this->context['dbname']);
+			$db_charset = $this->find_mysql_db_charset($dbname);
 		} else { 
 			$db_charset = '';
 		}
 
 		$text = str_replace("_CHARSET_",$db_charset,$text);
 		$sqlfile = lq($text);
-		$sqlcmds = preg_split ("/;\s*\n/", preg_replace("/#.*?$/m", '', $sqlfile));
-		if (!$sqlcmds) {
+		$sqlfile = preg_split ("/;\s*\n/", preg_replace("/#.*?$/m", '', $sqlfile));
+		if (!$sqlfile) {
 			trigger_error("le fichier init-site.sql ne contient pas de commande. Probleme!", E_USER_ERROR);
 		}
 		$error = array();
-		foreach ($sqlcmds as $cmd) {
+		foreach ($sqlfile as $cmd) {
 			$cmd = trim($cmd);
 			if ($cmd && !$db->Execute($cmd)) {
 				array_push($error, $cmd, $db->ErrorMsg());
@@ -727,13 +655,11 @@ class siteManage {
 		}
 		
 		if ($error) {
-			$this->context['error_createtables'] = $error;
-			require 'view.php';
-			$view = &View::getView();
-			$view->render($this->context, 'site-createtables');
+            		C::set('error_createtables', $error);
+			View::getView()->render('site-createtables');
 			exit();
-			}
-		$db->SelectDB($this->database) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		}
+		$db->SelectDB(C::get('database', 'cfg')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		return true;
 	}	
 
@@ -743,52 +669,40 @@ class siteManage {
 	 * Cette fonction gère la création des répertoires de lodel
 	 *
 	 */
-	function createDir($lodeldo, $mano, $filemask)
+	function createDir()
 	{
-
-		if(!$this->versiondir)
-			$this->selectVersion();
-		if (!$this->context['path']) {
-			$this->context['path'] = '/'. $this->context['name'];
+        	$path = C::get('path');
+		if (!$path) {
+            		C::set('path', '/'. C::get('name'));
 		}
-		$dir = LODELROOT. $this->context['path'];
+		$dir = LODELROOT. $path;
 		if (!file_exists($dir) || !@opendir($dir)) {
-
+			$installoption = C::get('installoption', 'cfg');
+			if(false === $installoption)
+				$installoption = C::get('installoption');
 			// il faut creer le repertoire rep
-			if ($this->context['installoption'] == '2' && !$lodeldo) {
-				if ($mano) {
-					$this->context['error_nonexists'] = !file_exists($dir);
-					$this->context['error_nonaccess'] = !@opendir($dir);
-				
-				}
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-createdir');
+			if ($installoption == '2' && !C::get('lodeldo')) {
+				C::set('error_nonexists', !file_exists($dir));
+				C::set('error_nonaccess', !@opendir($dir));
+				View::getView()->render('site-createdir');
 				exit();
 			}
 			// on essaie
-			if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec($filemask))) {
+			if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec(C::get('filemask')))) {
 				// on y arrive pas... pas les droits surement
-				$this->context['error_mkdir'] = 1;
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-createdir');
+                		C::set('error_mkdir', 1);
+				View::getView()->render('site-createdir');
 				exit();
 			}
-			@chmod($dir, 0777 & octdec($filemask));
+			@chmod($dir, 0777 & octdec(C::get('filemask')));
 		}
 		
 		// on essaie d'ecrire dans tpl si root
-		if ($this->context['path'] == '/') {
-			if (!@writefile(LODELROOT. 'tpl/testecriture', '')) {
-				$this->context['error_tplaccess'] = 1;
-
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-createdir');
+		if (C::get('path') == '/') {
+			if (!is_writable(LODELROOT.'/tpl')) {
+                		C::set('error_tplaccess', 1);
+				View::getView()->render('site-createdir');
 				exit();
-			} else {
-				unlink(LODELROOT. 'tpl/testecriture');
 			}
 		}
 		return true;
@@ -806,34 +720,35 @@ class siteManage {
 	function maj_siteconfig($siteconfig, $var, $val = -1)
 	{
 		// lit le fichier
-		$text   = join('', file($siteconfig));
+		$text   = file_get_contents($siteconfig);
 		$search = array(); 
 		$rpl = array();
 		if (is_array($var)) {
 			foreach ($var as $v => $val) {
-				if (!preg_match("/^\s*\\\$$v\s*=\s*\".*?\"/m", $text)) {
+				if (!preg_match("/^\s*\\\$cfg\['$v'\]\s*=\s*\".*?\"/m", $text)) {
 					trigger_error("la variable \$$v est introuvable dans le fichier de config.", E_USER_ERROR);
 				}
-				array_push($search, "/^(\s*\\\$$v\s*=\s*)\".*?\"/m");
+				array_push($search, "/^(\s*\\\$cfg\['$v'\]\s*=\s*)\".*?\"/m");
 				array_push($rpl, '\\1"'. $val. '"');
 			}
 		} else {
-				if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\"/m", $text)) {
+				if (!preg_match("/^\s*\\\$cfg\['$var'\]\s*=\s*\".*?\"/m", $text)) {
 					trigger_error("la variable \$$var est introuvable dans le fichier de config.", E_USER_ERROR);
 				}
-				array_push($search, "/^(\s*\\\$$var\s*=\s*)\".*?\"/m");
+				array_push($search, "/^(\s*\\\$cfg\['$var'\]\s*=\s*)\".*?\"/m");
 				array_push($rpl, '\\1"'. $val. '"');
 		}
 		$newtext = preg_replace($search, $rpl, $text);
 		if ($newtext == $text) {
 			return true;
 		}
+        	unset($text);
 		// ecrit le fichier
-		if (!(unlink($siteconfig)) ) {
+		if (!(@unlink($siteconfig)) ) {
 			return false;
 		}
-		if (($f = fopen($siteconfig, 'w')) && fputs($f,$newtext) && fclose($f)) {
-			@chmod ($siteconfig, 0666 & octdec($GLOBALS['filemask']));
+		if (false !== file_put_contents($siteconfig, $newtext)) {
+			@chmod ($siteconfig, 0666 & octdec(C::get('filemask', 'cfg')));
 			return true;
 		} else {
 			return false;
@@ -845,62 +760,58 @@ class siteManage {
 	 *
 	 * Cette fonction gère l'installation des fichiers de lodel
 	 *
-	 * @param string $lodeldo 
 	 */
-	function manageFiles($lodeldo)
+	function manageFiles()
 	{
 		global $db;
 		// verifie la presence ou copie les fichiers necessaires
 		// cherche dans le fichier install-file.dat les fichiers a copier
 		// on peut installer les fichiers
-		if (!$this->context['path']) {
-			$this->context['path'] = '/'. $this->context['name'];
+		if (!C::get('path')) {
+			C::set('path', '/'. C::get('name'));
 		}
-		$root = str_replace('//', '/', LODELROOT. $this->context['path']). '/';
+		$root = str_replace('//', '/', LODELROOT. C::get('path')). '/';
 		$siteconfigcache = 'CACHE/siteconfig.php';
-		if ($this->downloadsiteconfig) { // download the siteconfig
+		if (C::get('downloadsiteconfig')) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
 			exit();
 		}
 		if (file_exists($siteconfigcache)) {
 			unlink($siteconfigcache);
 		}
-		$atroot = $this->context['path'] == '/' ? 'root' : '';
+		$atroot = C::get('path') == '/' ? 'root' : '';
 		if (!copy(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php", $siteconfigcache)) {
 			trigger_error("ERROR: unable to write in CACHE.", E_USER_ERROR);
 		}
-		if(!$this->maj_siteconfig($siteconfigcache, array('site' => $this->context['name'])))
+		if(!$this->maj_siteconfig($siteconfigcache, array('site' => C::get('name'))))
 		{
-			require 'view.php';
-			$view = &View::getView();
-			$view->render($this->context, 'site-file');
+			View::getView()->render('site-file');
 			exit();
 		}
 		$siteconfigdest = $root. 'siteconfig.php';
 
 		// cherche si le fichier n'existe pas ou s'il est different de l'original
-		if (!file_exists($siteconfigdest) || file_get_contents($siteconfigcache) != file_get_contents($siteconfigdest)) {
-			if ($this->context['installoption'] == '2' && !$lodeldo) {
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-file');
+		if (!file_exists($siteconfigdest) || md5_file($siteconfigcache) != md5_file($siteconfigdest)) {
+			$installoption = C::get('installoption', 'cfg');
+			if(false === $installoption)
+				$installoption = C::get('installoption');
+			if ($installoption == '2' && !C::get('lodeldo')) {
+				View::getView()->render('site-file');
 				exit();
 			}
 			@unlink($siteconfigdest); // try to delete before copying.
 			// try to copy now.
 			if (!@copy($siteconfigcache,$siteconfigdest)) {
-				$this->context['siteconfigsrc']  = $siteconfigcache;
-				$this->context['siteconfigdest'] = $siteconfigdest;
-				$this->context['error_writing']    = 1;
-				require 'view.php';
-				$view = &View::getView();
-				$view->render($this->context, 'site-file');
+				C::set('siteconfigsrc', $siteconfigcache);
+				C::set('siteconfigdest', $siteconfigdest);
+				C::set('error_writing', 1);
+				View::getView()->render('site-file');
 				exit();
 			}
-			@chmod ($siteconfigdest, 0666 & octdec($GLOBALS['filemask']));
+			@chmod ($siteconfigdest, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 		// ok siteconfig est copie.
-		if ($this->context['path'] == '/') { // c'est un peu sale ca.
+		if (C::get('path') == '/') { // c'est un peu sale ca.
 			$this->install_file($root, $this->versiondir."/src", '');
 		} else {
 			$this->install_file($root, "../".$this->versiondir."/src", LODELROOT);
@@ -908,48 +819,53 @@ class siteManage {
 		
 		// clear the CACHEs
 		if(!function_exists('removefilesincache'))
-			require 'cachefunc.php';
+			include 'cachefunc.php';
 		removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
 	
 		// ok on a fini, on change le status du site
-		$db->SelectDB($GLOBALS[database]);
-		$db->Execute ("UPDATE `$GLOBALS[tp]sites` SET status=1 WHERE id='".$this->id."'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->SelectDB(C::get('database', 'cfg'));
+		$db->Execute (lq("
+            UPDATE #_MTP_sites 
+                SET status=1 
+                WHERE id='".C::get('id')."'")) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		
 		// ajouter le modele editorial ?
-		if ($GLOBALS[singledatabase]!="on") {
-			if($this->context['name'] != '')
-				$pattern = $this->context['name'];
-			elseif($GLOBALS['name'] != '')
-				$pattern = $GLOBALS['name'];
+		if (C::get('singledatabase', 'cfg')!="on") {
+			if(C::get('name') != '')
+				$pattern = C::get('name');
 
-			if(!preg_match("`".$pattern."`", $this->context['dbname']))
+			if(!preg_match("`".$pattern."`", C::get('dbname')))
 			{
-				$this->context['dbname'] .= $this->context['name'];
+                		C::set('dbname', C::get('dbname').C::get('name'));
 			}
-			$db->SelectDB($this->context['dbname']);
+			$db->SelectDB(C::get('dbname'));
 		}
 
 		$import = true;
 		// verifie qu'on peut importer le modele.
 		foreach(array('types', 'tablefields', 'persontypes', 'entrytypes') as $table) {
-			$result = $db->Execute("SELECT 1 FROM `$GLOBALS[tp]$table` WHERE status>-64 LIMIT 0,1") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result = $db->Execute(lq("
+            SELECT 1 
+                FROM #_TP_$table 
+                WHERE status>-64 
+                LIMIT 0,1")) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            
 			if ($result->RecordCount()) {
 				$import = false;
 				break;
 			}
 		}
 		
-		if (!$this->context['path']) {
-			$this->context['path'] = '/'. $this->context['rep'];
-		}
 		// clean siteconfig
 		unlink($siteconfigcache);
 
 		if ($import) {
-			$go = $this->context['url']. "/lodel/admin/index.php?do=importmodel&lo=data";
+			$go = C::get('url'). "/lodel/admin/index.php?do=importmodel&lo=data";
 		} else {
-			$go = $this->context['url']. '/lodel/edition';
+			$go = C::get('url'). '/lodel/edition';
 		}
 		if (!headers_sent()) {
 			header("location: $go");
@@ -970,27 +886,86 @@ class siteManage {
 	 * @param int type application de la maintenance : 1 = tous en ligne, 2 = tous en maintenance
 	 * @author Pierre-Alain Mignot
 	 */
-	function maintenance($type)
+	function maintenance()
 	{
 		global $db;
- 		if($this->id > 0) {
-			$status = $db->GetOne(lq("SELECT status FROM #_TP_sites WHERE ".$this->critere."")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			if($status == 32) {
+        	$id = C::get('id');
+ 		if($id > 0) 
+        	{
+			$site = $db->GetRow(lq("
+            SELECT name, status 
+                FROM #_MTP_sites 
+                WHERE ".$this->critere."")) 
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            
+            		$status = $site['status'];
+            
+			if($status == 32) 
+            		{
 				$status = -65;
-			} elseif($status == -65) {
+			} 
+			elseif($status == -65) 
+			{
 				$status = 32;
-			} else {
+			} 
+			else 
+			{
 				$status = $status == -64 ? 1 : -64;
 			}
-			$db->Execute(lq("UPDATE #_TP_sites SET status = ".$status." WHERE ".$this->critere."")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            		$lock = C::get('home', 'cfg').'../../'.(C::get('singledatabase', 'cfg') != "on" ? $site['name'].'/' : '').'CACHE/.lock';
+			if($status > 0)
+			{
+				unlink($lock);
+			}
+			else
+			{
+				touch($lock);
+			}
+			$db->Execute(lq("
+        UPDATE #_MTP_sites 
+            SET status = ".$status." 
+            WHERE ".$this->critere."")) 
+                	or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
-		elseif($this->id == 0) {
-			if(intval($type) === 1) {
-				$db->Execute(lq("UPDATE #_TP_sites SET status = 1 WHERE status = -64")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				$db->Execute(lq("UPDATE #_TP_sites SET status = 32 WHERE status = -65")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			} elseif(intval($type) === 2) {
-				$db->Execute(lq("UPDATE #_TP_sites SET status = -64 WHERE status = 1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				$db->Execute(lq("UPDATE #_TP_sites SET status = -65 WHERE status = 32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		elseif($id === 0) 
+        	{
+			$maintenance = (int)C::get('maintenance');
+			$sites = $db->Execute(lq('SELECT id, status, name FROM #_MTP_sites'));
+			$single = C::get('singledatabase', 'cfg') != "on";
+			$lock = C::get('home', 'cfg').'../../';
+			if($maintenance === 1) 
+			{
+				while($site = $sites->FetchRow())
+				{
+				if($site['status'] == -64)
+				{
+					$db->Execute(lq("UPDATE #_MTP_sites SET status = 1 WHERE id=".$site['id'])) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+				elseif($site['status'] == -65)
+				{
+					$db->Execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE id=".$site['id'])) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+				touch($lock.($single ? $site['name'].'/' : '').'CACHE/.lock');
+				}
+			} 
+			elseif($maintenance === 2) 
+			{
+				while($site = $sites->FetchRow())
+				{
+					if($site['status'] == -1)
+					{
+						$db->Execute(lq("UPDATE #_MTP_sites SET status = -64 WHERE id=".$site['id'])) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					}
+					elseif($site['status'] == 32)
+					{
+						$db->Execute(lq("UPDATE #_MTP_sites SET status = -65 WHERE id=".$site['id'])) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					}
+					unlink($lock.($single ? $site['name'].'/' : '').'CACHE/.lock');
+				}
 			}
 		}
 		if (!headers_sent()) {
@@ -1002,3 +977,4 @@ class siteManage {
 		}
 	}
 }
+?>

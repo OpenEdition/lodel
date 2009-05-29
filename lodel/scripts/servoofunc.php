@@ -31,7 +31,7 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 if(!class_exists('ServOO_Client', false))
-	require("servooclient.php");
+	include("servooclient.php");
 
 class ServOO extends ServOO_Client {
 	
@@ -50,22 +50,23 @@ class ServOO extends ServOO_Client {
 						"servoo.proxyhost","servoo.proxyport"),"");
 			
 			if (!$this->options || !$this->options['servoo.url']) { // get form the lodelconfig file
-				$this->options['servoo.url']=$GLOBALS['servoourl'];
-				$this->options['servoo.username']=$GLOBALS['servoousername'];
-				$this->options['servoo.passwd']=$GLOBALS['servoopasswd'];
+				$this->options['servoo.url']=C::get('servoourl', 'cfg');
+				$this->options['servoo.username']=C::get('servoousername', 'cfg');
+				$this->options['servoo.passwd']=C::get('servoopasswd', 'cfg');
 			}
 			if (!$this->options['servoo.url'] || !$this->options['servoo.username'] || !$this->options['servoo.passwd']) {
 				$this->error_message="No servoo";
 				return;
 			}
-			
+			$proxyhost = C::get('proxyhost', 'cfg');
 			// proxy
-			if (empty($this->options['servoo.proxyhost']) && !empty($GLOBALS['proxyhost'])) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'];
+			if (empty($this->options['servoo.proxyhost']) && !empty($proxyhost)) $this->options['servoo.proxyhost']=$proxyhost;
 			if (!empty($this->options['servoo.proxyhost'])) {
 				if (empty($this->options['servoo.proxyport'])) 
 				{
-					if(!empty($GLOBALS['proxyport']))
-						$this->options['servoo.proxyport']=$GLOBALS['proxyport'];
+					$proxyport = C::get('proxyport', 'cfg');
+					if(!empty($proxyhost))
+						$this->options['servoo.proxyport']=$proxyport;
 					else $this->options['servoo.proxyport']="8080";
 				}
 			}
@@ -84,19 +85,21 @@ class ServOO extends ServOO_Client {
 	private function SelectOtherServer($i) {
 		$this->options=getoption(array("servoo$i.url","servoo$i.username","servoo$i.passwd",
 				"servoo$i.proxyhost","servoo$i.proxyport"),"");
-		if ((!$this->options || empty($this->options['servoo.url'])) && !empty($GLOBALS['servoourl'.$i])) { // get form the lodelconfig file
-			$this->options['servoo.url']=$GLOBALS['servoourl'.$i];
-			$this->options['servoo.username']=$GLOBALS['servoousername'.$i];
-			$this->options['servoo.passwd']=$GLOBALS['servoopasswd'.$i];
+		$servoourl = C::get('servoourl'.$i, 'cfg');
+		if ((!$this->options || empty($this->options['servoo.url'])) && !empty($servoourl)) { // get form the lodelconfig file
+			$this->options['servoo.url']=$servoourl;
+			$this->options['servoo.username']=C::get('servoousername'.$i, 'cfg');
+			$this->options['servoo.passwd']=C::get('servoopasswd'.$i, 'cfg');
 		}
-
+		$proxyhost = C::get('proxyport'.$i, 'cfg');
 		// proxy
-		if (empty($this->options['servoo.proxyhost']) && !empty($GLOBALS['proxyhost'.$i])) $this->options['servoo.proxyhost']=$GLOBALS['proxyhost'.$i];
+		if (empty($this->options['servoo.proxyhost']) && !empty($proxyhost)) $this->options['servoo.proxyhost']=$proxyhost;
 		if (!empty($this->options['servoo.proxyhost'])) {
 			if (empty($this->options['servoo.proxyport'])) 
 			{
-				if(!empty($GLOBALS['proxyport'.$i]))
-					$this->options['servoo.proxyport']=$GLOBALS['proxyport'.$i];
+				$proxyport = C::get('proxyport'.$i, 'cfg');
+				if(!empty($proxyport))
+					$this->options['servoo.proxyport']=$proxyport;
 				else $this->options['servoo.proxyport']="8080";
 			}
 		}

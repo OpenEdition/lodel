@@ -41,7 +41,6 @@
  */
 
 
-
 /**
  * Classe de logique des types de personnes
  * 
@@ -104,15 +103,15 @@ class PersonTypesLogic extends Logic
 		switch($var) {
 		case 'gui_user_complexity' :
 			if(!function_exists('makeSelectGuiUserComplexity'))
-				require 'commonselect.php';
-			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+				include 'commonselect.php';
+			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		case 'g_type' :
 			if(!function_exists('reservedByLodel'))
-				require 'fieldfunc.php';
+				include 'fielfunc.php';
 			$g_typefields = $GLOBALS['g_persontypes_fields'];
-			$dao=$this->_getMainTableDAO();
-			$types = $dao->findMany('status > 0', '', 'g_type, title');
+			$types = $this->_getMainTableDAO()->findMany('status > 0', '', 'g_type, title');
+			$arr = array();
 			foreach($types as $type){
 				$arr[$type->g_type] = $type->title;
 			}
@@ -120,13 +119,13 @@ class PersonTypesLogic extends Logic
 			$arr2 = array('' => '--');
 			foreach($g_typefields as $g_type) {
 				$lg_type=strtolower($g_type);
-				if ($arr[$lg_type]) {
+				if (isset($arr[$lg_type])) {
 					$arr2[$lg_type]=$g_type." &rarr; ".$arr[$lg_type];
 				} else {
 					$arr2[$lg_type]=$g_type;
 				}
 			}
-			renderOptions($arr2,$context['g_type']);
+			renderOptions($arr2,isset($context['g_type']) ? $context['g_type'] : '');
 			break;
 		}
 	}
@@ -179,11 +178,9 @@ class PersonTypesLogic extends Logic
 		if (!$this->vo) trigger_error("ERROR: internal error in PersonTypesLogic::_prepareDelete", E_USER_ERROR);
 	}
 
-	protected function _deleteRelatedTables($id) {
-		global $home;
-
-		$dao=&getDAO("tablefields");
-		$dao->delete("type='persons' AND name='".$this->vo->type."'");
+	protected function _deleteRelatedTables($id) 
+	{
+		getDAO("tablefields")->delete("type='persons' AND name='".$this->vo->type."'");
 	}
 
 

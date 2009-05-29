@@ -45,29 +45,28 @@
 
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate(LEVEL_REDACTOR);
+    function getchecked($id)
+    {
+        return in_array($GLOBALS['ids'], $id) ? "checked=\"checked\"" : '';
+    }
+    
+    include 'auth.php';
+    authenticate(LEVEL_REDACTOR);
+    
+    define('UPLOADDIR', SITEROOT. 'upload');
+    
+    $context['caller'] = $_REQUEST['caller'];
+    $context['single'] = isset($_REQUEST['single']);
+    $GLOBALS['ids'] = array();
+    if(isset($_REQUEST['value']))
+    	$GLOBALS['ids'] = explode(',', $_REQUEST['value']);
+    $GLOBALS['nodesk'] = true;
+    View::getView()->renderCached('entitybrowser');
+    
 
-define('UPLOADDIR', SITEROOT. 'upload');
-
-$context['caller'] = $_REQUEST['caller'];
-$context['single'] = isset($_REQUEST['single']);
-
-$ids = explode(',', $_REQUEST['value']);
-$context['id'] = (int)$_GET['id'];
-$nodesk = true;
-require 'view.php';
-$view = &View::getView();
-$view->renderCached($context, 'entitybrowser');
-
-function getchecked($id)
-{
-  return in_array($GLOBALS['ids'], $id) ? "checked=\"checked\"" : '';
-}
 }
 catch(Exception $e)
 {

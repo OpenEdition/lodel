@@ -122,59 +122,13 @@ class entitiesDAO extends DAO
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  // end{definitions} automatic generation  //
 	public function rightscriteria($access)
 	{
 		if (!isset($this->cache_rightscriteria[$access])) {
 			parent::rightscriteria($access);
-			if (!$GLOBALS['lodeluser']['admin']) {
-				$this->cache_rightscriteria[$access].=" AND usergroup IN (".$GLOBALS['lodeluser']['groups'].")";
+			if (!C::get('admin', 'lodeluser')) {
+				$this->cache_rightscriteria[$access].=" AND usergroup IN (".C::get('groups', 'lodeluser').")";
 			}
 		}
 		return $this->cache_rightscriteria[$access];

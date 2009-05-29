@@ -61,14 +61,14 @@
 	<tr>
 		<th class="type">[@COMMON.INSTALL_LANG]</th>
 		<td>
-		<?php  echo $GLOBALS['installlang']; ?>
+		<?php  echo C::get('installlang', 'cfg'); ?>
 		</td>
 	</tr>
 	<tr>
 		<th class="type">[@COMMON.CONFIG_LOCALE]</th>
 		<td>
 		<?php  
-			echo $GLOBALS['locale'].'&nbsp;'; 
+			$locale = C::get('locale', 'cfg'); echo $locale.'&nbsp;'; 
 		?>
 		</td>
 	</tr>
@@ -100,7 +100,7 @@
 		if($locales = list_system_locales()){
 			echo "<ul>\n";
 			foreach($locales as $loc){
-				echo strtolower($loc) == strtolower($GLOBALS['locale']) ? "<li><strong>".utf8_encode($loc)."</strong></li>" : "<li>".utf8_encode($loc)."</li>\n";
+				echo strtolower($loc) == strtolower($locale) ? "<li><strong>".utf8_encode($loc)."</strong></li>" : "<li>".utf8_encode($loc)."</li>\n";
 			}
 			echo "</ul>\n";
 		}
@@ -114,7 +114,7 @@
 	<table class="statistics">
 		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
 	<tr>
-		<th class="type">Lodel</th><td>[#VERSION] - r. <?php echo $GLOBALS['revision'];?></td>
+		<th class="type">Lodel</th><td>[#VERSION] - r. <?php echo C::get('revision', 'cfg');?></td>
 	</tr>
 
 	<tr>
@@ -156,7 +156,7 @@
 		<?php
 		if(function_exists("mb_get_info")){
 			echo "<ul>";
-			foreach(mb_get_info(ALL) as $k => $mbinfo){
+			foreach(mb_get_info('all') as $k => $mbinfo){
 				if($mbinfo){
 					echo "<li>$k : ".(is_array($mbinfo) ? join(',', $mbinfo) : $mbinfo)."</li>";
 				}

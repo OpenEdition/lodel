@@ -110,7 +110,7 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);
 		if (is_array($checked)) {
-			$localcontext['value'] = $checked[$result->fields['id']] ? 'checked="checked"' : '';
+			$localcontext['value'] = isset($checked[$result->fields['id']]) ? 'checked="checked"' : '';
 		} else {
 			$localcontext['value'] = $result->fields['cond'] ? 'checked="checked"' : '';
 		}

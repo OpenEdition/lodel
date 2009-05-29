@@ -114,24 +114,24 @@ function isChild($idref, $idcurrent)
 
 function cleanEntities ()
 {
-		global $db;
-		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
-		$result = $db->execute($mysql);
-		$ids = array();
-		while(!$result->EOF) {
-			$ids[] = $result->fields['id'];
-			$result->MoveNext();
+	global $db;
+	$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
+	$result = $db->execute($mysql);
+	$ids = array();
+	while(!$result->EOF) {
+		$ids[] = $result->fields['id'];
+		$result->MoveNext();
+	}
+	
+	if (is_array($ids)) {
+		if(!function_exists('getLogic', false))
+			include 'logic.php';
+		$logic = getLogic('entities');
+		foreach($ids as $id) {
+			$context['id'] = $id;
+			$logic->deleteAction($context, $error);
 		}
-		
-		if (is_array($ids)) {
-			if(!class_exists('Logic', false))
-				require 'logic.php';
-			$logic = &getLogic('entities');
-			foreach($ids as $id) {
-				$context['id'] = $id;
-				$logic->deleteAction($context, $error);
-				}
-		}
+	}
 }
 
 

@@ -41,7 +41,7 @@
  */
 
 if(!function_exists('mkeditlodeltext'))
-	require("translationfunc.php");
+	include("translationfunc.php");
 
 /**
  * Classe de logique des textes lodel
@@ -74,15 +74,17 @@ class TextsLogic extends Logic
 		*/
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		if ($context['id']) {
+		if (!empty($context['id'])) {
 			// normal edit
-			return parent::editAction($context,$error);
+			$ret = parent::editAction($context,$error);
+            		clearcache();
+            		return $ret;
 		}
 		// Sauvegarde massive
-		if (is_array($context['contents'])) {
+		if (isset($context['contents']) && is_array($context['contents'])) {
 			$dao = $this->_getMainTableDAO();
 			//if ($GLOBALS['lodeluser']['translationmode'] != 'site') {
-			if($context['textgroup'] != 'site') {
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
 				usemaindb();
 			}
@@ -102,14 +104,11 @@ class TextsLogic extends Logic
 				$dao->save($vo);
 			}
 			//if ($GLOBALS['lodeluser']['translationmode']!="site") {
-			if($context['textgroup'] != 'site') {
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
 				usecurrentdb();
 			}
-			update();
 		}
-		if(!function_exists('clearcache'))
-			require("cachefunc.php");
 		clearcache();
 		return '_back';
 	}

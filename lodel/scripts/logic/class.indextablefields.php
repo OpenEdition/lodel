@@ -39,9 +39,6 @@
  * @version CVS:$Id$
  */
 
-if(!class_exists('TableFieldsLogic', false))
-	require("logic/class.tablefields.php");
-
 /**
  * Classe de logique des champs d'indexs
  * 
@@ -80,16 +77,15 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 		*/
 	public function makeSelect(&$context,$var)
 	{
-		global $home;
-
 		switch($var) {
 		case "name" :       
-			$dao=&getDAO($context['type']=='entries' ? "entrytypes" : "persontypes");
+			$dao=getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
 			$vos=$dao->findMany("status>0","rank,title","type,title");
+			$arr = array();
 			foreach($vos as $vo) {
 				$arr[$vo->type]=$vo->title;
 			}
-			renderOptions($arr,$context['name']);
+			renderOptions($arr,isset($context['name']) ? $context['name'] : '');
 			break;
 		case "edition" :
 			$arr=array(
@@ -98,7 +94,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 			"none"=>getlodeltextcontents("no_change","admin"),
 			"display"=>getlodeltextcontents("display_no_edit","admin"),
 			);
-			renderOptions($arr,$context['edition']);
+			renderOptions($arr,isset($context['edition']) ? $context['edition'] : '');
 			break;
 		default:
 			parent::makeSelect($context,$var);

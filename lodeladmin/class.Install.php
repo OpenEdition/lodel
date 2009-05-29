@@ -849,8 +849,8 @@ class Install {
 			
 			$text=str_replace($result[0],"define(\"$var\",".$val.");",$text);
 		} else { // no, it's a variable
-			if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\";/m",$text,$result)) {	trigger_error("la variable \$$var est introuvable dans le fichier de config.", E_USER_ERROR);      }
-			$text=str_replace($result[0],"\$$var=\"$val\";",$text);
+			if (!preg_match("/^\s*\\\$cfg['$var']\s*=\s*\".*?\";/m",$text,$result)) {	trigger_error("la variable \$$var est introuvable dans le fichier de config.", E_USER_ERROR);      }
+			$text=str_replace($result[0],"\$cfg['$var']=\"$val\";",$text);
 		}
 	}
 	

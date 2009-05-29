@@ -61,7 +61,7 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 	}
 	// determin the number of rows to use for the textarea
 	$ncols = 50;
-	$nrows = intval(strlen($text) / $ncols);
+	$nrows = (int)(strlen($text) / $ncols);
 	if ($nrows < 1)
 		$nrows = 1;
 	if ($nrows > 10)
@@ -190,7 +190,7 @@ class XMLDB_Translations extends XMLDB
 			}
 			$this->currentlang = $record['lang'];
 			// look for the translation
-			$dao = & getDAO("translations");
+			$dao = getDAO("translations");
 			$vo = $dao->find("lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
 			$vo->textgroups = $this->textgroups;
 			foreach ($record as $k => $v)
@@ -214,7 +214,7 @@ class XMLDB_Translations extends XMLDB
 				trigger_error("ERROR: Invalid textgroup : ".$this->textgroups, E_USER_ERROR);
 			}
 			// look for the translation
-			$dao = & getDAO("texts");
+			$dao = getDAO("texts");
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
 			foreach ($record as $k => $v)
 			{

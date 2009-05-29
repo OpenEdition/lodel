@@ -64,8 +64,9 @@ class Internal_MessagingLogic extends Logic
 	 */
 	public function __construct()
 	{
-		global $lodeluser, $context;
-		$this->_iduser = $lodeluser['adminlodel'] ? 'lodelmain-'.$lodeluser['id'] : $context['site'].'-'.$lodeluser['id'];
+		$this->_iduser = C::get('adminlodel', 'lodeluser') ? 
+              		'lodelmain-'.C::get('id', 'lodeluser') : 
+              		C::get('site', 'cfg').'-'.C::get('id', 'lodeluser');
 		parent::__construct('internal_messaging');
 	}
 
@@ -74,12 +75,12 @@ class Internal_MessagingLogic extends Logic
 	*/
 	public function makeSelect(&$context,$var) 
 	{
-		if('addressees' != $var) return;
+		if('recipients' != $var) return;
 		global $db;
 		$arr = array();
 		if($context['idparent']) {
 			$idparent = (int)$context['idparent'];
-			$sender = $db->getRow(lq("SELECT iduser, subject, body, addressees FROM #_MTP_internal_messaging WHERE id='{$idparent}'"));
+			$sender = $db->getRow(lq("SELECT iduser, subject, body, recipients FROM #_MTP_internal_messaging WHERE id='{$idparent}'"));
 			preg_match("/(\w+)-(\d+)/", $sender['iduser'], $m);
 			$idUser = (int)$m[2];
 			if('lodelmain' == $m[1]) {
@@ -89,8 +90,8 @@ class Internal_MessagingLogic extends Logic
 				$user = $db->getRow("SELECT username, firstname, lastname, userrights from {$dbname}users WHERE id='{$idUser}'");
 			}
 			$arr[':'.$sender['iduser'].':'] = $user['username'] . ( ($user['firstname'] || $user['lastname']) ? " ({$user['firstname']} {$user['lastname']})" : ''). ($user['userrights'] == LEVEL_ADMINLODEL ? '(LodelAdmin)' : ($user['userrights'] == LEVEL_ADMIN ? '(Admin)' : ''));
-			$addressees = explode(':', $sender['addressees']);
-			foreach($addressees as $addr) {
+			$recipients = explode(':', $sender['recipients']);
+			foreach($recipients as $addr) {
 				if($this->_iduser == $addr || preg_match("/(\w+)-(\d+)/", $addr, $m) != 1) continue;
 				$idUser = (int)$m[2];
 				if('lodelmain' == $m[1]) {
@@ -103,11 +104,11 @@ class Internal_MessagingLogic extends Logic
 				if(!in_array(':'.$addr.':', $arr))
 					$arr[':'.$addr.':'] = $user['username'] . ( ($user['firstname'] || $user['lastname']) ? " ({$user['firstname']} {$user['lastname']}) " : ''). ($user['userrights'] == LEVEL_ADMINLODEL ? ' (LodelAdmin) ' : ($user['userrights'] == LEVEL_ADMIN ? ' (Admin) ' : ''));
 			}
-			$context['addressees'] = $addressees;
-			foreach($context['addressees'] as $k=>$v) {
-				if($v == '') unset($context['addressees'][$k]);
+			$context['recipients'] = $recipients;
+			foreach($context['recipients'] as $k=>$v) {
+				if($v == '') unset($context['recipients'][$k]);
 				else {
-					$context['addressees'][$k] = ':'.$v.':';
+					$context['recipients'][$k] = ':'.$v.':';
 				}
 			}
 			$context['subject'] = 'RE: '.$sender['subject'];
@@ -124,7 +125,7 @@ class Internal_MessagingLogic extends Logic
 						}
 					}
 					$arr[':'.join(':', $ids).':'] = getlodeltextcontents('internal_messaging_all_users_from_site', 'admin');
-					if($adminids) {
+					if(isset($adminids)) {
 						$arr[':'.join(':', $adminids).':'] = getlodeltextcontents('internal_messaging_all_admin_from_site', 'admin');
 					}
 					unset($ids, $adminids);
@@ -140,7 +141,7 @@ class Internal_MessagingLogic extends Logic
 				$arr[':'.join(':', $ids).':'] = getlodeltextcontents('internal_messaging_all_adminlodel', 'admin');
 				unset($ids);
 			}
-			if($context['lodeluser']['adminlodel']) {
+			if(C::get('adminlodel', 'lodeluser')) {
 				$sites = $db->getArray(lq("SELECT name FROM #_MTP_sites ORDER BY name"));
 				$all = join(':', $mainids).':'.(isset($siteids) ? join(':', $siteids) : '');
 				foreach($sites as $site) {
@@ -177,15 +178,18 @@ class Internal_MessagingLogic extends Logic
 	public function deleteAction(&$context, &$error)
 	{
 		global $db;
+        
+        	if(empty($context['directory'])) $context['directory'] = 'inbox';
+        
 		if (isset($context['all'])) {
 			unset($context['all']);
 			$context['escape'] = true;
-			if(!isset($context['directory']) || $context['directory'] == 'inbox') {
-				$where = "status >= 0 AND addressee = '{$this->_iduser}'";
+			if($context['directory'] == 'inbox') {
+				$where = "status >= 0 AND recipient = '{$this->_iduser}'";
 			} elseif($context['directory'] == 'sent') {
 				$where = "status in (0,1,-1,-8,-32) AND iduser = '{$this->_iduser}'";
 			} elseif($context['directory'] == 'trash') {
-				$where = "status in (-1,-8,-2,-16) AND addressee = '{$this->_iduser}'";
+				$where = "status in (-1,-8,-2,-16) AND recipient = '{$this->_iduser}'";
 			}
 			if(isset($where)) {
 				$ids = $db->execute(lq("SELECT id FROM #_MTP_internal_messaging WHERE {$where}"));
@@ -208,14 +212,14 @@ class Internal_MessagingLogic extends Logic
 					$childIds = $db->execute(lq("
 							SELECT distinct(id) 
 							FROM	#_MTP_internal_messaging as i_m, 
-								(  SELECT iduser, incom_date, subject, body, addressees 
+								(  SELECT iduser, incom_date, subject, body, recipients 
 								   FROM #_MTP_internal_messaging 
 								   WHERE id = '{$id}') AS im 
 							WHERE 	i_m.iduser=im.iduser 
 								AND i_m.incom_date=im.incom_date 
 								AND i_m.subject=im.subject 
 								AND i_m.body=im.body 
-								AND i_m.addressees=im.addressees
+								AND i_m.recipients=im.recipients
 								AND id != '{$id}'"));
 					if($childIds) {
 						while(!$childIds->EOF) {
@@ -232,7 +236,7 @@ class Internal_MessagingLogic extends Logic
 		} elseif($id = (int)$context['id']) {
 			$childIds = $db->execute(lq("SELECT id FROM #_MTP_internal_messaging WHERE idparent = '{$id}'"));
 			if($childIds) {
-				$oldEscape = $context['escape'];
+				$oldEscape = isset($context['escape']) ? $context['escape'] : false;
 				$context['escape'] = true;
 				while(!$childIds->EOF) {
 					$context['id'] = $childIds->fields['id'];
@@ -243,122 +247,130 @@ class Internal_MessagingLogic extends Logic
 				unset($oldEscape);
 			}
 
-			$row = $db->getRow(lq("SELECT status, iduser, addressee FROM #_MTP_internal_messaging WHERE id = '{$id}'"));
+			$row = $db->getRow(lq("SELECT status, iduser, recipient FROM #_MTP_internal_messaging WHERE id = '{$id}'"));
 			
-			if((string)$row['addressee'] === $this->_iduser) {
-				if(!isset($context['directory']) || $context['directory'] == 'inbox') {
-					switch((int)$row['status']) {
-					case 0:
-					$status = -8;
-					break;
-
-					case 1:
-					$status = -1;
-					break;
-
-					case 16:
-					$status = -2;
-					break;
-
-					case 32:
-					$status = -16;
-					break;
-
-					default:break;
-					}
-					if(isset($status))
-						$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				} elseif($context['directory'] == 'trash') {
-					switch((int)$row['status']) {
-					case -16:
-					$status = (1 === (int)$context['restore']) ? 32 : 'delete';
-					break;
-					case -2:
-					$status = (1 === (int)$context['restore']) ? 16 : 'delete';
-					break;
-
-					case -8:
-					$status = (1 === (int)$context['restore']) ? 0 : -32;
-					break;
-					case -1:
-					$status = (1 === (int)$context['restore']) ? 1 : -32;
-					break;
-
-					default:break;
-					}
-					if(isset($status)) {
-						if('delete' === $status)
-							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						else
-							$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					}
-				} elseif($context['directory'] == 'sent') {
-					switch((int)$row['status']) {
-					case 0:
-					$status = 32;
-					break;
-
-					case 1:
-					$status = 16;
-					break;
-
-					case -1:
-					$status = -2;
-					break;
-
-					case -8:
-					$status = -16;
-					break;
-
-					case -32:
-					$status = 'delete';
-					break;
-					default:break;
-					}
-					if(isset($status)) {
-						if('delete' === $status)
-							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						else
-							$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					}
-				}
-			} elseif((string)$row['iduser'] === $this->_iduser) {
-				if($context['directory'] == 'sent') {
-					switch((int)$row['status']) {
-					case 0:
-					$status = 32;
-					break;
-
-					case 1:
-					$status = 16;
-					break;
-
-					case -1:
-					$status = -2;
-					break;
-
-					case -8:
-					$status = -16;
-					break;
-
-					case -32:
-					$status = 'delete';
-					break;
-					default:break;
-					}
-					if(isset($status)) {
-						if('delete' === $status)
-							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						else
-							$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					}
-				}
-			}
+			if($row) {
+                if((string)$row['recipient'] === $this->_iduser) {
+                    if(empty($context['directory']) || $context['directory'] == 'inbox') {
+                        switch((int)$row['status']) {
+                        case 0:
+                        $status = -8;
+                        break;
+    
+                        case 1:
+                        $status = -1;
+                        break;
+    
+                        case 16:
+                        $status = -2;
+                        break;
+    
+                        case 32:
+                        $status = -16;
+                        break;
+    
+                        default:break;
+                        }
+                        if(isset($status))
+                            $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                    } elseif($context['directory'] == 'trash') {
+                        if(!isset($context['restore'])) $context['restore'] = 0;
+                        switch((int)$row['status']) {
+                        case -16:
+                        $status = (1 === (int)$context['restore']) ? 32 : 'delete';
+                        break;
+                        case -2:
+                        $status = (1 === (int)$context['restore']) ? 16 : 'delete';
+                        break;
+    
+                        case -8:
+                        $status = (1 === (int)$context['restore']) ? 0 : -32;
+                        break;
+                        case -1:
+                        $status = (1 === (int)$context['restore']) ? 1 : -32;
+                        break;
+    
+                        default:break;
+                        }
+                        if(isset($status)) {
+                            if('delete' === $status)
+                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                            else
+                                $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                        }
+                    } elseif($context['directory'] == 'sent') {
+                        switch((int)$row['status']) {
+                        case 0:
+                        $status = 32;
+                        break;
+    
+                        case 1:
+                        $status = 16;
+                        break;
+    
+                        case -1:
+                        $status = -2;
+                        break;
+    
+                        case -8:
+                        $status = -16;
+                        break;
+    
+                        case -32:
+                        $status = 'delete';
+                        break;
+                        default:break;
+                        }
+                        if(isset($status)) {
+                            if('delete' === $status)
+                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                            else
+                                $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                        }
+                    }
+                } elseif((string)$row['iduser'] === $this->_iduser) {
+                    if($context['directory'] == 'sent') {
+                        switch((int)$row['status']) {
+                        case 0:
+                        $status = 32;
+                        break;
+    
+                        case 1:
+                        $status = 16;
+                        break;
+    
+                        case -1:
+                        $status = -2;
+                        break;
+    
+                        case -8:
+                        $status = -16;
+                        break;
+    
+                        case -32:
+                        $status = 'delete';
+                        break;
+                        default:break;
+                        }
+                        if(isset($status)) {
+                            if('delete' === $status)
+                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                            else
+                                $db->execute(lq("
+                                UPDATE #_MTP_internal_messaging 
+                                    SET status = '{$status}' 
+                                    WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) 
+                                or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                        }
+                    }
+                }
+            }
 		}
 		unset($context['id'], $id);
 		if(!isset($context['escape']) || true !== $context['escape']) {
 			update();
-			return "_location: index.php?do=list&lo=internal_messaging&deleted=1&directory=".$context['directory'];
+            		if(!isset($context['restore'])) $context['restore'] = false;
+			return "_location: index.php?do=list&lo=internal_messaging&".($context['restore'] ? "restored" : "deleted")."=1&directory=".$context['directory'];
 		}
 	}
 
@@ -368,7 +380,7 @@ class Internal_MessagingLogic extends Logic
 		$id = (int)$context['id'];
 		if($id) {
 			$context['data'] = array();
-			$datas = $db->getRow(lq("SELECT idparent, iduser, addressee, subject, body, cond, status FROM #_MTP_internal_messaging WHERE id='{$id}' AND (addressee = '{$this->_iduser}' OR iduser = '{$this->_iduser}')"));
+			$datas = $db->getRow(lq("SELECT idparent, iduser, recipient, subject, body, cond, status FROM #_MTP_internal_messaging WHERE id='{$id}' AND (recipient = '{$this->_iduser}' OR iduser = '{$this->_iduser}')"));
 			if(!$datas) {
 				$error = getlodeltextcontents('internal_messaging_no_message_found', 'admin');
 				return '_error';
@@ -381,20 +393,20 @@ class Internal_MessagingLogic extends Logic
 				$dbname = '`'.DATABASE.'_'.$m[1].'`.'.$GLOBALS['tableprefix'];
 				$sender = $db->getRow("SELECT username, firstname, lastname from {$dbname}users WHERE id='{$idUser}'");
 			}
-			preg_match("/(\w+)-(\d+)/", $datas['addressee'], $m);
+			preg_match("/(\w+)-(\d+)/", $datas['recipient'], $m);
 			$idUser = (int)$m[2];
 			if('lodelmain' == $m[1]) {
-				$addressee = $db->getRow(lq("SELECT username, firstname, lastname from #_MTP_users WHERE id='{$idUser}'"));
+				$recipient = $db->getRow(lq("SELECT username, firstname, lastname from #_MTP_users WHERE id='{$idUser}'"));
 			} else {
 				$dbname = '`'.DATABASE.'_'.$m[1].'`.'.$GLOBALS['tableprefix'];
-				$addressee = $db->getRow("SELECT username, firstname, lastname from {$dbname}users WHERE id='{$idUser}'");
+				$recipient = $db->getRow("SELECT username, firstname, lastname from {$dbname}users WHERE id='{$idUser}'");
 			}
 			$context['data'] = $datas;
 			$context['data']['sender'] = $sender['username']. ( ($sender['firstname'] || $sender['lastname']) ? " ({$sender['firstname']} {$sender['lastname']})" : '');
-			$context['data']['addressee'] = $addressee['username']. ( ($addressee['firstname'] || $addressee['lastname']) ? " ({$addressee['firstname']} {$addressee['lastname']})" : '');
+			$context['data']['recipient'] = $recipient['username']. ( ($recipient['firstname'] || $recipient['lastname']) ? " ({$recipient['firstname']} {$recipient['lastname']})" : '');
 			// nouveau message, on update son status à 0 == lu
-			if(1 == (int)$datas['status'] && $this->_iduser == $datas['addressee']) {
-				$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = 0 WHERE id = '{$id}' AND addressee = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(1 == (int)$datas['status'] && $this->_iduser == $datas['recipient']) {
+				$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = 0 WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 		return '_ok';
@@ -408,47 +420,47 @@ class Internal_MessagingLogic extends Logic
 
 	public function editAction(&$context, &$error)
 	{
-		global $db, $lodeluser;
+		global $db;
 		
 		if (!$this->validateFields($context, $error)) {
 			return '_error';
 		}
 		
-		$addressees = array();
-		foreach($context['addressees'] as $users) {
+		$recipients = array();
+		foreach($context['recipients'] as $users) {
 			$arr = explode(':', $users);
 			foreach($arr as $user) {
 				// on évite les doublons (ex: tous les admins + admin sélectionné)
-				if($user != '' && !in_array($user, $addressees))
-					$addressees[] = strtr($user, array('allsite'=>'', 'alllodelmain'=>'lodelmain'));
+				if($user != '' && !in_array($user, $recipients))
+					$recipients[] = strtr($user, array('allsite'=>'', 'alllodelmain'=>'lodelmain'));
 			}
 		}
 
 		usemaindb();
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		if ($lodeluser['rights'] < $dao->rights['write']) {
+		if (C::get('rights', 'lodeluser') < $dao->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to send internal message', E_USER_ERROR);
 		}
 		$context['subject'] = addslashes($context['subject']);
 		$context['body'] = addslashes($context['body']);
 		$requetes = '';
-		$context['addressees'] = array();
-		$context['addressees'] = join(':', $addressees);
-		foreach($addressees as $k=>$addressee) {
+		$context['recipients'] = array();
+		$context['recipients'] = join(':', $recipients);
+		foreach($recipients as $k=>$recipient) {
 			if($context['idparent']) {
-				$subject = addslashes($db->getOne(lq("SELECT subject FROM #_MTP_internal_messaging WHERE id='{$context['idparent']}' AND addressee = '{$this->_iduser}'")));
+				$subject = addslashes($db->getOne(lq("SELECT subject FROM #_MTP_internal_messaging WHERE id='{$context['idparent']}' AND recipient = '{$this->_iduser}'")));
 				if($subject)
-					$idparent = $db->getOne(lq("SELECT id FROM #_MTP_internal_messaging WHERE subject='{$subject}' AND addressee='{$addressee}' AND addressee = '{$this->_iduser}'"));
+					$idparent = $db->getOne(lq("SELECT id FROM #_MTP_internal_messaging WHERE subject='{$subject}' AND recipient='{$recipient}' AND recipient = '{$this->_iduser}'"));
 				else $idparent=0;
 			} else $idparent=0;
-			$requetes .= "('{$idparent}', '{$this->_iduser}', '{$addressee}', ':{$context['addressees']}:', '{$context['subject']}', '{$context['body']}', '{$context['cond']}', NOW(), '1'),";
+			$requetes .= "('{$idparent}', '{$this->_iduser}', '{$recipient}', ':{$context['recipients']}:', '{$context['subject']}', '{$context['body']}', '{$context['cond']}', NOW(), '1'),";
 		}
 		$requetes = substr_replace($requetes, '', -1);
-		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, addressee, addressees, subject, body, cond, incom_date, status) VALUES {$requetes}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, recipient, recipients, subject, body, cond, incom_date, status) VALUES {$requetes}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		unset($context['idparent']);
 		update();
-		return "_location: index.php?do=list&lo=internal_messaging&msgsended=1&directory=".$context['directory'];
+		return "_location: index.php?do=list&lo=internal_messaging&msgsended=1";
 	}
 
 	// begin{publicfields} automatic generation  //
@@ -460,7 +472,7 @@ class Internal_MessagingLogic extends Logic
 	protected function _publicfields() 
 	{
 		return array(
-				'addressees' => array('multipleselect', '+'),
+				'recipients' => array('multipleselect', '+'),
 				'subject' => array('text', ''),
 				'body' => array('longtext', '+'),
 				'cond' => array('boolean', '+'));
@@ -469,7 +481,14 @@ class Internal_MessagingLogic extends Logic
 	// end{publicfields} automatic generation  //
 
 	// begin{uniquefields} automatic generation  //
-
+	/**
+	 * Retourne la liste des champs uniques
+	 * @access private
+	 */
+	protected function _uniqueFields() 
+	{ 
+		return array();
+	}
 
 	// end{uniquefields} automatic generation  //
 

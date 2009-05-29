@@ -56,7 +56,7 @@ $GLOBALS['langues'] = array ("fr" => "fran\303\247ais", "en" => "anglais", "es" 
  */
 function makeselectlangs($lang = "")
 {
-	global $context, $langues;
+	global $langues;
 
 	echo "<option value=\"\">--</option>\n";
 	foreach ($langues as $l => $lang)	{
@@ -71,7 +71,7 @@ function makeselectlangs($lang = "")
  */
 function makeselectlangs_nevernil($lang = "")
 {
-	global $context, $langues;
+	global $langues;
 
 	foreach ($langues as $l => $lang)	{
 		$selected = $lang == $l ? " selected=\"selected\"" : '';

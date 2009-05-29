@@ -121,14 +121,10 @@ class TasksLogic extends Logic {
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
 	public function isdeletelocked($id,$status=0)
-
 	{
-		global $lodeluser;
-
 		// basic check. Should be more advanced because of the potential conflict between 
 		// adminlodel adn othe rusers
-		$dao=$this->_getMainTableDAO();
-		$vo=$dao->find("id='".$id."' AND user='".$lodeluser['id']."'","id");
+		$vo=$this->_getMainTableDAO()->find("id='".$id."' AND user='".C::get('id', 'lodeluser')."'","id");
 		return $vo->id ? false : true ;
 	}
 

@@ -404,12 +404,12 @@ function im_action(action, dir, message)
 	case 'rest': document.getElementById('im_restore').value=1;document.getElementById('im_form').submit();
 	break;
 	
-	case 'delSelected':
+	case 'delselected':
 	if(confirm(message +' ?')) document.getElementById('im_form').submit();
 	else document.getElementById('actions').selectedIndex = 0;
 	break;
 	
-	case 'delAll':
+	case 'delall':
 	if(confirm(message +' ?')) window.location='index.php?do=delete&lo=internal_messaging&all=1&directory='+dir;
 	else document.getElementById('actions').selectedIndex = 0;
 	break;

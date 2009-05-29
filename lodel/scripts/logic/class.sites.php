@@ -131,7 +131,7 @@ class SitesLogic extends Logic
 			//bloque les tables
 			lock_write ('session', 'sites');
 			// cherche le nom du site
-			$dao = &getDAO('sites');
+			$dao = getDAO('sites');
 			$vo = $dao->find($critere, 'path');
 			if (!$vo->path) {
 				$context['error'] = getlodeltextcontent('error_during_lock_site_the_site_may_have_been_deleted', 'lodeladmin');
@@ -155,7 +155,7 @@ class SitesLogic extends Logic
 
 		usecurrentdb();
 		if(!function_exists('clearcache'))
-			require 'cachefunc.php';
+			include 'cachefunc.php';
 		clearcache();
 		return '_back';
 	}

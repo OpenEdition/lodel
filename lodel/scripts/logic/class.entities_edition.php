@@ -40,8 +40,6 @@
  * @version CVS:$Id$
  */
 
-if(!class_exists('GenericLogic', false))
-	require 'genericlogic.php';
 /**
  * Classe de logique des entités (gestion de l'édition)
  * 
@@ -84,7 +82,7 @@ class Entities_EditionLogic extends GenericLogic
 	 */
 	public function viewAction(&$context, &$error)
 	{
-		if ($context['check'] && $error) {
+		if (isset($context['check']) && $error) {
 			return '_error';
 		}
 		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
@@ -92,109 +90,145 @@ class Entities_EditionLogic extends GenericLogic
 		}
 
 		// define some loop functions
-		function loop_persons_in_entities($context, $funcname)
+		if(!function_exists('loop_persons_in_entities'))
 		{
-			$varname = $context['varname'];
-			if (!$varname) return;
-
-			$idtype = $context['idtype'];
-			if (!$idtype) {
-				trigger_error("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities", E_USER_ERROR);
-			}
-			if (!is_numeric($idtype)) {
-				return;
-			}
-		
-			if (!$context['persons'][$idtype]) {
-				call_user_func("code_alter_$funcname",$context);
-				return;
-			}
-
-			foreach($context['persons'][$idtype] as $degree => $arr) {
-				if (!is_numeric($degree)) {
+			function loop_persons_in_entities($context, $funcname)
+			{
+				$varname = $context['varname'];
+				if (!$varname) return;
+	
+				$idtype = $context['idtype'];
+				if (!$idtype) {
+					trigger_error("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities", E_USER_ERROR);
+				}
+				if (!is_numeric($idtype)) {
 					return;
 				}
-				$localcontext              = array_merge($context,$arr);
-				$localcontext['name']      = $varname;
-				$localcontext['classtype'] = "persons";
-				$localcontext['degree']    = $degree;
-				if ($degree > $maxdegree) {
-					$maxdegree = $degree;
-				}
-				call_user_func("code_do_$funcname", $localcontext);
-			}
-
-			if (function_exists("code_after_$funcname")) {
-				$localcontext = $context;
-				$localcontext['maxdegree'] = $maxdegree;
-				call_user_func("code_after_$funcname", $localcontext);
-			}
-		}	  
-		/////
-		function loop_entries_in_entities($context, $funcname) 
-		{
-			$varname = $context['varname'];
-			if (!$varname) {
-				return;
-			}
-
-			$idtype = $context['idtype'];
-			if (!is_numeric($idtype)) {
-				return;
-			}
-			$dao = &getDAO("entrytypes");
-			$votype = $dao->getById($idtype, "id,sort,flat");
-			if (!$votype) {
-				trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
-			}
-			if ($context['entries'][$idtype]) {
-				foreach ($context['entries'][$idtype] as $entry) {
-					$checkarr[] = &$entry['g_name'];
-				}
-			}
-			$context['id'] = 0; // start by the parents
-			loop_entries_in_entities_rec ($context, $funcname, $votype, $checkarr);
-		}
-		
-		function loop_entries_in_entities_rec ($context, $funcname, &$votype, &$checkarr) 
-		{
-			global $db;
-
-			// get the entries
-			$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			while (!$result->EOF) {
-				$localcontext = array_merge($context, $result->fields);
-				$localcontext['selected'] = $checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
-				call_user_func("code_do_$funcname", $localcontext);
-				if (!$votype->flat) {
-					$localcontext['root'].= $localcontext['g_name']. "/";
-				}
-				loop_entries_in_entities_rec ($localcontext, $funcname, $votype, $checkarr);
-				$result->MoveNext();
-			}
-		}
-		/////
-		function loop_entities_select($context, $funcname)
-		{
-			global $db;
-			$varname = $context['varname'];
-			if (!$varname) {
-				if (function_exists("code_alter_$funcname")) {
+			
+				if (!isset($context['persons'][$idtype]) || !is_array($context['persons'][$idtype])) {
 					call_user_func("code_alter_$funcname",$context);
+					return;
 				}
-				return;
+				$maxdegree = 0;
+				foreach($context['persons'][$idtype] as $degree => $arr) {
+					if (!is_numeric($degree)) {
+						return;
+					}
+					$localcontext              = array_merge($context,$arr);
+					$localcontext['name']      = $varname;
+					$localcontext['classtype'] = "persons";
+					$localcontext['degree']    = $degree;
+					if ($degree > $maxdegree) {
+						$maxdegree = $degree;
+					}
+					call_user_func("code_do_$funcname", $localcontext);
+				}
+	
+				if (function_exists("code_after_$funcname")) {
+					$localcontext = $context;
+					$localcontext['maxdegree'] = $maxdegree;
+					call_user_func("code_after_$funcname", $localcontext);
+				}
+			}	  
+		}
+		if(!function_exists('loop_entries_in_entities'))
+		{
+			function loop_entries_in_entities($context, $funcname) 
+			{
+				$varname = $context['varname'];
+				if (!$varname) {
+					return;
+				}
+	
+				$idtype = $context['idtype'];
+				if (!is_numeric($idtype)) {
+					return;
+				}
+				$votype = getDAO("entrytypes")->getById($idtype, "id,sort,flat");
+				if (!$votype) {
+					trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
+				}
+				if (isset($context['entries'][$idtype]) && is_array($context['entries'][$idtype])) {
+					foreach ($context['entries'][$idtype] as $entry) {
+						$checkarr[] = &$entry['g_name'];
+					}
+				}
+				$context['id'] = 0; // start by the parents
+				loop_entries_in_entities_rec ($context, $funcname, $votype, $checkarr);
 			}
-			$ids = preg_split("/,/", $context['entities'][$varname], -1, PREG_SPLIT_NO_EMPTY);
-			$result = $db->execute(lq("SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			while (!$result->EOF) {
-				$localcontext = array_merge($context, $result->fields);
-				call_user_func("code_do_$funcname", $localcontext);
-				$result->MoveNext();
+		}
+		if(!function_exists('loop_entries_in_entities_rec'))
+		{
+			function loop_entries_in_entities_rec ($context, $funcname, &$votype, &$checkarr) 
+			{
+				global $db;
+	
+				// get the entries
+				$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				
+				while (!$result->EOF) {
+					$localcontext = array_merge($context, $result->fields);
+					$localcontext['root'] = '';
+					$localcontext['selected'] = $checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
+					call_user_func("code_do_$funcname", $localcontext);
+					if (!$votype->flat) {
+						$localcontext['root'].= $localcontext['g_name']. "/";
+					}
+					loop_entries_in_entities_rec ($localcontext, $funcname, $votype, $checkarr);
+					$result->MoveNext();
+				}
 			}
-			if (function_exists("code_after_$funcname")) {
-				$localcontext = $context;
-				$localcontext['all'] = $context['entities'][$varname];
-				call_user_func("code_after_$funcname",$localcontext);
+		}
+		if(!function_exists('loop_entities_select'))
+		{
+			function loop_entities_select($context, $funcname)
+			{
+				global $db;
+				$varname = $context['varname'];
+				if (!$varname) {
+					if (function_exists("code_alter_$funcname")) {
+						call_user_func("code_alter_$funcname",$context);
+					}
+					return;
+				}
+				$values = null;
+				if(isset($context['entities'][$varname]))
+				{
+					$values = $context['entities'][$varname];
+				}
+				elseif(is_numeric($nb = substr($varname, -1)))
+				{
+					$varname = substr($varname, 0, -1);
+					if(isset($context['entities'][$varname][$nb])) $values = $context['entities'][$varname][$nb];
+				}
+				$ids = array();
+				if($values)
+				{
+					if(!is_array($values))
+					{
+						$ids = preg_split("/,/", $values, -1, PREG_SPLIT_NO_EMPTY);
+					}
+					else $ids = $values;
+	
+					if($ids)
+					{
+						$result = $db->execute(lq("
+						SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition 
+							FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) 
+							WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						while (!$result->EOF) {
+							$localcontext = array_merge($context, $result->fields);
+							call_user_func("code_do_$funcname", $localcontext);
+							$result->MoveNext();
+						}
+					}
+				}
+				if (function_exists("code_after_$funcname")) {
+					$localcontext = $context;
+					$localcontext['all'] = join(',', $ids);
+					call_user_func("code_after_$funcname",$localcontext);
+				}
 			}
 		}
 		/////
@@ -202,18 +236,17 @@ class Entities_EditionLogic extends GenericLogic
 
 		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
 		if (!$context['id'] && !$error) { // add : récupération des valeurs par défaut
-			$daotablefields = &getDAO("tablefields");
-			$fields = $daotablefields->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
+			$fields = getDAO("tablefields")->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
-				$context['data'][$field->name] = $field->defaultvalue;
+					$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
 	
-		if ($context['check'] && !$error) {
+		if (isset($context['check']) && !$error) {
 			$context['status'] = -1;
 			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
-			clean_request_variable($context);
+			C::clean($context);
 			return $this->editAction($context, $error);
 		}
 		return $ret ? $ret : "_ok";
@@ -237,53 +270,51 @@ class Entities_EditionLogic extends GenericLogic
 		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
-		if ($context['cancel']) {
+		if (isset($context['cancel'])) {
 			return '_back';
 		}
-		global $lodeluser, $home;
 		$id = $context['id'];
-		if ($id && (!isset($context['idparent']) || !isset($context['idtype']))) {
-			$dao = $this->_getMainTableDAO();
-			$vo  = $dao->getById($id, "idparent, idtype");
+		if ($id && (empty($context['idparent']) || empty($context['idtype']))) {
+			$vo  = $this->_getMainTableDAO()->getById($id, "idparent, idtype");
 			$context['idparent'] = $vo->idparent;
 			$context['idtype']   = $vo->idtype;
 		}
 		$idparent = $context['idparent'];
 		$idtype   = $context['idtype'];
-		$status   = (int)$context['status'];
+        	$status = 0;
+        	if(isset($context['status']))
+			$status = (int)$context['status'];
 		$this->_isAuthorizedStatus($status);
 		// iduser
-		$context['iduser'] = !SINGLESITE && $lodeluser['adminlodel'] ? 0 : $lodeluser['id'];
+		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
 		if(!function_exists('checkTypesCompatibility'))
-			require 'entitiesfunc.php';
+			include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
 			$error['idtype'] = 'types_compatibility';
 			return '_error';
 		}
 
 		// get the class 
-		$daotype = &getDAO("types");
-		$votype = $daotype->getById($context['idtype'], "class,creationstatus,search");
-		$class = $context['class']=$votype->class;
-		if (!$class) {
+		$votype = getDAO("types")->getById($context['idtype'], "class,creationstatus,search");
+		if (!$votype) {
 			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
 		}
+		$class = $context['class']=$votype->class;
 		
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
 		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
-			$daotablefields = &getDAO("tablefields");
-			$fields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
+			$fields = getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
-				$context['data'][$field->name] = $field->defaultvalue;
+					$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
-
+        	$ret = '';
 		if (!$this->validateFields($context, $error)) {
 			// error.
 			// if the entity is imported and will be checked
 			// that's fine, let's continue, if not return an error
-			if ($opt == FORCE) { 
+			if ($opt == 'FORCE') { 
 				$status=-64;
 				$ret="_error";
 			}
@@ -302,12 +333,12 @@ class Entities_EditionLogic extends GenericLogic
 				trigger_error("ERROR: entity is locked. No operation is allowed", E_USER_ERROR);
 			}
 			// possibly document reloading
-			if($context['reload']) {
+			if(isset($context['reload']) && $context['reload']) {
 				// let's deal with document reloading problem : PDF file and entries disapeared :
-				$daotablefields = &getDAO("tablefields");
+				$daotablefields = getDAO("tablefields");
 				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");
 				foreach($Filefields as $ffield) {
-					$gdaoaf = &getGenericDAO ($class, "identity");
+					$gdaoaf = getGenericDAO ($class, "identity");
 					$tmpfile = $gdaoaf->getById($id, $ffield->name);
 					$fieldname = $ffield->name;
 					if($context['data'][$ffield->name] == 'deleted') {
@@ -318,10 +349,10 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 				// entries
-				$daorelations = &getDAO("relations");
+				$daorelations = getDAO("relations");
 				$Entryfields = $daorelations->findMany("id1='{$id}' AND nature = 'E'", "", "id2");
-				$daoentries = &getDAO("entries");
-				$daoentrytypes = &getDAO("entrytypes");
+				$daoentries = getDAO("entries");
+				$daoentrytypes = getDAO("entrytypes");
 				foreach($Entryfields as $ffield) {
 					$reloaded = false;
 					$entry = $daoentries->getById($ffield->id2, 'idtype, g_name');
@@ -346,7 +377,7 @@ class Entities_EditionLogic extends GenericLogic
 				unset($entry, $entryclass, $daoentries, $daoentrytypes, $Entryfields, $daorelations, $daotablefields, $Filefields); // save some memory
 			}
 			// change the usergroup of the entity ?
-			if ($lodeluser['admin'] && $context['usergroup']) {
+			if (C::get('admin', 'lodeluser') && C::get('usergroup')) {
 				$vo->usergroup = (int)$context['usergroup'];
 			}
 			if ($vo->status<=-64) {  // like a creation
@@ -355,10 +386,10 @@ class Entities_EditionLogic extends GenericLogic
 			}
 		} else { //create the entity
 			$new = true;
-			$vo =& $dao->createObject ();
+			$vo = $dao->createObject ();
 			$vo->idparent       = $idparent;
 			$vo->usergroup      = $this->_getUserGroup ($context, $idparent);
-			$vo->iduser         = $context['iduser'];
+			$vo->iduser         = C::get('id', 'lodeluser');
 			$vo->status         = $status ? $status : $votype->creationstatus;
 			$vo->creationdate   = $now;
 		}
@@ -371,9 +402,9 @@ class Entities_EditionLogic extends GenericLogic
 		$dctitle = $this->getGenericEquivalent ($class, 'dc.title');
 		if ($dctitle) {
 			$vo->g_title = strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
-		}
+		} else $vo->g_title = '';
 		// If Identifier is not set, let's calcul it with the generic title
-		
+		$context['identifier'] = C::get('identifier');
 		if (!$vo->identifier && trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
@@ -387,16 +418,16 @@ class Entities_EditionLogic extends GenericLogic
 			/*}*/
 		}
 		//print_r($context);
-		if ($context['creationmethod']) {
+		if (!empty($context['creationmethod'])) {
 			$vo->creationmethod = $context['creationmethod'];
 		}
-		if ($context['creationinfo']) {
+		if (!empty($context['creationinfo'])) {
 			$vo->creationinfo = $context['creationinfo'];
 		}
 	
 		$id = $context['id'] = $dao->save($vo);
 		// change the group recursively
-		$gdao = &getGenericDAO ($class, "identity");
+		$gdao = getGenericDAO ($class, "identity");
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id'] = $context['id'];
 		$this->_moveImages ($context['data']);
@@ -414,24 +445,21 @@ class Entities_EditionLogic extends GenericLogic
 		if ($ret=="_error") {
 			return "_error";
 		}
-		// désactivé le 06/02/09 par pierre-alain
-		// ça prend beaucoup trop de ressources et de temps !!
 		// pour indexer aller dans lodel/admin/ et cliquer sur réindexer
-// 		if ($votype->search) {
-// 			if(!class_exists('Entities_IndexLogic'))
-// 				require "class.entities_index.php";
-// 			$lo_entities_index = new Entities_IndexLogic();
-// 			$lo_entities_index->addIndexAction($context, $error);
-// 		}
+        	// ou activer l'option dans le siteconfig.php
+		if (C::get('searchEngine', 'cfg') && $votype->search) {
+			$lo_entities_index = new Entities_IndexLogic();
+			$lo_entities_index->addIndexAction($context, $error);
+		}
 		update();
 
 		// pour import de plusieurs entités à la suite
-		if(is_string($context['next_entity'])) {
-			if ($context['next_entity'] == 'yes') { return $ret = "_next"; }
+		if(isset($context['next_entity'])) {
+			if ((string)$context['next_entity'] === 'yes') { return $ret = "_next"; }
 			else { return $ret = "_back"; }
 		}
 
-		if ($context['visualiserdocument'] || $_GET['visualiserdocument']) {
+		if (isset($context['visualiserdocument'])) {
 			return "_location: ". SITEROOT. makeurlwithid($id);
 		}
 		return $ret ? $ret : "_back";
@@ -449,18 +477,18 @@ class Entities_EditionLogic extends GenericLogic
 	{
 		switch($var) {
 		case 'creationinfo':
-			if ($context['creationmethod'] && $context['creationmethod']!='form') {
+			if (isset($context['creationmethod']) && $context['creationmethod']!='form') {
 				trigger_error("ERROR: error creationmethod must be 'form' to choose the creationinfo", E_USER_ERROR);
 			}
 			$arr = array("xhtml"=>"XHTML", "wiki"=>"Wiki", "bb"=>"BB");
-			renderOptions($arr, $context['creationinfo']);
+			renderOptions($arr, isset($context['creationinfo']) ? $context['creationinfo'] : '');
 			break;
 		}
 		switch($edittype) {
 		case 'lang':
 			if(!function_exists('makeselectlangs'))
-				require 'lang.php';
-			makeselectlangs($context[$var]);
+				include 'lang.php';
+			makeselectlangs(isset($context[$var]) ? $context[$var] : '');
 			break;
 		}
 	}
@@ -486,10 +514,10 @@ class Entities_EditionLogic extends GenericLogic
 	protected function _saveRelatedTables($vo,$context) 
 	{
 		global $db;
-		if (!$vo->status) {
-			$dao = $this->_getMainTableDAO();
-			$vo  = $dao->getById($vo->id, 'status,id');
+		if (!isset($vo->status)) {
+			$vo  = $this->_getMainTableDAO()->getById($vo->id, 'status,id');
 		}
+		$status = 0;
 		if ($vo->status>-64 && $vo->status<=-1) {
 			$status = -1;
 		}
@@ -497,28 +525,24 @@ class Entities_EditionLogic extends GenericLogic
 			$status = 1;
 		}
 		//Mise à jour des softs relations
-		$entities_logic = &getLogic('entities');
-		$entities_logic->_publishSoftRelation(array($vo->id), $vo->status);
+		getLogic('entities')->_publishSoftRelation(array($vo->id), $vo->status);
 
 		// Entries and Persons
 		foreach (array ('entries' => 'E', 'persons' => 'G') as $table => $nature) {
 			// put the id's from entrees and autresentrees into idtypes
-			$idtypes = $context[$table] ? array_keys ($context[$table]) : array();
-			if (!$idtypes) {
+			if (empty($context[$table]) || !is_array($context[$table])) {
 				continue;
 			}
-			$logic = &getLogic($table);
+            		$idtypes = array_keys ($context[$table]);
+			$logic = getLogic($table);
 			$ids         = array();
 			$idrelations = array();
 			foreach ($idtypes as $idtype) {
-				$itemscontext = $context[$table][$idtype];
-				if (!$itemscontext) {
+				if (empty($context[$table][$idtype])) {
 					continue;
 				}
-				if(!is_array($itemscontext))
-				{
-					echo $idtype.' : '.$table.' :: '. $itemscontext.' - '.$context['class'].'<br>';
-				}
+                		$itemscontext = $context[$table][$idtype];
+				if(!is_array($itemscontext)) trigger_error('ERROR: invalid items', E_USER_ERROR);
 				$degree = 1;
 				foreach ($itemscontext as $k => $itemcontext) {
 					if (!is_numeric($k)) {
@@ -532,7 +556,7 @@ class Entities_EditionLogic extends GenericLogic
 					$ret = $logic->editAction($itemcontext, $error);
 					if ($ret!="_error" && $itemcontext['id']) {
 						$ids[$idtype][] = $itemcontext['id'];
-						if ($itemcontext['idrelation']) {
+						if (isset($itemcontext['idrelation'])) {
 							$idrelations[] = $itemcontext['idrelation'];
 						}
 					}
@@ -559,19 +583,31 @@ class Entities_EditionLogic extends GenericLogic
 			$this->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
 		// Entities
-		if ($context['entities']) {
-			$dao =& getDAO('tablefields');
-			foreach (array_keys ($context['entities']) as $name) {
+		if (!empty($context['entities'])) {
+			$dao = getDAO('tablefields');
+            		$keys = array_keys ($context['entities']);
+			foreach ($keys as $name) {
 				$name = addslashes ($name);
 				$vofield = $dao->find("class='". $context['class']. "' AND name='". $name. "' AND type='entities'");
 				if (!$vofield) {
-					trigger_error ("invalid name for field of type entities", E_USER_ERROR);
+					if(preg_match('/^([a-zA-Z]+)(\d+)$/', $name, $m))
+					{
+						$vofield = $dao->find("class='". $context['class']. "' AND name='". addslashes($m[1]). "' AND type='entities'");
+					}
+					if(!$vofield)
+						trigger_error ("invalid name for field of type entities", E_USER_ERROR);
+					if(!is_array($context['entities'][$name])) $context['entities'][$name] = explode(',', $context['entities'][$name]);
 				}
 				$idrelations = array ();
 				if (is_array($context['entities'][$name])) {
+					$i=0;
 					foreach ($context['entities'][$name] as $id) {
-						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "','0')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$id = (int)$id;
+						if(!$id) continue;
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "',".$i.")")) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$idrelations[] = $db->insert_id();
+						++$i;
 					}
 				}
 				$criteria = $idrelations ? "AND idrelation NOT IN ('". join("','", $idrelations). "')" : "";
@@ -599,7 +635,7 @@ class Entities_EditionLogic extends GenericLogic
 		} else {
 			$criteria = $ids;
 		}
-
+        	$checkjointtable = false;
 		if ($nature == 'E') {
 			$naturecriteria = " AND nature='E'";
 		} elseif ($nature == 'G') {
@@ -616,7 +652,7 @@ class Entities_EditionLogic extends GenericLogic
 		if ($checkjointtable) {
 		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
 		// get the joint table first
-			$dao = &getDAO('relations');
+			$dao = getDAO('relations');
 			$vos = $dao->findMany($criteria. $naturecriteria, '', 'idrelation');
 			$ids = array();
 			foreach ($vos as $vo) { 
@@ -625,7 +661,7 @@ class Entities_EditionLogic extends GenericLogic
 			if ($ids) {
 				// getting the tables name from persons and persontype would be to long. Let's suppose
 				// the number of classes are low and it is worse trying to delete in all the tables
-				$dao    = &getDAO('classes');
+				$dao    = getDAO('classes');
 				$tables = $dao->findMany("classtype='persons'", '', 'class');
 				$where  = "idrelation IN ('".join("','",$ids)."')";
 				foreach($tables as $table) {
@@ -652,7 +688,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 
 			if ($idstodelete) {
-				$logic = &getLogic($table);
+				$logic = getLogic($table);
 				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
 				$err = array();
 				$logic->deleteAction($localcontext, $err);
@@ -675,16 +711,15 @@ class Entities_EditionLogic extends GenericLogic
 	 */
 	protected function _getUserGroup($context, $idparent)
 	{
-		global $lodeluser, $db;
-		if ($lodeluser['admin']) { // take it from the context.
-			$usergroup = (int)$context['usergroup'];
+		global $db;
+		if (C::get('admin', 'lodeluser')) { // take it from the context.
+			$usergroup = (int)C::get('usergroup');
 			if ($usergroup > 0) {
 				return $usergroup;
 			}
 		}
 		if ($idparent) { // take the group of the parent
-			$dao = $this->_getMainTableDAO();
-			$vo = $dao->getById($idparent, 'id, usergroup');
+			$vo = $this->_getMainTableDAO()->getById($idparent, 'id, usergroup');
 			$usergroup = $vo->usergroup;
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -712,6 +747,7 @@ class Entities_EditionLogic extends GenericLogic
 		global $db;
 		// can't do INSERT SELECT because work on the same table... support for old MySQL version
 		$result = $db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='".$idparent."' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$values = '';
 		while (!$result->EOF) {
 			$values.= "('". $result->fields['id1']. "','$id','P','". ($result->fields['degree']+1). "'),";
 			$result->MoveNext();
@@ -769,8 +805,7 @@ class Entities_EditionLogic extends GenericLogic
 					$result2 = $db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields['idrelation'];
-						settype($ids[$id]['data'], "array");
-						$ids[$id]['data'] = array_merge($ids[$id]['data'], $result2->fields);
+						$ids[$id]['data'] = array_merge((array)$ids[$id]['data'], $result2->fields);
 						$result2->MoveNext();
 					}
 				}
@@ -779,14 +814,28 @@ class Entities_EditionLogic extends GenericLogic
 		} // foreach classtype
 		
 		// Entities
-		$result = $db->execute(lq("SELECT * FROM #_TP_relations WHERE  id1='". $vo->id. "' AND LENGTH(nature)>1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->execute(lq("SELECT * FROM #_TP_relations WHERE id1='". $vo->id. "' AND LENGTH(nature)>1 ORDER BY idrelation DESC")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$relations = array();
+		$multiple = false;
+		$count = 0;
 		while(!$result->EOF) {
-			$relations[$result->fields['nature']][] = $result->fields['id2'];
+			if(!isset($relations[$result->fields['nature']][$result->fields['degree']]) || !is_array($relations[$result->fields['nature']][$result->fields['degree']]))
+				$relations[$result->fields['nature']][$result->fields['degree']] = array();
+
+			$relations[$result->fields['nature']][$result->fields['degree']][] = $result->fields['id2'];
 			$result->MoveNext();
 		}
+		if($relations)
+			$context['entities'] = array();
 		foreach($relations as $k=>$v) {
-			$context['entities'][$k] = join(",", $v);
+			foreach($v as $ids)
+			{
+				if(isset($context['entities'][$k]))
+					$context['entities'][$k] .= join(',', $ids).',';
+				else
+					$context['entities'][$k] = join(",", $ids).',';
+			}
 		}
 	}
 
@@ -801,9 +850,7 @@ class Entities_EditionLogic extends GenericLogic
 	 */
 	protected function _calculateIdentifier($id, $title)
 	{
-		global $db, $error;
-		$identifier = preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
-		return $identifier;
+		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
 	}
 	
 	// begin{publicfields} automatic generation  //

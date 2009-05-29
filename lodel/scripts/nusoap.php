@@ -4776,7 +4776,7 @@ class soap_parser extends nusoap_base {
 				if(sizeof($this->multirefs) > 0){
 				  foreach($this->multirefs as $id => $hrefs){
 				    $this->debug('resolving multirefs for id: '.$id);
-				    $idVal = $this->buildVal($this->ids[$id]);
+				    $idVal = @$this->buildVal($this->ids[$id]);
 				    foreach($hrefs as $refPos => $ref){
 				      $this->debug('resolving href at pos '.$refPos);
 				      $this->multirefs[$id][$refPos] = $idVal;

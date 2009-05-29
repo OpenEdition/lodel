@@ -41,8 +41,6 @@
  * @version CVS:$Id$
  */
 
-if(!class_exists('GenericLogic', false))
-	require 'genericlogic.php';
 
 /**
  * Classe de logique des entrées
@@ -81,7 +79,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function viewAction (&$context, &$error) 
 	{
-		if (!$context['id']) $context['status']=32; //why ?
+		if (empty($context['id'])) $context['status']=32; //why ?
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
 	}
@@ -108,7 +106,7 @@ class EntriesLogic extends GenericLogic
 			$vo->status = -abs($vo->status);
 		}
 		
-		$dao->save($vo);		
+		$dao->save($vo);
 		update();
 		return '_back';
 	}
@@ -148,9 +146,9 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function listAction (&$context, &$error, $clean = false)
+	public function listAction (&$context, &$error)
 	{
-		$daotype = &getDAO ($this->daoname);
+		$daotype = getDAO ($this->daoname);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -169,18 +167,17 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		global $home;
-		$id = $context['id'];
+		$id = isset($context['id']) ? $context['id'] : '';
 		$idtype=$context['idtype'];
 		if (!$idtype) {
 			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
 		}
 		$status = $context['status'];
 		// get the class 
-		$daotype = &getDAO ("entrytypes");
+		$daotype = getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");
 		$class = $context['class']=$votype->class;
-		if ($clean!=CLEAN) {
+		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
 				// error.
 				// if the entity is imported and will be checked
@@ -203,7 +200,7 @@ class EntriesLogic extends GenericLogic
 			myaddslashes($tmpgname);
 			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			//$vo = $dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
-			if ($vo->id) {
+			if ($vo && $vo->id) {
 				$context['id']=$vo->id;
 				return; // nothing to do.
 			} else {
@@ -213,12 +210,12 @@ class EntriesLogic extends GenericLogic
 
 		$index_key = &$context['data'][$g_index_key];
 		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
-		if ($context['lo'] == 'entries') {  // check it does not exist
+		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not exist
 			$tmpindex_key = $index_key;
 			myaddslashes($tmpindex_key);
 			$vo=$dao->find("BINARY g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			//$vo=$dao->find("g_name='". $index_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
-			if ($vo->id) {
+			if ($vo && $vo->id) {
 				$error[$g_index_key] = "1";
 				return '_error';
 			}
@@ -232,15 +229,16 @@ class EntriesLogic extends GenericLogic
 			} else {
 				if (!$votype->newbyimportallowed && $context['lo']!="entries") { return "_error"; }
 				$new=true;
-				$vo=&$dao->createObject();
+				$vo=$dao->createObject();
 				$vo->status=$status ? $status : -1;
 			}
 		}
-		if ($dao->rights['protect']) $vo->protect=$context['protected'] ? 1 : 0;
+		if (isset($dao->rights['protect'])) $vo->protect=!empty($context['protected']) ? 1 : 0;
 		if ($votype->flat) {
 			$vo->idparent=0; // force the entry to be at root
 		} else {
-			$vo->idparent=(int)$context['idparent'];
+			$vo->idparent= isset($context['idparent']) ? $context['idparent'] : 0;
+			$vo->idparent = (int)$vo->idparent;
 		}
 		// populate the entry table
 		if ($idtype) $vo->idtype=$idtype;
@@ -248,7 +246,7 @@ class EntriesLogic extends GenericLogic
 		$vo->sortkey=makeSortKey($vo->g_name);
 		$id=$context['id']=$dao->save($vo);
 		// save the class table
-		$gdao=&getGenericDAO($class,"identry");
+		$gdao=getGenericDAO($class,"identry");
 		$gdao->instantiateObject($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject($gvo,$context['data']);
@@ -270,7 +268,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function changeRankAction (&$context, &$error) 
 	{
-		return parent::changeRankAction(&$context, &$error, 'idparent', '');
+		return parent::changeRankAction($context, $error, 'idparent', '');
 	}
 
 	/**
@@ -284,14 +282,19 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		switch($var) {
-		case 'idparent':
+			case 'idparent':
 			$arr=array ();
 			$rank=array ();
 			$parent=array ();
 			$ids=array (0);
 			$l=1;
 			do {
-				$result=$db->execute (lq ("SELECT * FROM #_TP_entries WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$result=$db->execute (lq ("
+				SELECT * 
+					FROM #_TP_entries 
+					WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " 
+					AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$ids=array();
 				$i=0;
 				while (!$result->EOF) {
@@ -316,7 +319,7 @@ class EntriesLogic extends GenericLogic
 			foreach ($arr as $row) {
 				$arr2[$row[0]]=$row[1];
 			}
-			renderOptions ($arr2, $context[$var]);
+			renderOptions ($arr2, isset($context[$var]) ? $context[$var] : '');
 			break;
 		}
 	} //end of function
@@ -348,8 +351,7 @@ class EntriesLogic extends GenericLogic
 		if (isset($context['idrelation'])) {
 			$this->idrelation=$context['idrelation'];
 		} else {
-			$dao=&getDAO ('relations');
-			$vos=$dao->findMany ("id2 ".sql_in_array ($context['id']));
+			$vos=getDAO ('relations')->findMany ("id2 ".sql_in_array ($context['id']));
 			$this->idrelation=array ();
 			foreach ($vos as $vo) {
 				$this->idrelation[]=$vo->idrelation;
@@ -365,19 +367,19 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		foreach ($this->classes as $class) {
-			$gdao=&getGenericDAO ($class, $this->idtype);
+			$gdao=getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
 		
 			if($this->maintable == 'persons') {
 				if ($this->idrelation) {
-					$gdao=&getGenericDAO("entities_".$class,"idrelation");
+					$gdao=getGenericDAO("entities_".$class,"idrelation");
 					$gdao->deleteObject($this->idrelation);
 				}
 			}
 		}
 
 		if ($this->idrelation) {
-			$dao=&getDAO ('relations');
+			$dao=getDAO ('relations');
 			$dao->delete ('idrelation '. sql_in_array ($this->idrelation));
 		}
 	}

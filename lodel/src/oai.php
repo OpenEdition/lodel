@@ -2,7 +2,7 @@
 /**
  * Fichier OAI - script du dépot OAI
  *
- * Ce fichier reçoit les commande OAI et fait renvoit le XML associé
+ * Ce fichier reéoit les commande OAI et fait renvoit le XML associé
  *
  * Mostly taken and often adapted from OAI V2 Data-Provider, Heinrich Stamerjohanns, 
  * stamer@uni-oldenburg.de, http://physnet.uni-oldenburg.de/oai
@@ -44,7 +44,7 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Bruno Cénou
- * @author Loïc Bontonou
+ * @author Loéc Bontonou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
@@ -53,38 +53,37 @@
  * @package lodel/source
  */
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate();
+    include 'auth.php';
+    authenticate();
 
-define('TOKENVALID', 24); // tokens lifetime in hours
-define('MAXIDS', 10); // max delivered identifiers
-define('MAXRECORDS', 10); // max delivered records
-$metadataformats = array ('oai_dc'); // only Dublin Core at the moment
+    define('TOKENVALID', 24); // tokens lifetime in hours
+    define('MAXIDS', 10); // max delivered identifiers
+    define('MAXRECORDS', 10); // max delivered records
+    $metadataformats = array ('oai_dc'); // only Dublin Core at the moment
+    
+    $dateformat = '';
 
-$dateformat = '';
-
-function getOut($hostname)
-{
-	header ("http/1.0 403 Forbidden");
-	echo "Host $hostname is not allowed";
-	log_access($hostname, 1);
-	exit();
-}
+    function getOut($hostname)
+    {
+        header ("http/1.0 403 Forbidden");
+        echo "Host $hostname is not allowed";
+        log_access($hostname, 1);
+        exit();
+    }
 
 /*function log_access($hostname, $denied = 0){
 	global $db;
 	$db->execute(lq("INSERT INTO #_TP_oailogs (host, date, denied) VALUES ('$hostname', ".date('YmdHis').", $denied)"));
 }*/
 
-function log_access($hostname, $denied = 0) 
-{
-	global $db;
-	$db->execute(lq("INSERT INTO #_TP_oailogs (host, denied) VALUES ('". $hostname. "','". $denied. "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-}
+    function log_access($hostname, $denied = 0) 
+    {
+        global $db;
+        $db->execute(lq("INSERT INTO #_TP_oailogs (host, denied) VALUES ('". $hostname. "','". $denied. "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+    }
 
 
 
@@ -173,10 +172,10 @@ function oai_error ($code, $argument = '', $value = '')
 /**
  * Transforme une chaine pour l'inclure dans un fichier XML
  *
- * @param string $string la chaine de caractères
- * @param string $charset le jeu de caractère de la chaine (utf-8 par défaut).
- * @param boolean $xmlescaped un boolean indiquant si le xml doit être échappé ou non. Par défaut à false.
- * @return la chaîne XML
+ * @param string $string la chaine de caractéres
+ * @param string $charset le jeu de caractére de la chaine (utf-8 par défaut).
+ * @param boolean $xmlescaped un boolean indiquant si le xml doit étre échappé ou non. Par défaut é false.
+ * @return la chaéne XML
  */
 function xmlstr ($string, $charset = 'utf-8', $xmlescaped = false)
 {
@@ -239,7 +238,7 @@ function del_token($token)
  *
  * @param string $token le token
  * @param string $where la clause where
- * @param string $metadataprefix le format de métadonnées de la requête
+ * @param string $metadataprefix le format de métadonnées de la requéte
  * @param integer $deliveredrecords le nombre d'enregistrements délivrés
  * @param datetime $expirationdatetime le datetime d'expiration du token.
  */
@@ -291,7 +290,7 @@ function sql2TS($date)
  * les types dc sont definis dans la base de donnees en utilisant la forme "dc.nom", 
  * on les renomme en "dc:nom" pour coller au protocole OAI
  *
- * @param string $str la chaine à modifier
+ * @param string $str la chaine é modifier
  * @return la chaine modifiée
  */
 function dc_rename($str)
@@ -307,7 +306,7 @@ function dc_rename($str)
  * Les noms de sets ne peuvent comporter qu'un ensemble limite de caracteres.
  * Ce filtre remplace les caracteres inappropries.
  *
- * @param string $str la chaine à modifier
+ * @param string $str la chaine é modifier
  * @return la chaine modifiée
  */
 function strip_set($str)
@@ -594,7 +593,7 @@ function check_records ()
  *
  * Verifie la validite de l'information liee a l'argument 'metadataPrefix'.
  *
- * @param string $val la valeur à vérifier
+ * @param string $val la valeur é vérifier
  */
 function check_mdp ($val)
 {
@@ -844,11 +843,8 @@ $context['oai_responsedate'] = gmstrftime('%Y-%m-%dT%TZ', time());
  */
 
 $base = 'oai20';
-if(!class_exists('View', false))
-	require 'view.php';
-$view = &View::getView();
 //$view->renderCached($context,$base);
-$view->render($context, $base);
+View::getView()->render($base);
 
 
 /**

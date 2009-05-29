@@ -44,25 +44,38 @@
  */
 
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
-
-$name = addslashes($_COOKIE[$sessionname]);
-$url_retour = strip_tags($_GET['url_retour']);
-$time = time()-1;
-usemaindb();
-$db->execute(lq("UPDATE #_MTP_session SET expire2='$time' WHERE name='$name'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession='$idsession'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-setcookie($sessionname, "", $time,$urlroot);
-
-if($url_retour)
-	header('Location: '.$url_retour);
-else
-	header('Location: '.SITEROOT); // la norme ne supporte pas les chemins relatifs !!
+    include 'auth.php';
+    authenticate();
+    
+    if(isset($_COOKIE[C::get('sessionname', 'cfg')]))
+    {
+        $name = addslashes($_COOKIE[C::get('sessionname', 'cfg')]);
+        $time = time()-1;
+        
+        $db->execute(lq("
+        UPDATE #_MTP_session 
+            SET expire2='$time' 
+            WHERE name='$name'")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        
+        $db->execute(lq("
+        DELETE FROM #_MTP_urlstack 
+            WHERE idsession='".C::get('idsession', 'lodeluser')."'")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            
+        setcookie(C::get('sessionname', 'cfg'), "", $time,C::get('urlroot', 'cfg'));
+    }
+    
+    // la norme ne supporte pas les chemins relatifs !! :/
+    if(C::get('url_retour'))
+        header('Location: '.C::get('url_retour'));
+    else
+    {
+        header('Location: '.('' !== SITEROOT ? SITEROOT : './'));
+    }
 }
 catch(Exception $e)
 {

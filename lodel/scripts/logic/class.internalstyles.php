@@ -71,20 +71,20 @@ class InternalstylesLogic extends Logic {
 
 	{
 		switch($var) {
-		case "surrounding" :
+			case "surrounding" :
 			$arr=array(
 			"-*"=>getlodeltextcontents("previous_style","admin"),
 			"*-"=>getlodeltextcontents("next_styles","admin"),
 			);
 			
-			$dao=&getDAO("tablefields");
+			$dao=getDAO("tablefields");
 			$vos=$dao->findMany("style!=''","style","style");
 			foreach($vos as $vo) {
 				if (strpos($vo->style,".")!==false || strpos($vo->style,":")!==false) continue;
 				$style=preg_replace("/[;,].*/","",$vo->style); // remove the synonyms
 				$arr[$style]=$style;
 			}
-			renderOptions($arr,$context['surrounding']);
+			renderOptions($arr,isset($context['surrounding']) ? $context['surrounding'] : '');
 			break;
 		}
 	}

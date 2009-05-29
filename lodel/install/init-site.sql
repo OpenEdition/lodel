@@ -548,3 +548,13 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   UNIQUE KEY `username` (`username`),
   KEY `index_username` (`username`)
 ) _CHARSET_;
+
+CREATE TABLE IF NOT EXISTS #_TP_plugins (
+  `id` int(10) unsigned NOT NULL default '0',
+  `name` varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `status` tinyint(4) NOT NULL default '0',
+  `config` longtext NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name` (`name`)
+) _CHARSET_;

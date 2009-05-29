@@ -43,9 +43,8 @@
 * @package lodel
 */
 
-
-makefilterfunc();
-require_once 'CACHE/filterfunc.php';
+if(!file_exists('CACHE/filterfunc.php')) makefilterfunc();
+@include 'CACHE/filterfunc.php';
 
 /**
 * Filtre les champs qu'il faut filtrer et converti les filtres en fonction
@@ -54,24 +53,35 @@ require_once 'CACHE/filterfunc.php';
 function makefilterfunc()
 {
 	global $db;
+    	if(!defined('INC_CONNECT')) include 'connect.php';
 	// cherche les champs a filtrer	
-	$result = $db->execute(lq("SELECT class,name,filtering FROM #_TP_tablefields WHERE status > 0 AND filtering!=''")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], "
+	SELECT class,name,filtering 
+		FROM {$GLOBALS['tp']}tablefields 
+		WHERE status > 0 AND filtering!=''") 
+		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+    	
+	$filterstr = '';
 	while (!$result->EOF)	{
 		$row = $result->fields;
 		// convert filter into a function
-		$filters = preg_split("/\|/", $row['filtering']);
-		#$filters = explode('|',$row['filter']);
+// 		$filters = preg_split("/\|/", $row['filtering']);
+		$filters = explode('|',$row['filter']);
 		$filterfunc = '$x';
 		foreach ($filters as $filter)	{
 			if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/", $filter, $result2)) {
 				$funcname = $result2[1]; // name of the pipe function
-				$arg = $result2[2]; // argument if any
-
-				// process the variable. The processing is simple here. Need more ? Sould be associated with parser variable processing.
-				$arg = preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e", ' "$"."context[".strtolower("\\1")."]" ', $arg);
-
-				if ($arg) {
-					$arg = ','. $arg;
+				$arg = '';
+				if(isset($result2[2]))
+				{
+					$arg = $result2[2]; // argument if any
+	
+					// process the variable. The processing is simple here. Need more ? Sould be associated with parser variable processing.
+					$arg = preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e", ' "$"."context[".strtolower("\\1")."]" ', $arg);
+	
+					if ($arg) {
+						$arg = ','. $arg;
+					}
 				}
 				$filterfunc = $funcname.'('.$filterfunc.$arg.')';
 			}	elseif ($filter)	{
@@ -83,9 +93,10 @@ function makefilterfunc()
 			#echo "filterstr=$filterstr";
 		$result->MoveNext();
 	}
+    	$result->Close();
+
 	// build the function with filtering
-	// to update with ADODB
-	if(FALSE === file_put_contents("CACHE/filterfunc.php", '<'.'?php 
+    	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
     function filtered_mysql_fetch_assoc($context, $result) {
 	global $db;
         $row = $result->FetchRow();
@@ -130,5 +141,6 @@ function makefilterfunc()
         }
     }
     ?'.'>')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
+	@chmod("CACHE/filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
 }
 ?>

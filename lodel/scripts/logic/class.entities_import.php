@@ -40,9 +40,6 @@
  * @version CVS:$Id$
  */
 
-if(!class_exists('Entities_EditionLogic', false))
-	require 'logic/class.entities_edition.php';
-
 /**
  * Classe de logique des entités (gestion de l'import)
  * 
@@ -74,7 +71,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	protected $_localcontext;
 	protected $task;
 
-  /**
+  	/**
 	 * Constructeur
 	 */
 	public function __construct()
@@ -93,29 +90,28 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$this->context=&$context;
 		$idtask = (int)$context['idtask'];
 		if(!function_exists('gettask'))
-			require ("taskfunc.php");
+			include ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
-		if ($task['identity']) $context['id'] = $task['identity'];
+		if (!empty($task['identity'])) $context['id'] = $task['identity'];
 		if(!class_exists('XMLImportParser', false))
-			require("xmlimport.php");
+			include("xmlimport.php");
 		$parser=new XMLImportParser();
 		$parser->init ($context['class']);
 		$parser->parse (file_get_contents ($task['fichier']), $this);
 		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
-		if ($this->nbdocuments>1) { // save the file
+		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
 			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".$task['idparent'].".source";
 		} else {
 			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
 		}
 		@unlink ($sourcefile);
 		copy ($task['source'], $sourcefile);
-		@chmod ($sourcefile, 0666 & octdec($GLOBALS['filemask']));
+		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		if ($idtask) { // close the task
-			$dao=&getDAO ("tasks");
-			$dao->deleteObject ($idtask);
+			getDAO('tasks')->deleteObject ($idtask);
 		}
-		if ($this->ret!='_error' && $context['finish']) {
+		if ($this->ret!='_error' && isset($context['finish'])) {
 			return $this->ret;
 		} elseif ($this->ret!='_error') {
 			return "_location: index.php?do=view&id=".$this->id;
@@ -149,7 +145,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$imgfile=$result[1];	   $ext=$result[2];
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
 				// local.image so
-				if ($imglist[$imgfile]) { // is it in the cache ?
+				if (isset($imglist[$imgfile])) { // is it in the cache ?
 					$text=str_replace ($result[0], "<img src=\\\"$imglist[$imgfile]\\\"", $text);
 				} else {
 					// not in the cache let's move it
@@ -158,12 +154,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$this->_checkdir ($dir);
 					}
 					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
-					copy ($imgfile, SITEROOT.$newimgfile);
+					@copy ($imgfile, SITEROOT.$newimgfile);
 					@unlink ($imgfile);
 					if ($newimgfile) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
-						@chmod (SITEROOT.$newimgfile, 0666  & octdec($GLOBALS['filemask']));
-						$count++;
+						@chmod (SITEROOT.$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
+						++$count;
 					} else { // no, problem copying the image
 						$text=str_replace ($result[0], "<span class=\"image_error\">[Image non convertie]</span>", $text);
 					}
@@ -175,8 +171,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	protected function _checkdir ($dir) 
 	{
 		if (!is_dir (SITEROOT.$dir)) {
-			mkdir (SITEROOT.$dir, 0777 & octdec($GLOBALS['filemask']));
-			@chmod(SITEROOT.$dir,0777 & octdec($GLOBALS['filemask']));
+			mkdir (SITEROOT.$dir, 0777 & octdec(C::get('filemask', 'cfg')));
+			@chmod(SITEROOT.$dir,0777 & octdec(C::get('filemask', 'cfg')));
 		} else { // clear the directory the first time.
 			$fd=opendir(SITEROOT.$dir);
 			if (!$fd) trigger_error("ERROR: cannot open the directory $dir", E_USER_ERROR);
@@ -221,18 +217,18 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".(int)$this->nbdocuments.",1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!$result->EOF) $localcontext['id']=$result->fields['id'];
 				$this->nbdocuments++;
-			} else if ($this->task['identity']) $localcontext['id']=$this->task['identity'];
+			} else if (!empty($this->task['identity'])) $localcontext['id']=$this->task['identity'];
 			$localcontext['creationmethod']=$multidoc ? "servoo;multidoc" : "servoo";
 			$localcontext['creationinfo']=$this->task['sourceoriginale'];
 
 			if ($multidoc) $this->context['finish']="oui";
-			if (!$this->context['finish']) $localcontext['status']=-64;
+			if (empty($this->context['finish'])) $localcontext['status']=-64;
 
 			$error=array ();
-			$this->ret=$this->editAction ($localcontext, $error, FORCE);
+			$this->ret=$this->editAction ($localcontext, $error, 'FORCE');
 			#echo "ret1=".$this->ret."<br />";
 			#print_r($error);
-			if (!$this->id) $this->id=$localcontext['id']; // record the first one only
+			if (!isset($this->id)) $this->id=$localcontext['id']; // record the first one only
 			// move the source file and the files
 		}
 	}
@@ -275,10 +271,20 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		if ($obj->type=="file" || $obj->type=="image") {
 			// nothing...
 		} elseif ($obj->type=="mltext") {
-			$lang=$obj->lang ? $obj->lang : $GLOBALS['lodeluser']['lang'];
+			$lang=!empty($obj->lang) ? $obj->lang : C::get('lang', 'lodeluser');
 			//$this->_currentcontext['data'][$obj->name][$lang].=addslashes ($data);
+			if(!isset($this->_currentcontext['data']))
+				$this->_currentcontext['data'] = array();
+			if(!isset($this->_currentcontext['data'][$obj->name]))
+				$this->_currentcontext['data'][$obj->name] = array();
+			if(!isset($this->_currentcontext['data'][$obj->name][$lang]))
+				$this->_currentcontext['data'][$obj->name][$lang] = '';
 			$this->_currentcontext['data'][$obj->name][$lang].=$data;
 		} elseif ($obj->style[0]!=".") {
+			if(!isset($this->_currentcontext['data']))
+				$this->_currentcontext['data'] = array();
+			if(!isset($this->_currentcontext['data'][$obj->name]))
+				$this->_currentcontext['data'][$obj->name] = '';
 			//$this->_currentcontext['data'][$obj->name].=addslashes ($data);
 			$this->_currentcontext['data'][$obj->name].=$data;
 		}
@@ -287,12 +293,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 	public function processEntryTypes ($obj, $data) 
 	{
-		foreach (preg_split ("/<\/p>/", $data) as $data2) {
-			foreach (preg_split ("/,/", strip_tags ($data2)) as $entry) {
+		$data = preg_split ("/<\/p>/", $data);
+		foreach ($data as $data2) {
+			$data2 = explode (",", strip_tags ($data2));
+			foreach ($data2 as $entry) {
 				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
 			
-			// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)	
-			$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
+				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)	
+				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
  			}
 		}
 	}
@@ -300,9 +308,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	public function processPersonTypes ($obj, $data) 
 	{
 		static $g_name_cache;
-		if (!$g_name_cache[$obj->class]) {  // get the generic type     
-			$dao=&getDAO("tablefields");
-			$vos=$dao->findMany ("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')", "", "name,g_name");
+		if (!isset($g_name_cache[$obj->class])) {  // get the generic type     
+			$vos=getDAO("tablefields")->findMany ("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')", "", "name,g_name");
 			foreach ($vos as $vo) {
 				$g_name_cache[$obj->class][$vo->g_name]=$vo->name;
 			}
@@ -310,8 +317,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$g_name=$g_name_cache[$obj->class];
 		// ok, we have the generic type
 		// let's split the paragraph and the comma
-		foreach (preg_split ("/<\/p>/", $data) as $data2) { 
-			foreach (preg_split ("/,/", strip_tags ($data2)) as $person) {
+		$data = preg_split ("/<\/p>/", $data);
+		foreach ($data as $data2) { 
+			$data2 = explode (",", strip_tags ($data2));
+			foreach ($data2 as $person) {
 				if (!trim ($person)) continue;
 				$this->_localcontext['persons'][$obj->id][]=array(); // add a person
 				$this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count ($this->_localcontext['persons'][$obj->id])-1];
@@ -321,17 +330,15 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				}
 				// ok, we have the prefix
 				// try to guess
-				if (!$have_firstname && !$have_familyname) {
-					// ok, on cherche maintenant a separer le name et le firstname
-					$name=$person;
-					while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
-					if ($name) {
-						$firstname=str_replace ($name, "", $person);
-					} else { // sinon coupe apres le premiere espace
-						if (preg_match ("/^(.*?)\s+([^\s]+)$/i", trim ($person), $result)) {
-							$firstname=$result[1]; $name=$result[2];
-						} else $name=$person;
-					}
+				// ok, on cherche maintenant a separer le name et le firstname
+				$name=$person;
+				while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
+				if ($name) {
+					$firstname=str_replace ($name, "", $person);
+				} else { // sinon coupe apres le premiere espace
+					if (preg_match ("/^(.*?)\s+([^\s]+)$/i", trim ($person), $result)) {
+						$firstname=$result[1]; $name=$result[2];
+					} else $name=$person;
 				}
 				//$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
 				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
@@ -341,7 +348,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
 			} // for each person
 		}
-  }
+  	}
 
 	public function processCharacterStyles ($obj, $data) 
 	{

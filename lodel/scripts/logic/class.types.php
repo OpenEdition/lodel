@@ -74,7 +74,7 @@ class TypesLogic extends Logic {
 	public function viewAction(&$context,&$error)
 	{
 		if ($error) return;
-		if (!$context['id']) {
+		if (empty($context['id'])) {
 			// creation
 			$context['creationstatus']=-1;
 			$context['search']=1;
@@ -132,16 +132,17 @@ class TypesLogic extends Logic {
 	{
 		switch($var) {
 		case "import" :
+			$arr = array();
 			$arr[] = getlodeltextcontents('form','common');
 			$arr[] = getlodeltextcontents('import_from_servoo','common');
-			renderOptions($arr,$context['import']);
+			renderOptions($arr,isset($context['import']) ? $context['import'] : '');
 			break;
 		case "display" :
 			$arr=array(""=>getlodeltextcontents("folded","admin"),
 			"unfolded"=>getlodeltextcontents("unfolded","admin"),
 			"advanced"=>getlodeltextcontents("advanced_functions","admin")
 				);
-			renderOptions($arr,$context['display']);
+			renderOptions($arr,isset($context['import']) ? $context['display'] : '');
 			break;
 		case "creationstatus" :
 			$arr=array("-8"=>getlodeltextcontents("draft","common"),
@@ -149,12 +150,12 @@ class TypesLogic extends Logic {
 			"1"=>getlodeltextcontents("published","common"),
 			"8"=>getlodeltextcontents("protected","common"),
 			"17"=>getlodeltextcontents("locked","common"));
-			renderOptions($arr,$context['creationstatus']);
+			renderOptions($arr,isset($context['creationstatus']) ? $context['creationstatus'] : '');
 			break;
 		case 'gui_user_complexity' :
 			if(!function_exists('makeSelectGuiUserComplexity'))
-				require("commonselect.php");
-			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+				include("commonselect.php");
+			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		}
 	}
@@ -177,9 +178,9 @@ class TypesLogic extends Logic {
 	protected function _saveRelatedTables($vo,$context) 
 	{
 		if(!function_exists('typetype_delete'))
-			require("typetypefunc.php");
+			include("typetypefunc.php");
 
-		if ($context['id']) {
+		if (!empty($context['id'])) {
 			typetype_delete("entitytype","identitytype='".$context['id']."'");
 		}
 		typetype_insert($vo->id,$context['entitytype'],"entitytype2");
@@ -187,11 +188,10 @@ class TypesLogic extends Logic {
 
 
 
-	protected function _deleteRelatedTables($id) {
-		global $home;
-
+	protected function _deleteRelatedTables($id) 
+	{
 		if(!function_exists('typetype_delete'))
-			require("typetypefunc.php");
+			include("typetypefunc.php");
 		$criteria="(identitytype ".sql_in_array($id)." OR identitytype2 ".sql_in_array($id).")";
 		typetype_delete("entitytype",$criteria);
 	}
@@ -246,7 +246,7 @@ class TypesLogic extends Logic {
 function loop_entitytypes($context,$funcname)
 { 
 	if(!function_exists('loop_typetable'))
-		require ("typetypefunc.php"); 
-	loop_typetable ("entitytype2","entitytype",$context,$funcname,$context['entitytype']);
+		include ("typetypefunc.php"); 
+	loop_typetable ("entitytype2","entitytype",$context,$funcname,isset($context['entitytype']) ? $context['entitytype'] : null);
 }
 ?>

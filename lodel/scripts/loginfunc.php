@@ -44,48 +44,79 @@
  * @package lodel
  */
 
+if(!defined('INC_CONNECT')) include 'connect.php';
+
 /**
  * Ouverture d'une session
  *
  * @param string $login le nom d'utilisateur
+ * @param string $name $nom de la session (optionnel)
  */
-function open_session($login)
+function open_session($login, $name = null)
 {
-	global $lodeluser, $sessionname, $timeout, $cookietimeout;
-	global $db, $urlroot, $site;
+	global $db;
 
 	// timeout pour les cookies
-	if (!$cookietimeout)
-		$cookietimeout = 4 * 3600; // to ensure compatibility
+	if(!$cookietimeout = C::get('cookietimeout', 'cfg'))
+	{
+		$cookietimeout = 4 * 3600;
+	}
+
+	if(!$timeout = C::get('cookietimeout', 'cfg'))
+	{
+		$timeout = 120*60;
+	}
 
 	// context
+	C::setUser($login, 'name');
 	$lodeluser['name'] = $login;
 	// by default, we want the desk
 	$lodeluser['desk'] = true;
-	$contextstr = addslashes(serialize($lodeluser));
-	$expire = time() + $timeout;
+	C::setUser(true, 'desk');
+	$contextstr = addslashes(serialize(C::getC(null, 'lodeluser')));
+	$expire = $timeout + time();
 	$expire2 = time() + $cookietimeout;
+	// clean the url - nettoyage de l'url
+	$url = preg_replace("/[\?&]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
+	if (get_magic_quotes_gpc()) {
+		$url = stripslashes($url);
+	}
+	$myurl = C::get('norecordurl') ? "''" : $db->qstr($url);
 
-	usemaindb();
-	for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
-		// name de la session
-		$name = md5($login.microtime());
-		// enregistre la session, si ca marche sort de la boucle
-		$result = $db->execute(lq("INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2, userrights) VALUES ('$name','".$lodeluser['id']."','$site','$contextstr','$expire','$expire2', '{$lodeluser['rights']}')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		if ($result)
-			break; // ok, it's working fine
+	if(is_null($name))
+	{
+		for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
+			// name de la session
+			$name = md5($login.uniqid(mt_rand(), true));
+			// enregistre la session, si ca marche sort de la boucle
+			$result = $db->execute(lq("
+        INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2,userrights,currenturl) 
+            VALUES ('$name','".C::get('id', 'lodeluser')."','".C::get('site', 'cfg')."',
+                '".addslashes(serialize(C::get(null, 'lodeluser')))."','$expire','$expire2', 
+                '".C::get('rights', 'lodeluser')."', ".$myurl.")")) 
+        or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	
+			if ($result) break; // ok, it's working fine
+		}
+        if ($i == 5)
+        {
+            C::setUser();
+            return "error_opensession";
+        }
+        if (!@setcookie(C::get('sessionname', 'cfg'), $name, time() + $cookietimeout, C::get('urlroot', 'cfg')))
+            trigger_error("Cannot set cookie !", E_USER_ERROR);
+	}
+	else
+	{
+		$db->execute(lq("
+        UPDATE #_MTP_session 
+            SET expire='$expire',currenturl=$myurl 
+            WHERE name='$name'")) 
+        or trigger_error($db->errormsg(), E_USER_ERROR);
 	}
 
-	if ($i == 5)
-		return "error_opensession";
-	if (!setcookie($sessionname, $name, time() + $cookietimeout, $urlroot))
-		trigger_error("Probleme avec setcookie... probablement du texte avant", E_USER_ERROR);
-	// nettoyage des tables session et urlstack
-	if($lodeluser['rights'] == LEVEL_ADMINLODEL) {
-		$db->execute(lq("DELETE FROM #_MTP_session WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	}
-	usecurrentdb();
+	C::set('clearcacheurl', mkurl($url, "clearcache=oui"));
+
 	return $name;
 }
 
@@ -101,9 +132,10 @@ function open_session($login)
  * @param string &$site le site
  * @return boolean un booleen indiquant si l'authentification est valide
  */
-function check_auth($login, & $passwd, & $site)
+function check_auth($login, $passwd)
 {
-	global $db, $context, $lodeluser, $home;
+	C::trigger('prelogin');
+	global $db;
 	do { // block de control
 		if (!$login || !$passwd)
 			break;
@@ -112,49 +144,84 @@ function check_auth($login, & $passwd, & $site)
 		$pass = md5($passwd. $login);
 		// cherche d'abord dans la base generale.
 
-		usemaindb();
-		$result = $db->execute(lq("SELECT * FROM #_MTP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		usecurrentdb();
+		$result = $db->execute(lq("
+            SELECT * 
+                FROM #_MTP_users 
+                WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-		if (($row = $result->fields))	{
-
-			// le user est dans la base generale
-			$site = "tous les sites";
-		}	elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb'] != DATABASE)	{ // le user n'est pas dans la base generale
-			if (!$site)
+		if (!($row = $result->fields) && $GLOBALS['currentdb'] != DATABASE)	
+        { // le user n'est pas dans la base generale
+			if (!C::get('site', 'cfg'))
 				break; // si $site n'est pas definie on s'ejecte
 			// cherche ensuite dans la base du site
-			$result = $db->execute(lq("SELECT * FROM #_TP_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			if (!($row = $result->fields))
+			$result = $db->execute(lq("
+            SELECT * 
+                FROM #_TP_users 
+                WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			
+            if (!($row = $result->fields))
 				break;
-		}	else {
-			break; // on s'ejecte
 		}
 		
+        $result->Close();
+        
 		// pass les variables en global
 		$lodeluser['rights'] = $row['userrights'];
 		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
 		$lodeluser['id'] = $row['id'];
 		$lodeluser['gui_complexity'] = $row['gui_user_complexity'];
+		$lodeluser['name'] = $row['username'];
 
 		// cherche les groupes pour les non administrateurs
 		if (defined("LEVEL_ADMIN") && $lodeluser['rights'] < LEVEL_ADMIN)	{ // defined is useful only for the install.php
-			$result = $db->execute(lq("SELECT idgroup FROM #_TP_users_usergroups WHERE iduser='".$lodeluser['id']."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result = $db->execute(lq("
+            SELECT idgroup 
+                FROM #_TP_users_usergroups 
+                WHERE iduser='".$lodeluser['id']."'")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            
 			$lodeluser['groups'] = "1"; // sont tous dans le groupe "tous"
 			while (($row = $result->fields)) {
 				$lodeluser['groups'] .= ",".$row['idgroup'];
 				$result->MoveNext();
 			}
+            $result->Close();
 		}	else {
 			$lodeluser['groups'] = '';
 		}
 
-		$context['lodeluser'] = $lodeluser; // export info into the context
-
+		C::setUser($lodeluser); // export info into the context
 		// efface les donnees de la memoire et protege pour la suite
-		$passwd = 0;
+		$passwd = $pass = $lodeluser = 0;
+        	C::set('passwd', null);
+
+        // nettoyage des tables session et urlstack
+        if(C::get('adminlodel', 'lodeluser')) {
+            $db->execute(lq("
+            DELETE FROM #_MTP_session 
+                WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            
+            $db->execute(lq("
+            DELETE FROM #_MTP_urlstack 
+                WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) 
+            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        }
+
+        if (C::get('admin', 'lodeluser')) {
+            if(!function_exists('cleanEntities'))
+                include ('entitiesfunc.php');
+            cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
+        }
+
+		C::trigger('postlogin');
 		return true;
 	}	while (0);
+   	$passwd = $pass = 0;
+    	C::set('passwd', null);
+	C::trigger('postlogin');
 	return false;
 }
 
@@ -167,24 +234,26 @@ function check_auth($login, & $passwd, & $site)
  */
 function check_suspended()
 {
-	global $context, $db;
-	if($context['site'] != '') {
-		$prefixe = "#_TP_";
-		usecurrentdb();
-		$context['datab'] = $db->database;
+	global $db;
+	$status = 0;
+
+	if(C::get('site', 'cfg')) {
+		C::set('datab', $db->database);
+		$status = $db->getOne(lq("
+          SELECT status 
+            FROM #_TP_users 
+            where id = '".C::get('id', 'lodeluser')."' AND username = '".C::get('name', 'lodeluser')."'"));
 	}
-	else {
-		$prefixe = "#_MTP_";
-		usemaindb();
-	}
-	$status = $db->getOne(lq("SELECT status FROM ".$prefixe."users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+	
 	//on a pas de status. Deux possibilités : soit cest pas la bonne base, soit l'utilisateur n'existe pas (deja vérifié avant, donc exclu)
 	if(!$status) {
-		usemaindb();
- 		$context['datab'] = $db->database;
-		$status = $db->getOne(lq("SELECT status FROM #_MTP_users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+ 		C::set('datab', DATABASE);
+		$status = $db->getOne(lq("
+          SELECT status 
+            FROM #_MTP_users 
+            WHERE id = '".C::get('id', 'lodeluser')."' AND username = '".C::get('name', 'lodeluser')."'"));
 	}
-	usecurrentdb();
+
 	if($status == 10 || $status == 11)
 		return false;
 
@@ -205,14 +274,17 @@ function check_suspended()
  */
 function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 {
-	global $db, $context;
+	global $db;
 
 	$log = addslashes($login);
 	$datab = addslashes($datab);
 	$old_pass = md5($old_passwd . $login);
 	$currentdb = $db->database;
 	$db->SelectDB($datab);
-	$res = $db->getRow("SELECT id, status FROM ".$GLOBALS['tableprefix']."users WHERE username = '".$log."' AND passwd = '".$old_pass."'");
+	$res = $db->getRow("
+        SELECT id, status 
+            FROM ".$GLOBALS['tableprefix']."users 
+            WHERE username = '".$log."' AND passwd = '".$old_pass."'");
 
 	if(!$res)
 	{
@@ -225,7 +297,10 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 				$status = 1;
 			elseif($res['status'] == 11)
 				$status = 32; 
-			$db->execute("UPDATE ".$GLOBALS['tableprefix']."users SET passwd = '".$passwd."', status = ".$status." WHERE username = '".$log."' AND id = '".$res['id']."'");
+			$db->execute("
+            UPDATE ".$GLOBALS['tableprefix']."users 
+                SET passwd = '".$passwd."', status = ".$status." 
+                WHERE username = '".$log."' AND id = '".$res['id']."'");
 			$db->SelectDB($currentdb);
 			return true;
 		}
@@ -245,12 +320,11 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
  *
  * @param string $login le nom d'utilisateur
  * @param string &$passwd le mot de passe
- * @param string &$site le site
  * @return boolean un booleen indiquant si l'authentification est valide
  */
-function check_auth_restricted($login, & $passwd)
+function check_auth_restricted($login, $passwd)
 {
-	global $db, $context, $lodeluser, $home;
+	global $db;
 	do { // block de control
 		if (!$login || !$passwd)
 			break;
@@ -258,21 +332,23 @@ function check_auth_restricted($login, & $passwd)
 		$lodelusername = addslashes($login);
 		$pass = md5($passwd. $login);
 
-		usecurrentdb();
-		$row = $db->getRow(lq("SELECT * FROM #_TP_restricted_users WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$row = $db->getRow(lq("
+            SELECT * 
+                FROM #_TP_restricted_users 
+                WHERE username='$lodelusername' AND passwd='$pass' AND status>0"));
 		if (!$row)	{
 			break;
 		}
 		// pass les variables en global
-		$lodeluser['rights'] = $row['userrights'];
+		$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
 		$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
 		$lodeluser['id'] = $row['id'];
  		$lodeluser['name'] = $row['username'];
 		$lodeluser['groups'] = '';
-		$context['lodeluser'] = $lodeluser; // export info into the context
-
+		C::setUser($lodeluser);
 		// efface les donnees de la memoire et protege pour la suite
-		$passwd = 0;
+		$passwd = $pass = $lodeluser = null;
+        	C::set('passwd', null);
 		return true;
 	}	while (0);
 	return false;
@@ -285,11 +361,15 @@ function check_auth_restricted($login, & $passwd)
  */
 function check_expiration()
 {
-	global $context, $db;
+	global $db;
 
-	usecurrentdb();
-	$context['datab'] = $db->database;
-	$status = $db->getOne(lq("SELECT expiration FROM #_TP_restricted_users where id = '".$context['lodeluser']['id']."' AND username = '".$context['login']."'"));
+	C::set('datab', $db->database);
+	$status = $db->getOne(lq("
+       SELECT expiration 
+            FROM #_TP_restricted_users 
+            WHERE id = '".C::get('id', 'lodeluser')."' AND username = '".C::get('name', 'lodeluser')."'"));
+    if(!$status) return false;
+    
 	$status = explode('-', $status);
 
 	if(mktime(23, 59, 0, $status[1], $status[2], $status[0]) <= time())
@@ -300,28 +380,35 @@ function check_expiration()
 /**
  * Vérifie la messagerie de l'utilisateur. S'il a un message avec priorité alors on redirige vers la messagerie
  *
- * @param string $site nom du site actuel, optionnel (côté lodeladmin)
  */
-function check_internal_messaging($site='')
+function check_internal_messaging()
 {
-	global $db, $context, $urlroot;
+	global $db;
 	
-	$url_retour = "Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : '').$urlroot;
-	
+    	$url_retour = 'Location: ';
+    
 	if(defined('backoffice')) {
-		if(!preg_match("/^[a-z0-9\-]+$/",$site))
-			trigger_error('Error: incorrect variable site in '.__FILE__.' function '.__FUNCTION__, E_USER_ERROR);
-		$url_retour .= $site.'/lodel/admin/index.php?do=list&lo=internal_messaging';
+        	$url_retour .= $db->CacheGetOne(lq('
+            SELECT url
+                FROM #_MTP_sites
+                WHERE name="'.C::get('site', 'cfg').'"')) or trigger_error($db->errormsg(), E_USER_ERROR);
+
+		$url_retour .= '/lodel/admin/index.php?do=list&lo=internal_messaging';
 	} elseif(defined('backoffice-lodeladmin')) {
-		$url_retour .= 'lodeladmin-'.$context['version'].'/index.php?do=list&lo=internal_messaging';
+		$url_retour .= 'index.php?do=list&lo=internal_messaging';
 	} else {
 		// où sommes-nous ??
 		return false;
 	}
-	$lodeluserid = (int)$context['lodeluser']['rights'] !== 128 ? 
-			$site.'-'.$context['lodeluser']['id'] : 
-			'lodelmain-'.$context['lodeluser']['id'];
-	$msg = $db->getOne(lq("SELECT count(id) as nbMsg FROM #_MTP_internal_messaging WHERE addressee = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
+    
+	$lodeluserid = (int)C::get('rights', 'lodeluser') !== 128 ? 
+			C::get('site','cfg').'-'.C::get('id', 'lodeluser') : 
+			'lodelmain-'.C::get('id', 'lodeluser');
+	$msg = $db->getOne(lq("
+            SELECT count(id) as nbMsg 
+                FROM #_MTP_internal_messaging 
+                WHERE addressee = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
+    
 	if($msg) {
 		header($url_retour);
 		exit();
@@ -330,9 +417,11 @@ function check_internal_messaging($site='')
 
 function updateDeskDisplayInSession()
 {
-	global $db, $context, $idsession;
+	global $db;
 	
-	if(!$context['lodeluser']['visitor']) return 'error';
+	$user = C::get(null, 'lodeluser');
+	if(!$user['visitor']) return 'error';
+	$idsession = $user['idsession'];
 	$row = $db->getRow(lq("SELECT context FROM #_MTP_session WHERE id='{$idsession}'"));
 	if(!$row) return 'error';
 	$localcontext = unserialize($row['context']);

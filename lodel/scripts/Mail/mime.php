@@ -648,7 +648,7 @@ class Mail_mime
                 $this->_html_images[$i]['cid'] = $this->_html_images[$i]['cid'] . $domain;
             }
         }
-        
+
         if (count($this->_html_images) AND isset($this->_htmlbody)) {
             foreach ($this->_html_images as $key => $value) {
                 $regex   = array();

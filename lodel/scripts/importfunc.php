@@ -58,7 +58,7 @@
 	$context['importdir'] = $importdir;
 	$GLOBALS['fileregexp'] = '('.$footprint.')-\w+(?:-\d+)?.'.$ext;
 
-	$GLOBALS['importdirs'] = array ("CACHE", $GLOBALS['home']."../install/plateform");
+	$GLOBALS['importdirs'] = array ("CACHE", C::get('home', 'cfg')."../install/plateform");
 	if ($importdir) {
 		$GLOBALS['importdirs'][] = $importdir;
 	}

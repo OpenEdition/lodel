@@ -79,7 +79,7 @@ function mysqldate($s, $type)
 			$delimiter = ' ';
 		}
 	}
-	if (!$delimiter) {
+	if (!isset($delimiter)) {
 		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
 			return $s . '-00-00';
 		} elseif(strlen($s) > 0) {
@@ -91,8 +91,8 @@ function mysqldate($s, $type)
 	if(preg_match("`^\d\d\d\d.\d\d.\d\d$`", $s)) 
 		list ($y, $m, $d) = preg_split("/s*$delimiter+/", $s);
 	else
-		list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
-	$d = intval(trim($d));
+		@list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
+	$d = (int)trim($d);
 
 	if ((($d < 1 || $d > 31) && !preg_match("`[:hH-]`", $delimiter))) {
 		return 'bad date';
@@ -100,7 +100,7 @@ function mysqldate($s, $type)
 	$m = trim($m);
 
 	if($type != 'time') {
-		if (intval($m) == 0) {
+		if ((int)$m == 0) {
 			$m = mois($m);
 		}
 		if ($m == 0) {
@@ -115,10 +115,10 @@ function mysqldate($s, $type)
 			}
 		}
 	
-		$y = intval(trim($y));
+		$y = (int)trim($y);
 	
 		//the last value is always the year, so check it for 2- to 4-digit convertion 
-		if (intval($y) < 100)	{
+		if ($y < 100)	{
 			$y += 2000;
 		}
 	
@@ -244,8 +244,16 @@ function mysqldatetime($s, $type = 'datetime')
 	}	else {
 		if($type == 'datetime') {
 			$datetime = explode(' ', $s);
-			$date = mysqldate($datetime[0], 'date');
-			$time = mysqldate($datetime[1], 'time');
+			if(count($datetime)>2)
+			{
+				$date = mysqldate($datetime[0].' '.$datetime[1].' '.$datetime[2], 'date');
+				$time = mysqldate($datetime[3], 'time');
+			}
+			else
+			{
+				$date = mysqldate($datetime[0], 'date');
+				$time = mysqldate($datetime[1], 'time');
+			}
 			if($date == 'bad date' || $time == 'bad date')
 				return $type;
 			if(!$date) $date = date("Y-m-d");

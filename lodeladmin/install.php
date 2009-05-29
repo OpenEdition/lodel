@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *

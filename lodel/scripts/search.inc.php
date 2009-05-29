@@ -41,7 +41,7 @@
 function search(&$context, $funcname, $arguments)
 {
 	global $db;
-	if (!$context['query'])
+	if (empty($context['query']))
 		return;
 	$query = $context['query'];
 	//non alphanum chars cleaning
@@ -53,7 +53,9 @@ function search(&$context, $funcname, $arguments)
 	#print_r($tokens);
 	$we = array (); // we is an array that contains : key as entity identifier and value as weight
 	$context['nbresults'] = 0;
-	while (list (, $token) = each($tokens))	{
+    foreach($tokens as $token)
+    {
+        $token = trim($token);
 		if ($token == "")
 			continue; //if token is empty or just whitespace --> not search it !
 		if ($token[0] == '-')	{
@@ -82,14 +84,14 @@ function search(&$context, $funcname, $arguments)
 		$token = strtolower(str_replace(array ("\305\223", "\305\222"), array ("oe", "OE"), $token));
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
-		$dao = & getDAO("search_engine");
+		$dao =  getDAO("search_engine");
 		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
 		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		$from = "#_TP_search_engine";
-		if ($context['qfield']) {
+		if (!empty($context['qfield'])) {
 			#echo "qfield :".$context['qfield'];
 			//get all tablefields for q_field specified
-			$dao_dc_fields = & getDAO("tablefields");
+			$dao_dc_fields = getDAO("tablefields");
 			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['qfield'])."'");
 			$field_in = array ();
 			foreach ($vos_dc_fields as $vo_field)
@@ -97,20 +99,21 @@ function search(&$context, $funcname, $arguments)
 			if ($field_in)
 				$criteria_index .= " AND tablefield ".sql_in_array($field_in);
 		}
-		if ($context['qtype'] || $context['qstatus'] || !$context['lodeluser']['visitor']) {
+        $join = '';
+		if (!empty($context['qtype']) || !empty($context['qstatus']) || !C::get('visitor', 'lodeluser')) {
 			$join = "INNER JOIN #_TP_entities ON #_TP_search_engine.identity = #_TP_entities.id";
 		}
-		if ($context['qtype']) {
-			$criteria_index .= " AND #_TP_entities.idtype ='".intval($context['qtype'])."'";
+		if (!empty($context['qtype'])) {
+			$criteria_index .= " AND #_TP_entities.idtype ='".(int)$context['qtype']."'";
 		}
-		if ($context['qstatus'] && $context['lodeluser']['visitor']) {
-			$criteria_index .= " AND #_TP_entities.status ='".intval($context['qstatus'])."'";
+		if (!empty($context['qstatus']) && C::get('visitor', 'lodeluser')) {
+			$criteria_index .= " AND #_TP_entities.status ='".(int)$context['qstatus']."'";
 		}
-		if (!$context['lodeluser']['visitor']) {
+		if (!C::get('visitor', 'lodeluser')) {
 			$criteria_index .= " AND #_TP_entities.status >= 1";
 		}
 		$groupby = " GROUP BY identity ";
-		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby.$limit);
+		$sql = lq("SELECT identity,sum(weight) as weight  FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);
 		#echo "hey :".$sql;
 		$sqlc = lq("SELECT identity FROM ".$from." ".$join." WHERE ".$criteria_index.$groupby);
 		$result = $db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -124,7 +127,7 @@ function search(&$context, $funcname, $arguments)
 		switch ($cond) { // differents cases : word inclusion, exclusion and no condition
 		case "" :
 			foreach ($we_temp as $id => $weight) {
-				if ($we[$id])
+				if (isset($we[$id]))
 					$we[$id] += $weight;
 				else
 					$we[$id] = $weight;
@@ -132,15 +135,14 @@ function search(&$context, $funcname, $arguments)
 			break;
 		case "exclude" :
 			foreach ($we_temp as $id => $weight) {
-				if ($we[$id])
+				if (isset($we[$id]))
 					unset ($we[$id]);
-
 			}
 			break;
 		case "include" :
 			if (count($we) > 0) {
 				foreach ($we as $id => $weight) {
-					if ($we_temp[$id])
+					if (isset($we_temp[$id]))
 						$we[$id] += $we_temp[$id];
 					else
 						unset ($we[$id]);
@@ -163,7 +165,7 @@ function search(&$context, $funcname, $arguments)
  */
 function loop_search(& $context, $funcname, $arguments)
 {
-	if (!$arguments['split'])
+	if (!isset($arguments['split']))
 		$arguments['split'] = 10; //split results by 10 by default
 	$local_context = $context;
 	static $cache;
@@ -174,13 +176,13 @@ function loop_search(& $context, $funcname, $arguments)
 	}
 	$results = $cache[$funcname];
 	$count = 0;
-	if (!$results || $context['nbresults'] == 0) {
+	if ($context['nbresults'] === 0) {
 		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $local_context);
 		return;
 	}
 	$offsetname = "offset_".substr(md5($funcname), 0, 5);
-	$currentoffset = ($_REQUEST[$offsetname] ? $_REQUEST[$offsetname] : 0);
+	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 	#echo "currentoffset :$currentoffset";
 	$context['offsetname'] = $offsetname;
 	$context['limitinfo'] = $arguments['split'];
@@ -192,7 +194,7 @@ function loop_search(& $context, $funcname, $arguments)
 	//call before function
 	if (function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname", $context);
-	$dao2 = & getDAO("entities");
+	$dao2 = getDAO("entities");
 	//call do function with the results
 
 	$res = _array_slice_key($results, $currentoffset, $arguments['split']);
@@ -205,7 +207,7 @@ function loop_search(& $context, $funcname, $arguments)
 				$local_context[$key] = $value;
 			$local_context['weight'] = $weight;
 			$local_context['idtype'] = $vo->idtype;
-			$dao_type = & getDAO("types");
+			$dao_type = getDAO("types");
 			$vo_type = $dao_type->getByID($vo->idtype);
 			$local_context['type'] = $vo_type->type;
 			//added information on tpledition
@@ -239,12 +241,7 @@ function _array_slice_key($array, $offset, $len = -1)
  * Results page script - Lodel part
  * 
  */
-if(!class_exists('View', false))
-	require "view.php";
-$view = &View::getView();
-$base = "search";
-extract_post($_GET);
 recordurl();
-$view->renderCached($context, $base);
+View::getView()->renderCached("search");
 return;
 ?>

@@ -111,7 +111,7 @@ class OptiongroupsLogic extends Logic {
 			foreach($arr as $row) {
 				$arr2[$row[0]] = $row[1];
 			}
-			renderOptions($arr2, $context[$var]);
+			renderOptions($arr2, isset($context[$var]) ? $context[$var] : '');
 			break;
 		}
 	}
@@ -251,7 +251,7 @@ class OptiongroupsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(SITEROOT. "CACHE/options_cache.php");
+		@unlink(SITEROOT. "CACHE/options");
 	}
 
 	// begin{publicfields} automatic generation  //

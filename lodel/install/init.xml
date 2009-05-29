@@ -529,6 +529,72 @@
 		edittype="boolean" />
 	<column name="upd"
 		type="TIMESTAMP" />
+	<column name="status"
+		type="TINYINT"
+		default="1"
+        required="true" />
+</table>
+
+<table name="mainplugins"
+       writeright="adminlodel">
+	
+	<column name="id"
+		type="INTEGER"
+		size="10"
+		required="true"
+		primaryKey="true"
+		autoIncrement="true" />
+	<column name="name"
+		type="VARCHAR(64)"
+		required="true" />
+	<column name="status"
+		type="TINYINT"
+		default="1"
+        	required="true" />
+	<column name="upd"
+		type="TIMESTAMP" />
+	<column name="config"
+		type="LONGVARCHAR"
+		required="true"/>
+	<column name="hooktype"
+		type="VARCHAR(5)"
+		required="true"/>
+	<column name="title"
+		type="text"/>
+	<column name="description"
+		type="LONGVARCHAR"/>
+	<column name="trigger_preedit"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postedit"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_prelogin"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postlogin"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_preview"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postview"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_preauth"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postauth"
+		type="TINYINT"
+		default="0"
+        	required="true" />
 </table>
 </database>
 

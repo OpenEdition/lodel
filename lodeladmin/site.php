@@ -46,91 +46,66 @@
 define('backoffice-lodeladmin', true);
 // gere un site. L'acces est reserve au niveau lodeladmin.
 require 'lodelconfig.php';
-require 'class.errors.php';
 
 try
 {
 	include 'auth.php';
 	authenticate(LEVEL_ADMINLODEL, NORECORDURL);
-	// pas de paramètres ? rien à faire ici. redirige vers la liste des sites
-	if(empty($_GET) && empty($_POST))
-		header('Location:index.php?do=list&lo=sites');
 	
-	extract_post();
-	$context['installoption'] = (int)$installoption;
-	$context['version']       = $GLOBALS['version'];
-
 	include 'class.siteManage.php';
-	$context['shareurl'] = $shareurl;
-	$website = new siteManage($id, $context);
-	$website->set('reinstall', $reinstall);
-	$website->set('maindefault', $maindefault);
-	$website->set('singledatabase',$singledatabase);
-	$website->set('version',$context['version']);
-	$website->set('downloadsiteconfig',$downloadsiteconfig);
-	
-	if($maintenance > 0)
+	$website = new siteManage();
+
+	if(C::get('maintenance') > 0)
 	{
-		$website->maintenance($maintenance);
+		$website->maintenance();
 	} 
-	elseif ($id>0 && ($delete || $restore)) 
+	elseif (C::get('id') > 0) 
 	{ // suppression et restauration
-		if($delete)
+		if(C::get('delete'))
 			$website->remove();
-		elseif($restore)
+		elseif(C::get('restore'))
 			$website->restore();
+        
+        $result = $db->GetRow("
+            SELECT * 
+                FROM `$GLOBALS[tp]sites` 
+                WHERE ".$website->get('critere')." AND (status>0 || status=-32)") 
+                or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        
+        	C::mergeC($result); // preserve possible post datas
+        	unset($result);
+	}
+	
+    	// reinstall all the sites
+	if (C::get('reinstall') == 'all') {
+		$website->reinstall();
+	}
+	
+    	$task = C::get('task');
+
+	// ajoute ou edit
+	if (C::get('edit') || C::get('maindefault')) {
+		if($website->manageSite())
+		{
+			if (!preg_match($website->get('lodelhomere'),$website->get('versiondir'))) {
+				trigger_error("ERROR: versiondir", E_USER_ERROR);
+			}
+			$task = 'createdb';
+		}
 	}
 
-	// on récupère les infos du site (url, path, status, etc..)
-	if ($id > 0) {
-		$result = $db->GetRow("SELECT * FROM `$GLOBALS[tp]sites` WHERE ".$website->get('critere')." AND (status>0 || status=-32)") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		$website->context = array_merge($result,$website->context);
-	
-	}
-	
-	// reinstall all the sites
-	if ($reinstall == 'all') {
-		$website->reinstall($dir);
-	}
-	
-	// ajoute ou edit
-	if ($edit || $maindefault) { 
-		if($website->manageSite())
-			$task = 'version';
-	}
-	
-	if ($task === 'version') {
-	
-		// on verifie que versiondir match bien un repertoire local pour eviter un hack.
-		// on verifie en meme temps qu'il est bien defini, ce qui correspond quand meme 
-		// a la plupart des cas.
-		if  (!$website->get('versiondir')) {
-			$website->selectVersion();
-		}
-		$task = 'createdb';
-	}   // on connait le repertoire dans lequel est la "bonne" version de lodel/site
-	
-	if ($task) {
-		if  (!$website->get('versiondir')) {
-			$website->selectVersion();
-		}
-		if (!preg_match($website->get('lodelhomere'),$website->get('versiondir'))) {
-			trigger_error("ERROR: versiondir", E_USER_ERROR);
-		}
-	}
-	
 	// creation de la DataBase si besoin
 	if (defined('DATABASE')) {
 		$database = DATABASE;
 	}
 	$website->set('database', $database);
 	
-	if($website->context['name'] && !$website->context['dbname'])
-		$website->context['dbname'] = ($website->get('singledatabase') == 'on') ? $database : $database. '_'. $website->context['name'];
+	if(C::get('name') && !C::get('dbname'))
+        	C::set('dbname', (C::get('singledatabase', 'cfg') == 'on') ? $database : $database. '_'. C::get('name'));
 
 	if ($task === 'createdb') 
 	{
-		$website->createDB($lodeldo);
+		$website->createDB();
 		$task = 'createtables';
 	}
 	
@@ -143,24 +118,21 @@ try
 	
 	// Creer le repertoire principale du site
 	if ($task === 'createdir'){
-		$website->createDir($lodeldo, $mano, $filemask);
+		$website->createDir();
 		$task = 'file';
 	}
-	
+
 	// verifie la presence ou copie les fichiers necessaires
 	// cherche dans le fichier install-file.dat les fichiers a copier
 	if ($task === 'file') {
-		$website->manageFiles($lodeldo);
+		$website->manageFiles();
 	}
 	
-	$context = $website->context;
-	
 	// post-traitement
-	postprocessing($context);
+    	if(!defined('INC_FUNC')) include 'func.php';
+	postprocessing(C::getC());
 	
-	include 'view.php';
-	$view = &View::getView();
-	$view->render($context, 'site');
+	View::getView()->render('site');
 }
 catch(Exception $e)
 {

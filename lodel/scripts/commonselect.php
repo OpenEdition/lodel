@@ -52,7 +52,8 @@
  */
 function makeSelectFieldTypes($value)
 {
-	require_once 'fieldfunc.php';
+	if(!isset($GLOBALS['lodelfieldtypes']))
+		include_once 'fieldfunc.php';
 	$arr2 = array ();
 	foreach ($GLOBALS['lodelfieldtypes'] as $k => $v) {
 		if ($v) {
@@ -69,22 +70,43 @@ function makeSelectFieldTypes($value)
  * renderOptions()
  * @param string $value la valeur courante (pour positionner le selected="selected"
  * @param boolean $adminlodel un booleen qui indique si on doit inclure le niveau Admin Lodel
+ * @param array $rights on peut forcer un tableau de droits (utilisé pour les plugins)
  */
-function makeSelectUserRights($value, $adminlodel)
+function makeSelectUserRights($value, $adminlodel, array $rights=array())
 {
-	$arr = array (LEVEL_VISITOR => getlodeltextcontents("user_visitor", "common"), LEVEL_REDACTOR => getlodeltextcontents("user_redactor", "common"), LEVEL_EDITOR => getlodeltextcontents("user_editor", "common"), LEVEL_ADMIN => getlodeltextcontents("user_admin", "common"));
-	if (!$GLOBALS['site'] && !SINGLESITE) {
-		$arr = array ();
+	if(!empty($rights))
+	{
+		$lodelrights = array(	LEVEL_VISITOR=>'user_visitor', 
+					LEVEL_REDACTOR=>'user_redactor', 
+					LEVEL_EDITOR=>'user_editor', 
+					LEVEL_ADMIN=>'user_admin', 
+					LEVEL_ADMINLODEL=>'user_adminlodel');
+
+		foreach($rights as $right)
+		{
+			if(isset($lodelrights[$right]))
+				$arr[$right] = getlodeltextcontents($lodelrights[$right], "common");
+		}
 	}
-	if ($adminlodel) {
+	elseif (C::get('site', 'cfg') || SINGLESITE) 
+	{
+		$arr = array (	
+			LEVEL_VISITOR => getlodeltextcontents("user_visitor", "common"), 
+			LEVEL_REDACTOR => getlodeltextcontents("user_redactor", "common"), 
+			LEVEL_EDITOR => getlodeltextcontents("user_editor", "common"), 
+			LEVEL_ADMIN => getlodeltextcontents("user_admin", "common"));
+	}
+
+	if ($adminlodel && !isset($arr[LEVEL_ADMINLODEL])) {
 		$arr[LEVEL_ADMINLODEL] = getlodeltextcontents("user_adminlodel", "common");
 	}
 
 	// take only the rights below the current user rights
 	// in pratice only the ADMIN and ADMINLODEL should be authorized to add/remove users...
 	$arr2 = array ();
+	$userrights = C::get('rights', 'lodeluser');
 	foreach ($arr as $k => $v) {
-		if ($GLOBALS['lodeluser']['rights'] >= $k) {
+		if ($userrights >= $k) {
 			$arr2[$k] = $v;
 		}
 	}
@@ -92,12 +114,11 @@ function makeSelectUserRights($value, $adminlodel)
 }
 function makeSelectGuiUserComplexity($value)
 {
-	
-	$arr = array( INTERFACE_SIMPLE => getlodeltextcontents('simple', 'common'),
-								INTERFACE_NORMAL => getlodeltextcontents('normal', 'common'),
-								INTERFACE_ADVANCED => getlodeltextcontents('advanced', 'common'),
-								INTERFACE_DEBUG => getlodeltextcontents('debug', 'common')
-							);
+	$arr = array( 	INTERFACE_SIMPLE => getlodeltextcontents('simple', 'common'),
+			INTERFACE_NORMAL => getlodeltextcontents('normal', 'common'),
+			INTERFACE_ADVANCED => getlodeltextcontents('advanced', 'common'),
+			INTERFACE_DEBUG => getlodeltextcontents('debug', 'common'));
+
 	if(!$value || $value == 0) {
 		$value = INTERFACE_ADVANCED;
 	}

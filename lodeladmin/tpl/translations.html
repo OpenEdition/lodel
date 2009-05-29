@@ -35,9 +35,9 @@
 <ul id="actionsOnEntitiesPath">
 	<li><span class="intit">[@ADMIN.TITLE_ADMINISTRATE_TRANSLATION_FOR_SITE]</span></li>
 	<li>
-		<LET ARRAY="actions[import]">[@LODELADMIN.IMPORT_A_TRANSLATION]</LET>
-		<LET ARRAY="actions[lookfor]">[@ADMIN.LOOKFOR_TRANSLATIONS]</LET>
-		<LET ARRAY="actions[view]">[@LODELADMIN.ADD_A_TRANSLATION]</LET>
+		<LET ARRAY="actions.import">[@LODELADMIN.IMPORT_A_TRANSLATION]</LET>
+		<LET ARRAY="actions.lookfor">[@ADMIN.LOOKFOR_TRANSLATIONS]</LET>
+		<LET ARRAY="actions.view">[@LODELADMIN.ADD_A_TRANSLATION]</LET>
 		<ul class="actions">
 			<li class="isolated">
 				<label for="actions">[@COMMON.ACTIONS] :</label>
@@ -58,8 +58,8 @@
 	<tr>
 		<th class="status">[@COMMON.LANG]</th>
 		<th class="status">[@LODELADMIN.CODE]</th>
-		<td class="emty">&nbsp;</td>
 		<th class="status">[@LODELADMIN.TRANSLATE_GROUPS]</th>
+		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
@@ -71,18 +71,18 @@
 			<td>[#TITLE]</td>
 			<td>[#LANG]</td>
 			<td class="actions">
-				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
-			</td>
-			<td class="actions">
 			<LET VAR="currentlang">[#LANG]</LET>
 			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
 				<a href="index.php?do=list&amp;lo=texts&amp;textgroup=[#TEXTGROUP]&amp;lang=[#CURRENTLANG]">
 					[(#TEXTGROUP|strtoupper)]
 				</a>&nbsp;
 			</LOOP>
-		  </td>
+		  	</td>
+			<td class="actions">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
+			</td>
 		</tr>
 		</DO>
 	</LOOP>

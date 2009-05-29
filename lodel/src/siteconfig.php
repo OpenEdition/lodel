@@ -46,26 +46,33 @@
 
 require '../lodelconfig.php';
 
-$site = "";
+$cfg['site'] = "";
 
 ##########################################
 
-$versionsuffix = $version ? "-$version" : '';   # versioning
-
-$home = "../lodel$versionsuffix/scripts/";
-
-$sharedir = "../".$sharedir.$versionsuffix;
-$shareurl.= $versionsuffix;
+$cfg['versionsuffix'] = "-".$cfg['version'];   # versioning
 
 if (!defined("SITEROOT")) {
-	define("SITEROOT","");
+    define("SITEROOT","");
 }
+
+$cfg['home'] = "../lodel{$cfg['versionsuffix']}/scripts/";
+$home = $cfg['home'];
+$cfg['sharedir'] = SITEROOT . "../".$cfg['sharedir'].$cfg['versionsuffix'];
+$cfg['shareurl'] .= $cfg['versionsuffix'];
 
 # recaptcha pour la partie signaler
 # par défaut désactivé
-$signaler_recaptcha = false;
-$recaptcha_privatekey = ""; // clé privée recaptcha
-$recaptcha_publickey = ""; // clé publique recaptcha
+$cfg['signaler_recaptcha'] = false;
+$cfg['recaptcha_privatekey'] = ""; // clé privée recaptcha
+$cfg['recaptcha_publickey'] = ""; // clé publique recaptcha
 
-ini_set('include_path', SITEROOT. $home. PATH_SEPARATOR. ini_get('include_path'));
+ini_set('include_path', SITEROOT. $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
+// important here
+// when this file is included, we are ALWAYS in the site root, so don't concat $home !!
+require $cfg['home'].'context.php';
+
+$cfg['home'] = SITEROOT. $cfg['home'];
+C::setCfg($cfg);
+require $home.'class.errors.php';
 ?>

@@ -209,7 +209,7 @@ class ServOO_Client {
 			 $options=array(),
 			 $zipoptions=array()) {
 
-    global $tmpoutdir;
+    $tmpoutdir = C::get('tmpoutdir', 'cfg');
     if(empty($tmpoutdir) && !empty($outdir)) {
 	$tmpoutdir = $outdir;
     }
@@ -284,8 +284,7 @@ class ServOO_Client {
 			  $callbackimages="",
 			  $user_vars="") 
   {
-
-    global $tmpoutdir;
+    $tmpoutdir = C::get('tmpoutdir', 'cfg');
     if(empty($tmpoutdir) && !empty($outdir)) {
 	$tmpoutdir = $outdir;
     }
