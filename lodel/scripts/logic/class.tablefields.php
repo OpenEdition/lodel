@@ -34,6 +34,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -52,6 +54,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -121,13 +125,13 @@ class TableFieldsLogic extends Logic
 		switch($var) {
 		case 'type':
 			if(!function_exists('makeSelectFieldTypes'))
-				require 'commonselect.php';
-			makeSelectFieldTypes($context['type']);
+				include 'commonselect.php';
+			makeSelectFieldTypes(isset($context['type']) ? $context['type'] : '');
 			break;
 		case 'gui_user_complexity' :
 			if(!function_exists('makeSelectGuiUserComplexity'))
-				require 'commonselect.php';
-			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+				include 'commonselect.php';
+			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : 0);
 			break;
 		case 'cond':
 			$arr = array(
@@ -137,12 +141,12 @@ class TableFieldsLogic extends Logic
 			'permanent' => getlodeltextcontents('permanent', 'admin'),
 			'unique' => getlodeltextcontents('single', 'admin'),
 			);
-			renderOptions($arr,$context['cond']);
+			renderOptions($arr,isset($context['cond']) ? $context['cond'] : '');
 			break;
 		case 'edition':
 			if(!function_exists('makeSelectEdition'))
-				require 'commonselect.php';
-			makeSelectEdition($context['edition']);
+				include 'commonselect.php';
+			makeSelectEdition(isset($context['edition']) ? $context['edition'] : '');
 			break;
 		case 'allowedtags':
 			require_once 'balises.php';
@@ -151,7 +155,7 @@ class TableFieldsLogic extends Logic
 			foreach($groups as $k) {
 				if ($k && !is_numeric($k)) $arr2[$k]=$k;
 			}
-			renderOptions($arr2,$context['allowedtags']);
+			renderOptions($arr2,isset($context['allowedtags']) ? $context['allowedtags'] : '');
 			break;
 		case 'idgroup':
 			$arr = array();
@@ -161,11 +165,11 @@ class TableFieldsLogic extends Logic
 				$arr[$result->fields['id']]=$result->fields['title'];
 				$result->MoveNext();
 			}
-			renderOptions($arr, $context['idgroup']);
+			renderOptions($arr, isset($context['idgroup']) ? $context['idgroup'] : 0);
 			break;
 		case 'g_name':
 			if(!function_exists('reservedByLodel'))
-				require 'fieldfunc.php';
+				include 'fieldfunc.php';
 			if (!$context['classtype']) $this->_getClass($context);
 			switch ($context['classtype']) {
 			case 'entities':
@@ -189,25 +193,24 @@ class TableFieldsLogic extends Logic
 				trigger_error("class type ?",E_USER_ERROR);
 			}
 
-			$dao = $this->_getMainTableDAO();
-			$tablefields = $dao->findMany("class='".$context['class']."'","","g_name,title");     
+			$tablefields = $this->_getMainTableDAO()->findMany("class='".$context['class']."'","","g_name,title");     
 			foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
 	
 			$arr2 = array(''=>'--');
 			foreach($g_namefields as $g_name) {
 				$lg_name=strtolower($g_name);
-				if ($arr[$lg_name]) {
+				if (isset($arr[$lg_name])) {
 					$arr2[$lg_name]=$g_name." &rarr; ".$arr[$lg_name];
 				} else {
 					$arr2[$lg_name]=$g_name;
 				}
 			}
-			renderOptions($arr2, $context['g_name']);
+			renderOptions($arr2, isset($context['g_name']) ? $context['g_name'] : '');
 			break;
 			case 'weight':
 			$arr = array('0' => getlodeltextcontents('not_indexed', 'admin'),
 			'1' => '1', '2' => '2', '4' => '4', '8' => '8');
-			renderOptions($arr, $context['weight']);
+			renderOptions($arr, isset($context['weight']) ? $context['weight'] : 0);
 			break;
 		}
 	}
@@ -248,35 +251,41 @@ class TableFieldsLogic extends Logic
 	*/
 	protected function _saveRelatedTables($vo,$context) 
 	{
-		global $home,$lodelfieldtypes,$db;
+		global $lodelfieldtypes,$db;
 		if(!function_exists('reservedByLodel'))
-			require 'fieldfunc.php';
+			include 'fieldfunc.php';
 
 		// remove the dc for all the other fields
 		if ($vo->g_name) {
-			$db->execute(lq("UPDATE #_TP_tablefields SET g_name='' WHERE g_name='".$vo->g_name."' AND id!='".$vo->id."' AND class='".$vo->class."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$db->execute(lq("UPDATE #_TP_tablefields SET g_name='' WHERE g_name='".$vo->g_name."' AND id!='".$vo->id."' AND class='".$vo->class."'")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 
 		// manage the physical field 
-		if ($vo->class && $this->oldvo->class && $this->oldvo->class!=$vo->class) trigger_error("ERROR: field change of class is not implemented yet", E_USER_ERROR);
+		if(isset($this->oldvo))
+		{
+			if ($this->oldvo->class!=$vo->class) 
+				trigger_error("ERROR: field change of class is not implemented yet", E_USER_ERROR);
+		}
 
 		if ($vo->type!="entities") {
-			if (!$this->oldvo) {
+			$alter = false;
+			if (!isset($this->oldvo)) {
 				$alter="ADD";
-			} elseif ($this->oldvo->name!=$vo->name) {
+			} elseif ($this->oldvo->name && $this->oldvo->name!=$vo->name) {
 				$alter="CHANGE ".$this->oldvo->name;
-			} elseif ($lodelfieldtypes[$this->oldvo->type]['sql']==$lodelfieldtypes[$vo->type]['sql']) {
+			} elseif ($lodelfieldtypes[$this->oldvo->type]['sql']=$lodelfieldtypes[$vo->type]['sql']) {
 				$alter="MODIFY";
 			}
-
 			if ($alter) { // modify or add or rename the field
-				if (!$lodelfieldtypes[$vo->type]['sql']) trigger_error("ERROR: internal error in TableFields:: _saveRelatedTables ".$vo->type, E_USER_ERROR);
-				$db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				if (!isset($lodelfieldtypes[$vo->type]['sql'])) 
+					trigger_error("ERROR: internal error in TableFields:: _saveRelatedTables ".$vo->type, E_USER_ERROR);
+				
+				$db->execute(lq("ALTER TABLE #_TP_".$context['class']." $alter ".$vo->name." ".$lodelfieldtypes[$vo->type]['sql'])) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			if ($alter || $vo->filtering!=$this->oldvo->filtering) {
 				// should be in view ??
-				if(!function_exists('clearcache'))
-					require 'cachefunc.php';
 				clearcache();
 			}
 		}
@@ -306,7 +315,7 @@ class TableFieldsLogic extends Logic
 	 */
 	protected function _deleteRelatedTables($id)
 	{
-		global $db, $home;
+		global $db;
 
 		if (!$this->vo) {
 			trigger_error("ERROR: internal error in TableFields::deleteAction", E_USER_ERROR);
@@ -315,12 +324,6 @@ class TableFieldsLogic extends Logic
 			$db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		unset($this->vo);
-
-		// should be in the view....
-		if(!function_exists('clearcache'))
-			require 'cachefunc.php';
-		clearcache();
-		//
 
 		return '_back';
 	}
@@ -341,6 +344,7 @@ class TableFieldsLogic extends Logic
 			$context['class']     = $row['class'];
 			$context['classtype'] = $row['classtype'];
 		} else {
+			$classtype = '';
 			if (substr($context['class'],0,9) == 'entities_') {
 				$class = substr($context['class'],9);
 				$classtype = 'entities_';
@@ -422,10 +426,10 @@ function loop_allowedtags_documentation(&$context,$funcname)
 {
 	##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
 	require_once("balises.php");
+	$count = 0;
 	foreach($GLOBALS['xhtmlgroups'] as $groupname => $tags) {
 		$localcontext=$context;
-		$localcontext['count']=$count;
-		$count++;
+		$localcontext['count']=++$count;
 		$localcontext['groupname']=$groupname;
 		$localcontext['allowedtags']="";
 		foreach ($tags as $k=>$v) { if (!is_numeric($k)) unset($tags[$k]); }

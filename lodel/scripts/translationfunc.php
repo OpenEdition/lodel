@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,16 +37,20 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @licence http://www.gnu.org/copyleft/gpl.html
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @version CVS:$Id:
  * @package lodel
  * @since Fichier ajouté depuis la version 0.8
  */
 if(!class_exists('XMLDB', false))
-	require 'xmldbfunc.php';
+	include 'xmldbfunc.php';
 
 /**
  * Affichage des champs textes pour la traduction
@@ -61,7 +67,7 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 	}
 	// determin the number of rows to use for the textarea
 	$ncols = 50;
-	$nrows = intval(strlen($text) / $ncols);
+	$nrows = (int)(strlen($text) / $ncols);
 	if ($nrows < 1)
 		$nrows = 1;
 	if ($nrows > 10)
@@ -190,7 +196,7 @@ class XMLDB_Translations extends XMLDB
 			}
 			$this->currentlang = $record['lang'];
 			// look for the translation
-			$dao = & getDAO("translations");
+			$dao = getDAO("translations");
 			$vo = $dao->find("lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
 			$vo->textgroups = $this->textgroups;
 			foreach ($record as $k => $v)
@@ -214,7 +220,7 @@ class XMLDB_Translations extends XMLDB
 				trigger_error("ERROR: Invalid textgroup : ".$this->textgroups, E_USER_ERROR);
 			}
 			// look for the translation
-			$dao = & getDAO("texts");
+			$dao = getDAO("texts");
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
 			foreach ($record as $k => $v)
 			{

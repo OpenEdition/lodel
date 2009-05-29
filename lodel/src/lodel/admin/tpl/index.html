@@ -3,10 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -21,6 +23,7 @@
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
       Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
@@ -88,13 +91,15 @@
 					<ELSE/>
 						<option value="[#LANG]">
 					</IF>
-					[#TITLE]</option>
+                    <LET VAR="lang">[#LANG|strtoupper]</LET>
+                    <IF COND="[#DEFAULTLANG.#LANG]">[#DEFAULTLANG.#LANG]<ELSE/>[#TITLE]</IF>
+                </option>
 				</LOOP>
 				</select>
 			</li>
 			<IF COND="[#LODELUSER.ADMINLODEL]">
 				<li>
-				<?php $context['lodeladminpath']=$GLOBALS['home']."../../lodeladmin".($GLOBALS['version'] ? "-".$GLOBALS['version'] : ""); // this is not wonderfull..... 
+				<?php $context['lodeladminpath']=C::get('home', 'cfg')."../../lodeladmin-".C::get('version'); // this is not wonderfull..... 
 				?>
 				<a href="[#LODELADMINPATH]/index.php">[@ADMIN.GO_TO_THE_GENERAL_ADMINISTRATION_PAGE]</a>
 				</li>
@@ -103,6 +108,9 @@
 				<ELSE/>
 					<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
 				</IF>
+				<li>
+					<a href="index.php?lo=plugins&amp;do=list">[@ADMIN.PLUGINS]</a>
+				</li>
 			</IF>
 		</ul>
 	</div>

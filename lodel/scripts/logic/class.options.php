@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -52,6 +54,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -115,7 +119,7 @@ class OptionsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(SITEROOT. "CACHE/options_cache.php");
+		@unlink(SITEROOT. "CACHE/options");
 	}
 
 
@@ -130,19 +134,19 @@ class OptionsLogic extends Logic {
 		switch($var) {
 		case "userrights":
 			if(!function_exists('makeSelectUserRights'))
-				require("commonselect.php");
-			$lodeladmin = ((!$GLOBALS['site'] || SINGLESITE) && (FALSE !== strpos(dirname($_SERVER['REQUEST_URI']), '/lodeladmin'))) ? TRUE : FALSE;
-			makeSelectUserRights($context['userrights'], $lodeladmin);
+				include("commonselect.php");
+			$lodeladmin = ((!C::get('site', 'cfg') || SINGLESITE) && defined('backoffice-lodeladmin')) ? TRUE : FALSE;
+			makeSelectUserRights(isset($context['userrights']) ? $context['userrights'] : '', $lodeladmin);
 			break;
 		case "type" :
 			if(!function_exists('makeSelectFieldTypes'))
-				require("commonselect.php");
-			makeSelectFieldTypes($context['type']);
+				include("commonselect.php");
+			makeSelectFieldTypes(isset($context['type']) ? $context['type'] : '');
 			break;
 		case "edition" :
 			if(!function_exists('makeSelectEdition'))
-				require("commonselect.php");
-			makeSelectEdition($context['edition']);
+				include("commonselect.php");
+			makeSelectEdition(isset($context['edition']) ? $context['edition'] : '');
 			break;
 		}
 	}
@@ -214,6 +218,6 @@ class OptionsLogic extends Logic {
 /*-----------------------------------*/
 function humanfieldtype($text)
 {
-	return $GLOBALS['fieldtypes'][$text];
+	return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
 }
 ?>

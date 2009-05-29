@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,9 +37,15 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -79,7 +87,7 @@ function mysqldate($s, $type)
 			$delimiter = ' ';
 		}
 	}
-	if (!$delimiter) {
+	if (!isset($delimiter)) {
 		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
 			return $s . '-00-00';
 		} elseif(strlen($s) > 0) {
@@ -91,8 +99,8 @@ function mysqldate($s, $type)
 	if(preg_match("`^\d\d\d\d.\d\d.\d\d$`", $s)) 
 		list ($y, $m, $d) = preg_split("/s*$delimiter+/", $s);
 	else
-		list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
-	$d = intval(trim($d));
+		@list ($d, $m, $y) = preg_split("/s*$delimiter+/", $s);
+	$d = (int)trim($d);
 
 	if ((($d < 1 || $d > 31) && !preg_match("`[:hH-]`", $delimiter))) {
 		return 'bad date';
@@ -100,7 +108,7 @@ function mysqldate($s, $type)
 	$m = trim($m);
 
 	if($type != 'time') {
-		if (intval($m) == 0) {
+		if ((int)$m == 0) {
 			$m = mois($m);
 		}
 		if ($m == 0) {
@@ -115,10 +123,10 @@ function mysqldate($s, $type)
 			}
 		}
 	
-		$y = intval(trim($y));
+		$y = (int)trim($y);
 	
 		//the last value is always the year, so check it for 2- to 4-digit convertion 
-		if (intval($y) < 100)	{
+		if ($y < 100)	{
 			$y += 2000;
 		}
 	
@@ -244,8 +252,16 @@ function mysqldatetime($s, $type = 'datetime')
 	}	else {
 		if($type == 'datetime') {
 			$datetime = explode(' ', $s);
-			$date = mysqldate($datetime[0], 'date');
-			$time = mysqldate($datetime[1], 'time');
+			if(count($datetime)>2)
+			{
+				$date = mysqldate($datetime[0].' '.$datetime[1].' '.$datetime[2], 'date');
+				$time = mysqldate($datetime[3], 'time');
+			}
+			else
+			{
+				$date = mysqldate($datetime[0], 'date');
+				$time = mysqldate($datetime[1], 'time');
+			}
 			if($date == 'bad date' || $time == 'bad date')
 				return $type;
 			if(!$date) $date = date("Y-m-d");

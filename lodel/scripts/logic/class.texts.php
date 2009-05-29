@@ -35,13 +35,15 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
 
 if(!function_exists('mkeditlodeltext'))
-	require("translationfunc.php");
+	include("translationfunc.php");
 
 /**
  * Classe de logique des textes lodel
@@ -55,6 +57,8 @@ if(!function_exists('mkeditlodeltext'))
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -74,15 +78,17 @@ class TextsLogic extends Logic
 		*/
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		if ($context['id']) {
+		if (!empty($context['id'])) {
 			// normal edit
-			return parent::editAction($context,$error);
+			$ret = parent::editAction($context,$error);
+            		clearcache();
+            		return $ret;
 		}
 		// Sauvegarde massive
-		if (is_array($context['contents'])) {
+		if (isset($context['contents']) && is_array($context['contents'])) {
 			$dao = $this->_getMainTableDAO();
 			//if ($GLOBALS['lodeluser']['translationmode'] != 'site') {
-			if($context['textgroup'] != 'site') {
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
 				usemaindb();
 			}
@@ -102,14 +108,11 @@ class TextsLogic extends Logic
 				$dao->save($vo);
 			}
 			//if ($GLOBALS['lodeluser']['translationmode']!="site") {
-			if($context['textgroup'] != 'site') {
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
 				usecurrentdb();
 			}
-			update();
 		}
-		if(!function_exists('clearcache'))
-			require("cachefunc.php");
 		clearcache();
 		return '_back';
 	}

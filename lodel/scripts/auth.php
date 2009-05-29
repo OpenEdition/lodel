@@ -16,6 +16,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -41,9 +43,14 @@
  * @author Jean Lamy
  * @author Sophie Malafosse
  * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -75,168 +82,190 @@ define("INTERFACE_SIMPLE", 16);
  */
 function authenticate($level = 0, $mode = "", $return = false)
 {
-	global $context, $lodeluser, $norecordurl;
-	global $home, $timeout, $sessionname, $site;
-	global $db;
-
-		$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
-		do { // block de control
-			$name = addslashes($_COOKIE[$sessionname]);
-			if (!$name && !defined('backoffice') && !defined('backoffice-lodeladmin')) {
-				// check for restricted users by client IP address
-				$users = $db->getArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
-				if(!$users) break;
-				list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
-				
-				foreach($users as $user) {
-					$uuser = explode(' ', $user['ip']);
-					foreach($uuser as $ip)
-					{
-						$ip = trim($ip);
-						if(!$ip) continue 2;
-						$octs = explode('.', $ip);
-						foreach($octs as $k=>$octet) {
-							if(!$octet) continue;
-							if(FALSE !== strpos($octet, '[')) 
-							{ // plage d'ip
-								$o = explode('-', substr($octet, 1, strlen($octet)-2));
-								if((int)$oct[$k] < (int)$o[0] || (int)$oct[$k] > (int)$o[1]) continue 2;
-							} 
-							elseif((int)$octet !== (int)$oct[$k]) continue 2;
-						}
-						
-						$row = $db->getRow(lq("SELECT id, username, passwd, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
-						if(!function_exists('check_expiration')) require 'loginfunc.php';
-						$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
-						$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
-						$lodeluser['id'] = $row['id'];
-						$lodeluser['name'] = $context['login'] = $row['username'];
-						$lodeluser['groups'] = '';
-						$context['lodeluser'] = $lodeluser; // export info into the context
-						unset($row);
-						if(!check_expiration()) {
-							$context['lodeluser'] = $lodeluser = array();
-							break 3;
-						}
-						$name = open_session($context['login']);
-						// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
-						break 2;
-					}
-				}
-				if(!$name || $name == 'error_opensession') break;
-			}
-			usemaindb();
+	C::trigger('preauth');
+	$lodeluser = array();
+	$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
+	do { // block de control
+		if (!isset($_COOKIE[C::get('sessionname', 'cfg')]) && !defined('backoffice-lodeladmin') && !defined('backoffice'))
+        	{
+                	if(file_exists(SITEROOT.'./CACHE/.no_restricted')) break;
+                	maintenance();
+            
+            		if(!defined('INC_CONNECT')) include 'connect.php';
+			global $db;
+			// check for restricted users by client IP address
+			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
+			if(!$users)
+            		{
+                		touch(SITEROOT.'./CACHE/.no_restricted');
+                		break;
+            		}
+			list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
 			
-			if (!($row = $db->getRow(lq("SELECT id,iduser,site,context,expire,expire2,currenturl FROM #_MTP_session WHERE name='$name'")))) {
-				break;
+			foreach($users as $user) 
+			{
+				$uuser = explode(' ', $user['ip']);
+				foreach($uuser as $ip)
+				{
+					$ip = trim($ip);
+					if(!$ip) continue 2;
+					$octs = explode('.', $ip);
+					foreach($octs as $k=>$octet) {
+						if(!$octet) continue;
+						if(false !== strpos($octet, '[')) 
+						{ // plage d'ip
+							$o = explode('-', substr($octet, 1, strlen($octet)-2));
+							if((int)$oct[$k] < (int)$o[0] || (int)$oct[$k] > (int)$o[1]) continue 2;
+						} 
+						elseif((int)$octet !== (int)$oct[$k]) continue 2;
+					}
+					
+					$row = $db->getRow(lq("SELECT id, username, lang FROM #_TP_restricted_users WHERE id = '{$user['id']}'"));
+					if(!$row) break 3; // strange ???????
+					$lodeluser['rights'] = LEVEL_RESTRICTEDUSER;
+					$lodeluser['lang'] = $row['lang'] ? $row['lang'] : "fr";
+					$lodeluser['id'] = $row['id'];
+					$lodeluser['groups'] = '';
+					C::set('lodeluser', $lodeluser);
+					C::set('login', $row['username']);
+					$lodeluser['name'] = $row['username'];
+					C::setUser($lodeluser);
+					unset($lodeluser);
+					if(!function_exists('check_expiration')) include 'loginfunc.php';
+					if(!check_expiration()) {
+						break 3;
+					}
+					$name = open_session($row['username']);
+					unset($row);
+					// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
+					break 2;
+				}
 			}
+			if(!$name || $name == 'error_opensession') break;
+			else
+			{
+				C::trigger('postauth');
+				return true;
+			}
+		}
+		elseif(isset($_COOKIE[C::get('sessionname', 'cfg')]))
+		{
+			$name = addslashes($_COOKIE[C::get('sessionname', 'cfg')]);
+		}
+		else break;
+
+        	if(!defined('INC_CONNECT')) include 'connect.php';
+		global $db;
+
+		if (!($row = $db->getRow(lq("
+            SELECT id,iduser,site,context,expire,expire2,currenturl 
+                FROM #_MTP_session 
+                WHERE name='$name'")))) 
+        	{
+        		setcookie(C::get('sessionname', 'cfg'), "", time()-1,C::get('urlroot', 'cfg'));
+			break;
+		}
 		
-			$GLOBALS['idsession'] = $idsession = $row['id'];
-			$GLOBALS['session'] = $name;
-	
-			// verifie qu'on est dans le bon site
-			if ($row['site'] != "tous les sites" && $row['site'] != $site) {
+		// passe les variables en global
+		$lodeluser = unserialize($row['context']);
+
+		// verifie que la session n'est pas expiree
+		$time = time();
+		if ($row['expire'] < $time || $row['expire2'] < $time) {
+			$login = $lodeluser = "";
+			if (file_exists('login.php'))	{
+				$login = 'login.php';
+			}	elseif (file_exists('lodel/edition/login.php'))	{
+				$login = 'lodel/edition/login.php';
+			}	else {
 				break;
 			}
-
-			// passe les variables en global
-			$lodeluser = unserialize($row['context']);
-			if($level == (LEVEL_RESTRICTEDUSER | LEVEL_VISITOR)) {
-				$level = ($lodeluser['rights'] == 5) ? LEVEL_RESTRICTEDUSER : LEVEL_VISITOR;
-			}
-	
-			// verifie que la session n'est pas expiree
-			$time = time();
-			if ($row['expire'] < $time || $row['expire2'] < $time) {
-				$login = $lodeluser = "";
-				if($level == LEVEL_RESTRICTEDUSER) {
-					$login = 'index.'.$GLOBALS['extensionscripts'];
-				} else {
-					if (file_exists('login.php'))	{
-						$login = 'login.php';
-					}	elseif (file_exists('lodel/edition/login.php'))	{
-						$login = 'lodel/edition/login.php';
-					}	else {
-						break;
-					}
-				}
-				header("location: $login?error_timeout=1&". $retour);
-				exit;
-			}
-	
-			if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
-				if($level == LEVEL_RESTRICTEDUSER) {
-					$login = 'index.'.$GLOBALS['extensionscripts'];
-				} else {
-					$login = 'login.php';
-				}
-				$lodeluser = '';
-				header("location: $login?error_privilege=1&". $retour);
-				exit;
-			}
-	
-			// verifie encore une fois au cas ou...
-			if($level == LEVEL_RESTRICTEDUSER) {
-				if ($lodeluser['rights'] < LEVEL_RESTRICTEDUSER && !$site) {
-					break;
-				}
-			} else {
-				if ($lodeluser['rights'] < LEVEL_ADMINLODEL && !$site) {
-					break;
-				}
-			}
-			
-			$lodeluser['restricted_user'] = $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER;
-			$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
-			$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
-			$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
-			$lodeluser['redactor']   = $lodeluser['rights'] >= LEVEL_REDACTOR;
-			$lodeluser['visitor']    = $lodeluser['rights'] >= LEVEL_VISITOR;
-	
-			$context['lodeluser']    = $lodeluser;
-	
-			if ($lodeluser['lang']) {
-				$GLOBALS['lang'] = $lodeluser['lang'];
-				$context['sitelang'] = $GLOBALS['lang'];
-			}
-			
-			// clean the url - nettoyage de l'url
-			$url = preg_replace("/[\?&]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
-			if (get_magic_quotes_gpc()) {
-				$url = stripslashes($url);
-			}
-			$myurl = $norecordurl ? "''" : $db->qstr($url);
-			$expire = $timeout + $time;
-			$db->execute(lq("UPDATE #_MTP_session SET expire='$expire',currenturl=$myurl WHERE name='$name'")) or trigger_error($db->errormsg(), E_USER_ERROR);
-			$context['clearcacheurl'] = mkurl($url, "clearcache=oui");
-			usecurrentdb();
-			return true; // ok !!!
-		}	while (0);
-		if (function_exists("usecurrentdb")) {
-			usecurrentdb();
-		}
-	
-		// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
-		$_REQUEST['clearcache'] = $context['nocache'] = false;
-		$lodeluser = '';
-
-		// exception
-		if ($level == 0) {
-			return; // les variables ne sont pas mises... on retourne
-		}
-		elseif ($mode == 'HTTP') {
-			require 'loginHTTP.php';
-			return;
-		}
-		elseif($level == LEVEL_RESTRICTEDUSER) {
-			header("Location: ".SITEROOT."index.".$GLOBALS['extensionscripts']);
+			header("location: $login?error_timeout=1&". $retour);
 			exit;
 		}
-		else {
-			if($return) return false;
-			header("location: login.php?". $retour);
+
+		if ($lodeluser['rights'] < $level) { //teste si l'utilisateur a les bons droits
+			$lodeluser = '';
+			header("location: login.php?error_privilege=1&". $retour);
 			exit;
 		}
+
+		// verifie qu'on est dans le bon site
+		if ($lodeluser['rights'] < LEVEL_ADMINLODEL && (!C::get('site', 'cfg') || $row['site'] != C::get('site', 'cfg'))) {
+			break;
+		}
+
+		$lodeluser['restricted_user'] = $lodeluser['rights'] >= LEVEL_RESTRICTEDUSER;
+		$lodeluser['adminlodel'] = $lodeluser['rights'] >= LEVEL_ADMINLODEL;
+		$lodeluser['admin']      = $lodeluser['rights'] >= LEVEL_ADMIN;
+		$lodeluser['editor']     = $lodeluser['rights'] >= LEVEL_EDITOR;
+		$lodeluser['redactor']   = $lodeluser['rights'] >= LEVEL_REDACTOR;
+		$lodeluser['visitor']    = $lodeluser['rights'] >= LEVEL_VISITOR;
+
+		C::set('login', $lodeluser['name']);
+		$lodeluser['idsession'] = $row['id'];
+		$lodeluser['session'] = $name;
+		C::setUser($lodeluser);
+		unset($row);
+        
+		if(!function_exists('open_session')) include 'loginfunc.php';
+		if('error_opensession' === open_session(C::get('login'), $name))
+			break;
+
+
+		if($lang = C::get('lang'))
+		{
+			$GLOBALS['lang'] = $lang;
+			C::set('sitelang', $lang);
+			C::set('lang', $lang);
+		}
+		elseif(isset($lodeluser['lang'])) 
+		{
+			$GLOBALS['lang'] = $lodeluser['lang'];
+			C::set('sitelang', $lodeluser['lang']);
+			C::set('lang', $lodeluser['lang']);
+		}
+		
+// 		usecurrentdb();
+		unset($lodeluser);
+        
+		if(!C::get('adminlodel', 'lodeluser')) maintenance();
+			
+		if(isset($_REQUEST['clearcache']))
+		{
+			clearcache(true);
+		}
+            
+		C::trigger('postauth');
+		return true; // ok !!!
+	}	while (0);
+
+// 	usecurrentdb();
+    	C::setUser();
+	// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
+	C::set('nocache', false);
+	$lodeluser = '';
+   	maintenance();
+
+	if(!C::get('lang'))
+	{
+		C::set('lang', 'fr'); // fr by default
+		setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
+	}
+	C::trigger('postauth');
+	// exception
+	if ($level == 0) {
+		return; // les variables ne sont pas mises... on retourne
+	}
+	elseif ($mode == 'HTTP') {
+		include SITEROOT.'lodel/admin/loginHTTP.php';
+		return;
+	}
+	else {
+		if($return) return false;
+		header("location: login.php?". $retour);
+		exit;
+	}
 }
 
 /**
@@ -247,11 +276,11 @@ function authenticate($level = 0, $mode = "", $return = false)
  */
 function recordurl()
 {
-	global $idsession, $norecordurl, $db;
-	if (!$norecordurl) {
-		$row = $db->GetRow(lq("SELECT id,currenturl FROM #_MTP_session WHERE id='". $idsession."' AND currenturl!=''"));
+	global $db;
+	if (!C::get('norecordurl')) {
+		$row = $db->GetRow(lq("SELECT id,currenturl FROM #_MTP_session WHERE id='". C::get('idsession', 'lodeluser')."' AND currenturl!=''"));
 		if(!$row) return;
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '{$GLOBALS['site']}')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -278,7 +307,7 @@ function mkurl($url, $extraarg)
 /**
  * Récuperer les charsets acceptés par un navigateur
  *
- * Test des jeux de caractères supportés par un navigateur. Ce test est fait grâce aux
+ * Test des jeux de caractéres supportés par un navigateur. Ce test est fait grâce aux
  * informations fournis par le navigateur dans la requête HTTP (utilisation de la superglobale
  * $_SERVER)
  *
@@ -316,153 +345,90 @@ function getacceptedcharset($charset)
 /**
  * Le site est-il en maintenance ?
  *
- * Vérifie le status d'un site. Si status == -64 ou -65 et qu'on est pas loggé en admin lodel et qu'on est pas dans la partie 
- * administration générale de Lodel alors on redirige vers la page maintenance.html
- * 
+ * Vérifie le status d'un site. Si le fichier ./CACHE/.lock est présent c'est que le site est bloqué
+ * Cette fonction est appellée uniquement si on n'est pas loggé en tant qu'admin lodel
+ *
+ * This function checks if the file ./CACHE/.lock exists and return the maintenance page if it is so 
+ * This function is called only if we are not logged in as an adminlodel
  */
 function maintenance()
 {
-	global $urlroot, $lodeluser, $sessionname, $db, $site;
-	$name = addslashes($_COOKIE[$sessionname]);
-	$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."maintenance.html";
-	$reg = "`/lodeladmin`";
-	$query = lq("SELECT status FROM #_MTP_sites where name = '".$site."'");
-	usemaindb();
-	if ($name) {
-		$row = $db->getRow(lq("SELECT context,expire,expire2 FROM #_MTP_session WHERE name='$name'"));
-		// verifie que la session n'est pas expiree
-		$time = time();
-
-		if (($row['expire'] < $time || $row['expire2'] < $time) && FALSE !== strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) {
-			usecurrentdb();
-			return;
-		} elseif($row['expire'] < $time || $row['expire2'] < $time) {
-			$status = $db->getOne($query);
-			if($status == -64 || $status == -65) {
-				if($lodeluser['rights'] <= LEVEL_RESTRICTEDUSER ) {
-					if(file_exists($urlroot."maintenance.html"))
-						die(include($urlroot."maintenance.html"));
-					else
-						die('Site is under maintenance.');
-				}
-				$path = "http://".$_SERVER['SERVER_NAME'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$urlroot."lodeladmin/login.php?error_timeout=1";
-				header("Location: ".$path);
-			}
-		}
-
-		// passe les variables en global
-		$lodeluser = unserialize($row['context']);
-		if($lodeluser['rights'] < 128) {
-			if(FALSE !== strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) 
-			{
-				$status = $db->getOne($query);
-				if($status == -64 || $status == -65) {
-					if(file_exists("../maintenance.html"))
-						die(include("../maintenance.html"));
-					elseif(file_exists("maintenance.html"))
-						die(include("maintenance.html"));
-					else
-						die('Site is under maintenance.');
-				}
-			}
-		}
-	} 
-	elseif(FALSE === strpos($_SERVER['SCRIPT_NAME'], '/lodeladmin')) 
+	if('logout.php' === basename($_SERVER['SCRIPT_NAME']))
 	{
-		$status = $db->getOne($query);
-		if($status == -64 || $status == -65) {
-			if(file_exists("../maintenance.html"))
-				die(include("../maintenance.html"));
-			elseif(file_exists("maintenance.html"))
-				die(include("maintenance.html"));
-			else
-				die('Site is under maintenance.');
-		}
+		return false;
 	}
-	usecurrentdb();
+	
+	if(defined('backoffice-lodeladmin') || !file_exists(SITEROOT.'./CACHE/.lock')) return false;
+	
+	if(file_exists(C::get('home', 'cfg')."../../maintenance.html"))
+		die(include(C::get('home', 'cfg')."../../maintenance.html"));
+	elseif(file_exists("maintenance.html"))
+		die(include("maintenance.html"));
+	else
+		die('Sorry, the site is under maintenance. Please come back later.');
 }
 
-// import Posted variables for the Register Off case.
-// this should be nicely/safely integrated inside the code, but that's
-// a usefull little hack at the moment
-if (!((bool) ini_get('register_globals'))){
-	extract($_REQUEST, EXTR_SKIP);
-}
-
-// securite... initialisation
-$lodeluser = array ();
-$idsession = 0;
-$session   = '';
-if(!function_exists('lq'))
-	require 'connect.php';
-require 'func.php';
 // tres important d'initialiser le context.
-$context = array ('version' => $GLOBALS['version'],
-			'shareurl' => $GLOBALS['shareurl'],
-			'extensionscripts' => $GLOBALS['extensionscripts'], 
-			'currenturl' => 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'],
-			'siteroot' => defined('SITEROOT') ? SITEROOT : '',
-			'site' => $site,
-			'charset' => ($GLOBALS['db_charset'] == 'utf8' ? 'utf-8' : 'iso-8859-1'),
-			'langcache' => array ());
+C::setRequest();
 
 // Tableau des options du site dans le $context
-if (!empty($context['site'])) { // pas besoin quand on est dans l'admin générale (options définies pour un site)
-	$context['options'] = array ();
-	if(!function_exists('cacheOptionsInFile'))
-		require 'optionfunc.php';
-	$context['options'] = cacheOptionsInFile();
-	unset($options_cache);
+if (C::get('site', 'cfg')) 
+{ // pas besoin quand on est dans l'admin générale (options définies pour un site)
+	if(!($options = getFromCache('options')))
+	{
+		if(!function_exists('cacheOptionsInFile'))
+			include 'optionfunc.php';
+		C::set('options', cacheOptionsInFile());
+	}
+	else
+	{
+		C::set('options', $options);
+		unset($options);
+	}
 }
-
-if (!$GLOBALS['filemask']) {
-	$GLOBALS['filemask'] = "0700";
-}
-
 
 // Langue ?
+$lang = trim(C::get('lang'));
 // récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
-if(!empty($_COOKIE['language']) && empty($_GET['lang']) && empty($_POST['lang'])) {
-	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) {
-		$GLOBALS['lang'] = $_COOKIE['language']; }
-	else {
-		$GLOBALS['lang'] = 'fr'; // fr by default
-		setcookie('language', $GLOBALS['lang']);
+if(!empty($_COOKIE['language']) && !$lang) {
+	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
+	{
+		C::set('lang', $_COOKIE['language']);
+	}
+	else
+	{
+		C::set('lang', 'fr'); // fr by default
+		setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
 	}
 }
 // langue passée en GET ou POST : initialise le cookie
-else {
-	if(isset($_GET['lang']))
-		$GLOBALS['lang'] = trim($_GET['lang']);
-	elseif(isset($_POST['lang']))
-		$GLOBALS['lang'] = trim($_POST['lang']);
-	else
-		$GLOBALS['lang'] = 'fr';
-
-	if (!preg_match("/^\w{2}(-\w{2})?$/", $GLOBALS['lang'])) {
+else 
+{
+	if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
+	{
 		// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-		$GLOBALS['lang'] = empty($context['options']['metadonneessite']['langueprincipale']) ? 'fr' : $context['options']['metadonneessite']['langueprincipale'];
+		$lang = C::get('options.metadonneessite.langueprincipale');
+		$lang = !$lang ? 'fr' : $lang;
 	}
-	setcookie('language', $GLOBALS['lang']);
+	C::set('lang', $lang); // fr by default
+	setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
+	unset($lang);
 }
 
+$lang = C::get('lang');
 // do we have to set another locale ?
-if(stripos($GLOBALS['lang'], 'fr') !== 0)
+if('fr' !== substr($lang, 0, 2))
 {
-	$l = strtolower(substr($GLOBALS['lang'], 0,2));
+	$l = strtolower(substr(C::get('lang'), 0,2));
 	$lu = 'en' === $l ? 'US' : strtoupper($l);
 	setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
-	unset($l);
+	unset($l, $lu);
 }
+unset($lang);
 
 // tableaux des langues disponibles
-if(!function_exists('makeSelectLang'))
-	require 'lang.php';
-$context['defaultlang'] = $GLOBALS['languages'];
-// accès à la langue dans les templates
-$context['sitelang'] = $GLOBALS['lang'];
-//sommes nous en maintenance ?
-maintenance();
-//echo $GLOBALS['lang'];
-header("Content-type: text/html; charset=". $context['charset']);
+include 'lang.php';
+C::set('defaultlang', $GLOBALS['languages']);
+C::set('sitelang', C::get('lang'));
+C::set('installlang', C::get('installlang', 'cfg'));
 ?>

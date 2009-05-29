@@ -36,13 +36,13 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
 
-if(!class_exists('EntriesLogic', false))
-	require("class.entries.php");
 
 /**
  * Classe de logique des personnes
@@ -56,6 +56,8 @@ if(!class_exists('EntriesLogic', false))
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajoutée depuis la version 0.8
  * @see logic.php
@@ -65,7 +67,8 @@ class PersonsLogic extends EntriesLogic
 
 	/** Constructor
 	 */
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct('persons');
 		$this->daoname = 'persontypes';
 		$this->idtype = 'idperson';
@@ -82,18 +85,19 @@ class PersonsLogic extends EntriesLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		global $lodeluser, $home;
-		$id=(int)$context['id'];
+		if(isset($context['id']))
+			$id=(int)$context['id'];
+		else $id = 0;
 		$idtype=$context['idtype'];
 		if (!$idtype) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
 		$status=$context['status'];
 #echo "status=$status"; print_r ($context);
 		// get the class 
-		$daotype=&getDAO ("persontypes");
+		$daotype=getDAO ("persontypes");
 		$votype=$daotype->getById ($idtype, "class");
 		$class=$context['class']=$votype->class;
 		#print_r($context);
-		if ($clean!=CLEAN) {
+		if ($clean!='CLEAN') {
 			if (!$this->validateFields ($context, $error)) {
 			// error.
 			// if the entity is imported and will be checked
@@ -120,7 +124,7 @@ class PersonsLogic extends EntriesLogic
 			myaddslashes($tmpfamilyname);
 			$vo=$dao->find ("g_familyname='". $tmpfamilyname. "' AND g_firstname='". $tmpfirstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
 			//$vo=$dao->find ("g_familyname='". $familyname. "' AND g_firstname='". $firstname. "'  AND idtype='".$idtype."' AND status>-64","id,status");
-			if( abs($vo->status) == 32) $context['protected'] = 1; //if protected
+			if($vo && abs($vo->status) == 32) $context['protected'] = 1; //if protected
 			$new=false;
 		}
 
@@ -131,12 +135,12 @@ class PersonsLogic extends EntriesLogic
 				$vo->id=$id;
 			} else { //create
 				$new=true;
-				$vo=&$dao->createObject();
+				$vo=$dao->createObject();
 				$vo->status=$status ? $status : -1;
 			}
 		}
 		// populate the persons table
-		if ($dao->rights['protect']) $vo->protect=$context ['protected'] ? 1 : 0;
+		if (isset($dao->rights['protect']) && $dao->rights['protect']) $vo->protect=isset($context ['protected']) ? 1 : 0;
 		if ($idtype) $vo->idtype=$idtype;
 		$vo->g_firstname=$firstname;
 		$vo->g_familyname=$familyname;
@@ -146,7 +150,7 @@ class PersonsLogic extends EntriesLogic
 		//if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
 
 		// save the class table
-		$gdao=&getGenericDAO ($class,"idperson");
+		$gdao=getGenericDAO ($class,"idperson");
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject ($gvo,$context['data']);
@@ -155,7 +159,7 @@ class PersonsLogic extends EntriesLogic
 		$gdao->save ($gvo,$new);  // save the related table
 		// save the entities_class table
 		if ($context['identity']) {
-			$dao=&getDAO ("relations");
+			$dao=getDAO ("relations");
 			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
@@ -168,7 +172,7 @@ class PersonsLogic extends EntriesLogic
 				$idrelation=$context['idrelation'] = $vo->idrelation;
 			}
 
-			$gdao=&getGenericDAO("entities_".$class,"idrelation");
+			$gdao=getGenericDAO("entities_".$class,"idrelation");
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;

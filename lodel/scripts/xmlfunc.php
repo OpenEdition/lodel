@@ -11,6 +11,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -34,9 +36,14 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -84,6 +91,25 @@ function calculateXMLSchema($context)
  */
 function indentXML($contents, $output = false, $indenter= '  ')
 {
+    // on vire toute l'indentation existante
+    $contents = trim(strtr(preg_replace("/[\t\n\r]+/", '', $contents), array(
+                    "\n"    => '',
+                    "\r"    => '',
+                    "\t"    => '')));
+    $dom = new DomDocument;
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
+    $dom->loadXML($contents);
+    $contents = $dom->saveXML();
+    unset($dom);
+    if($output)
+    { 
+        echo $contents;
+        return;
+    }
+    else return $contents;
+    
+    
 	$arr = preg_split("/\s*(<(\/?)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)\s*/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
 	$ret = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 	if ($output)
@@ -132,13 +158,13 @@ function loop_xsdtypes(&$context, $funcname)
 	if ($balises) {
 		call_user_func("code_before_$funcname", $context);
 	}
+	$count = 0;
 	foreach ($balises as $name) {
 		if (is_numeric($name)) {
 			continue;
 		}
 		$localcontext = $context;
-		$localcontext['count'] = $count;
-		$count ++;
+		$localcontext['count'] = ++$count;
 		$localcontext['name'] = preg_replace("/\s/", "_", $name);
 		call_user_func("code_do_$funcname", $localcontext);
 	}
@@ -183,7 +209,7 @@ function loop_fields_values(& $context, $funcname)
 		$localcontext['name'] = $row['name'];
 		$localcontext['type'] = $row['type'];
 		$localcontext['identity'] = $context['identity'];
-		if ($rowsvalued[$row['name']]) {
+		if (isset($rowsvalued[$row['name']])) {
 			$localcontext['value'] = $rowsvalued[$row['name']];
 		}
 		call_user_func("code_do_$funcname", $localcontext);

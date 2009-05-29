@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  */
@@ -53,6 +55,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -79,10 +83,9 @@ class Restricted_UsersLogic extends Logic
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
-		global $lodeluser;
-		if ($lodeluser['id']==$id && 
-		( ($GLOBALS['site'] && $lodeluser['rights']<LEVEL_ADMINLODEL) ||
-		(!$GLOBALS['site'] && $lodeluser['rights']==LEVEL_ADMINLODEL))) {
+		if (C::get('id', 'lodeluser')==$id && 
+		( (C::get('site', 'cfg') && !C::get('adminlodel', 'lodeluser')) ||
+		(!C::get('site', 'cfg') && C::get('adminlodel', 'lodeluser')))) {
 			return getlodeltextcontents("cannot_delete_current_user","common");
 		} else {
 			return false;
@@ -105,8 +108,8 @@ class Restricted_UsersLogic extends Logic
 	{
 		global $db;
 		$id = (int)$context['id'];
-		$session     = (int)$context['session'];
-		usemaindb(); // les sessions sont stockés dans la base principale
+		$session     = (int)C::get('session', 'lodeluser');
+
 		$ids = array();
 		if ($id) { //suppression de toutes les sessions
 			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -128,7 +131,6 @@ class Restricted_UsersLogic extends Logic
 			$db->execute(lq("DELETE FROM #_MTP_urlstack WHERE idsession IN ($idstr)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 
-		usecurrentdb();
 		update();
 		return '_back';
 	}
@@ -179,20 +181,17 @@ class Restricted_UsersLogic extends Logic
 	{
 		switch($var) {
 		case 'userrights':
-			if(!function_exists('makeSelectUserRights'))
-				require 'commonselect.php';
-			makeSelectUserRights($context['userrights'],!$GLOBALS['site'] || SINGLESITE);
 			break;
 		case "lang" :
 			// get the language available in the interface
 			
-			$dao=&getDAO("translations");
+			$dao=getDAO("translations");
 			$list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
 			$arr=array();
 			foreach($list as $lang) {
-			$arr[$lang->lang]=$lang->title;
+				$arr[$lang->lang]=$lang->title;
 			}
-			if (!$arr) $arr['fr']="Francais";
+			if (!$arr) $arr['fr']=utf8_encode("Français");
 			renderOptions($arr,$context['lang']);
 		}
 	}
@@ -209,8 +208,7 @@ class Restricted_UsersLogic extends Logic
 	protected function _setcontext($var, $operation, $value = '')
 	{
 		global $db;
-		usemaindb();
-		$where = "name='". addslashes($_COOKIE[$GLOBALS['sessionname']]). "' AND iduser='". $GLOBALS['lodeluser']['id']. "'";
+		$where = "name='". addslashes($_COOKIE[C::get('sessionname', 'cfg')]). "' AND iduser='". C::get('id', 'lodeluser'). "'";
 		$context = $db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
 		if ($db->errorno()) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -228,8 +226,8 @@ class Restricted_UsersLogic extends Logic
 			break;
 		}
 	
-		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		usecurrentdb();
+		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 
 	/**
@@ -296,12 +294,12 @@ class Restricted_UsersLogic extends Logic
 
 
 	public function validateFields(&$context,&$error) {
-		global $db,$lodeluser;
+		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
 
 		// check the user has the right equal or higher to the new user
-		if ($lodeluser['rights']<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
+		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		usecurrentdb();
 
@@ -364,14 +362,14 @@ class Restricted_UsersLogic extends Logic
 		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
 		if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
-		if(!class_exists('View', false))
-			require 'view.php';
 		$GLOBALS['nodesk'] = true;
 		$context['restricted'] = true;
+		$nocache = View::$nocache;
+		View::$nocache = true;
 		ob_start();
-		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/", true);
-		$body = ob_get_contents();
-		ob_end_clean();
+		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/");
+		$body = ob_get_clean();
+		View::$nocache = $nocache;
 		unset($context['tmppasswd']);
 		return send_mail($context['email'], $body, utf8_encode("Votre compte abonné sur le site "). $context['sitetitle'] ." ({$context['siteurl']})", $email, '');
 	}

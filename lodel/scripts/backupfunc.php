@@ -8,6 +8,8 @@
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  *  Home page: http://www.lodel.org
  *
@@ -43,7 +45,7 @@ $GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entit
 $GLOBALS['lodelsitetables_nodatadump'] = array ("#_TP_search_engine");
 
 $GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session", "#_MTP_internal_messaging");
-if($GLOBALS['singledatabase'] != 'on') {
+if(C::get('singledatabase', 'cfg') != 'on') {
 	array_push($GLOBALS['lodelbasetables'], "#_MTP_translations", "#_MTP_texts");
 }
 
@@ -76,7 +78,7 @@ function operation($operation, $archivetmp, $archivefilename, &$context)
 		@ unlink($archivetmp);
 		return TRUE;
 	}	elseif ($operation == 'cache' || $operation == 'importdir')	{
-		$context['outfilename'] = $operation == 'cache' ? "CACHE/$archivefilename" : $GLOBALS['importdir']."/$archivefilename";
+		$context['outfilename'] = $operation == 'cache' ? "CACHE/$archivefilename" : C::get('importdir', 'cfg')."/$archivefilename";
 		if (!(@ rename($archivetmp, $context['outfilename']))) {
 			$context['error'] = 1;
 			return FALSE;
@@ -115,7 +117,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	}
 
 	$GLOBALS['drop'] = $drop;
-	$err_url = $GLOBALS['PHP_SELF']."?error=1";
+	$err_url = $_SERVER['PHP_SELF']."?error=1";
 	$crlf = PMA_whichCrlf();
 
 	if (!$tables) {
@@ -184,10 +186,10 @@ function lodelprefix($table)
 {
 	// remove up to the dot
 	$table = preg_replace("/.*\./", "", $table);
-	if ($GLOBALS['tableprefix'] && strpos($table, $GLOBALS['tableprefix']) !== 0)
+	if (C::get('tableprefix', 'cfg') && strpos($table, C::get('tableprefix', 'cfg')) !== 0)
 		trigger_error("ERROR: table $table should be prefixed", E_USER_ERROR);
 
-	$table = substr($table, strlen($GLOBALS['tableprefix']));
+	$table = substr($table, strlen(C::get('tableprefix', 'cfg')));
 
 	if ($GLOBALS['currentprefix']) {
 		return $GLOBALS['currentprefix'].$table;
@@ -264,7 +266,7 @@ function PMA_convert_display_charset($text)
  */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '', $xml=false)
 {
-	global $unzipcmd;
+	$unzipcmd = C::get('unzipcmd', 'cfg');
 	$tmpdir = tmpdir();
 
 	// use UNZIP command
@@ -332,8 +334,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		{ // chmod
 			#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
 			#    file_exists($p_header['filename'])) {
-			global $user_vars;
-			@ chmod($p_header['filename'], octdec($GLOBALS[filemask]) & (substr($p_header['filename'], -1) == "/" ? 0777 : 0666));
+			@ chmod($p_header['filename'], octdec(C::get('filemask', 'cfg')) & (substr($p_header['filename'], -1) == "/" ? 0777 : 0666));
 			#}
 			return 1;
 		}

@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -44,7 +46,7 @@
 
 function humanfieldtype($text)
 {
-  return $GLOBALS['fieldtypes'][$text];
+  return isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '';
 }
 
 /***/
@@ -62,6 +64,8 @@ function humanfieldtype($text)
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -89,8 +93,8 @@ class UserOptionGroupsLogic extends Logic {
 			while (!$result->EOF) {
 				$localcontext=array_merge($context,$result->fields);
 				$name=$result->fields['name'];
-				if ($context[$name]) $localcontext['value']=$context[$name];
-					call_user_func("code_do_$funcname",$localcontext);
+				if (!empty($context[$name])) $localcontext['value']=$context[$name];
+				call_user_func("code_do_$funcname",$localcontext);
 				$result->MoveNext();
 			}
 		}
@@ -100,14 +104,13 @@ class UserOptionGroupsLogic extends Logic {
 
 	public function editAction(&$context,&$error)
 	{
-		global $lodeluser,$home;
 		// get the dao for working with the object
-		$dao=&getDAO("options");
+		$dao=getDAO("options");
 		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
 		if(!function_exists('validfield'))
-			require("validfunc.php");
+			include("validfunc.php");
 		foreach ($options as $option) {
-			if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
+			if ($option->type=="passwd" && (!isset($context['data'][$option->name]) || !trim($context['data'][$option->name]))) continue; // empty password means we keep the previous one.
 			$valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
 			if ($valid===false) trigger_error("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php", E_USER_ERROR);
 			if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context['data'][$option->name]) ) {
@@ -120,13 +123,13 @@ class UserOptionGroupsLogic extends Logic {
 		if ($error) return "_error";
 
 		foreach ($options as $option) {
-			if ($lodeluser['rights'] < $option->userrights) continue; // the user has not the right to do that.
+			if (C::get('rights', 'lodeluser') < $option->userrights) continue; // the user has not the right to do that.
 			if ($option->type=="passwd" && !trim($context['data'][$option->name])) continue; // empty password means we keep the previous one.
 			if ($option->type!="boolean" && trim($context['data'][$option->name])==="") $context['data'][$option->name]=$option->defaultvalue; // default value
 			$option->value=$context['data'][$option->name];
 			if (!$dao->save($option)) trigger_error("You don't have the rights to modify this option", E_USER_ERROR);
 		}
-		@unlink(SITEROOT."CACHE/options_cache.php");
+		@unlink(SITEROOT."CACHE/options");
 		return "_back";
 	}
 
@@ -168,8 +171,8 @@ class UserOptionGroupsLogic extends Logic {
 	public function makeSelect(&$context, $var)
 	{
 		if(!function_exists('makeselectlangs'))
-			require("lang.php");
-		makeselectlangs($context[$var]);
+			include("lang.php");
+		makeselectlangs(isset($context[$var]) ? $context[$var] : '');
 	}
 
 	/*---------------------------------------------------------------*/

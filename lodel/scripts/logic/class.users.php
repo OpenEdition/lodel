@@ -34,6 +34,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -53,6 +55,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -80,10 +84,9 @@ class UsersLogic extends Logic
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
-		global $lodeluser;
-		if ($lodeluser['id']==$id && 
-		( ($GLOBALS['site'] && $lodeluser['rights']<LEVEL_ADMINLODEL) ||
-		(!$GLOBALS['site'] && $lodeluser['rights']==LEVEL_ADMINLODEL))) {
+		if (C::get('id', 'lodeluser')==$id && 
+		( (C::get('site', 'cfg') && !C::get('adminlodel', 'lodeluser')) ||
+		(!C::get('site', 'cfg') && C::get('adminlodel', 'lodeluser')))) {
 			return getlodeltextcontents("cannot_delete_current_user","common");
 		} else {
 			return false;
@@ -105,7 +108,7 @@ class UsersLogic extends Logic
 	{
 		global $db;
 		$id = (int)$context['id'];
-		$session     = (int)$context['session'];
+		$session     = (int)C::get('session', 'lodeluser');
 		usemaindb(); // les sessions sont stockés dans la base principale
 		$ids = array();
 		if ($id) { //suppression de toutes les sessions
@@ -144,14 +147,16 @@ class UsersLogic extends Logic
 	public function setAction(&$context, &$error)
 	{
 		global $db;
-		$lang = $context['lang'];
-		$translationmode = $context['translationmode'];
+		$lang = C::get('lang');
+		$translationmode = C::get('translationmode');
 		if ($lang) {
 			if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) {
 				trigger_error("ERROR: invalid lang", E_USER_ERROR);
 			}
-			$db->execute(lq("UPDATE #_TP_users SET lang='$lang'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$prefix = C::get('adminlodel', 'lodeluser') ? '#_MTP_' : '#_TP_';
+			$db->execute(lq("UPDATE {$prefix}users SET lang='$lang' WHERE id=".C::get('id', 'lodeluser'))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$this->_setcontext('lang', 'setvalue', $lang);
+			setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
 		}
 
 		if ($translationmode) {
@@ -179,37 +184,35 @@ class UsersLogic extends Logic
 	{
 		switch($var) {
 		case 'usergroups' :
-			$dao=&getDAO("usergroups");
-			$list=$dao->findMany("status>0","rank,name","id,name");
+			$list=getDAO("usergroups")->findMany("status>0","rank,name","id,name");
 			$arr=array();
 			foreach($list as $group) {
 				$arr[$group->id]=$group->name;
 			}
 			if (!$arr) $arr[1] = '--';
-			renderOptions($arr,$context['usergroups']);
+			renderOptions($arr,isset($context['usergroups']) ? $context['usergroups'] : '');
 			break;
 		case 'gui_user_complexity' :
 			if(!function_exists('makeSelectGuiUserComplexity'))
-				require("commonselect.php");
-			makeSelectGuiUserComplexity($context['gui_user_complexity']);
+				include("commonselect.php");
+			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		case 'userrights':
 			if(!function_exists('makeSelectUserRights'))
-				require("commonselect.php");
-			makeSelectUserRights($context['userrights'],!$GLOBALS['site'] || SINGLESITE);
+				include("commonselect.php");
+			makeSelectUserRights(isset($context['userrights']) ? $context['userrights'] : '',!C::get('site', 'cfg') || SINGLESITE);
 			break;
 		case "lang" :
 			// get the language available in the interface
 			usemaindb();
-			$dao=&getDAO("translations");
-			$list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
+			$list=getDAO("translations")->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
 			usecurrentdb();
 			$arr=array();
 			foreach($list as $lang) {
 				$arr[$lang->lang]=$lang->title;
 			}
 			if (!$arr) $arr['fr']=utf8_encode("Français");
-			renderOptions($arr,$context['lang']);
+			renderOptions($arr,isset($context['lang']) ? $context['lang'] : '');
 		}
 	}
 
@@ -225,16 +228,15 @@ class UsersLogic extends Logic
 	protected function _setcontext($var, $operation, $value = '')
 	{
 		global $db;
-		usemaindb();
-		$where = "name='". addslashes($_COOKIE[$GLOBALS['sessionname']]). "' AND iduser='". $GLOBALS['lodeluser']['id']. "'";
-		$context = $db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
+		$where = "name='". addslashes($_COOKIE[C::get('sessionname', 'cfg')]). "' AND iduser='". C::get('id', 'lodeluser'). "' AND userrights=".C::get('rights', 'lodeluser');
+		$context = $db->getOne(lq("SELECT context FROM #_MTP_session WHERE ".$where));
 		if ($db->errorno()) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		$arr = unserialize($context);
 		switch ($operation) {
 		case 'toggle' :
-			$arr[$var] = $arr[$var] ? 0 : 1; // toggle
+			$arr[$var] = (isset($arr[$var]) && $arr[$var]) ? 0 : 1; // toggle
 			break;
 		case 'setvalue' :
 			$arr[$var] = $value;  // set
@@ -243,9 +245,8 @@ class UsersLogic extends Logic
 			unset($arr[$var]);  // clear
 			break;
 		}
-	
+
 		$db->execute(lq("UPDATE #_MTP_session SET context='". addslashes(serialize($arr)). "' WHERE ".$where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		usecurrentdb();
 	}
 
 	/**
@@ -258,7 +259,7 @@ class UsersLogic extends Logic
 	protected function _prepareEdit($dao,&$context) 
 	{
 		// encode the password
-		if ($context['passwd']) {
+		if (isset($context['passwd'])) {
 			$context['tmppasswd'] = $context['passwd']; // backup it in memory just a few, for emailing
 			$context['passwd']=md5($context['passwd'].$context['username']);
 		}
@@ -269,8 +270,7 @@ class UsersLogic extends Logic
 	protected function _populateContextRelatedTables(&$vo,&$context)
 	{
 		if ($vo->userrights<=LEVEL_EDITOR) {
-			$dao=&getDAO("users_usergroups");
-			$list=$dao->findMany("iduser='". $vo->id."'", "", "idgroup");
+			$list=getDAO("users_usergroups")->findMany("iduser='". $vo->id."'", "", "idgroup");
 			$context['usergroups']=array();
 			foreach($list as $relationobj) {
 				$context['usergroups'][] = $relationobj->idgroup;
@@ -304,19 +304,19 @@ class UsersLogic extends Logic
 
 	protected function _deleteRelatedTables($id) {
 		global $db;
-		if ($GLOBALS['site']) { // only in the site table
+		if (C::get('site', 'cfg')) { // only in the site table
 			$db->execute(lq("DELETE FROM #_TP_users_usergroups WHERE iduser='$id'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 
 
 	public function validateFields(&$context,&$error) {
-		global $db,$lodeluser;
+		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
 
 		// check the user has the right equal or higher to the new user
-		if ($lodeluser['rights']<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
+		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		// Check the user is not duplicated in the main table...
 		if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
@@ -389,12 +389,13 @@ class UsersLogic extends Logic
 	 * Bloque un compte utilisateur tant que celui-ci n'a pas modifié son mot de passe
 	 */
 
-	public function suspendAction()
+	public function suspendAction(&$context, &$error)
 	{
- 		global $db, $id, $site, $lodeluser;
-
+ 		global $db;
+		$id = (int)$context['id'];
+		$site = C::get('site', 'cfg');
 		//on vérifie qu'on est bien administrateur
-		if($lodeluser['rights'] >= LEVEL_ADMIN) {
+		if(C::get('admin', 'lodeluser')) {
 			$prefixe = ($site != '' && $site != "tous les sites") ? "#_TP_" : "#_MTP_";
 	
 			$status = $db->getOne(lq("SELECT status FROM ".$prefixe."users WHERE id = '".$id."'"));
@@ -419,8 +420,8 @@ class UsersLogic extends Logic
 	{
 		global $db;
 		if(!$context['tmppasswd']) return;
-		if(!empty($GLOBALS['site'])) {
-			$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$GLOBALS['site']}'"));
+		if(C::get('site', 'cfg')) {
+			$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '".C::get('site', 'cfg')."'"));
 			if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 			$context['siteurl'] = str_replace(":80", "", $row['url']);
 			$context['sitetitle'] = $row['title'];
@@ -429,17 +430,17 @@ class UsersLogic extends Logic
 			$context['sitetitle'] = $context['siteurl'];
 			$context['islodeladmin'] = true;
 		}
-		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
-		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
+		$prefix = C::get('adminlodel', 'lodeluser') ? lq("#_MTP_") : lq("#_TP_");
+		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '".C::get('id', 'lodeluser')."'");
 		if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
-		if(!class_exists('View', false))
-			require 'view.php';
 		$GLOBALS['nodesk'] = true;
+		$nocache = View::$nocache;
+		View::$nocache = true;
 		ob_start();
-		insert_template($context, 'users_mail', "", $GLOBALS['home']."../src/lodel/admin/tpl/", true);
-		$body = ob_get_contents();
-		ob_end_clean();
-		unset($context['tmppasswd']);
+		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/");
+		$body = ob_get_clean();
+		View::$nocache = $nocache;
+		$context['tmppasswd'] = null;
 		return send_mail($context['email'], $body, "Votre compte Lodel sur le site '{$context['sitetitle']}' ({$context['siteurl']})", $email, '');
 	}
 

@@ -8,10 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,57 +37,45 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
+    include 'auth.php';
+    authenticate(LEVEL_VISITOR);
 
-authenticate(LEVEL_VISITOR);
-if (isset($_GET['page'])) { // call a special page (and template)
-	$page = $_GET['page'];
-  	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-		trigger_error('invalid page', E_USER_ERROR);
-	}
-	require 'view.php';
-	$view = &View::getView();
-	$view->renderCached($context, $page);
-	exit;
-}
+    if (isset($_GET['page'])) { // call a special page (and template)
+        $page = $_GET['page'];
+        if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
+            trigger_error('invalid page', E_USER_ERROR);
+        }
+        View::getView()->renderCached($page);
+        exit;
+    }
 
-require 'controller.php';
-$authorized_logics = array('entrytypes', 'persontypes',
-				'entries', 'persons',
-				'tablefieldgroups', 'tablefields', 'indextablefields',
-				'translations', 'texts',
-				'usergroups', 'users', 'restricted_users',
-				'types', 'classes',
-				'options', 'optiongroups', 'useroptiongroups', 'servooconf',
-				'internalstyles', 'characterstyles', 'entities_index',
-				'filebrowser', 'xml', 'data', 'internal_messaging');
-$Controller = new Controller($authorized_logics);
-
-
-function loop_classtypes($context, $funcname)
-{
-	global $db;
-	foreach(array('entities', 'entries', 'persons') as $classtype) {
-		$localcontext = $context;
-		$localcontext['classtype'] = $classtype;
-		$localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
-    		call_user_func("code_do_$funcname", $localcontext);
- 	}
-}
-
+    $authorized_logics = array('entrytypes', 'persontypes',
+                    'entries', 'persons',
+                    'tablefieldgroups', 'tablefields', 'indextablefields',
+                    'translations', 'texts',
+                    'usergroups', 'users', 'restricted_users',
+                    'types', 'classes',
+                    'options', 'optiongroups', 'useroptiongroups', 'servooconf',
+                    'internalstyles', 'characterstyles', 'entities_index',
+                    'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
+    Controller::getController()->execute($authorized_logics);
 }
 catch(Exception $e)
 {

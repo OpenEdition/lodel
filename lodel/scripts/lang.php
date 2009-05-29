@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier contenant la liste des langues (abr�g�es)
+ * Fichier contenant la liste des langues (abrégées)
  *
  * PHP versions 4 et 5
  *
@@ -8,10 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C�nou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno C�nou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno C�nou, Jean Lamy, Mika�l Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno C�nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -36,13 +38,18 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Pierre-Alain Mignot
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno C�nou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno C�nou, Jean Lamy, Mika�l Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno C�nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
- * @since Fichier ajout� dans la version 0.8
+ * @since Fichier ajouté dans la version 0.8
  */
 //contient la liste des langues disponibles pour installer lodel
 $GLOBALS['installlanguages'] = array(
@@ -327,11 +334,11 @@ $GLOBALS['languages']=array(
 /**
  * Construction du SELECT des langues
  *
- * @param string $selectedlang la langue s�lectionn�e (par d�faut vide)
+ * @param string $selectedlang la langue sélectionnée (par défaut vide)
  */
 function makeselectlangs($selectedlang = "") 
 {
-	global $context,$languages;
+	global $languages;
   
 	echo "<option value=\"\">--</option>\n";
 	foreach ($languages as $l=>$lang) {
@@ -344,11 +351,11 @@ function makeselectlangs($selectedlang = "")
 /**
  * Construction du SELECT des langues (jamais vide)
  *
- * @param string $selectedlang la langue s�lectionn�e (par d�faut vide)
+ * @param string $selectedlang la langue sélectionnée (par défaut vide)
  */
 function makeselectlangs_nevernil($selectedlang = "") 
 {
-	global $context,$languages;
+	global $languages;
 
 	foreach ($languages as $l=>$lang) {
 		$l = strtolower($l);
@@ -360,12 +367,12 @@ function makeselectlangs_nevernil($selectedlang = "")
 /**
  * Affichage choix langue
  *
- * Cette fonction affiche une liste d�roulante permettant de choisir une langue (utilis�e par entrytypes)
+ * Cette fonction affiche une liste déroulante permettant de choisir une langue (utilisée par entrytypes)
  *
  */	
 function makeSelectLang()
 {
-	global $languages, $context;
+	global $languages;
 	echo "<option value=\"\">--</option>\n";
 	foreach ($languages as $l=>$lang) {
 		$l = strtolower($l);

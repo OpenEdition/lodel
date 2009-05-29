@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,9 +37,14 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -101,10 +108,10 @@ class XMLImportParser
 	 */
 	function init($class)
 	{
-		global $home, $phpversion;
+		global $phpversion;
 		if (!$this->commonstyles) {
 			// get internal styles and prepare them (detect synonym styles, same style in different lang)
-			$dao = &getDAO('internalstyles');
+			$dao = getDAO('internalstyles');
 			$iss = $dao->findMany('status > 0');
 			foreach ($iss as $is) {
 				// analyse the styles
@@ -115,7 +122,7 @@ class XMLImportParser
 				}
 			}
 			// get characterstyles
-			$dao = &getDAO('characterstyles');
+			$dao = getDAO('characterstyles');
 			$css = $dao->findMany('status > 0');
 			foreach ($css as $cs) {
 				foreach (preg_split("/[,;]/", $cs->style) as $style) {
@@ -217,9 +224,7 @@ class XMLImportParser
 				continue;
 			if ($arr[$i] == "/") {
 				// closing
-				$in = '';
 			}	else {
-				$in = $obj->name;
 				$arr2 = preg_split("/(<\/?)((?:table|ul|ol|dl|dd|pre|blockquote|object)\b[^>]*>)/", $arr[$i +2], -1, PREG_SPLIT_DELIM_CAPTURE);
 				$arr[$i +2] = $arr2[0];
 				$m = count($arr2);
@@ -294,11 +299,12 @@ class XMLImportParser
 		//echo $classstack[0];
 		$opening = $arr[$i] != "/";
 		$obj = & $arr[$i +1];
-		if (((!$opening && $obj == $arr[$i +4]) || ($opening && $obj == $arr[$i -2])) && (strtolower(get_class($obj)) != 'internalstylesvo' || $obj->greedy)) {
+		if (((!$opening && isset($arr[$i +4]) && $obj == $arr[$i +4]) || ($opening && isset($arr[$i -2]) && $obj == $arr[$i -2])) && (strtolower(get_class($obj)) != 'internalstylesvo' || $obj->greedy)) {
 			// current closing equals next opening
 			// or current opening equals last closing
 			return;
 		}
+		if(!isset($datastack[0])) $datastack[0] = '';
 		if (!is_object($obj)) {
 			// unknow style
 			if ($opening) {
@@ -339,10 +345,10 @@ class XMLImportParser
 			break;
 			case 'tablefieldsvo' :
 				$cstyles = & $this->contextstyles[$classstack[0][0]];
-				if (!$cstyles[$obj->style]) { // context change	 ?
+				if (empty($cstyles[$obj->style])) { // context change	 ?
 					$this->handler->closeClass($classstack[0]);
 					$cl = array_shift($classstack);
-					if (!$this->contextstyles[$cl[0]][$obj->style]) {
+					if (empty($this->contextstyles[$cl[0]][$obj->style])) {
 						// must be in the context below
 						// if not... problem.
 					}
@@ -403,11 +409,11 @@ class XMLImportParser
 // 		if(!function_exists('clone')) // pour pouvoir utiliser clone en php5
 // 			require 'php4.inc.php';
 	
-		if ($this->contextstyles[$class])
+		if (isset($this->contextstyles[$class]))
 			return; // already done
 
 		// get all the information from the database for all the fields
-		$dao = &getDAO('tablefields');
+		$dao = getDAO('tablefields');
 		if (!$criteria) {
 			$criteria = "class='".$class."'";
 		}
@@ -418,7 +424,7 @@ class XMLImportParser
 			// is it an index ?
 			if ($tf->type == 'entries' || $tf->type == 'persons') {
 				// yes, it's an index. Get the object
-				$dao = &getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
+				$dao = getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
 				$tf = $dao->find("type='".$tf->name."'");
 				$this->_init_class($tf->class, "class='".$tf->class."' OR class='entities_".$tf->class. "'");
 			}
@@ -443,7 +449,7 @@ class XMLImportParser
 	{
 		$style = strtolower(trim($style));
 		// style synonyme. take the first one
-		list ($style, $lang) = explode(":", $style);
+		@list ($style, $lang) = explode(":", $style);
 		if ($lang) {
 			$obj->lang = $lang;
 			$obj->style = $style;

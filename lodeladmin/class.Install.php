@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier racine de lodeladmin
+ * Fichier de la classe d'installation
  *
  * PHP versions 4 et 5
  *
@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -36,10 +38,15 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
- * @author Pierre-Alain MIGNOT
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodeladmin
@@ -849,8 +856,8 @@ class Install {
 			
 			$text=str_replace($result[0],"define(\"$var\",".$val.");",$text);
 		} else { // no, it's a variable
-			if (!preg_match("/^\s*\\\$$var\s*=\s*\".*?\";/m",$text,$result)) {	trigger_error("la variable \$$var est introuvable dans le fichier de config.", E_USER_ERROR);      }
-			$text=str_replace($result[0],"\$$var=\"$val\";",$text);
+			if (!preg_match("/^\s*\\\$cfg['$var']\s*=\s*\".*?\";/m",$text,$result)) {	trigger_error("la variable \$$var est introuvable dans le fichier de config.", E_USER_ERROR);      }
+			$text=str_replace($result[0],"\$cfg['$var']=\"$val\";",$text);
 		}
 	}
 	

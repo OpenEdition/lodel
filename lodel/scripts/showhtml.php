@@ -1,5 +1,6 @@
-<!--	script-nexen.php,v 1.5 2001/05/30 13:02:01 pierre Exp	-->
-/*
+<?php
+//	script-nexen.php,v 1.5 2001/05/30 13:02:01 pierre Exp
+/**
  *
  *  LODEL - Logiciel d'Edition ELectronique.
  *
@@ -9,6 +10,8 @@
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  *  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  *  Home page: http://www.lodel.org
  *
@@ -28,12 +31,12 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
+ *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 <!--    $Id$    -->
 <!--	db.inc,v 1.238 2001/05/30 15:43:51 pierre Exp	-->
+*/
 
-<?php
 
 /*
  *

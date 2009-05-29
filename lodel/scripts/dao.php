@@ -6,12 +6,16 @@
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -36,9 +40,14 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id:
@@ -65,9 +74,14 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @since Classe ajoutée depuis la version 0.8
@@ -146,16 +160,17 @@ class DAO
 	 */
 	public function save(&$vo, $forcecreate = false) // $set,$context=array())
 	{
-		global $db, $lodeluser;
+		global $db;
 		$idfield = $this->idfield;
 		#print_r($vo);
 		// check the user has the basic right for modifying/creating an object
-		if ($lodeluser['rights'] < $this->rights['write']) {
+		if (isset($this->rights['write']) && C::get('rights', 'lodeluser') < $this->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to modify objects from the table '. $this->table, E_USER_ERROR);
 		}
+        
 		// check the user has the right to protect the object
-		if (((isset ($vo->status) && ($vo->status >= 32 || $vo->status <= -32)) || $vo->protect) && 
-					$lodeluser['rights'] < $this->rights['protect']) {
+		if (((isset ($vo->status) && ($vo->status >= 32 || $vo->status <= -32)) || (isset($vo->protect) && $vo->protect)) && 
+					C::get('rights', 'lodeluser') < $this->rights['protect']) {
 			trigger_error('ERROR: you don\'t have the right to protect objects from the table '. $this->table, E_USER_ERROR);
 		}
 
@@ -167,7 +182,7 @@ class DAO
 			$vo->rank = $rank +1;
 		}
 		$this->quote($vo);
-		if ($vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
+		if (isset($vo->$idfield) && $vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
 			$update = ''; //critère de mise à jour
 			if (isset ($vo->protect))	{ // special processing for the protection
 				$update = 'status=(2*(status>0)-1)'. ($vo->protect ? '*32' : ''); //reglage du status
@@ -210,7 +225,7 @@ class DAO
 			}
 			if ($insert) {
 				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				if (!$vo->$idfield) {
+				if (!isset($vo->$idfield)) {
 					$vo->$idfield = $db->insert_id();
 				}
 			}
@@ -314,7 +329,8 @@ class DAO
 		}
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
 		# echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
-		$result = $db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
 		$i = 0;
@@ -324,9 +340,10 @@ class DAO
 			$this->instantiateObject($vos[$i]);
 			// call getFromResult
 			$this->_getFromResult($vos[$i], $result->fields);
-			$i ++;
+			++$i;
 			$result->MoveNext();
 		}
+		$result->Close();
 		// return vo's
 		return $vos;
 	}
@@ -341,7 +358,7 @@ class DAO
 	public function count($criteria)
 	{
 		global $db;
-		$ret = $db->getOne('SELECT count(*) FROM '.$this->sqltable.' WHERE '.$criteria);
+		$ret = $db->getOne('SELECT COUNT(*) FROM '.$this->sqltable.' WHERE '.$criteria);
 		if ($db->errorno()) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
@@ -356,6 +373,7 @@ class DAO
 	 */
 	public function createObject()
 	{
+		$vo = null;
 		$this->instantiateObject($vo);
 		if (array_key_exists("status", $vo)) {
 			$vo->status = 1;
@@ -396,9 +414,10 @@ class DAO
 	{
 		global $db;
 
-		if ($GLOBALS['lodeluser']['rights'] < $this->rights['write']) {
+		if (isset($this->rights['write']) && C::get('rights', 'lodeluser') < $this->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to delete object from the table '. $this->table, E_USER_ERROR);
 		}
+		
 		$idfield = $this->idfield;
 		if (is_object($mixed)) {
 			$vo = &$mixed;
@@ -419,7 +438,7 @@ class DAO
 			$criteria = lq($mixed);
 			if ($this->uniqueid) {
 				// select before deleting
-				$result = $db->execute('SELECT id FROM '.$this->sqltable."WHERE ($criteria) ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$result = $db->execute('SELECT id FROM '.$this->sqltable." WHERE ($criteria) ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				// collect the ids
 				$id = array ();
 				foreach ($result as $row) {
@@ -432,8 +451,10 @@ class DAO
 		}	else {
 			trigger_error('ERROR: DAO::deleteObject does not support the type of mixed variable', E_USER_ERROR);
 		}
+
 		//execute delete statement
-		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($db->affected_Rows() < $nbid) {
 			trigger_error("ERROR: you don't have the right to delete some objects in table ". $this->table, E_USER_ERROR);
 		}
@@ -463,7 +484,7 @@ class DAO
 		global $db;
 
 		// check the rights
-		if ($GLOBALS['lodeluser']['rights'] < $this->rights['write']) {
+		if (isset($this->rights['write']) && C::get('rights', 'lodeluser') < $this->rights['write']) {
 			trigger_error("ERROR: you don't have the right to delete object from the table ".$this->table, E_USER_ERROR);
 		}
 		$where = " WHERE (".$criteria.") ".$this->rightscriteria("write");
@@ -503,9 +524,9 @@ class DAO
 			$classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {
 				$status = $this->sqltable. '.status';
-				$this->cache_rightscriteria[$access] = $GLOBALS['lodeluser']['visitor'] ? '' : " AND $status > 0";
+				$this->cache_rightscriteria[$access] = C::get('visitor', 'lodeluser') ? '' : " AND $status > 0";
 
-				if ($access == "write" && $GLOBALS['lodeluser']['rights'] < $this->rights['protect']) {
+				if ($access == "write" && isset($this->rights['protect']) && C::get('rights', 'lodeluser') < $this->rights['protect']) {
 					$this->cache_rightscriteria[$access] .= " AND $status<32 AND $status>-32 ";
 				}
 			}

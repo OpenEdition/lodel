@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -36,9 +38,15 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -50,7 +58,8 @@
  *
  * <p>Validation des caractères autorisés dans les champs suivant leur type
  * leur nom, et le texte contenu. Par exemple si on a un champ de type email, il faut
- * vérifier que l'adresse mail est bien formée. Idem pour un champ de type url. Cela appliqué  à tous les types de champs gérés par Lodel (cf. fichier fieldfunc.php)</p>
+ * vérifier que l'adresse mail est bien formée. Idem pour un champ de type url. Cela appliqué 
+ * à tous les types de champs gérés par Lodel (cf. fichier fieldfunc.php)</p>
  *
  * @param string $&text le texte à valider. Passé par référence.
  * @param string $type le type du champ à valider.
@@ -58,15 +67,19 @@
  * @param string $name le nom du champ
  * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
  * @param array $context le context utilisé par la fonction appelante
+ * @param int $filerank utilisé pour upload multiple de documents dans le meme champ
  * @return boolean true si le champ est valide. false sinon
  */
-function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="", $context=null)
+function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="", $context=null, $filerank=null)
 {
 	global $db;
 	static $tmpdir;
 	static $masks = array();
 
-	if ($GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
+    	if(!isset($GLOBALS['lodelfieldtypes']))
+        	include 'fieldfunc.php';
+
+	if (isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
 	switch ($type) { //pour chaque type de champ
@@ -76,21 +89,21 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'longtext' :
 		if (!$text) {
 			$text = $default;
-		} elseif($name) {
-			if(!$masks[$context['class']]) {
+		} elseif($name && isset($context['class'])) {
+			if(!isset($masks[$context['class']])) {
 				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext')"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
 					if($fields->fields['mask'] != '') {
 						$mask = unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
-						$masks[$context['class']][$fields->fields['name']]['lodel'] = $mask['lodel'];
-						$masks[$context['class']][$fields->fields['name']]['user'] = $mask['user'];
+						$masks[$context['class']][$fields->fields['name']] = array();
+						$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
+						$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
 					}
 					$fields->MoveNext();
 				}
 				unset($mask);
 			}
-			
 			if(isset($masks[$context['class']][$name]['lodel'])) {
 				$ret = @preg_match($masks[$context['class']][$name]['lodel'], $text);
 				if(FALSE === $ret) trigger_error('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.', E_USER_ERROR);
@@ -138,7 +151,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			return $type;
 		}
 		if(!function_exists('reservedword'))
-			require 'fieldfunc.php';
+			include 'fieldfunc.php';
 		if (reservedword($text))
 			return 'reservedsql';
 		break;
@@ -183,7 +196,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'username' :
 		if ($text) {
 			$len = strlen($text);
-			if ($len < 3 || $len > 25 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $text)) {
+			if ($len < 3 || $len > 64 || !preg_match("/^[0-9A-Za-z_;.?!@:,&\-]+$/", $text)) {
 				return $type;
 			}
 		}
@@ -198,7 +211,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 	case 'date' :
 		if(!function_exists('mysqldatetime'))
-			require 'date.php';
+			include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -216,7 +229,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 	case 'datetime' :
 		if(!function_exists('mysqldatetime'))
-			require 'date.php';
+			include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -234,7 +247,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 	case 'time' : 
 		if(!function_exists('mysqldatetime'))
-			require 'date.php';
+			include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -251,18 +264,18 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'int' :
-		if ((!isset ($text) || $text === "") && $default !== "") {
+		if ((empty ($text) || $text === "") && $default !== "") {
 			$text = (int)$default;
 		}
-		if (isset ($text) && (!is_numeric($text) || (int)$text != $text)) {
+		if ($text && (!is_numeric($text) || (int)$text != $text)) {
 			return 'int';
 		}
 		break;
 	case 'number' : //nombre
-		if ((!isset ($text) || $text === "") && $default !== "") {
+		if ((empty ($text) || $text === "") && $default !== "") {
 			$text = doubleval($default);
 		}
-		if (isset ($text) && !is_numeric($text)) {
+		if ($text && !is_numeric($text)) {
 			return 'numeric';
 		}
 		break;
@@ -281,7 +294,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if ($text) {
 			$parsedurl = @parse_url($text);
 			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
-	//			return 'url';
+				return 'url';
 			}
 		}
 		break;
@@ -290,7 +303,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		break;
 	case 'tplfile' :
 		$text = trim($text); // should be done elsewhere but to be sure...
-		if (strpos($text, "/") !== false || $text[0] == ".") {
+		if ($text && (strpos($text, "/") !== false || $text[0] == ".")) {
 			return "tplfile";
 		}
 		break;
@@ -300,10 +313,9 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'entity' :
-		$text = intval($text);
+		$text = (int)$text;
 		// check it exists
-		$dao = &getDAO('entities');
-		$vo = $dao->getById($text, "1");
+		$vo = getDAO('entities')->getById($text, "1");
 		if (!$vo) {
 			return 'entity';
 		}
@@ -335,24 +347,46 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!$name) {
 			trigger_error("ERROR: \$name is not set in validfunc.php", E_USER_ERROR);
 		}
-		global $authorizedFiles; // white list dispo dans le lodelconfig.php
-		// on récupère l'extension du fichier	
-		$extension = strtolower(strrchr($_FILES['data']['name'][$name][$text['radio']],'.'));
-		// on évite la possibilité d'uploader des fichiers non désirés
-		if($text['radio'] == 'upload' && !in_array($extension, $authorizedFiles)) {
-			return $text['radio'];
-		}
+        	if(!isset($text['radio'])) $text['radio'] = '';
+		$filetodelete = false;
 		switch ($text['radio']) {
 		case 'upload' :
 			// let's upload
 			if(!$usedata) {
 				$files = &$_FILES;
 			} else { //les informations sur le champ se trouve dans $_FILES['data']
-				$files[$name]['error']['upload'] = $_FILES['data']['error'][$name]['upload'];
-				$files[$name]['tmp_name']['upload'] = $_FILES['data']['tmp_name'][$name]['upload'];
-				$files[$name]['type']['upload'] = $_FILES['data']['type'][$name]['upload'];
-				$files[$name]['size']['upload'] = $_FILES['data']['size'][$name]['upload'];
-				$files[$name]['name']['upload'] = $_FILES['data']['name'][$name]['upload'];
+				if(isset($filerank))
+				{
+					if(!isset($_FILES['data']['error'][$name][$filerank]['upload']))
+					{
+						$text = '';
+						return true;
+					}
+					$files[$name]['error']['upload'] = $_FILES['data']['error'][$name][$filerank]['upload'];
+					$files[$name]['tmp_name']['upload'] = $_FILES['data']['tmp_name'][$name][$filerank]['upload'];
+					$files[$name]['type']['upload'] = $_FILES['data']['type'][$name][$filerank]['upload'];
+					$files[$name]['size']['upload'] = $_FILES['data']['size'][$name][$filerank]['upload'];
+					$files[$name]['name']['upload'] = $_FILES['data']['name'][$name][$filerank]['upload'];
+				}
+				else
+				{
+					if(!isset($_FILES['data']['error'][$name]['upload']))
+					{
+						$text = '';
+						return true;
+					}
+					$files[$name]['error']['upload'] = $_FILES['data']['error'][$name]['upload'];
+					$files[$name]['tmp_name']['upload'] = $_FILES['data']['tmp_name'][$name]['upload'];
+					$files[$name]['type']['upload'] = $_FILES['data']['type'][$name]['upload'];
+					$files[$name]['size']['upload'] = $_FILES['data']['size'][$name]['upload'];
+					$files[$name]['name']['upload'] = $_FILES['data']['name'][$name]['upload'];
+				}
+			}
+			// on récupère l'extension du fichier   
+			$extension = strtolower(strrchr($files[$name]['name']['upload'],'.'));
+			// on évite la possibilité d'uploader des fichiers non désirés
+			if(!in_array($extension, C::get('authorizedFiles', 'cfg'))) {
+				return $text['radio'];
 			}
 			#print_r($files);
 			// look for an error ?
@@ -366,7 +400,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				$text = save_file($type, $directory, $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err, false);
 			} else {
 				// check if the tmpdir is defined
-				if (!$tmpdir[$type]) {
+				if (!isset($tmpdir[$type])) {
 					// look for a unique dirname.
 					do {
 						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
@@ -387,7 +421,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);
 			} else {
 				// check if the tmpdir is defined
-				if (!$tmpdir[$type]) {
+				if (!isset($tmpdir[$type])) {
 					// look for a unique dirname.
 					do {
 						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
@@ -406,7 +440,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$filetodelete = true;
 		case '' :
 			// validate
-			$text = $text['previousvalue'];
+			$text = isset($text['previousvalue']) ? $text['previousvalue'] : '';
 			if (!$text) {
 				return true;
 			}

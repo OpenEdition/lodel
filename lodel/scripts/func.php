@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -37,9 +39,14 @@
  * @author Jean Lamy
  * @author Sophie Malafosse
  * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -49,13 +56,14 @@
 function writefile ($filename,$text)
 {
 # echo "name de fichier : $filename";
-   if (file_exists($filename)) { 
-     if (! (unlink($filename)) ) trigger_error("Ne peut pas supprimer $filename. probleme de right contacter Luc ou Ghislain", E_USER_ERROR);
-   }
-  $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
-   
-  @chmod ($filename,0666 & octdec($GLOBALS['filemask']));
-  return  $ret;
+//    if (file_exists($filename)) { 
+//      if (! (unlink($filename)) ) trigger_error("Cannot delete file $filename.", E_USER_ERROR);
+//    }
+//   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
+   if(false === @file_put_contents($filename, $text)) 
+        trigger_error("Cannot write $filename.", E_USER_ERROR);
+   @chmod ($filename,0666 & octdec(C::get('filemask', 'cfg')));
+   return  true;
 }
 
 
@@ -82,60 +90,15 @@ function postprocessing(&$context)
 function extract_post($arr=null)
 {
 	if (is_null($arr)) $arr=&$_POST;
-	array_walk_recursive($arr, 'clean_request_variable');
-	$GLOBALS['context'] = array_merge($arr, $GLOBALS['context']);
+	C::setRequest($arr);
+	return;
 }
 
 
 function clean_request_variable(&$var, $key='')
 {
-	static $filter;
-
-	if (!$filter) {
-		if(!class_exists('HTMLPurifier', false))
-			require 'htmlpurifier/HTMLPurifier.standalone.php';
-		$config = HTMLPurifier_Config::createDefault();
-		$config->set('Core', 'Encoding', $GLOBALS['context']['charset']);
-		$config->set('HTML', 'TidyLevel', 'heavy' );
-        	$config->set('Attr', 'EnableID', true);
-		if(!is_dir('./CACHE/htmlpurifier/')) {
-			if(is_writeable('./CACHE/')) {
-				@mkdir('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
-				@chmod('./CACHE/htmlpurifier', 0777 & octdec($GLOBALS['filemask']));
-			} else {
-				trigger_error('ERROR : cannot write in CACHE directory in '.__FUNCTION__.'.', E_USER_ERROR);
-			}
-		}
-		$config->set('Cache', 'SerializerPath', realpath('./CACHE/htmlpurifier/') );
-		$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-		$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
-		$config->set('HTML', 'DefinitionRev', 1);
-		$config->set('HTML', 'SafeObject', true);
-		$config->set('HTML', 'SafeEmbed', true);	
-		if($GLOBALS['debugMode'])
-			$config->set('Cache', 'DefinitionImpl', null);
-		$def = $config->getHTMLDefinition(true);
-		$r2r = $def->addElement(
-			'r2r',   // name
-			'Block',  // content set
-			'Flow', // allowed children
-			'IL8N', // attribute collection
-			array( // attributes
-			'lang' => 'CDATA')
-			);
-		$r2r->excludes = array('r2r' => true);
-		$filter = new HTMLPurifier($config);
-  	}
-
-	if (is_array($var)) {
-		array_walk_recursive($var, 'clean_request_variable');
-	} else {
-		$var = trim(magic_stripslashes($var));
-		// htmlpurifier n'est pas encore compatible avec les namespaces, chiant pour les balises r2r:ml
-		$var = strtr($var, array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>'));
-		$var = $filter->purify($var);
-		$var = strtr($var, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
-	}
+	C::clean($var);
+	return;
 }
 
 function magic_addslashes($var) 
@@ -195,6 +158,7 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
     }
     $rank+=$dir;
   }
+  $result->Close();
 } 
 
 
@@ -204,9 +168,10 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
  */
 function closetags($text)
 {
-	preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER);
+	if(!preg_match_all("/<(\w+)\b[^>]*>/",$text,$results,PREG_PATTERN_ORDER)) return '';
 	$n=count($results[1]);
-	for($i=$n-1; $i>=0; $i--) $ret.="</".$results[1][$i].">";
+	$ret = '';
+	for($i=$n-1; $i>=0; $i--) { $ret.="</".$results[1][$i].">"; }
 	return $ret;
 }
 
@@ -248,8 +213,7 @@ function myfilemtime($filename)
 
 function update()
 {
-	if(!function_exists('clearcache'))
-		require 'cachefunc.php';
+	if(!function_exists('clearcache')) include 'cachefunc.php';
 	clearcache(false);
 }
 
@@ -323,7 +287,6 @@ function array_merge_withprefix($arr1,$prefix,$arr2)
 
 function getoption($name)
 {
-	global $db;
 	static $options_cache;
 	if (!$name) return;
 	if (!isset($options_cache)) {
@@ -333,7 +296,7 @@ function getoption($name)
 			require($optionsfile);
 		} else {
 			if(!function_exists('cacheOptionsInFile'))
-				require('optionfunc.php');
+				include('optionfunc.php');
 			$options_cache = cacheOptionsInFile($optionsfile);
 		}
 	}
@@ -352,7 +315,6 @@ function getoption($name)
 
 function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 {
-	static $req;
 	if ($group=="") {
 		if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
 		$dotpos=strpos($name,".");
@@ -363,57 +325,58 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			trigger_error("ERROR: unknow group for getlodeltext", E_USER_ERROR);
 		}
 	}
-	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
-	if (!$lang) $lang = $GLOBALS['installlang']; // if no lang is specified choose the default installation language
+	if ($lang==-1 || ''==$lang) $lang=C::get('lang');
+	if (!$lang) $lang = C::get('installlang', 'cfg'); // if no lang is specified choose the default installation language
+	if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
 	global $db;
-	
+
 	if ($group!="site") {
-		usemaindb();
 		$prefix=lq("#_MTP_");
 	} else {
-		$prefix=lq("#_TP_");
+		$prefix=$GLOBALS['tableprefix'];
 	}
 	
-	$critere=$GLOBALS['lodeluser']['visitor'] ? "" : "AND status>0";
+	$critere=C::get('visitor', 'lodeluser') ? "" : "AND status>0";
 	$logic=false;
 	$query = "SELECT id,contents,status 
 			FROM {$prefix}texts 
 			WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
 			ORDER BY lang DESC";
-	
+	$text=false;
 	$create = false;
+    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
 	do {
-		//$arr=$db->getRow("SELECT id,contents,status FROM ".lq($prefix)."texts WHERE name='".$name."' AND textgroup='".$group."' AND (lang='$lang' OR lang='') $critere ORDER BY lang DESC");
-// 		$arr = $db->execute($stmt[$prefix], array((string)$name, (string)$group, (string)$lang));
-
-		// cache SQL des requetes de texte mis à un an .. à priori ça change pas beaucoup, et le clearcache nettoiera si besoin
-		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, $query, array((string)$name, (string)$group, (string)$lang));
+		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime'], $query, array((string)$name, (string)$group, (string)$lang));
 		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-		$arr = $arr->FetchRow();
-		if(!$arr) {
-			if($create) break;
-			if (!$GLOBALS['lodeluser']['admin']) break;
-			if(!function_exists('getLogic')) require 'logic.php';
+		$text = $arr->FetchRow();
+		if(!$text) 
+        	{
+			if($create || !C::get('admin', 'lodeluser'))
+			{
+				$arr->Close();
+				break;
+			}
+			if(!function_exists('getLogic')) include 'logic.php';
 			// create the textfield
-			$logic=&getLogic("texts");
+            		if(!$logic) $logic=getLogic("texts");
 			$logic->createTexts($name,$group);
 			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
 			$create = true;
 		}
-	} while(!$arr);
-
-	if ($group!="site") usecurrentdb();
+        	$arr->Close();
+	} while(!$text);
+    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
 	
-	$id=$arr['id'];
-	$contents=$arr['contents'];
-	$status=$arr['status'];
-	if (!$contents && $GLOBALS['lodeluser']['visitor']) $contents="@".$name;
+	$id=$text['id'];
+	$contents=$text['contents'];
+	$status=$text['status'];
+	if (!$contents && C::get('visitor', 'lodeluser')) $contents="@".$name;
 }
 
 function getlodeltextcontents($name,$group="",$lang=-1)
 {
-	if ($lang==-1) $lang=$GLOBALS['lang'] ? $GLOBALS['lang'] : $GLOBALS['lodeluser']['lang'];
+	if ($lang==-1) $lang=C::get('sitelang');
 	if (isset($GLOBALS['langcache'][$lang][$group.".".$name])) {
 		return $GLOBALS['langcache'][$lang][$group.".".$name];
 	} else {
@@ -435,10 +398,11 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = URI;
 	} else {
 		// compat 0.7
-		if ($GLOBALS['idagauche']) {
+		if (C::get('idagauche', 'cfg')) {
 			$uri = 'leftid';
 		}
 	}
+    	$id = (int)$id;
 	
 	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
@@ -448,9 +412,9 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
-		return $base. (int)$id. '.'. $GLOBALS['extensionscripts'];
+		return $base. $id. '.'. C::get('extensionscripts', 'cfg');
 	case 'singleid':
-		return ('index' != $base ? $base. (int)$id : (int)$id);
+		return ('index' != $base ? $base. $id : $id);
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
 		$path = getPath($id,'path');
@@ -459,7 +423,7 @@ function makeurlwithid ($id, $base = 'index')
 		$path = getPath($id,'querystring');
 		return $path;
 	default:
-		return $base. '.'. $GLOBALS['extensionscripts']. '?id='. (int)$id;
+		return $base. '.'. C::get('extensionscripts', 'cfg'). '?id='. $id;
 	}
 }
 
@@ -479,10 +443,10 @@ function makeurlwithfile($id) {
 function getPath($id, $urltype,$base='index')
 {
 	$urltype = 'querystring'; //la version actuelle de lodel ne gère que le type path
-	if($urltype!='path' && $urltype!='querystring') {
-		return;
-	}
-	$id = intval($id);
+// 	if($urltype!='path' && $urltype!='querystring') {
+// 		return;
+// 	}
+	$id = (int)$id;
 	$result = $GLOBALS['db']->execute(lq("SELECT identifier FROM #_TP_entities INNER JOIN #_TP_relations ON id1=id WHERE id2='$id' ORDER BY degree DESC")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	while(!$result->EOF) {
 		$path.= '/'. $result->fields['identifier'];
@@ -494,9 +458,9 @@ function getPath($id, $urltype,$base='index')
 	}
 	$path.= "/$id-". $row['identifier'];
 	if($urltype == 'path') {
-		return $base. '.'. $GLOBALS['extensionscripts']. $path;
+		return $base. '.'. C::get('extensionscripts', 'cfg'). $path;
 	}
-	return "$base.". $GLOBALS['extensionscripts']. "?$path";
+	return "$base.". C::get('extensionscripts', 'cfg'). "?$path";
 }
 
 
@@ -526,7 +490,7 @@ function download($filename,$originalname="",$contents="")
   $ext=substr($originalname,strrpos($originalname,".")+1);
   $size = $filename ? filesize($filename) : strlen($contents);
   get_PMA_define(); 
-  if($mimetype[$ext] && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
+  if(isset($mimetype[$ext]) && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
     $mime = $mimetype[$ext];
     $disposition = "inline";
   } else {
@@ -691,7 +655,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 	if ($move) {
 		@unlink($file);
 	}
-	@chmod($dest, 0666 & octdec($GLOBALS['filemask']));
+	@chmod($dest, 0666 & octdec(C::get('filemask', 'cfg')));
 	return $dest;
 }
 
@@ -708,10 +672,10 @@ function checkdocannexedir($dir)
 		$rep = SITEROOT . $dir;
 		if(!file_exists(SITEROOT . "docannexe/image"))
 		{// il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
+			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe/image\"", E_USER_ERROR);//peut rien faire
 			}
-			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
 		}
 	}
 	else
@@ -719,38 +683,38 @@ function checkdocannexedir($dir)
 		$rep = $dir;
 		if(!file_exists("docannexe/image"))
 		{
-			if (!@mkdir("docannexe/image",0777 & octdec($GLOBALS['filemask']), true)) {
+			if (!@mkdir("docannexe/image",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
 			}
-			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
 		}
 	}
 	if(defined("SITEROOT"))
 	{//si le siteroot est défini
 		if(!file_exists(SITEROOT . "docannexe/file"))
 		{//il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
+			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);//peut rien faire
 			}
-			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
 		}
 	}
 	else
 	{
 		if(!file_exists("docannexe/file"))
 		{
-			if (!@mkdir("docannexe/file",0777 & octdec($GLOBALS['filemask']), true)) {
+			if (!@mkdir("docannexe/file",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
 			}
-			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec($GLOBALS['filemask']));
+			@chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
 		}
 	}
 
 	if (!file_exists($rep)) {
-		if (!@mkdir($rep,0777 & octdec($GLOBALS['filemask']))) {
+		if (!@mkdir($rep,0777 & octdec(C::get('filemask', 'cfg')))) {
 			trigger_error("ERROR: impossible to create the directory \"$rep\"", E_USER_ERROR);
 		}
-		@chmod($rep,0777 & octdec($GLOBALS['filemask']));
+		@chmod($rep,0777 & octdec(C::get('filemask', 'cfg')));
 		writefile($rep. '/index.html', '');
 	}
 	// pseudo-sécurité. faudrait trouver mieux, ptetre ajouter directement le répertoire docannexe dans la distrib avec un .htaccess
@@ -770,10 +734,15 @@ function checkdocannexedir($dir)
 
 function tmpdir()
 {
-	$tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
-	if (!file_exists($tmpdir)) { 
-		mkdir($tmpdir,0777  & octdec($GLOBALS['filemask']));
-		chmod($tmpdir,0777 & octdec($GLOBALS['filemask'])); 
+    $tmpdir = '';
+    if(defined("TMPDIR") && '' !== (string)TMPDIR)
+        $tmpdir = TMPDIR;
+    elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
+        $tmpdir = 'CACHE/tmp';
+	
+    if (!file_exists($tmpdir)) { 
+		mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
+		chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg'))); 
 	}
 	return $tmpdir;
 }
@@ -977,8 +946,7 @@ function makeSortKey($text)
 				chr(197).chr(190) => 'z', chr(197).chr(191) => 'z',
  
 			);
-	$text = strtr($text,$replacement);
-	return trim(strtolower($text));
+	return trim(strtolower(strtr($text,$replacement)));
 }
 
 /**
@@ -989,28 +957,28 @@ function makeSortKey($text)
  */
 function rightonentity ($action, $context)
 {
-	if ($GLOBALS['lodeluser']['admin']) return true;
+	if (C::get('admin', 'lodeluser')) return true;
 
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
-	if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
-	$context = array_merge ($context, $row);
+		if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
+		$context = array_merge ($context, $row);
 	}
-  // groupright ?
+  	// groupright ?
 	if ($context['usergroup']) {
-  	$groupright = in_array ($context['usergroup'], explode (',', $GLOBALS['lodeluser']['groups']));
-  	if (!$groupright)return false;
+  		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
+  		if (!$groupright)return false;
 	}
 
 	// only admin can work at the base.
-	$editorok= $GLOBALS['lodeluser']['editor'] && $context['idparent'];
+	$editorok= C::get('editor', 'lodeluser') && $context['idparent'];
 	// redactor are ok, only if they own the document and it is not protected.
-	$redactorok = ($context['iduser']==$GLOBALS['lodeluser']['id'] && $GLOBALS['lodeluser']['redactor']) && $context['status']<8 && $context['idparent'];
+	$redactorok = ($context['iduser']==C::get('id', 'lodeluser') && C::get('redactor', 'lodeluser')) && $context['status']<8 && $context['idparent'];
 
 	switch($action) {
 	case 'create' :
-		return ($GLOBALS['lodeluser']['editor'] ||  ($GLOBALS['lodeluser']['redactor'] && $context['status']<8));// &&  $context['id'];
+		return (C::get('editor', 'lodeluser') ||  (C::get('redactor', 'lodeluser') && $context['status']<8));// &&  $context['id'];
 		break;
 	case 'delete' :
 		return (abs($context['status'])<8 && $editorok) || ($context['status']<0 && $redactorok);
@@ -1033,7 +1001,7 @@ function rightonentity ($action, $context)
 			return $editorok;
 		} 
 	default:
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: unknown action \"$action\" in the loop \"rightonentity\"", E_USER_ERROR);
 		return;
 	}
@@ -1054,17 +1022,25 @@ function sql_in_array($ids)
  *
  */
 
-function &getDAO($table)
+function getDAO($table)
 {
 	static $factory; // cache
-	if ($factory[$table]) {
+	if (isset($factory[$table])) {
 		return $factory[$table]; // cache
 	}
 	$daoclass = $table. 'DAO';
-	if(!class_exists('DAO', false))
-		require 'dao.php' ;
-	if(!class_exists($daoclass, false))
-		require 'dao/class.'.$table.'.php';
+
+	if(!class_exists($daoclass))
+	{
+		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/dao.php';
+		if(!file_exists($file))
+			trigger_error('ERROR: unknown dao', E_USER_ERROR);
+		
+		include $file;
+		if(!class_exists($daoclass, false) || !is_subclass_of($daoclass, 'DAO'))
+			trigger_error('ERROR: the DAO plugin file MUST extends the DAO OR GenericDAO class', E_USER_ERROR);
+	}
+	
 	$factory[$table] = new $daoclass;
 	return $factory[$table];
 }
@@ -1073,16 +1049,12 @@ function &getDAO($table)
  * generic DAO factory
  *
  */
-function &getGenericDAO($table, $idfield)
+function getGenericDAO($table, $idfield)
 {
 	static $factory; // cache
-	if ($factory[$table]) {
+	if (isset($factory[$table])) {
 		return $factory[$table]; // cache
 	}
-	if(!class_exists('DAO', false))
-		require 'dao.php' ;
-	if(!class_exists('genericDAO', false))
-		require 'genericdao.php';
 	$factory[$table] = new genericDAO ($table,$idfield);
 	return $factory[$table];
 }
@@ -1095,6 +1067,7 @@ function &getGenericDAO($table, $idfield)
 function canContainTypes ($idtype)
 {
 	global $db;
+	$idtype = (int)$idtype;
 	//select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2) 
 	//but select only those who can be contains directly (not in advanced function)
 	$sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
@@ -1113,200 +1086,6 @@ function mystripslashes (&$var)
 		return $var=stripslashes($var);
 	}
 }
-
-/**
- * Indentation de code HTML, XML
- *
- * @param string $source le code a indenter
- * @param string $indenter les caractères à utiliser pour l'indentation. Par défaut deux espaces.
- * @return le code indenté proprement
- */
-function _indent($source, $indenter = '  ')
-{
-	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
-			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
-			if(!function_exists('indentXML'))
-				require 'xmlfunc.php';
-			$source = indentXML($source, false, $indenter);
-			return $source;
-	} elseif(!preg_match("/<[^><]+>/", $source)) {
-		$source = _indent_xhtml($source,$indenter);
-		return $source;
-	}
-	// on touche pas à l'indentation du code PHP, JS, CSS
-	$tmp = preg_split("/(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)(.*?)(\?>|<\/script>|<\/noscript>|<\/style>)/s", $source, -1, PREG_SPLIT_DELIM_CAPTURE);
-	$source = $tab = '';
-	$iscode = 0;
-	$nbOpPar = $nbCloPar = 0;
-	while(list(,$texte) = each($tmp)) {
-		if(preg_match("/^(<\?php|<script[^>]*>|<noscript[^>]*>|<style[^>]*>)$/", $texte)) {
-			$iscode++;
-		} elseif(preg_match("/^(\?>|<\/script>|<\/noscript>|<\/style>)$/", $texte)) {
-			$iscode--;
-		} elseif($iscode == 0 && ($nbOpPar == $nbCloPar)) {
- 			// on vire toute l'indentation existante
-			$texte = preg_replace("/\n+/", "", $texte);
-			$texte = preg_replace("/\t+/", "", $texte);
-			$texte = preg_replace("/^(\s)*$/", "", $texte);
-
-			// c'est parti on indente
-			$arr = preg_split("/(<(\/?|!?)(?!em|sup|span|sub|a|img|strong|br)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$texte = '';
-			$nbarr = count($arr);
-			if($nbarr<=1) {
-				$source .= $arr[0];
-				continue;
-			}
-			for ($i = 1 ; $i < $nbarr ; $i += 3) {
-				if (!empty($arr[$i +1])) {
-					$tab = substr($tab, 2); // closing tag
-				}
-				if (substr($arr[$i], -2) == "/>") { // opening closing tag
-					$out = $tab.$arr[$i].$arr[$i +2]."\n";
-				} else {
-					if (empty($arr[$i +1]) && !empty($arr[$i +4])) { // opening follow by a closing tags
-						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
-						$i += 3;
-					}	else {
-						$out = $tab.$arr[$i]."\n";
-						if (empty($arr[$i +1])) {
-							$tab .= "$indenter";
-						}
-						if (trim($arr[$i +2])) {
-							$out .= $tab.$arr[$i +2]."\n";
-						}
-					}
-				}
-				if(trim($out))
-					$texte .= $out;
-			}
-		} elseif($iscode>0) {
-			$nbOpPar += substr_count($texte, '{');
-			$nbCloPar += substr_count($texte, '}');
-		}
-		if(trim($texte))
-			$source .= $texte;
-	}
-	return $source;
-}
-
-
-
-// Function to seperate multiple tags one line (used by function _indent_xhtml)
-function fix_newlines_for_clean_html($fixthistext)
-{
-	$fixthistext_array = explode("\n", $fixthistext);
-
-	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
-
- 		// Exception for fckeditor
-		if (preg_match("/fck_.+editor/", $unfixedtextvalue))
-		{
-			$fixedtext_array[$unfixedtextkey] = $unfixedtextvalue;
-		}
-		
-		//Makes sure empty lines are ignores
-		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
-		{
-			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
-			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
-		}
-		
-	}
-	
-	if (is_array($fixedtext_array)) {
-		return implode("\n", $fixedtext_array);
-	} else {
-		return false;
-	}
-}
-
-/**
- * Indentation de code XHTML
- *
- * @param string $uncleanhtml le code a indenter
- * @param string $indent les caractères à utiliser pour l'indentation. Par déffaut deux espaces.
- * @return le code indenté proprement
- */
-
-
-function _indent_xhtml ($uncleanhtml, $indent = "  ")
-{
-	//Set wanted indentation
-	//$indent = "    ";
-	//Uses previous function to seperate tags
-	if ($fixed_uncleanhtml = fix_newlines_for_clean_html($uncleanhtml)) {
-
-		$uncleanhtml_array = explode("\n", $fixed_uncleanhtml);
-	
-		//Sets no indentation
-		$indentlevel = 0;
-		foreach ($uncleanhtml_array as $uncleanhtml_key => $currentuncleanhtml)
-		{
-			//Removes all indentation
-			$currentuncleanhtml = preg_replace("/\t+/", "", $currentuncleanhtml);
-			$currentuncleanhtml = preg_replace("/^\s+/", "", $currentuncleanhtml);
-		
-			$replaceindent = "";
-		
-			//Sets the indentation from current indentlevel
-			for ($o = 0; $o < $indentlevel; $o++)
-			{
-				$replaceindent .= $indent;
-			}
-		
-			//If self-closing tag, simply apply indent
-			if (preg_match("/<(.+)\/>/", $currentuncleanhtml))
-			{ 
-				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
-			}
-			//If doctype declaration, simply apply indent
-			else if (preg_match("/<!(.*)>/", $currentuncleanhtml))
-			{ 
-				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
-			}
-			//If opening AND closing tag on same line, simply apply indent
-			else if (preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && preg_match("/<\/(.*)>/", $currentuncleanhtml))
-			{ 
-				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
-			}
-			//If closing HTML tag or closing JavaScript clams, decrease indentation and then apply the new level
-			else if (preg_match("/<\/(.*)>/", $currentuncleanhtml) || preg_match("/^(\s|\t)*\}{1}(\s|\t)*$/", $currentuncleanhtml))
-			{
-				$indentlevel--;
-				$replaceindent = "";
-				for ($o = 0; $o < $indentlevel; $o++)
-				{
-					$replaceindent .= $indent;
-				}
-			
-				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
-			}
-			//If opening HTML tag AND not a stand-alone tag, or opening JavaScript clams, increase indentation and then apply new level
-			else if ((preg_match("/<[^\/](.*)>/", $currentuncleanhtml) && !preg_match("/<(link|meta|base|br|img|hr)(.*)>/", $currentuncleanhtml)) || preg_match("/^(\s|\t)*\{{1}(\s|\t)*$/", $currentuncleanhtml))
-			{
-				$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;
-			
-				$indentlevel++;
-				$replaceindent = "";
-				for ($o = 0; $o < $indentlevel; $o++)
-				{
-					$replaceindent .= $indent;
-				}
-			}
-			else
-			//Else, only apply indentation
-			{$cleanhtml_array[$uncleanhtml_key] = $replaceindent.$currentuncleanhtml;}
-		}
-		//Return single string seperated by newline
-
-		return implode("\n", $cleanhtml_array);	
-	} else {
-			return '';
-		}
-}
-
-
 
 /**
  * Récupération des champs génériques dc.* associés aux entités
@@ -1373,15 +1152,20 @@ function getgenericfields(&$context)
 {
 	global $db;
 	#print_r($context);
-	$sql = lq("SELECT name,g_name, defaultvalue FROM #_TP_tablefields WHERE class='". $context['class'])."' AND g_name!=''";
+	$sql = "SELECT name,g_name, defaultvalue 
+               FROM {$GLOBALS['tp']}tablefields 
+               WHERE class='". $context['class']."' AND g_name!=''";
 	$row = $db->getArray($sql);
 	#print_r($row);
+    $fields = '';
 	foreach ($row as $elem) {
-		$fields[] = $elem['name'];
+		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
 	//Retrouve les valeurs de $fields
-	$sql = lq("SELECT ".join(',', $fields). ' FROM #_TP_'.$context['class']. " WHERE identity='".$context['id']."'");
+	$sql = "SELECT ".substr($fields, 0, -1). ' 
+               FROM '.$GLOBALS['tp'].$context['class']. " 
+               WHERE identity='".$context['id']."'";
 	#echo "sql=$sql";
 	$row = $db->getRow($sql);
 	foreach ($row as $key => $value) {
@@ -1399,16 +1183,25 @@ function getgenericfields(&$context)
 
 	// -- Traitement des indexs -- 
 	//Récupère maintenant les valeurs des champs génériques des entrées d'index associés et des personnes associées
-	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_entrytypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
+	$sql = "SELECT e.type,e.g_type, e.class 
+               FROM {$GLOBALS['tp']}entrytypes as e, 
+               {$GLOBALS['tp']}tablefields as t 
+               WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
+    $fields = array();
 	foreach ($row as $elem) {
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
 	}
 	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
-	if(count($fields) > 0) {
-		$sql = lq("SELECT e.g_name, et.type FROM #_TP_entries as e, #_TP_relations as r, #_TP_entrytypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
+	if(!empty($fields)) {
+		$sql = "SELECT e.g_name, et.type 
+                  FROM {$GLOBALS['tp']}entries as e, 
+                  {$GLOBALS['tp']}relations as r, 
+                  {$GLOBALS['tp']}entrytypes as et 
+                  WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' 
+                  AND et.type IN('".join("','",$fields)."')";
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
 		foreach($array as $row) {
@@ -1423,25 +1216,37 @@ function getgenericfields(&$context)
 	unset($fields);
 	unset($generic);
 	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
-	$sql = lq("SELECT e.type,e.g_type, e.class FROM #_TP_persontypes as e, #_TP_tablefields as t WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''");
+	$sql = "SELECT e.type,e.g_type, e.class 
+               FROM {$GLOBALS['tp']}persontypes as e, 
+               {$GLOBALS['tp']}tablefields as t 
+               WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";
 	$row = $db->getArray($sql);
-	foreach ($row as $elem) {
-		$fields[] = $elem['type'];
-		$generic[$elem['type']] = $elem['g_type'];
-	}
-	if(count($fields) > 0) {
-		//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
-		$sql = lq("SELECT e.g_firstname, e.g_familyname, et.type FROM #_TP_persons as e, #_TP_relations as r, #_TP_persontypes as et WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' AND et.type IN('".join("','",$fields)."')");
-		#echo "sql=$sql";
-		$array = $db->getArray($sql);
-		foreach($array as $row) {
-			if($cle = $generic[$row['type']]) {
-				$cle = str_replace('.','_',$cle);
-				$context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
-			}
-		}
-	}
+    if(!empty($row))
+    {
+        $fields = array();
+        foreach ($row as $elem) {
+            $fields[] = $elem['type'];
+            $generic[$elem['type']] = $elem['g_type'];
+        }
+        if(count($fields) > 0) {
+            //Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+            $sql = "SELECT e.g_firstname, e.g_familyname, et.type FROM 
+                        {$GLOBALS['tp']}persons as e, 
+                        {$GLOBALS['tp']}relations as r, 
+                        {$GLOBALS['tp']}persontypes as et 
+                        WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' 
+                        AND et.type IN('".join("','",$fields)."')";
+            #echo "sql=$sql";
+            $array = $db->getArray($sql);
+            foreach($array as $row) {
+                if($cle = $generic[$row['type']]) {
+                    $cle = str_replace('.','_',$cle);
+                    $context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
+                }
+            }
+        }
+    }
 
 
 	return $context; // pas nécessaire le context est passé par référence
@@ -1485,44 +1290,16 @@ function rewriteFilename($string) {
  * @param string $subject sujet du mail
  * @param string $fromaddress adresse de l'expéditeur
  * @param string $fromname nom de l'expediteur
+ * @param array $docs pièces jointes
+ * @param bool $isHTML body html ou texte brut
+ * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
  */
-function send_mail($to, $body, $subject, $fromaddress, $fromname)
+function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false)
 {
-	if(!class_exists('Mail', false))
-		require 'Mail/Mail.php';
-	if(!class_exists('Mail_mime', false))
-		require 'Mail/mime.php';
-	$message = new Mail_mime();
-	
-	// body creation
-	$message->setHTMLBody($body);
-	$aParam = array(
-		"text_charset" => "UTF-8",
-		"html_charset" => "UTF-8",
-		"head_charset" => "UTF-8"
-	);
-	$body = $message->get($aParam);
-	// set headers
-	$message->setFrom($fromname."<".$fromaddress.">");
-	$message->setSubject($subject);
-	$headers = $message->headers();
-	unset($message);
-	// send the mail
-	$mail = Mail::factory('mail');
-	if(PEAR::isError($mail->send($to, $headers, $body)))
-		return false;
-	return true;
-}
-
-/**
- * Function to convert windows characters to utf8 characters
- * Taken from the net - thanks to the author(s)
- */
-function cp1252ToUtf8($str) 
-{
-	$cp1252_map = array (
+	$replace = array (
 		"\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
+		"\xc2\x81" => "",
 		"\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
 		"\xc2\x83" => "\xc6\x92",     /* LATIN SMALL LETTER F WITH HOOK */
 		"\xc2\x84" => "\xe2\x80\x9e", /* DOUBLE LOW-9 QUOTATION MARK */
@@ -1534,7 +1311,10 @@ function cp1252ToUtf8($str)
 		"\xc2\x8a" => "\xc5\xa0",     /* LATIN CAPITAL LETTER S WITH CARON */
 		"\xc2\x8b" => "\xe2\x80\xb9", /* SINGLE LEFT-POINTING ANGLE QUOTATION */
 		"\xc2\x8c" => "\xc5\x92",     /* LATIN CAPITAL LIGATURE OE */
+		"\xc2\x8d" => "",
 		"\xc2\x8e" => "\xc5\xbd",     /* LATIN CAPITAL LETTER Z WITH CARON */
+		"\xc2\x8f" => "",
+		"\xc2\x90" => "",
 		"\xc2\x91" => "\xe2\x80\x98", /* LEFT SINGLE QUOTATION MARK */
 		"\xc2\x92" => "\xe2\x80\x99", /* RIGHT SINGLE QUOTATION MARK */
 		"\xc2\x93" => "\xe2\x80\x9c", /* LEFT DOUBLE QUOTATION MARK */
@@ -1548,11 +1328,110 @@ function cp1252ToUtf8($str)
 		"\xc2\x9b" => "\xe2\x80\xba", /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
 		"\xc2\x9c" => "\xc5\x93",     /* LATIN SMALL LIGATURE OE */
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
-		"\xc2\x9f" => "\xc5\xb8"      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+		'&#39;'    => "'",
 	);
-	return strtr ( utf8_encode ( $str ), $cp1252_map );
+
+	$body = wordwrap(strtr($body, $replace), 70);
+	$subject = wordwrap(strtr($subject, $replace), 70);
+
+	$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
+
+	if(!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
+
+	$message = new Mail_mime("\n");
+
+	if(preg_match_all('/<img\b[^>]+src="([^"]+)"[^>]*\/?>/', $body, $m))
+	{
+		foreach($m[1] as $img)
+		{
+			$r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
+			if(PEAR::isError($r))
+			{
+				return $r->getMessage();
+			}
+		}
+	}
+
+	if(!empty($docs))
+	{
+		foreach($docs as $doc)
+		{
+			$r = $message->addAttachment($doc, getMimeType(substr(strrchr($doc, '.'), 1)), basename($doc), true, 'base64');
+			if(PEAR::isError($r))
+			{
+				return $r->getMessage();
+			}
+		}
+	}
+
+	// set headers
+	$message->setFrom($fromname);
+	$message->setSubject($subject);
+	// body creation
+	$isHTML ? $message->setHTMLBody($body) : $message->setTxtBody($body);
+
+	$aParam = array(
+		"text_charset" => "UTF-8",
+		"html_charset" => "UTF-8",
+		"head_charset" => "UTF-8",
+	);
+	$body =& $message->get($aParam);
+
+	if($toBcc)
+	{
+		$headers = array('Bcc'=>$to);
+		$to = '';
+		$headers =& $message->headers($headers, true);
+	}
+	else $headers =& $message->headers();
+
+	// bug if the $fromname contains accentued chars
+	// @see http://pear.php.net/bugs/bug.php?id=11238
+	// hardcode it
+	$from = $message->_encodeHeaders(array('From'=>"<".$fromaddress.">"));
+	$headers['From'] .= $from['From'];
+
+	unset($message, $from);
+	// send the mail
+	$r = Mail::factory('mail')->send($to, $headers, $body);
+	$ret = true;
+	if(PEAR::isError($r))
+	{
+		$ret = $r->getMessage();
+	}
+	error_reporting($err);
+	return $ret;
 }
 
+function getMimeType($ext)
+{
+	switch(strtolower($ext))
+	{
+		case 'gif': return 'image/gif';
+		case 'tif': return 'image/tif';
+		case 'png': return 'image/png';
+		case 'jpg':
+		case 'jpeg': return 'image/jpeg';
+		case 'docx':
+		case 'doc': return 'application/msword';
+		case 'xls': return 'application/vnd.ms-excel';
+		case 'pdf': return 'application/pdf';
+		case 'rtf': return 'application/rtf';
+		case 'tar': return 'application/x-tar';
+		case 'zip': return 'multipart/x-zip';
+		case 'gzip': return 'multipart/x-gzip';
+		case 'htm':
+		case 'html': return 'text/html';
+		case 'txt': return 'text/plain';
+		case 'avi': return 'video/avi';
+		case 'wav': return 'audio/x-wav';
+		case 'bin': 
+		default: return 'application/octet-stream';
+	}
+}
+
+define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
 return 568;

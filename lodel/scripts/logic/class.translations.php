@@ -36,16 +36,17 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
 
-
-
-$GLOBALS['translations_textgroups']=array("interface"=>array("common","edition","admin","lodeladmin","install","lodelloader"),
-			     "site"=>array("site"),
-			     );
+$GLOBALS['translations_textgroups']=array(
+	"interface"=>array("common","edition","admin","lodeladmin","install","lodelloader"),
+	"site"=>array("site"),
+);
 
 
 /**
@@ -60,6 +61,8 @@ $GLOBALS['translations_textgroups']=array("interface"=>array("common","edition",
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -84,7 +87,6 @@ class TranslationsLogic extends Logic {
 		} else { // interface
 			$tplDirs = array('./tpl/', '../tpl/', '../share-'.$context['version'].'/macros/', '../lodel-'.$context['version'].'/tpl/');
 		}
-		if(!class_exists('LodelParser', false)) require 'lodelparser.php';
 		$lodelparser =& LodelParser::getParser();
 		$vars = array();
 		if(is_array($tplDirs)) {
@@ -118,7 +120,7 @@ class TranslationsLogic extends Logic {
 				}
 			}
 		}
-		update();
+		clearcache();
 		return '_back';
 	}
 
@@ -151,7 +153,7 @@ class TranslationsLogic extends Logic {
 				$name=$result->fields['name'];	
 				if ($name && $lang) {
 					$alltexts_cache[$lang][$name]=$result->fields;
-					if ($lang==$GLOBALS['lang']) {
+					if ($lang==C::get('lang')) {
 						$distincttexts[$name]=$result->fields['contents'];
 					} elseif (!isset($distincttexts[$name])) {
 						$distincttexts[$name]=true;
@@ -172,10 +174,10 @@ class TranslationsLogic extends Logic {
 			global $alltexts_cache, $distincttexts, $db;
 			$logic = null;
 			foreach(array_keys($alltexts_cache) as $lang) {
-				$row=$alltexts_cache[$lang][$context['name']];
+				$row=isset($alltexts_cache[$lang][$context['name']]) ? $alltexts_cache[$lang][$context['name']] : null;
 				$localcontext=$row ? array_merge($context,$row) : $context;
 				if(0 === (int)$localcontext['id']) { // entry doesn't exist in this lang
-					if(is_null($logic)) $logic =& getLogic('texts');
+					if(!isset($logic)) $logic = getLogic('texts');
 					$logic->createTexts($localcontext['name'], $localcontext['textgroups']);
 					
 					$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$localcontext['textgroup']."' AND name='{$localcontext['name']}' ORDER BY lang")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -185,7 +187,7 @@ class TranslationsLogic extends Logic {
 						$l=strtolower($result->fields['lang']);
 						if ($l) {
 							$alltexts_cache[$l][$localcontext['name']]=$result->fields;
-							if ($l==$GLOBALS['lang']) {
+							if ($l==C::get('lang')) {
 								$distincttexts[$localcontext['name']]=$result->fields['contents'];
 							} elseif (!isset($distincttexts[$localcontext['name']])) {
 								$distincttexts[$localcontext['name']]=true;
@@ -209,9 +211,11 @@ class TranslationsLogic extends Logic {
 	public function editAction(&$context,&$error,$clean=false)
 	{
 		$this->_setTextGroups($context);
-		if (!$context['id']) $context['modificationdate']=date("Y-m-d");
+		if (empty($context['id'])) $context['modificationdate']=date("Y-m-d");
 
-		return parent::editAction($context,$error);
+		$ret = parent::editAction($context,$error);
+        	clearcache();
+        	return $ret;
 	}
 
 	/**
@@ -219,9 +223,8 @@ class TranslationsLogic extends Logic {
 		*/
 	public function exportAction(&$context,&$error)
 	{
-		global $home;
 		if(!function_exists('validfield'))
-			require("validfunc.php");
+			include("validfunc.php");
 
 		$lang=$context['lang'];
 		if ($lang!="all" && !validfield($lang,"lang")) trigger_error("ERROR: invalid lang", E_USER_ERROR);
@@ -232,7 +235,7 @@ class TranslationsLogic extends Logic {
 		$tmpfile=tempnam(tmpdir(),"lodeltranslation");
 
 		if(!class_exists('XMLDB_Translations', false))
-			require("translationfunc.php");
+			include("translationfunc.php");
 
 		$this->_setTextGroups($context);
 		$xmldb=new XMLDB_Translations($context['textgroups'],$lang);
@@ -254,22 +257,20 @@ class TranslationsLogic extends Logic {
 
 	public function importAction(&$context,&$error)
 	{
-		global $home;
-
 		$this->_setTextGroups($context);
 		$lang="";
 
 		if(!function_exists('extract_import'))
-			require("importfunc.php");
+			include("importfunc.php");
 		$file=extract_import("translation",$context,"xml");
 
 		if ($file) {
 			if(!class_exists('XMLDB_Translations', false))
-				require("translationfunc.php");
+				include("translationfunc.php");
 			$xmldb=new XMLDB_Translations($context['textgroups']);
 			
 			$xmldb->readFromFile($file);
-			update();
+			clearcache();
 
 			return "_back";
 		}
@@ -277,7 +278,7 @@ class TranslationsLogic extends Logic {
 
 		function loop_files(&$context,$funcname)
 		{
-			global $fileregexp,$importdirs,$home;
+			global $fileregexp,$importdirs;
 		
 			foreach ($importdirs as $dir) {
 				if ( $dh= @opendir($dir)) {
@@ -324,7 +325,7 @@ class TranslationsLogic extends Logic {
 
 	protected function _setTextGroups(&$context) 
 	{
-		$context['textgroups']=$GLOBALS['site'] ? "site" : "interface";
+		$context['textgroups']=C::get('site', 'cfg') ? "site" : "interface";
 	}
 
 	/**
@@ -337,7 +338,7 @@ class TranslationsLogic extends Logic {
 	*/
 	protected function _saveRelatedTables($vo,$context) 
 	{
-		global $db,$lodeluser;
+		global $db;
 		//
 		// create all the texts if needed
 		// 
@@ -349,16 +350,16 @@ class TranslationsLogic extends Logic {
 			$dao=$this->_getMainTableDAO();
 			$vo=$dao->getById($vo->id);
 		}
-		if ($vo->lang==$lodeluser['lang']) {
+		if ($vo->lang==C::get('lang', 'lodeluser')) {
 			// get any lang... this should not happen anyway
 			$dao=$this->_getMainTableDAO();
 			$vo2=$dao->find("status>0","lang");
 			$fromlang=$vo2->lang;
 		} else {
 			// normal case... should be different !
-			$fromlang=$lodeluser['lang'];
+			$fromlang=C::get('lang', 'lodeluser');
 		}
-		$textscriteria=textgroupswhere( defined("SITEROOT") ? "site" : "interface" );
+		$textscriteria=textgroupswhere( C::get('site', 'cfg') ? "site" : "interface" );
 
 		// get all the text name, group, text in current lang for which the translation does not exists in the new lang
 		$result=$db->execute(lq("SELECT t1.name,t1.textgroup,t1.contents FROM #_TP_texts as t1 LEFT OUTER JOIN #_TP_texts as t2 ON t1.name=t2.name AND t1.textgroup=t2.textgroup AND t2.lang='".$vo->lang."' WHERE t1.status>-64 AND t1.lang='".$fromlang."' AND t2.id IS NULL AND t1.".$textscriteria." GROUP BY t1.name,t1.textgroup")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -379,12 +380,41 @@ class TranslationsLogic extends Logic {
 		} while (!$result->EOF);
 	}
 
-	protected function _deleteRelatedTables($id) {
+	/**
+	 * Suppression dans les tables liées
+	 *
+	 * @param integer $id identifiant numérique de l'objet supprimé
+	 */
+	protected function _deleteRelatedTables($id) 
+	{
 		//il faut supprimer les texts associés à la traduction
-		// reinitialise le cache surement.
+		global $db;
+
+		if (!$this->vo) {
+			trigger_error("ERROR: internal error in Translations::deleteAction", E_USER_ERROR);
+		}
+		
+		$db->execute(lq('DELETE FROM #_TP_texts WHERE lang="'.$vo->lang.'" AND textgroup="'.$vo->textgroups.'"')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		unset($this->vo);
+
+		return '_back';
 	}
 
-
+	/**
+	* Appelé avant l'action delete
+	*
+	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
+	* préliminaires à une suppression.
+	*
+	* @param object $dao la DAO utilisée
+	* @param array &$context le contexte passé par référénce
+	*/
+	protected function _prepareDelete($dao, &$context)
+	{
+		// gather information for the following
+		$this->vo=$dao->getById($context['id']);
+		if (!$this->vo) trigger_error("ERROR: internal error in Translations::deleteAction", E_USER_ERROR);
+	}
 
 	// begin{publicfields} automatic generation  //
 

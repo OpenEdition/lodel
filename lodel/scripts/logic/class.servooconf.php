@@ -35,13 +35,12 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
-
-if(!class_exists('UserOptionGroupsLogic', false))
-	require("logic/class.useroptiongroups.php");
 
 /**
  * Classe de logique de la configuration de ServOO
@@ -55,6 +54,8 @@ if(!class_exists('UserOptionGroupsLogic', false))
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -97,12 +98,12 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 		if ($ret=="_error") return $ret;
 		if(!class_exists('ServOO', false))
-			require("servoofunc.php");
+			include("servoofunc.php");
 		$client=new ServOO();
 		if ($client->error_message) {
-			if ($context['url']) $error['url']='+';
-			if ($context['username'])$error['username']='+';
-			if ($context['passwd']) $error['passwd']='+';
+			if (!empty($context['url'])) $error['url']='+';
+			if (!empty($context['username'])) $error['username']='+';
+			if (!empty($context['passwd'])) $error['passwd']='+';
 		}
 
 		$servoover=$client->version();
@@ -123,7 +124,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 		*/
 	function _getGroup(&$context)
 	{
-		$dao=&getDAO("optiongroups");
+		$dao=getDAO("optiongroups");
 		$vo=$dao->find("name='servoo'");
 		$context['id']=$vo->id;
 

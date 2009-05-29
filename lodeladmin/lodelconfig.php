@@ -7,6 +7,8 @@
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
  *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  *  Home page: http://www.lodel.org
  *
@@ -28,21 +30,25 @@
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
-$version="0.9";
+$cfg['version']="0.9";
 
 ##########################
 
 
-$versionsuffix=$version ? "-$version" : "";   # versioning
+$cfg['versionsuffix']=$cfg['version'] ? "-{$cfg['version']}" : "";   # versioning
 
 define("LODELROOT","../");
 
 require(LODELROOT."lodelconfig.php");
-ini_set('include_path',LODELROOT. "lodel$versionsuffix/scripts" .PATH_SEPARATOR . ini_get("include_path"));
+ini_set('include_path',LODELROOT. "lodel{$cfg['versionsuffix']}/scripts" .PATH_SEPARATOR . ini_get("include_path"));
 
-$home=LODELROOT.$home;
-$sharedir=LODELROOT.$sharedir.$versionsuffix;
-$shareurl.=$versionsuffix;
+$cfg['home']=LODELROOT.$cfg['home'];
+$cfg['sharedir']=LODELROOT.$cfg['sharedir'].$cfg['versionsuffix'];
+$cfg['shareurl'].=$cfg['versionsuffix'];
 
-$site="";
+$cfg['site']="";
+
+require 'context.php';
+C::setCfg($cfg);
+require 'class.errors.php';
 ?>

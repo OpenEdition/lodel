@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,10 +37,15 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
- * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -114,24 +121,24 @@ function isChild($idref, $idcurrent)
 
 function cleanEntities ()
 {
-		global $db;
-		$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
-		$result = $db->execute($mysql);
-		$ids = array();
-		while(!$result->EOF) {
-			$ids[] = $result->fields['id'];
-			$result->MoveNext();
+	global $db;
+	$mysql = lq('SELECT id FROM #_TP_entities WHERE status=-64 AND upd < DATE_SUB(NOW(), INTERVAL 12 HOUR)');
+	$result = $db->execute($mysql);
+	$ids = array();
+	while(!$result->EOF) {
+		$ids[] = $result->fields['id'];
+		$result->MoveNext();
+	}
+	
+	if (is_array($ids)) {
+		if(!function_exists('getLogic', false))
+			include 'logic.php';
+		$logic = getLogic('entities');
+		foreach($ids as $id) {
+			$context['id'] = $id;
+			$logic->deleteAction($context, $error);
 		}
-		
-		if (is_array($ids)) {
-			if(!class_exists('Logic', false))
-				require 'logic.php';
-			$logic = &getLogic('entities');
-			foreach($ids as $id) {
-				$context['id'] = $id;
-				$logic->deleteAction($context, $error);
-				}
-		}
+	}
 }
 
 

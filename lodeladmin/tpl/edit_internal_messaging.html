@@ -4,10 +4,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -57,12 +59,12 @@
 		<legend>[@ADMIN.INTERNAL_MESSAGING_NEW_MSG]</legend>
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit"><input type="hidden" name="lo" value="internal_messaging"><input type="hidden" name="id" value="[#ID]">
-<LOOP NAME="fielderror" FIELD="id"><a id="id"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC></span></LOOP><input type="hidden" name="idparent" value="[#IDPARENT]"><input type="hidden" name="status" value="1"><label for="addressees">[@ADMIN.INTERNAL_MESSAGING_TO]<span class="optional">(*)</span> : 
-		</label><br class="nobr"><select name="addressees[]" id="addressees" multiple="multiple">
+<LOOP NAME="fielderror" FIELD="id"><a id="id"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE=""></FUNC></span></LOOP><input type="hidden" name="idparent" value="[#IDPARENT]"><input type="hidden" name="status" value="1"><label for="recipients">[@ADMIN.INTERNAL_MESSAGING_TO]<span class="optional">(*)</span> : 
+		</label><br class="nobr"><select name="recipients[]" id="recipients" multiple="multiple">
 		<?php 
-			makeSelect($context,"addressees","internal_messaging","multipleselect");
+			makeSelect($context,"recipients","internal_messaging","multipleselect");
 		?>
-</select><LOOP NAME="fielderror" FIELD="addressees"><a id="addressees"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_TO]"></FUNC></span></LOOP><br /><label for="subject">[@ADMIN.INTERNAL_MESSAGING_SUBJECT] : 
+</select><LOOP NAME="fielderror" FIELD="recipients"><a id="recipients"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_TO]"></FUNC></span></LOOP><br /><label for="subject">[@ADMIN.INTERNAL_MESSAGING_SUBJECT] : 
 		</label><br class="nobr"><input type="text" size="62" name="subject" id="subject" class="text" value="[#SUBJECT|trim]"><LOOP NAME="fielderror" FIELD="subject"><a id="subject"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"></FUNC></span></LOOP><br /><label for="body">[@ADMIN.INTERNAL_MESSAGING_BODY]<span class="optional">(*)</span> : 
 		</label><br class="nobr"><textarea size="30" name="body" id="body" class="text" rows="10" cols="60">[#BODY|htmlentities(ENT_NOQUOTES, 'UTF-8')]</textarea><LOOP NAME="fielderror" FIELD="body"><a id="body"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERNAL_MESSAGING_BODY]"></FUNC></span></LOOP><br /><label for="cond">[@ADMIN.FORCE_LOOKING] : 
 		</label><br class="nobr"><IF COND="[#COND]"><input type="checkbox" name="cond" id="cond" checked><ELSE/><input type="checkbox" name="cond" id="cond"></IF><LOOP NAME="fielderror" FIELD="cond"><a id="cond"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FORCE_LOOKING]"></FUNC></span></LOOP><br />
@@ -78,7 +80,7 @@
 <legend>[@COMMON.VALIDATION]</legend>
 	<input class="button" value="[@ADMIN.INTERNAL_MESSAGING_SEND]" type="submit">&nbsp;&nbsp;&nbsp;&nbsp;
 	<input class="button" name="prev" value="[@ADMIN.INTERNAL_MESSAGING_PREV]" type="button" onclick="javascript:makePrev();">&nbsp;&nbsp;&nbsp;&nbsp;
-	<input class="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php?lo=internal_messaging&amp;do=list<IF COND="[#IDPARENT">&amp;id=[#IDPARENT]</IF>'" type="button">	
+	<input class="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php?lo=internal_messaging&amp;do=list<IF COND="[#IDPARENT]">&amp;id=[#IDPARENT]</IF>'" type="button">	
 </fieldset>
 </form>
 <script type="text/javascript">

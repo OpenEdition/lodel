@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -54,6 +56,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -71,20 +75,20 @@ class InternalstylesLogic extends Logic {
 
 	{
 		switch($var) {
-		case "surrounding" :
+			case "surrounding" :
 			$arr=array(
 			"-*"=>getlodeltextcontents("previous_style","admin"),
 			"*-"=>getlodeltextcontents("next_styles","admin"),
 			);
 			
-			$dao=&getDAO("tablefields");
+			$dao=getDAO("tablefields");
 			$vos=$dao->findMany("style!=''","style","style");
 			foreach($vos as $vo) {
 				if (strpos($vo->style,".")!==false || strpos($vo->style,":")!==false) continue;
 				$style=preg_replace("/[;,].*/","",$vo->style); // remove the synonyms
 				$arr[$style]=$style;
 			}
-			renderOptions($arr,$context['surrounding']);
+			renderOptions($arr,isset($context['surrounding']) ? $context['surrounding'] : '');
 			break;
 		}
 	}

@@ -11,6 +11,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -34,16 +36,22 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
  */
 
-if (is_readable($home . 'loops_local.php'))
-	require_once "loops_local.php";
+if (is_readable(C::get('home', 'cfg') . 'loops_local.php'))
+	include "loops_local.php";
 
 /**
  * Loop parententities
@@ -54,10 +62,14 @@ if (is_readable($home . 'loops_local.php'))
 function loop_parentsentities(& $context, $funcname, $critere = "")
 {
 	global $db;
-	$id = intval($context['id']);
+	$id = (int)$context['id'];
 	if (!$id)
 		return;
-	$result = $db->execute(lq("SELECT *  FROM #_entitiestypesjoin_,#_TP_relations WHERE #_TP_entities.id=id1 AND id2='".$id."' AND nature='P' AND #_TP_entities.status>". ($GLOBALS['lodeluser']['visitor'] ? -64 : 0)." ORDER BY degree DESC")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$result = $db->execute(lq("SELECT * 
+                            FROM #_entitiestypesjoin_,#_TP_relations 
+                            WHERE #_TP_entities.id=id1 AND id2='".$id."' 
+                            AND nature='P' AND #_TP_entities.status>". (C::get('visitor', 'lodeluser') ? -64 : 0)." 
+                            ORDER BY degree DESC")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);
@@ -92,10 +104,11 @@ function loop_toc($context, $funcname, $arguments)
 	$i = 0;
 	$tocid = array ();
 	foreach ($results as $result) {
-		$i ++;
+		++$i;
 		$localcontext = $context;
-		$level = intval($result[2]);
+		$level = (int)$result[2];
 		$localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
+        	if(!isset($tocid[$level])) $tocid[$level] = 0; 
 		$localcontext['tocid'] = $level."n". (++ $tocid[$level]);
 		$localcontext['title'] = $localcontext['titre'] = $result[3]; //for compatibility
 		if ($i == 1 && function_exists("code_dofirst_$funcname")) {
@@ -114,7 +127,7 @@ function loop_toc($context, $funcname, $arguments)
 function loop_paragraphs($context, $funcname, $arguments)
 {
 	if (!isset ($arguments['text'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
@@ -131,7 +144,7 @@ function loop_paragraphs($context, $funcname, $arguments)
 function loop_extract_images($context, $funcname, $arguments)
 {
 	if (!isset ($arguments['text'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
@@ -150,7 +163,7 @@ function loop_extract_images($context, $funcname, $arguments)
 		$result = $results[$j];
 		$localcontext = $context;
 		$attrs = preg_split("/\"/", $result[1]);
-		$countattrs = 2 * intval(count($attrs) / 2);
+		$countattrs = 2 * ((int)(count($attrs) / 2));
 		for ($i = 0; $i < $countattrs; $i += 2) {
 			$attr = trim(str_replace("=", "", $attrs[$i]));
 			if (in_array($attr, $validattrs))
@@ -166,13 +179,13 @@ function previousnext($dir, $context, $funcname, $arguments)
 {
 	global $db;
 	if (!isset ($arguments['id'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"previous\" requires a ID attribut", E_USER_ERROR);
 		return;
 	}
 
-	$id = intval($arguments['id']);
-	// cherche le document precedent ou le suivante
+	$id = (int)$arguments['id'];
+	// cherche le document precedent ou le suivant
 	if ($dir == "previous") {
 		$sort = "DESC";
 		$compare = "<";
@@ -181,8 +194,34 @@ function previousnext($dir, $context, $funcname, $arguments)
 		$compare = ">";
 	}
 
-	$statusmin = $GLOBALS['lodeluser']['visitor'] ? -32 : 0;
-	$querybase = "SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id WHERE e0.id='$id' AND e3.idparent=e0.idparent AND e3.status>$statusmin AND e0.status>$statusmin AND e3.rank".$compare."e0.rank ORDER BY e3.rank ".$sort;
+	$statusmin = C::get('visitor', 'lodeluser') ? -32 : 0;
+
+	$querybase = "SELECT e3.*,t3.type,t3.class 
+			        FROM {$GLOBALS['tp']}entities as e0 INNER JOIN {$GLOBALS['tp']}types as t0 ON e0.idtype=t0.id, 
+			        {$GLOBALS['tp']}entities as e3 INNER JOIN {$GLOBALS['tp']}types as t3 ON e3.idtype=t3.id 
+			        WHERE e0.id='{$id}' AND e3.idparent=e0.idparent AND e3.status>{$statusmin} 
+                    			AND e0.status>{$statusmin} AND e3.rank{$compare}e0.rank";
+
+	if (!empty($arguments['through']))
+	{
+		$quotedtypes = join("','", explode(",", addslashes($arguments['through'])));
+		$result = $db->execute("SELECT id FROM {$GLOBALS['tp']}types WHERE type IN ('$quotedtypes')") 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$idtypes = array();
+		while (!$result->EOF)	
+		{
+			$idtypes[] = $result->fields['id'];
+			$result->MoveNext();
+		}
+
+		if($idtypes)
+		{
+			$types = join(",", $idtypes);
+			$querybase .= ' AND t3.id IN ('.$types.')';
+		}
+	}
+
+	$querybase .= " ORDER BY e3.rank ".$sort;
 
 	do {
 		$row = $db->getRow($querybase);
@@ -193,23 +232,22 @@ function previousnext($dir, $context, $funcname, $arguments)
 			break;
 		}
 
-		if (!$arguments['through'])
+		if (!isset($types))
 			break;
-		$quotedtypes = join("','", explode(",", addslashes($arguments['through'])));
-		if (!$quotedtypes)
-			break;
-		$result = $db->execute(lq("SELECT id FROM #_TP_types WHERE type IN ('$quotedtypes')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-		while (!$result->EOF)	{
-			$idtypes[] = $result->fields['id'];
-			$result->MoveNext();
-		}
-		if (!$idtypes)
-			break;
-		$types = join("','", $idtypes);
 		// ok, on a pas trouve on cherche alors le pere suivant l'entite (e0) et son premier fils (e2)
 		// not found, well, we look for the next/previous parent above and it's first/last son.
-		$row = $db->getrow(lq("SELECT e3.*,t3.type,t3.class FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, $GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, $GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id AND e2.rank".$compare."e1.rank AND e1.idtype IN ('$types') AND e2.idtype IN ('$types') AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin AND e3.status>$statusmin ORDER BY e2.rank ".$sort.", e3.rank ".$sort));
+		$row = $db->getrow("
+			SELECT e3.*,t3.type,t3.class 
+				FROM $GLOBALS[tp]entities as e0 INNER JOIN $GLOBALS[tp]types as t0 ON e0.idtype=t0.id, 
+				$GLOBALS[tp]entities as e1, $GLOBALS[tp]entities as e2, 
+				$GLOBALS[tp]entities as e3 INNER JOIN $GLOBALS[tp]types as t3 ON e3.idtype=t3.id  
+				WHERE e0.id='$id' AND e1.id=e0.idparent AND e2.idparent=e1.idparent AND e3.idparent=e2.id 
+					AND e2.rank".$compare."e1.rank AND e1.idtype IN ({$types}) AND e2.idtype IN ({$types}) 
+					AND e0.status>$statusmin AND e1.status>$statusmin AND e2.status>$statusmin 
+					AND e3.status>$statusmin 
+				ORDER BY e2.rank ".$sort.", e3.rank ".$sort);
+
 		if ($row === false)
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
@@ -219,7 +257,7 @@ function previousnext($dir, $context, $funcname, $arguments)
 		}
 	}	while (0);
 
-	if ($localcontext) {
+	if (isset($localcontext)) {
 		call_user_func("code_do_$funcname", $localcontext);
 	}	else {
 		if (function_exists("code_alter_$funcname"))
@@ -247,29 +285,29 @@ function loop_next($context, $funcname, $arguments)
  */
 function loop_rss($context, $funcname, $arguments)
 {
-	define("MAGPIE_CACHE_ON", TRUE);
-	define("MAGPIE_CACHE_DIR", "./CACHE");
-	define("DIRECTORY_SEPARATOR", "/");
-	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
+	if(!defined('MAGPIE_CACHE_ON')) define("MAGPIE_CACHE_ON", TRUE);
+	if(!defined('MAGPIE_CACHE_DIR')) define("MAGPIE_CACHE_DIR", "./CACHE");
+	if(!defined('DIRECTORY_SEPARATOR')) define("DIRECTORY_SEPARATOR", "/");
+	if(!defined('MAGPIE_OUTPUT_ENCODING')) define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);
 		return;
 	}
-	if ($arguments['refresh'] && !is_numeric($arguments['refresh'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+	if (isset($arguments['refresh']) && !is_numeric($arguments['refresh'])) {
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
 	if(!function_exists('fetch_rss'))
-		require "magpierss/rss_fetch.inc";
-	$rss = fetch_rss($arguments['url'], $arguments['refresh'] ? $arguments['refresh'] : 3600);
+		include "magpierss/rss_fetch.inc";
+	$rss = fetch_rss($arguments['url'], isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
-		if ($GLOBALS['lodeluser']['editor']) {
+		if (C::get('visitor', 'lodeluser')) {
 			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
 		}	else {
-			if ($GLOBALS['contactbug'])
-				@mail($GLOBALS['contactbug'], "[WARNING] LODEL - $GLOBALS[version] - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+			if (C::get('contactbug', 'cfg'))
+				@mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
 			return;
 		}
 	}
@@ -278,20 +316,20 @@ function loop_rss($context, $funcname, $arguments)
 	foreach (array (# obligatoire
 	"title", "link", "description", # optionel
 	"language", "copyright", "managingEditor", "webMaster", "pubDate", "lastBuildDate", "category", "generator", "docs", "cloud", "ttl", "rating", "textInput", "skipHours", "skipDays") as $v)
-		$localcontext[strtolower($v)] = $rss->channel[$v];
+		$localcontext[strtolower($v)] = isset($rss->channel[$v]) ? $rss->channel[$v] : '';
 
 	// special treatment for "image"
-	if ($rss->channel['image']) {
-		$localcontext['image_url'] = $rss->channel['image']['url'];
-		$localcontext['image_title'] = $rss->channel['image']['title'];
-		$localcontext['image_link'] = $rss->channel['image']['link'];
-		$localcontext['image_description'] = $rss->channel['image']['description'];
-		$localcontext['image_width'] = $rss->channel['image']['link'];
+	if (isset($rss->channel['image'])) {
+		$localcontext['image_url'] = isset($rss->channel['image']['url']) ? $rss->channel['image']['url'] : '';
+		$localcontext['image_title'] = isset($rss->channel['image']['title']) ? $rss->channel['image']['title'] : '';
+		$localcontext['image_link'] = isset($rss->channel['image']['link']) ? $rss->channel['image']['link'] : '';
+		$localcontext['image_description'] = isset($rss->channel['image']['description']) ? $rss->channel['image']['description'] : '';
+		$localcontext['image_width'] = isset($rss->channel['image']['width']) ? $rss->channel['image']['width'] : '';
+        	$localcontext['image_height'] = isset($rss->channel['image']['height']) ? $rss->channel['image']['height'] : '';
 		if (!$localcontext['image_width'])
 			$localcontext['image_width'] = 88;
 		if ($localcontext['image_width'] > 144)
 			$localcontext['image_width'] = 144;
-		$localcontext['image_height'] = $rss->channel['image']['link'];
 		if (!$localcontext['image_height'])
 			$localcontext['image_height'] = 31;
 		if ($localcontext['image_height'] > 400)
@@ -309,7 +347,7 @@ function loop_rss($context, $funcname, $arguments)
 function loop_rssitem($context, $funcname, $arguments)
 {
 	// check whether there are some items in the rssobject.
-	if (!$context['rssobject'] || !$context['rssobject']->items) {
+	if (!is_object($context['rssobject']) || !isset($context['rssobject']->items)) {
 		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $localcontext);
 		return;
@@ -323,7 +361,7 @@ function loop_rssitem($context, $funcname, $arguments)
 	$items = $context['rssobject']->items;
 	$context['nbresults'] = $context['nbresultats'] = count($items);
 	$count = 0;
-	if ($arguments['limit']) {
+	if (isset($arguments['limit'])) {
 		list ($start, $length) = preg_split("/\s*,\s*/", $arguments['limit']);
 	} else {
 		$start = 0;
@@ -331,12 +369,13 @@ function loop_rssitem($context, $funcname, $arguments)
 	}
 
 	for ($i = $start; $i < $start + $length; $i ++) {
+        	if(!isset($items[$i])) continue;
 		$item = $items[$i];
 		$localcontext = $context;
-		$count ++;
+		++$count;
 		$localcontext['count'] = $count;
 		foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubdate", "source") as $v)
-			$localcontext[strtolower($v)] = $item[$v];
+			$localcontext[strtolower($v)] = isset($item[$v]) ? $item[$v] : '';
 		call_user_func("code_do_$funcname", $localcontext);
 	}
 	if (function_exists("code_after_$funcname"))
@@ -393,7 +432,7 @@ function _constructPages(& $context, $funcname, $arguments)
 		return;
 
 	$offsetname = $context['offsetname'];
-	$currentoffset = ($_REQUEST[$offsetname] ? $_REQUEST[$offsetname] : 0);
+	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
 	$cleanquery = preg_replace(array("/(^|&)".$offsetname."=\d+/","/(^|&)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
 	if ($cleanquery[0] == "&")
@@ -415,7 +454,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	$pages = array ();
 	//previous pages 
 	$i = 0;
-	while ($i + $arguments['limit'] <= intval($currentoffset)) {
+	while ($i + $arguments['limit'] <= (int)$currentoffset) {
 		$urlpage = $currenturl.$offsetname."=".$i;
 		$pages[($i / $arguments['limit'] + 1)] = $urlpage;
 		$i += $arguments['limit'];
@@ -492,9 +531,9 @@ function loop_mltext(& $context, $funcname)
 			call_user_func("code_do_$funcname", $localcontext);
 		}
 		// pas super cette regexp... mais l argument a deja ete processe !
-	}	elseif (preg_match_all("/&lt;r2r:ml lang\s*=&quot;(\w+)&quot;&gt;(.*?)&lt;\/r2r:ml&gt;/s", 
-													$context['value'], $results, PREG_SET_ORDER) || 
-						preg_match_all("/<r2r:ml lang\s*=\"(\w+)\">(.*?)<\/r2r:ml>/s", 
+	}	elseif (/*preg_match_all("/&amp;lt;r2r:ml lang\s*=&amp;quot;(\w+)&amp;quot;&amp;gt;(.*?)&amp;lt;\/r2r:ml&amp;gt;/s", 
+													$context['value'], $results, PREG_SET_ORDER) || */
+        preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
 														$context['value'], $results, PREG_SET_ORDER))	{
 		foreach ($results as $result)	{
 			$localcontext = $context;
@@ -511,7 +550,7 @@ function loop_mltext(& $context, $funcname)
 function loop_rightonentity(& $context, $funcname, $arguments)
 {
 	if (!isset ($arguments['action'])) {
-		if ($GLOBALS['lodeluser']['visitor'])
+		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"rightonentity\" requires an ACTION attribut", E_USER_ERROR);
 		return;
 	}
@@ -530,7 +569,7 @@ function loop_rightonentity(& $context, $funcname, $arguments)
 function loop_errors(& $context, $funcname, $arguments)
 {
 	$localcontext = $context;
-	if (is_array($localcontext['error'])) {
+	if (!empty($localcontext['error']) && is_array($localcontext['error'])) {
 		if (function_exists("code_before_$funcname")) {
 			$context['count'] = count($context['error']);
 			call_user_func("code_before_$funcname", $context);
@@ -552,9 +591,10 @@ function loop_fielderror(& $context, $funcname, $arguments)
 {
 	if (!$arguments['field'])
 		trigger_error("ERROR: loop fielderror require a field attribute", E_USER_ERROR);
-	$localcontext = $context;
-	$localcontext['error'] = $context['error'][$arguments['field']];
-	if ($localcontext['error']) {
+	
+	if (isset($context['error'][$arguments['field']])) {
+        $localcontext = $context;
+        $localcontext['error'] = $context['error'][$arguments['field']];
 		call_user_func("code_do_$funcname", $localcontext);
 	}
 }
@@ -589,8 +629,10 @@ function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
 
-	if((!is_array($arguments['array']) || !$arguments['array']) && function_exists("code_alter_$funcname")) {
-		call_user_func("code_alter_$funcname", $localcontext);
+	if((!is_array($arguments['array']) || empty($arguments['array']))) {
+		if(function_exists("code_alter_$funcname"))
+			call_user_func("code_alter_$funcname", $localcontext);
+		return;
 	}
 	$localcontext['count'] = count($arguments['array']);
 	//Le before
@@ -629,7 +671,7 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 	global $db;
 	static $compatible_types;
 	if(!function_exists('checkTypesCompatibility'))
-		require 'entitiesfunc.php';
+		include 'entitiesfunc.php';
 	if(!$compatible_types) {
 		//selectionne tous les types de la classe
 		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
@@ -712,16 +754,19 @@ function loop_alphabet($context, $funcname)
  */
 function loop_alphabetSpec($context, $funcname)
 {
-	global $db, $lodeluser;
+	global $db;
 	if(empty($context['table']) || empty($context['field']))
 		trigger_error("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.", E_USER_ERROR);
 	if(!empty($context['idtype'])) {
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
 		$whereCount = " idtype = '{$context['idtype']}' AND ";
 	}
-	$status = $lodeluser['editor'] ? ' status > -64 ' : ' status > 0 ';
+	$status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
 	$whereSelect .= isset($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
-	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l FROM #_TP_{$context['table']} {$whereSelect} ORDER BY l";
+	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l 
+			FROM #_TP_{$context['table']} 
+			{$whereSelect} 
+			ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
 
@@ -756,4 +801,17 @@ function loop_alphabetSpec($context, $funcname)
 		}
 	}
 }
+
+function loop_classtypes($context, $funcname)
+{
+    global $db;
+    foreach(array('entities', 'entries', 'persons') as $classtype) {
+        $localcontext = $context;
+        $localcontext['classtype'] = $classtype;
+        $localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
+            call_user_func("code_do_$funcname", $localcontext);
+    }
+}
+
+define('INC_LOOPS', 1);
 ?>

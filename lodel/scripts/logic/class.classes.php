@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -52,6 +54,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -160,27 +164,27 @@ class ClassesLogic extends Logic
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		if ($clean != CLEAN) {      // validate the forms data
+		if ($clean != 'CLEAN') {      // validate the forms data
 			if (!$this->validateFields($context, $error)) {
 				return '_error';
 			}
 		}
 		if(!function_exists('reservedByLodel'))
-			require 'fieldfunc.php';
+			include 'fieldfunc.php';
 		if(reservedByLodel($context['class'])) {
 			$error['class'] = 'reservedsql';
 			return '_error';
 		}
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = $context['id'] = (int)$context['id'];
+		$id = $context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
 			$dao->instantiateObject($vo);
 			$vo->id = $id;
 		} else {
-			$vo =& $dao->createObject();
+			$vo = $dao->createObject();
 		}
 		if ($dao->rights['protect']) {
 			$vo->protect = $context['protected'] ? 1 : 0;
@@ -204,8 +208,10 @@ class ClassesLogic extends Logic
 	protected function _saveRelatedTables ($vo, $context) 
 	{
 		global $db;
+
+		$alter = false;
 		//----------------new, create the table
-		if (!$this->oldvo->class) {
+		if (!isset($this->oldvo->class)) {
 			switch($vo->classtype) {
 			case 'entities' :
 				$create = "identity	INTEGER UNSIGNED  UNIQUE, KEY index_identity (identity)";
@@ -239,8 +245,6 @@ class ClassesLogic extends Logic
 			$alter = true;
 		}
 		if ($alter) {        // update the CACHE ?
-			if(!function_exists('clearcache'))
-				require 'cachefunc.php';
 			clearcache();
 		}
 	}
@@ -268,7 +272,7 @@ class ClassesLogic extends Logic
 	 * @param integer $id identifiant numérique de l'objet supprimé
 	 */
 	protected function _deleteRelatedTables ($id) {
-		global $db,$home;
+		global $db;
 		if (!$this->vo) trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		$db->execute (lq ("DROP TABLE #_TP_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($this->vo->classtype=="persons") {
@@ -276,9 +280,8 @@ class ClassesLogic extends Logic
 		}
 		// delete associated types
 		// collect the type to delete
-		$dao=&getDAO ($this->typestable ($this->vo->classtype));
-		$types=$dao->findMany ("class='". $this->vo->class. "'", "id");
-		$logic=&getLogic ($this->typestable ($this->vo->classtype));
+		$types=getDAO ($this->typestable ($this->vo->classtype))->findMany ("class='". $this->vo->class. "'", "id");
+		$logic=getLogic ($this->typestable ($this->vo->classtype));
 		foreach ($types as $type) {
 			$localcontext['id']=$type->id;
 			$logic->deleteAction ($localcontext, $err);
@@ -288,17 +291,12 @@ class ClassesLogic extends Logic
 		if ($this->vo->classtype=="persons") {
 			$criteria.=" OR class='entities_".$this->vo->class."'";
 		}
-		$dao=&getDAO ("tablefields");
-		$dao->deleteObjects ($criteria);
+		getDAO ("tablefields")->deleteObjects ($criteria);
 
 		// delete tablefields
-		$dao=&getDAO ("tablefieldgroups");
-		$dao->deleteObjects ($criteria);
+		getDAO ("tablefieldgroups")->deleteObjects ($criteria);
 		unset ($this->vo);
 
-		// should be in the view....
-		if(!function_exists('clearcache'))
-			require 'cachefunc.php';
 		clearcache();
 		return "_back";
 	}

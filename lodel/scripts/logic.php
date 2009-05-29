@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -37,9 +39,14 @@
  * @author Jean Lamy
  * @author Sophie Malafosse
  * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -57,9 +64,14 @@
  * @package lodel
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @since Fichier ajouté depuis la version 0.8
@@ -114,14 +126,15 @@ class Logic
 	public function viewAction(&$context, &$error)
 	{
 		if ($error) return; // nothing to do if it is an error.
-		$id = intval($context['id']);
+		$id = $context['id'];
 		if (!$id) return "_ok"; // just add a new Object
-		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->getById($id);
+		$vo  = $this->_getMainTableDAO()->getById($id);
 		if (!$vo) //erreur critique
 			trigger_error("ERROR: can't find object $id in the table ". $this->maintable, E_USER_ERROR);
+		if(isset($vo->passwd)) $vo->passwd = null; // clean the passwd !
 		$this->_populateContext($vo, $context); //rempli le context
-		if('tablefields' == $this->maintable && $context['mask']) {
+
+		if('tablefields' == $this->maintable && !empty($context['mask'])) {
 			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
 		}
 		//ajout d'informations supplémentaires dans le contexte (éventuellement)
@@ -174,7 +187,7 @@ class Logic
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		if ($clean != CLEAN) {      // validate the forms data
+		if ($clean != 'CLEAN') {      // validate the forms data
 			if (!$this->validateFields($context, $error)) {
 				return '_error';
 			}
@@ -182,7 +195,7 @@ class Logic
 		
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = $context['id'] = intval($context['id']);
+		$id = (int)$context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
@@ -190,16 +203,16 @@ class Logic
 			$vo->id = $id;
 		} else {
 			$create = true;
-			$vo =& $dao->createObject();
+			$vo = $dao->createObject();
 		}
 		if ($dao->rights['protect']) {
-			$vo->protect = $context['protected'] ? 1 : 0;
+			$vo->protect = isset($context['protect']) && $context['protect'] ? 1 : 0;
 		}
 		// put the context into 
 		$this->_populateObject($vo, $context);
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
-		if($create && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
+		if(isset($create) && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
 			$this->_sendPrivateInformation($context);
 		}
 		update();
@@ -226,8 +239,7 @@ class Logic
 		$criterias = array();
 		$id = $context['id'];
 		if ($groupfields) {
-			$dao = $this->_getMainTableDAO();
-			$vo  = $dao->getById($id, $groupfields);
+			$vo  = $this->_getMainTableDAO()->getById($id, $groupfields);
 			foreach (explode(",", $groupfields) as $field) {
 				$criterias[] = $field. "='". $vo->$field. "'";
 			}
@@ -253,7 +265,7 @@ class Logic
 	 */
 	public function deleteAction(&$context, &$error)
 	{
-		global $db, $home;
+		global $db;
 		$id = $context['id'];
 
 		if ($this->isdeletelocked($id)) {
@@ -269,6 +281,18 @@ class Logic
 		return $ret ? $ret : '_back';
 	}
 
+	public function removeAction(&$context, &$error)
+	{
+		// we can reach here ONLY if we are at least admin for table plugins
+		// or adminlodel for table mainplugins
+		if( (C::get('site', 'cfg') && !C::get('admin', 'lodeluser')) ||
+			!C::get('adminlodel', 'lodeluser'))
+		trigger_error('ERROR: You don\'t have the rights to do that', E_USER_ERROR);
+		
+		C::set('remove', true); // @see Dao::delete()
+		
+		return $this->deleteAction($context, $error);
+	}
 
 	/**
 	 * Implémentation par défaut de la fonction right
@@ -281,8 +305,7 @@ class Logic
 	 */
 	public function rights($access) 
 	{
-		$dao = $this->_getMainTableDAO();
-		return $dao->rights[$access];
+		return $this->_getMainTableDAO()->rights[$access];
 	}
 
 	/**
@@ -297,9 +320,7 @@ class Logic
 	 */
 	public function isdeletelocked($id, $status=0)
 	{
-		global $lodeluser;
 		// basic
-		$dao = $this->_getMainTableDAO();
 		if (is_numeric($id)) {
 			$criteria = "id='". $id. "'";
 			$nbexpected = 1;
@@ -307,10 +328,10 @@ class Logic
 			$criteria = "id IN ('". join("','", $id). "')";
 			$nbexpected = count($id);
 		}
+		$dao = $this->_getMainTableDAO();
 		$nbreal = $dao->count($criteria. " ". $dao->rightsCriteria("write"));
 		return $nbexpected != $nbreal;
 	}
-
 
 	//! Private or protected from this point
 	/**#@+
@@ -319,8 +340,7 @@ class Logic
 	
 	protected function _getMainTableDAO() 
 	{
-		$dao =& getDAO($this->maintable);
-		return $dao;
+		return getDAO($this->maintable);
 	}
    
 
@@ -346,7 +366,7 @@ class Logic
 		for ($i = 0 ; $i < $count ; $i++) {
 			if ($vos[$i]->id == $id) {
 				// exchange with the next if it exists
-				if (!$vos[$i+1]) {
+				if (!isset($vos[$i+1])) {
 					break;
 				}
 				$vos[$i+1]->rank = $newrank;
@@ -358,7 +378,7 @@ class Logic
 				$dao->save($vos[$i]);
 			}
 			if ($vos[$i]->id == $id) {
-				$i++;
+				++$i;
 			}
 			$newrank+= $dir;
 		}
@@ -377,7 +397,7 @@ class Logic
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
 		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
 		if(!function_exists('validfield'))
-			require "validfunc.php";
+			include "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
 			list($type, $condition) = $fielddescr;
@@ -407,9 +427,16 @@ class Logic
 					$error[$field]=$valid;
 				}
 			}
-			if('tablefields' == $this->maintable && 'mask' == $field && $context['mask']['user']) {
-				$this->_makeMask($context, $error);
-				if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
+			if('tablefields' == $this->maintable && 'mask' == $field) {
+				if(!empty($context['mask']['user']))
+				{
+					$this->_makeMask($context, $error);
+					if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
+				}
+				else
+				{
+					$context['mask'] = null;
+				}
 			}
 		}
 		if ($error) {
@@ -436,13 +463,12 @@ class Logic
 
 	protected function _makeMask(&$context, &$error)
 	{
-		if(!defined('PONCTUATION')) require 'utf8_file.php';
-
 		if($context['mask']['user'] == '') return;
+		if(!defined('PONCTUATION')) include 'utf8_file.php';
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {
 			// disable eval options for more security
-			$mask = $context['mask']['user'] = preg_replace('/^(.)(.*)(\\1)([msieDASUXxuJ]*)?$/e', "'\\1'.\\2.'\\1'.str_replace('e', '', \"\\4\")", $mask);
+			$mask = $context['mask']['user'] = preg_replace('/^(.)(.*)(\\1)([msieDASuUXxJ]*)?$/e', "'\\1'.\\2.'\\1'.str_replace('e', '', \"\\4\")", $mask);
 			if(FALSE === @preg_match($mask, 'just a test for user regexp')) {
 				$error['mask'] = 'mask: '.getlodeltextcontents('mask_bad_regexp', 'common');
 				return;
@@ -579,11 +605,21 @@ class Logic
 		}
 	}
 
+    public function getPublicFields()
+    {
+        return $this->_publicfields();
+    }
+
 	protected function _publicfields() 
 	{
 		trigger_error("call to abstract publicfields", E_USER_ERROR);
 		return array();
 	}
+
+    public function getUniqueFields()
+    {
+        return $this->_uniqueFields();
+    }
 
 	protected function _uniqueFields() 
 	{
@@ -598,7 +634,7 @@ class Logic
 	{
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
-			$vo->$field = $context[$field];
+			$vo->$field = isset($context[$field]) ? $context[$field] : null;
 		}
 	}
 
@@ -608,11 +644,12 @@ class Logic
 	 */
 	protected function _populateContext(&$vo, &$context) 
 	{
+		$view = (isset($context['do']) && $context['do'] == 'view');
 		foreach ($vo as $k=>$v) {
 			//Added by Jean - Be carefull using it
 			//if value is a string and we want to view it (or edit it in a form, 
 			//open a form is a view action) then we htmlize it
-			if (is_string($v) && $context['do'] == 'view') {
+			if (is_string($v) && $view) {
 				$v = htmlspecialchars($v);
 			}
 			$context[$k] = $v;
@@ -655,15 +692,12 @@ class Logic
 	protected function _processSpecialFields($type, $context, $status = 0) 
 	{
 		global $db;
-		$daoentities = &getDAO('entities');
-		$vo = $daoentities->getById($context['id'], 'id, idtype');
-		$daotype = &getDAO ("types");
-		$votype = $daotype->getById ($vo->idtype, 'class');
+		$vo = getDAO('entities')->getById($context['id'], 'id, idtype');
+		$votype = getDAO ("types")->getById ($vo->idtype, 'class');
 		$class = $votype->class;
-		unset($vo);	unset($votype);
+		unset($vo,$votype);
 
-		$daotablefields = &getDAO("tablefields");
-		$fields = $daotablefields->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
+		$fields = getDAO("tablefields")->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
 		if($fields && $type == 'history') {
 			$updatecrit = "";
 			foreach ($fields as $field) {
@@ -687,18 +721,18 @@ class Logic
 	 */
 	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
 	{
-		$dao = &getDAO('users');
-		if($context['lodeluser']['adminlodel'] == 1) {
+		if($context['id']) {
+            	$dao = getDAO('users');
+		if(C::get('lodeladmin', 'lodeluser')) {
 			usemaindb();
-			$vo = $dao->getById ($context['lodeluser']['id']);
+			$vo = $dao->getById (C::get('id', 'lodeluser'));
 			usecurrentdb();
 		}
 		else {
-			$vo = $dao->getById ($context['lodeluser']['id']);
+			$vo = $dao->getById (C::get('id', 'lodeluser'));
 		}
-		if($context['id']) {
-			//edition or change of status
-			switch($status) {
+		//edition or change of status
+		switch($status) {
 			case 0:
 				$line .= getlodeltextcontents('editedby', 'common');
 				break;
@@ -735,25 +769,25 @@ class Logic
 	protected function _isAuthorizedStatus($status)
 	{
 	//echo $this->maintable . '<p>' . $status . '<p>';
-			switch ($this->maintable) {
-				case 'entities' :
-					$this->_authorizedStatus = array(-64, -8, -1, 1, 8, 17, 24);
-					break;
-				case 'persons' :
-				case 'entries' :
-					$this->_authorizedStatus = array(-64, -32, -1, 1, 32);
-					break;
-				case 'texts' :
-					$this->_authorizedStatus = array(-1, 1, 2);
-					break;
-				default : trigger_error("ERROR: Cannot find authorized status", E_USER_ERROR);
-					
-			}
-			if (in_array($status, $this->_authorizedStatus) || $status == 0) {
-				return true;
-			} else {
-				trigger_error("ERROR: Invalid status ! ", E_USER_ERROR);
-			}
+		switch ($this->maintable) {
+			case 'entities' :
+				$this->_authorizedStatus = array(-64, -8, -1, 1, 8, 17, 24);
+				break;
+			case 'persons' :
+			case 'entries' :
+				$this->_authorizedStatus = array(-64, -32, -1, 1, 32);
+				break;
+			case 'texts' :
+				$this->_authorizedStatus = array(-1, 1, 2);
+				break;
+			default : trigger_error("ERROR: Cannot find authorized status", E_USER_ERROR);
+				
+		}
+		if (in_array($status, $this->_authorizedStatus) || $status == 0) {
+			return true;
+		} else {
+			trigger_error("ERROR: Invalid status ! ", E_USER_ERROR);
+		}
 	}
 	/**#@-*/
 
@@ -766,17 +800,24 @@ class Logic
  * Logic factory
  *
  */
-function &getLogic($table) 
+function getLogic($table) 
 {
 	static $factory; // cache
 	if (isset($factory[$table])) {
 		return $factory[$table]; // cache
 	}
 	$logicclass = $table. 'Logic';
-	if(!class_exists($logicclass, false))
-		require "logic/class.$table.php";
+	if(!class_exists($logicclass))
+	{
+		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/logic.php';
+		if(!file_exists($file))
+			trigger_error('ERROR: unknown logic', E_USER_ERROR);
+		include $file;
+		if(!class_exists($logicclass,false) || !is_subclass_of($logicclass, 'Logic'))
+			trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
+	}
 	$factory[$table] = new $logicclass;
-	//return $factory[$table]= new $logicclass;
+
 	return $factory[$table];
 }
 
@@ -788,8 +829,7 @@ function &getLogic($table)
 	{
 		static $cache;
 		if (!isset($cache[$table][$access])) {
-			$logic = &getLogic($table);
-			$cache[$table][$access] = $logic->rights($access);
+			$cache[$table][$access] = getLogic($table)->rights($access);
 		}
 		return $cache[$table][$access];
 	}
@@ -802,8 +842,7 @@ function isdeletelocked($table, $id, $status = 0)
 {
 	static $cache;
 	if (!isset($cache[$table][$id])) {
-		$logic = &getLogic($table);
-		$cache[$table][$id] = $logic->isdeletelocked($id, $status);
+		$cache[$table][$id] = getLogic($table)->isdeletelocked($id, $status);
 	}
 	return $cache[$table][$id];
 }

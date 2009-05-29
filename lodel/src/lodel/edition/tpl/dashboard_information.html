@@ -4,10 +4,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C?ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -61,14 +63,14 @@
 	<tr>
 		<th class="type">[@COMMON.INSTALL_LANG]</th>
 		<td>
-		<?php  echo $GLOBALS['installlang']; ?>
+		<?php  echo C::get('installlang', 'cfg'); ?>
 		</td>
 	</tr>
 	<tr>
 		<th class="type">[@COMMON.CONFIG_LOCALE]</th>
 		<td>
 		<?php  
-			echo $GLOBALS['locale'].'&nbsp;'; 
+			$locale = C::get('locale', 'cfg'); echo $locale.'&nbsp;'; 
 		?>
 		</td>
 	</tr>
@@ -100,7 +102,7 @@
 		if($locales = list_system_locales()){
 			echo "<ul>\n";
 			foreach($locales as $loc){
-				echo strtolower($loc) == strtolower($GLOBALS['locale']) ? "<li><strong>".utf8_encode($loc)."</strong></li>" : "<li>".utf8_encode($loc)."</li>\n";
+				echo strtolower($loc) == strtolower($locale) ? "<li><strong>".utf8_encode($loc)."</strong></li>" : "<li>".utf8_encode($loc)."</li>\n";
 			}
 			echo "</ul>\n";
 		}
@@ -114,7 +116,7 @@
 	<table class="statistics">
 		<caption>[@COMMON.SOFTWARE_VERSIONS]</caption>
 	<tr>
-		<th class="type">Lodel</th><td>[#VERSION] - r. <?php echo $GLOBALS['revision'];?></td>
+		<th class="type">Lodel</th><td>[#VERSION] - r. <?php echo C::get('revision', 'cfg');?></td>
 	</tr>
 
 	<tr>
@@ -156,7 +158,7 @@
 		<?php
 		if(function_exists("mb_get_info")){
 			echo "<ul>";
-			foreach(mb_get_info(ALL) as $k => $mbinfo){
+			foreach(mb_get_info('all') as $k => $mbinfo){
 				if($mbinfo){
 					echo "<li>$k : ".(is_array($mbinfo) ? join(',', $mbinfo) : $mbinfo)."</li>";
 				}

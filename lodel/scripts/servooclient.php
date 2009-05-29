@@ -5,6 +5,10 @@
  *
  *  Copyright (c) 2004, Ghislain Picard, Gautier Poupeau, Luc Santeramo
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ *  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  *  Home page: http://www.servoo.net
  *
@@ -44,8 +48,14 @@ if(!class_exists('soapclientmime', false))
  *
  * @package servooclient
  * @author Ghislain Picard, Gautier Poupeau, Luc Santeramo
- * @copyright Copyright (c) 2004, Ghislain Picard, Gautier Poupeau, Luc Santeramo
- * @copyright Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  */
 
@@ -209,7 +219,7 @@ class ServOO_Client {
 			 $options=array(),
 			 $zipoptions=array()) {
 
-    global $tmpoutdir;
+    $tmpoutdir = C::get('tmpoutdir', 'cfg');
     if(empty($tmpoutdir) && !empty($outdir)) {
 	$tmpoutdir = $outdir;
     }
@@ -284,8 +294,7 @@ class ServOO_Client {
 			  $callbackimages="",
 			  $user_vars="") 
   {
-
-    global $tmpoutdir;
+    $tmpoutdir = C::get('tmpoutdir', 'cfg');
     if(empty($tmpoutdir) && !empty($outdir)) {
 	$tmpoutdir = $outdir;
     }

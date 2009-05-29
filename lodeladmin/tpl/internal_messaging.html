@@ -1,28 +1,36 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1" REFRESH="1"/>
 <!--[
-
    LODEL - Logiciel d'Edition ELectronique.
+
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C?ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+
    Home page: http://www.lodel.org
+
    E-Mail: lodel@lodel.org
+
                              All Rights Reserved
+
       This program is free software; you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
       the Free Software Foundation; either version 2 of the License, or
       (at your option) any later version.
+
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
+
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+]-->
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_admin.html">
@@ -33,17 +41,17 @@
 </title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
-<LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
 <ul id="actionsOnEntitiesPath"><li><span class="intit">[@COMMON.INTERNAL_MESSAGING] <IF COND="[%NBMSGS]">([%NBMSGS])</IF></span></li>
 <li>
 	<ul class="actions">
+        <LET VAR="directory"><IF COND="![#DIRECTORY|empty]">[#DIRECTORY|strtolower]<ELSE/>inbox</IF></LET>
 		<IF COND="[#DIRECTORY] EQ 'inbox'">
-		<LET ARRAY="actions[view]">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
+		  <LET ARRAY="actions.view">[@ADMIN.ADD_INTERNAL_MESSAGING]</LET>
 		<ELSEIF COND="[#DIRECTORY] EQ 'trash'">
-		<LET ARRAY="actions[rest]">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
+		  <LET ARRAY="actions.rest">[@ADMIN.INTERNAL_MESSAGING_RESTORE_SELECTED]</LET>
 		</IF>
-		<LET ARRAY="actions[delSelected]">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
-		<LET ARRAY="actions[delAll]">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
+		<LET ARRAY="actions.delSelected">[@ADMIN.INTERNAL_MESSAGING_DELETE_SELECTED]</LET>
+		<LET ARRAY="actions.delAll">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
 		<li class="isolated">
 			<label for="actions">[@COMMON.ACTIONS] :</label>
 			<select class="barInfo" id="actions">
@@ -57,13 +65,10 @@
 </li>
 </ul>
 <br />
-<IF COND="[#ERROR]">
-	<p class="error">[#ERROR]</span>
-<ELSE />
-<IF COND="[#MSGSENDED]" />
-	<p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
-<ELSEIF COND="[#DELETED]" />
-	<p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+<IF COND="[#ERROR]"><p class="error">[#ERROR]</span>
+<ELSEIF COND="[#MSGSENDED]"/><p>[@ADMIN.MSG_CORRECTLY_SENDED]</p>
+<ELSEIF COND="[#DELETED]"/><p>[@ADMIN.MSG_CORRECTLY_DELETED]</p>
+<ELSEIF COND="[#RESTORED]"/><p>[@ADMIN.MSG_CORRECTLY_RESTORED]</p>
 </IF>
 
 <IF COND="[#ID]">
@@ -73,7 +78,7 @@
 	<IF COND="[#DIRECTORY] NE 'sent'">
 	<p><strong>[@ADMIN.INTERNAL_MESSAGING_SENDER] :</strong> [#DATA.SENDER]</p>
 	<ELSE/>
-	<p><strong>[@ADMIN.INTERNAL_MESSAGING_TO] :</strong> [#DATA.ADDRESSEE]</p>
+	<p><strong>[@ADMIN.INTERNAL_MESSAGING_TO] :</strong> [#DATA.RECIPIENT]</p>
 	</IF>
 	<p><strong>[@ADMIN.INTERNAL_MESSAGING_MESSAGE] :</strong><br>[#DATA.BODY|nl2br]</p>
 	</fieldset>
@@ -83,14 +88,12 @@
 	<MACRO NAME="DELETE_BUTTON">&nbsp;&nbsp;&nbsp;&nbsp;
 	<input class="button" type="button" value="[@LODELADMIN.BACK]" onclick="javascript:window.location='index.php?do=list&amp;lo=internal_messaging&amp;directory=[#DIRECTORY]'" />
 	</fieldset>
-
 <ELSE/>
-
 	<LET VAR="lodeluserid">
 	<IF COND="[#LODELUSER.ADMINLODEL]">
-		lodelmain-[#LODELUSER.ID]
+		lodelmain-<?php echo C::get('id', 'lodeluser'); ?>
 	<ELSE />
-		[#SITE]-[#LODELUSER.ID]
+		[#SITE]-<?php echo C::get('id', 'lodeluser'); ?>
 	</IF>
 	</LET>
 	<LET VAR="idpar">0</LET>
@@ -100,15 +103,11 @@
 		<LET VAR="im_groupby">incom_date, subject</LET>
 	</DO>
 	<DO CASE="trash">
-		<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+		<LET VAR="im_where">in (-1, -2, -8, -16) AND recipient = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
-	<DO CASE="inbox">
-		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
-		<LET VAR="im_groupby">id</LET>
-	</DO>
-	<DO CASE="default">
-		<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
+	<DO CASES="inbox,default">
+		<LET VAR="im_where">in (0, 1, 16, 32) AND recipient = '[#LODELUSERID|trim]'<IF COND="![#SORT|isset]"> AND idparent='[#IDPAR]'</IF></LET>
 		<LET VAR="im_groupby">id</LET>
 	</DO>
 	</SWITCH>
@@ -121,16 +120,16 @@
 <input type="hidden" name="lo" value="internal_messaging"/>
 <input type="hidden" name="do" value="delete"/>
 <input type="hidden" name="directory" value="[#DIRECTORY]"/>
-<IF COND="![#SORT|isset]">
+<IF COND="![#SORT]">
 	<LOOP NAME="getMessages" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="incom_date ASC" GROUPBY="[#IM_GROUPBY]">
 		<BEFORE>
-			<IF COND="[%INSIDE|intval] GT 0"><?php $GLOBALS['context']['level']++; ?><tr><ELSE/>
+			<IF COND="[%INSIDE|intval] GT 0"><LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+',1)]</LET><tr><ELSE/>
 			<table class="internal_messaging" id="internal_messaging">
 				<th class="im_select"><input type="checkbox" name="im_select_all" onclick="javascript:im_selectAll();"/></th>
 				<IF COND="[#DIRECTORY] NE 'sent'">
 				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=iduser&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_FROM]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_FROM]"/></a></th>
 				<ELSE/>
-				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a></th>
+				<th class="im_from"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a></th>
 				</IF>
 				<th class="im_subject"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=subject&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_SUBJECT]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_SUBJECT]"/></a></th>
 				<th class="im_date"><a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=incom_date&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_DATE]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_DATE]"/></a></th></tr>
@@ -155,7 +154,7 @@
 			</LOOP>
 			</td>
 			<ELSE/>
-				<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+				<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 				<LET VAR="tos" GLOBAL="1"></LET>
 				<LOOP NAME="foreach" ARRAY="[#USERS]">
 				<IF COND="[#VALUE] LIKE /(\w+)\-(\d+)/">
@@ -202,7 +201,7 @@
 				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"></strong><IF COND="[#COND] EQ 1"></span></IF></IF>
 				</a>
 			</td>
-			<?php $GLOBALS['context']['inside']++; ?>
+			<LET VAR="inside" GLOBAL="1">[%INSIDE|lmath('+',1)]</LET>
 			<IF COND="[#DIRECTORY] NE 'sent'">
 				<LET VAR="idpar">[#ID]</LET>
 				<SWITCH TEST="[#DIRECTORY]">
@@ -210,13 +209,10 @@
 					<LET VAR="im_where">in (-32, -8, -1, 0, 1) AND iduser = '[#LODELUSERID|trim]'</LET>
 				</DO>
 				<DO CASE="trash">
-					<LET VAR="im_where">in (-1, -2, -8, -16) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+					<LET VAR="im_where">in (-1, -2, -8, -16) AND recipient = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
 				</DO>
-				<DO CASE="inbox">
-					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
-				</DO>
-				<DO CASE="default">
-					<LET VAR="im_where">in (0, 1, 16, 32) AND addressee = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
+				<DO CASES="inbox,default">
+					<LET VAR="im_where">in (0, 1, 16, 32) AND recipient = '[#LODELUSERID|trim]' AND idparent='[#IDPAR]'</LET>
 				</DO>
 				</SWITCH>
 				<LOOP NAME="getMessages"></LOOP>
@@ -224,24 +220,18 @@
 			</tr>
 		</DO>
 		<AFTER>
-			<IF COND="[%INSIDE] GT 0"></tr><?php $GLOBALS['context']['level']--; ?><ELSE/></table></IF>
+			<IF COND="[%INSIDE] GT 0"></tr><LET VAR="inside" GLOBAL="1">[%INSIDE|lmath('-',1)]</LET><ELSE/></table></IF>
 		</AFTER>
 		<ALTERNATIVE><IF COND="[#IDPARENT] EQ [#IDPAR]">[@ADMIN.INTERNAL_MESSAGING_NO_MAILS]</IF></ALTERNATIVE>
 	</LOOP>	
 
 <ELSE/>
 
-	<LET VAR="dir">
-	<IF COND="[#DIR|strtolower] EQ 'desc'">
-		DESC
-	<ELSE/>
-		ASC
-	</IF>
-	</LET>
+	<LET VAR="dir"><IF COND="[#DIR|strtolower] EQ 'desc'">DESC<ELSE/>ASC</IF></LET>
 	<LET VAR="orderby">
 	<IF COND="[#SORT]">
 		<SWITCH TEST="[#SORT|strtolower]">
-			<DO CASES="iduser,subject,addressees">
+			<DO CASES="iduser,subject,recipients">
 				[#SORT|strtolower]
 			</DO>
 			<DO CASE="default">
@@ -250,7 +240,6 @@
 		</SWITCH>
 	<ELSE/>incom_date</IF>
 	</LET>
-	<LET VAR="dir">[#DIR|trim]</LET>
 	<LET VAR="orderby">[#ORDERBY|trim]</LET>
 	<LOOP NAME="getMessagesWithSort" DATABASE="lodelmain" TABLE="internal_messaging" WHERE="status [#IM_WHERE]" ORDER="[#ORDERBY] [#DIR]" GROUPBY="[#IM_GROUPBY]">
 		<BEFORE>
@@ -266,10 +255,10 @@
 		</IF>
 		<ELSE/>
 		<IF COND="[#ORDERBY] EQ 'iduser' AND [#DIR] EQ 'DESC'">
-			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;dir=asc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;
 			<img src="[#SHAREURL]/images/fleche_haut_gris.png" alt="ASC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
 		<ELSE/>
-			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=addressees&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
+			<a href="index.php?lo=internal_messaging&amp;do=list&amp;sort=recipients&amp;dir=desc&amp;directory=[#DIRECTORY]">&nbsp;<strong>[@ADMIN.INTERNAL_MESSAGING_TO]</strong>&nbsp;<img src="[#SHAREURL]/images/fleche_bas_gris.png" alt="DESC" title="[@ADMIN.INTERNAL_MESSAGING_TO]"/></a>
 		</IF>
 		</IF>
 		</th>
@@ -311,7 +300,7 @@
 			</LOOP>
 			</td>
 		<ELSE/>
-			<LET ARRAY="users">[#ADDRESSEES|lexplode(':')]</LET>
+			<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 			<LET VAR="tos" GLOBAL="1"></LET>
 			<LOOP NAME="foreach" ARRAY="[#USERS]">
 			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
@@ -367,6 +356,5 @@
 	</LOOP>
 </IF>
 </form>
-</IF>
 </IF>
 <MACRO NAME="CLOSE_HTML">

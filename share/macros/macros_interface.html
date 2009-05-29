@@ -1,3 +1,28 @@
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
 
 <DEFMACRO NAME="INTERTITLE">
 <IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF>
@@ -26,7 +51,7 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spï¿½cial dans le cas d'une personne -->
+				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
 					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
 					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
 						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
@@ -96,7 +121,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par dï¿½faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -117,7 +142,7 @@
                                 <div class="hidden">
                         </IF>
                                 <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-                                <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> [#IDENTITY]
+                                <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> 
                                 <!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
                                 <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
                                 <br />
@@ -154,14 +179,14 @@
     else
       $context['fck_mode'] = 'Advanced';
     //Width (by default will be 600px)
-    $context['fck_width'] = (($parameters[1])  ? intval($parameters[1]) : 550);
+    $context['fck_width'] = (isset($parameters[1])  ? intval($parameters[1]) : 550);
     //Height (by default will be 400px)
-    $context['fck_height'] = (($parameters[2]) ? intval($parameters[2]) : 400);
+    $context['fck_height'] = (isset($parameters[2]) ? intval($parameters[2]) : 400);
     //Language (by default will be empty)
-    $context['fck_language'] = ($parameters[3] ? trim($parameters[3]) : $context['lodeluser']['lang']);
-    $context['fck_autodetectlanguage'] = 'false';
-		//SkinName (by default will be default :p)
-    $context['fck_skin'] = (($parameters[5]) ? trim($parameters[5]) : 'silver');
+    $context['fck_language'] = (isset($parameters[3]) ? trim($parameters[3]) : $context['lodeluser']['lang']);
+    $context['fck_autodetectlanguage'] = (isset($parameters[4]) ? trim($parameters[4]) : false);
+	//SkinName (by default will be default :p)
+    $context['fck_skin'] = (isset($parameters[5]) ? trim($parameters[5]) : 'silver');
   }
   else
   {
@@ -176,10 +201,10 @@
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'ï¿½dition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisï¿½e dans les templates gï¿½nï¿½rï¿½s automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien ï¿½ cause du nom de la
-	variable qui diffï¿½re.]-->
+<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
+	variable qui diffère.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -269,24 +294,17 @@
 ?>
 		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
 <?php
-				$urlFck = SITEROOT . $GLOBALS['sharedir'] . "/plugins/fckeditor/";
+				$urlFck = C::get('sharedir', 'cfg') . "/plugins/fckeditor/";
 				require_once($urlFck."fckeditor.php");
 				$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
 				$oFCKeditor->ToolbarSet = $context['fck_mode'];
 				$oFCKeditor->BasePath = $urlFck;
 				$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
 				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-				$oFCKeditor->Config["AutoDetectLanguage"] = $context['FCK_AUTODETECTLANGUAGE'];
-				$oFCKeditor->Config["DefaultLanguage"] = $context['FCK_LANGUAGE'];
+				$oFCKeditor->Config["AutoDetectLanguage"] = $context['fck_autodetectlanguage'];
+				$oFCKeditor->Config["DefaultLanguage"] = $context['fck_language'];
 				$oFCKeditor->Value = $context['value'];
 				$oFCKeditor->Create();
-?>
-		</IF>
-		<IF COND="[#EDITION] EQ 'wysiwyg_spaw'">
-<?php
- 		/*	include_once(SITEROOT . $GLOBALS['sharedir'] . "/plugins/spaw2/spaw.inc.php");
-			$spaw = new SpawEditor($context['fullvarname'], $context['value']);
-			$spaw->show();*/
 ?>
 		</IF>
     	<ELSE/>
@@ -297,13 +315,7 @@
         	</IF>
       </IF>
 	<?php 
-			/* le javascript sert ï¿½ï¿½dï¿½bugger FCKEditor qui charge ï¿½ l'infini
-			on avait la div qui sert ï¿½ gï¿½nï¿½rer les champs auteur/directeur de publication etc ..
-			qui par dï¿½faut avait comme display 'none' ce qui crï¿½ait le bug. 
-			Maintenant on a une div en display block qui se met en display none 
-			3s apres le dï¿½but de chargement de la page
-			=> Largement suffisant, mais pas trop quand meme, sachant que FCKEditor est tres lourd */
-			if($context['nom']) {	?>
+			if(isset($context['nom'])) {	?>
 				<script type="text/javascript">
 					if(document.getElementById("persons_[#NOM]_for_copy")) {
 						function cacher_copie(nom_elmt) {
@@ -344,8 +356,8 @@
 <ELSE/>
 <!--[ --------------- MULTIPLESELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'multipleselect'">
-	      <select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
-		<?php  makeSelect($context,"value","",$context['type']); ?>
+	      <select name="[#FULLVARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
+		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
@@ -389,17 +401,17 @@
 <ELSE/>
 <!--[ --------------- COLOR ------------- ]-->	    
 <IF COND="[#TYPE] eq 'color'">
-<script language="Javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
-<script language="Javascript">
+<script type="text/javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
+<script type="text/javascript">
 <!--
 	var cp_[#VARNAME] = new ColorPicker(); // DIV style
 -->
 </script>
 <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
-<a href="#" onClick="cp_[#VARNAME].select(document.forms[0].[#VARNAME],'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
-<script language="JavaScript">
+<a href="#" onclick="cp_[#VARNAME].select(document.getElementById('[#VARNAME]'),'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+<script type="text/javascript">
 <!--
-document.forms[0].[#VARNAME].style.backgroundColor='[#VALUE]';
+document.getElementById('[#VARNAME]').style.backgroundColor='[#VALUE]';
 cp_[#VARNAME].writeDiv();
 -->
 </script>
@@ -427,7 +439,6 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<ELSE/>
-	
 	<select id="[#VARNAME]_select" row="3" multiple="multiple">
 	<LOOP NAME="entities_select">
 		<DO>
@@ -979,7 +990,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisï¿½.
+Affichage du titre internationalisé.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -991,7 +1002,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macros_admin !!
+C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
 
 ]-->
 
@@ -1003,20 +1014,20 @@ C'est ignoble de remettre cette macro lï¿½ alors qu'elle est dï¿½jï¿½ dans macro
 
 <!--[ 
 
-Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
+Macros rapatriées de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'ï¿½dition. 2002                        ]-->
+<!--[ * Macros de l'édition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutï¿½e le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ cachï¿½ "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -1030,7 +1041,7 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutï¿½es le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1079,8 +1090,8 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutï¿½e le 17/09/03 *********************** ]-->
-<!--[ Macro servant ï¿½ publication.html et                ]-->
+<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
+<!--[ Macro servant à publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1261,7 +1272,7 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 	<ELSE/>
 	<IF COND="[#STATUS]==1">
 		<IF COND="[#CLASS]">
-			<LET VAR="table"><?php echo $GLOBALS['tp'];?>[#CLASS]</LET>
+			<LET VAR="table">[#TP][#CLASS]</LET>
 			<LOOP NAME="getDatePubli" TABLE="[#TABLE]" WHERE="identity = '[#ID]'">
 				<IF COND="[#DATEPUBLI|isadate] AND [#DATEPUBLI] GT today()">
 					<img class="statusIcon" src="[#SHAREURL]/images/later_published.gif" alt="[@EDITION.LATER_PUBLISHED]" title="[@EDITION.LATER_PUBLISHED]" />
@@ -1291,17 +1302,17 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intï¿½gration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on prï¿½-charge les image */
-	//img1=new Image(82,18); /* on dï¿½clare les images */
+	/* on pré-charge les image */
+	//img1=new Image(82,18); /* on déclare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les prï¿½-charge */
+	//img1.src="image1.gif"; /* on les pré-charge */
 	//img2.src="image2.gif";
-	/* on dï¿½clare la fonction qui affiche les Rollovers */
+	/* on déclare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}
@@ -1929,7 +1940,7 @@ Macros rapatriï¿½es de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 
 <DEFFUNC NAME="GET_ASSOCIATED_ICON" REQUIRED="idtype, table">
-<LET VAR="table"><?php echo $GLOBALS['tp'];?>[#TABLE]</LET>
+<LET VAR="table">[#TP][#TABLE]</LET>
 <IF COND="[#CURRENTURL|strpos('lodel/edition')] OR [#CURRENTURL|strpos('lodel/admin')] OR [#CURRENTURL|strpos('lodeladmin')]">
 	<LET VAR="imgdir">../../</LET>
 <ELSE />

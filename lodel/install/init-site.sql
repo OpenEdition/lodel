@@ -7,6 +7,8 @@
 #  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
 #  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
 #  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+#  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+#  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
 #
 #  Home page: http://www.lodel.org
 #
@@ -547,4 +549,14 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `index_username` (`username`)
+) _CHARSET_;
+
+CREATE TABLE IF NOT EXISTS #_TP_plugins (
+  `id` int(10) unsigned NOT NULL default '0',
+  `name` varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `status` tinyint(4) NOT NULL default '0',
+  `config` longtext NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name` (`name`)
 ) _CHARSET_;

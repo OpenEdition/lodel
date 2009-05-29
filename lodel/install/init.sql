@@ -7,6 +7,8 @@
 #  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
 #  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mickaël Cixous, Sophie Malafosse
 #  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+#  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+#  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
 #
 #  Home page: http://www.lodel.org
 #
@@ -129,12 +131,12 @@ CREATE TABLE IF NOT EXISTS #_MTP_texts (
 	KEY index_textgroup (textgroup)
 ) _CHARSET_;
 
-CREATE TABLE #_MTP_internal_messaging (
+CREATE TABLE IF NOT EXISTS #_MTP_internal_messaging (
   `id` int(10) unsigned NOT NULL auto_increment,
   `idparent` int(10) unsigned NOT NULL,
   `iduser` varchar(255) default NULL,
-  `addressee` longtext NOT NULL,
-  `addressees` longtext NOT NULL,
+  `recipient` longtext NOT NULL,
+  `recipients` longtext NOT NULL,
   `subject` varchar(255) NOT NULL,
   `body` longtext NOT NULL,
   `incom_date` datetime NOT NULL,
@@ -160,6 +162,27 @@ CREATE TABLE IF NOT EXISTS #_MTP_translations (
 
 	PRIMARY KEY (id),
 	KEY index_lang (lang)
+) _CHARSET_;
+
+CREATE TABLE IF NOT EXISTS #_MTP_mainplugins (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `name` varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `status` tinyint(4) NOT NULL default '0',
+  `trigger_preedit` tinyint(1) NOT NULL default '0',
+  `trigger_postedit` tinyint(1) NOT NULL default '0',
+  `trigger_prelogin` tinyint(1) NOT NULL default '0',
+  `trigger_postlogin` tinyint(1) NOT NULL default '0',
+  `trigger_preauth` tinyint(1) NOT NULL default '0',
+  `trigger_postauth` tinyint(1) NOT NULL default '0',
+  `trigger_preview` tinyint(1) NOT NULL default '0',
+  `trigger_postview` tinyint(1) NOT NULL default '0',
+  `config` longtext NOT NULL,
+  `hooktype` varchar(5) NOT NULL,
+  `title` text NOT NULL,
+  `description` longtext NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `name` (`name`)
 ) _CHARSET_;
 
 # suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.

@@ -8,6 +8,8 @@
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -44,12 +46,22 @@ function sendValues(){
 	obj=window.opener.document.getElementById('[#CALLER]');
 	objselect=window.opener.document.getElementById('[#CALLER]_select');
 	var pattern=/(\d+):(.*):(.*)/;
+	var pattern2 = /^(\d+)$/;
 	var chkbox = document.getElementsByName('entities');
 	var s='';
-	while(objselect.length) {
-		objselect.options[0]=null;
-	}		
-	obj.value='';
+	for(var i=0;objselect.options[i];i++) {
+		if(objselect.options[i].value.match(pattern2)) {
+			var values = obj.value.split(',');
+			obj.value = '';
+			for(var j=0;j<values.length;j++) {
+				if(values[j] && values[j] !== objselect.options[i].value)
+					obj.value += values[j]+',';
+			}
+			objselect.options[i]=null;
+			--i;
+		}
+	}
+	
 	for(i=0; i<chkbox.length; i++){
 		if(chkbox[i].checked) {
 			var result = chkbox[i].value.match(pattern);
@@ -117,7 +129,7 @@ if (o) o.style.backgroundColor='orange';
 <ELSE/>
 for(i=0; i<obj.length; i++) {
 	o=document.getElementById('entities'+obj.options[i].value);
-	o.checked=true;
+	if(o) o.checked=true;
 }
 </IF>
 //  End -->

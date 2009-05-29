@@ -34,13 +34,12 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
  */
-
-if(!class_exists('TableFieldsLogic', false))
-	require("logic/class.tablefields.php");
 
 /**
  * Classe de logique des champs d'indexs
@@ -54,6 +53,8 @@ if(!class_exists('TableFieldsLogic', false))
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -80,16 +81,15 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 		*/
 	public function makeSelect(&$context,$var)
 	{
-		global $home;
-
 		switch($var) {
 		case "name" :       
-			$dao=&getDAO($context['type']=='entries' ? "entrytypes" : "persontypes");
+			$dao=getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
 			$vos=$dao->findMany("status>0","rank,title","type,title");
+			$arr = array();
 			foreach($vos as $vo) {
 				$arr[$vo->type]=$vo->title;
 			}
-			renderOptions($arr,$context['name']);
+			renderOptions($arr,isset($context['name']) ? $context['name'] : '');
 			break;
 		case "edition" :
 			$arr=array(
@@ -98,7 +98,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 			"none"=>getlodeltextcontents("no_change","admin"),
 			"display"=>getlodeltextcontents("display_no_edit","admin"),
 			);
-			renderOptions($arr,$context['edition']);
+			renderOptions($arr,isset($context['edition']) ? $context['edition'] : '');
 			break;
 		default:
 			parent::makeSelect($context,$var);

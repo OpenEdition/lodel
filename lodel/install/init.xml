@@ -8,6 +8,8 @@
   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mickaël Cixous, Sophie Malafosse
   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
 
   Home page: http://www.lodel.org
 
@@ -529,6 +531,72 @@
 		edittype="boolean" />
 	<column name="upd"
 		type="TIMESTAMP" />
+	<column name="status"
+		type="TINYINT"
+		default="1"
+        required="true" />
+</table>
+
+<table name="mainplugins"
+       writeright="adminlodel">
+	
+	<column name="id"
+		type="INTEGER"
+		size="10"
+		required="true"
+		primaryKey="true"
+		autoIncrement="true" />
+	<column name="name"
+		type="VARCHAR(64)"
+		required="true" />
+	<column name="status"
+		type="TINYINT"
+		default="1"
+        	required="true" />
+	<column name="upd"
+		type="TIMESTAMP" />
+	<column name="config"
+		type="LONGVARCHAR"
+		required="true"/>
+	<column name="hooktype"
+		type="VARCHAR(5)"
+		required="true"/>
+	<column name="title"
+		type="text"/>
+	<column name="description"
+		type="LONGVARCHAR"/>
+	<column name="trigger_preedit"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postedit"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_prelogin"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postlogin"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_preview"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postview"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_preauth"
+		type="TINYINT"
+		default="0"
+        	required="true" />
+	<column name="trigger_postauth"
+		type="TINYINT"
+		default="0"
+        	required="true" />
 </table>
 </database>
 

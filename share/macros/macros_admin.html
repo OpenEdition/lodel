@@ -3,10 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -59,7 +61,7 @@
 <legend>[@COMMON.VALIDATION]</legend>
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
 	  <IF COND="[#ID]">
-		<IF COND="![#LO|isdeletelocked([#ID],[#STATUS])]">
+		<IF COND="[#LO] NE 'plugins' AND ![#LO|isdeletelocked([#ID],[#STATUS])]">
 			<MACRO NAME="DELETE_BUTTON">
 		</IF>
 	  </IF>
@@ -459,26 +461,29 @@
 
 <DEFFUNC NAME="PRINT_ERROR_MESSAGE">
 	<IF COND="[#ERROR] eq '+'">[@COMMON.ERROR_REQUIRED_FIELD]</IF>
-	<IF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE]</IF>
-	<IF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE]</IF>
-	<IF COND="[#ERROR] eq 'time'">[@COMMON.ERROR_INVALID_TIME]</IF>
-	<IF COND="[#ERROR] eq 'datetime'">[@COMMON.ERROR_INVALID_DATETIME]</IF>
-	<IF COND="[#ERROR] eq 'int'">[@COMMON.ERROR_INVALID_INTEGER]</IF>
-	<IF COND="[#ERROR] eq 'number'">[@COMMON.ERROR_INVALID_NUMBER]</IF>
-	<IF COND="[#ERROR] eq 'class'">[@COMMON.ERROR_INVALID_CLASS]</IF>
-	<IF COND="[#ERROR] eq 'type'">[@COMMON.ERROR_INVALID_TYPE]</IF>
-	<IF COND="[#ERROR] eq 'username'">[@COMMON.ERROR_INVALID_USERNAME]</IF>
-	<IF COND="[#ERROR] eq 'passwd'">[@COMMON.ERROR_INVALID_PASSWD]</IF>
-	<IF COND="[#ERROR] eq 'tablefield'">[@COMMON.ERROR_INVALID_FIELD]</IF>
-	<IF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE]</IF>
-	<IF COND="[#ERROR] eq 'mlstyle'">[@COMMON.ERROR_INVALID_MULTILINGUAL_STYLE]</IF>
-	<IF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL]</IF>
-	<IF COND="[#ERROR] eq 'email'">[@COMMON.ERROR_INVALID_EMAIL]</IF>
-	<IF COND="[#ERROR] eq 'tplfile'">[@COMMON.ERROR_INVALID_TPLFILE]</IF>
-	<IF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS]</IF>
-	<IF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]</IF>
-	<IF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]</IF>
-	<IF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL]</IF>
+	<ELSEIF COND="[#ERROR] eq '1'">[@COMMON.ERROR_FIELD_MUST_BE_UNIQUE]
+	<ELSEIF COND="[#ERROR] eq 'date'">[@COMMON.ERROR_INVALID_DATE]
+	<ELSEIF COND="[#ERROR] eq 'time'">[@COMMON.ERROR_INVALID_TIME]
+	<ELSEIF COND="[#ERROR] eq 'datetime'">[@COMMON.ERROR_INVALID_DATETIME]
+	<ELSEIF COND="[#ERROR] eq 'int'">[@COMMON.ERROR_INVALID_INTEGER]
+	<ELSEIF COND="[#ERROR] eq 'number'">[@COMMON.ERROR_INVALID_NUMBER]
+	<ELSEIF COND="[#ERROR] eq 'class'">[@COMMON.ERROR_INVALID_CLASS]
+	<ELSEIF COND="[#ERROR] eq 'type'">[@COMMON.ERROR_INVALID_TYPE]
+	<ELSEIF COND="[#ERROR] eq 'username'">[@COMMON.ERROR_INVALID_USERNAME]
+	<ELSEIF COND="[#ERROR] eq 'passwd'">[@COMMON.ERROR_INVALID_PASSWD]
+	<ELSEIF COND="[#ERROR] eq 'tablefield'">[@COMMON.ERROR_INVALID_FIELD]
+	<ELSEIF COND="[#ERROR] eq 'style'">[@COMMON.ERROR_INVALID_STYLE]
+	<ELSEIF COND="[#ERROR] eq 'mlstyle'">[@COMMON.ERROR_INVALID_MULTILINGUAL_STYLE]
+	<ELSEIF COND="[#ERROR] eq 'url'">[@COMMON.ERROR_INVALID_URL]
+	<ELSEIF COND="[#ERROR] eq 'email'">[@COMMON.ERROR_INVALID_EMAIL]
+	<ELSEIF COND="[#ERROR] eq 'tplfile'">[@COMMON.ERROR_INVALID_TPLFILE]
+	<ELSEIF COND="[#ERROR] eq 'textgroups'">[@COMMON.ERROR_INVALID_TEXTGROUPS]
+	<ELSEIF COND="[#ERROR] eq 'readerror'">[@COMMON.ERROR_MISSING_FILE]
+	<ELSEIF COND="[#ERROR] eq 'imageformat'">[@COMMON.ERROR_FORMAT_IMAGE]
+	<ELSEIF COND="[#ERROR] eq 'reservedsql'">[@COMMON.ERROR_WORD_RESERVED_BY_SQL_OR_LODEL]
+	<ELSE/>
+		[#ERROR]
+	</IF>
 </DEFFUNC>
 
 
@@ -828,7 +833,7 @@ cp_[#NAME].writeDiv();
 			<th class="type"><IF COND="[#INTERTITLE] EQ ''">[#TITLE]<ELSE/>[#INTERTITLE]</IF></th>
 			<td>[(#NAME|nbsp)]</td>
 			<td>[(#TYPE|nbsp)]</td>
-			<td>[(#STYLE|nbsp)]</td>
+			<td>[(#STYLE|nbsp|wordwrap(75, '<br/>',true))]</td>
 			<td class="actions">
 	                <IF COND="[#TYPE] eq 'entries' || [#TYPE] eq 'persons'">
 				 <FUNC NAME="CHANGE_RANK_BUTTON" LO="indextablefields">

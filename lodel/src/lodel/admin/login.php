@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,101 +37,114 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source/lodel/admin
  */
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-
-$url_retour = strip_tags($url_retour);
-
-if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {
-	extract_post();
-	require 'loginfunc.php';
-	unset($retour);
-	$retour = change_passwd($_POST['datab'], $_POST['login'], $_POST['old_passwd'], $_POST['passwd'], $_POST['passwd2']);
-	if($retour === "error_passwd") {
-		$context['suspended'] = 1;
-	} elseif($retour === false) {	
-		$context['error_login'] = 1;
-	} elseif($retour === true) {
-		// on relance la procédure d'identification
-		if (!check_auth($_POST['login'], $_POST['passwd'], $site)) {
-			$context['error_login'] = 1;
-		} else {
-			// et on ouvre une session
-			$err = open_session($_POST['login']);
-			if ((string)$err === 'error_opensession')
-				$context[$err] = 1;
-			else
-				header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
-		}
-	}
-} elseif ($_POST['login']) {
-	extract_post();
-	require 'loginfunc.php';
-	do {
-		$currentSite = $site;
-		if (!check_auth($context['login'], $context['passwd'], $site)) {
-			$context['error_login'] = 1;
-			break;
-		}
-		//Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
-		if($context['lodeluser']['rights'] < LEVEL_LODELADMIN) {
-			usemaindb();
-			$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
-			usecurrentdb();
-			if($context['site_bloque'] == 1) {
-				$context['error_site_bloque'] = 1;
-				break;
-			}
-		}
-		//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
-		if(!check_suspended()) {
-			$context['suspended'] = 1;
-			break;
-		}
-		else {
-			// ouvre une session
-			$err = open_session($context['login']);
-			if ((string)$err === 'error_opensession') {
-				$context[$err] = 1;
-				break;
-			}
-			unset($err);
-		}
-		check_internal_messaging($currentSite);
-		header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $url_retour);
-	} while (0);
-}
-
-$context['passwd'] = $passwd = 0;
-// variable: sitebloque
-/*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
-	$context['site_bloque'] = 1;
-} else { // test si le site est bloque dans la DB.
-	
-	usemaindb();
-	$context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
-	usecurrentdb();
-}*/
-
-$context['url_retour']      = $url_retour;
-$context['error_timeout']   = $error_timeout;
-$context['error_privilege'] = $error_privilege;
-
-require 'view.php';
-$view = &View::getView();
-$view->render($context, 'login');
+    include 'auth.php';
+    
+    $login = C::get('login');
+    
+    if($login && C::get('passwd') && C::get('passwd2')) {
+        include 'loginfunc.php';
+        $retour = change_passwd(C::get('datab'), $login, C::get('old_passwd'), C::get('passwd'), C::get('passwd2'));
+        switch($retour)
+        {
+            case true:
+                // on relance la procédure d'identification
+                if (!check_auth(C::get('login'), C::get('passwd'), C::get('site', 'cfg'))) {
+                    C::set('error_login', 1);
+                } else {
+                    //Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
+                    if(C::get('rights', 'lodeluser') < LEVEL_LODELADMIN) {
+                        usemaindb();
+                        C::set('site_bloque', $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='".C::get('site', 'cfg')."' AND status >= 32")));
+                        usecurrentdb();
+                        if(C::get('site_bloque') == 1) {
+                            C::set('error_site_bloque', 1);
+                            break;
+                        }
+                    }
+                    // et on ouvre une session
+                    $err = open_session(C::get('login'));
+                    if ((string)$err === 'error_opensession') {
+                        C::set($err, 1);
+                        break;
+                    } else {
+                        check_internal_messaging();
+                        header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
+                    }
+                }
+                break;
+            case 'error_passwd':
+                C::set('suspended', 1);
+                break;
+            case false: // bad login/passwd
+            default: 
+                C::set('error_login', 1);
+                break;
+        }
+    } elseif (C::get('login')) {
+        include 'loginfunc.php';
+        do {
+            if (!check_auth(C::get('login'), C::get('passwd'))) {
+                C::set('error_login', 1);
+                break;
+            }
+            //Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
+            if(C::get('rights', 'lodeluser') < LEVEL_ADMINLODEL) {
+                usemaindb();
+                C::set('site_bloque', $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='".C::get('site', 'cfg')."' AND status >= 32")));
+                usecurrentdb();
+                if(C::get('site_bloque') == 1) {
+                    C::set('error_site_bloque', 1);
+                    break;
+                }
+            }
+            //vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
+            if(!check_suspended()) {
+                C::set('suspended', 1);
+                break;
+            }
+            else {
+                // ouvre une session
+                if ((string)open_session(C::get('login')) === 'error_opensession') {
+                    C::set('error_opensession', 1);
+                    break;
+                }
+            }
+            check_internal_messaging();
+            header ("Location: http://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
+        } while (0);
+    }
+    
+    C::set('passwd', null);
+    C::set('passwd2', null);
+    C::set('old_passwd', null);
+    // variable: sitebloque
+    /*if ($context['error_sitebloque']) { // on a deja verifie que la site est bloque.
+        $context['site_bloque'] = 1;
+    } else { // test si le site est bloque dans la DB.
+        
+        usemaindb();
+        $context['site_bloque'] = $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='$site' AND status >= 32"));
+        usecurrentdb();
+    }*/
+    
+    View::getView()->render('login');
 }
 catch(Exception $e)
 {

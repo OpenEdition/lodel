@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -36,9 +38,15 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Sophie Malafosse
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -57,17 +65,19 @@
 	
 function cacheOptionsInFile($optionsfile=null)
 {
-	if(is_null($optionsfile) && file_exists(SITEROOT."CACHE/options_cache.php"))
+	if(!isset($optionsfile) && ($options = getFromCache('options')))
 	{
-		require SITEROOT."CACHE/options_cache.php";
-		if(isset($options_cache_return))
-			return $options_cache_return;
+        	return $options;
 	}
-
+    
+    	if(!defined('INC_CONNECT')) include 'connect.php';
 	global $db;
 	$ids = $arr = array();
 	do {
-		$sql = lq('SELECT id,idparent,name FROM #_TP_optiongroups WHERE status > 0 AND idparent '.sql_in_array($ids)." ORDER BY rank");
+		$sql = 'SELECT id,idparent,name 
+                    FROM '.$GLOBALS['tp'].'optiongroups 
+                    WHERE status > 0 AND idparent '.(is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'").
+                    " ORDER BY rank";
 		$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array ();
 		$i = 1;
@@ -83,44 +93,64 @@ function cacheOptionsInFile($optionsfile=null)
 			$arr[$id] = $name;
 			$parent[$id] = $name;
 			$l *= 100;
-			$i ++;
-			$result->moveNext();
+			++$i;
+			$result->MoveNext();
 		}
+        	$result->Close();
 	}	while ($ids);
+    
+	$sql = 'SELECT id, idgroup, name, value, defaultvalue, type 
+               FROM '.$GLOBALS['tp'].'options 
+               WHERE status > 0 ';
+               
+    	if(!isset($optionsfile))
+        	$sql .= 'AND type != "passwd" AND type != "username" ';
+        
+    	$sql .= 'ORDER BY rank';
 
-	if (!is_null($optionsfile)) {
-		$sql = lq('SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 ORDER BY rank');
-	} else { // pas les username et passwd dans le context
-		$sql = lq("SELECT id, idgroup, name, value, defaultvalue FROM #_TP_options WHERE status > 0 AND type !='passwd' AND type !='username' ORDER BY rank");
-	}
+	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) 
+       or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	$txt = "<"."?php\n\$options_cache=array(\n";
-	$txt2 = "\n\$options_cache_return=";
-	while (!$result->EOF)	{
-		$id = $result->fields['id'];
-		$name = $result->fields['name'];
-		$idgroup = $result->fields['idgroup'];
-		$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
-		clean_request_variable($value);
-		$options_cache_return[$arr[$idgroup]][$name] = $value;
-		$optname = $arr[$idgroup].".".$name;
-		$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
-		$options_cache[$optname] = addslashes($value);
-		$result->MoveNext();
-	}
-	$txt .= ");\n";
-	$txt2 .= var_export($options_cache_return, true).";?".">";
-	
-	#echo "<textarea cols=100 rows=10>$txt</textarea>";
-	if (!is_null($optionsfile)) 
-	{ 
-		writefile($optionsfile, $txt.$txt2); 
-		return $options_cache;
+	if(isset($optionsfile))
+	{
+		$txt = "<"."?php\n\$options_cache=array(\n";
+		$txt2 = "\n\$options_cache_return=";
+		while (!$result->EOF)   {
+			$id = $result->fields['id'];
+			$name = $result->fields['name'];
+			$idgroup = $result->fields['idgroup'];
+			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+			if('username' != $result->fields['type'] && 'passwd' !== $result->fields['type'])
+				$options_cache_return[$arr[$idgroup]][$name] = $value;
+			$optname = $arr[$idgroup].".".$name;
+			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
+			$options_cache[$optname] = addslashes($value);
+			$result->MoveNext();
+		}
+        	$result->Close();
+        	$txt .= ");\n";
+        	$txt2 .= var_export($options_cache_return, true).";?".">";
+        
+		if(FALSE === file_put_contents($optionsfile, $txt.$txt2)) 
+			trigger_error("Cannot write $optionsfile.", E_USER_ERROR);
+        
+        	@chmod ($optionsfile,0666 & octdec(C::get('filemask', 'cfg'))); 
+		
+        	return $options_cache;
 	}
 	else
 	{
-		writefile(SITEROOT."CACHE/options_cache.php", $txt.$txt2);
+		while (!$result->EOF)   {
+			$id = $result->fields['id'];
+			$name = $result->fields['name'];
+			$idgroup = $result->fields['idgroup'];
+			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
+			if('username' != $result->fields['type'] && 'passwd' !== $result->fields['type'])
+				$options_cache_return[$arr[$idgroup]][$name] = $value;
+			$result->MoveNext();
+		}
+		$result->Close();
+		writeToCache('options', $options_cache_return);
 		return $options_cache_return;
 	}
 }

@@ -1,27 +1,36 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
 <!--[
-
    LODEL - Logiciel d'Edition ELectronique.
+
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½ou
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
    Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
    Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
    Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+
    Home page: http://www.lodel.org
+
    E-Mail: lodel@lodel.org
+
                              All Rights Reserved
+
       This program is free software; you can redistribute it and/or modify
       it under the terms of the GNU General Public License as published by
       the Free Software Foundation; either version 2 of the License, or
       (at your option) any later version.
+
       This program is distributed in the hope that it will be useful,
       but WITHOUT ANY WARRANTY; without even the implied warranty of
       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
       GNU General Public License for more details.
+
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+]-->
 
 
 <USE MACROFILE="macros.html">
@@ -35,9 +44,9 @@
 <ul id="actionsOnEntitiesPath">
 	<li><span class="intit">[@ADMIN.TITLE_ADMINISTRATE_TRANSLATION_FOR_SITE]</span></li>
 	<li>
-		<LET ARRAY="actions[import]">[@LODELADMIN.IMPORT_A_TRANSLATION]</LET>
-		<LET ARRAY="actions[lookfor]">[@ADMIN.LOOKFOR_TRANSLATIONS]</LET>
-		<LET ARRAY="actions[view]">[@LODELADMIN.ADD_A_TRANSLATION]</LET>
+		<LET ARRAY="actions.import">[@LODELADMIN.IMPORT_A_TRANSLATION]</LET>
+		<LET ARRAY="actions.lookfor">[@ADMIN.LOOKFOR_TRANSLATIONS]</LET>
+		<LET ARRAY="actions.view">[@LODELADMIN.ADD_A_TRANSLATION]</LET>
 		<ul class="actions">
 			<li class="isolated">
 				<label for="actions">[@COMMON.ACTIONS] :</label>
@@ -58,8 +67,8 @@
 	<tr>
 		<th class="status">[@COMMON.LANG]</th>
 		<th class="status">[@LODELADMIN.CODE]</th>
-		<td class="emty">&nbsp;</td>
 		<th class="status">[@LODELADMIN.TRANSLATE_GROUPS]</th>
+		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
@@ -71,18 +80,18 @@
 			<td>[#TITLE]</td>
 			<td>[#LANG]</td>
 			<td class="actions">
-				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
-			</td>
-			<td class="actions">
 			<LET VAR="currentlang">[#LANG]</LET>
 			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
 				<a href="index.php?do=list&amp;lo=texts&amp;textgroup=[#TEXTGROUP]&amp;lang=[#CURRENTLANG]">
 					[(#TEXTGROUP|strtoupper)]
 				</a>&nbsp;
 			</LOOP>
-		  </td>
+		  	</td>
+			<td class="actions">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
+			</td>
 		</tr>
 		</DO>
 	</LOOP>

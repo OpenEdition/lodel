@@ -34,6 +34,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -53,6 +55,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -95,9 +99,8 @@ class EntitiesLogic extends Logic
 	public function changeRankAction(&$context, &$error)
 	{
 		global $db;
-		$id  = (int)$context['id'];
-		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->getById($id,"idparent");
+		$id  = $context['id'];
+		$vo  = $this->_getMainTableDAO()->getById($id,"idparent");
 		$this->_changeRank($id,$context['dir'], "status<64 AND idparent='". $vo->idparent. "'");
 		update();
 		return '_back';
@@ -126,20 +129,21 @@ class EntitiesLogic extends Logic
 	 */
 	public function massAction(&$context,&$error)
 	{
-		if (!$context['entity']) {
+		if (empty($context['entity'])) {
 			return "_back";
 		}
 		$context['id'] = array();
-		foreach(array_keys($context['entity']) as $id) {
+        	$entities = array_keys($context['entity']);
+		foreach($entities as $id) {
 			$context['id'][] = (int)$id;
 		}
 
-		if ($context['delete']) {
+		if (isset($context['delete'])) {
 			return $this->deleteAction($context,$error);
-		} elseif ($context['publish']) {
+		} elseif (isset($context['publish'])) {
 			$context['status'] = 1;
 			return $this->publishAction($context,$error);
-		} elseif ($context['unpublish']) {
+		} elseif (isset($context['unpublish'])) {
 			$context['status'] = -1;
 			return $this->publishAction($context,$error);
 		}
@@ -158,6 +162,7 @@ class EntitiesLogic extends Logic
 		global $db;
 		// get the entities to modify and ancillary information
 		if (!rightonentity("delete",$context)) trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
+		$ids = $classes = $softprotectedids = $lockedids = null;
 		$this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
 		if (!$ids) {
 			return '_back';
@@ -167,18 +172,22 @@ class EntitiesLogic extends Logic
 		}
 
 		// needs confirmation ?
-		if (!$context['confirm'] && $softprotectedids) {
+		if (!isset($context['confirm']) && $softprotectedids) {
 			$context['softprotectedentities'] = $softprotectedids;
 			$this->define_loop_protectedentities();
 			return 'delete_confirm';
 		}
 
 		// delete all the entities
-		$dao = $this->_getMainTableDAO();
-		$dao->deleteObject($ids);
+		$this->_getMainTableDAO()->deleteObject($ids);
 
 		// delete in the joint table
-		foreach(array_keys($classes) as $class) {
+		if(!empty($classes))
+		{
+			$classes = array_keys($classes);
+		}
+
+		foreach($classes as $class) {
 			$db->execute(lq("DELETE FROM #_TP_$class WHERE identity ".sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 
@@ -231,7 +240,7 @@ class EntitiesLogic extends Logic
 		}
 
 		// depublish protected entity ? need confirmation.
-		if (!$context['confirm'] && $status < 0 && $softprotectedids) {
+		if ((!isset($context['confirm']) || !$context['confirm']) && $status < 0 && $softprotectedids) {
 			$context['softprotectedentities'] = $softprotectedids;
 			$this->define_loop_protectedentities();
 			return 'unpublish_confirm';
@@ -299,7 +308,7 @@ class EntitiesLogic extends Logic
 			}
 
 			if ($idstodelete) {
-				$logic=&getLogic($table);
+				$logic=getLogic($table);
 				$localcontext=array("id"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
 				$localerror=array();
 				$logic->deleteAction($localcontext,$localerror);
@@ -389,8 +398,7 @@ class EntitiesLogic extends Logic
 		global $db;
 
 		// check the rights to $access the current entity
-		$dao = $this->_getMainTableDAO();
-		$hasrights="(1 ".$dao->rightsCriteria($access).") as hasrights";
+		$hasrights="(1 ".$this->_getMainTableDAO()->rightsCriteria($access).") as hasrights";
 
 		// get the central object
 		if ($criteria) {

@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,9 +37,14 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -78,13 +85,13 @@ function checkstring(&$text, $error = 0)
 		if (!$error) {
 			echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp poster un rapport de bug sur <a href="http://sourceforge.net/projects/lodel/">http://sourceforge.net/projects/lodel<a/>. Pensez &agrave; joindre le fichier.<br />En attendant que le problème soit résolu, essayez de changer le stylage de votre fichier.</p><p><hr /></p>';
 
-			require $GLOBALS[home]."xmlfunc.php";
+			include C::get('home', 'cfg')."xmlfunc.php";
 			$text = indentXML($text);
 			checkstring($text, 1);
 			return;
 		} else {
 			echo "<font color=red>";
-			echo preg_replace("/\n/se", "'<br /><b>'.((\$GLOBALS[line]++)+2).'</b> '", htmlspecialchars(substr($text, xml_get_current_byte_index($xml_parser) - 2)));
+			echo preg_replace("/\n/se", "'<br /><b>'.((\$GLOBALS['line']++)+2).'</b> '", htmlspecialchars(substr($text, xml_get_current_byte_index($xml_parser) - 2)));
 			echo "</font>\n";
 			echo sprintf("<br /><H2>XML error: %s ligne %d</H2>", xml_error_string(xml_get_error_code($xml_parser)), xml_get_current_line_number($xml_parser));
 			echo "L'erreur se situe avant la zone rouge. Elle peut etre due a une erreur bien au dessus la ligne donne par le parser<br />";

@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,9 +37,14 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source/lodel/edition
@@ -45,29 +52,28 @@
 
 define('backoffice', true);
 require 'siteconfig.php';
-require 'class.errors.php';
 
 try
 {
-require 'auth.php';
-authenticate(LEVEL_REDACTOR);
+    function getchecked($id)
+    {
+        return in_array($GLOBALS['ids'], $id) ? "checked=\"checked\"" : '';
+    }
+    
+    include 'auth.php';
+    authenticate(LEVEL_REDACTOR);
+    
+    define('UPLOADDIR', SITEROOT. 'upload');
+    
+    $context['caller'] = $_REQUEST['caller'];
+    $context['single'] = isset($_REQUEST['single']);
+    $GLOBALS['ids'] = array();
+    if(isset($_REQUEST['value']))
+    	$GLOBALS['ids'] = explode(',', $_REQUEST['value']);
+    $GLOBALS['nodesk'] = true;
+    View::getView()->renderCached('entitybrowser');
+    
 
-define('UPLOADDIR', SITEROOT. 'upload');
-
-$context['caller'] = $_REQUEST['caller'];
-$context['single'] = isset($_REQUEST['single']);
-
-$ids = explode(',', $_REQUEST['value']);
-$context['id'] = (int)$_GET['id'];
-$nodesk = true;
-require 'view.php';
-$view = &View::getView();
-$view->renderCached($context, 'entitybrowser');
-
-function getchecked($id)
-{
-  return in_array($GLOBALS['ids'], $id) ? "checked=\"checked\"" : '';
-}
 }
 catch(Exception $e)
 {

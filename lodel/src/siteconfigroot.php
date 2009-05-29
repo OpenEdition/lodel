@@ -12,6 +12,8 @@
  * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  *
  * Home page: http://www.lodel.org
  *
@@ -35,9 +37,14 @@
  *
  * @author Ghislain Picard
  * @author Jean Lamy
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source
@@ -46,26 +53,33 @@
 
 require 'lodelconfig.php';
 
-$site = "";
+$cfg['site'] = "";
 
 ##########################################
 
-$versionsuffix = $version ? "-$version" : '';   # versioning
+$cfg['versionsuffix'] = "-".$cfg['version'];   # versioning
 
-$home = "lodel$versionsuffix/scripts/";
-
-$sharedir = $sharedir. $versionsuffix;
-$shareurl.= $versionsuffix;
-
-if (!defined('SITEROOT')) {
-	define('SITEROOT', '');
+if (!defined("SITEROOT")) {
+    define("SITEROOT","");
 }
+
+$cfg['home'] = "lodel{$cfg['versionsuffix']}/scripts/";
+$home = $cfg['home'];
+$cfg['sharedir'] = $cfg['sharedir'].$cfg['versionsuffix'];
+$cfg['shareurl'] .= $cfg['versionsuffix'];
 
 # recaptcha pour la partie signaler
 # par défaut désactivé
-$signaler_recaptcha = false;
-$recaptcha_privatekey = ""; // clé privée recaptcha
-$recaptcha_publickey = ""; // clé publique recaptcha
+$cfg['signaler_recaptcha'] = false;
+$cfg['recaptcha_privatekey'] = ""; // clé privée recaptcha
+$cfg['recaptcha_publickey'] = ""; // clé publique recaptcha
 
-ini_set('include_path', SITEROOT. $home . PATH_SEPARATOR. ini_get('include_path'));
+ini_set('include_path', SITEROOT. $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
+// important here
+// when this file is included, we are ALWAYS in the site root, so don't concat $home !!
+require $cfg['home'].'context.php';
+
+$cfg['home'] = SITEROOT. $cfg['home'];
+C::setCfg($cfg);
+require $home.'class.errors.php';
 ?>

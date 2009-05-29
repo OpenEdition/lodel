@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -52,6 +54,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajoutée depuis la version 0.8
  * @see backupfunc.php, pma/sql-modified.php
@@ -168,16 +172,18 @@ class DataLogic
 	 */
 	public function __construct()
 	{
- 		if ($GLOBALS['lodeluser']['rights'] < LEVEL_ADMIN
-                || ($GLOBALS['lodeluser']['rights'] == LEVEL_ADMIN && ($GLOBALS['context']['do'] == 'import'
-                || $GLOBALS['context']['do'] == 'backup'
-                || $GLOBALS['context']['do'] == 'importmodel'
-                || $GLOBALS['context']['do'] == 'importxmlmodel'))) {
+		$do = C::get('do');
+ 		if (!C::get('admin', 'lodeluser')
+                || (!C::get('adminlodel', 'lodeluser') && ($do == 'import'
+                || $do == 'backup'
+                || $do == 'importmodel'
+                || $do == 'importxmlmodel'
+                || $do == 'globalbackup'))) {
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
 
 		if(!function_exists('importFromZip'))
-			require 'backupfunc.php';
+			include 'backupfunc.php';
 
 		$this->fileExtension = 'zip';
 	}
@@ -194,13 +200,13 @@ class DataLogic
 	{
 		global $db;
 
-		$context['importdir'] = $GLOBALS['importdir'];
+		$context['importdir'] = C::get('importdir', 'cfg');
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
 		$context['importdirs'] = array('CACHE');
 		if ($context['importdir']) {
-  		$context['importdirs'][] = $context['importdir'];
+  		    $context['importdirs'][] = $context['importdir'];
 		}
 
 		$file = $this->_extractImport($context);
@@ -208,11 +214,11 @@ class DataLogic
 		if ($file) { // Si on a bien spécifié un fichier
 			do { // control block
 
-				set_time_limit(120); //pas d'effet si safe_mode on ; on met le temps à unlimited
+				set_time_limit(0); //pas d'effet si safe_mode on ; on met le temps à unlimited
 				//nom du fichier SQL
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 				//noms des répertoires acceptés
-				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image');
+				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier'/*compat 0.7*/);
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
 					
 					$err = $error['error_extract'] = 'extract';
@@ -228,7 +234,7 @@ class DataLogic
 				@unlink($sqlfile);
 		
 				if(!function_exists('clearcache'))
-					require 'cachefunc.php';
+					include 'cachefunc.php';
 				clearcache();
 		
 				// verifie les .htaccess dans le CACHE
@@ -254,14 +260,13 @@ class DataLogic
 	 */
 	public function backupAction(&$context, &$error)
 	{
-		global $zipcmd;
-		$context['importdir'] = $GLOBALS['importdir'];
+		$zipcmd = C::get('zipcmd', 'cfg');
+		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
-		if ($context['backup']) { // si on a demandé le backup
-			$site = $context['site'];
+		if (isset($context['backup'])) { // si on a demandé le backup
+			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
 
-			//$uselodelprefix = true; // ? NON UTILISE
 			$GLOBALS['tmpdir'] = $tmpdir = tmpdir();
 			$errors = array();
 			$fh = fopen($tmpdir. '/'. $outfile, 'w');
@@ -286,6 +291,7 @@ class DataLogic
 			// fichiers à exclure de l'archive
 			$GLOBALS['excludes'] = $excludes = array('lodel/sources/.htaccess',
 						'docannexe/fichier/.htaccess',
+						'docannexe/file/.htaccess',
 						'docannexe/image/index.html',
 						'docannexe/index.html',
 						'docannexe/image/tmpdir-\*',
@@ -294,7 +300,7 @@ class DataLogic
 			$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
 
 			// si sauvegarde des répertoires demandée (en + de la base)
-			if (!$context['sqlonly']) {
+			if (empty($context['sqlonly'])) { // undefined or equal to 0
 					//verifie que les repertoires sont accessibles en lecture
 					foreach ($sitedirs as $sitedir) {
 						if(is_readable(SITEROOT . $sitedir)){
@@ -313,7 +319,7 @@ class DataLogic
 
 			if ($zipcmd && $zipcmd != 'pclzip') { //Commande ZIP
 
-				if (!$context['sqlonly']) {
+				if (empty($context['sqlonly'])) {
 					if (!chdir(SITEROOT)) {
 						trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
 					}
@@ -329,9 +335,9 @@ class DataLogic
 				}
 			} else { // Comande PCLZIP
 				if(!class_exists('PclZip', false))
-					require 'pclzip/pclzip.lib.php';
+					include 'pclzip/pclzip.lib.php';
 				$archive = new PclZip($archivetmp);
-				if (!$context['sqlonly']) {
+				if (empty($context['sqlonly'])) {
 					// function to exclude files and rename directories
 					function preadd($p_event, &$p_header) 
 					{
@@ -347,8 +353,9 @@ class DataLogic
 					// end of function to exclude files
 
 					// ajout de la racine du site aux chemins des répertoires
-					for($i=0 ; $i<count($good_dirs) ; $i++){
-						$good_dirs[$i] = SITEROOT. $good_dirs[$i];
+					foreach($good_dirs as $i=>$good_dir)
+					{
+						$good_dirs[$i] = SITEROOT. $good_dir;
 					}
 					// ajout du fichier sql issu du dump de la base du site
 					array_push($good_dirs, $tmpdir. '/'. $outfile);
@@ -362,12 +369,14 @@ class DataLogic
 			} // end of pclzip option
 
 			if (!file_exists($archivetmp)) {
+                		@unlink($tmpdir. '/'. $outfile); // delete the sql file
 				trigger_error("ERROR: the zip command or library does not produce any output", E_USER_ERROR);
 			}
 			@unlink($tmpdir. '/'. $outfile); // delete the sql file
 			
 			if($error) { // Pour avoir accès aux erreurs dans les templates
-				$context['error'] = $error;}
+				$context['error'] = $error;
+            		}
 
 			if (operation($context['operation'], $archivetmp, $archivefilename, $context)) {
 				$context['success'] = 1;
@@ -398,15 +407,12 @@ class DataLogic
 	public function globalbackupAction(&$context, &$error)
 	{
 		global $db;
-		if($context['lodeluser']['rights'] < 128) {
-			trigger_error('ERROR : You d\'ont have the rights to use this feature', E_USER_ERROR);
-		}
-		$context['importdir'] = $GLOBALS['importdir'];
+		$context['importdir'] = C::get('importdir', 'cfg');
 		$operation = $context['operation'];
-		if ($context['backup']) {
+		if (isset($context['backup'])) {
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
-			$dirlocked = tempnam('/tmp', 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
+			$dirlocked = tempnam(tmpdir(), 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
 			mkdir($dirlocked, 0700);
 			$outfile = 'lodel.sql';
 			$fh = fopen($dirlocked. '/'. $outfile, 'w');
@@ -420,7 +426,7 @@ class DataLogic
 			}
 
 			$GLOBALS['currentprefix'] = '#_MTP_';
-			set_time_limit(60); // pas d'effet en safe mode
+			set_time_limit(0); // pas d'effet en safe mode
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
 			
 			// Trouve les sites a inclure au backup.
@@ -455,13 +461,13 @@ class DataLogic
 			$db->selectDB(DATABASE); //selectionne la base principale.
 
 			// tar les sites et ajoute la base
-			$archivetmp      = tempnam('/tmp', 'lodeldump_');
+			$archivetmp      = tempnam(tmpdir(), 'lodeldump_');
 			$archivefilename = 'lodel-'. date('dmy'). '.tar.gz';
 			// Attention ce qui suit ne fonctionnera que sous Linux
 			system("tar czf $archivetmp ". join(' ', $dirtotar). " -C $dirlocked $outfile") !== false or trigger_error("impossible d'executer tar", E_USER_ERROR);
 			unlink($dirlocked. '/'. $outfile);
 			rmdir($dirlocked);
-			chdir('lodeladmin'. ($GLOBALS['version'] ? '-'. $GLOBALS['version'] : ''));
+			chdir('lodeladmin'. (C::get('version', 'cfg') ? '-'. C::get('version', 'cfg') : ''));
 			if (operation($operation, $archivetmp, $archivefilename, $context)) {
 				return 'backup';
 			}
@@ -483,10 +489,10 @@ class DataLogic
 	public function importmodelAction(&$context, &$error)
 	{
 		//Vérifie que l'on peut bien faire cet import
-		$context['importdir'] = $GLOBALS['importdir']; //cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
+		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
+		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
-			$GLOBALS['importdirs'][] = $importdir;
+			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
 		$context['importdirs'] = $GLOBALS['importdirs'];
 		$this->fileExtension = 'zip';
@@ -498,7 +504,7 @@ class DataLogic
 		$this->filePrefix = 'model';
 		$file = $this->_extractImport($context);
 		
-		if ($file && $context['delete']) {// extra check. Need more ?
+		if ($file && !empty($context['delete'])) {// extra check. Need more ?
 			if (dirname($file) == 'CACHE') {
 				unlink($file);
 			}
@@ -524,8 +530,8 @@ class DataLogic
 				require 'cachefunc.php';
 			clearcache();
 			
-			if (!$err) {
-				if ($context['frominstall']) { // si on vient de l'install redirige vers la page d'édition
+			if (!isset($err)) {
+				if (!empty($context['frominstall'])) { // si on vient de l'install redirige vers la page d'édition
 					header ('location: ../edition/index.php');
 					exit;
 				} else {
@@ -535,7 +541,7 @@ class DataLogic
 			}
 		}
 		#print_r($context);
-		if ($context['frominstall']) {
+		if (!empty($context['frominstall'])) {
 			$GLOBALS['nodesk'] = true;
 			return 'importmodel-frominstall';
 		} else {
@@ -617,8 +623,7 @@ class DataLogic
 			mysql_dump($currentdb, $tables, '', $fh, false, false, true); // get the content
 			
 			// select the optiongroups to export
-			$dao = &getDAO('optiongroups');
-			$vos = $dao->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
+			$vos = getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
 			$ids = array();
 			foreach($vos as $vo) {
 				$ids[] = $vo->id;
@@ -629,8 +634,7 @@ class DataLogic
 			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
 			// Récupère la liste des tables de classe à sauver.
-			$dao = &getDAO('classes');
-			$vos = $dao->findMany('status > 0', '', 'class,classtype');
+			$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 			$tables = array();
 			foreach ($vos as $vo) {
 				$tables[] = lq('#_TP_'. $vo->class);
@@ -682,7 +686,8 @@ class DataLogic
 	private function _dump($site, $outfile, &$error, $fh = 0)
 	{
 		global $db;
-		if ($site && $GLOBALS['singledatabase'] != 'on') {
+        	$closefh = false;
+		if ($site && C::get('singledatabase', 'cfg') != 'on') {
 			$dbname = DATABASE."_".$site;
 			if (!$fh)	{
 				$fh = fopen($outfile, "w");
@@ -700,8 +705,7 @@ class DataLogic
 		}
 		$GLOBALS['currentprefix'] = "#_TP_";
 		$tables = $GLOBALS['lodelsitetables'];
-		$dao = &getDAO('classes');
-		$vos = $dao->findMany('status > 0', '', 'class, classtype');
+		$vos = getDAO('classes')->findMany('status > 0', '', 'class, classtype');
 		foreach ($vos as $vo)	{
 			$tables[] = lq("#_TP_". $vo->class);
 			if ($vo->classtype == 'persons')
@@ -785,8 +789,7 @@ class DataLogic
 	 */
 	private function _backupME($sqlfile, $dirs = array())
 	{
-		global $zipcmd;
-	
+		$zipcmd = C::get('zipcmd', 'cfg');
 		$acceptedexts = array ('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff');
 		$tmpdir = tmpdir();
 		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
@@ -824,7 +827,7 @@ class DataLogic
 			}
 		}	else	{ // commande PCLZIP
 			if(!class_exists('PclZip', false))
-				require 'pclzip/pclzip.lib.php';
+				include 'pclzip/pclzip.lib.php';
 			$archive = new PclZip($archivetmp);
 			if ($zipdirs)	{
 				// function to exclude files and rename directories
@@ -869,7 +872,7 @@ class DataLogic
 		$tablestocheck = array('#_TP_entities', '#_TP_entries', '#_TP_persons');
 		foreach($tablestocheck as $table) {
 			$haveelements = $db->getOne(lq("SELECT id FROM $table WHERE status>-64"));
-			if ($db->errorno) {
+			if ($db->errorno()) {
 				continue; // on fait comme si la table n'existait pas
 			}
 			if ($haveelements) {
@@ -891,9 +894,9 @@ class DataLogic
 	 */
 	private function _extractImport(&$context)
 	{
-		$archive = $_FILES['archive']['tmp_name'];
-		$context['error_upload'] = $_FILES['archive']['error'];
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé			
+		$archive = @$_FILES['archive']['tmp_name'];
+		$context['error_upload'] = @$_FILES['archive']['error'];
+		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
 				$context['error_regexp'] = 1;
@@ -907,7 +910,7 @@ class DataLogic
 				//return;
 			}
 			$file = ''; // on repropose la page
-		} elseif ($context['file']) {
+		} elseif (!empty($context['file'])) {
 			if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
 				file_exists($context['file']))	{ // fichier sur le disque
 				$file = $context['file'];
@@ -988,23 +991,23 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
 	public function backupxmlmodelAction(&$context, &$error) {
-		if (!$context['backup']) {
+		if (empty($context['backup'])) {
 			return 'backupmodel';
 		}
-		if(!$context['title']) {
+		if(empty($context['title'])) {
 			$error['title'] = 'title_required';
 		}
-		if(!$context['description']) {
+		if(empty($context['description'])) {
 			$error['description'] = 'description_required';
 		}
-		if(!$context['author']) {
+		if(empty($context['author'])) {
 			$error['author'] = 'author_required';
 		}
-		if(!$context['modelversion']) {
+		if(empty($context['modelversion'])) {
 			$error['modelversion'] = 'modelversion_required';
 		}
 		if($error) { // Si on detecte des erreurs
-			$context['error'] =& $error;
+			$context['error'] = $error;
 			return 'backupmodel';
 		}
 		$xml = $this->_generateXML($context);
@@ -1021,8 +1024,7 @@ class DataLogic
 		$zipfile = $this->_backupME($tmpfile, $dirs);
 		$site = $context['site'];
 		$filename  = "modelxml-$site-". date("dmy"). ".zip";
-		$operation = 'download';
-		if (operation($operation, $zipfile, $filename, $context)) {
+		if (operation('download', $zipfile, $filename, $context)) {
 			$context['success'] = 1;
 			return 'backupmodel';
 		}
@@ -1041,8 +1043,8 @@ class DataLogic
 	public function importxmlmodelAction(&$context, &$error) {
 		global $db;
 		$err = '';
-		$context['importdir'] = $GLOBALS['importdir']; // cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', $GLOBALS['home']. '../install/plateform');
+		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
+		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -1071,7 +1073,7 @@ class DataLogic
 		
 		if(file_exists('CACHE/require_caching/ME.obj') && (isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))) { // on a déjà parsé le XML
 			ob_start();
-			require 'CACHE/require_caching/ME.obj';
+			include 'CACHE/require_caching/ME.obj';
 			$meObj = unserialize(base64_decode($meObj));
 			ob_end_clean();
 			$class = __CLASS__;
@@ -1093,7 +1095,7 @@ class DataLogic
 		} elseif($xmlfile) {
 			// besoin des fonctions de bruno pour conversion entités
 			if(!function_exists('HTML2XML'))
-				require 'textfunc.php';
+				include 'textfunc.php';
 			$this->_changedTables['added'] = $this->_changedTables['dropped'] = array();
 			// on récupère les tables du ME
 			$this->_getEMTables();
@@ -1101,7 +1103,7 @@ class DataLogic
 			$this->_parseXML($xmlfile, $error);
 			@unlink($xmlfile);
 			if($error) {
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				return 'importxmlmodel';
 			}
 			// parse la base
@@ -1115,7 +1117,7 @@ class DataLogic
 		if(isset($context['checktables'])) {
 			$this->_manageTables($context, $error);
 			if($error) {
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				return 'importxml_checktables';
 			}
 			if(!empty($this->_changedFields)) {
@@ -1127,7 +1129,7 @@ class DataLogic
 		} elseif(isset($context['checkfields'])) {
 			$this->_manageFields($context, $error);
 			if($error) {
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
@@ -1151,14 +1153,14 @@ class DataLogic
 				}
 				$context['success'] = 1;
 			} else {
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				return 'importxml_checktypes';
 			}
 		} elseif(isset($context['checktypesclass'])) {
 			$this->_updateTypeClass($context['changedtypeclass'], $error);
 			if($error)
 			{
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				return 'importxml_checktypes_class';
 			}
 			$context['success'] = 1;
@@ -1183,13 +1185,13 @@ class DataLogic
 		if(isset($context['success'])) {
 			$this->_updateDatabase($context, $error);
 			if($error) {
-				$context['error'] =& $error;
+				$context['error'] = $error;
 				return 'importxmlmodel';
 			}
 			if(!isset($context['checktypes']) && !isset($context['checktypesclass'])) {
 				$this->_updateTypes(false, $error);
 				if($error) {
-					$context['error'] =& $error;
+					$context['error'] = $error;
 					return 'importxmlmodel';
 				}
 				if(!empty($this->_changedTypes)) {
@@ -1205,7 +1207,7 @@ class DataLogic
 				} 
 				$this->_updateTypes(true, $error);
 				if($error) {
-					$context['error'] =& $error;
+					$context['error'] = $error;
 					return 'importxmlmodel';
 				}
 			}
@@ -1214,12 +1216,12 @@ class DataLogic
 		// Vide le cache
 		if(isset($context['success'])) {
 			if(!function_exists('clearcache'))
-				require 'cachefunc.php';
+				include 'cachefunc.php';
 			clearcache();
 		}
 
 		if(file_exists('CACHE/require_caching/ME.obj')) {
-			unlink('CACHE/require_caching/ME.obj');
+			@unlink('CACHE/require_caching/ME.obj');
 		}		
 		return 'importxmlmodel';
 	}
@@ -1413,8 +1415,7 @@ class DataLogic
 		// tables ME statiques
 		$this->_tables = array($GLOBALS['tableprefix'].'classes'=>true, $GLOBALS['tableprefix'].'tablefields'=>true, $GLOBALS['tableprefix'].'tablefieldgroups'=>true, $GLOBALS['tableprefix'].'types'=>true, $GLOBALS['tableprefix'].'persontypes'=>true, $GLOBALS['tableprefix'].'entrytypes'=>true, $GLOBALS['tableprefix'].'entitytypes_entitytypes'=>true, $GLOBALS['tableprefix'].'internalstyles'=>true, $GLOBALS['tableprefix'].'characterstyles'=>true, $GLOBALS['tableprefix'].'optiongroups'=>true, $GLOBALS['tableprefix'].'options'=>true);
 		// tables ME dynamiques
-		$dao = &getDAO('classes');
-		$vos = $dao->findMany('status > 0', '', 'class,classtype');
+		$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 		foreach($vos as $vo) {
 			$this->_tables[$GLOBALS['tableprefix'].$vo->class] = false;
 			if ($vo->classtype == 'persons') {
@@ -1439,9 +1440,9 @@ class DataLogic
 	private function _parseXML($file, &$error) {
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
-		$dtd = @copy(SITEROOT . '../share-'.$GLOBALS['version'].'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		$dtd = @copy(SITEROOT . '../share-'.C::get('version', 'cfg').'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
-			$error = 'Unable to copy DTD into tmpdir "'.tmpdir().'". Aborted.';
+			$error = 'Unable to copy DTD into tmpdir. Aborted.';
 			return;
 		}
 		// on récupère le ME
@@ -1465,7 +1466,10 @@ class DataLogic
 			return;
 		}
 		// on récupère les noms des tables sur la base
-		require_once 'tablefields.php';
+		if(!($tablefields = getFromCache('tablefields')))
+        	{
+                	include 'tablefields.php';
+		}
 
 		// on récupère la structure de la base XML ainsi que les données
 		$this->_xmlStruct = $this->_xmlDatas = $this->_recordedTables = array();
@@ -2264,8 +2268,8 @@ class DataLogic
 		global $db;
 		
 		// besoin des fonctions de bruno pour conversion entités
-		if(!function_exists('HTML2XML'))
-			require 'textfunc.php';
+		if(!defined('INC_TEXTFUNC'))
+			include 'textfunc.php';
 
 		// on récupère les tables du ME
 		$this->_getEMTables();
@@ -2394,8 +2398,9 @@ function loop_files(&$context, $funcname)
 // Définition de la loop pour les fichier du ME
 function loop_files_model(&$context, $funcname)
 {
-	global $fileregexp, $home, $unzipcmd;
-	$model = $context['xmlimport'] ? 'model.xml' : 'model.sql';
+	global $fileregexp;
+	$unzipcmd = C::get('unzipcmd', 'cfg');
+	$model = !empty($context['xmlimport']) ? 'model.xml' : 'model.sql';
 	#print_r($context);
 	foreach ($context['importdirs'] as $dir) {
 		if ( $dh = @opendir($dir)) {
@@ -2440,7 +2445,7 @@ function loop_files_model(&$context, $funcname)
 					}
 				}
 				// check only the major version, sub-version are not checked
-				if (doubleval($localcontext['lodelversion']) != doubleval($GLOBALS['version'])) {
+				if (doubleval($localcontext['lodelversion']) != doubleval(C::get('version', 'cfg'))) {
 					$localcontext['warning_version'] = 1;
 				}
 				call_user_func("code_do_$funcname", $localcontext);

@@ -35,6 +35,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
  * @version CVS:$Id$
@@ -54,6 +56,8 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
@@ -105,17 +109,15 @@ class Entities_IndexLogic extends Logic
 		if ($row['search'] != 1) return "_back";
 
 		//get the fieldnames list to index
-		$dao_fields = &getDAO ("tablefields");
-		$vos_fields = array ();
-		$vos_fields = $dao_fields->findMany ("class='$class' AND weight > 0", "weight DESC", "id,weight,name");
+		$vos_fields = getDAO ("tablefields")->findMany ("class='$class' AND weight > 0", "weight DESC", "id,weight,name");
 
-//no fields to index --> return
+		//no fields to index --> return
 		if (!$vos_fields) return ("_back");
 
 		$sql = "SELECT * FROM #_TP_$class WHERE identity='$id'";
 		$row = $db->getRow(lq($sql)) ;
 		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
-		$daoIndex = &getDAO ("search_engine"); 	
+		$daoIndex = getDAO ("search_engine"); 	
 		foreach ( $vos_fields as $vo_field)
 			$this->_indexField ($id,$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
 		//Index entries relations
@@ -135,8 +137,7 @@ class Entities_IndexLogic extends Logic
 	public function deleteIndexAction(&$context,&$error) {
 		$id = $context["id"];
 		if (!$id) trigger_error("ERROR: give the id ", E_USER_ERROR);
-		$dao = &getDAO("search_engine");
-		if ($dao->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
+		if (getDAO("search_engine")->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
 			return '_back';
 		else
 			return '_error';
@@ -149,8 +150,7 @@ class Entities_IndexLogic extends Logic
 	 */
 	public function cleanIndexAction(&$context,&$error)
 	{
-		$dao = &getDAO ("search_engine");
-		$dao->deleteObjects("1");    //delete all index lines and return
+		getDAO ("search_engine")->deleteObjects("1");    //delete all index lines and return
 		#echo "index cleaning";
 		return '_ok';
 	}
@@ -321,8 +321,8 @@ class Entities_IndexLogic extends Logic
 		{
 			$table2='relation';
 			$sql = "SELECT DISTINCT tf.name, tf.weight, tf.class, r.idrelation AS id 
-							FROM #_TP_relations AS r, #_TP_tablefields AS tf, #_TP_persontypes as t, #_TP_persons as p
-							WHERE r.nature='G' AND r.id1='$id' AND tf.weight > 0 AND t.id=p.idtype AND tf.class=CONCAT('entities_',t.class)";
+					FROM #_TP_relations AS r, #_TP_tablefields AS tf, #_TP_persontypes as t, #_TP_persons as p
+					WHERE r.nature='G' AND r.id1='$id' AND tf.weight > 0 AND t.id=p.idtype AND tf.class=CONCAT('entities_',t.class)";
 			$result = $db->execute(lq($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$arr = array();
 			while (!$result->EOF) {
@@ -334,8 +334,8 @@ class Entities_IndexLogic extends Logic
 			foreach ($arr as $classe => $values) {
 				$cols = implode (",", array_keys ($values['fieldname']));
 				$sql2 = "SELECT $cols FROM #_TP_".$classe." WHERE id$table2 ".sql_in_array ($values['id']);
-	$result2 = $db->execute (lq ($sql2)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	while (!$result2->EOF)	{
+				$result2 = $db->execute (lq ($sql2)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				while (!$result2->EOF)	{
 					foreach ($result2->fields as $field => $value)
 						$this->_indexField($id,$value,$field,$values['fieldname'][$field],$daoIndex,$classe.".");
 					$result2->moveNext();
