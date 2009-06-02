@@ -156,7 +156,7 @@ class Internal_MessagingLogic extends Logic
 						$ids[] = $site['name'].'-'.$user['id'];
 					}				
 				}
-				$arr[':'.$all.(is_array($ids) ? ':'.join(':', $ids) : '').':'] = getlodeltextcontents('internal_messaging_all_users_all_sites', 'admin');
+				$arr[':'.$all.(!empty($ids) ? ':'.join(':', $ids) : '').':'] = getlodeltextcontents('internal_messaging_all_users_all_sites', 'admin');
 			}
 		}
 		$selected = $context['idparent'] ? array_keys($arr) : '';

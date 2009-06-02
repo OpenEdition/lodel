@@ -148,7 +148,7 @@ function convertHTMLtoUTF8(&$text)
 	      "sect"=>"\302\247"
 	      );
 	
-	$text = preg_replace("/&(\w+);/e", 'isset($hash[\'\\1\']) ? $hash[\\1] : "\\0"', $text);
+	$text = preg_replace("/&(\w+);/e", 'isset($hash[\'\\1\']) ? $hash[\'\\1\'] : "\\0"', $text);
 	return $text;
 }
 
