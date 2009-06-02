@@ -54,7 +54,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
-	if($cfg['installlang'] != $_GET['installlang']) {
+	if(isset($_GET['installlang']) && $cfg['installlang'] != $_GET['installlang']) {
 		require_once '../lodel-'.$cfg['version'].'/scripts/lang.php';
 		if(in_array(strtoupper($_GET['installlang']), array_keys($GLOBALS['installlanguages']))) {
 			$installlang = $_GET['installlang'];
@@ -164,21 +164,31 @@ switch($tache)
 	}
 	else
 	{
-		require($install->get('lodelconfig'));	
+		require($install->get('lodelconfig'));
 		$GLOBALS['tableprefix'] = $cfg['tableprefix'];
 		require("context.php");
+		$cfg['home'] = LODELROOT.$cfg['home'];
 		C::setCfg($cfg);
 		// log this user in 
 		require_once("connect.php");
 		require_once("loginfunc.php");
-
+		require_once("auth.php");
 		$site="";
 		if (check_auth($adminusername,$adminpasswd,$site)) {
-			open_session($adminusername);
+			$adminpasswd = null;
+			if('error_opensession' === ($name = open_session($adminusername)))
+			{
+				trigger_error('ERROR: cannot open a session ?', E_USER_ERROR);
+			}
+		} 
+		else 
+		{
+			$adminpasswd = null;
+			trigger_error('ERROR: invalid username or password. Strange, please contact lodel@lodel.org', E_USER_ERROR);
 		}
 
 		// on vire le MDP de la mémoire
-		unset($adminpasswd);
+		$adminpasswd = null;
 	}
 	break;
 	case 'htaccess': // mise en place htaccess

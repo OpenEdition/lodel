@@ -393,7 +393,7 @@ class Install {
 
 		$adminusername=addslashes($adminusername);
 		$pass=md5($adminpasswd.$adminusername);
-		$adminpasswd = $adminpasswd2 = null;
+		$adminpasswd2 = null;
 		if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) trigger_error("ERROR: invalid lang", E_USER_ERROR);
 		
 		if (!@mysql_query("REPLACE INTO ".$cfg['tableprefix']."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','$adminemail',128,'$lang')")) {

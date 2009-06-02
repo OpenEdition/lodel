@@ -97,7 +97,7 @@ try
                 C::set('error_login', 1);
                 break;
         }
-    } elseif (C::get('login')) {
+    } elseif ($login) {
         include 'loginfunc.php';
         do {
             if (!check_auth(C::get('login'), C::get('passwd'))) {

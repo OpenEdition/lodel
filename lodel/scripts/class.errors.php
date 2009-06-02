@@ -118,7 +118,7 @@ class LodelException extends Exception
 	 */
 	public function getContent() 
 	{
-		if(TRUE === $this->debug) {
+		if(TRUE === $this->debug || C::get('redactor', 'lodeluser')) {
 			$ret = '</body><p class="error">';
 			$ret .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno ? '' : 'PHP ');
 			$ret .= "Error (".$this->type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : <br />";

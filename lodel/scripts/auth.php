@@ -209,7 +209,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 		unset($row);
         
 		if(!function_exists('open_session')) include 'loginfunc.php';
-		if('error_opensession' === open_session(C::get('login'), $name))
+		if('error_opensession' === open_session($lodeluser['name'], $name))
 			break;
 
 
