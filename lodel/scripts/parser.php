@@ -1259,33 +1259,41 @@ PHP;
 		if (!empty($contents['DO'])) {
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_do_{$localtpl}{$name}')) {
 	function code_do_{$localtpl}{$name}(\$context) { 
 ?>{$contents['DO']}<?php 
 	}
+}
 PHP;
 		}
 		if (!empty($contents['BEFORE'])) { // genere le code de avant
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_before_{$localtpl}{$name}')) {
 	function code_before_{$localtpl}{$name}(\$context) { 
 ?>{$contents['BEFORE']}<?php 
 	} 
+}
 PHP;
 		}
 		if (!empty($contents['AFTER']))	{ // genere le code de apres
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_after_{$localtpl}{$name}')) {
 	function code_after_{$localtpl}{$name}(\$context) { 
 ?>{$contents['AFTER']}<?php 
 	} 
+}
 PHP;
 		}
 		if (!empty($contents['ALTERNATIVE']))	{ // genere le code de alternative
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_alter_{$localtpl}{$name}')) {
 	function code_alter_{$localtpl}{$name}(\$context) { 
 ?>{$contents['ALTERNATIVE']}<?php 
 	} 
+}
 PHP;
 		}
 		// fin ajout

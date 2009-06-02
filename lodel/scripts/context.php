@@ -491,7 +491,7 @@ class C
 	 */
 	static public function mergeC(array &$datas)
 	{
-		return (self::$_context = array_merge($datas, self::$_context));
+		return ((bool)(self::$_context = array_merge($datas, self::$_context)));
 	}
 
 	/**

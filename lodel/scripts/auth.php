@@ -422,6 +422,7 @@ if('fr' !== substr($lang, 0, 2))
 	$l = strtolower(substr(C::get('lang'), 0,2));
 	$lu = 'en' === $l ? 'US' : strtoupper($l);
 	setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
+	C::set('locale', $l.'_'.$lu.'.UTF8');
 	unset($l, $lu);
 }
 unset($lang);
