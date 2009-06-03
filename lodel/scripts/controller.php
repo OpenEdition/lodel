@@ -721,7 +721,7 @@ class Controller
 		if(!function_exists('merge_and_filter_fields'))
 			include 'filterfunc.php';
 
-		merge_and_filter_fields($context, $context['class'], $row);
+		merge_and_filter_fields($context, $context['type']['class'], $row);
 		View::getView()->renderCached($base);
 		exit;
 	}
