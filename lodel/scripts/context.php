@@ -297,7 +297,7 @@ class C
 
 		foreach (array('class', 'classtype', 'type', 'textgroups') as $var) 
 		{
-			if (isset(self::$_context[$var]))
+			if (isset(self::$_context[$var]) && self::$_context[$var])
 			{
 				// get the various common parameters
 				if(!function_exists('validfield')) include 'validfunc.php';

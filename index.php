@@ -48,6 +48,8 @@
  */
 
 
+define('backoffice-lodeladmin', true);
+
 if (!file_exists("lodelconfig.php")) {
 	header('location: lodeladmin-0.9/install.php');
 	exit;
@@ -59,9 +61,9 @@ if (file_exists("siteconfig.php")) {
 } else {
 	require 'lodelconfig.php';
 	ini_set('include_path', $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
-    include 'context.php';
-    C::setCfg($cfg);
-    include 'class.errors.php';
+	require 'context.php';
+	C::setCfg($cfg);
+	require 'class.errors.php';
 }
 
 try

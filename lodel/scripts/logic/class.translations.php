@@ -394,7 +394,7 @@ class TranslationsLogic extends Logic {
 			trigger_error("ERROR: internal error in Translations::deleteAction", E_USER_ERROR);
 		}
 		
-		$db->execute(lq('DELETE FROM #_TP_texts WHERE lang="'.$vo->lang.'" AND textgroup="'.$vo->textgroups.'"')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq('DELETE FROM #_TP_texts WHERE lang="'.$this->vo->lang.'" AND textgroup="'.$this->vo->textgroups.'"')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		unset($this->vo);
 
 		return '_back';

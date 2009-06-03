@@ -206,7 +206,7 @@ class Install {
 			}
 			@chmod($this->lodelconfig,$chmod);
 			@include($this->lodelconfig);
-			$this->maj_lodelconfig(array("home"=>'$pathroot/lodel'.$this->versionsuffix.'/scripts/'));
+			$this->maj_lodelconfig(array("home"=>'$cfg[\'pathroot\']/lodel'.$this->versionsuffix.'/scripts/'));
 		} else {
 			trigger_error("ERROR: ".$this->lodelconfigplatform." does not exist. Internal error, please report this bug.", E_USER_ERROR);
 		}

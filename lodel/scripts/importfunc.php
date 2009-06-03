@@ -59,19 +59,19 @@
  * @param string $ext l'extension du fichier (par défaut 'zip')
  * @return le fichier qui a été extrait du répertoire d'import
  */
-	function extract_import($footprint, & $context, $ext = 'zip')
-	{
+function extract_import($footprint, & $context, $ext = 'zip')
+{
 
-	$context['importdir'] = $importdir;
+	$context['importdir'] = C::get('importdir', 'cfg');
 	$GLOBALS['fileregexp'] = '('.$footprint.')-\w+(?:-\d+)?.'.$ext;
 
 	$GLOBALS['importdirs'] = array ("CACHE", C::get('home', 'cfg')."../install/plateform");
-	if ($importdir) {
-		$GLOBALS['importdirs'][] = $importdir;
+	if ($context['importdir']) {
+		$GLOBALS['importdirs'][] = $context['importdir'];
 	}
 
-	$archive = $_FILES['archive']['tmp_name'];
-	$context['error_upload'] = $_FILES['archive']['error'];
+	$archive = @$_FILES['archive']['tmp_name'];
+	$context['error_upload'] = @$_FILES['archive']['error'];
 	if (!$context['error_upload'] && $archive && $archive != "none" && is_uploaded_file($archive)) { // Upload
 		$file = $_FILES['archive']['name'];
 		if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $file)) {
@@ -82,7 +82,7 @@
 			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
 		}
 		$file = ""; // on repropose la page
-	} elseif ($_GET['file'] && 
+	} elseif (isset($_GET['file']) && 
 						preg_match("/^(?:".str_replace("/", '\/', 
 															join("|", $GLOBALS['importdirs'])).")\/".$GLOBALS['fileregexp']."$/", 
 																		$_GET['file'], $result) && 
