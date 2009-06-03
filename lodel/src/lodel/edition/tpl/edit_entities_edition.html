@@ -70,7 +70,7 @@
 	<input type="hidden" name="id" value="[#ID]" />
 	<IF COND="[#IDTACHE]"><input type="hidden" name="idtache" value="[#IDTACHE]" /></IF>
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
-	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
+	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /><LET VAR="currentidtype">[#IDTYPE]</LET></IF>
 	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form" /></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1" />
 	<br />
@@ -118,7 +118,7 @@
 	</IF>
 	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 	<dd>
-	<LET VAR="currentidtype">[#IDTYPE]</LET>
+	
 	<LOOP NAME="compatible_types">
 		<BEFORE><select name="idtype"></BEFORE>
 			<IF COND="[#CURRENTIDTYPE] EQ [#ID]">
