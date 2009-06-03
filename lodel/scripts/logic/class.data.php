@@ -241,7 +241,6 @@ class DataLogic
 				$this->_checkFiles($context);
 			} while(0);
 		} else {
-			$error['file'] = 'unknown_file';
 			return 'import';
 		}
 		if(!$error) {
