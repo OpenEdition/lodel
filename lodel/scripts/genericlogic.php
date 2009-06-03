@@ -124,16 +124,16 @@ class GenericLogic extends Logic
 				global $db;
 				if(!function_exists('validfield'))
 					include 'validfunc.php';
-				if ($context['class']) {
+				if (!empty($context['class'])) {
 					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
-				}	elseif ($context['type']['class'])	{
+				}	elseif (!empty($context['type']['class']))	{
 					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
 				}	else {
 					trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 				}
-				if(isset($context['classtype']))
+				if(!empty($context['classtype']))
 				{
 					if ($context['classtype'] == "persons") {
 						$criteria = "class='".$class."'";
