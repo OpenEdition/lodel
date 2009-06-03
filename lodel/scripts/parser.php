@@ -1123,6 +1123,7 @@ PHP;
 		//
 		$this->fct_txt .= 
 <<<PHP
+if(!function_exists('loop_{$name}')) {
 	function loop_{$name}(\$context){
 		if(!defined('INC_CONNECT')) include 'connect.php';
 		global \$db;
@@ -1248,6 +1249,7 @@ PHP;
 <<<PHP
 		\$result->Close();
 	}
+}
 PHP;
 	}
 
