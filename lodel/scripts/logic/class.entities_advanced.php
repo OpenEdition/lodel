@@ -297,6 +297,7 @@ class Entities_AdvancedLogic extends Logic
 	public function downloadAction(&$context, &$error)
 	{
 		$id = $context['id'];
+		$multidoc = false;
 		switch($context['type']) {
 		case 'xml':
 			trigger_error('a implementer', E_USER_ERROR);
