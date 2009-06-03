@@ -76,9 +76,7 @@ function open_session($login, $name = null)
 
 	// context
 	C::setUser($login, 'name');
-	$lodeluser['name'] = $login;
 	// by default, we want the desk
-	$lodeluser['desk'] = true;
 	C::setUser(true, 'desk');
 	$contextstr = addslashes(serialize(C::getC(null, 'lodeluser')));
 	$expire = $timeout + time();
@@ -105,13 +103,13 @@ function open_session($login, $name = null)
 	
 			if ($result) break; // ok, it's working fine
 		}
-        if ($i == 5)
-        {
-            C::setUser();
-            return "error_opensession";
-        }
-        if (!@setcookie(C::get('sessionname', 'cfg'), $name, time() + $cookietimeout, C::get('urlroot', 'cfg')))
-            trigger_error("Cannot set cookie !", E_USER_ERROR);
+		if ($i == 5)
+		{
+			C::setUser();
+			return "error_opensession";
+		}
+		if (!@setcookie(C::get('sessionname', 'cfg'), $name, time() + $cookietimeout, C::get('urlroot', 'cfg')))
+			trigger_error("Cannot set cookie !", E_USER_ERROR);
 	}
 	else
 	{
@@ -119,7 +117,7 @@ function open_session($login, $name = null)
         UPDATE #_MTP_session 
             SET expire='$expire',currenturl=$myurl 
             WHERE name='$name'")) 
-        or trigger_error($db->errormsg(), E_USER_ERROR);
+        		or trigger_error($db->errormsg(), E_USER_ERROR);
 	}
 
 	C::set('clearcacheurl', mkurl($url, "clearcache=oui"));
@@ -158,7 +156,7 @@ function check_auth($login, $passwd)
             or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		if (!($row = $result->fields) && $GLOBALS['currentdb'] != DATABASE)	
-        { // le user n'est pas dans la base generale
+        	{ // le user n'est pas dans la base generale
 			if (!C::get('site', 'cfg'))
 				break; // si $site n'est pas definie on s'ejecte
 			// cherche ensuite dans la base du site
@@ -166,13 +164,13 @@ function check_auth($login, $passwd)
             SELECT * 
                 FROM #_TP_users 
                 WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
-            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			
-            if (!($row = $result->fields))
+            		if (!($row = $result->fields))
 				break;
 		}
 		
-        $result->Close();
+        	$result->Close();
         
 		// pass les variables en global
 		$lodeluser['rights'] = $row['userrights'];
@@ -187,14 +185,14 @@ function check_auth($login, $passwd)
             SELECT idgroup 
                 FROM #_TP_users_usergroups 
                 WHERE iduser='".$lodeluser['id']."'")) 
-            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
             
 			$lodeluser['groups'] = "1"; // sont tous dans le groupe "tous"
 			while (($row = $result->fields)) {
 				$lodeluser['groups'] .= ",".$row['idgroup'];
 				$result->MoveNext();
 			}
-            $result->Close();
+            		$result->Close();
 		}	else {
 			$lodeluser['groups'] = '';
 		}
@@ -204,24 +202,25 @@ function check_auth($login, $passwd)
 		$passwd = $pass = $lodeluser = 0;
         	C::set('passwd', null);
 
-        // nettoyage des tables session et urlstack
-        if(C::get('adminlodel', 'lodeluser')) {
-            $db->execute(lq("
-            DELETE FROM #_MTP_session 
-                WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) 
-            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            
-            $db->execute(lq("
-            DELETE FROM #_MTP_urlstack 
-                WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) 
-            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-        }
+		// nettoyage des tables session et urlstack
+		if(C::get('adminlodel', 'lodeluser')) {
+			$db->execute(lq("
+		DELETE FROM #_MTP_session 
+			WHERE expire < UNIX_TIMESTAMP() AND expire2 < UNIX_TIMESTAMP()")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		
+			$db->execute(lq("
+		DELETE FROM #_MTP_urlstack 
+			WHERE idsession NOT IN (SELECT id FROM #_MTP_session)")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		}
 
-        if (C::get('admin', 'lodeluser')) {
-            if(!function_exists('cleanEntities'))
-                include ('entitiesfunc.php');
-            cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
-        }
+		if (C::get('admin', 'lodeluser')) 
+		{
+			if(!function_exists('cleanEntities'))
+				include ('entitiesfunc.php');
+			cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
+		}
 
 		C::trigger('postlogin');
 		return true;

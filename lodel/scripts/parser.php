@@ -375,7 +375,7 @@ PHP;
 		switch ($escape) {
 			case 'php' :
 				// traitement normal, php espace
-				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){ \$isSerialized=true;echo serialize(\$tmp); }else{ echo \$tmp; } unset(\$tmp); ?>";
+				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
 				break;
 			case 'quote' :
 					$variable = "\".{$variable}.\"";
@@ -1630,7 +1630,7 @@ PHP;
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->_errmsg("LET have no VAR|ARRAY attribut");
 		
-		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}(\[\])?$/i" : "/^{$this->variable_regexp}$/i";
+		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}(\[\]|(\.[#%{$this->variablechar}]{$this->variable_regexp})*)?$/i" : "/^{$this->variable_regexp}$/i";
 
 		if (!preg_match($regexp, $result[2], $res))
 			$this->_errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
@@ -1663,9 +1663,11 @@ PHP;
             		$this->_clearposition();
 			// @ is bad, but we need to avoid notice error from PHP if multi dimensional array is not defined
 			// be carefull on variable erasing !!
-			$this->arr[$this->ind + 1] = (!empty($result[4]) ? '<?php @$GLOBALS[\'context\']' : '<?php @$context');
-			$add = false;
-			if('[]' === substr($var, -2))
+			$this->arr[$this->ind + 1] = '<?php $tmp=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false;if(0!==$tmp&&empty($tmp)){$tmp=array();}';
+			$this->arr[$this->ind + 1] .= (!empty($result[4]) ? '@$GLOBALS[\'context\']' : '$context');
+			$add = $array = false;
+
+			if(!empty($res[1]) && '[]' === $res[1])
 			{
 				$add = true;
 				$var = substr($var, 0, -2);
@@ -1676,17 +1678,30 @@ PHP;
 				$vars = explode('.', $var);
 				foreach($vars as $v)
 				{
-					$this->arr[$this->ind + 1] .= '[\''.$v.'\']';
+					$c = substr($v, 0, 1);
+					if('%' === $c || '#' === $c || $this->variablechar === $c)
+					{
+						$v = '['.strtoupper($v).']';
+						$this->parse_variable($v, false);
+						$this->arr[$this->ind + 1] .= '['.$v.']';
+					}
+					else
+					{
+						$this->arr[$this->ind + 1] .= '[\''.$v.'\']';
+					}
 				}
+				$array = true;
 			}
 			else
 			{
 				$this->arr[$this->ind + 1] .= '[\''.$var.'\']';
 			}
 			
-			if($add) $this->arr[$this->ind + 1] .= '[]';
+			if($add) $this->arr[$this->ind + 1] .= '[]=';
+			elseif($array) $this->arr[$this->ind + 1] .= '=';
+			else $this->arr[$this->ind + 1] .= '=(array)';
 
-			$this->arr[$this->ind + 1] .= '=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false; ?>';
+			$this->arr[$this->ind + 1] .= '$tmp;unset($tmp); ?>';
 		}
 	}
 

@@ -272,8 +272,8 @@ function formatedtime($time, $format)
 
 function humandate($s)
 {
-    if(!$s) return $s;
-    $ret = false;
+	if(!$s) return $s;
+	$ret = false;
 	// date
 	if (preg_match("/(\d\d\d\d)-(\d\d)-(\d\d)/", $s, $result)) {
 		if ($result[1] > 9000)
