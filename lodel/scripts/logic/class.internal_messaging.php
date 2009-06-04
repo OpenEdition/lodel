@@ -121,7 +121,7 @@ class Internal_MessagingLogic extends Logic
 				$users = $db->getArray(lq("SELECT id, username, lastname, firstname, userrights FROM #_TP_users ORDER BY username"));
 				if(is_array($users)) {
 					foreach($users as $user) {
-						$arr[':'.$context['site'].'-'.$user['id'].':'] = $user['username'] . ( ($user['firstname'] || $user['lastname']) ? " ({$user['firstname']} {$user['lastname']})" : ''). ($user['userrights'] == LEVEL_ADMINLODEL ? '(LodelAdmin)' : ($user['userrights'] == LEVEL_ADMIN ? '(Admin)' : ''));
+						$arr[':'.$context['site'].'-'.$user['id'].':'] = $user['username'] . ( ($user['firstname'] || $user['lastname']) ? " ({$user['firstname']} {$user['lastname']})" : ''). ($user['userrights'] == LEVEL_ADMIN ? '(Admin)' : '');
 						$ids[] = 'allsite'.$context['site'].'-'.$user['id'];
 						$siteids[] = $context['site'].'-'.$user['id'];
 						if($user['userrights'] == LEVEL_ADMIN) {
@@ -419,7 +419,9 @@ class Internal_MessagingLogic extends Logic
 	public function viewAction(&$context, &$error)
 	{
 		usemaindb();
-		return parent::viewAction($context, $error);
+		$ret = parent::viewAction($context, $error);
+		usecurrentdb();
+		return $ret;
 	}
 
 	public function editAction(&$context, &$error)
@@ -464,6 +466,7 @@ class Internal_MessagingLogic extends Logic
 		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, recipient, recipients, subject, body, cond, incom_date, status) VALUES {$requetes}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		unset($context['idparent']);
 		update();
+		usecurrentdb();
 		return "_location: index.php?do=list&lo=internal_messaging&msgsended=1";
 	}
 
