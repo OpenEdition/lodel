@@ -284,7 +284,8 @@ PHP;
 						++$i;
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
-						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#') {
+						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#' || $text {$i} == '_' || 
+							($text {$i}	>= '0' && $text {$i}	<= '9')) {
 							if ($text {$i} == '.') { $is_array = true; }
 							$lang .= $text {$i};
 							++$i;

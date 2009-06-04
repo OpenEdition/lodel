@@ -266,7 +266,7 @@ class View
 	 */
 	public function render($tpl, $caching = false)
 	{
-		C::set('tpl', $tpl);
+		C::set('view.tpl', $tpl);
 		
 		if(!isset($this->_cachedfile))
 		{	
@@ -274,7 +274,7 @@ class View
 		}
 
 		C::trigger('preview');
-		$tpl = C::get('tpl');
+		$tpl = C::get('view.tpl');
 
 		$format = C::get('format');
 		$base = $tpl.($format ? '_'.$format : '');
@@ -565,7 +565,7 @@ class View
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) 
 		{
-			$base_rep = C::get('base_rep.'.$base);
+			$base_rep = C::get('view.base_rep.'.$base);
             		$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
 			if(!$base_rep || !file_exists($tpl = $plugin_base_rep.$base_rep.'/tpl/'.$base.'.html'))
 			{
