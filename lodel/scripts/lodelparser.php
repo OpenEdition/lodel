@@ -147,7 +147,6 @@ class LodelParser extends Parser
 	protected function __construct()
 	{ // constructor
 		parent::__construct();
-		$this->commands[] = 'TEXT'; // catch the text
 		$this->variablechar = '@'; // catch the @
 		
 		if(!($this->tablefields = getFromCache('tablefields')))
