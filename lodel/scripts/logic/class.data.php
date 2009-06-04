@@ -198,6 +198,7 @@ class DataLogic
 	 */
 	public function importAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 
 		$context['importdir'] = C::get('importdir', 'cfg');
@@ -259,6 +260,7 @@ class DataLogic
 	 */
 	public function backupAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		$zipcmd = C::get('zipcmd', 'cfg');
 		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
@@ -405,6 +407,7 @@ class DataLogic
 	 */
 	public function globalbackupAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$context['importdir'] = C::get('importdir', 'cfg');
 		$operation = $context['operation'];
@@ -487,6 +490,7 @@ class DataLogic
 	 */
 	public function importmodelAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
@@ -989,7 +993,8 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
-	public function backupxmlmodelAction(&$context, &$error) {
+	public function backupxmlmodelAction(&$context, &$error) 
+	{
 		if (empty($context['backup'])) {
 			return 'backupmodel';
 		}
@@ -1039,7 +1044,9 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 * @return string $tpl nom du template à afficher
 	 */
-	public function importxmlmodelAction(&$context, &$error) {
+	public function importxmlmodelAction(&$context, &$error) 
+	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$err = '';
 		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
