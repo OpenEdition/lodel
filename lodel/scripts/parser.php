@@ -1388,10 +1388,12 @@ PHP;
 				$this->arr = join('', $this->arr);
 				$this->fct_txt .= 
 <<<PHP
+if(!function_exists('{$macrofunc}')) {
     function {$macrofunc}(\$context,\$args) {
         \$context=array_merge(\$context,\$args); 
 ?>{$this->arr}<?php 
     }
+}
 PHP;
 				$this->arr = $tmpArr;
 				$this->ind = $tmpInd;
