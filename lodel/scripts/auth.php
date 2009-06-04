@@ -212,18 +212,16 @@ function authenticate($level = 0, $mode = "", $return = false)
 		if('error_opensession' === open_session($lodeluser['name'], $name))
 			break;
 
-
-		if($lang = C::get('lang'))
+		$lang = C::get('lang');
+		if($lang && 'set' === C::get('do') && 'users' === C::get('lo'))
 		{
 			$GLOBALS['lang'] = $lang;
 			C::set('sitelang', $lang);
-			C::set('lang', $lang);
 		}
 		elseif(isset($lodeluser['lang'])) 
 		{
 			$GLOBALS['lang'] = $lodeluser['lang'];
 			C::set('sitelang', $lodeluser['lang']);
-			C::set('lang', $lodeluser['lang']);
 		}
 		
 // 		usecurrentdb();
@@ -388,16 +386,18 @@ if (C::get('site', 'cfg'))
 }
 
 // Langue ?
-$lang = trim(C::get('lang'));
+$lang = C::get('lang');
 // récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
 if(!empty($_COOKIE['language']) && !$lang) {
 	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
 	{
-		C::set('lang', $_COOKIE['language']);
+		$lang = $_COOKIE['language'];
+		//C::set('lang', $_COOKIE['language']);
 	}
 	else
 	{
-		C::set('lang', 'fr'); // fr by default
+		$lang = 'fr';
+		//C::set('lang', 'fr'); // fr by default
 		setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
 	}
 }
@@ -410,12 +410,10 @@ else
 		$lang = C::get('options.metadonneessite.langueprincipale');
 		$lang = !$lang ? 'fr' : $lang;
 	}
-	C::set('lang', $lang); // fr by default
+	//C::set('lang', $lang); // fr by default
 	setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
-	unset($lang);
 }
 
-$lang = C::get('lang');
 // do we have to set another locale ?
 if('fr' !== substr($lang, 0, 2))
 {
@@ -425,11 +423,11 @@ if('fr' !== substr($lang, 0, 2))
 	C::set('locale', $l.'_'.$lu.'.UTF8');
 	unset($l, $lu);
 }
-unset($lang);
 
 // tableaux des langues disponibles
 include 'lang.php';
 C::set('defaultlang', $GLOBALS['languages']);
-C::set('sitelang', C::get('lang'));
+C::set('sitelang', $lang);
+unset($lang);
 C::set('installlang', C::get('installlang', 'cfg'));
 ?>
