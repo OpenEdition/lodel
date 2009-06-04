@@ -271,7 +271,7 @@ class XMLDB
 		if ($this->header)
 			$this->_write("<header>". $this->header. "</header>\n");
 		foreach ($this->tables as $table => $info) {
-			if ($info['child'])
+			if (isset($info['child']) && $info['child'])
 				continue; # will be processed in with its parent
 			$this->exporttable($table, $info);
 		}
@@ -299,12 +299,12 @@ class XMLDB
 		//
 		// join
 		$join = array ();
-		if ($info['joinfield']) {
+		if (isset($info['joinfield']) && $info['joinfield']) {
 			$join[] = $info['joinfield']."='".$joinfieldvalue."'";
 		}
 		//
 		// where and join
-		if ($info['where'])
+		if (isset($info['where']) && $info['where'])
 			$where = " WHERE ".join(" AND ", array_merge($info['where'], $join));
 
 		//
