@@ -1993,7 +1993,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFFUNC NAME="TITRE_AUTEURS_TYPE_DOCUMENT_ALIAS" REQUIRED="id">
 	<div class="document_alias">
-		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="nature='alias' AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
+		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="LENGTH(nature)>1 AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
 			<BEFORE>
 				&nbsp;<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" onclick="if(document.getElementById('aliasContainer[#ID]').style.display == 'none' || document.getElementById('aliasContainer[#ID]').style.display == '') document.getElementById('aliasContainer[#ID]').style.display = 'inline'; else document.getElementById('aliasContainer[#ID]').style.display = 'none';" />
 				<div class="alias_container" id="aliasContainer[#ID]"> [@COMMON.ENTITY_ALIAS_RELATION] :
