@@ -167,9 +167,12 @@ class GenericLogic extends Logic
 				while (!$result->EOF)	{
 					$localcontext = array_merge($context, $result->fields);
 					$name = $result->fields['name'];
-					$localcontext['value'] = ($result->fields['edition'] != "display" && isset($context['data'][$name]) 
-                                              && is_string($context['data'][$name])) ?
-                                            htmlspecialchars($context['data'][$name]) : '';
+					if(isset($context['data'][$name]))
+					{
+						$localcontext['value'] = ($result->fields['edition'] != "display" && is_string($context['data'][$name])) ?
+                                            htmlspecialchars($context['data'][$name]) : $context['data'][$name];
+					} else $localcontext['value'] = '';
+					
 
 					call_user_func("code_do_$funcname", $localcontext);
 					$result->MoveNext();
