@@ -99,7 +99,7 @@ function indentXML($contents, $output = false, $indenter= '  ')
     $dom = new DomDocument;
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
-    $dom->loadXML($contents);
+    @$dom->loadXML($contents);
     $contents = $dom->saveXML();
     unset($dom);
     if($output)

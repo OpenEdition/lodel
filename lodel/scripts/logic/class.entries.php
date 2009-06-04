@@ -176,7 +176,7 @@ class EntriesLogic extends GenericLogic
 		if (!$idtype) {
 			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
 		}
-		$status = $context['status'];
+		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
 		$daotype = getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");

@@ -39,6 +39,9 @@
 	#lodel-desk ul li a{
 		background: #0096b7 url("[#SHAREURL]/images/bg_li_group1.png") top left no-repeat;
 	}
+	#lodel-desk ul li a:hover{
+		border:none;
+	}
 	#lodel-desk ul li.admin a{
 		background: #0075ab url("[#SHAREURL]/images/bg_li_admin_group1.png") top left no-repeat;
 	}
@@ -82,6 +85,9 @@
 	}
 	div#lodelGlobalDeskDisplayer a {
 		display:block;
+	}
+	div#lodelGlobalDeskDisplayer a:hover {
+		border:none;
 	}
 </IF>
 </style>
@@ -397,7 +403,7 @@
 </div>
 
 <IF COND="[#LODELUSER.ADMINLODEL]">
-	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
+	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights EQ 128">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>

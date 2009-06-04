@@ -109,7 +109,7 @@ function cacheOptionsInFile($optionsfile=null)
     	$sql .= 'ORDER BY rank';
 
 	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) 
-       or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+       		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	if(isset($optionsfile))
 	{

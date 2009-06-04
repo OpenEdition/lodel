@@ -340,6 +340,7 @@ class Logic
 	
 	protected function _getMainTableDAO() 
 	{
+		if(!defined('INC_FUNC')) include 'func.php';
 		return getDAO($this->maintable);
 	}
    

@@ -405,7 +405,7 @@ class View
 	
 		$tplFile = $base_rep. $tpl. '.html';
 		$blockId = (int)$blockId;
-		$idcontext = (int)$context['id'];
+		$idcontext = (int)@$context['id'];
         	$recalcul = true;
 
 		if(!self::$nocache)
