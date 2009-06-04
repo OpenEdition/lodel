@@ -1497,7 +1497,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<li>
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 		</li>
-		<IF COND="defined('backoffice')">
+		<IF COND="defined('backoffice') AND ![#DO]">
 		<li>
 			<ul class="actions">
 				<li class="isolated"><a href="#" id="displayButton" onclick="javascript:displayAll(this, true, false, null);">[@COMMON.DISPLAY_ALL_SITEMAP]</a></li>
