@@ -109,7 +109,7 @@ class MainPluginsLogic extends Logic
 			}
 			else
 			{
-				if(!class_exists($name[0], false) || get_parent_class($name[0]) !== 'plugins' || !method_exists($name[0], $name[1]))
+				if(!class_exists($name[0], false) || get_parent_class($name[0]) !== 'Plugins' || !method_exists($name[0], $name[1]))
 				{
 					if($return) return false;
 					trigger_error('ERROR: no way to find the plugin', E_USER_ERROR);

@@ -404,12 +404,12 @@
 		</DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
-	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
+	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 <ELSEIF COND="[#LODELUSER.REDACTOR]">
-	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5 AND lodelmain.session.userrights LT '128'">
+	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
