@@ -140,7 +140,7 @@
 			  <ELSE/>
 			  	<IF COND="[#TYPE] eq 'persons' OR [#TYPE] eq 'entries'">
 			  		<LET VAR="typetable"><IF COND="[#TYPE] eq 'persons'">person<ELSE>entry</IF>types</LET>
-			  		<xsd:element name="[#NAME]" <LOOP NAME="typesentrypersons" TABLE="[#TYPETABLE]" WHERE="type eq '[#NAME]'">type="type[#CLASS|ucfirst]"</LOOP> [#OCCURS]>
+			  		<xsd:element name="[#NAME]" <LOOP NAME="typesentrypersons" TABLE="#_TP_[#TYPETABLE]" WHERE="type eq '[#NAME]'">type="type[#CLASS|ucfirst]"</LOOP> [#OCCURS]>
 					<ELSE/>
 				    <xsd:element name="[#NAME]" [#OCCURS]>
 				    <IF COND="[#COMMENTAIRE]">
@@ -163,7 +163,7 @@
 							</xsd:complexType>
 						</AFTER>
 					  </LOOP>
-					 	</IF>				  
+					 	</IF>
 				</IF>
 				</xsd:element>
 	    </DO>
