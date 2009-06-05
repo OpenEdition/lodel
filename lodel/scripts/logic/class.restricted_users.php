@@ -192,7 +192,7 @@ class Restricted_UsersLogic extends Logic
 				$arr[$lang->lang]=$lang->title;
 			}
 			if (!$arr) $arr['fr']=utf8_encode("Français");
-			renderOptions($arr,$context['lang']);
+			renderOptions($arr,$context['sitelang']);
 		}
 	}
 
