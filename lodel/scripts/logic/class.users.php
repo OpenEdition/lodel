@@ -289,7 +289,7 @@ class UsersLogic extends Logic
 	{
 		global $db;
 		if ($vo->userrights<=LEVEL_EDITOR) {
-			if (!$context['usergroups']) $context['usergroups']=array(1);
+			if (empty($context['usergroups'])) $context['usergroups']=array(1);
 
 			// change the usergroups     
 			// first delete the group
