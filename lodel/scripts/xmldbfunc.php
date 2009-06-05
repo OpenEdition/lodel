@@ -460,7 +460,7 @@ class XMLDB
 				// start a new record
 				$this->_newrecord($name);
 				$this->state = "inrecord";
-			}	elseif ($this->tables[$currenttable]['join'] && $this->tables[$currenttable]['join'][$name]) {
+			}	elseif (isset($this->tables[$currenttable]['join'][$name]) && $this->tables[$currenttable]['join'][$name]) {
 				// records a finish
 				$this->_endrow();
 				// start in the child table
@@ -481,11 +481,11 @@ class XMLDB
 				$this->records[$field] = $val;
 			}
 			// add the parent join field if we are a child
-			if ($this->tables[$currenttable]['child']) {
+			if (isset($this->tables[$currenttable]['child']) && $this->tables[$currenttable]['child']) {
 				$this->records[$this->tables[$currenttable]['joinfield']] = $this->joinfieldvaluestack[1];
 			}
 			// row started but also start of the record (unique record)
-			if ($this->tables[$currenttable]['norowelement']) {
+			if (isset($this->tables[$currenttable]['norowelement']) && $this->tables[$currenttable]['norowelement']) {
 				$tag = reset($this->tables[$currenttable]['element']);
 				if ($name == $tag) {
 					$this->state = "inrecord";
@@ -494,7 +494,7 @@ class XMLDB
 					trigger_error("ERROR: Invalid XML. Expecting &lt;$tag&gt; but got &lt;$name&gt;", E_USER_ERROR);
 				}
 			}	else {
-				if ($name == $this->tables[$currenttable]['rowtag']) {
+				if (isset($this->tables[$currenttable]['rowtag']) && $name == $this->tables[$currenttable]['rowtag']) {
 					$this->state = "record";
 				} else {
 					trigger_error("ERROR: Invalid XML. Expecting &lt;".$this->tables[$currenttable]['rowtag']."&gt; but got &lt;$name&gt;", E_USER_ERROR);
@@ -502,7 +502,7 @@ class XMLDB
 			}
 			break;
 		case "table" :
-			if ($this->tables[$name]) {
+			if (isset($this->tables[$name]) && $this->tables[$name]) {
 				// start of a new table
 				$this->state = "row";
 				$this->_newtable($name);
@@ -520,7 +520,7 @@ class XMLDB
 	function endElement($parser, $name)
 	{
 		#echo "endElement $name ".$this->state."<br/>";
-		$currenttable = $this->tablestack[0];
+		$currenttable = @$this->tablestack[0];
 		switch ($this->state)	{
 		case "inrecord" :
 			if ($name == $this->currentrecord) {
@@ -529,7 +529,7 @@ class XMLDB
 				$this->state = "record";
 				$this->_endrecord($name);
 
-				if ($this->tables[$currenttable]['norowelement']) {
+				if (isset($this->tables[$currenttable]['norowelement']) && $this->tables[$currenttable]['norowelement']) {
 					$tag = reset($this->tables[$currenttable]['element']);
 					if ($name == $tag) {
 						$this->_endrow();
@@ -544,7 +544,7 @@ class XMLDB
 			break;
 		case "record" :
 			// rowtag element
-			if ($name == $this->tables[$currenttable]['rowtag']) {
+			if (isset($this->tables[$currenttable]['rowtag']) && $name == $this->tables[$currenttable]['rowtag']) {
 				// finish recording
 				if (!$this->tables[$currenttable]['join']) { // if join, the insertion has already been done
 					$this->joinfieldvaluestack[0] = $this->insertRow($currenttable, $this->records);
@@ -555,7 +555,7 @@ class XMLDB
 			}
 			break;
 		case "row" :
-			if ($this->tables[$currenttable]['norowelement']) {
+			if (isset($this->tables[$currenttable]['norowelement']) && $this->tables[$currenttable]['norowelement']) {
 				if ($name == $currenttable) {
 					$this->_endtable();
 					#####$this->state="table";
@@ -564,7 +564,7 @@ class XMLDB
 					trigger_error("EROR: XML Invalid. Expecting &lt;/".$currenttable.".&gt; element. Found &lt;/$name&gt;", E_USER_ERROR);
 				}
 			} else {
-				if ($name == $this->tables[$currenttable]['rowtag']) {
+				if (isset($this->tables[$currenttable]['rowtag']) && $name == $this->tables[$currenttable]['rowtag']) {
 					// nothing to do
 				} elseif ($name == $currenttable) {
 					// closing current table
