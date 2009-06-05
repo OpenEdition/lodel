@@ -83,6 +83,7 @@ class PluginsLogic extends MainPluginsLogic
 		}
 
 		parent::listAction($context, $error);  // security 
+
 		if($error)
 			return '_error';
 
@@ -100,9 +101,10 @@ class PluginsLogic extends MainPluginsLogic
 		$context['id'] = $dao->save($vo, $new);
 
 		parent::factory($context, $error, $this->_plugin['name'].'_'.__FUNCTION__, true); // call the enableAction func from the plugin
+
 		@unlink(SITEROOT.'/CACHE/triggers');
 		clearcache();
-		return '_back';
+		return '_location:index.php?lo=plugins&do=list';
 	}
 
 	/**
@@ -119,6 +121,7 @@ class PluginsLogic extends MainPluginsLogic
 		}
 
 		parent::listAction($context, $error); // security 
+
 		if($error)
 			return '_error';
 
@@ -138,7 +141,7 @@ class PluginsLogic extends MainPluginsLogic
 		
 		@unlink(SITEROOT.'/CACHE/triggers');
 		clearcache();
-		return '_back';
+		return '_location:index.php?lo=plugins&do=list';
 	}
 
 	// begin{publicfields} automatic generation  //

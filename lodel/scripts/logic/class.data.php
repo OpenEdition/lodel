@@ -302,6 +302,8 @@ class DataLogic
 
 			// si sauvegarde des répertoires demandée (en + de la base)
 			if (empty($context['sqlonly'])) { // undefined or equal to 0
+					$bad_dirs = array();
+					$good_dirs = array();
 					//verifie que les repertoires sont accessibles en lecture
 					foreach ($sitedirs as $sitedir) {
 						if(is_readable(SITEROOT . $sitedir)){
@@ -311,7 +313,7 @@ class DataLogic
 						}
 					}
 					// initialise $error pour affichage dans le template backup.html
-					if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
+					if (!empty($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
 					
 					// conversion en chaîne pour ligne de commande
 					$dirs = implode(' ', $good_dirs);

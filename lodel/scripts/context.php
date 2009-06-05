@@ -190,6 +190,7 @@ class C
 	{
 		self::$_context = self::$_backupC;
 		$GLOBALS['context'] =& self::$_context;
+		self::$_backupC = array();
 	}
 
 	/**
@@ -444,13 +445,13 @@ class C
 			if(!isset(self::${"_{$arr}"})) return false;
 			if(!isset($v))	return self::${"_{$arr}"};
 
-			if(false === strpos($v, '.')) return isset(self::${"_{$arr}"}[$v]) ? self::${"_{$arr}"}[$v] : false;
+			if(false === strpos($v, '.')) return array_key_exists($v, self::${"_{$arr}"}) ? self::${"_{$arr}"}[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::${"_{$arr}"};
 			foreach($vars as $var)
 			{
-				if(!isset($return[$var])) return false;
+				if(!array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -458,13 +459,13 @@ class C
 		}
 		elseif(isset($v))
 		{
-			if(false === strpos($v, '.')) return isset(self::$_context[$v]) ? self::$_context[$v] : false;
+			if(false === strpos($v, '.')) return array_key_exists($v, self::$_context) ? self::$_context[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::$_context;
 			foreach($vars as $var)
 			{
-				if(!isset($return[$var])) return false;
+				if(!array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -503,7 +504,7 @@ class C
 	 */
 	static public function set($n, $v)
 	{
-		if(false === strpos($n, '.')) return ('lodeluser' !== (string)$n ? (self::$_context[$n] = $v) : false);
+		if(false === strpos($n, '.')) return ((bool)('lodeluser' !== (string)$n ? (self::$_context[$n] = $v) : false));
 
 		$vars = explode('.', $n);
 		if('lodeluser' === (string)$vars[0]) return false; // haha
@@ -511,11 +512,11 @@ class C
 		$set =& self::$_context;
 		foreach($vars as $var)
 		{
-			if(!isset($set[$var])) $set[$var] = array();
-			$set =& $set[$var];	
+			if(!array_key_exists($var, $set)) $set[$var] = array();
+			$set =& $set[$var];
 		}
 		
-		return ($set = $v);
+		return ((bool)($set = $v));
 	}
 
 	/**
@@ -528,7 +529,7 @@ class C
 	{
 		if(!isset($n))
 		{
-			if(!isset($v)) return (self::$_lodeluser = self::$_context['lodeluser'] = null);
+			if(!isset($v)) return ((bool)(self::$_lodeluser = self::$_context['lodeluser'] = null));
 			elseif(empty(self::$_lodeluser))
 			{
 				self::$_lodeluser = self::$_context['lodeluser'] = $v;
@@ -543,9 +544,9 @@ class C
         
 		if(false === strpos($n, '.'))
 		{
-			if(isset(self::$_lodeluser[$n]))
+			if(array_key_exists($n, self::$_lodeluser))
 			{
-				return (!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false);
+				return ((bool)(!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
 			}
 			else 
 			{
@@ -553,7 +554,7 @@ class C
 				self::$_context['lodeluser'][$n] = array();
 				self::$_lodeluser[$n] = $v;
 				// don't want to have access to the session id or name in templates
-				return (('idsession' === $n || 'session' === $n) ? true : self::$_context['lodeluser'][$n] = $v);
+				return ((bool)(('idsession' === $n || 'session' === $n) ? true : (self::$_context['lodeluser'][$n] = $v)));
 			}
 		}
 		else
@@ -562,11 +563,11 @@ class C
 			$set =& self::$_lodeluser;
 			foreach($vars as $var)
 			{
-				if(!isset($set[$var])) $set[$var] = array();
+				if(!array_key_exists($var, $set)) $set[$var] = array();
 				$set =& $set[$var];	
 			}
 			
-			return ($set = $v);
+			return ((bool)($set = $v));
 		}
 		return false;
 	}

@@ -84,9 +84,9 @@ class TextsLogic extends Logic
             		clearcache();
             		return $ret;
 		}
+		$dao = $this->_getMainTableDAO();
 		// Sauvegarde massive
 		if (isset($context['contents']) && is_array($context['contents'])) {
-			$dao = $this->_getMainTableDAO();
 			//if ($GLOBALS['lodeluser']['translationmode'] != 'site') {
 			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
@@ -108,6 +108,32 @@ class TextsLogic extends Logic
 				$dao->save($vo);
 			}
 			//if ($GLOBALS['lodeluser']['translationmode']!="site") {
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
+				#echo "mode interface";
+				usecurrentdb();
+			}
+		}
+		else
+		{
+			if (!$this->validateFields($context, $error)) {
+				return '_error';
+			}
+			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
+				#echo "mode interface";
+				usemaindb();
+			}
+			$vo = $dao->createObject();
+			$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $context['contents']);
+			$status = (int)$context['status'];
+			$this->_isAuthorizedStatus($status);
+			$vo->status   = $status;
+			$vo->lang = $context['lang'];
+			$vo->name = strtolower($context['name']);
+			$vo->textgroup = $context['textgroup'];
+			if (!$vo->status) {
+				$vo->status=-1;
+			}
+			$context['id'] = $dao->save($vo);
 			if(!isset($context['textgroup']) || $context['textgroup'] != 'site') {
 				#echo "mode interface";
 				usecurrentdb();
@@ -194,7 +220,7 @@ class TextsLogic extends Logic
 	// end{publicfields} automatic generation  //
 
 
-		function _uniqueFields() {  return array();  }
+	protected function _uniqueFields() {  return array();  }
 
 
 } // class

@@ -155,7 +155,7 @@ function hasbeencut()
 
 function couperpara($texte, $long)
 {
-	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($texte, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$pos = -1;
 	do {
 		$pos = mb_strpos($texte, "</p>", $pos +1, $encoding);

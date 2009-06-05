@@ -175,7 +175,7 @@ class Controller
 
 			if (!$ret) 
 				trigger_error('ERROR: invalid return from the logic.', E_USER_ERROR);
-	
+
 			if($do != 'listAction') C::trigger('postedit');
 
 			if(!empty($context['error']) && $ret != '_error')
@@ -357,18 +357,21 @@ class Controller
 		
 		$where = array();
 		$uniqueFields = getLogic($type)->getUniqueFields();
-		foreach($uniqueFields[0] as $field)
+		if(!empty($uniqueFields))
 		{
-			if(!isset($request[$field]))
+			foreach($uniqueFields[0] as $field)
 			{
-				return 'ERROR: missing field '.$field;
+				if(!array_key_exists($field, $request))
+				{
+					return 'ERROR: missing field '.$field;
+				}
+				$where[] = $field.'='.$db->quote($request[$field]);
 			}
-			$where[] = $field.'='.$db->quote($request[$field]);
+			$vo = getDAO($type)->find(join(' AND ', $where), 'id');
+			unset($where);
+			
+			$request['id'] = $vo ? $vo->id : 0;
 		}
-		$vo = getDAO($type)->find(join(' AND ', $where), 'id');
-		unset($where);
-		
-		$request['id'] = $vo ? $vo->id : 0;
 		
 		$ret = Controller::getController()->execute(array($type), $type, $request);
 		if('_next' !== $ret)

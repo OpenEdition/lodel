@@ -293,7 +293,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		if ($text) {
 			$parsedurl = @parse_url($text);
-			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
+			if (!$parsedurl || empty($parsedurl['host']) || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
 				return 'url';
 			}
 		}

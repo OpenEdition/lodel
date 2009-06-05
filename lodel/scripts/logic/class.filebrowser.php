@@ -79,6 +79,7 @@ class FileBrowserLogic {
 	 */
 	public function viewAction(&$context,&$error)
 	{
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		return "filebrowser";
 	}
 
@@ -88,9 +89,10 @@ class FileBrowserLogic {
 
 	public function submitAction(&$context,&$error)
 	{
-		if (isset($_POST['checkmail'])) return $this->checkMailAction($context,$error);
-		if (isset($_POST['resize']) && isset($_POST['newsize'])) return $this->resizeAction($context,$error);
-		if (isset($_POST['delete'])) return $this->deleteAction($context,$error);
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
+		if (!empty($_POST['checkmail'])) return $this->checkMailAction($context,$error);
+		if (!empty($_POST['resize']) && isset($_POST['newsize'])) return $this->resizeAction($context,$error);
+		if (!empty($_POST['delete'])) return $this->deleteAction($context,$error);
 	}
 
 	/**
@@ -99,6 +101,7 @@ class FileBrowserLogic {
 
 	public function checkMailAction(&$context,&$error)
 	{
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		if(!function_exists('checkmailforattachments'))
 			include ("imapfunc.php");
 		$context['nbattachments']=checkmailforattachments();
@@ -112,6 +115,7 @@ class FileBrowserLogic {
 
 	public function deleteAction(&$context,&$error)
 	{
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		$selectedfiles= (isset($context['file']) && is_array($context['file'])) ? array_keys($context['file']) : false;
 		$dh=@opendir(UPLOADDIR);
 		if (!$dh) trigger_error("ERROR: can't open upload directory", E_USER_ERROR);
@@ -132,8 +136,8 @@ class FileBrowserLogic {
 		*/
 
 	public function resizeAction(&$context,&$error)
-
 	{
+		if (!C::get('redactor', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		$selectedfiles= (isset($context['file']) && is_array($context['file'])) ? array_keys($context['file']) : false;
 		if(!function_exists('resize_image'))
 			include("images.php");
