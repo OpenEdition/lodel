@@ -148,7 +148,7 @@ class Parser
 		$this->base_rep = str_replace($this->tpl.'.html', '', $in);
 		$this->cache_rep = $cache_rep;
 		$this->blockid = (int)$blockId;
-		$this->signature = preg_replace("/\W+/", "_", $in).'_'.uniqid(); // we need unique name for multiple call to the same template
+		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = $this->macros_txt = $this->charset = $this->ind = $this->countarr = null;
         	$this->refresh = $this->looplevel = 0;
 		$this->loops = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();

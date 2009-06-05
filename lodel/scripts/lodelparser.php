@@ -587,7 +587,7 @@ class LodelParser extends Parser
 				return; // no idea what to do...
 			$tf = join("", $this->translationform);
 			$code = <<<PHP
-<?php if (C::get('translationmode', 'lodeluser')=="interface") {
+<?php if (C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site")) {
 if(!function_exists('mkeditlodeltextJS')) include("translationfunc.php"); mkeditlodeltextJS(); ?>
 <hr />
 <form method="post" action="index.php">

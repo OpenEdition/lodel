@@ -178,7 +178,7 @@ class Controller
 
 			if($do != 'listAction') C::trigger('postedit');
 
-			if(!empty($context['error']) && $ret != '_error')
+			if(!empty($context['error']) && ($ret === '_ok'))
 			{ // maybe an error from plugins
 				$ret = '_error';
 			}
@@ -216,7 +216,12 @@ class Controller
 					{ // plugin call
 						getLogic($lo)->factory($context, $error, substr($do, 0, $p).'_viewAction');
 					}
-					else getLogic($lo)->viewAction($context, $error); // in case anything is needed to be put in the context
+					else
+					{
+						$logic = getLogic($lo);
+						if(method_exists($logic, 'viewAction'))
+							$logic->viewAction($context, $error); // in case anything is needed to be put in the context
+					}
 					$context['error'] = array_merge((array)$context['error'], (array)$error);
 				case '_ok' :
 					View::getView()->render(($do != 'listAction' ? "edit_" : "") . $lo);
@@ -356,6 +361,7 @@ class Controller
 		$request['protected'] = 1;
 		
 		$where = array();
+		if(!function_exists('getLogic')) include 'logic.php';
 		$uniqueFields = getLogic($type)->getUniqueFields();
 		if(!empty($uniqueFields))
 		{

@@ -86,7 +86,10 @@ if('mysql' === DBDRIVER)
             if(!is_object($result))
                 return false;
     
-            return count($result->_fieldobjects);
+	    if(isset($result->_fieldobjects))
+            	return count($result->_fieldobjects);
+	    elseif(isset($result->_numOfRows))
+		return $result->_numOfRows;
         }
     
         public function fetchField(&$result, $i=null)
@@ -154,7 +157,10 @@ elseif('mysqli' === DBDRIVER)
             if(!is_object($result))
                 return false;
 
-            return count($result->_fieldobjects);
+	    if(isset($result->_fieldobjects))
+            	return count($result->_fieldobjects);
+	    elseif(isset($result->_numOfRows))
+		return $result->_numOfRows;
         }
     
         public function fetchField(&$result, $i=null)

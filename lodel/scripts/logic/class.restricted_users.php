@@ -309,12 +309,7 @@ class Restricted_UsersLogic extends Logic
 			return false;
 		}
 
-		if ($ret) {
-			$error['username']="1"; // report the error on the first field
-			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 

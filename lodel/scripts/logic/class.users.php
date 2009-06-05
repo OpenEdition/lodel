@@ -294,10 +294,12 @@ class UsersLogic extends Logic
 			// change the usergroups     
 			// first delete the group
 			$this->_deleteRelatedTables($vo->id);
+			$id = (int)$context['id'];
 			// now add the usergroups
 			foreach ($context['usergroups'] as $usergroup) {
 				$usergroup=(int)$usergroup;
-				$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 	}

@@ -569,8 +569,8 @@ class DataLogic
 	 */
 	public function backupmodelAction(&$context, &$error)
 	{
-		$context['importdir'] = $importdir;
-		if ($context['backup']) {
+		$context['importdir'] = C::get('importdir', 'cfg');
+		if (isset($context['backup'])) {
 			if(!$context['title']) {
 				$error['title'] = 'title_required';
 			}
@@ -1100,7 +1100,7 @@ class DataLogic
 			$this->_fieldsToKeep = $meObj->_fieldsToKeep;
 			$this->_changedTables = $meObj->_changedTables;
 			$meObj = null;
-		} elseif($xmlfile) {
+		} elseif(isset($xmlfile)) {
 			// besoin des fonctions de bruno pour conversion entités
 			if(!function_exists('HTML2XML'))
 				include 'textfunc.php';
@@ -2293,7 +2293,7 @@ class DataLogic
 		$schemaNode->appendChild($model);
 		$descr = $document->createElement("lodelversion");
 		$model->appendChild($descr);
-		$descr->nodeValue = $version;
+		$descr->nodeValue = C::get('version', 'cfg');
 		$descr = $document->createElement("date");
 		$model->appendChild($descr);
 		$descr->nodeValue = date("Y-m-d");
