@@ -510,7 +510,11 @@ class ServOO_Client {
    */
 
     function call($operation,$params=array()) {
-
+      if(!is_object($this->_soapclient)) {
+          $this->error=true;
+          $this->error_message='Invalid configuration, can not contact the ServOO';
+	  return false;
+      }
       // sent the file to convert
       $ret = $this->_soapclient->call($operation,
 				      $params,
