@@ -448,7 +448,7 @@ class XMLDB
 	function startElement($parser, $name, $attrs)
 	{
 		#echo "<br/>startElement $name ".$this->state."    $currenttable<br/>";
-		$currenttable = $this->tablestack[0];
+		$currenttable = @$this->tablestack[0];
 
 		switch ($this->state) {
 		case "inrecord" :
