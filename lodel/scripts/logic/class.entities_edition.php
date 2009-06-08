@@ -515,7 +515,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param object $vo l'objet qui a été créé
 	 * @param array $context le contexte
 	 */
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 		global $db;
 		if (!isset($vo->status)) {
@@ -713,7 +713,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array $contextle contexte
 	 * @param integer $idparent identifiant du parent
 	 */
-	protected function _getUserGroup($context, $idparent)
+	protected function _getUserGroup(&$context, $idparent)
 	{
 		global $db;
 		if (C::get('admin', 'lodeluser')) { // take it from the context.
@@ -767,7 +767,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param object &$vo l'objet utilisé dans viewAction
 	 * @param array &$context le contexte, tableau passé par référence
 	 */
-	protected function _populateContextRelatedTables(&$vo, &$context)
+	protected function _populateContextRelatedTables($vo, &$context)
 	{
 		global $db;
 		foreach (array('entries' => array('E', 'identry', 'entrytypes'),

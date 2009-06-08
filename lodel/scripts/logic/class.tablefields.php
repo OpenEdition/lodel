@@ -249,7 +249,7 @@ class TableFieldsLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 		global $lodelfieldtypes,$db;
 		if(!function_exists('reservedByLodel'))
@@ -360,13 +360,13 @@ class TableFieldsLogic extends Logic
 		*
 		* Special treatment for allowedtags, from/to the context
 		*/
-	protected function _populateContext(&$vo,&$context)
+	protected function _populateContext($vo,&$context)
 	{
 		parent::_populateContext($vo, $context);
 		$context['allowedtags'] = explode(';', $vo->allowedtags);
 	}
 
-	function _populateObject(&$vo, &$context)
+	function _populateObject($vo, &$context)
 	{
 		parent::_populateObject($vo,$context);
 		$vo->class = $context['class']; // it is safe, we now that !

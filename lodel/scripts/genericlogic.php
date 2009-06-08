@@ -436,7 +436,7 @@ class GenericLogic extends Logic
 	 * @param array $files_to_move un tableau contenant les informations de tous les fichiers (nom et type)
 	 * @param object &$vo l'objet virtuel correspondant à l'objet passé par référence
 	 */
-	protected function _moveFiles($id, $files_to_move, &$vo)
+	protected function _moveFiles($id, $files_to_move, $vo)
 	{
 		foreach ($files_to_move as $file)	{
 			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
@@ -491,14 +491,6 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Implémentation par défaut de _populateContextRelatedTables
-	 *
-	 */
-	protected function _populateContextRelatedTables($vo, $context)
-	{
-	}
-
-	/**
 	 * Vérifie que la valeur d'un champ est unique (pas d'autre occurrence dans la table)
 	 *
 	 * @param string $class le nom de la classe de l'objet.
@@ -523,13 +515,13 @@ class GenericLogic extends Logic
 	 * @param object &$vo L'objet virtuel à remplir.
 	 * @param array &$context Le tableau contenant les données.
 	 */
-	protected function _populateObject(&$vo, &$context)
+	protected function _populateObject($vo, &$context)
 	{
 		//print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
 		$publicfields = $this->_publicfields();
 		
-		if ($publicfields[$class]) {
+		if (isset($publicfields[$class])) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
 				$vo->$field = isset($context[$field]) ? $context[$field] : '';
 			}

@@ -182,7 +182,7 @@ class EntryTypesLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 		if ($vo->type!=$this->oldvo->type) {
 			// name has changed

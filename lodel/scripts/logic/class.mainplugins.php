@@ -718,7 +718,7 @@ class MainPluginsLogic extends Logic
 	 * Populate the object from the context.
 	 * @private
 	 */
-	protected function _populateObject(&$vo, &$context) 
+	protected function _populateObject($vo, &$context) 
 	{
 		$vo->name = $this->_plugin['name'];
 		if(is_string($vo->config))
@@ -808,5 +808,4 @@ class MainPluginsLogic extends Logic
 
 
 } // class 
-
 ?>

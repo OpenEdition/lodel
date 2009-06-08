@@ -325,7 +325,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			trigger_error("ERROR: unknow group for getlodeltext", E_USER_ERROR);
 		}
 	}
-	if ($lang==-1 || ''==$lang) $lang=C::get('lang');
+	if ($lang==-1 || ''==$lang) $lang=C::get('sitelang');
 	if (!$lang) $lang = C::get('installlang', 'cfg'); // if no lang is specified choose the default installation language
 	if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
 	global $db;
@@ -739,7 +739,7 @@ function tmpdir()
         $tmpdir = TMPDIR;
     elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
         $tmpdir = 'CACHE/tmp';
-	
+
     if (!file_exists($tmpdir)) { 
 		mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
 		chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg'))); 

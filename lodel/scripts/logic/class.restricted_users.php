@@ -248,7 +248,7 @@ class Restricted_UsersLogic extends Logic
 
 
 
-	protected function _populateContextRelatedTables(&$vo,&$context)
+	protected function _populateContextRelatedTables($vo,&$context)
 	{
 	/*	if ($vo->userrights<=LEVEL_EDITOR) {
 			$dao=&getDAO("users_usergroups");
@@ -268,7 +268,7 @@ class Restricted_UsersLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{/*
 		global $db;
 		if ($vo->userrights<=LEVEL_EDITOR) {
@@ -347,9 +347,10 @@ class Restricted_UsersLogic extends Logic
 	/**
 	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
 	 */
-	protected function _sendPrivateInformation(&$context) {
+	protected function _sendPrivateInformation(&$context) 
+	{
 		global $db;
-		if(!$context['tmppasswd']) return;
+		if(empty($context['tmppasswd'])) return;
 		$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
 		if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 		$context['siteurl'] = str_replace(":80", "", $row['url']);

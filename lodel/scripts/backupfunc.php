@@ -302,6 +302,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 				return false;
 		}
 	}	else {
+		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 		// use PCLZIP library
 		if(!class_exists('PclZip', false))
 			require 'pclzip/pclzip.lib.php';
@@ -341,7 +342,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		$GLOBALS['user_vars'] = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
 		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
 		#echo "ici $res";
-
+		error_reporting($err);
 		if (!$res)
 			trigger_error("ERROR: unable to extract $archive.<br />".$archive->error_string, E_USER_ERROR);
 		unset($archive);

@@ -802,7 +802,7 @@ function ishtml($text)
 function lodeltextcolor($status)
 {
 	$colorstatus = array (-1 => "red", 1 => "orange", 2 => "green");
-	return $colorstatus[$status];
+	return isset($colorstatus[$status]) ? $colorstatus[$status] : 'red';
 }
 
 /**

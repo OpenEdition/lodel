@@ -205,7 +205,7 @@ class Logic
 			$create = true;
 			$vo = $dao->createObject();
 		}
-		if ($dao->rights['protect']) {
+		if (isset($dao->rights['protect'])) {
 			$vo->protect = isset($context['protect']) && $context['protect'] ? 1 : 0;
 		}
 		// put the context into 
@@ -305,7 +305,7 @@ class Logic
 	 */
 	public function rights($access) 
 	{
-		return $this->_getMainTableDAO()->rights[$access];
+		return @$this->_getMainTableDAO()->rights[$access];
 	}
 
 	/**
@@ -462,6 +462,12 @@ class Logic
 		return empty($error);
 	}
 
+	/**
+	 * Crée le masque (regexp) en fonction du masque rentré dans l'interface
+	 *
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 */
 	protected function _makeMask(&$context, &$error)
 	{
 		if($context['mask']['user'] == '') return;
@@ -606,24 +612,41 @@ class Logic
 		}
 	}
 
-    public function getPublicFields()
-    {
-        return $this->_publicfields();
-    }
+	/**
+	 * Return the public fields
+	 * @access public
+	 */
+	public function getPublicFields()
+	{
+		return $this->_publicfields();
+	}
 
+	/**
+	 * Return the unique fields
+	 * @access protected
+	 */
 	protected function _publicfields() 
 	{
 		trigger_error("call to abstract publicfields", E_USER_ERROR);
 		return array();
 	}
 
-    public function getUniqueFields()
-    {
-        return $this->_uniqueFields();
-    }
+	/**
+	 * Return the unique fields
+	 * @access public
+	 */
+	public function getUniqueFields()
+	{
+		return $this->_uniqueFields();
+	}
 
+	/**
+	 * Return the unique fields
+	 * @access protected
+	 */
 	protected function _uniqueFields() 
 	{
+		trigger_error("call to abstract uniquefields", E_USER_ERROR);
 		return array();
 	}
 
@@ -631,7 +654,7 @@ class Logic
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * @private
 	 */
-	protected function _populateObject(&$vo, &$context) 
+	protected function _populateObject($vo, &$context) 
 	{
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -643,7 +666,7 @@ class Logic
 	 * Populate the context from the object. All fields are outputted.
 	 * @protected
 	 */
-	protected function _populateContext(&$vo, &$context) 
+	protected function _populateContext($vo, &$context) 
 	{
 		$view = (isset($context['do']) && $context['do'] == 'view');
 		foreach ($vo as $k=>$v) {
@@ -682,7 +705,7 @@ class Logic
 	/**
 	 * Used in viewAction to do extra populate in the context 
 	 */
-	protected function _populateContextRelatedTables(&$vo, &$context) {}
+	protected function _populateContextRelatedTables($vo, &$context) {}
 	
 	/**
 	 * process of particular type of fields
@@ -690,7 +713,7 @@ class Logic
 	 * @param array $context the context
 	 * @param int $status the status; by default 0 if no status changed
 	 */
-	protected function _processSpecialFields($type, $context, $status = 0) 
+	protected function _processSpecialFields($type, &$context, $status = 0) 
 	{
 		global $db;
 		$vo = getDAO('entities')->getById($context['id'], 'id, idtype');
@@ -762,7 +785,7 @@ class Logic
 		}
 	}
 
-/**
+	/**
 	 * Vérification de la valeur du statut (champ status dans les tables)
 	 * @param int $status la valeur du statut à insérer dans la base
 	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
@@ -826,14 +849,14 @@ function getLogic($table)
 /**
  * function returning the right for $access in the table $table
  */
-	function rights($table, $access)
-	{
-		static $cache;
-		if (!isset($cache[$table][$access])) {
-			$cache[$table][$access] = getLogic($table)->rights($access);
-		}
-		return $cache[$table][$access];
+function rights($table, $access)
+{
+	static $cache;
+	if (!isset($cache[$table][$access])) {
+		$cache[$table][$access] = getLogic($table)->rights($access);
 	}
+	return $cache[$table][$access];
+}
 
 /**
  * Pipe function to test if an object can be deleted or not
