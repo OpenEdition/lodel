@@ -265,6 +265,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
 		if (isset($context['backup'])) { // si on a demandé le backup
+			set_time_limit(0); 
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
 
@@ -326,8 +327,9 @@ class DataLogic
 					if (!chdir(SITEROOT)) {
 						trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
 					}
-					$prefixdir    = $tmpdir[0] == "/" ? '' : 'lodel/admin/';
+					$prefixdir    = $archivetmp[0] == "/" ? '' : 'lodel/admin/';
 					$excludefiles = $excludes ? " -x ". join(" -x ", $excludes) : "";
+
 					system($zipcmd. " -q $prefixdir$archivetmp -r $dirs $excludefiles");
 					if (!chdir("lodel/admin")) {
 						trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
@@ -337,6 +339,7 @@ class DataLogic
 					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
 				}
 			} else { // Comande PCLZIP
+				$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 				if(!class_exists('PclZip', false))
 					include 'pclzip/pclzip.lib.php';
 				$archive = new PclZip($archivetmp);
@@ -369,6 +372,7 @@ class DataLogic
 				} else {
 					$archive->create($tmpdir. "/". $outfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 				}
+				error_reporting($err);
 			} // end of pclzip option
 
 			if (!file_exists($archivetmp)) {
@@ -414,6 +418,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 		$operation = $context['operation'];
 		if (isset($context['backup'])) {
+			set_time_limit(0); // pas d'effet en safe mode
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
 			$dirlocked = tempnam(tmpdir(), 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
@@ -430,14 +435,13 @@ class DataLogic
 			}
 
 			$GLOBALS['currentprefix'] = '#_MTP_';
-			set_time_limit(0); // pas d'effet en safe mode
+			
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
 			
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
 			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			chdir(LODELROOT); 
-			set_time_limit(60); // pas d'effet en safe mode
 			$GLOBALS['currentprefix'] = '#_TP_';
 			while (!$result->EOF) {
 				$name = $result->fields['name'];
