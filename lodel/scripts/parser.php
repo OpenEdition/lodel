@@ -110,7 +110,7 @@ class Parser
 	{
 	}
 	
-	protected function parse_after($contents)
+	protected function parse_after(&$contents)
 	{
 	}
 	

@@ -49,7 +49,7 @@
  * @package lodel
  */
 
-
+$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 include "adodb/adodb.inc.php";
 
 if('mysql' === DBDRIVER)
@@ -196,4 +196,5 @@ function &lodelADODB_factory($driver)
     $obj = new $driver();
     return $obj;
 }
+error_reporting($err);
 ?>

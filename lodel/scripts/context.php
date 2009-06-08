@@ -401,7 +401,13 @@ class C
 		{
 			if(!isset(self::$_triggers['included'][$trigger]))
 			{
-				include self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php';
+				$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php');
+				if(!$file)
+				{
+					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
+					continue;
+				}
+				include $file;
 				if('class' === $hooktype) 
 				{
 					call_user_func(array($trigger, 'init'), $trigger);
@@ -677,11 +683,10 @@ function __autoload($class)
 	}
 
 	$file = realpath($file);
-
 	if(!$file) return false;
 
 	include $file;
-	
+
 	return class_exists($class, false);
 }
 ?>
