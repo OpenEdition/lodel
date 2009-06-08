@@ -125,8 +125,7 @@ function removefilesincache()
 			$file = $rep. "/". $file;
 			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
 				removefilesincache($file);
-			}
-			@unlink($file);
+			} else @unlink($file);
 		}
 		closedir($fd);	
 	}

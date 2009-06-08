@@ -959,16 +959,16 @@ function rightonentity ($action, $context)
 {
 	if (C::get('admin', 'lodeluser')) return true;
 
-	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
+	if (!empty($context['id']) && (empty($context['usergroup']) || !isset($context['status']))) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
 		if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
 		$context = array_merge ($context, $row);
 	}
   	// groupright ?
-	if ($context['usergroup']) {
+	if (empty($context['usergroup'])) {
   		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
-  		if (!$groupright)return false;
+  		if (!$groupright) return false;
 	}
 
 	// only admin can work at the base.
@@ -1366,15 +1366,16 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	}
 
 	// set headers
-	$message->setFrom($fromname);
 	$message->setSubject($subject);
+	$message->setFrom($fromname);
+	
 	// body creation
 	$isHTML ? $message->setHTMLBody($body) : $message->setTxtBody($body);
 
 	$aParam = array(
-		"text_charset" => "UTF-8",
-		"html_charset" => "UTF-8",
-		"head_charset" => "UTF-8",
+		"text_charset"  => "UTF-8",
+		"html_charset"  => "UTF-8",
+		"head_charset"  => "UTF-8",
 	);
 	$body =& $message->get($aParam);
 

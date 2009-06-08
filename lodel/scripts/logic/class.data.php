@@ -1403,7 +1403,7 @@ class DataLogic
 	 */
 	private function _cleanDatabase() {
 		global $db;
-		if(!is_array($this->_existingTables)) return;
+		if(empty($this->_existingTables) || !is_array($this->_existingTables)) return;
 		foreach($this->_existingTables as $table=>$k) {
 			if(FALSE !== strpos($table, '__oldME')) {
 				$db->execute("DROP TABLE `{$table}`");

@@ -935,7 +935,7 @@ class Mail_mime
                     $imePrefs['input-charset']  = $build_params['head_charset'];
                     $imePrefs['output-charset'] = $build_params['head_charset'];
                     $imePrefs['line-length'] = 74;
-                    $imePrefs['line-break-chars'] = "\r\n"; //Specified in RFC2047
+                    $imePrefs['line-break-chars'] = $this->_eol; //Specified in RFC2047
                     
                     $hdr_value = iconv_mime_encode($hdr_name, $hdr_value, $imePrefs);
                     $hdr_value = preg_replace("#^{$hdr_name}\:\ #", "", $hdr_value);
@@ -971,7 +971,7 @@ class Mail_mime
                         //RFC 2047 specifies that any split header should 
                         //be seperated by a CRLF SPACE. 
                         if ($output) {
-                            $output .=  "\r\n ";
+                            $output .=  $this->_eol." ";
                         }
                         $output .= $prefix . $part . $suffix;
                     }
@@ -1058,7 +1058,7 @@ class Mail_mime
                             //RFC 2047 specifies that any split header should 
                             //be seperated by a CRLF SPACE
                             if ($output) {
-                                $output .=  "\r\n ";
+                                $output .=  $this->_eol." ";
                             }
                             $output .= $prefix . $part . $suffix;
                         }
