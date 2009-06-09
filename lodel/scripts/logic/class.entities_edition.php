@@ -269,7 +269,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function editAction (&$context, &$error, $opt = false)
+	public function editAction (&$context, &$error, $clean = false)
 	{
 		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
@@ -318,7 +318,7 @@ class Entities_EditionLogic extends GenericLogic
 			// error.
 			// if the entity is imported and will be checked
 			// that's fine, let's continue, if not return an error
-			if ($opt == 'FORCE') { 
+			if ($clean == 'FORCE') { 
 				$status=-64;
 				$ret="_error";
 			}

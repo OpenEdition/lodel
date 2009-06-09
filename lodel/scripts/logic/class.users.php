@@ -427,6 +427,7 @@ class UsersLogic extends Logic
 			if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 			$context['siteurl'] = str_replace(":80", "", $row['url']);
 			$context['sitetitle'] = $row['title'];
+			$context['islodeladmin'] = false;
 		} else { // lodeladmin
 			$context['siteurl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : '').dirname($_SERVER['REQUEST_URI']);
 			$context['sitetitle'] = $context['siteurl'];
@@ -438,12 +439,18 @@ class UsersLogic extends Logic
 		$GLOBALS['nodesk'] = true;
 		$nocache = View::$nocache;
 		View::$nocache = true;
+		if($context['lang'] != $context['sitelang'])
+		{
+			$sitelang = $context['sitelang'];
+			$context['sitelang'] = $context['lang'];
+		}
 		ob_start();
-		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/");
+		insert_template($context, 'users_mail', "", (!$context['islodeladmin'] ? SITEROOT."lodel/admin/tpl/" : ''));
 		$body = ob_get_clean();
 		View::$nocache = $nocache;
 		$context['tmppasswd'] = null;
-		return send_mail($context['email'], $body, "Votre compte Lodel sur le site '{$context['sitetitle']}' ({$context['siteurl']})", $email, '');
+		if(isset($sitelang)) $context['sitelang'] = $sitelang;
+		return send_mail($context['email'], $body, "Your Lodel account".(!$context['islodeladmin'] ? " on the website '{$context['sitetitle']}' ({$context['siteurl']})" : ''), $email, '');
 	}
 
 } // class 

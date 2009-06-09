@@ -472,7 +472,7 @@ class MainPluginsLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
 		if(empty($context['name']))
 		{

@@ -102,7 +102,7 @@ class TasksLogic extends Logic {
 		* add/edit Action
 		*/
 
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{ trigger_error("TasksLogic::editAction", E_USER_ERROR); }
 
 	/*---------------------------------------------------------------*/

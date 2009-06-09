@@ -84,7 +84,7 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function viewAction(&$context,$error) 
+	public function viewAction(&$context,&$error) 
 	{
 		function loop_useroptions($context,$funcname)
 		{
@@ -102,7 +102,7 @@ class UserOptionGroupsLogic extends Logic {
 	}
 
 
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
 		// get the dao for working with the object
 		$dao=getDAO("options");

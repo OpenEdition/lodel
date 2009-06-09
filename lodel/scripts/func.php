@@ -473,52 +473,59 @@ function getPath($id, $urltype,$base='index')
  */
 function download($filename,$originalname="",$contents="")
 {
-  $mimetype = array(
-		    'doc'=>'application/msword',
-		    'htm'=>'text/html',
-		    'html'=>'text/html',
-		    'jpg'=>'image/jpeg',
-		    'gif'=>'image/gif',
-		    'png'=>'image/png',
-		    'pdf'=>'application/pdf',
-		    'txt'=>'text/plain',
-		    'xls'=>'application/vnd.ms-excel'
+	if (!$originalname) $originalname=$filename;
+	$originalname=preg_replace("/.*\//","",$originalname);
+	$ext=substr($originalname,strrpos($originalname,".")+1);
+	$size = $filename ? filesize($filename) : strlen($contents);
+	$mime = getMimeType($ext);
+	get_PMA_define(); 
+	$mimetype = array(
+		'application/msword',
+		'text/html',
+		'text/html',
+		'image/jpeg',
+		'image/gif',
+		'image/png',
+		'application/pdf',
+		'text/plain',
+		'application/vnd.ms-excel',
+		'video/avi',
+		'audio/x-wav',
+		'audio/mpeg',
+		'video/mp4',
+		'video/x-flv',
+		'video/quicktime',
+		'video/mpeg',
+		'application/ogg',
 		    );
-
-  if (!$originalname) $originalname=$filename;
-  $originalname=preg_replace("/.*\//","",$originalname);
-  $ext=substr($originalname,strrpos($originalname,".")+1);
-  $size = $filename ? filesize($filename) : strlen($contents);
-  get_PMA_define(); 
-  if(isset($mimetype[$ext]) && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
-    $mime = $mimetype[$ext];
-    $disposition = "inline";
-  } else {
-    $mime = "application/force-download";
-    $disposition = "attachment";
-  }
-  if ($filename) {
-    $fp=fopen($filename,"rb");
-    if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
-  }
-  // fix for IE catching or PHP bug issue
-  header("Pragma: public");
-  header("Expires: 0"); // set expiration time
-  header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-
-#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
-#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
-
-  header("Content-type: $mime\n");
-  header("Content-transfer-encoding: binary\n");
-  header("Content-length: ".$size."\n");
-  header("Content-disposition: $disposition; filename=\"$originalname\"\n");
-  sleep(1); // don't know why... (from on uk.php.net)
-  if ($filename) {
-    fpassthru($fp); 
-  } else { 
-    echo $contents; 
-  }
+	if(in_array($mime, $mimetype) && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
+		$disposition = "inline";
+	} else {
+		$mime = "application/force-download";
+		$disposition = "attachment";
+	}
+	if ($filename) {
+		$fp=fopen($filename,"rb");
+		if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
+	}
+	// fix for IE catching or PHP bug issue
+	header("Pragma: public");
+	header("Expires: 0"); // set expiration time
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	
+	#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
+	#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+	
+	header("Content-type: $mime\n");
+	header("Content-transfer-encoding: binary\n");
+	header("Content-length: ".$size."\n");
+	header("Content-disposition: $disposition; filename=\"$originalname\"\n");
+	//  sleep(1); // don't know why... (from on uk.php.net)
+	if ($filename) {
+		fpassthru($fp); 
+	} else { 
+		echo $contents; 
+	}
 }
 
 
@@ -627,7 +634,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 			$error = 'imageformat'; return;
 		}
 		$exts = array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
-    $ext = $exts[$info[2]-1];
+    		$ext = $exts[$info[2]-1];
 		if (!$ext) { // si l'extension n'est pas bonne
 			$error = 'imageformat'; return;
 		}
@@ -1427,6 +1434,13 @@ function getMimeType($ext)
 		case 'txt': return 'text/plain';
 		case 'avi': return 'video/avi';
 		case 'wav': return 'audio/x-wav';
+		case 'mp3': return 'audio/mpeg';
+		case 'mp4': return 'video/mp4';
+		case 'flv': return 'video/x-flv';
+		case 'mov': return 'video/quicktime';
+		case 'mpg':
+		case 'mpeg': return 'video/mpeg';
+		case 'ogg': return 'application/ogg';
 		case 'bin': 
 		default: return 'application/octet-stream';
 	}

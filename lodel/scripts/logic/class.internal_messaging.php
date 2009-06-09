@@ -424,7 +424,7 @@ class Internal_MessagingLogic extends Logic
 		return $ret;
 	}
 
-	public function editAction(&$context, &$error)
+	public function editAction(&$context, &$error, $clean = false)
 	{
 		global $db;
 		

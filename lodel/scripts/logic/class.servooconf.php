@@ -91,7 +91,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 	/**
 		* add/edit Action
 		*/
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{ 
 		$this->_getGroup($context);
 		$ret=parent::editAction($context,$error);

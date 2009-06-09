@@ -153,7 +153,7 @@ function check_auth($login, $passwd)
             SELECT * 
                 FROM #_MTP_users 
                 WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
-            or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		if (!($row = $result->fields) && $GLOBALS['currentdb'] != DATABASE)	
         	{ // le user n'est pas dans la base generale

@@ -445,7 +445,8 @@ class Logic
 		}
 
 		$conditions=array();
-		foreach ($this->_uniqueFields() as $fields) { // all the unique set of fields
+		$ufields = $this->_uniqueFields();
+		foreach ($ufields as $fields) { // all the unique set of fields
 			foreach ($fields as $field) { // set of fields which has to be unique.
 				$conditions[] = $field. "='". $context[$field]. "'";
 			}
