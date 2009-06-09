@@ -110,6 +110,7 @@ class XMLImportParser
 	{
 		global $phpversion;
 		if (!$this->commonstyles) {
+			defined('INC_FUNC') || include 'func.php';
 			// get internal styles and prepare them (detect synonym styles, same style in different lang)
 			$dao = getDAO('internalstyles');
 			$iss = $dao->findMany('status > 0');
