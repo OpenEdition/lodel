@@ -300,15 +300,23 @@ PHP;
 					$lang = strtolower($lang);
 					if ($is_var === true) {
 						if ($is_array === true) {
+							// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
+							// ou pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
 							$tab = explode ('.', $lang);
-							if('#' == $tab[1]{0}) {
-								// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
-								$val = substr($tab[1], 1);
-								$lang = '(isset($context[\''.$tab[0].'\'][(isset($context[\''.$val.'\'])?$context[\''.$val.'\']:null)])?$context[\''.$tab[0].'\'][$context[\''.$val.'\']]:null)';
-							} else {
-								//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
-								$lang = '(isset($context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\'])?$context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\']:null)';
+							$value = '';
+							foreach($tab as $t)
+							{
+								if('#' == $t{0}) 
+								{
+									$t = substr($t, 1);
+									$value .= '[(isset($context[\''.$t.'\'])?$context[\''.$t.'\']:null)]';
+								}
+								else
+								{
+									$value .= '[\''.$t.'\']';
+								}
 							}
+							$lang =  '(isset($context'.$value.')?$context'.$value.':null)';
 						} else {
 							$lang = '(isset($context[\''.$lang.'\'])?$context[\''.$lang.'\']:null)';
 						}
