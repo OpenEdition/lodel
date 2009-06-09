@@ -125,5 +125,15 @@ abstract class Plugins implements MainPlugins
 		self::$_config = C::get($classname.'.config', 'triggers');
 		if(false === self::$_config) trigger_error('ERROR: cannot fetch config values for plugin '.$classname, E_USER_ERROR);
 	}
+
+	/**
+	 * Compare the user rights against level passed in argument
+	 *
+	 * @param int $level the level to compare the user rights to
+	 */
+	static protected function _checkRights($level)
+	{
+		return ((bool)(C::get('rights','lodeluser') > $level));
+	}
 }
 ?>
