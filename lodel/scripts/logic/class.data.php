@@ -221,7 +221,6 @@ class DataLogic
 				//noms des répertoires acceptés
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier'/*compat 0.7*/);
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
-					
 					$err = $error['error_extract'] = 'extract';
 					return 'import';
 				}

@@ -147,30 +147,43 @@ function check_auth($login, $passwd)
 
 		$lodelusername = addslashes($login);
 		$pass = md5($passwd. $login);
-		// cherche d'abord dans la base generale.
 
-		$result = $db->execute(lq("
-            SELECT * 
-                FROM #_MTP_users 
-                WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
-            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-
-		if (!($row = $result->fields) && $GLOBALS['currentdb'] != DATABASE)	
-        	{ // le user n'est pas dans la base generale
-			if (!C::get('site', 'cfg'))
-				break; // si $site n'est pas definie on s'ejecte
-			// cherche ensuite dans la base du site
+		if(C::get('site', 'cfg'))
+		{
 			$result = $db->execute(lq("
-            SELECT * 
-                FROM #_TP_users 
-                WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
-            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		SELECT * 
+			FROM #_TP_users 
+			WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			
-            		if (!($row = $result->fields))
-				break;
+			$row = $result->fields;
+			$result->Close();
+
+			if(!$row)
+			{
+				$result = $db->execute(lq("
+		SELECT * 
+			FROM #_MTP_users 
+			WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+				$row = $result->fields;
+				$result->Close();
+				if (!$row) break;
+			}
 		}
-		
-        	$result->Close();
+		else
+		{
+			$result = $db->execute(lq("
+		SELECT * 
+			FROM #_MTP_users 
+			WHERE username='$lodelusername' AND passwd='$pass' AND status>0")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+			$row = $result->fields;
+			$result->Close();
+			if (!$row) break;
+		}
         
 		// pass les variables en global
 		$lodeluser['rights'] = $row['userrights'];

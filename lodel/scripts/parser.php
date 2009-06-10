@@ -309,18 +309,18 @@ PHP;
 								if('#' == $t{0}) 
 								{
 									$t = substr($t, 1);
-									$value .= '[(isset($context[\''.$t.'\'])?$context[\''.$t.'\']:null)]';
+									$value .= '[$context[\''.$t.'\']]';
 								}
 								else
 								{
 									$value .= '[\''.$t.'\']';
 								}
 							}
-							$lang =  '(isset($context'.$value.')?$context'.$value.':null)';
+							$lang =  '$context'.$value;
 						} else {
-							$lang = '(isset($context[\''.$lang.'\'])?$context[\''.$lang.'\']:null)';
+							$lang = '$context[\''.$lang.'\']';
 						}
-						$pipefunction = '|multilingue('.$lang.')';
+						$pipefunction = '|multilingue(@'.$lang.')';
 					} else	$pipefunction = '|multilingue(\''.$lang.'\')';
 				}
 				
@@ -416,7 +416,7 @@ PHP;
 			if(false !== strpos($name, '.')) {
 				$brackets = explode('.', $name);
 				foreach($brackets as $bracket) {
-					$code .= ('(' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
+					$code .= ('@' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
 				}
 			} else {
 				$code = "['{$name}']";
@@ -425,12 +425,12 @@ PHP;
            	 	if('%' === (string)$prefix) {
 				$variable = 
 <<<PHP
-(isset(\$GLOBALS['context']{$code})?\$GLOBALS['context']{$code}:null)
+@\$GLOBALS['context']{$code}
 PHP;
 			} else {
 				$variable = 
 <<<PHP
-(isset(\$context{$code})?\$context{$code}:null)
+@\$context{$code}
 PHP;
 			}
 			unset($code);
@@ -510,9 +510,6 @@ PHP;
 				elseif ($fct == "else") {
 					$fct = "falsefunction";
 				}
-                
-                		if('isset' == $fct || 'empty' == $fct)
-                    			$fct = 'l'.$fct;
                 
 				if ($fct) {
 					if('' !== $argsArray[$k])
@@ -788,7 +785,7 @@ PHP;
                     			{
 						if(!empty($database))
 						{
-							$prefix = (false !== strpos($database, '$context') ? $this->prefix : '');
+							$prefix = (false !== strpos($database, '$context') || false !== strpos($database, '$GLOBALS[\'context\']')) ? $this->prefix : '';
 						}
 						else
 						{
@@ -1134,7 +1131,7 @@ PHP;
 <<<PHP
 if(!function_exists('loop_{$name}')) {
 	function loop_{$name}(\$context){
-		if(!defined('INC_CONNECT')) include 'connect.php';
+		defined('INC_CONNECT') || include 'connect.php';
 		global \$db;
 PHP;
 		if(isset($preprocesslimit))
@@ -1677,7 +1674,7 @@ PHP;
 			// @ is bad, but we need to avoid notice error from PHP if multi dimensional array is not defined
 			// be carefull on variable erasing !!
 			$this->arr[$this->ind + 1] = '<?php $tmp=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false;if(0!==$tmp&&empty($tmp)){$tmp=array();}';
-			$this->arr[$this->ind + 1] .= (!empty($result[4]) ? '@$GLOBALS[\'context\']' : '$context');
+			$this->arr[$this->ind + 1] .= (!empty($result[4]) ? '@$GLOBALS[\'context\']' : '@$context');
 			$add = $array = false;
 
 			if(!empty($res[1]) && '[]' === $res[1])

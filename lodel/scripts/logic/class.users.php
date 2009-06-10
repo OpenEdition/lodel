@@ -312,7 +312,8 @@ class UsersLogic extends Logic
 	}
 
 
-	public function validateFields(&$context,&$error) {
+	public function validateFields(&$context,&$error) 
+	{
 		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
@@ -321,11 +322,11 @@ class UsersLogic extends Logic
 		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		// Check the user is not duplicated in the main table...
-		if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
+//		if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
 
-		$ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND username='".$context['username']."'");
-		if ($db->errorno()) trigger_error($this->errormsg(), E_USER_ERROR);
-		usecurrentdb();
+//		$ret=$db->getOne("SELECT 1 FROM ".lq("#_TP_".$this->maintable)." WHERE status>-64 AND id!='".$context['id']."' AND username='".$context['username']."'");
+//		if ($db->errorno()) trigger_error($this->errormsg(), E_USER_ERROR);
+//		usecurrentdb();
 
 		// check the passwd is given for new user.
 		if (!$context['id'] && !trim($context['passwd'])) {
