@@ -511,6 +511,9 @@ PHP;
 					$fct = "falsefunction";
 				}
                 
+                		if('isset' == $fct || 'empty' == $fct)
+                    			$fct = 'l'.$fct;
+                
 				if ($fct) {
 					if('' !== $argsArray[$k])
 					{

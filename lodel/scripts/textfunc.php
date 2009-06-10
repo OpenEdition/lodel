@@ -1403,5 +1403,26 @@ function lmath($text, $operator, $var)
 	return $text;
 }
 
+/**
+ * implémente empty()
+ */
+function lempty($var)
+{
+    return empty($var);
+}
+
+/**
+ * implémente isset()
+ */
+function lisset($var)
+{
+    return isset($var);
+}
+
+function larray_pop(&$var)
+{
+	return $var ? array_pop($var) : array();
+}
+
 define('INC_TEXTFUNC', 1);
 ?>
