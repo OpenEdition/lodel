@@ -60,8 +60,6 @@ var lastTarget  = null;
 var rootParent  = null;
 var rootSibling = null;
 var interval	= [];
-var ids			= [];
-var xhrs		= [];
 
 Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
 
@@ -490,6 +488,8 @@ function autoScroll(e){
 	<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
 </div>
 <script type="text/javascript">
+var xhrs = [];
+var ids = [];
 function loadTemplate(id, displayWarner, recursive)
 {
 	var container = document.getElementById('container'+id);

@@ -409,8 +409,9 @@ class Internal_MessagingLogic extends Logic
 			$context['data']['sender'] = $sender['username']. ( ($sender['firstname'] || $sender['lastname']) ? " ({$sender['firstname']} {$sender['lastname']})" : '');
 			$context['data']['recipient'] = $recipient['username']. ( ($recipient['firstname'] || $recipient['lastname']) ? " ({$recipient['firstname']} {$recipient['lastname']})" : '');
 			// nouveau message, on update son status à 0 == lu
-			if(1 == (int)$datas['status'] && $this->_iduser == $datas['recipient']) {
-				$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = 0 WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(1 === (int)$datas['status'] && $this->_iduser == $datas['recipient']) {
+				$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = 0 WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 		return '_ok';
@@ -463,7 +464,9 @@ class Internal_MessagingLogic extends Logic
 			$requetes .= "('{$idparent}', '{$this->_iduser}', '{$recipient}', ':{$context['recipients']}:', '{$context['subject']}', '{$context['body']}', '{$context['cond']}', NOW(), '1'),";
 		}
 		$requetes = substr_replace($requetes, '', -1);
-		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, recipient, recipients, subject, body, cond, incom_date, status) VALUES {$requetes}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq("INSERT INTO #_MTP_internal_messaging (idparent, iduser, recipient, recipients, subject, body, cond, incom_date, status) 
+					VALUES {$requetes}")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		unset($context['idparent']);
 		update();
 		usecurrentdb();

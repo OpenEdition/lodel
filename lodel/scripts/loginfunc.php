@@ -426,7 +426,7 @@ function check_internal_messaging()
 	$msg = $db->getOne(lq("
             SELECT count(id) as nbMsg 
                 FROM #_MTP_internal_messaging 
-                WHERE addressee = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
+                WHERE recipient = '{$lodeluserid}' AND status = '1' AND cond = '1'"));
     
 	if($msg) {
 		header($url_retour);
