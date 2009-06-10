@@ -862,6 +862,8 @@ div.advancedFunc h4{
 	padding: 0 .5em .2ex .5em;
 	background: #fff;
 	border: 1px solid #cecece;
+	line-height:15px;
+	position:absolute;
 	font-size: 100%;
 	overflow: visible;
 }
