@@ -566,14 +566,10 @@ class siteManage {
 			$dbhost = C::get('dbhost', 'cfg');
 			$dbpasswd = C::get('dbpasswd', 'cfg');
 			
-            		if ($GLOBALS['version_mysql'] > 40) {
-				$db_charset = $this->find_mysql_db_charset($GLOBALS['currentdb']);
-			} else { 
-				$db_charset = '';
-			}
+			$db_charset = $this->find_mysql_db_charset($GLOBALS['currentdb']);
 			
             		C::set('command1', "CREATE DATABASE `".$dbname."` $db_charset");
-			C::set('command2', "GRANT ALL ON `".$dbname."`.* TO \"$dbusername\"@\"$dbhost\"".($dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : ''));
+			C::set('command2', "GRANT ALL ON `".$dbname."`.* TO \"$dbusername\"@\"$dbhost\"");
 			$installoption = C::get('installoption', 'cfg');
 			if(false === $installoption)
 				$installoption = C::get('installoption');
