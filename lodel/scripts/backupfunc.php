@@ -281,8 +281,10 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 			return false;
 		$dirs = '';
 		foreach ($accepteddirs as $dir) {
-			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles) 
-						&& file_exists(SITEROOT.$dir)) {
+			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles)) {
+				if(!file_exists(SITEROOT.$dir)) {
+					if(!@mkdir(SITEROOT.$dir) || !@chmod(SITEROOT.$dir, 0770 & octdec(C::get('filemask', 'cfg')))) continue;
+				} elseif(!is_dir(SITEROOT.$dir)) continue;
 				if ($acceptedexts) {
 					foreach ($acceptedexts as $ext)	{
 						$dirs .= "\\".$dir."\/\*.$ext ".$dir."\/\*\/\*.$ext ";
@@ -314,6 +316,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		{ // choose the files to extract
 			//echo $p_header['filename'],"<br>";
 			global $user_vars;
+
 			if (preg_match("/^(\.\/)*.*\.(sql|xml)$/", $p_header['filename']))	{ // extract the sql file
 				unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
 				//                   may cause problem if the file is recreated but it's so uncertain !
@@ -321,7 +324,6 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 				return 1;
 			}
 			$exts = $user_vars['acceptedexts'] ? ".*\.(".join("|", $user_vars['acceptedexts']).")$" : "";
-			
 			if (preg_match("/^(\.\/)*(".str_replace("/", "\/", join("|", $user_vars['accepteddirs'])).")\/$exts/", str_replace('//', '/', $p_header['filename']))) {
 				$p_header['filename'] = SITEROOT.$p_header['filename'];
 				if (file_exists($p_header['filename']) && is_file($p_header['filename']))
