@@ -110,7 +110,8 @@ function loop_toc($context, $funcname, $arguments)
 		$localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
         	if(!isset($tocid[$level])) $tocid[$level] = 0; 
 		$localcontext['tocid'] = $level."n". (++ $tocid[$level]);
-		$localcontext['title'] = $localcontext['titre'] = $result[3]; //for compatibility
+		// cleaning bad anchor putted by servoo
+		$localcontext['title'] = $localcontext['titre'] = preg_replace('/^<a\b\s* id="[^"]+">\s*<\/a>/', '', $result[3]); //for compatibility
 		if ($i == 1 && function_exists("code_dofirst_$funcname")) {
 			call_user_func("code_dofirst_$funcname", $localcontext);
 		}	elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
