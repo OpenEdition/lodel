@@ -145,7 +145,7 @@ class LodelException extends Exception
 		// if error was triggered by @function
 		// or error level is lower than error code
 		// just ignore it
-		if(($err = error_reporting()) === 0 || $err > $errno) 
+		if(($err = error_reporting()) === 0 || !($err & $errno)) 
 		{
     			return true;
   		}

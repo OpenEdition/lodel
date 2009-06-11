@@ -96,7 +96,7 @@ class EntitiesLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		global $db;
 		$id  = $context['id'];

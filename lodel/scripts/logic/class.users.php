@@ -334,12 +334,12 @@ class UsersLogic extends Logic
 			return false;
 		}
 
-		if ($ret) {
-			$error['username']="1"; // report the error on the first field
-			return false;
-		} else {
+// 		if ($ret) {
+// 			$error['username']="1"; // report the error on the first field
+// 			return false;
+// 		} else {
 			return true;
-		}
+// 		}
 	}
 
 
@@ -451,7 +451,7 @@ class UsersLogic extends Logic
 		View::$nocache = $nocache;
 		$context['tmppasswd'] = null;
 		if(isset($sitelang)) $context['sitelang'] = $sitelang;
-		return send_mail($context['email'], $body, "Your Lodel account".(!$context['islodeladmin'] ? " on the website '{$context['sitetitle']}' ({$context['siteurl']})" : ''), $email, '');
+		return send_mail($context['email'], $body, getlodeltextcontents("Your Lodel account", 'admin', $context['lang']).(!$context['islodeladmin'] ? ' '.getlodeltextcontents("on the website", 'admin', $context['lang'])." '{$context['sitetitle']}' ({$context['siteurl']})" : ''), $email, '');
 	}
 
 } // class 

@@ -70,7 +70,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	/**
 		* edit/add an object Action
 		*/
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
 		$context['condition']="*";
 		return parent::editAction($context,$error);

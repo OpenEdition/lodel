@@ -155,7 +155,7 @@ function addList($text)
         $sourceoriginale = '';
         $source          = '';
     }
-    
+    $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
     if(!class_exists('ServOO', false))
         include 'servoofunc.php';
     $client = new ServOO;
@@ -248,12 +248,12 @@ function addList($text)
             if(!function_exists('maketask'))
                 include 'taskfunc.php';
             $idtask = maketask("Import $file1", 3, $row);
-    
+    	    error_reporting($err);
             header("Location: checkimport.php?reload=".$context['reload']."&idtask=". $idtask);
             return;
         } while (0); // exceptions
     }
-    
+    error_reporting($err);
     $context['url'] = 'oochargement.php';
     View::getView()->render('oochargement', !(bool)$file1);
 

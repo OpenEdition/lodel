@@ -327,7 +327,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	}
 	if ($lang==-1 || ''==$lang) $lang=C::get('sitelang');
 	if (!$lang) $lang = C::get('installlang', 'cfg'); // if no lang is specified choose the default installation language
-	if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+	defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 	global $db;
 
 	if ($group!="site") {
@@ -357,7 +357,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 				$arr->Close();
 				break;
 			}
-			if(!function_exists('getLogic')) include 'logic.php';
+			function_exists('getLogic') || include 'logic.php';
 			// create the textfield
             		if(!$logic) $logic=getLogic("texts");
 			$logic->createTexts($name,$group);

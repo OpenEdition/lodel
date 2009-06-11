@@ -215,13 +215,13 @@
 	<div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 		<label>XXX</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
-		<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
+		<a href="javascript:;" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
 	</div>
 	<LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	<div>
 		<label>[(#LANG|humanlang|ucfirst)] :</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
-		<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
+		<a href="javascript:;" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
 	</div>
 	</LOOP>
 	<div>
@@ -408,7 +408,7 @@
 -->
 </script>
 <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
-<a href="#" onclick="cp_[#VARNAME].select(document.getElementById('[#VARNAME]'),'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+<a href="javascript:;" onclick="cp_[#VARNAME].select(document.getElementById('[#VARNAME]'),'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
 <script type="text/javascript">
 <!--
 document.getElementById('[#VARNAME]').style.backgroundColor='[#VALUE]';
@@ -428,7 +428,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="javascript:;" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
 	<LOOP NAME="entities_select">
 		<DO>
@@ -455,7 +455,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<br /><br />
-	<a href="#" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="javascript:;" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 
