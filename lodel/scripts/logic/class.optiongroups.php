@@ -100,7 +100,7 @@ class OptiongroupsLogic extends Logic {
 						$fullname=$result->fields['title'];
 						$idparent=$result->fields['idparent'];
 						if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
-						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+						$d=$rank[$id]=@$rank[$idparent]+($i*1.0)/$l;
 						//echo $d," ";
 						$arr["p$d"]=array($id,$fullname);
 						$parent[$id]=$fullname;

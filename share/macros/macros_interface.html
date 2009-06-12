@@ -52,9 +52,9 @@
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
 				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
-					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
+					<LET VAR="iderror"><?php $tmperror = array_keys(@$context['error']); echo $tmperror[0]; ?></LET>
 					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
-						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
+						<?php $err = array_values(@$context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
 						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
 						<IF COND="[#INTERTITLE] EQ ''">
 							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
@@ -170,7 +170,7 @@
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
-  $parameters = explode(',', $context['editionparams']);
+  $parameters = explode(',', @$context['editionparams']);
   if( is_array($parameters) )
   {
     //Advanced mode or not
@@ -194,7 +194,7 @@
     $context['fck_height'] = 400;
     $context['fck_skin'] = 'default';
     $context['fck_autodetectlanguage'] = 'false';
-    $context['fck_language'] = $context['lodeluser']['lang'];
+    $context['fck_language'] = @$context['lodeluser']['lang'];
     $context['fck_mode'] = 'Advanced';
   }
 ?>
@@ -296,13 +296,13 @@
 <?php
 				$urlFck = C::get('sharedir', 'cfg') . "/plugins/fckeditor/";
 				require_once($urlFck."fckeditor.php");
-				$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
-				$oFCKeditor->ToolbarSet = $context['fck_mode'];
+				$oFCKeditor = new FCKeditor($context['fullvarname'], @$context['fck_width'], @$context['fck_height']) ;
+				$oFCKeditor->ToolbarSet = @$context['fck_mode'];
 				$oFCKeditor->BasePath = $urlFck;
-				$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
+				$oFCKeditor->Config['SkinPath'] = "skins/".@$context['fck_skin']."/";
 				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-				$oFCKeditor->Config["AutoDetectLanguage"] = $context['fck_autodetectlanguage'];
-				$oFCKeditor->Config["DefaultLanguage"] = $context['fck_language'];
+				$oFCKeditor->Config["AutoDetectLanguage"] = @$context['fck_autodetectlanguage'];
+				$oFCKeditor->Config["DefaultLanguage"] = @$context['fck_language'];
 				$oFCKeditor->Value = $context['value'];
 				$oFCKeditor->Create();
 ?>
@@ -351,13 +351,13 @@
 <!--[ --------------- LANG,SELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
 	      <select name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>
-		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
+		<?php  makeSelect($context,"value",@$context['lo'],@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- MULTIPLESELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'multipleselect'">
 	      <select name="[#FULLVARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
-		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
+		<?php  makeSelect($context,"value",@$context['lo'],@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- DATE DATETIME TIME ------------- ]-->	    

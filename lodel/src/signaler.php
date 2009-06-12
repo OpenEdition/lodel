@@ -72,6 +72,8 @@ try
     if (!function_exists("filtered_mysql_fetch_assoc")) {
         include_once 'filterfunc.php';
     }
+    $id = C::get('id');
+    $site = C::get('site', 'cfg');
     global $db;
     $result = $db->Execute(lq("
         SELECT #_TP_textes.*, #_TP_entities.*,type 
@@ -108,10 +110,10 @@ try
         // validation
         do {
             // on vérifie que les mails fournies sont correctes
-            if (empty($context['to']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to']) === 0) {
+            if (empty($context['to']) || !preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to'])) {
                 $err = $context['error_to'] = 1;
             }
-            if (empty($context['from']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from']) === 0) {
+            if (empty($context['from']) || !preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from'])) {
                 $err = $context['error_from'] = 1;
             }
     

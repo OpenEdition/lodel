@@ -215,8 +215,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			break;
 		case 'entities':    // let's import now.
 			$localcontext=array_merge ($this->context, $this->_localcontext);
-			if ($this->task['idparent']) $localcontext['idparent']=$this->task['idparent'];
-			if ($this->task['idtype']) $localcontext['idtype']=$this->task['idtype'];
+			if (!empty($this->task['idparent'])) $localcontext['idparent']=$this->task['idparent'];
+			if (!empty($this->task['idtype'])) $localcontext['idtype']=$this->task['idtype'];
 			if ($multidoc) { // try to find the id
 				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".(int)$this->nbdocuments.",1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!$result->EOF) $localcontext['id']=$result->fields['id'];

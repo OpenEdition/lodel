@@ -57,7 +57,7 @@ if(!isset($_POST['site']) || !preg_match("/^[a-z0-9\-]+$/", $_POST['site']) ||
 chdir('../../'.$_POST['site']);
 if(!file_exists('siteconfig.php')) {
 	echo 'error';
-	return;
+	exit();
 }
 require 'siteconfig.php';
 

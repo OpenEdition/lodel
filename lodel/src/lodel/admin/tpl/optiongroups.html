@@ -73,7 +73,7 @@
 			</IF>
                </td>
 		</tr>
-        <?php $context['margin']+=10; ?> <!--[ incrément de la marge ]-->
+        <?php $context['margin']= isset($context['margin']) ? $context['margin']+10 : 10; ?> <!--[ incrément de la marge ]-->
         <LET VAR="BARRE">[#BARRE]|</LET>
       <MACRO NAME="AFFICHER_OPTIONS_DU_GROUPE"> 
       
