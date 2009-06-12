@@ -99,15 +99,17 @@ function indentXML($contents, $output = false, $indenter= '  ')
     $dom = new DomDocument;
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
-    @$dom->loadXML($contents);
-    $contents = $dom->saveXML();
-    unset($dom);
-    if($output)
-    { 
-        echo $contents;
-        return;
+    if(@$dom->loadXML($contents)) 
+    {
+    	$contents = $dom->saveXML();
+	unset($dom);
+    	if($output)
+    	{ 
+        	echo $contents;
+        	return;
+    	}
+    	else return $contents;
     }
-    else return $contents;
     
     
 	$arr = preg_split("/\s*(<(\/?)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)\s*/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
