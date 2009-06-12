@@ -445,12 +445,8 @@ function autoScroll(e){
 					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
 				</IF>
 			</IF>
-			<div class="entityIconsEdition">
-				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
-			</div>
 			<IF COND="[#TPLEDITION]">
-				<div id="unfolder">
+				<div>
 				<IF COND="[#DISPLAY] eq 'unfolded'">
 					<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], false);" />
 				<ELSE/>
@@ -458,6 +454,11 @@ function autoScroll(e){
 				</IF>
 				</div>
 			</IF>
+			<div class="entityIconsEdition">
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
+			</div>
+
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 

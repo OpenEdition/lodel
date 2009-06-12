@@ -66,14 +66,11 @@ div.warner {
 	color:black;
 	display:none;
 }
-div#unfolder {
-	z-index:99;
-	float:left;
-	margin-left:1em;
-	margin-top:1.5em;
-}
 img.unfolder {
-
+	float:left;
+	margin:1.6em 1em;
+	position:absolute;
+	z-index:2;
 }
 ul.listEntities div.entityIconsEdition{
 	z-index:1;
@@ -652,12 +649,8 @@ ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
 	font-size: 11px;
 }
 
-ul.listEntities li.unfoldedentities ul li{
-	/*background: #fff;*/
-}
-
 ul.listEntities li.unfoldedentities ul{
-	margin: 0 1em 2ex 1.5em;
+	margin: 0 1em 2ex 0;
 }
 
 ul.listEntities li.unfoldedentities ul ul{
