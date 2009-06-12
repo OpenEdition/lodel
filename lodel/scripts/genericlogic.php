@@ -191,7 +191,7 @@ class GenericLogic extends Logic
 			$this->_populateContext($vo, $context);
 		}
 
-		$daotype = getDAO($this->_typetable);
+		$daotype = DAO::getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -200,7 +200,7 @@ class GenericLogic extends Logic
         	$this->_populateContext($votype, $context['type']);
         	$ret = false;
 		if ($id && !$error)	{
-			$gvo = getGenericDAO($votype->class, $this->_idfield)->getById($id);
+			$gvo = DAO::getGenericDAO($votype->class, $this->_idfield)->getById($id);
 			if (!$gvo) {
 				trigger_error("ERROR: can't find object $id in the associated table. Please report this bug", E_USER_ERROR);
 			}
@@ -226,8 +226,7 @@ class GenericLogic extends Logic
 	public function validateFields(&$context, &$error)
 	{
 		// get the fields of class
-		if(!function_exists('validfield'))
-			include "validfunc.php";
+		function_exists('validfield') || include "validfunc.php";
 		if (!empty($context['class'])) {
 			validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
@@ -238,14 +237,13 @@ class GenericLogic extends Logic
 			trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 		}
 
-		$daotablefields = getDAO("tablefields");
+		$daotablefields = DAO::getDAO("tablefields");
 		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
 
 		// file to move once the document id is know.
 		$this->files_to_move = array ();
 		$this->_publicfields = array ();
-		if(!isset($GLOBALS['lodelfieldtypes']))
-			include "fieldfunc.php";
+		isset($GLOBALS['lodelfieldtypes']) || include "fieldfunc.php";
 
 		foreach ($fields as $field) {
 			if ($field->g_name) {
@@ -344,9 +342,9 @@ class GenericLogic extends Logic
 				case 'entries' :
 					// get the type
 					if ($type == "persons") {
-						$dao = getDAO("persontypes");
+						$dao = DAO::getDAO("persontypes");
 					}	else	{
-						$dao = getDAO("entrytypes");
+						$dao = DAO::getDAO("entrytypes");
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
 					$idtype = $vo->id;
@@ -362,7 +360,7 @@ class GenericLogic extends Logic
 							$localcontext[] = array ("g_name" => $key);
 						}
 					}
-					$logic = getLogic($type); // the logic is used to validate
+					$logic = Logic::getLogic($type); // the logic is used to validate
 					if (!is_array($localcontext)) {
 						trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 					}

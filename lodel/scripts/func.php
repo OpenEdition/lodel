@@ -357,9 +357,8 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 				$arr->Close();
 				break;
 			}
-			function_exists('getLogic') || include 'logic.php';
 			// create the textfield
-            		if(!$logic) $logic=getLogic("texts");
+            		if(!$logic) $logic=Logic::getLogic("texts");
 			$logic->createTexts($name,$group);
 			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
 			$create = true;
@@ -1031,25 +1030,7 @@ function sql_in_array($ids)
 
 function getDAO($table)
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$daoclass = $table. 'DAO';
-
-	if(!class_exists($daoclass))
-	{
-		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/dao.php';
-		if(!file_exists($file))
-			trigger_error('ERROR: unknown dao', E_USER_ERROR);
-		
-		include $file;
-		if(!class_exists($daoclass, false) || !is_subclass_of($daoclass, 'DAO'))
-			trigger_error('ERROR: the DAO plugin file MUST extends the DAO OR GenericDAO class', E_USER_ERROR);
-	}
-	
-	$factory[$table] = new $daoclass;
-	return $factory[$table];
+	return DAO::getDAO($table);
 }
 
 /**
@@ -1058,12 +1039,7 @@ function getDAO($table)
  */
 function getGenericDAO($table, $idfield)
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$factory[$table] = new genericDAO ($table,$idfield);
-	return $factory[$table];
+	return DAO::getGenericDao($table, $idfield);
 }
 
 /**

@@ -50,6 +50,9 @@
  */
 
 require 'lodelconfig.php';
+require 'context.php';
+C::setCfg($cfg);
+require 'class.errors.php';
 require 'connect.php';
 require 'func.php';
 
@@ -72,9 +75,10 @@ $files = array("install.php",
 
 
 // look for the files and create the tags
-$GLOBALS['lodeluser']['admin']   = true;
-$GLOBALS['lodeluser']['visitor'] = true;
-$GLOBALS['lodeluser']['rights']  = 128;
+$lodeluser['admin']   = true;
+$lodeluser['visitor'] = true;
+$lodeluser['rights']  = 128;
+C::setUser($lodeluser);
 
 foreach($files as $file) {
 	$text = file_get_contents($file);
@@ -85,8 +89,8 @@ foreach($files as $file) {
 	}
 }
 
-$dao = getDAO('translations');
-$daotexts = getDAO('texts');
+$dao = DAO::getDAO('translations');
+$daotexts = DAO::getDAO('texts');
 
 require 'view.php';
 

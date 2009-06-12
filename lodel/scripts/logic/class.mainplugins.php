@@ -604,10 +604,10 @@ class MainPluginsLogic extends Logic
 		$dao->save($vo);
 		unset($dao,$vo);
 
-		$daosites = getDao('sites');
+		$daosites = DAO::getDao('sites');
 		$vos = $daosites->findMany('status>0', 'id', 'name');
 		if(!$vos) return '_back'; // nothing to do
-		$plogic = getLogic('plugins');
+		$plogic = Logic::getLogic('plugins');
 		$home = C::get('home', 'cfg');
 		$database = C::get('database', 'cfg');
 		foreach($vos as $vo)
@@ -649,10 +649,10 @@ class MainPluginsLogic extends Logic
 		$dao->save($vo);
 		unset($dao,$vo);
 
-		$daosites = getDao('sites');
+		$daosites = DAO::getDao('sites');
 		$vos = $daosites->findMany('status>0', 'id', 'name');
 		if(!$vos) return '_back'; // nothing to do
-		$plogic = getLogic('plugins');
+		$plogic = Logic::getLogic('plugins');
 		$home = C::get('home', 'cfg');
 		$database = C::get('database', 'cfg');
 		foreach($vos as $vo)

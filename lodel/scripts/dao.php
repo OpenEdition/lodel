@@ -131,6 +131,18 @@ class DAO
 	 * @access private
 	 */
 	protected $cache_rightscriteria;
+
+	/**
+	 * Internal cache for DAO objects
+	 * @var array
+	 */
+	static protected $_daos = array();
+
+	/**
+	 * Internal cache for GenericDAO objects
+	 * @var array
+	 */
+	static protected $_gdaos = array();
 	/**#@-*/
 
 	/**
@@ -148,6 +160,48 @@ class DAO
 		$this->sqltable = lq("#_TP_"). $table;
 		$this->uniqueid = $uniqueid;
 		$this->idfield = $idfield;
+	}
+
+	/**
+	* DAO factory
+	*
+	* @param string $table the dao name
+	*/
+	static public function getDAO($table)
+	{
+		if (isset(self::$_daos[$table])) {
+			return self::$_daos[$table]; // cache
+		}
+		$daoclass = $table. 'DAO';
+	
+		if(!class_exists($daoclass))
+		{
+			$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/dao.php';
+			if(!file_exists($file))
+				trigger_error('ERROR: unknown dao', E_USER_ERROR);
+			
+			include $file;
+			if(!class_exists($daoclass, false) || !is_subclass_of($daoclass, 'DAO'))
+				trigger_error('ERROR: the DAO plugin file MUST extends the DAO OR GenericDAO class', E_USER_ERROR);
+		}
+		
+		self::$_daos[$table] = new $daoclass;
+		return self::$_daos[$table];
+	}
+
+	/**
+	* generic DAO factory
+	*
+	* @param string $table the dao name
+	* @param int $idfield the identifier field
+	*/
+	static public function getGenericDAO($table, $idfield)
+	{
+		if (isset(self::$_gdaos[$table])) {
+			return self::$_gdaos[$table]; // cache
+		}
+		self::$_gdaos[$table] = new genericDAO ($table,$idfield);
+		return self::$_gdaos[$table];
 	}
 
 	/**

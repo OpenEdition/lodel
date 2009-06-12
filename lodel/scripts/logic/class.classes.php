@@ -280,8 +280,8 @@ class ClassesLogic extends Logic
 		}
 		// delete associated types
 		// collect the type to delete
-		$types=getDAO ($this->typestable ($this->vo->classtype))->findMany ("class='". $this->vo->class. "'", "id");
-		$logic=getLogic ($this->typestable ($this->vo->classtype));
+		$types=DAO::getDAO ($this->typestable ($this->vo->classtype))->findMany ("class='". $this->vo->class. "'", "id");
+		$logic=Logic::getLogic ($this->typestable ($this->vo->classtype));
 		foreach ($types as $type) {
 			$localcontext['id']=$type->id;
 			$logic->deleteAction ($localcontext, $err);
@@ -291,10 +291,10 @@ class ClassesLogic extends Logic
 		if ($this->vo->classtype=="persons") {
 			$criteria.=" OR class='entities_".$this->vo->class."'";
 		}
-		getDAO ("tablefields")->deleteObjects ($criteria);
+		DAO::getDAO ("tablefields")->deleteObjects ($criteria);
 
 		// delete tablefields
-		getDAO ("tablefieldgroups")->deleteObjects ($criteria);
+		DAO::getDAO ("tablefieldgroups")->deleteObjects ($criteria);
 		unset ($this->vo);
 
 		clearcache();

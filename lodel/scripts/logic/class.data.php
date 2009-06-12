@@ -631,7 +631,7 @@ class DataLogic
 			mysql_dump($currentdb, $tables, '', $fh, false, false, true); // get the content
 			
 			// select the optiongroups to export
-			$vos = getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
+			$vos = DAO::getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
 			$ids = array();
 			foreach($vos as $vo) {
 				$ids[] = $vo->id;
@@ -642,7 +642,7 @@ class DataLogic
 			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
 			// Récupère la liste des tables de classe à sauver.
-			$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
+			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 			$tables = array();
 			foreach ($vos as $vo) {
 				$tables[] = lq('#_TP_'. $vo->class);
@@ -713,7 +713,7 @@ class DataLogic
 		}
 		$GLOBALS['currentprefix'] = "#_TP_";
 		$tables = $GLOBALS['lodelsitetables'];
-		$vos = getDAO('classes')->findMany('status > 0', '', 'class, classtype');
+		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class, classtype');
 		foreach ($vos as $vo)	{
 			$tables[] = lq("#_TP_". $vo->class);
 			if ($vo->classtype == 'persons')
@@ -1426,7 +1426,7 @@ class DataLogic
 		// tables ME statiques
 		$this->_tables = array($GLOBALS['tableprefix'].'classes'=>true, $GLOBALS['tableprefix'].'tablefields'=>true, $GLOBALS['tableprefix'].'tablefieldgroups'=>true, $GLOBALS['tableprefix'].'types'=>true, $GLOBALS['tableprefix'].'persontypes'=>true, $GLOBALS['tableprefix'].'entrytypes'=>true, $GLOBALS['tableprefix'].'entitytypes_entitytypes'=>true, $GLOBALS['tableprefix'].'internalstyles'=>true, $GLOBALS['tableprefix'].'characterstyles'=>true, $GLOBALS['tableprefix'].'optiongroups'=>true, $GLOBALS['tableprefix'].'options'=>true);
 		// tables ME dynamiques
-		$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
+		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 		foreach($vos as $vo) {
 			$this->_tables[$GLOBALS['tableprefix'].$vo->class] = false;
 			if ($vo->classtype == 'persons') {

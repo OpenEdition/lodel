@@ -42,8 +42,7 @@
  * @version CVS:$Id$
  */
 
-if(!function_exists('mkeditlodeltext'))
-	include("translationfunc.php");
+function_exists('mkeditlodeltext') || include("translationfunc.php");
 
 /**
  * Classe de logique des textes lodel

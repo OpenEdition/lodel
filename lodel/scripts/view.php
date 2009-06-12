@@ -518,9 +518,9 @@ class View
 			if(!$this->_evalCalled) 
 			{
 				// needed funcs
-				if(!defined('INC_LOOPS')) include 'loops.php';
-				if(!defined('INC_TEXTFUNC')) include 'textfunc.php';
-				if(!defined('INC_FUNC')) include 'func.php'; 
+				defined('INC_LOOPS') || include 'loops.php';
+				defined('INC_TEXTFUNC') || include 'textfunc.php';
+				defined('INC_FUNC') || include 'func.php'; 
 				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
@@ -697,7 +697,7 @@ class View
         
 		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
 		{
-			if(!function_exists('show_html')) include 'showhtml.php';
+			function_exists('show_html') || include 'showhtml.php';
 			// on affiche la source
 			return show_html($template['contents']);
 		}
@@ -893,8 +893,7 @@ function _indent($source, $indenter = '  ')
 {
 	if(false !== strpos($source, '<?xml')) {
 			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
-			if(!function_exists('indentXML'))
-				include 'xmlfunc.php';
+			function_exists('indentXML') || include 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
 	} elseif(!preg_match("/<[^><]+>/", $source)) {

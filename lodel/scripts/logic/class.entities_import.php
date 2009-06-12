@@ -113,7 +113,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		copy ($task['source'], $sourcefile);
 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		if ($idtask) { // close the task
-			getDAO('tasks')->deleteObject ($idtask);
+			DAO::getDAO('tasks')->deleteObject ($idtask);
 		}
 		if ($this->ret!='_error' && isset($context['finish'])) {
 			return $this->ret;
@@ -313,7 +313,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	{
 		static $g_name_cache;
 		if (!isset($g_name_cache[$obj->class])) {  // get the generic type     
-			$vos=getDAO("tablefields")->findMany ("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')", "", "name,g_name");
+			$vos=DAO::getDAO("tablefields")->findMany ("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')", "", "name,g_name");
 			foreach ($vos as $vo) {
 				$g_name_cache[$obj->class][$vo->g_name]=$vo->name;
 			}

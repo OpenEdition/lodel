@@ -148,7 +148,7 @@ class Entities_EditionLogic extends GenericLogic
 				if (!is_numeric($idtype)) {
 					return;
 				}
-				$votype = getDAO("entrytypes")->getById($idtype, "id,sort,flat");
+				$votype = DAO::getDAO("entrytypes")->getById($idtype, "id,sort,flat");
 				if (!$votype) {
 					trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
 				}
@@ -240,7 +240,7 @@ class Entities_EditionLogic extends GenericLogic
 
 		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
 		if (!$context['id'] && !$error) { // add : récupération des valeurs par défaut
-			$fields = getDAO("tablefields")->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
+			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
 					$context['data'][$field->name] = $field->defaultvalue;
@@ -299,7 +299,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 
 		// get the class 
-		$votype = getDAO("types")->getById($context['idtype'], "class,creationstatus,search");
+		$votype = DAO::getDAO("types")->getById($context['idtype'], "class,creationstatus,search");
 		if (!$votype) {
 			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
 		}
@@ -307,7 +307,7 @@ class Entities_EditionLogic extends GenericLogic
 		
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
 		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
-			$fields = getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
+			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
 					$context['data'][$field->name] = $field->defaultvalue;
@@ -339,10 +339,10 @@ class Entities_EditionLogic extends GenericLogic
 			// possibly document reloading
 			if(isset($context['reload']) && $context['reload']) {
 				// let's deal with document reloading problem : PDF file and entries disapeared :
-				$daotablefields = getDAO("tablefields");
+				$daotablefields = DAO::getDAO("tablefields");
 				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");
 				foreach($Filefields as $ffield) {
-					$gdaoaf = getGenericDAO ($class, "identity");
+					$gdaoaf = DAO::getGenericDAO ($class, "identity");
 					$tmpfile = $gdaoaf->getById($id, $ffield->name);
 					$fieldname = $ffield->name;
 					if($context['data'][$ffield->name] == 'deleted') {
@@ -353,10 +353,10 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 				// entries
-				$daorelations = getDAO("relations");
+				$daorelations = DAO::getDAO("relations");
 				$Entryfields = $daorelations->findMany("id1='{$id}' AND nature = 'E'", "", "id2");
-				$daoentries = getDAO("entries");
-				$daoentrytypes = getDAO("entrytypes");
+				$daoentries = DAO::getDAO("entries");
+				$daoentrytypes = DAO::getDAO("entrytypes");
 				foreach($Entryfields as $ffield) {
 					$reloaded = false;
 					$entry = $daoentries->getById($ffield->id2, 'idtype, g_name');
@@ -431,7 +431,7 @@ class Entities_EditionLogic extends GenericLogic
 	
 		$id = $context['id'] = $dao->save($vo);
 		// change the group recursively
-		$gdao = getGenericDAO ($class, "identity");
+		$gdao = DAO::getGenericDAO ($class, "identity");
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id'] = $context['id'];
 		$this->_moveImages ($context['data']);
@@ -529,7 +529,7 @@ class Entities_EditionLogic extends GenericLogic
 			$status = 1;
 		}
 		//Mise à jour des softs relations
-		getLogic('entities')->_publishSoftRelation(array($vo->id), $vo->status);
+		Logic::getLogic('entities')->_publishSoftRelation(array($vo->id), $vo->status);
 
 		// Entries and Persons
 		foreach (array ('entries' => 'E', 'persons' => 'G') as $table => $nature) {
@@ -538,7 +538,7 @@ class Entities_EditionLogic extends GenericLogic
 				continue;
 			}
             		$idtypes = array_keys ($context[$table]);
-			$logic = getLogic($table);
+			$logic = Logic::getLogic($table);
 			$ids         = array();
 			$idrelations = array();
 			foreach ($idtypes as $idtype) {
@@ -588,7 +588,7 @@ class Entities_EditionLogic extends GenericLogic
 		} // foreach entries and persons
 		// Entities
 		if (!empty($context['entities'])) {
-			$dao = getDAO('tablefields');
+			$dao = DAO::getDAO('tablefields');
             		$keys = array_keys ($context['entities']);
 			foreach ($keys as $name) {
 				$name = addslashes ($name);
@@ -656,7 +656,7 @@ class Entities_EditionLogic extends GenericLogic
 		if ($checkjointtable) {
 		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
 		// get the joint table first
-			$dao = getDAO('relations');
+			$dao = DAO::getDAO('relations');
 			$vos = $dao->findMany($criteria. $naturecriteria, '', 'idrelation');
 			$ids = array();
 			foreach ($vos as $vo) { 
@@ -665,7 +665,7 @@ class Entities_EditionLogic extends GenericLogic
 			if ($ids) {
 				// getting the tables name from persons and persontype would be to long. Let's suppose
 				// the number of classes are low and it is worse trying to delete in all the tables
-				$dao    = getDAO('classes');
+				$dao    = DAO::getDAO('classes');
 				$tables = $dao->findMany("classtype='persons'", '', 'class');
 				$where  = "idrelation IN ('".join("','",$ids)."')";
 				foreach($tables as $table) {
@@ -692,7 +692,7 @@ class Entities_EditionLogic extends GenericLogic
 			}
 
 			if ($idstodelete) {
-				$logic = getLogic($table);
+				$logic = Logic::getLogic($table);
 				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
 				$err = array();
 				$logic->deleteAction($localcontext, $err);

@@ -185,7 +185,7 @@ class Restricted_UsersLogic extends Logic
 		case "lang" :
 			// get the language available in the interface
 			
-			$dao=getDAO("translations");
+			$dao=DAO::getDAO("translations");
 			$list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
 			$arr=array();
 			foreach($list as $lang) {

@@ -109,7 +109,7 @@ class Entities_IndexLogic extends Logic
 		if ($row['search'] != 1) return "_back";
 
 		//get the fieldnames list to index
-		$vos_fields = getDAO ("tablefields")->findMany ("class='$class' AND weight > 0", "weight DESC", "id,weight,name");
+		$vos_fields = DAO::getDAO ("tablefields")->findMany ("class='$class' AND weight > 0", "weight DESC", "id,weight,name");
 
 		//no fields to index --> return
 		if (!$vos_fields) return ("_back");
@@ -117,7 +117,7 @@ class Entities_IndexLogic extends Logic
 		$sql = "SELECT * FROM #_TP_$class WHERE identity='$id'";
 		$row = $db->getRow(lq($sql)) ;
 		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
-		$daoIndex = getDAO ("search_engine"); 	
+		$daoIndex = DAO::getDAO ("search_engine"); 	
 		foreach ( $vos_fields as $vo_field)
 			$this->_indexField ($id,$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
 		//Index entries relations
@@ -137,7 +137,7 @@ class Entities_IndexLogic extends Logic
 	public function deleteIndexAction(&$context,&$error) {
 		$id = $context["id"];
 		if (!$id) trigger_error("ERROR: give the id ", E_USER_ERROR);
-		if (getDAO("search_engine")->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
+		if (DAO::getDAO("search_engine")->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
 			return '_back';
 		else
 			return '_error';
@@ -150,7 +150,7 @@ class Entities_IndexLogic extends Logic
 	 */
 	public function cleanIndexAction(&$context,&$error)
 	{
-		getDAO ("search_engine")->deleteObjects("1");    //delete all index lines and return
+		DAO::getDAO ("search_engine")->deleteObjects("1");    //delete all index lines and return
 		#echo "index cleaning";
 		return '_ok';
 	}

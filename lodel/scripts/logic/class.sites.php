@@ -135,7 +135,7 @@ class SitesLogic extends Logic
 			//bloque les tables
 			lock_write ('session', 'sites');
 			// cherche le nom du site
-			$dao = getDAO('sites');
+			$dao = DAO::getDAO('sites');
 			$vo = $dao->find($critere, 'path');
 			if (!$vo->path) {
 				$context['error'] = getlodeltextcontent('error_during_lock_site_the_site_may_have_been_deleted', 'lodeladmin');

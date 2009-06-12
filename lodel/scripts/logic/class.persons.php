@@ -93,7 +93,7 @@ class PersonsLogic extends EntriesLogic
 		$status=$context['status'];
 #echo "status=$status"; print_r ($context);
 		// get the class 
-		$daotype=getDAO ("persontypes");
+		$daotype=DAO::getDAO ("persontypes");
 		$votype=$daotype->getById ($idtype, "class");
 		$class=$context['class']=$votype->class;
 		#print_r($context);
@@ -150,7 +150,7 @@ class PersonsLogic extends EntriesLogic
 		//if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
 
 		// save the class table
-		$gdao=getGenericDAO ($class,"idperson");
+		$gdao=DAO::getGenericDAO ($class,"idperson");
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject ($gvo,$context['data']);
@@ -159,7 +159,7 @@ class PersonsLogic extends EntriesLogic
 		$gdao->save ($gvo,$new);  // save the related table
 		// save the entities_class table
 		if ($context['identity']) {
-			$dao=getDAO ("relations");
+			$dao=DAO::getDAO ("relations");
 			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
@@ -172,7 +172,7 @@ class PersonsLogic extends EntriesLogic
 				$idrelation=$context['idrelation'] = $vo->idrelation;
 			}
 
-			$gdao=getGenericDAO("entities_".$class,"idrelation");
+			$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;

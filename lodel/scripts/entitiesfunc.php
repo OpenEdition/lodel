@@ -131,9 +131,7 @@ function cleanEntities ()
 	}
 	
 	if (is_array($ids)) {
-		if(!function_exists('getLogic', false))
-			include 'logic.php';
-		$logic = getLogic('entities');
+		$logic = Logic::getLogic('entities');
 		foreach($ids as $id) {
 			$context['id'] = $id;
 			$logic->deleteAction($context, $error);

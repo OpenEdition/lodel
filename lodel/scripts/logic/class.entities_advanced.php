@@ -108,7 +108,7 @@ class Entities_AdvancedLogic extends Logic
 		}
 		$this->_populateContext($vo, $context);
 
-		$votype  = getDAO('types')->getById($vo->idtype);
+		$votype  = DAO::getDAO('types')->getById($vo->idtype);
 		$this->_populateContext($votype, $context['type']);
 
 		// look for the source
@@ -182,7 +182,7 @@ class Entities_AdvancedLogic extends Logic
 				//mise en cache du type du document
 				$idtype = $idtypes[$context['iddocument']];
 				if (!$idtype) { // get the type, we don't have it!
-					$dao = getDAO("entities");
+					$dao = DAO::getDAO("entities");
 					$vo = $dao->getById($context['iddocument'],"idtype");
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}

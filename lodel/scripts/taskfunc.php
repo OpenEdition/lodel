@@ -116,8 +116,7 @@ function gettypeandclassfromtask($task, & $context)
 		if (!isset($task['idtype']) || !($idtype = $task['idtype']))
 			trigger_error("ERROR: idtype must be given by task in gettypeandclassfromtask", E_USER_ERROR);
 		// get the type 
-		if(!defined('INC_FUNC')) include 'func.php';
-		$votype = getDAO("types")->getById($idtype, "class");
+		$votype = DAO::getDAO("types")->getById($idtype, "class");
 		$context['class'] = $votype->class;
 	}
 }

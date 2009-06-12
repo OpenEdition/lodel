@@ -184,7 +184,7 @@ class PersonTypesLogic extends Logic
 
 	protected function _deleteRelatedTables($id) 
 	{
-		getDAO("tablefields")->delete("type='persons' AND name='".$this->vo->type."'");
+		DAO::getDAO("tablefields")->delete("type='persons' AND name='".$this->vo->type."'");
 	}
 
 

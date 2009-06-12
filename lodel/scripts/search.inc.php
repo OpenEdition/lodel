@@ -88,14 +88,14 @@ function search(&$context, $funcname, $arguments)
 		$token = strtolower(str_replace(array ("\305\223", "\305\222"), array ("oe", "OE"), $token));
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
-		$dao =  getDAO("search_engine");
+		$dao =  DAO::getDAO("search_engine");
 		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
 		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		$from = "#_TP_search_engine";
 		if (!empty($context['qfield'])) {
 			#echo "qfield :".$context['qfield'];
 			//get all tablefields for q_field specified
-			$dao_dc_fields = getDAO("tablefields");
+			$dao_dc_fields = DAO::getDAO("tablefields");
 			$vos_dc_fields = $dao_dc_fields->findMany("g_name='".addslashes($context['qfield'])."'");
 			$field_in = array ();
 			foreach ($vos_dc_fields as $vo_field)
@@ -198,7 +198,7 @@ function loop_search(& $context, $funcname, $arguments)
 	//call before function
 	if (function_exists("code_before_$funcname"))
 		call_user_func("code_before_$funcname", $context);
-	$dao2 = getDAO("entities");
+	$dao2 = DAO::getDAO("entities");
 	//call do function with the results
 
 	$res = _array_slice_key($results, $currentoffset, $arguments['split']);
@@ -211,7 +211,7 @@ function loop_search(& $context, $funcname, $arguments)
 				$local_context[$key] = $value;
 			$local_context['weight'] = $weight;
 			$local_context['idtype'] = $vo->idtype;
-			$dao_type = getDAO("types");
+			$dao_type = DAO::getDAO("types");
 			$vo_type = $dao_type->getByID($vo->idtype);
 			$local_context['type'] = $vo_type->type;
 			//added information on tpledition

@@ -112,7 +112,7 @@ class XMLImportParser
 		if (!$this->commonstyles) {
 			defined('INC_FUNC') || include 'func.php';
 			// get internal styles and prepare them (detect synonym styles, same style in different lang)
-			$dao = getDAO('internalstyles');
+			$dao = DAO::getDAO('internalstyles');
 			$iss = $dao->findMany('status > 0');
 			foreach ($iss as $is) {
 				// analyse the styles
@@ -123,7 +123,7 @@ class XMLImportParser
 				}
 			}
 			// get characterstyles
-			$dao = getDAO('characterstyles');
+			$dao = DAO::getDAO('characterstyles');
 			$css = $dao->findMany('status > 0');
 			foreach ($css as $cs) {
 				foreach (preg_split("/[,;]/", $cs->style) as $style) {
@@ -414,7 +414,7 @@ class XMLImportParser
 			return; // already done
 
 		// get all the information from the database for all the fields
-		$dao = getDAO('tablefields');
+		$dao = DAO::getDAO('tablefields');
 		if (!$criteria) {
 			$criteria = "class='".$class."'";
 		}
@@ -425,7 +425,7 @@ class XMLImportParser
 			// is it an index ?
 			if ($tf->type == 'entries' || $tf->type == 'persons') {
 				// yes, it's an index. Get the object
-				$dao = getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
+				$dao = DAO::getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
 				$tf = $dao->find("type='".$tf->name."'");
 				$this->_init_class($tf->class, "class='".$tf->class."' OR class='entities_".$tf->class. "'");
 			}

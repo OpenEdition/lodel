@@ -91,9 +91,8 @@ try
 			if (!($idtype = C::get('idtype'))) {
 				trigger_error('ERROR: idtype must be given', E_USER_ERROR);
 			}
-			if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
-			include 'dao.php';
-			$vo = getDAO('types')->find("id='{$idtype}' and public>0 and status>0");
+			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
+			$vo = DAO::getDAO('types')->find("id='{$idtype}' and public>0 and status>0");
 			if (!$vo) {
 				trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
 			}

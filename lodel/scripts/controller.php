@@ -82,6 +82,26 @@ class Controller
 	static private $_instance;
 
 	/**
+	 * List of authorized types (used by add/removeObject)
+	 * @var array
+	 */
+	static private $_authorizedTypes = array(
+			'tablefields',
+			'tablefieldgroups',
+			'types',
+			'classes',
+			'entrytypes',
+			'persontypes',
+			'characterstyles',
+			'internalstyles',
+			'options',
+			'optiongroups',
+			'texts',
+			'translations',
+			'indextablefields'
+			);
+
+	/**
 	 * Constructeur de la classe Controller.
 	 *
 	 * Ce constructeur se charge du nettoyage des variables $_POST, $_GET dans un premier temps. Puis
@@ -105,7 +125,7 @@ class Controller
 	 */
 	private function __construct()
 	{
-        	if(!defined('INC_FUNC')) include 'func.php'; // include needed funcs
+        	defined('INC_FUNC') || include 'func.php'; // include needed funcs
     	}
 
 	/**
@@ -113,7 +133,7 @@ class Controller
 	 */
 	public function __clone()
 	{
-		return Controller::getController();
+		return self::getController();
 	}
 
 	/**
@@ -211,14 +231,13 @@ class Controller
 					// user to use \' in there text
 					#require_once 'func.php';
 					mystripslashes($context);
-					C::trigger('preview');
 					if(false !== ($p = strpos($do, '_')))
 					{ // plugin call
-						getLogic($lo)->factory($context, $error, substr($do, 0, $p).'_viewAction');
+						Logic::getLogic($lo)->factory($context, $error, substr($do, 0, $p).'_viewAction');
 					}
 					else
 					{
-						$logic = getLogic($lo);
+						$logic = Logic::getLogic($lo);
 						if(method_exists($logic, 'viewAction'))
 							$logic->viewAction($context, $error); // in case anything is needed to be put in the context
 					}
@@ -232,7 +251,6 @@ class Controller
 						header(substr($ret, 1));
 						exit;
 					}
-					C::trigger('preview');
 					View::getView()->renderCached($ret);
 				break;
 			}
@@ -252,7 +270,7 @@ class Controller
 		// ID ou IDENTIFIER
 		if ($context['id'] || $context['identifier']) 
 		{
-			if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 			global $db;
 			do { // exception block
 				if ($context['id']) 
@@ -266,9 +284,9 @@ class Controller
 						header("Status: 404 Not Found");
 						header("Connection: Close");
 						if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-						include C::get('home', 'cfg')."../../missing.html";
+							include C::get('home', 'cfg')."../../missing.html";
 						} else {
-						header('Location: not-found.html');
+							header('Location: not-found.html');
 						}
 						exit; 
 					}
@@ -289,6 +307,7 @@ class Controller
 					$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) 
 						or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					$context['type'] = $result->fields;
+					$result->Close();
 					View::getView()->renderCached($result->fields['tplindex']);
 					exit;
 
@@ -333,24 +352,9 @@ class Controller
 	static public function addObject($type, array &$request)
 	{
 		global $db;
-		$authorizedTypes = array(
-			'tablefields',
-			'tablefieldgroups',
-			'types',
-			'classes',
-			'entrytypes',
-			'persontypes',
-			'characterstyles',
-			'internalstyles',
-			'options',
-			'optiongroups',
-			'texts',
-			'translations',
-			'indextablefields'
-			);
-		
+
 		// for other sensible types, better way is to call Controller::execute
-		if(!in_array($type, $authorizedTypes)) 
+		if(!in_array($type, self::$_authorizedTypes)) 
 			trigger_error('ERROR: invalid type of object, please use Controller::execute instead', E_USER_ERROR);
 		
 		$request['do'] = 'edit';
@@ -361,8 +365,7 @@ class Controller
 		$request['protected'] = 1;
 		
 		$where = array();
-		if(!function_exists('getLogic')) include 'logic.php';
-		$uniqueFields = getLogic($type)->getUniqueFields();
+		$uniqueFields = Logic::getLogic($type)->getUniqueFields();
 		if(!empty($uniqueFields))
 		{
 			foreach($uniqueFields[0] as $field)
@@ -379,7 +382,7 @@ class Controller
 			$request['id'] = $vo ? $vo->id : 0;
 		}
 		
-		$ret = Controller::getController()->execute(array($type), $type, $request);
+		$ret = self::getController()->execute(array($type), $type, $request);
 		if('_next' !== $ret)
 		{
 			return $ret;
@@ -398,30 +401,14 @@ class Controller
 		if(!isset($request['id']) || !($request['id'] = (int)$request['id']))
 			trigger_error('ERROR: a valid id is needed', E_USER_ERROR);
 
-		$authorizedTypes = array(
-			'tablefields',
-			'tablefieldgroups',
-			'types',
-			'classes',
-			'entrytypes',
-			'persontypes',
-			'characterstyles',
-			'internalstyles',
-			'options',
-			'optiongroups',
-			'texts',
-			'translations',
-			'indextablefields'
-			);
-		
 		// for other sensible types, better way is to call Controller::execute
-		if(!in_array($type, $authorizedTypes)) 
+		if(!in_array($type, self::$_authorizedTypes)) 
 			trigger_error('ERROR: invalid type of object, please use Controller::execute instead', E_USER_ERROR);
 		
 		$request['do'] = 'delete';
 		$request['lo']= $type;
 		
-		$ret = Controller::getController()->execute(array($type), $type, $request);
+		$ret = self::getController()->execute(array($type), $type, $request);
 		if('_next' !== $ret)
 		{
 			return $ret;
@@ -437,10 +424,9 @@ class Controller
 	 */
 	private function _auth(&$context)
 	{
-		if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
-		if(!function_exists('check_auth_restricted'))
-			include 'loginfunc.php';
+		function_exists('check_auth_restricted') || include 'loginfunc.php';
 		do {
 			if (!check_auth_restricted($context['login'], $context['passwd'], C::get('site', 'cfg'))) {
 				$context['error_login'] = $err = 1;
@@ -476,7 +462,7 @@ class Controller
 	 */
 	private function _getAnnexe(&$context)
 	{
-		if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
 		$critere = C::get('rights', 'lodeluser') > LEVEL_VISITOR ? '' : 
 		" AND {$GLOBALS['tableprefix']}entities.status>0 AND {$GLOBALS['tableprefix']}types.status>0";
@@ -486,7 +472,7 @@ class Controller
 			FROM {$GLOBALS['tp']}tablefields, 
 			{$GLOBALS['tp']}entities LEFT JOIN {$GLOBALS['tp']}types ON ({$GLOBALS['tp']}entities.idtype = {$GLOBALS['tp']}types.id) 
 			WHERE {$GLOBALS['tp']}entities.id='{$context['id']}' AND {$GLOBALS['tp']}tablefields.class = {$GLOBALS['tp']}types.class 
-			AND {$GLOBALS['tp']}tablefields.type = 'file'{$critere} ORDER BY tablefields.id");
+			AND {$GLOBALS['tp']}tablefields.type = 'file'{$critere} ORDER BY {$GLOBALS['tp']}tablefields.id");
 		if($row) 
 		{
 			$datepubli = $db->getRow("
@@ -497,9 +483,9 @@ class Controller
 			if(!$datepubli) 
 			{
 				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
-				if($file[$row['name']]) {
-				download($file[$row['name']]);
-				exit();
+				if(!empty($file[$row['name']])) {
+					download($file[$row['name']]);
+					exit();
 				}
 			} 
 			else 
@@ -507,12 +493,12 @@ class Controller
 				$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
 				$datepubli = $datepubli['datepubli'];
 		
-				if(!defined('INC_TEXTFUNC')) include 'textfunc.php';
+				defined('INC_TEXTFUNC') || include 'textfunc.php';
 				
 				if(!$datepubli || $datepubli <= today() || C::get('rights', 'lodeluser') >= LEVEL_RESTRICTEDUSER) 
 				{
 					$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
-					if($file[$row['name']]) 
+					if(!empty($file[$row['name']])) 
 					{
 						download($file[$row['name']]);
 						exit();
@@ -534,11 +520,9 @@ class Controller
 	 */
 	private function _execute(&$context, $do, $lo, $logics, &$error)
 	{
-		if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
 		
-		if(!function_exists('getLogic')) include 'logic.php';
-	
 		// que fait-on suivant l'action demandée
 		switch($do) 
 		{
@@ -551,7 +535,7 @@ class Controller
 				
 				if(!empty($context['error'])) return '_error';
 				
-				$logic = getLogic($lo);
+				$logic = Logic::getLogic($lo);
 				// create the logic for the table
 				if (!method_exists($logic, $do)) 
 				{
@@ -588,7 +572,7 @@ class Controller
 	*/
 	private function _printEntities($id, $identifier, &$context)
 	{
-		if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
 		$context['classtype'] = 'entities';
 		$critere = C::get('visitor', 'lodeluser') ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
@@ -644,8 +628,7 @@ class Controller
 			exit; 
 		}
 
-		if(!function_exists('merge_and_filter_fields'))
-			include 'filterfunc.php';
+		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
 		//Merge $row et applique les filtres définis dans le ME
 		merge_and_filter_fields($context, $context['class'], $row);
@@ -663,7 +646,7 @@ class Controller
 	*/
 	private function _printIndex($id, $classtype, &$context)
 	{
-		if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
 		$context['classtype'] = $classtype;
 		switch($classtype) {
@@ -727,8 +710,7 @@ class Controller
 			trigger_error("ERROR: internal error", E_USER_ERROR);
 		}
 
-		if(!function_exists('merge_and_filter_fields'))
-			include 'filterfunc.php';
+		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
 		merge_and_filter_fields($context, $context['type']['class'], $row);
 		View::getView()->renderCached($base);

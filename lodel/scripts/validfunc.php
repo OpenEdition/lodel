@@ -76,8 +76,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	static $tmpdir;
 	static $masks = array();
 
-    	if(!isset($GLOBALS['lodelfieldtypes']))
-        	include 'fieldfunc.php';
+    	isset($GLOBALS['lodelfieldtypes']) || include 'fieldfunc.php';
 
 	if (isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
@@ -128,8 +127,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			require 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql'; // if the class is a reservedword -> error
 		}
@@ -139,8 +137,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			require 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql';
 		}
@@ -150,8 +147,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-z0-9]{2,}$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			include 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text))
 			return 'reservedsql';
 		break;
@@ -210,8 +206,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'date' :
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -228,8 +223,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'datetime' :
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -246,8 +240,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'time' : 
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -315,7 +308,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'entity' :
 		$text = (int)$text;
 		// check it exists
-		$vo = getDAO('entities')->getById($text, "1");
+		$vo = DAO::getDAO('entities')->getById($text, "1");
 		if (!$vo) {
 			return 'entity';
 		}

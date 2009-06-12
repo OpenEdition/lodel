@@ -152,7 +152,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function listAction (&$context, &$error)
 	{
-		$daotype = getDAO ($this->daoname);
+		$daotype = DAO::getDAO ($this->daoname);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -178,7 +178,7 @@ class EntriesLogic extends GenericLogic
 		}
 		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
-		$daotype = getDAO ("entrytypes");
+		$daotype = DAO::getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");
 		$class = $context['class']=$votype->class;
 		if (!$clean) {
@@ -250,7 +250,7 @@ class EntriesLogic extends GenericLogic
 		$vo->sortkey=makeSortKey($vo->g_name);
 		$id=$context['id']=$dao->save($vo);
 		// save the class table
-		$gdao=getGenericDAO($class,"identry");
+		$gdao=DAO::getGenericDAO($class,"identry");
 		$gdao->instantiateObject($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject($gvo,$context['data']);
@@ -355,7 +355,7 @@ class EntriesLogic extends GenericLogic
 		if (isset($context['idrelation'])) {
 			$this->idrelation=$context['idrelation'];
 		} else {
-			$vos=getDAO ('relations')->findMany ("id2 ".sql_in_array ($context['id']));
+			$vos=DAO::getDAO ('relations')->findMany ("id2 ".sql_in_array ($context['id']));
 			$this->idrelation=array ();
 			foreach ($vos as $vo) {
 				$this->idrelation[]=$vo->idrelation;
@@ -371,19 +371,19 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		foreach ($this->classes as $class) {
-			$gdao=getGenericDAO ($class, $this->idtype);
+			$gdao=DAO::getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
 		
 			if($this->maintable == 'persons') {
 				if ($this->idrelation) {
-					$gdao=getGenericDAO("entities_".$class,"idrelation");
+					$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
 					$gdao->deleteObject($this->idrelation);
 				}
 			}
 		}
 
 		if ($this->idrelation) {
-			$dao=getDAO ('relations');
+			$dao=DAO::getDAO ('relations');
 			$dao->delete ('idrelation '. sql_in_array ($this->idrelation));
 		}
 	}

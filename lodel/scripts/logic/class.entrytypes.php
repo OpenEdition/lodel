@@ -208,7 +208,7 @@ class EntryTypesLogic extends Logic
 
 	protected function _deleteRelatedTables($id)
 	{
-		getDAO('tablefields')->delete("type='entries' AND name='".$this->vo->type."'");
+		DAO::getDAO('tablefields')->delete("type='entries' AND name='".$this->vo->type."'");
 	}
 
 

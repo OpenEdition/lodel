@@ -177,7 +177,7 @@ class TranslationsLogic extends Logic {
 				$row=isset($alltexts_cache[$lang][$context['name']]) ? $alltexts_cache[$lang][$context['name']] : null;
 				$localcontext=$row ? array_merge($context,$row) : $context;
 				if(0 === (int)$localcontext['id']) { // entry doesn't exist in this lang
-					if(!isset($logic)) $logic = getLogic('texts');
+					if(!isset($logic)) $logic = Logic::getLogic('texts');
 					$logic->createTexts($localcontext['name'], $localcontext['textgroups']);
 					
 					$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$localcontext['textgroup']."' AND name='{$localcontext['name']}' ORDER BY lang")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

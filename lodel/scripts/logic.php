@@ -99,6 +99,7 @@ class Logic
 	protected $rankcriteria;
 	/**#@-*/
 
+	static protected $_logics = array();
 
 	/** 
 	 * Constructeur de la classe.
@@ -111,6 +112,30 @@ class Logic
 		$this->maintable = $maintable;
 	}
 
+	/**
+	* Logic factory
+	* @param string $table the name of the logic to call
+	*/
+	public static function getLogic($table) 
+	{
+		if (isset(self::$_logics[$table])) {
+			return self::$_logics[$table]; // cache
+		}
+
+		$logicclass = $table. 'Logic';
+		if(!class_exists($logicclass))
+		{
+			$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/logic.php';
+			if(!file_exists($file))
+				trigger_error('ERROR: unknown logic', E_USER_ERROR);
+			include $file;
+			if(!class_exists($logicclass,false) || !is_subclass_of($logicclass, 'Logic'))
+				trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
+		}
+		self::$_logics[$table] = new $logicclass;
+	
+		return self::$_logics[$table];
+	}
 
 	/**
 	 * Implémentation par défaut de l'action permettant d'appeler l'affichage d'un objet.
@@ -340,8 +365,7 @@ class Logic
 	
 	protected function _getMainTableDAO() 
 	{
-		if(!defined('INC_FUNC')) include 'func.php';
-		return getDAO($this->maintable);
+		return DAO::getDAO($this->maintable);
 	}
    
 
@@ -717,12 +741,12 @@ class Logic
 	protected function _processSpecialFields($type, &$context, $status = 0) 
 	{
 		global $db;
-		$vo = getDAO('entities')->getById($context['id'], 'id, idtype');
-		$votype = getDAO ("types")->getById ($vo->idtype, 'class');
+		$vo = DAO::getDAO('entities')->getById($context['id'], 'id, idtype');
+		$votype = DAO::getDAO ("types")->getById ($vo->idtype, 'class');
 		$class = $votype->class;
 		unset($vo,$votype);
 
-		$fields = getDAO("tablefields")->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
+		$fields = DAO::getDAO("tablefields")->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
 		if($fields && $type == 'history') {
 			$updatecrit = "";
 			foreach ($fields as $field) {
@@ -747,7 +771,7 @@ class Logic
 	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
 	{
 		if($context['id']) {
-            	$dao = getDAO('users');
+            	$dao = DAO::getDAO('users');
 		if(C::get('lodeladmin', 'lodeluser')) {
 			usemaindb();
 			$vo = $dao->getById (C::get('id', 'lodeluser'));
@@ -820,32 +844,13 @@ class Logic
 
 
 /*------------------------------------------------*/
-
 /**
  * Logic factory
- *
  */
-function getLogic($table) 
+function getLogic($table)
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$logicclass = $table. 'Logic';
-	if(!class_exists($logicclass))
-	{
-		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/logic.php';
-		if(!file_exists($file))
-			trigger_error('ERROR: unknown logic', E_USER_ERROR);
-		include $file;
-		if(!class_exists($logicclass,false) || !is_subclass_of($logicclass, 'Logic'))
-			trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
-	}
-	$factory[$table] = new $logicclass;
-
-	return $factory[$table];
+	return Logic::getLogic($table);
 }
-
 
 /**
  * function returning the right for $access in the table $table
@@ -854,7 +859,7 @@ function rights($table, $access)
 {
 	static $cache;
 	if (!isset($cache[$table][$access])) {
-		$cache[$table][$access] = getLogic($table)->rights($access);
+		$cache[$table][$access] = Logic::getLogic($table)->rights($access);
 	}
 	return $cache[$table][$access];
 }
@@ -867,7 +872,7 @@ function isdeletelocked($table, $id, $status = 0)
 {
 	static $cache;
 	if (!isset($cache[$table][$id])) {
-		$cache[$table][$id] = getLogic($table)->isdeletelocked($id, $status);
+		$cache[$table][$id] = Logic::getLogic($table)->isdeletelocked($id, $status);
 	}
 	return $cache[$table][$id];
 }

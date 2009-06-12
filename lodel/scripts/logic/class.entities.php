@@ -308,7 +308,7 @@ class EntitiesLogic extends Logic
 			}
 
 			if ($idstodelete) {
-				$logic=getLogic($table);
+				$logic=Logic::getLogic($table);
 				$localcontext=array("id"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
 				$localerror=array();
 				$logic->deleteAction($localcontext,$localerror);
