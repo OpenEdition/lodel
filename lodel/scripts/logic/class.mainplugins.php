@@ -103,9 +103,10 @@ class MainPluginsLogic extends Logic
 		if(!$hook)
 		{
 			include_once $path.$name[0].'/'.$name[0].'.php';
-			if(function_exists($name[1]))
+			if(function_exists($name[0].'_'.$name[1]))
 			{
-				return $name[1]($context,$error);
+				$func = $name[0].'_'.$name[1];
+				return $func($context,$error);
 			}
 			else
 			{
@@ -143,12 +144,13 @@ class MainPluginsLogic extends Logic
 		else
 		{
 			include_once $path.$name[0].'/'.$name[0].'.php';
-			if(!function_exists($name[1]))
+			$func = $name[0].'_'.$name[1];
+			if(!function_exists($func))
 			{
 				if($return) return false;
 				trigger_error('ERROR: Invalid hook/function name '.$name[1].' for plugin '.$name[0], E_USER_ERROR);
 			}
-			return $name[1]($context,$error);
+			return $func($context,$error);
 		}
 	}
 
