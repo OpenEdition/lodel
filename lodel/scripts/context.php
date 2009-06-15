@@ -154,8 +154,8 @@ class C
 		self::$_triggers['included'] = array();
         	self::$_backupC = array();
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
-        	if(!defined('SITEROOT')) define('SITEROOT', '');
-       		if(!function_exists('checkCacheDir')) include 'cachefunc.php';
+        	defined('SITEROOT') || define('SITEROOT', '');
+       		function_exists('checkCacheDir') || include 'cachefunc.php';
 	}
 
 	/**
@@ -301,7 +301,7 @@ class C
 			if (isset(self::$_context[$var]) && self::$_context[$var])
 			{
 				// get the various common parameters
-				if(!function_exists('validfield')) include 'validfunc.php';
+				function_exists('validfield') || include 'validfunc.php';
 				if(!validfield(self::$_context[$var], $var)) 
 					trigger_error("ERROR: a valid $var name is required", E_USER_ERROR);
 			}
@@ -322,12 +322,13 @@ class C
 			self::$_context['version'] = self::get('version', 'cfg');
 			self::$_context['shareurl'] = self::get('shareurl', 'cfg');
 			self::$_context['extensionscripts'] = self::get('extensionscripts', 'cfg');
-			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
+			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['site'] = self::get('site', 'cfg');
 			self::$_context['sharedir'] = self::get('sharedir', 'cfg');
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::get('tableprefix', 'cfg');
 			self::$_context['base_rep'] = array();
+			self::$_context['charset'] = 'utf-8';
 			// get all the triggers in self::$_triggers
 			self::_getTriggers();
 		}
@@ -345,7 +346,7 @@ class C
     
 		if(!(self::$_triggers = getFromCache('triggers')))
 		{
-			if(!defined('INC_CONNECT')) include 'connect.php';
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			$triggers = Plugins::$triggers;
 			self::$_triggers = array();
@@ -611,14 +612,13 @@ class C
 		{
 			checkCacheDir('htmlpurifier');
 		
-			if(!class_exists('HTMLPurifier', false))
-				include 'htmlpurifier/HTMLPurifier.standalone.php';
+			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
 			// custom Lodel filters
-			if(file_exists(self::$_cfg['home'].'htmlpurifierFilters.php')) include 'htmlpurifierFilters.php';
+			!file_exists(self::$_cfg['home'].'htmlpurifierFilters.php') || include 'htmlpurifierFilters.php';
 			// custom personnal filters
-			if(file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php')) include 'htmlpurifierFilters_local.php';
+			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
 			$config->set('Core', 'Encoding', 'UTF-8');
 			$config->set('HTML', 'TidyLevel', 'heavy' );
 			$config->set('Attr', 'EnableID', true);

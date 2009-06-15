@@ -370,7 +370,7 @@ class TableFieldsLogic extends Logic
 	{
 		parent::_populateObject($vo,$context);
 		$vo->class = $context['class']; // it is safe, we now that !
-		$vo->allowedtags = is_array($context['allowedtags']) ? join(';', $context['allowedtags']) : '';
+		$vo->allowedtags = (isset($context['allowedtags']) && is_array($context['allowedtags'])) ? join(';', $context['allowedtags']) : '';
 	}
 
 	// begin{publicfields} automatic generation  //

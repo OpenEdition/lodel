@@ -119,7 +119,7 @@ class OptionsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(SITEROOT. "CACHE/options");
+		clearcache();
 	}
 
 
@@ -133,19 +133,16 @@ class OptionsLogic extends Logic {
 	{
 		switch($var) {
 		case "userrights":
-			if(!function_exists('makeSelectUserRights'))
-				include("commonselect.php");
+			function_exists('makeSelectUserRights') || include("commonselect.php");
 			$lodeladmin = ((!C::get('site', 'cfg') || SINGLESITE) && defined('backoffice-lodeladmin')) ? TRUE : FALSE;
 			makeSelectUserRights(isset($context['userrights']) ? $context['userrights'] : '', $lodeladmin);
 			break;
 		case "type" :
-			if(!function_exists('makeSelectFieldTypes'))
-				include("commonselect.php");
+			function_exists('makeSelectFieldTypes') || include("commonselect.php");
 			makeSelectFieldTypes(isset($context['type']) ? $context['type'] : '');
 			break;
 		case "edition" :
-			if(!function_exists('makeSelectEdition'))
-				include("commonselect.php");
+			function_exists('makeSelectEdition') || include("commonselect.php");
 			makeSelectEdition(isset($context['edition']) ? $context['edition'] : '');
 			break;
 		}

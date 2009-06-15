@@ -89,7 +89,7 @@ class Entities_EditionLogic extends GenericLogic
 		if (isset($context['check']) && $error) {
 			return '_error';
 		}
-		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
+		if (!rightonentity(!empty($context['id']) ? 'edit' : 'create', $context)) {
 			trigger_error('ERROR: you don\'t have the right to perform this operation', E_USER_ERROR);
 		}
 
@@ -239,7 +239,7 @@ class Entities_EditionLogic extends GenericLogic
 		$ret = parent::viewAction($context, $error);
 
 		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
-		if (!$context['id'] && !$error) { // add : récupération des valeurs par défaut
+		if (empty($context['id']) && !$error) { // add : récupération des valeurs par défaut
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
@@ -271,7 +271,7 @@ class Entities_EditionLogic extends GenericLogic
 	 */
 	public function editAction (&$context, &$error, $clean = false)
 	{
-		if (!rightonentity($context['id'] ? 'edit' : 'create', $context)) {
+		if (!rightonentity(!empty($context['id']) ? 'edit' : 'create', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 		if (isset($context['cancel'])) {
@@ -285,14 +285,11 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		$idparent = $context['idparent'];
 		$idtype   = $context['idtype'];
-        	$status = 0;
-        	if(isset($context['status']))
-			$status = (int)$context['status'];
+		$status = $context['status'];
 		$this->_isAuthorizedStatus($status);
 		// iduser
 		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
-		if(!function_exists('checkTypesCompatibility'))
-			include 'entitiesfunc.php';
+		function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
 			$error['idtype'] = 'types_compatibility';
 			return '_error';
@@ -374,7 +371,7 @@ class Entities_EditionLogic extends GenericLogic
 					$context['entries'][$entry->idtype][$pos]['g_name'] = $entry->g_name;
 					$context['entries'][$entry->idtype][$pos]['class'] = $entryclass->class;
 					$context['entries'][$entry->idtype][$pos]['idtype'] = $entry->idtype;
-					$indexfields = $daotablefields->find("class='{$entryclass->class}'", 'name');
+					$indexfields = $daotablefields->findMany("class='{$entryclass->class}'",'', 'name');
 					foreach($indexfields as $indexfield)
 						$context['entries'][$entry->idtype][$pos]['data'][$indexfield->name] = null;
 				}
@@ -408,7 +405,7 @@ class Entities_EditionLogic extends GenericLogic
 			$vo->g_title = strip_tags ($context['data'][$dctitle], "<em><strong><span><sup><sub>");
 		} else $vo->g_title = '';
 		// If Identifier is not set, let's calcul it with the generic title
-		$context['identifier'] = C::get('identifier');
+		$context['identifier'] = isset($context['identifier']) ? $context['identifier'] : '';
 		if (!$vo->identifier && trim($context['identifier']) === '') {
 			$vo->identifier = $this->_calculateIdentifier ($id, $vo->g_title);
 		}	else { // else simply clean bad chars
@@ -521,7 +518,7 @@ class Entities_EditionLogic extends GenericLogic
 		if (!isset($vo->status)) {
 			$vo  = $this->_getMainTableDAO()->getById($vo->id, 'status,id');
 		}
-		$status = 0;
+		$status = null;
 		if ($vo->status>-64 && $vo->status<=-1) {
 			$status = -1;
 		}
@@ -775,7 +772,11 @@ class Entities_EditionLogic extends GenericLogic
 			list($nature, $idfield, $type) = $info;
 			$degree = 0;
 			
-			$result = $db->execute(lq("SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id WHERE  id1='".$vo->id. "' AND nature='". $nature. "'  ORDER BY degree")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result = $db->execute(lq("
+				SELECT #_TP_$table.*,#_TP_relations.idrelation,#_TP_relations.degree,#_TP_$type.class 
+					FROM #_TP_$table INNER JOIN #_TP_relations ON id2=#_TP_$table.id INNER JOIN #_TP_$type ON #_TP_$table.idtype=#_TP_$type.id 
+					WHERE  id1='".$vo->id. "' AND nature='". $nature. "'  ORDER BY degree")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$relatedtable         = array();
 			$relatedrelationtable = array();
 			while (!$result->EOF) {

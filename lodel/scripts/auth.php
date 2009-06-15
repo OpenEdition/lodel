@@ -91,7 +91,7 @@ function authenticate($level = 0, $mode = "", $return = false)
                 	if(file_exists(SITEROOT.'./CACHE/.no_restricted')) break;
                 	maintenance();
             
-            		if(!defined('INC_CONNECT')) include 'connect.php';
+            		defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
 			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
@@ -154,7 +154,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 		}
 		else break;
 
-        	if(!defined('INC_CONNECT')) include 'connect.php';
+        	defined('INC_CONNECT') || include 'connect.php';
 		global $db;
 
 		if (!($row = $db->getRow(lq("
@@ -374,8 +374,7 @@ if (C::get('site', 'cfg'))
 { // pas besoin quand on est dans l'admin générale (options définies pour un site)
 	if(!($options = getFromCache('options')))
 	{
-		if(!function_exists('cacheOptionsInFile'))
-			include 'optionfunc.php';
+		function_exists('cacheOptionsInFile') || include 'optionfunc.php';
 		C::set('options', cacheOptionsInFile());
 	}
 	else

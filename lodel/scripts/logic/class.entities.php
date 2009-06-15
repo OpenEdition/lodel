@@ -368,7 +368,7 @@ class EntitiesLogic extends Logic
 					unset($ids[$nature][$result->fields['id2']]); // remove the id from the list to unpublish
 					$result->MoveNext();
 				}
-				if ($ids[$nature]) {
+				if (!empty($ids[$nature])) {
 					$idlist = join(',', array_keys($ids[$nature]));
 					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités :
 					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

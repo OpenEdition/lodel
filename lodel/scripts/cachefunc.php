@@ -62,7 +62,7 @@
 function clearcache($allCache=true)
 {
 	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
-	$site = C::get('site');
+	$site = C::get('site', 'cfg');
 	if($allCache) {
 		if ($site) {
 			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
@@ -111,12 +111,6 @@ function removefilesincache()
 
 		if(!is_dir($rep)) continue;
 
-// 		$cache = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rep));
-// 		foreach($cache as $file) {
-// 			if($cache->isDot() || $cache->isDir() || !$cache->isWritable() || ($dir = basename($cache->getPath())) == 'CVS' 
-// 				|| $dir == 'upload' || $dir == 'require_caching') continue;
-// 			@unlink($file);
-// 		}
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
 		while (($file = readdir($fd)) !== false) {
@@ -125,7 +119,7 @@ function removefilesincache()
 			$file = $rep. "/". $file;
 			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
 				removefilesincache($file);
-			} else @unlink($file);
+			} else {@unlink($file);}
 		}
 		closedir($fd);	
 	}

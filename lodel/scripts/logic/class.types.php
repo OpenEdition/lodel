@@ -181,21 +181,19 @@ class TypesLogic extends Logic {
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
 	{
-		if(!function_exists('typetype_delete'))
-			include("typetypefunc.php");
+		function_exists('typetype_delete') || include("typetypefunc.php");
 
 		if (!empty($context['id'])) {
 			typetype_delete("entitytype","identitytype='".$context['id']."'");
 		}
-		typetype_insert($vo->id,$context['entitytype'],"entitytype2");
+		typetype_insert($vo->id,isset($context['entitytype']) ? $context['entitytype'] : null,"entitytype2");
 	}
 
 
 
 	protected function _deleteRelatedTables($id) 
 	{
-		if(!function_exists('typetype_delete'))
-			include("typetypefunc.php");
+		function_exists('typetype_delete') || include("typetypefunc.php");
 		$criteria="(identitytype ".sql_in_array($id)." OR identitytype2 ".sql_in_array($id).")";
 		typetype_delete("entitytype",$criteria);
 	}
@@ -249,8 +247,7 @@ class TypesLogic extends Logic {
 
 function loop_entitytypes($context,$funcname)
 { 
-	if(!function_exists('loop_typetable'))
-		include ("typetypefunc.php"); 
+	function_exists('loop_typetable') || include ("typetypefunc.php"); 
 	loop_typetable ("entitytype2","entitytype",$context,$funcname,isset($context['entitytype']) ? $context['entitytype'] : null);
 }
 ?>

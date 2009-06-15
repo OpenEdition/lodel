@@ -111,8 +111,8 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		$relationtable = $listtype;
 		$rank = 'type';
 	}
-
-	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$context[id]' WHERE status>0 ORDER BY $rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$id = isset($context['id']) ? $context['id'] : 0;
+	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$id' WHERE status>0 ORDER BY $rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {
 		$localcontext = array_merge($context, $result->fields);

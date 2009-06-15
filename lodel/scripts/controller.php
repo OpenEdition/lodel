@@ -188,7 +188,7 @@ class Controller
 				trigger_error("ERROR: unknown logic", E_USER_ERROR);
 			}
 	
-			$error = null;
+			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
 			$context['error'] = array_merge((array)$context['error'], (array)$error);
@@ -212,7 +212,7 @@ class Controller
 				
 				$ret = '_next';
 			}
-		
+
 			//Appel de la vue nécessaire
 			switch($ret) {
 				case '_next' : 
@@ -233,7 +233,7 @@ class Controller
 					mystripslashes($context);
 					if(false !== ($p = strpos($do, '_')))
 					{ // plugin call
-						Logic::getLogic($lo)->factory($context, $error, substr($do, 0, $p).'_viewAction');
+						Logic::getLogic('mainplugins')->factory($context, $error, substr($do, 0, $p).'_viewAction');
 					}
 					else
 					{

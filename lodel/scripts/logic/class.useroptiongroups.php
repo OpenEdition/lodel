@@ -130,7 +130,7 @@ class UserOptionGroupsLogic extends Logic {
 			$option->value=$context['data'][$option->name];
 			if (!$dao->save($option)) trigger_error("You don't have the rights to modify this option", E_USER_ERROR);
 		}
-		@unlink(SITEROOT."CACHE/options");
+		clearcache();
 		return "_back";
 	}
 
@@ -171,8 +171,7 @@ class UserOptionGroupsLogic extends Logic {
 	 */
 	public function makeSelect(&$context, $var)
 	{
-		if(!function_exists('makeselectlangs'))
-			include("lang.php");
+		function_exists('makeselectlangs') || include("lang.php");
 		makeselectlangs(isset($context[$var]) ? $context[$var] : '');
 	}
 

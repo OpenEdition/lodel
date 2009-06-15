@@ -70,7 +70,7 @@ function cacheOptionsInFile($optionsfile=null)
         	return $options;
 	}
     
-    	if(!defined('INC_CONNECT')) include 'connect.php';
+    	defined('INC_CONNECT') || include 'connect.php';
 	global $db;
 	$ids = $arr = array();
 	do {
@@ -78,7 +78,7 @@ function cacheOptionsInFile($optionsfile=null)
                     FROM '.$GLOBALS['tp'].'optiongroups 
                     WHERE status > 0 AND idparent '.(is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'").
                     " ORDER BY rank";
-		$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$result = $db->Execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array ();
 		$i = 1;
 		$l = 1;
@@ -108,7 +108,7 @@ function cacheOptionsInFile($optionsfile=null)
         
     	$sql .= 'ORDER BY rank';
 
-	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], $sql) 
+	$result = $db->Execute($sql) 
        		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	if(isset($optionsfile))

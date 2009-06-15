@@ -92,14 +92,15 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	{
 		global $db;
 		$this->context=&$context;
-		$idtask = (int)$context['idtask'];
-		if(!function_exists('gettask'))
-			include ("taskfunc.php");
+		$this->error =& $error;
+		$idtask = 0;
+		if(isset($context['idtask']))
+			$idtask = (int)$context['idtask'];
+		function_exists('gettask') || include ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
 		if (!empty($task['identity'])) $context['id'] = $task['identity'];
-		if(!class_exists('XMLImportParser', false))
-			include("xmlimport.php");
+		class_exists('XMLImportParser', false) || include "xmlimport.php";
 		$parser=new XMLImportParser();
 		$parser->init ($context['class']);
 		$parser->parse (file_get_contents ($task['fichier']), $this);
@@ -229,7 +230,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			if (empty($this->context['finish'])) $localcontext['status']=-64;
 
 			$error=array ();
-			$this->ret=$this->editAction ($localcontext, $error, 'FORCE');
+			$this->ret=parent::editAction ($localcontext, $this->error, 'FORCE');
 			#echo "ret1=".$this->ret."<br />";
 			#print_r($error);
 			if (!isset($this->id)) $this->id=$localcontext['id']; // record the first one only
