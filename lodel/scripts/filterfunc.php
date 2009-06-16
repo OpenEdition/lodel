@@ -61,7 +61,7 @@ if(!file_exists('CACHE/filterfunc.php')) makefilterfunc();
 function makefilterfunc()
 {
 	global $db;
-    	if(!defined('INC_CONNECT')) include 'connect.php';
+    	defined('INC_CONNECT') || include 'connect.php';
 	// cherche les champs a filtrer	
 	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], "
 	SELECT class,name,filtering 
@@ -106,6 +106,7 @@ function makefilterfunc()
 	// build the function with filtering
     	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
     function filtered_mysql_fetch_assoc($context, $result) {
+	defined(\'INC_CONNECT\') || include \'connect.php\';
 	global $db;
         $row = $result->FetchRow();
         if (!$row) return array();

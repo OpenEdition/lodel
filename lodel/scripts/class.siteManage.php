@@ -138,7 +138,7 @@ class siteManage {
 		$this->critere = "id='".C::get('id')."'";
 		$this->lodelhomere = "/^lodel(-[\w.]+)$/";
         	$this->versiondir = 'lodel-'.C::get('version', 'cfg');
-		if(!defined('INC_FUNC')) include 'func.php';
+		defined('INC_FUNC') || include 'func.php';
 	}
 
 	/**
@@ -231,8 +231,7 @@ class siteManage {
 			}
 	
 			// clear the CACHEs
-			if(!function_exists('removefilesincache'))
-				include 'cachefunc.php';
+			function_exists('removefilesincache') || include 'cachefunc.php';
 			removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
 	
 			$result->MoveNext();

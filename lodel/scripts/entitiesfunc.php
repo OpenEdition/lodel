@@ -67,6 +67,9 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 	global $db;
 	#echo "id=$id;idparent=$idparent;idtype=$idtype";
 	// check whether we have the right or not to put an entitie $id in the $idparent
+	$id = (int)$id;
+	$idparent = (int)$idparent;
+	$idtype = (int)$idtype;
 	if ($id > 0) {
 		$table = "#_TP_entitytypes_entitytypes INNER JOIN #_TP_entities as son ON identitytype=son.idtype";
 		$criteria = "son.id='". $id. "'";
@@ -102,6 +105,8 @@ function isChild($idref, $idcurrent)
 	if(!isset($idcurrent) || !isset($idref)) {
 		return;
 	}
+	$idcurrent = (int)$idcurrent;
+	$idref = (int)$idref;
 	$sql = lq("SELECT idrelation FROM #_TP_relations where id2='$idcurrent' AND id1='$idref'");
 	$idrelation = $db->getOne($sql);
 	if ($db->errorno()) {
@@ -138,6 +143,4 @@ function cleanEntities ()
 		}
 	}
 }
-
-
 ?>

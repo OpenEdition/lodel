@@ -82,11 +82,8 @@ function extract_import($footprint, & $context, $ext = 'zip')
 			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
 		}
 		$file = ""; // on repropose la page
-	} elseif (isset($_GET['file']) && 
-						preg_match("/^(?:".str_replace("/", '\/', 
-															join("|", $GLOBALS['importdirs'])).")\/".$GLOBALS['fileregexp']."$/", 
-																		$_GET['file'], $result) && 
-						file_exists($_GET['file']))	{ // file sur le disque
+	} elseif (isset($_GET['file']) && preg_match("/^(?:".str_replace("/", '\/', 
+		join("|", $GLOBALS['importdirs'])).")\/".$GLOBALS['fileregexp']."$/", $_GET['file'], $result) && file_exists($_GET['file']))	{ // file sur le disque
 		$file = $_GET['file'];
 		$prefix = $result[1];
 	}	else	{ // rien

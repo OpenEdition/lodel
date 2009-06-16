@@ -50,16 +50,14 @@
  * @version CVS:$Id:
  * @package lodel
  */
-if (!(INC_LODELCONFIG)) trigger_error("inc lodelconfig please", E_USER_ERROR); // security
+if (!defined(INC_LODELCONFIG)) trigger_error("inc lodelconfig please", E_USER_ERROR); // security
 
 // compatibility 0.7
-if (!defined("DATABASE")) {
-	define("DATABASE", C::get('database', 'cfg'));
-	define("DBUSERNAME", C::get('dbusername', 'cfg'));
-	define("DBPASSWD", C::get('dbpasswd', 'cfg'));
-	define("DBHOST", C::get('dbhost','cfg'));
-	define("DBDRIVER", C::get('dbDriver', 'cfg'));
-}
+defined("DATABASE") 	|| define("DATABASE", C::get('database', 'cfg'));
+defined("DBUSERNAME") 	|| define("DBUSERNAME", C::get('dbusername', 'cfg'));
+defined("DBPASSWD")	|| define("DBPASSWD", C::get('dbpasswd', 'cfg'));
+defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
+defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
 include 'adodb_hack.php';
 // connect to the database server
@@ -68,12 +66,10 @@ $GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
 $single = C::get('singledatabase', 'cfg') != "on";
 $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::get('site', 'cfg') : DATABASE;
 
-if (!defined("SINGLESITE")) {
-	define("SINGLESITE", !$single); // synonyme currently but may change in the future
-}
+defined("SINGLESITE") || define("SINGLESITE", !$single); // synonyme currently but may change in the future
 unset($single);
-if(!function_exists('checkCacheDir'))
-    include 'cachefunc.php';
+
+function_exists('checkCacheDir') || include 'cachefunc.php';
 checkCacheDir('adodb_tpl'); // sql cache for templates
 checkCacheDir('adodb_il8n'); // sql cache from translations
 $GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
@@ -196,11 +192,13 @@ function deleteuniqueid($id)
 {
 	global $db;
 
-	if(empty($id)) return false;
+	if(!$id) return false;
 
 	if (is_array($id))	{
+		$id = array_map('intval', $id);
 		$db->execute("DELETE FROM {$GLOBALS['tp']}objects WHERE id IN (". join(",", $id). ")");
 	}	else {
+		$id = (int)$id;
 		$db->execute("DELETE FROM {$GLOBALS['tp']}objects WHERE id='{$id}'");
 	}
 }

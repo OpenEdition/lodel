@@ -65,7 +65,7 @@ function resize_image($taille, $src, &$dest)
 {
 	do { // exception
 		// cherche le type de l'image
-		$result = getimagesize($src);
+		$result = @getimagesize($src);
 		if ($result[2] == 1 && function_exists("ImageCreateFromGIF"))	{
 			$im = ImageCreateFromGIF($src);
 		}	elseif ($result[2] == 2 && function_exists("ImageCreateFromJPEG")) {
@@ -82,10 +82,10 @@ function resize_image($taille, $src, &$dest)
 		if (is_numeric($taille)) { // la plus grande taille
 			if ($result[0] > $result[1]) {
 				$width = $taille;
-				$height = intval(($taille * $result[1]) / $result[0]);
+				$height = (int)(($taille * $result[1]) / $result[0]);
 			}	else {
 				$height = $taille;
-				$width = intval(($taille * $result[0]) / $result[1]);
+				$width = (int)(($taille * $result[0]) / $result[1]);
 			}
 		}	else {
 			if (!preg_match("/(\d+)[x\s]+(\d+)/", $taille, $result2)) {
@@ -95,9 +95,9 @@ function resize_image($taille, $src, &$dest)
 			$height = $result2[2] ? $result2[2] : $result[1];
 		}
 		if (!($gdv = GDVersion())) {
-			return false; // Pas de GD installÃ©
+			return false; // Pas de GD installé
 		}
-		if ($gdv >= 2) { //Sur la GD2 la version a changÃ©
+		if ($gdv >= 2) { //Sur la GD2 la version a changé
 			$im2 = ImageCreateTrueColor($width, $height);
 			if (!$im2) {
 				return false;
@@ -168,8 +168,7 @@ function GDVersion()
 	}
 	ob_start();
 	phpinfo(8);
-	$info = ob_get_contents();
-	ob_end_clean();
+	$info = ob_get_clean();
 	$info = stristr($info, 'gd version');
 	preg_match('/\d+/', $info, $gd);
 	$gdversion = $gd[0];

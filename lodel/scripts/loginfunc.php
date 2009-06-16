@@ -51,7 +51,7 @@
  * @package lodel
  */
 
-if(!defined('INC_CONNECT')) include 'connect.php';
+defined('INC_CONNECT') include 'connect.php';
 
 /**
  * Ouverture d'une session

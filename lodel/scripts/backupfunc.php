@@ -191,7 +191,7 @@ function lodelprefix($table)
 
 	$table = substr($table, strlen(C::get('tableprefix', 'cfg')));
 
-	if ($GLOBALS['currentprefix']) {
+	if (@$GLOBALS['currentprefix']) {
 		return $GLOBALS['currentprefix'].$table;
 	}	else {
 		trigger_error("ERROR: currentprefix is not defined", E_USER_ERROR);
@@ -306,8 +306,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 	}	else {
 		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 		// use PCLZIP library
-		if(!class_exists('PclZip', false))
-			require 'pclzip/pclzip.lib.php';
+		class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
 		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 

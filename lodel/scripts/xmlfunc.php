@@ -56,8 +56,7 @@
  */
 function calculateXML($context)
 {
-	if(!function_exists("insert_template"))
-		include 'view.php';
+	function_exists("insert_template") || include 'view.php';
 	ob_start();
 	insert_template($context, "xml-classe", "", SITEROOT."lodel/edition/tpl/");
 	$contents = ob_get_contents();
@@ -70,8 +69,7 @@ function calculateXML($context)
  */
 function calculateXMLSchema($context)
 {
-	if(!function_exists("insert_template"))
-		include 'view.php';
+	function_exists("insert_template") || include 'view.php';
 	ob_start();
 	insert_template($context, "schema-xsd", "", SITEROOT."lodel/admin/tpl/");
 	$contents = ob_get_contents();
@@ -187,7 +185,9 @@ function loop_fields_values(& $context, $funcname)
 {
 	global $error;
 	global $db;
-	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$context[id]' AND status>0 ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$id = (int)@$context['id'];
+	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$id' AND status>0 ORDER BY rank")) 
+		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	$haveresult = $result->NumRows() > 0;
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
@@ -201,6 +201,8 @@ function loop_fields_values(& $context, $funcname)
 		$fields[] = $row;
 		$result->moveNext();
 	}
+	$context['class'] = @$context['class'];
+	$context['identity'] = @$context['identity'];
 	if (is_array($fieldvalued) && count($fieldvalued) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldvalued). " FROM #_TP_". $context['class']. " WHERE identity='". $context['identity']. "'");
 		$rowsvalued = $db->getRow($sql);
@@ -234,6 +236,7 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 	global $error;
 	global $db;
 
+	$context['nature'] = @$context['nature'];
 	if ($context['nature'] == 'G') {
 		$table = '#_TP_persontypes';
 		$id = 'idperson';
@@ -259,6 +262,7 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 	}
 	
 	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);
+	$context['id2'] = @$context['id2'];
 	//$fieldnames = array_keys($fields);
 	if (is_array($fieldnames) && count($fieldnames) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $class. " WHERE $id='". $context['id2']."'");
@@ -291,6 +295,7 @@ function loop_person_relations_fields(&$context, $funcname)
 {
 	global $error;
 	global $db;
+	$context['class'] = @$context['class'];
 	$sql = "SELECT t.name, t.class, t.type,t.cond FROM #_TP_tablefields as t";
 	$sql .= " WHERE t.class='entities_". $context['class']."'";
 	$result = $db->execute(lq($sql));
@@ -311,6 +316,7 @@ function loop_person_relations_fields(&$context, $funcname)
 	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);	
 	//$fieldnames = array_keys($fields);
 	if (is_array($fieldnames) && count($fieldnames) > 0) {
+		$context['idrelation'] = @$context['idrelation'];
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $row['class']. " WHERE idrelation='". $context['idrelation']. "'");
 		$values = $db->getRow($sql);
 		foreach ($fields as $key => $row) {

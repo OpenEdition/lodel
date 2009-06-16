@@ -59,7 +59,7 @@ if (!($tablefields = getFromCache('tablefields')))
 	{
 		function maketablefields(& $tablefields)
 		{
-			if(!defined('INC_CONNECT')) include 'connect.php';
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			$start = DATABASE != $GLOBALS['currentdb'] ? 0 : 1;
 			#      $dbs[$GLOBALS['currentdb']]="";

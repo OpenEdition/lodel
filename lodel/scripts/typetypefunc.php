@@ -63,7 +63,8 @@
 function typetype_delete($typetable, $critere)
 {
 	global $db;
-	$db->execute(lq("DELETE FROM #_TP_entitytypes_".$typetable."s WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$db->execute(lq("DELETE FROM #_TP_entitytypes_".$typetable."s WHERE $critere")) 
+		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 /**
@@ -82,7 +83,8 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 	if (!$identitytype || !$idtypetable) {
 		return;
 	}
-
+	$identitytype = (int)$identitytype;
+	$idtypetable = (int)$idtypetable;
 	$values = array ();
 	if (is_array($idtypetable))	{
 		foreach ($idtypetable as $idtype => $cond) {
@@ -95,7 +97,8 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 	}
 	$table = $typetable != 'entitytype2' ? $typetable : 'entitytype';
 
-	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,cond) VALUES ".join(",", $values))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	$db->execute(lq("INSERT INTO #_TP_entitytypes_".$table."s (identitytype,id$typetable,cond) VALUES ".join(",", $values))) 
+		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 }
 
 
@@ -111,7 +114,7 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		$relationtable = $listtype;
 		$rank = 'type';
 	}
-	$id = isset($context['id']) ? $context['id'] : 0;
+	$id = (int)@$context['id'];
 	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$id' WHERE status>0 ORDER BY $rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {

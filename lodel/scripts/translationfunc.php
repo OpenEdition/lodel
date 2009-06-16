@@ -49,8 +49,7 @@
  * @package lodel
  * @since Fichier ajouté depuis la version 0.8
  */
-if(!class_exists('XMLDB', false))
-	include 'xmldbfunc.php';
+class_exists('XMLDB', false) || include 'xmldbfunc.php';
 
 /**
  * Affichage des champs textes pour la traduction

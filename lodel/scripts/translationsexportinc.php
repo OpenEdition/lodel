@@ -54,7 +54,7 @@ if (!function_exists("authenticate")) {
 	trigger_error("ERROR: invalid include of translationsexportinc.php", E_USER_ERROR);
 }
 
-require_once 'validfunc.php';
+function_exists('validfield') || include 'validfunc.php';
 
 //$context[importdir]=$importdir;
 if ($lang != "all" && !isvalidlang($lang))
@@ -64,8 +64,7 @@ if ($lang != "all" && !isvalidlang($lang))
 lock_write("translations", "textes");
 
 $tmpfile = tempnam(tmpdir(), "lodeltranslation");
-if(!class_exists('XMLDB_Translations'))
-	include 'translationfunc.php';
+class_exists('XMLDB_Translations') || include 'translationfunc.php';
 
 $xmldb = new XMLDB_Translations($context['textgroups'], $lang);
 
