@@ -116,14 +116,11 @@ class GenericLogic extends Logic
 	public function viewAction(&$context, &$error)
 	{
 		// define some loop functions
-		if(!function_exists('makeSelectLang'))
-			include 'lang.php';
 		if(!function_exists('loop_edition_fields')) {
 			function loop_edition_fields($context, $funcname)
 			{
 				global $db;
-				if(!function_exists('validfield'))
-					include 'validfunc.php';
+				function_exists('validfield') || include 'validfunc.php';
 				if (!empty($context['class'])) {
 					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
@@ -144,12 +141,14 @@ class GenericLogic extends Logic
 					}   elseif ($context['classtype'] == "entries") {
 						$criteria = "class='".$class."'";
 					}   else {
+						$context['id'] = @$context['id'];
 						$criteria = "idgroup='". $context['id']."'";
 						$context['idgroup'] = $context['id'];
 					}
 				}
 				else
 				{
+					$context['id'] = @$context['id'];
 					$criteria = "idgroup='". $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
@@ -182,7 +181,7 @@ class GenericLogic extends Logic
 				}
 			} //function }}}
 		}
-		$id = (int)$context['id'];
+		$id = @$context['id'];
 		if ($id && !$error) {
 			$vo = $this->_getMainTableDAO()->getById($id);
 			if (!$vo) {
@@ -190,7 +189,7 @@ class GenericLogic extends Logic
 			}
 			$this->_populateContext($vo, $context);
 		}
-
+		$context['idtype'] = @$context['idtype'];
 		$daotype = DAO::getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
@@ -253,7 +252,7 @@ class GenericLogic extends Logic
 			$name = $field->name;
 
 			// check if the field is required or not, and rise an error if any problem.
-			$value = &$context['data'][$name];
+			$value = &@$context['data'][$name];
 
 			if (!is_array($value)) {
 				$value = trim($value);
@@ -436,7 +435,8 @@ class GenericLogic extends Logic
 	 */
 	protected function _moveFiles($id, $files_to_move, $vo)
 	{
-		foreach ($files_to_move as $file)	{
+		foreach ($files_to_move as $file)
+		{
 			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
@@ -498,7 +498,7 @@ class GenericLogic extends Logic
 	 */
 	protected function _is_unique($class, $name, $value, $id) {
 		global $db;
- 
+ 		$id = (int)$id;
 		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
 		if ($result == 0) {
 			return true; } else {
@@ -554,6 +554,8 @@ class GenericLogic extends Logic
  * @param integer $k par défaut à -1. ???
  * @return $text le texte nettoyé
  */
+if(!function_exists('lodel_strip_tags'))
+{
 function lodel_strip_tags($text, $allowedtags, $k = -1)
 {
 	if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
@@ -565,8 +567,7 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 		$k = -1;
 	} // for call via array_walk
 
-	if(empty($GLOBALS['xhtmlgroups']))
-		include "balises.php";
+	isset($GLOBALS['xhtmlgroups']) || include "balises.php";
 	static $accepted; // cache the accepted balise;
 	global $multiplelevel, $xhtmlgroups;
 
@@ -645,7 +646,7 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 	// now, we know the accepted tags
 	return join("", $arr);
 }
-
+}
 /*-----------------------------------*/
 /* loops                             */
 ?>

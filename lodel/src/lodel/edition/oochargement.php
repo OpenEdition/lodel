@@ -117,7 +117,7 @@ function addList($text)
     authenticate(LEVEL_REDACTOR);
 // require 'func.php';
     include 'utf8.php'; // conversion des caracteres
-    if(!defined('INC_FUNC')) include 'func.php';
+    defined('INC_FUNC') || include 'func.php';
     
     foreach(array('idtask', 'lodeltags', 'reload', 'iddocument') as $var)
     {
@@ -245,8 +245,7 @@ function addList($text)
                 $row['idtype']        = $context['idtype'];
             }
             
-            if(!function_exists('maketask'))
-                include 'taskfunc.php';
+            function_exists('maketask') || include 'taskfunc.php';
             $idtask = maketask("Import $file1", 3, $row);
     	    error_reporting($err);
             header("Location: checkimport.php?reload=".$context['reload']."&idtask=". $idtask);

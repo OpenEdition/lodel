@@ -93,25 +93,23 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		global $db;
 		$this->context=&$context;
 		$this->error =& $error;
-		$idtask = 0;
-		if(isset($context['idtask']))
-			$idtask = (int)$context['idtask'];
+		$idtask = @$context['idtask'];
 		function_exists('gettask') || include ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
-		if (!empty($task['identity'])) $context['id'] = $task['identity'];
+		$context['id'] = @$task['identity'];
 		class_exists('XMLImportParser', false) || include "xmlimport.php";
 		$parser=new XMLImportParser();
-		$parser->init ($context['class']);
-		$parser->parse (file_get_contents ($task['fichier']), $this);
+		$parser->init (@$context['class']);
+		$parser->parse (file_get_contents (@$task['fichier']), $this);
 		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
 		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
-			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".$task['idparent'].".source";
+			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
 		} else {
 			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
 		}
 		@unlink ($sourcefile);
-		copy ($task['source'], $sourcefile);
+		copy (@$task['source'], $sourcefile);
 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		if ($idtask) { // close the task
 			DAO::getDAO('tasks')->deleteObject ($idtask);
@@ -139,10 +137,11 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 	protected function _moveImages_rec (&$context, &$dir, &$count) 
 	{
+		$imglist = array();
 		foreach (array_keys ($context) as $k) {
 			if (is_array ($context[$k])) {
 				$this->_moveImages_rec ($context[$k], $dir, $count);
-			continue;
+				continue;
 			}
 			$text=&$context[$k];
        			preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
@@ -179,13 +178,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			mkdir (SITEROOT.$dir, 0777 & octdec(C::get('filemask', 'cfg')));
 			@chmod(SITEROOT.$dir,0777 & octdec(C::get('filemask', 'cfg')));
 		} else { // clear the directory the first time.
-			$fd=opendir(SITEROOT.$dir);
+			$fd=@opendir(SITEROOT.$dir);
 			if (!$fd) trigger_error("ERROR: cannot open the directory $dir", E_USER_ERROR);
 			while ($file=readdir($fd)) {
 				if ($file{0}=="." || !preg_match("/^(img-\d+(-small\d+)?|\w+-small\d+).(jpg|gif|png)$/i", $file)) continue;
 				$file=SITEROOT.$dir."/".$file;
 				if (is_file($file)) @unlink($file);
 			}
+			closedir($fd);
 		}
 	}
 
@@ -216,15 +216,15 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			break;
 		case 'entities':    // let's import now.
 			$localcontext=array_merge ($this->context, $this->_localcontext);
-			if (!empty($this->task['idparent'])) $localcontext['idparent']=$this->task['idparent'];
-			if (!empty($this->task['idtype'])) $localcontext['idtype']=$this->task['idtype'];
+			$localcontext['idparent']=@$this->task['idparent'];
+			$localcontext['idtype']=@$this->task['idtype'];
 			if ($multidoc) { // try to find the id
 				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".(int)$this->nbdocuments.",1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!$result->EOF) $localcontext['id']=$result->fields['id'];
 				$this->nbdocuments++;
 			} else if (!empty($this->task['identity'])) $localcontext['id']=$this->task['identity'];
 			$localcontext['creationmethod']=$multidoc ? "servoo;multidoc" : "servoo";
-			$localcontext['creationinfo']=$this->task['sourceoriginale'];
+			$localcontext['creationinfo']=@$this->task['sourceoriginale'];
 
 			if ($multidoc) $this->context['finish']="oui";
 			if (empty($this->context['finish'])) $localcontext['status']=-64;

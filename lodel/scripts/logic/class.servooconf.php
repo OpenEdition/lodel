@@ -65,7 +65,8 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 
@@ -98,8 +99,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 		if ($ret=="_error") return $ret;
 		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
-		if(!class_exists('ServOO', false))
-			include("servoofunc.php");
+		if(!class_exists('ServOO', false)) include("servoofunc.php");
 		$client=new ServOO();
 		if ($client->error_message) {
 			if (!empty($context['url'])) $error['url']='+';

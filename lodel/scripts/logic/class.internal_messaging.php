@@ -82,6 +82,7 @@ class Internal_MessagingLogic extends Logic
 		if('recipients' != $var) return;
 		global $db;
 		$arr = array();
+		$context['idparent'] = @$context['idparent'];
 		if($context['idparent']) {
 			$idparent = (int)$context['idparent'];
 			$sender = $db->getRow(lq("SELECT iduser, subject, body, recipients FROM #_MTP_internal_messaging WHERE id='{$idparent}'"));
@@ -237,7 +238,7 @@ class Internal_MessagingLogic extends Logic
 				$this->deleteAction($context, $error);
 			}
 			unset($context['escape']);
-		} elseif($id = (int)$context['id']) {
+		} elseif($id = (int)@$context['id']) {
 			$childIds = $db->execute(lq("SELECT id FROM #_MTP_internal_messaging WHERE idparent = '{$id}'"));
 			if($childIds) {
 				$oldEscape = isset($context['escape']) ? $context['escape'] : false;
@@ -254,121 +255,129 @@ class Internal_MessagingLogic extends Logic
 			$row = $db->getRow(lq("SELECT status, iduser, recipient FROM #_MTP_internal_messaging WHERE id = '{$id}'"));
 			
 			if($row) {
-                if((string)$row['recipient'] === $this->_iduser) {
-                    if(empty($context['directory']) || $context['directory'] == 'inbox') {
-                        switch((int)$row['status']) {
-                        case 0:
-                        $status = -8;
-                        break;
-    
-                        case 1:
-                        $status = -1;
-                        break;
-    
-                        case 16:
-                        $status = -2;
-                        break;
-    
-                        case 32:
-                        $status = -16;
-                        break;
-    
-                        default:break;
-                        }
-                        if(isset($status))
-                            $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                    } elseif($context['directory'] == 'trash') {
-                        if(!isset($context['restore'])) $context['restore'] = 0;
-                        switch((int)$row['status']) {
-                        case -16:
-                        $status = (1 === (int)$context['restore']) ? 32 : 'delete';
-                        break;
-                        case -2:
-                        $status = (1 === (int)$context['restore']) ? 16 : 'delete';
-                        break;
-    
-                        case -8:
-                        $status = (1 === (int)$context['restore']) ? 0 : -32;
-                        break;
-                        case -1:
-                        $status = (1 === (int)$context['restore']) ? 1 : -32;
-                        break;
-    
-                        default:break;
-                        }
-                        if(isset($status)) {
-                            if('delete' === $status)
-                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                            else
-                                $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                        }
-                    } elseif($context['directory'] == 'sent') {
-                        switch((int)$row['status']) {
-                        case 0:
-                        $status = 32;
-                        break;
-    
-                        case 1:
-                        $status = 16;
-                        break;
-    
-                        case -1:
-                        $status = -2;
-                        break;
-    
-                        case -8:
-                        $status = -16;
-                        break;
-    
-                        case -32:
-                        $status = 'delete';
-                        break;
-                        default:break;
-                        }
-                        if(isset($status)) {
-                            if('delete' === $status)
-                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                            else
-                                $db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                        }
-                    }
-                } elseif((string)$row['iduser'] === $this->_iduser) {
-                    if($context['directory'] == 'sent') {
-                        switch((int)$row['status']) {
-                        case 0:
-                        $status = 32;
-                        break;
-    
-                        case 1:
-                        $status = 16;
-                        break;
-    
-                        case -1:
-                        $status = -2;
-                        break;
-    
-                        case -8:
-                        $status = -16;
-                        break;
-    
-                        case -32:
-                        $status = 'delete';
-                        break;
-                        default:break;
-                        }
-                        if(isset($status)) {
-                            if('delete' === $status)
-                                $db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                            else
-                                $db->execute(lq("
-                                UPDATE #_MTP_internal_messaging 
-                                    SET status = '{$status}' 
-                                    WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) 
-                                or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-                        }
-                    }
-                }
-            }
+				if((string)$row['recipient'] === $this->_iduser) 
+				{
+					if(empty($context['directory']) || $context['directory'] == 'inbox') 
+					{
+						switch((int)$row['status']) {
+						case 0:
+						$status = -8;
+						break;
+			
+						case 1:
+						$status = -1;
+						break;
+			
+						case 16:
+						$status = -2;
+						break;
+			
+						case 32:
+						$status = -16;
+						break;
+			
+						default:break;
+						}
+						if(isset($status))
+						$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					} 
+					elseif($context['directory'] == 'trash') 
+					{
+						if(!isset($context['restore'])) $context['restore'] = 0;
+						switch((int)$row['status']) {
+						case -16:
+						$status = (1 === (int)$context['restore']) ? 32 : 'delete';
+						break;
+						case -2:
+						$status = (1 === (int)$context['restore']) ? 16 : 'delete';
+						break;
+			
+						case -8:
+						$status = (1 === (int)$context['restore']) ? 0 : -32;
+						break;
+						case -1:
+						$status = (1 === (int)$context['restore']) ? 1 : -32;
+						break;
+			
+						default:break;
+						}
+						if(isset($status)) {
+						if('delete' === $status)
+							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						else
+							$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						}
+					} 
+					elseif($context['directory'] == 'sent') 
+					{
+						switch((int)$row['status']) {
+						case 0:
+						$status = 32;
+						break;
+			
+						case 1:
+						$status = 16;
+						break;
+			
+						case -1:
+						$status = -2;
+						break;
+			
+						case -8:
+						$status = -16;
+						break;
+			
+						case -32:
+						$status = 'delete';
+						break;
+						default:break;
+						}
+						if(isset($status)) {
+						if('delete' === $status)
+							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						else
+							$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = '{$status}' WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						}
+					}
+				} 
+				elseif((string)$row['iduser'] === $this->_iduser) 
+				{
+					if($context['directory'] == 'sent') {
+						switch((int)$row['status']) {
+						case 0:
+						$status = 32;
+						break;
+			
+						case 1:
+						$status = 16;
+						break;
+			
+						case -1:
+						$status = -2;
+						break;
+			
+						case -8:
+						$status = -16;
+						break;
+			
+						case -32:
+						$status = 'delete';
+						break;
+						default:break;
+						}
+						if(isset($status)) {
+						if('delete' === $status)
+							$db->execute(lq("DELETE FROM #_MTP_internal_messaging WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						else
+							$db->execute(lq("
+							UPDATE #_MTP_internal_messaging 
+							SET status = '{$status}' 
+							WHERE id = '{$id}' AND iduser = '{$this->_iduser}'")) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						}
+					}
+				}
+			}
 		}
 		unset($context['id'], $id);
 		if(!isset($context['escape']) || true !== $context['escape']) {
@@ -381,7 +390,7 @@ class Internal_MessagingLogic extends Logic
 	public function listAction(&$context, &$error)
 	{
 		global $db;
-		$id = (int)$context['id'];
+		$id = (int)@$context['id'];
 		if($id) {
 			$context['data'] = array();
 			$datas = $db->getRow(lq("SELECT idparent, iduser, recipient, subject, body, cond, status FROM #_MTP_internal_messaging WHERE id='{$id}' AND (recipient = '{$this->_iduser}' OR iduser = '{$this->_iduser}')"));
@@ -449,11 +458,12 @@ class Internal_MessagingLogic extends Logic
 		if (C::get('rights', 'lodeluser') < $dao->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to send internal message', E_USER_ERROR);
 		}
-		$context['subject'] = addslashes($context['subject']);
-		$context['body'] = addslashes($context['body']);
+		$context['subject'] = addslashes(@$context['subject']);
+		$context['body'] = addslashes(@$context['body']);
 		$requetes = '';
 		$context['recipients'] = array();
 		$context['recipients'] = join(':', $recipients);
+		$context['idparent'] = @$context['idparent'];
 		foreach($recipients as $k=>$recipient) {
 			if($context['idparent']) {
 				$subject = addslashes($db->getOne(lq("SELECT subject FROM #_MTP_internal_messaging WHERE id='{$context['idparent']}' AND recipient = '{$this->_iduser}'")));

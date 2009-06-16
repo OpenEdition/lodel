@@ -64,7 +64,8 @@ class TypesLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("types");
 	}
 
@@ -78,7 +79,8 @@ class TypesLogic extends Logic {
 	public function viewAction(&$context,&$error)
 	{
 		if ($error) return;
-		if (empty($context['id'])) {
+		$context['id'] = @$context['id'];
+		if (!$context['id']) {
 			// creation
 			$context['creationstatus']=-1;
 			$context['search']=1;
@@ -105,6 +107,7 @@ class TypesLogic extends Logic {
 	public function isdeletelocked($id,$status=0) 
 	{
 		global $db;
+		$id = (int)$id;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_entities WHERE idtype='$id' AND status>-64"));
 		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
@@ -124,7 +127,7 @@ class TypesLogic extends Logic {
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
-		return parent::changeRankAction(&$context, &$error, 'class');
+		return parent::changeRankAction($context, $error, 'class');
 	}
 
 
@@ -157,8 +160,7 @@ class TypesLogic extends Logic {
 			renderOptions($arr,isset($context['creationstatus']) ? $context['creationstatus'] : '');
 			break;
 		case 'gui_user_complexity' :
-			if(!function_exists('makeSelectGuiUserComplexity'))
-				include("commonselect.php");
+			function_exists('makeSelectGuiUserComplexity') || include("commonselect.php");
 			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		}
@@ -182,8 +184,8 @@ class TypesLogic extends Logic {
 	protected function _saveRelatedTables($vo,&$context) 
 	{
 		function_exists('typetype_delete') || include("typetypefunc.php");
-
-		if (!empty($context['id'])) {
+		$context['id'] = @$context['id'];
+		if ($context['id']) {
 			typetype_delete("entitytype","identitytype='".$context['id']."'");
 		}
 		typetype_insert($vo->id,isset($context['entitytype']) ? $context['entitytype'] : null,"entitytype2");
@@ -194,6 +196,8 @@ class TypesLogic extends Logic {
 	protected function _deleteRelatedTables($id) 
 	{
 		function_exists('typetype_delete') || include("typetypefunc.php");
+		if(is_array($id)) $id = array_map($id);
+		else $id = (int)$id;
 		$criteria="(identitytype ".sql_in_array($id)." OR identitytype2 ".sql_in_array($id).")";
 		typetype_delete("entitytype",$criteria);
 	}
@@ -244,10 +248,12 @@ class TypesLogic extends Logic {
 
 /*-----------------------------------*/
 /* loops                             */
-
-function loop_entitytypes($context,$funcname)
-{ 
-	function_exists('loop_typetable') || include ("typetypefunc.php"); 
-	loop_typetable ("entitytype2","entitytype",$context,$funcname,isset($context['entitytype']) ? $context['entitytype'] : null);
+if(!function_exists('loop_entitytypes'))
+{
+	function loop_entitytypes($context,$funcname)
+	{ 
+		function_exists('loop_typetable') || include ("typetypefunc.php"); 
+		loop_typetable ("entitytype2","entitytype",$context,$funcname,isset($context['entitytype']) ? $context['entitytype'] : null);
+	}
 }
 ?>

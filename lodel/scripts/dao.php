@@ -254,7 +254,7 @@ class DAO
 			}
 			if ($update) {
 				$update = 
-				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". (int)$vo->$idfield. "' ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}	else	{ // new  - Ajout
 			if (isset ($vo->protect))	{ // special processing for the protection
@@ -315,6 +315,7 @@ class DAO
 	 */
 	public function getById($id, $select = "*")
 	{
+		$id = (int)$id;
 		return $this->find($this->idfield. "='$id'", $select);
 	}
 
@@ -329,7 +330,7 @@ class DAO
 	 */
 	public function getByIds($ids, $select = "*")
 	{
-		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", $ids). "')" : "='".$ids."'"), '', $select);
+		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", array_map('intval', $ids)). "')" : "='".(int)$ids."'"), '', $select);
 	}
 
 	/**
@@ -475,17 +476,17 @@ class DAO
 		$idfield = $this->idfield;
 		if (is_object($mixed)) {
 			$vo = &$mixed;
-			$id = $vo->$idfield;
+			$id = (int)$vo->$idfield;
 			$criteria = $idfield. "='$id'";
 			//set id on vo to 0
 			$vo->$idfield = 0;
 			$nbid = 1;
 		}	elseif (is_numeric($mixed) && $mixed > 0)	{
-			$id = $mixed;
+			$id = (int)$mixed;
 			$criteria = $idfield. "='$id'";
 			$nbid = 1;
 		}	elseif (is_array($mixed))	{
-			$id = $mixed;
+			$id = array_map('intval', $mixed);
 			$criteria = $idfield. " IN ('". join("','", $id). "')";
 			$nbid = count($id);
 		}	elseif (is_string($mixed) && trim($mixed)) {

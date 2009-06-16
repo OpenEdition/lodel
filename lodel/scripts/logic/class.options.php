@@ -91,6 +91,8 @@ class OptionsLogic extends Logic {
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{ 
+		$context['title'] = @$context['title'];
+		$context['name'] = @$context['name'];
 		if (!$context['title']) {
 			$context['title'] = $context['name'];
 		}
@@ -213,8 +215,11 @@ class OptionsLogic extends Logic {
 /*-----------------------------------*/
 /* loops                             */
 /*-----------------------------------*/
-function humanfieldtype($text)
+if(!function_exists('humanfieldtype'))
 {
-	return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
+	function humanfieldtype($text)
+	{
+		return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
+	}
 }
 ?>

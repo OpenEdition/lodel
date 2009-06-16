@@ -110,7 +110,7 @@ class TableFieldsLogic extends Logic
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
-		return parent::changeRankAction(&$context, &$error, 'idgroup,class');
+		return parent::changeRankAction($context, $error, 'idgroup,class');
 	}
 
 
@@ -124,13 +124,11 @@ class TableFieldsLogic extends Logic
 	{
 		switch($var) {
 		case 'type':
-			if(!function_exists('makeSelectFieldTypes'))
-				include 'commonselect.php';
+			function_exists('makeSelectFieldTypes') || include 'commonselect.php';
 			makeSelectFieldTypes(isset($context['type']) ? $context['type'] : '');
 			break;
 		case 'gui_user_complexity' :
-			if(!function_exists('makeSelectGuiUserComplexity'))
-				include 'commonselect.php';
+			function_exists('makeSelectGuiUserComplexity') || include 'commonselect.php';
 			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : 0);
 			break;
 		case 'cond':
@@ -144,8 +142,7 @@ class TableFieldsLogic extends Logic
 			renderOptions($arr,isset($context['cond']) ? $context['cond'] : '');
 			break;
 		case 'edition':
-			if(!function_exists('makeSelectEdition'))
-				include 'commonselect.php';
+			function_exists('makeSelectEdition') || include 'commonselect.php';
 			makeSelectEdition(isset($context['edition']) ? $context['edition'] : '');
 			break;
 		case 'allowedtags':
@@ -159,17 +156,18 @@ class TableFieldsLogic extends Logic
 			break;
 		case 'idgroup':
 			$arr = array();
+			$context['idgroup'] = (int)@$context['idgroup'];
 			// get the groups having of the same class as idgroup
 			$result = $GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.class WHERE tfg2.id='".$context['idgroup']."'")) or trigger_error($GLOBALS['db']->errormsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$arr[$result->fields['id']]=$result->fields['title'];
 				$result->MoveNext();
 			}
-			renderOptions($arr, isset($context['idgroup']) ? $context['idgroup'] : 0);
+			renderOptions($arr, $context['idgroup']);
 			break;
 		case 'g_name':
-			if(!function_exists('reservedByLodel'))
-				include 'fieldfunc.php';
+			function_exists('reservedByLodel') || include 'fieldfunc.php';
+			$context['classtype'] = @$context['classtype'];
 			if (!$context['classtype']) $this->_getClass($context);
 			switch ($context['classtype']) {
 			case 'entities':
@@ -192,7 +190,7 @@ class TableFieldsLogic extends Logic
 			default:
 				trigger_error("class type ?",E_USER_ERROR);
 			}
-
+			$context['class'] = @$context['class'];
 			$tablefields = $this->_getMainTableDAO()->findMany("class='".$context['class']."'","","g_name,title");     
 			foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
 	
@@ -235,9 +233,10 @@ class TableFieldsLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
+		$id = @$context['id'];
 		// gather information for the following
-		if ($context['id']) {
-			$this->oldvo=$dao->getById($context['id']);
+		if ($id) {
+			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo) trigger_error("ERROR: internal error in TableFields::_prepareEdit", E_USER_ERROR);
 		}
 	}
@@ -252,8 +251,7 @@ class TableFieldsLogic extends Logic
 	protected function _saveRelatedTables($vo,&$context) 
 	{
 		global $lodelfieldtypes,$db;
-		if(!function_exists('reservedByLodel'))
-			include 'fieldfunc.php';
+		function_exists('reservedByLodel') || include 'fieldfunc.php';
 
 		// remove the dc for all the other fields
 		if ($vo->g_name) {
@@ -302,9 +300,10 @@ class TableFieldsLogic extends Logic
 	* @param array &$context le contexte passé par référénce
 	*/
 	protected function _prepareDelete($dao,&$context)
-	{     
+	{
+		$id = @$context['id'];
 		// gather information for the following
-		$this->vo=$dao->getById($context['id']);
+		$this->vo=$dao->getById($id);
 		if (!$this->vo) trigger_error("ERROR: internal error in TableFields::deleteAction", E_USER_ERROR);
 	}
 	
@@ -336,6 +335,8 @@ class TableFieldsLogic extends Logic
 	protected function _getClass(&$context)
 	{
 		global $db;
+		$context['idgroup'] = (int)@$context['idgroup'];
+		$context['class'] = @$context['class'];
 		if ($context['idgroup']) {
 			$row = $db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='". $context['idgroup']. "'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if ($context['class'] && $context['class'] != $row['class']) {
@@ -369,6 +370,7 @@ class TableFieldsLogic extends Logic
 	function _populateObject($vo, &$context)
 	{
 		parent::_populateObject($vo,$context);
+		$context['class'] = @$context['class'];
 		$vo->class = $context['class']; // it is safe, we now that !
 		$vo->allowedtags = (isset($context['allowedtags']) && is_array($context['allowedtags'])) ? join(';', $context['allowedtags']) : '';
 	}
@@ -421,21 +423,23 @@ class TableFieldsLogic extends Logic
 
 /*-----------------------------------*/
 /* loops                             */
-function loop_allowedtags_documentation(&$context,$funcname)
-
+if(!function_exists('loop_allowedtags_documentation'))
 {
-	##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
-	require_once("balises.php");
-	$count = 0;
-	foreach($GLOBALS['xhtmlgroups'] as $groupname => $tags) {
-		$localcontext=$context;
-		$localcontext['count']=++$count;
-		$localcontext['groupname']=$groupname;
-		$localcontext['allowedtags']="";
-		foreach ($tags as $k=>$v) { if (!is_numeric($k)) unset($tags[$k]); }
-		if (!$tags) continue;
-		$localcontext['allowedtags']=join(", ",$tags);
-		call_user_func("code_do_$funcname",$localcontext);
+	function loop_allowedtags_documentation(&$context,$funcname)
+	{
+		##$groups=array_merge(array_keys($GLOBALS['xhtmlgroups']),array_keys($GLOBALS['multiplelevel']));
+		require_once("balises.php");
+		$count = 0;
+		foreach($GLOBALS['xhtmlgroups'] as $groupname => $tags) {
+			$localcontext=$context;
+			$localcontext['count']=++$count;
+			$localcontext['groupname']=$groupname;
+			$localcontext['allowedtags']="";
+			foreach ($tags as $k=>$v) { if (!is_numeric($k)) unset($tags[$k]); }
+			if (!$tags) continue;
+			$localcontext['allowedtags']=join(", ",$tags);
+			call_user_func("code_do_$funcname",$localcontext);
+		}
 	}
 }
 ?>

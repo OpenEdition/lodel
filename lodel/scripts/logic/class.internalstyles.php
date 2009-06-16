@@ -66,13 +66,13 @@ class InternalstylesLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("internalstyles");
 	}
 
 
 	public function makeSelect(&$context,$var)
-
 	{
 		switch($var) {
 			case "surrounding" :

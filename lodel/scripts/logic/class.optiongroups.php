@@ -82,8 +82,9 @@ class OptiongroupsLogic extends Logic {
 	{
 		global $db;
 
+		$context['id'] = @$context['id'];
 		switch($var) {
-		case 'idparent':
+			case 'idparent':
 			$arr=array();
 			$rank=array();
 			$parent=array();
@@ -147,6 +148,7 @@ class OptiongroupsLogic extends Logic {
 	public function isdeletelocked($id, $status = 0)
 	{
 		global $db;
+		$id = (int)$id;
 		$count = $db->getOne(lq("SELECT count(*) FROM #_TP_options WHERE idgroup='$id' AND status>-64"));
 		$countgroups = $db->getOne(lq("SELECT count(*) FROM #_TP_optiongroups WHERE idparent='$id' AND status>-64"));
 		$count = $count + $countgroups;
@@ -169,9 +171,11 @@ class OptiongroupsLogic extends Logic {
 	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
-		if ($context['id']) //it is an edition
+		$context['id'] = (int)@$context['id'];
+		$context['idparent'] = (int)@$context['idparent'];
+		if ($id) //it is an edition
 		{
-			$this->oldvo=$dao->getById($context['id']);
+			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo)
 				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
 			if($context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
@@ -222,6 +226,7 @@ class OptiongroupsLogic extends Logic {
 		$oldpolicy = $context['exportpolicy'] == 'on' ? 1 : 0;
 		if($newpolicy != $oldpolicy)	
 		{
+			$vo->id = (int)$vo->id;
 			$ids = array($vo->id);
 			do
 			{

@@ -85,12 +85,10 @@ class PersonsLogic extends EntriesLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		if(isset($context['id']))
-			$id=(int)$context['id'];
-		else $id = 0;
-		$idtype=$context['idtype'];
+		$id=(int)@$context['id'];
+		$idtype=(int)@$context['idtype'];
 		if (!$idtype) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
-		$status=$context['status'];
+		$status=@$context['status'];
 #echo "status=$status"; print_r ($context);
 		// get the class 
 		$daotype=DAO::getDAO ("persontypes");
@@ -158,6 +156,7 @@ class PersonsLogic extends EntriesLogic
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo,$new);  // save the related table
 		// save the entities_class table
+		$context['identity'] = @$context['identity'];
 		if ($context['identity']) {
 			$dao=DAO::getDAO ("relations");
 			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");

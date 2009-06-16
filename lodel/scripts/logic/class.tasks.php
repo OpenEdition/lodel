@@ -126,6 +126,7 @@ class TasksLogic extends Logic {
 	*/
 	public function isdeletelocked($id,$status=0)
 	{
+		$id = (int)$id;
 		// basic check. Should be more advanced because of the potential conflict between 
 		// adminlodel adn othe rusers
 		$vo=$this->_getMainTableDAO()->find("id='".$id."' AND user='".C::get('id', 'lodeluser')."'","id");

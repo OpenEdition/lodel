@@ -182,9 +182,7 @@ class DataLogic
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
 
-		if(!function_exists('importFromZip'))
-			include 'backupfunc.php';
-
+		function_exists('importFromZip') || include 'backupfunc.php';
 		$this->fileExtension = 'zip';
 	}
 
@@ -233,8 +231,6 @@ class DataLogic
 				}
 				@unlink($sqlfile);
 		
-				if(!function_exists('clearcache'))
-					include 'cachefunc.php';
 				clearcache();
 		
 				// verifie les .htaccess dans le CACHE

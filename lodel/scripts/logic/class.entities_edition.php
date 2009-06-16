@@ -98,10 +98,10 @@ class Entities_EditionLogic extends GenericLogic
 		{
 			function loop_persons_in_entities($context, $funcname)
 			{
-				$varname = $context['varname'];
+				$varname = @$context['varname'];
 				if (!$varname) return;
 	
-				$idtype = $context['idtype'];
+				$idtype = @$context['idtype'];
 				if (!$idtype) {
 					trigger_error("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities", E_USER_ERROR);
 				}
@@ -139,12 +139,12 @@ class Entities_EditionLogic extends GenericLogic
 		{
 			function loop_entries_in_entities($context, $funcname) 
 			{
-				$varname = $context['varname'];
+				$varname = @$context['varname'];
 				if (!$varname) {
 					return;
 				}
 	
-				$idtype = $context['idtype'];
+				$idtype = @$context['idtype'];
 				if (!is_numeric($idtype)) {
 					return;
 				}
@@ -166,7 +166,7 @@ class Entities_EditionLogic extends GenericLogic
 			function loop_entries_in_entities_rec ($context, $funcname, &$votype, &$checkarr) 
 			{
 				global $db;
-	
+				$context['id'] = @$context['id'];
 				// get the entries
 				$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				
@@ -188,7 +188,7 @@ class Entities_EditionLogic extends GenericLogic
 			function loop_entities_select($context, $funcname)
 			{
 				global $db;
-				$varname = $context['varname'];
+				$varname = @$context['varname'];
 				if (!$varname) {
 					if (function_exists("code_alter_$funcname")) {
 						call_user_func("code_alter_$funcname",$context);
@@ -277,15 +277,15 @@ class Entities_EditionLogic extends GenericLogic
 		if (isset($context['cancel'])) {
 			return '_back';
 		}
-		$id = $context['id'];
+		$id = @$context['id'];
 		if ($id && (empty($context['idparent']) || empty($context['idtype']))) {
 			$vo  = $this->_getMainTableDAO()->getById($id, "idparent, idtype");
 			$context['idparent'] = $vo->idparent;
 			$context['idtype']   = $vo->idtype;
 		}
-		$idparent = $context['idparent'];
-		$idtype   = $context['idtype'];
-		$status = $context['status'];
+		$idparent = @$context['idparent'];
+		$idtype   = @$context['idtype'];
+		$status = @$context['status'];
 		$this->_isAuthorizedStatus($status);
 		// iduser
 		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
@@ -296,12 +296,12 @@ class Entities_EditionLogic extends GenericLogic
 		}
 
 		// get the class 
-		$votype = DAO::getDAO("types")->getById($context['idtype'], "class,creationstatus,search");
+		$votype = DAO::getDAO("types")->getById($idtype, "class,creationstatus,search");
 		if (!$votype) {
 			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
 		}
 		$class = $context['class']=$votype->class;
-		
+		$context['lo'] = @$context['lo'];
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
 		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
@@ -487,8 +487,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		switch($edittype) {
 		case 'lang':
-			if(!function_exists('makeselectlangs'))
-				include 'lang.php';
+			function_exists('makeselectlangs') || include 'lang.php';
 			makeselectlangs(isset($context[$var]) ? $context[$var] : '');
 			break;
 		}
@@ -556,6 +555,7 @@ class Entities_EditionLogic extends GenericLogic
 					//$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
 					$ret = $logic->editAction($itemcontext, $error);
 					if ($ret!="_error" && $itemcontext['id']) {
+						if(!isset($ids[$idtype])) $ids[$idtype] = array();
 						$ids[$idtype][] = $itemcontext['id'];
 						if (isset($itemcontext['idrelation'])) {
 							$idrelations[] = $itemcontext['idrelation'];
@@ -714,7 +714,7 @@ class Entities_EditionLogic extends GenericLogic
 	{
 		global $db;
 		if (C::get('admin', 'lodeluser')) { // take it from the context.
-			$usergroup = (int)C::get('usergroup');
+			$usergroup = (int)C::get('usergroup', 'lodeluser');
 			if ($usergroup > 0) {
 				return $usergroup;
 			}
@@ -788,6 +788,7 @@ class Entities_EditionLogic extends GenericLogic
 				if ($table == "persons") {
 					$relatedrelationtable[$class][$result->fields['idrelation']] = &$ref;
 				}
+				if(!isset($context[$table])) $context[$table] = array();
 				$context[$table][$result->fields['idtype']][$degree] = &$ref;
 				$result->MoveNext();
 			}
@@ -798,8 +799,7 @@ class Entities_EditionLogic extends GenericLogic
 					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields[$idfield];
-						settype($ids[$id]['data'], "array");
-						$ids[$id]['data'] = array_merge($ids[$id]['data'], $result2->fields);
+						$ids[$id]['data'] = array_merge((array)$ids[$id]['data'], $result2->fields);
 						$result2->MoveNext();
 					}
 				}

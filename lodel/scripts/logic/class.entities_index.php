@@ -90,7 +90,7 @@ class Entities_IndexLogic extends Logic
 	{
 		global $db;
 		//no object identity specified
-		$id = (int)$context['id'];
+		$id = @$context['id'];
 		if (!$id) trigger_error("ERROR: no id given", E_USER_ERROR);
 		//if this entity is already indexed ==> clean
 		$this->deleteIndexAction ($context, $error);
@@ -101,7 +101,7 @@ class Entities_IndexLogic extends Logic
 		//where
 		$sql .= " WHERE e.id='$id'";
 		$row = $db->getRow (lq ($sql)) ;
-		if (!$row['id']) trigger_error("ERROR: can't find object $id ". $dao_temp->table, E_USER_ERROR);
+		if (!$row || empty($row['id'])) trigger_error("ERROR: can't find object $id ". $dao_temp->table, E_USER_ERROR);
 
 		$class= $row['class'];
 		if (!$class) trigger_error("ERROR: idtype is not valid in Entities_IndexLogic::addIndexAction", E_USER_ERROR);
@@ -119,7 +119,7 @@ class Entities_IndexLogic extends Logic
 		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
 		$daoIndex = DAO::getDAO ("search_engine"); 	
 		foreach ( $vos_fields as $vo_field)
-			$this->_indexField ($id,$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
+			$this->_indexField ($id,@$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
 		//Index entries relations
 		$this->_indexEntitiesRelations($id,'E',$daoIndex);
 		//Index persons relations
@@ -135,7 +135,7 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
 	public function deleteIndexAction(&$context,&$error) {
-		$id = $context["id"];
+		$id = @$context["id"];
 		if (!$id) trigger_error("ERROR: give the id ", E_USER_ERROR);
 		if (DAO::getDAO("search_engine")->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
 			return '_back';
@@ -205,7 +205,6 @@ class Entities_IndexLogic extends Logic
 	 */
 	protected function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield = '') 
 	{
-
 		if (!$fieldValue) return;
 		$fieldValue = preg_replace ("/<[^>]*>/", " ", $fieldValue);//HTML tags cleaning
 		$fieldValue = $this->_decode_html_entities ($fieldValue); //HTML Entities decode
@@ -286,18 +285,18 @@ class Entities_IndexLogic extends Logic
 	protected function _indexEntitiesRelations ($id, $nature, $daoIndex) 
 	{
 		global $db;
-		if (!$id)return false;
+		if (!$id) return false;
 		if ($nature != 'E' && $nature != 'G') return false;
 		if ($nature == 'G') { $table1 = 'persons'; $table2 = 'person';}
 		if ($nature == 'E') { $table1 = 'entries'; $table2 = 'entry';}
 
 		//build query to select the right fields to index for the entry or the person
 		$sql = "SELECT DISTINCT tf.name, tf.weight, e.id, t.class
-						FROM #_TP_relations as r,#_TP_$table1 as e, #_TP_".$table2."types as t
-						INNER JOIN #_TP_tablefields as tf ON tf.class=t.class
-						WHERE r.id2= e.id AND r.id1='$id' AND r.nature='$nature' 
-						AND t.id=e.idtype
-						AND tf.weight > 0";
+				FROM #_TP_relations as r,#_TP_$table1 as e, #_TP_".$table2."types as t
+				INNER JOIN #_TP_tablefields as tf ON tf.class=t.class
+				WHERE r.id2= e.id AND r.id1='$id' AND r.nature='$nature' 
+				AND t.id=e.idtype
+				AND tf.weight > 0";
 		$result = $db->execute (lq ($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$arr = array();
 		while (!$result->EOF) {

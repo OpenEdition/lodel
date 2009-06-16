@@ -77,7 +77,8 @@ class TextsLogic extends Logic
 		*/
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		if (!empty($context['id'])) {
+		$id = @$context['id'];
+		if ($id) {
 			// normal edit
 			$ret = parent::editAction($context,$error);
             		clearcache();
@@ -98,7 +99,7 @@ class TextsLogic extends Logic
 				$dao->instantiateObject($vo);
 				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
 				$vo->id       = $id;
-				$status = (int)$context['status'][$id];
+				$status = (int)@$context['status'][$id];
 				$this->_isAuthorizedStatus($status);
 				$vo->status   = $status;
 				if (!$vo->status) {
@@ -123,12 +124,12 @@ class TextsLogic extends Logic
 			}
 			$vo = $dao->createObject();
 			$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $context['contents']);
-			$status = (int)$context['status'];
+			$status = (int)@$context['status'];
 			$this->_isAuthorizedStatus($status);
 			$vo->status   = $status;
-			$vo->lang = $context['lang'];
-			$vo->name = strtolower($context['name']);
-			$vo->textgroup = $context['textgroup'];
+			$vo->lang = @$context['lang'];
+			$vo->name = strtolower(@$context['name']);
+			$vo->textgroup = @$context['textgroup'];
 			if (!$vo->status) {
 				$vo->status=-1;
 			}
@@ -149,7 +150,8 @@ class TextsLogic extends Logic
 	public function createTexts($name, $textgroup = '')
 	{
 		global $db;
-
+		$name = addslashes($name);
+		$textgroup = addslashes($textgroup);
 		if ($textgroup == '' && is_numeric($name)) {
 			$criteria = "#_TP_texts.id='". $name. "'";
 		} else {

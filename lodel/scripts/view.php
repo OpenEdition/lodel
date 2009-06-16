@@ -345,9 +345,56 @@ class View
 	private function _print()
 	{
 		C::trigger('postview');
-		@ob_start('ob_gzhandler'); // try to gzip
-		echo self::$page;
-		@ob_end_flush();
+		// try to gzip the page
+		if(extension_loaded('zlib') && (!ini_get('zlib.output_compression') || !ini_set('zlib.output_compression', 1)))
+		{
+			if(function_exists('ob_gzhandler') && @ob_start('ob_gzhandler'))
+			{
+				@ob_implicit_flush(0);
+				echo self::$page;
+				@ob_end_flush();
+			}
+			else
+			{
+				if(headers_sent())
+				{
+					$acceptEncoding = false;
+				} 
+				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) 
+				{
+					$acceptEncoding = 'x-gzip';
+				} 
+				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false) 
+				{
+					$acceptEncoding = 'gzip';
+				} 
+				else 
+				{
+					$acceptEncoding = false;
+				}
+				
+				if ($acceptEncoding) 
+				{
+					header('Content-Encoding: ' . $acceptEncoding);
+					echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+					$size = strlen(self::$page);
+					$content = gzcompress(self::$page, 6);
+					$content = substr($content, 0, $size);
+					echo $content;
+					flush();
+				}
+				else
+				{
+					echo self::$page;
+					flush;
+				}
+			}
+		}
+		else
+		{
+			echo self::$page;
+			flush();
+		}
 		self::$page = null; // memory
 	}
 

@@ -99,9 +99,9 @@ class EntitiesLogic extends Logic
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		global $db;
-		$id  = $context['id'];
+		$id  = @$context['id'];
 		$vo  = $this->_getMainTableDAO()->getById($id,"idparent");
-		$this->_changeRank($id,$context['dir'], "status<64 AND idparent='". $vo->idparent. "'");
+		$this->_changeRank($id,@$context['dir'], "status<64 AND idparent='". $vo->idparent. "'");
 		update();
 		return '_back';
 	}
@@ -133,7 +133,7 @@ class EntitiesLogic extends Logic
 			return "_back";
 		}
 		$context['id'] = array();
-        	$entities = array_keys($context['entity']);
+        	$entities = array_keys(@$context['entity']);
 		foreach($entities as $id) {
 			$context['id'][] = (int)$id;
 		}
@@ -163,7 +163,7 @@ class EntitiesLogic extends Logic
 		// get the entities to modify and ancillary information
 		if (!rightonentity("delete",$context)) trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		$ids = $classes = $softprotectedids = $lockedids = null;
-		$this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
+		$this->_getEntityHierarchy(@$context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
 		if (!$ids) {
 			return '_back';
 		}
@@ -218,7 +218,7 @@ class EntitiesLogic extends Logic
 	public function publishAction (&$context, &$error) 
 	{
 		global $db;
-		$status = (int)$context['status'];
+		$status = @$context['status'];
 		$this->_isAuthorizedStatus($status);
 		if ($status == 0) {
 			trigger_error("error in publishAction", E_USER_ERROR);
@@ -229,7 +229,7 @@ class EntitiesLogic extends Logic
 
 		// get the entities to modify and ancillary information
 		$access = abs ($status) >= 32 ? 'protect' : 'write';
-		$this->_getEntityHierarchy($context['id'], $access,"#_TP_entities.status>-8", $ids, $classes, $softprotectedids, $lockedids);
+		$this->_getEntityHierarchy(@$context['id'], $access,"#_TP_entities.status>-8", $ids, $classes, $softprotectedids, $lockedids);
 
 		if (!$ids) {
 			return '_back';
@@ -240,7 +240,7 @@ class EntitiesLogic extends Logic
 		}
 
 		// depublish protected entity ? need confirmation.
-		if ((!isset($context['confirm']) || !$context['confirm']) && $status < 0 && $softprotectedids) {
+		if (empty($context['confirm']) && $status < 0 && $softprotectedids) {
 			$context['softprotectedentities'] = $softprotectedids;
 			$this->define_loop_protectedentities();
 			return 'unpublish_confirm';
@@ -282,6 +282,7 @@ class EntitiesLogic extends Logic
 		$idrelation = array();
 		while(!$result->EOF) {
 			$nature = $result->fields['nature'];
+			if(!isset($idrelation[$nature])) $idrelation[$nature] = array();
 			$idrelation[$nature][] = $result->fields['idrelation'];
 			$result->MoveNext();
 		}
@@ -343,6 +344,7 @@ class EntitiesLogic extends Logic
 		$result = $db->execute(lq("SELECT id2,nature FROM #_TP_relations WHERE nature IN ('E','G') AND ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array();
 		while (!$result->EOF) {
+			if(!isset($ids[$result->fields['nature']]) $ids[$result->fields['nature']] = array();
 			$ids[$result->fields['nature']][$result->fields['id2']] = true;
 			$result->MoveNext();
 		}
@@ -436,6 +438,7 @@ class EntitiesLogic extends Logic
 	
 	protected function define_loop_protectedentities()
 	{
+		if(function_exists('loop_protectedentities')) return;
 		function loop_protectedentities($context,$funcname) {
 			global $db;
 			$result=$db->execute(lq("SELECT * FROM #_TP_entities WHERE id ".sql_in_array($context['softprotectedentities']))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

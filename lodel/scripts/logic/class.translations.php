@@ -71,7 +71,8 @@ class TranslationsLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("translations");
 	}
 
@@ -131,20 +132,22 @@ class TranslationsLogic extends Logic {
 	public function listAction(&$context,&$errro) 
 	{
 		$this->_setTextGroups($context);
-
+		if(!function_exists('loop_textgroups')) {
 		function loop_textgroups(&$context,$funcname)
 		{
+			$GLOBALS['translations_textgroups'][$context['textgroups']] = @$GLOBALS['translations_textgroups'][$context['textgroups']];
 			foreach($GLOBALS['translations_textgroups'][$context['textgroups']] as $textgroup) {
 				$localcontext=$context;
 				$localcontext['textgroup']=$textgroup;
 				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
-
+		}
+		if(!function_exists('loop_alltexts')) {
 		function loop_alltexts(&$context,$funcname)
 		{
 			global $db,$distincttexts,$alltexts_cache;
-
+			$context['textgroup'] = @$context['textgroup'];
 			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' AND lang IN (SELECT distinct(lang) FROM #_TP_translations) ORDER BY lang, name")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 			$distincttexts=array();
@@ -153,7 +156,7 @@ class TranslationsLogic extends Logic {
 				$name=$result->fields['name'];	
 				if ($name && $lang) {
 					$alltexts_cache[$lang][$name]=$result->fields;
-					if ($lang==C::get('lang')) {
+					if ($lang==C::get('sitelang')) {
 						$distincttexts[$name]=$result->fields['contents'];
 					} elseif (!isset($distincttexts[$name])) {
 						$distincttexts[$name]=true;
@@ -168,15 +171,19 @@ class TranslationsLogic extends Logic {
 				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
-
+		}
+		if(!function_exists('loop_lang_and_text')) {
 		function loop_lang_and_text(&$context,$funcname)
 		{
 			global $alltexts_cache, $distincttexts, $db;
 			$logic = null;
+			$context['name'] = @$context['name'];
+			$context['textgroups'] = @$context['textgroups'];
 			foreach(array_keys($alltexts_cache) as $lang) {
 				$row=isset($alltexts_cache[$lang][$context['name']]) ? $alltexts_cache[$lang][$context['name']] : null;
 				$localcontext=$row ? array_merge($context,$row) : $context;
-				if(0 === (int)$localcontext['id']) { // entry doesn't exist in this lang
+				$localcontext['id'] = (int)@$localcontext['id'];
+				if(0 === $localcontext['id']) { // entry doesn't exist in this lang
 					if(!isset($logic)) $logic = Logic::getLogic('texts');
 					$logic->createTexts($localcontext['name'], $localcontext['textgroups']);
 					
@@ -187,7 +194,7 @@ class TranslationsLogic extends Logic {
 						$l=strtolower($result->fields['lang']);
 						if ($l) {
 							$alltexts_cache[$l][$localcontext['name']]=$result->fields;
-							if ($l==C::get('lang')) {
+							if ($l==C::get('sitelang')) {
 								$distincttexts[$localcontext['name']]=$result->fields['contents'];
 							} elseif (!isset($distincttexts[$localcontext['name']])) {
 								$distincttexts[$localcontext['name']]=true;
@@ -201,7 +208,7 @@ class TranslationsLogic extends Logic {
 				call_user_func("code_do_".$funcname,$localcontext);
 			}
 		}
-
+		}
 		return "_ok";
 	}
 
@@ -211,7 +218,8 @@ class TranslationsLogic extends Logic {
 	public function editAction(&$context,&$error,$clean=false)
 	{
 		$this->_setTextGroups($context);
-		if (empty($context['id'])) $context['modificationdate']=date("Y-m-d");
+		$context['id'] = @$context['id'];
+		if (!$context['id']) $context['modificationdate']=date("Y-m-d");
 
 		$ret = parent::editAction($context,$error);
         	clearcache();
@@ -223,10 +231,10 @@ class TranslationsLogic extends Logic {
 		*/
 	public function exportAction(&$context,&$error)
 	{
-		if(!function_exists('validfield'))
-			include("validfunc.php");
+		function_exists('validfield') || include "validfunc.php";
 
-		$lang=$context['lang'];
+		$lang=@$context['lang'];
+		$context['textgroups'] = @$context['textgroups'];
 		if ($lang!="all" && !validfield($lang,"lang")) trigger_error("ERROR: invalid lang", E_USER_ERROR);
 		
 		// lock the database
@@ -234,8 +242,7 @@ class TranslationsLogic extends Logic {
 
 		$tmpfile=tempnam(tmpdir(),"lodeltranslation");
 
-		if(!class_exists('XMLDB_Translations', false))
-			include("translationfunc.php");
+		class_exists('XMLDB_Translations', false) || include "translationfunc.php";
 
 		$this->_setTextGroups($context);
 		$xmldb=new XMLDB_Translations($context['textgroups'],$lang);
@@ -260,13 +267,12 @@ class TranslationsLogic extends Logic {
 		$this->_setTextGroups($context);
 		$lang="";
 
-		if(!function_exists('extract_import'))
-			include("importfunc.php");
+		function_exists('extract_import') || include "importfunc.php";
 		$file=extract_import("translation",$context,"xml");
 
 		if ($file) {
-			if(!class_exists('XMLDB_Translations', false))
-				include("translationfunc.php");
+			$context['textgroups'] = @$context['textgroups'];
+			class_exists('XMLDB_Translations', false) || include("translationfunc.php");
 			$xmldb=new XMLDB_Translations($context['textgroups']);
 			
 			$xmldb->readFromFile($file);
@@ -275,7 +281,8 @@ class TranslationsLogic extends Logic {
 			return "_back";
 		}
 
-
+		if(!function_exists('loop_files'))
+		{
 		function loop_files(&$context,$funcname)
 		{
 			global $fileregexp,$importdirs;
@@ -294,9 +301,12 @@ class TranslationsLogic extends Logic {
 				}
 			}
 		}
-
+		}
+		if(!function_exists('loop_translation'))
+		{
 		function loop_translation(&$context,$funcname)
 		{
+			$context['fullfilename'] = @$context['fullfilename'];
 			$arr=preg_split("/<\/?row>/",file_get_contents($context['fullfilename']));
 
 			$langs=array();
@@ -306,9 +316,10 @@ class TranslationsLogic extends Logic {
 					if (preg_match("/<$tag>(.*)<\/$tag>/",$arr[$i],$result)) 
 						$localcontext[$tag]=trim(strip_tags($result[1]));
 				}
-				if (!$localcontext['lang']) continue;
+				if (empty($localcontext['lang'])) continue;
 				call_user_func("code_do_$funcname",$localcontext);
 			}
+		}
 		}
 		return "import_translations";
 	}
@@ -325,7 +336,7 @@ class TranslationsLogic extends Logic {
 
 	protected function _setTextGroups(&$context) 
 	{
-		$context['textgroups']=C::get('site', 'cfg') ? "site" : "interface";
+		$context['textgroups'] = C::get('site', 'cfg') ? "site" : "interface";
 	}
 
 	/**
@@ -411,8 +422,9 @@ class TranslationsLogic extends Logic {
 	*/
 	protected function _prepareDelete($dao, &$context)
 	{
+		$id = @$context['id'];
 		// gather information for the following
-		$this->vo=$dao->getById($context['id']);
+		$this->vo=$dao->getById($id);
 		if (!$this->vo) trigger_error("ERROR: internal error in Translations::deleteAction", E_USER_ERROR);
 	}
 
@@ -450,15 +462,16 @@ class TranslationsLogic extends Logic {
 
 /*-----------------------------------*/
 /* function pipe                     */
-
-function textgroupswhere($textgroups)
-
+if(!function_exists('textgroupswhere'))
 {
-	if (!$textgroups) trigger_error("ERROR: which textgroups ?", E_USER_ERROR);
-	if ($GLOBALS['translations_textgroups'][$textgroups]) {
-		return "textgroup IN ('".join("','",$GLOBALS['translations_textgroups'][$textgroups])."')";
-	} else {
-		trigger_error("ERROR: unkown textgroup", E_USER_ERROR);
+	function textgroupswhere($textgroups)
+	{
+		if (!$textgroups) trigger_error("ERROR: which textgroups ?", E_USER_ERROR);
+		if (!empty($GLOBALS['translations_textgroups'][$textgroups])) {
+			return "textgroup IN ('".join("','",$GLOBALS['translations_textgroups'][$textgroups])."')";
+		} else {
+			trigger_error("ERROR: unkown textgroup", E_USER_ERROR);
+		}
 	}
 }
 ?>

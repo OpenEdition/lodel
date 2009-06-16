@@ -162,6 +162,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function listAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 		$plugins = array();
 		
@@ -476,12 +478,14 @@ class MainPluginsLogic extends Logic
 	 */
 	public function editAction(&$context,&$error, $clean=false)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			return '_location:index.php?lo='.$this->maintable.'&do=list';
 		}
 
-		if(!isset($context['edit']) || !$context['edit'])
+		if(empty($context['edit']))
 			return '_error';
 
 		$err = null;
@@ -495,6 +499,7 @@ class MainPluginsLogic extends Logic
 		$dao = $this->_getMainTableDao();
 
 		$new = false;
+		$context['id'] = (int)@$context['id'];
 		if(!$context['id']) // never enabled
 		{
 			$new = true;
@@ -525,6 +530,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function activateAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			trigger_error('You need to specify the name of the plugin to activate', E_USER_ERROR);
@@ -556,6 +563,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function desactivateAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			trigger_error('You need to specify the name of the plugin to activate', E_USER_ERROR);
@@ -587,6 +596,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function enableallAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 
 		if(empty($context['name']))
@@ -632,6 +643,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function disableallAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 
 		if(empty($context['name']))
@@ -675,7 +688,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function validateFields(&$context, &$error) 
 	{
-		if(!function_exists('validfield')) include 'validfunc.php';
+		function_exists('validfield') || include 'validfunc.php';
 
 		$filemask = 0777 & octdec(C::get('filemask', 'cfg'));
 
@@ -750,28 +763,36 @@ class MainPluginsLogic extends Logic
 			makeSelectLangs($var);
 			return;
 		}
-
-		foreach($context['plugin']['config'] as $name=>$value)
+		
+		if(!empty($context['plugin']['config']))
 		{
-			if($name != $context['varname']) continue;
-			$current = $value;
-			break;	
+			foreach($context['plugin']['config'] as $name=>$value)
+			{
+				if($name != $context['varname']) continue;
+				$current = $value;
+				break;	
+			}
 		}
 		if(!isset($current)) trigger_error('Invalid parameter '.$varname, E_USER_ERROR);
 
-		foreach($current['allowedValues'] as $k=>$v)
+		if(!empty($current['allowedValues']))
 		{
-			$current['allowedValues'][$v] = $v;
-			unset($current['allowedValues'][$k]);
+			foreach($current['allowedValues'] as $k=>$v)
+			{
+				$current['allowedValues'][$v] = $v;
+				unset($current['allowedValues'][$k]);
+			}
 		}
+
+		$current['defaultValue'] = @$current['defaultValue'];
+
 		// if not defined get the default value
 		$value = isset($current['value']) ? $current['value'] : $current['defaultValue'];
 
 		switch($context['varname'])
 		{
 			case 'userrights':
-				if(!function_exists('makeSelectUserRights'))
-					include 'commonselect.php';
+				function_exists('makeSelectUserRights') || include 'commonselect.php';
 				makeSelectUserRights($value, true, $current['allowedValues']);
 			break;
 			default:

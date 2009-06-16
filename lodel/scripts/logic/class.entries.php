@@ -83,7 +83,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function viewAction (&$context, &$error) 
 	{
-		if (empty($context['id'])) $context['status']=32; //why ?
+		if (empty($context['id'])) $context['status']=32; //why ? dont't know !
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
 	}
@@ -99,7 +99,8 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->find('id=' . $context['id'], 'status,id');
+		$id = (int)@$context['id'];
+		$vo  = $dao->find('id=' . $id, 'status,id');
 		if (!$vo) {
 			trigger_error("ERROR: interface error in EntriesLogic::publishAction ", E_USER_ERROR);
 		}

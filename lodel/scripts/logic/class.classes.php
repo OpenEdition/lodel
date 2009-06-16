@@ -140,7 +140,7 @@ class ClassesLogic extends Logic
 	protected function _prepareEdit ($dao, &$context)
 	{
 		// gather information for the following
-		if ($context['id']) {
+		if (!empty($context['id'])) {
 			$this->oldvo = $dao->getById ($context['id']);
 			if (!$this->oldvo) {
 				trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
@@ -169,15 +169,14 @@ class ClassesLogic extends Logic
 				return '_error';
 			}
 		}
-		if(!function_exists('reservedByLodel'))
-			include 'fieldfunc.php';
+		function_exists('reservedByLodel') || include 'fieldfunc.php';
 		if(reservedByLodel($context['class'])) {
 			$error['class'] = 'reservedsql';
 			return '_error';
 		}
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = $context['id'];
+		$id = @$context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
@@ -186,8 +185,8 @@ class ClassesLogic extends Logic
 		} else {
 			$vo = $dao->createObject();
 		}
-		if ($dao->rights['protect']) {
-			$vo->protect = isset($context['protected']) && $context['protected'] ? 1 : 0;
+		if (!empty($dao->rights['protect'])) {
+			$vo->protect = !empty($context['protected']) ? 1 : 0;
 		}
 		// put the context into 
 		$this->_populateObject($vo, $context);
@@ -261,7 +260,7 @@ class ClassesLogic extends Logic
 	protected function _prepareDelete ($dao, &$context) 
 	{
 		// gather information for the following
-		$this->vo = $dao->getById ($context['id']);
+		$this->vo = $dao->getById (@$context['id']);
 		if (!$this->vo) {
 			trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		}

@@ -63,7 +63,8 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 
@@ -82,7 +83,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	public function makeSelect(&$context,$var)
 	{
 		switch($var) {
-		case "name" :       
+		case "name" :
 			$dao=DAO::getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
 			$vos=$dao->findMany("status>0","rank,title","type,title");
 			$arr = array();

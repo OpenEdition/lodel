@@ -74,7 +74,8 @@ class UserOptionGroupsLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
 	}
 
@@ -89,7 +90,10 @@ class UserOptionGroupsLogic extends Logic {
 		function loop_useroptions($context,$funcname)
 		{
 			global $db;
-			$result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result=$db->execute(lq("SELECT * FROM #_TP_options 
+						WHERE status > 0 AND idgroup='".$context['id']."' 
+						ORDER BY rank,name ")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result->EOF) {
 				$localcontext=array_merge($context,$result->fields);
 				$name=$result->fields['name'];
@@ -106,6 +110,7 @@ class UserOptionGroupsLogic extends Logic {
 	{
 		// get the dao for working with the object
 		$dao=DAO::getDAO("options");
+		$context['id'] = (int)@$context['id'];
 		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
 		
 		function_exists('validfield') || include 'validfunc.php';
