@@ -62,7 +62,7 @@ if (is_readable(C::get('home', 'cfg') . 'loops_local.php'))
 function loop_parentsentities(& $context, $funcname, $critere = "")
 {
 	global $db;
-	$id = (int)$context['id'];
+	$id = (int)@$context['id'];
 	if (!$id)
 		return;
 	$result = $db->execute(lq("SELECT * 
@@ -132,13 +132,15 @@ function loop_paragraphs($context, $funcname, $arguments)
 			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
-	preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is", $arguments['text'], $results, PREG_SET_ORDER);
-	$count = 0;
-	foreach ($results as $result)	{
-		$localcontext = $context;
-		$localcontext['count'] = (++ $count);
-		$localcontext['paragraph'] = $result[0];
-		call_user_func("code_do_$funcname", $localcontext);
+	if(preg_match_all("/<p\b[^>]*>(.*?)<\/p>/is", $arguments['text'], $results, PREG_SET_ORDER))
+	{
+		$count = 0;
+		foreach ($results as $result)	{
+			$localcontext = $context;
+			$localcontext['count'] = (++ $count);
+			$localcontext['paragraph'] = $result[0];
+			call_user_func("code_do_$funcname", $localcontext);
+		}
 	}
 }
 
@@ -149,7 +151,8 @@ function loop_extract_images($context, $funcname, $arguments)
 			trigger_error("ERROR: the loop \"paragraph\" requires a TEXT attribut", E_USER_ERROR);
 		return;
 	}
-	if ($arguments['limit']) {
+	$end = 0;
+	if (isset($arguments['limit'])) {
 		list ($start, $length) = explode(",", $arguments['limit']);
 		$end = $start + $length;
 	} else {
@@ -286,10 +289,10 @@ function loop_next($context, $funcname, $arguments)
  */
 function loop_rss($context, $funcname, $arguments)
 {
-	if(!defined('MAGPIE_CACHE_ON')) define("MAGPIE_CACHE_ON", TRUE);
-	if(!defined('MAGPIE_CACHE_DIR')) define("MAGPIE_CACHE_DIR", "./CACHE");
-	if(!defined('DIRECTORY_SEPARATOR')) define("DIRECTORY_SEPARATOR", "/");
-	if(!defined('MAGPIE_OUTPUT_ENCODING')) define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
+	defined('MAGPIE_CACHE_ON') || define("MAGPIE_CACHE_ON", TRUE);
+	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", "./CACHE");
+	defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
+	defined('MAGPIE_OUTPUT_ENCODING') || define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {
 		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);
@@ -300,8 +303,7 @@ function loop_rss($context, $funcname, $arguments)
 			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
-	if(!function_exists('fetch_rss'))
-		include "magpierss/rss_fetch.inc";
+	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
 	$rss = fetch_rss($arguments['url'], isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
 		if (C::get('visitor', 'lodeluser')) {
@@ -428,11 +430,11 @@ function loop_page_scale(& $context, $funcname, $arguments)
 function _constructPages(& $context, $funcname, $arguments)
 {
 	//get current offset and construct url
-	$arguments['limit'] = $context['limitinfo'];
-	if (!$context['limitinfo'])
+	$arguments['limit'] = @$context['limitinfo'];
+	if (!$arguments['limit'])
 		return;
 
-	$offsetname = $context['offsetname'];
+	$offsetname = @$context['offsetname'];
 	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
 	$cleanquery = preg_replace(array("/(^|&)".$offsetname."=\d+/","/(^|&)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
@@ -441,6 +443,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	if ($cleanquery)
 		$currenturl .= $cleanquery."&";
 
+	$context['nbresults'] = @$context['nbresults'];
 	//construct next url
 	if ($context['nbresults'] > ($currentoffset + $arguments['limit']))
 		$context['nexturl'] = $currenturl.$offsetname."=". ($currentoffset + $arguments['limit']);
@@ -590,12 +593,12 @@ function loop_errors(& $context, $funcname, $arguments)
 
 function loop_fielderror(& $context, $funcname, $arguments)
 {
-	if (!$arguments['field'])
+	if (empty($arguments['field']))
 		trigger_error("ERROR: loop fielderror require a field attribute", E_USER_ERROR);
 	
 	if (isset($context['error'][$arguments['field']])) {
-        $localcontext = $context;
-        $localcontext['error'] = $context['error'][$arguments['field']];
+        	$localcontext = $context;
+        	$localcontext['error'] = $context['error'][$arguments['field']];
 		call_user_func("code_do_$funcname", $localcontext);
 	}
 }
@@ -606,7 +609,9 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 	// and if no editionparams call alter
 	if (!isset ($context['editionparams']))
 		trigger_error("ERROR: internal error in loop_field_selection_values", E_USER_ERROR);
+	
 	$arr = explode(",", $context['editionparams']);
+	$context['value'] = @$context['value'];
 	$choosenvalues = explode(",", $context['value']); //if field contains more than one value (comma separated)
 	foreach ($arr as $value) {
 		$value = trim($value);
@@ -630,7 +635,7 @@ function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
 
-	if((!is_array($arguments['array']) || empty($arguments['array']))) {
+	if(empty($arguments['array']) || !is_array($arguments['array'])) {
 		if(function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $localcontext);
 		return;
@@ -651,8 +656,6 @@ function loop_foreach(&$context, $funcname, $arguments)
 	if (function_exists("code_after_$funcname")) {
 		call_user_func("code_after_$funcname", $context);
 	}
-
-	
 }
 
 /**
@@ -671,10 +674,12 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 {
 	global $db;
 	static $compatible_types;
-	if(!function_exists('checkTypesCompatibility'))
-		include 'entitiesfunc.php';
+	function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 	if(!$compatible_types) {
 		//selectionne tous les types de la classe
+		$context['type']['class'] = @$context['type']['class'];
+		$context['idparent'] = @$context['idparent'];
+		$context['id'] = @$context['id'];
 		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
 		$compatible_types = array();
 		$types = $db->getArray($sql);
@@ -717,6 +722,7 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 function childCanBeInThisType($type,$id)
 {
 	global $db;
+	$id = (int)$id;
 	if($id == 0) { //si id = 0 cela veut dire qu'on est en création d'entité
 		return true;
 	}
@@ -810,7 +816,7 @@ function loop_classtypes($context, $funcname)
         $localcontext = $context;
         $localcontext['classtype'] = $classtype;
         $localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
-            call_user_func("code_do_$funcname", $localcontext);
+	call_user_func("code_do_$funcname", $localcontext);
     }
 }
 

@@ -362,8 +362,7 @@ function vignette($text, $width)
 	if($widt && $widt <= $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
-	if(!function_exists('resize_image'))
-		include("images.php");
+	function_exists('resize_image') || include("images.php");
 	if (!resize_image($width, $text, $vignettefile, "+"))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
@@ -620,7 +619,8 @@ function format($text, $creationmethod = "", $creationinfo = "")
 
 function isrelative($lien)
 {
-	$test = parse_url($lien);
+	$test = @parse_url($lien);
+	if(!$test) return false;
 	if ($test["scheme"])
 		return false;
 	return !preg_match("/^\//", $test["path"]);
@@ -654,8 +654,6 @@ function strip_tags_keepnotes($text, $keeptags = "")
 
 function humanlang($text)
 {
-	if(!function_exists('makeSelectLang'))
-		include ("lang.php");
 	$text = strtoupper($text);
 	return (isset($GLOBALS['languages'][$text]) ? $GLOBALS['languages'][$text] : '');
 }
@@ -684,7 +682,6 @@ function today_with_hour()
 
 function hideifearlier($text, $date)
 {
-
 	#  echo "date:$date<br />";
 	if ($date && ($date <= date("Y-m-d")))
 		return $text;
@@ -700,8 +697,8 @@ function imagewidth($image)
 	if ($image)	{
 		$result = @getImageSize($image);
 		return isset($result[0]) ? $result[0] : 0;
-	}	else
-		return 0;
+	}
+	return 0;
 }
 
 /**
@@ -712,9 +709,9 @@ function imageheight($image)
 {
 	if ($image)	{
 		$result = @getImageSize($image);
-        return isset($result[1]) ? $result[1] : 0;
-	}	else
-		return 0;
+        	return isset($result[1]) ? $result[1] : 0;
+	}
+	return 0;
 }
 
 /**
@@ -759,8 +756,7 @@ function wiki($text)
 	$parserOutput = $parser->internalParse($text);
 	print_r($parserOutput);
 	*/
-	if(!class_exists('WikiRenderer', false))
-		include ('wikirenderer/WikiRenderer.lib.php');
+	class_exists('WikiRenderer', false) || include ('wikirenderer/WikiRenderer.lib.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
@@ -1267,6 +1263,7 @@ function HTML2XML($str, $reverse=false){
 
 function getParentByType($id,$type, $return=false){
 	global $db;
+	$id = (int)$id;
         $q = "SELECT idparent FROM {$GLOBALS['tp']}entities WHERE id = '$id'";
 	$idparent = $db->GetOne($q);
         if($idparent){
@@ -1297,7 +1294,7 @@ function getParentByType($id,$type, $return=false){
  */
 function cryptEmails($texte, $codeInclude = FALSE)
 {
-	if(TRUE === $codeInclude) {
+	if($codeInclude) {
 		$javascript = "<script type=\"text/javascript\">
 				function recomposeMail(obj, region, nom, domaine)
 				{
@@ -1309,31 +1306,32 @@ function cryptEmails($texte, $codeInclude = FALSE)
 	}
 
 	// on récupère tous les liens mail contenus dans le texte
-	preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches);
-
-	foreach($matches[0] as $k=>$mail) {
-		$name = explode("@", $matches[1][$k]);
-		$extension = substr(strrchr($name[1], '.'), 1);
-		$domain = substr($name[1], 0, strrpos($name[1], '.'));
-
-		// email dans le contenu du lien ?
-		if(array(0=>$matches[2][$k]) != ($content = explode("@", $matches[2][$k]))) { 
-			/* 
-			on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
-			résultat dans le code source de la page avec test@domaine.com : 
-			test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
-			*/
-			$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
-			$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
+	if(preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches))
+	{
+		foreach($matches[0] as $k=>$mail) {
+			$name = explode("@", $matches[1][$k]);
+			$extension = substr(strrchr($name[1], '.'), 1);
+			$domain = substr($name[1], 0, strrpos($name[1], '.'));
+	
+			// email dans le contenu du lien ?
+			if(array(0=>$matches[2][$k]) != ($content = explode("@", $matches[2][$k]))) { 
+				/* 
+				on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
+				résultat dans le code source de la page avec test@domaine.com : 
+				test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
+				*/
+				$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
+				$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
+			}
+	
+			// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
+			$newLink = "<a href=\"javascript:;\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
+			$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
+			$newLink .= "</a>";
+	
+			// on remplace
+			$texte = str_replace($mail, $newLink, $texte);
 		}
-
-		// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
-		$newLink = "<a href=\"javascript:;\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
-		$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
-		$newLink .= "</a>";
-
-		// on remplace
-		$texte = str_replace($mail, $newLink, $texte);
 	}
 	return $texte;
 }
@@ -1361,8 +1359,7 @@ function cleanCallNotes($text)
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
-	if(!class_exists('GeSHi', false))
-		include C::get('sharedir', 'cfg') . "/plugins/geshi/geshi.php";
+	class_exists('GeSHi', false) || include C::get('sharedir', 'cfg') . "/plugins/geshi/geshi.php";
 	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
@@ -1417,11 +1414,6 @@ function lempty($var)
 function lisset($var)
 {
     return isset($var);
-}
-
-function larray_pop(&$var)
-{
-	return $var ? array_pop($var) : array();
 }
 
 define('INC_TEXTFUNC', 1);

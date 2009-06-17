@@ -213,7 +213,7 @@ function myfilemtime($filename)
 
 function update()
 {
-	if(!function_exists('clearcache')) include 'cachefunc.php';
+	function_exists('clearcache') || include 'cachefunc.php';
 	clearcache(false);
 }
 
@@ -222,12 +222,12 @@ function addmeta(&$arr,$meta="")
 	foreach ($arr as $k=>$v) {
 		if (strpos($k,"meta_")===0) {
 			if (!isset($metaarr)) { // cree le hash des meta
-		$metaarr=$meta ? unserialize($meta) : array();
+				$metaarr=$meta ? unserialize($meta) : array();
 			}
 			if ($v) {
-	$metaarr[$k]=$v;
+				$metaarr[$k]=$v;
 			} else {
-	unset($metaarr[$k]);
+				unset($metaarr[$k]);
 			}
 		}
 	}
@@ -293,10 +293,9 @@ function getoption($name)
 		$optionsfile=SITEROOT."CACHE/options_cache.php";
 	
 		if (file_exists($optionsfile)) {
-			require($optionsfile);
+			include($optionsfile);
 		} else {
-			if(!function_exists('cacheOptionsInFile'))
-				include('optionfunc.php');
+			function_exists('cacheOptionsInFile') || include('optionfunc.php');
 			$options_cache = cacheOptionsInFile($optionsfile);
 		}
 	}
@@ -764,14 +763,15 @@ function myhtmlentities($text)
 function setrecord($table,$id,$set,$context=array())
 {
 	global $db;
-	
+	$id = (int)$id;
 	$table=lq("#_TP_").$table;
 	
 	if ($id>0) { // update
+		$update = "";
 		foreach($set as $k=>$v) {
 			if (is_numeric($k)) { // get it from context
-	$k=$v;
-	$v=$context[$k];
+				$k=$v;
+				$v=$context[$k];
 			}
 			if ($update) $update.=",";
 			$update.="$k=".$db->qstr($v);
@@ -786,8 +786,8 @@ function setrecord($table,$id,$set,$context=array())
 		}
 		foreach($set as $k=>$v) {
 			if (is_numeric($k)) { // get it from context
-	$k=$v;
-	$v=$context[$k];
+				$k=$v;
+				$v=$context[$k];
 			}
 			if ($insert) { $insert.=","; $values.=","; }
 			$insert.=$k;
@@ -795,7 +795,6 @@ function setrecord($table,$id,$set,$context=array())
 		}
 	
 		if ($insert) {
-	
 			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if (!$id) $id=$db->insert_id();
 		}
@@ -819,19 +818,19 @@ function setrecord($table,$id,$set,$context=array())
  * UTF8
  */
 function isUTF8($string)
-	{
-		// From http://w3.org/International/questions/qa-forms-utf-8.html
-		return preg_match('%^(?:
-			  [\x09\x0A\x0D\x20-\x7E]			# ASCII
-			| [\xC2-\xDF][\x80-\xBF]				# non-overlong 2-byte
-			| \xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
-			| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
-			| \xED[\x80-\x9F][\x80-\xBF]			# excluding surrogates
-			| \xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
-			| [\xF1-\xF3][\x80-\xBF]{3}			# planes 4-15
-			| \xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
-		)*$%xs', $string);
-	}
+{
+	// From http://w3.org/International/questions/qa-forms-utf-8.html
+	return preg_match('%^(?:
+			[\x09\x0A\x0D\x20-\x7E]			# ASCII
+		| [\xC2-\xDF][\x80-\xBF]				# non-overlong 2-byte
+		| \xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
+		| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
+		| \xED[\x80-\x9F][\x80-\xBF]			# excluding surrogates
+		| \xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
+		| [\xF1-\xF3][\x80-\xBF]{3}			# planes 4-15
+		| \xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
+	)*$%xs', $string);
+}
 
 /**
  * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
@@ -964,19 +963,22 @@ function makeSortKey($text)
 function rightonentity ($action, $context)
 {
 	if (C::get('admin', 'lodeluser')) return true;
-
-	if (!empty($context['id']) && (empty($context['usergroup']) || !isset($context['status']))) {
+	$context['idparent'] = @$context['idparent'];
+	$context['id'] = @$context['id'];
+	$context['status'] = @$context['status'];
+	$context['usergroup'] = @$context['usergroup'];
+	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
 		if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
 		$context = array_merge ($context, $row);
 	}
   	// groupright ?
-	if (empty($context['usergroup'])) {
+	if ($context['usergroup']) {
   		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
   		if (!$groupright) return false;
 	}
-
+	
 	// only admin can work at the base.
 	$editorok= C::get('editor', 'lodeluser') && $context['idparent'];
 	// redactor are ok, only if they own the document and it is not protected.
@@ -1081,6 +1083,7 @@ function get_dc_fields($id, $dcfield)
 {
 	$dcfield = 'dc.' . $dcfield;
 	global $db;
+	$id = (int)$id;
 	if ($result = $db->execute(lq("SELECT #_TP_entities.id, #_TP_types.class, #_TP_tablefields.name, #_TP_tablefields.g_name
 	FROM #_TP_entities, #_TP_types, #_TP_tablefields
   	WHERE (#_TP_tablefields.g_name = '$dcfield')
@@ -1091,23 +1094,23 @@ function get_dc_fields($id, $dcfield)
 
 	{
 		if ($row = $result->fields)
-			{
+		{
 			$id  = $row['id'];
 			$id_class_fields[$id]['class'] = $row['class'];
 			$id_class_fields[$id][$row['g_name']] = $row['name'];
 	
-			if ($id_class_fields[$id][$dcfield])
-				{
+			if (!empty($id_class_fields[$id][$dcfield]))
+			{
 				$class_table = "#_TP_".$id_class_fields[$id]['class'];
 				$field = $id_class_fields[$id][$dcfield];
 				$result =$db->getOne(lq("SELECT $field FROM $class_table WHERE identity = '$id'"));
 				if ($result===false) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					}
-  				}
+				}
+			}
   			return $result;
-			} 
-	else return false;
+		} 
+		else return false;
 	}
 else return false;
 }
@@ -1135,16 +1138,19 @@ function getgenericfields(&$context)
 {
 	global $db;
 	#print_r($context);
+	$context['class'] = @$context['class'];
 	$sql = "SELECT name,g_name, defaultvalue 
                FROM {$GLOBALS['tp']}tablefields 
                WHERE class='". $context['class']."' AND g_name!=''";
 	$row = $db->getArray($sql);
 	#print_r($row);
-    $fields = '';
+	$fields = '';
+	$generic = array();
 	foreach ($row as $elem) {
 		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
+	$context['id'] = (int)@$context['id'];
 	//Retrouve les valeurs de $fields
 	$sql = "SELECT ".substr($fields, 0, -1). ' 
                FROM '.$GLOBALS['tp'].$context['class']. " 
@@ -1154,6 +1160,7 @@ function getgenericfields(&$context)
 	foreach ($row as $key => $value) {
 		$values[$key] = $value;
 	}
+	if(!isset($context['generic'])) $context['generic'] = array();
 	//Contruit le tableau des champs génériques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
@@ -1172,7 +1179,7 @@ function getgenericfields(&$context)
                WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
-    $fields = array();
+    	$fields = array();
 	foreach ($row as $elem) {
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
@@ -1188,7 +1195,7 @@ function getgenericfields(&$context)
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
 		foreach($array as $row) {
-			if($cle = $generic[$row['type']]) {
+			if($cle = @$generic[$row['type']]) {
 				$cle = str_replace('.','_',$cle);
 				$context['generic'][$cle][] = $row['g_name'];
 			}
@@ -1245,8 +1252,8 @@ function getgenericfields(&$context)
  */
 function url_path($url)
 {
-	$url_parts = parse_url($url);
-	return $url_parts['path'];
+	$url_parts = @parse_url($url);
+	return $url_parts ? $url_parts['path'] : '';
 }
 
 function rewriteFilename($string) {
