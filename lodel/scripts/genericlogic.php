@@ -250,9 +250,9 @@ class GenericLogic extends Logic
 			}
 			$type = $field->type;
 			$name = $field->name;
-
+			$context['data'][$name] = @$context['data'][$name];
 			// check if the field is required or not, and rise an error if any problem.
-			$value = &@$context['data'][$name];
+			$value = &$context['data'][$name];
 
 			if (!is_array($value)) {
 				$value = trim($value);
