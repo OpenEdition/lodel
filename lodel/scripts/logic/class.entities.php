@@ -344,7 +344,7 @@ class EntitiesLogic extends Logic
 		$result = $db->execute(lq("SELECT id2,nature FROM #_TP_relations WHERE nature IN ('E','G') AND ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$ids = array();
 		while (!$result->EOF) {
-			if(!isset($ids[$result->fields['nature']]) $ids[$result->fields['nature']] = array();
+			if(!isset($ids[$result->fields['nature']])) $ids[$result->fields['nature']] = array();
 			$ids[$result->fields['nature']][$result->fields['id2']] = true;
 			$result->MoveNext();
 		}
