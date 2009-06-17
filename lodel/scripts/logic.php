@@ -410,7 +410,7 @@ class Logic
 		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
 		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
-		function_exists('validfield') || include "validfunc.php";
+		function_exists('validfield') || include "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
 			list($type, $condition) = $fielddescr;
