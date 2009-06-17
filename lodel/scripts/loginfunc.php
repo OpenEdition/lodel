@@ -51,7 +51,7 @@
  * @package lodel
  */
 
-defined('INC_CONNECT') include 'connect.php';
+defined('INC_CONNECT') || include 'connect.php';
 
 /**
  * Ouverture d'une session
@@ -99,7 +99,7 @@ function open_session($login, $name = null)
             VALUES ('$name','".C::get('id', 'lodeluser')."','".C::get('site', 'cfg')."',
                 '".addslashes(serialize(C::get(null, 'lodeluser')))."','$expire','$expire2', 
                 '".C::get('rights', 'lodeluser')."', ".$myurl.")")) 
-        or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			if ($result) break; // ok, it's working fine
 		}

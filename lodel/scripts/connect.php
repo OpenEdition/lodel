@@ -50,7 +50,8 @@
  * @version CVS:$Id:
  * @package lodel
  */
-if (!defined(INC_LODELCONFIG)) trigger_error("inc lodelconfig please", E_USER_ERROR); // security
+
+defined('INC_LODELCONFIG') || trigger_error("inc lodelconfig please", E_USER_ERROR); // security
 
 // compatibility 0.7
 defined("DATABASE") 	|| define("DATABASE", C::get('database', 'cfg'));
