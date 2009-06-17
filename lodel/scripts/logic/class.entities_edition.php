@@ -799,6 +799,7 @@ class Entities_EditionLogic extends GenericLogic
 					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields[$idfield];
+						if(!isset($ids[$id]['data']) || !is_array($ids[$id]['data'])) $ids[$id]['data'] = array();
 						$ids[$id]['data'] = array_merge((array)$ids[$id]['data'], $result2->fields);
 						$result2->MoveNext();
 					}
@@ -810,6 +811,7 @@ class Entities_EditionLogic extends GenericLogic
 					$result2 = $db->execute(lq("SELECT * FROM #_TP_entities_".$class." WHERE idrelation ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields['idrelation'];
+						if(!isset($ids[$id]['data']) || !is_array($ids[$id]['data'])) $ids[$id]['data'] = array();
 						$ids[$id]['data'] = array_merge((array)$ids[$id]['data'], $result2->fields);
 						$result2->MoveNext();
 					}
