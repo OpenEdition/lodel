@@ -94,20 +94,20 @@ try
 		do {
 			include 'loginfunc.php';
 			if (!check_auth($login, C::get('passwd'), C::get('site', 'cfg'))) {
-                C::set('error_login', 1);
+                		C::set('error_login', 1);
 				break;
 			}
 			
 			//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
 			if(!check_suspended()) {
-                C::set('suspended', 1);
+                		C::set('suspended', 1);
 				break;
 			}
 			else {
 				// ouvre une session
 				$err = open_session(C::get('login'));
 				if ((string)$err === 'error_opensession') {
-                    C::set($err, 1);
+                    			C::set($err, 1);
 					break;
 				}
 			}

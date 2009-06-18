@@ -86,9 +86,9 @@ class TranslationsLogic extends Logic {
 		if('site' === (string)$context['textgroups']) {
 			$tplDirs = SITEROOT.'tpl/';
 		} else { // interface
-			$tplDirs = array('./tpl/', '../tpl/', '../share-'.$context['version'].'/macros/', '../lodel-'.$context['version'].'/tpl/');
+			$tplDirs = array('./tpl/', '../tpl/', '../share-'.C::get('version', 'cfg').'/macros/', '../lodel-'.C::get('version', 'cfg').'/tpl/');
 		}
-		$lodelparser =& LodelParser::getParser();
+		$lodelparser = LodelParser::getParser();
 		$vars = array();
 		if(is_array($tplDirs)) {
 			foreach($tplDirs as $tplDir) {
@@ -233,7 +233,7 @@ class TranslationsLogic extends Logic {
 	{
 		function_exists('validfield') || include "validfunc.php";
 
-		$lang=@$context['lang'];
+		$lang= @$context['lang'];
 		$context['textgroups'] = @$context['textgroups'];
 		if ($lang!="all" && !validfield($lang,"lang")) trigger_error("ERROR: invalid lang", E_USER_ERROR);
 		

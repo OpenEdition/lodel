@@ -182,7 +182,7 @@ class DataLogic
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
 
-		function_exists('importFromZip') || include 'backupfunc.php';
+		function_exists('importFromZip') || include 'backupfunc.php';
 		$this->fileExtension = 'zip';
 	}
 

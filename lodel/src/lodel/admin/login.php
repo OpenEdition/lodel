@@ -69,7 +69,7 @@ try
                     C::set('error_login', 1);
                 } else {
                     //Vérifie que le site est bloqué si l'utilisateur est pas lodeladmin
-                    if(C::get('rights', 'lodeluser') < LEVEL_LODELADMIN) {
+                    if(C::get('rights', 'lodeluser') < LEVEL_ADMINLODEL) {
                         usemaindb();
                         C::set('site_bloque', $db->getOne(lq("SELECT 1 FROM #_MTP_sites WHERE name='".C::get('site', 'cfg')."' AND status >= 32")));
                         usecurrentdb();

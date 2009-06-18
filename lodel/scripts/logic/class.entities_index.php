@@ -266,6 +266,7 @@ class Entities_IndexLogic extends Logic
 				//little hack because oe ligature is not supported in ISO-latin!!
 				$token = strtolower (str_replace (array ("\305\223", "\305\222"), array ("oe", "OE"), $token));
 				$token = makeSortKey($token); // clean accents
+				if(!isset($indexs[$token])) $indexs[$token]=0;
 				$indexs[$token] ++; //simply count word number
 				/*require_once("class.stemmer.inc.php");
 				$stemmer = new Stemmer();
@@ -285,6 +286,7 @@ class Entities_IndexLogic extends Logic
 	protected function _indexEntitiesRelations ($id, $nature, $daoIndex) 
 	{
 		global $db;
+		$id = (int)$id;
 		if (!$id) return false;
 		if ($nature != 'E' && $nature != 'G') return false;
 		if ($nature == 'G') { $table1 = 'persons'; $table2 = 'person';}

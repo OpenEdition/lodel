@@ -346,7 +346,7 @@ class View
 	{
 		C::trigger('postview');
 		// try to gzip the page
-		if(extension_loaded('zlib') && (!ini_get('zlib.output_compression') || !ini_set('zlib.output_compression', 1)))
+		if(extension_loaded('zlib') && (!ini_get('zlib.output_compression') || !@ini_set('zlib.output_compression', 1)))
 		{
 			if(function_exists('ob_gzhandler') && @ob_start('ob_gzhandler'))
 			{
