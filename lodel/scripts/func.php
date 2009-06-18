@@ -1118,11 +1118,8 @@ else return false;
 // Tente de recupérer la liste des locales du système dans un tableau
 function list_system_locales()
 {
-	ob_start();
-	if(system('locale -a')) {
-		$str = ob_get_contents();
-		ob_end_clean();
-		return split("\n", trim($str));
+	if(exec('locale -a', $arr)) {
+		return $arr;
 	}else{
 		return FALSE;
 	}

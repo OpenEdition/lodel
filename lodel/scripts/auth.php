@@ -431,7 +431,7 @@ if (C::get('site', 'cfg'))
 		unset($options);
 	}
 }
-
+setLang();
 // tableaux des langues disponibles
 include 'lang.php';
 C::set('defaultlang', $GLOBALS['languages']);
