@@ -109,9 +109,9 @@
 	<IF COND="[#SITE]">
 		<li>
 			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')] AND [#LO] NE 'internal_messaging'">
-			 <a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a class="actif" href="[#SITEROOT]lodel/edition/index.php" title="[@COMMON.EDITION]">
 			<ELSE/>
-			 <a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a href="[#SITEROOT]lodel/edition/index.php" title="[@COMMON.EDITION]">
 			</IF>
 			[@COMMON.EDITION]
 			</a>
