@@ -590,7 +590,7 @@ class DataLogic
 			$tmpfile        = tmpdir(). '/model.sql';
 			$fh             = fopen($tmpfile, 'w');
 			$description    = '<model>
-			<lodelversion>'. $version. '</lodelversion>
+			<lodelversion>'. C::get('version', 'cfg'). '</lodelversion>
 			<date>'. date("Y-m-d"). '</date>
 			<title>
 			'. myhtmlentities(stripslashes($context['title'])). '

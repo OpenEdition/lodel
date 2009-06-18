@@ -493,12 +493,14 @@ class C
 
 	/**
 	 * Merge the passed array into the current context
-	 * Warning : we assume that the values have already been sanitized !!
+	 * Warning : by default, we assume that the values have already been sanitized !!
 	 *
-	 * @param array $datas
+	 * @param array $datas the datas to merge the context with
+	 * @param bool $clean do we have to clean the inputs ?
 	 */
-	static public function mergeC(array &$datas)
+	static public function mergeC(array &$datas, $clean=false)
 	{
+		if($clean) self::clean($datas);
 		return ((bool)(self::$_context = array_merge($datas, self::$_context)));
 	}
 

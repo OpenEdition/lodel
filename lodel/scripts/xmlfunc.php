@@ -192,7 +192,8 @@ function loop_fields_values(& $context, $funcname)
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
 	}
-
+	$fields = array();
+	$fieldvalued = array();
 	while (!$result->EOF) {
 		$row = $result->fields;
 		if ($row['type'] != 'persons' && $row['type'] != 'entries' && $row['type'] != 'entities') {
@@ -203,7 +204,7 @@ function loop_fields_values(& $context, $funcname)
 	}
 	$context['class'] = @$context['class'];
 	$context['identity'] = @$context['identity'];
-	if (is_array($fieldvalued) && count($fieldvalued) > 0) {
+	if (count($fieldvalued) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldvalued). " FROM #_TP_". $context['class']. " WHERE identity='". $context['identity']. "'");
 		$rowsvalued = $db->getRow($sql);
 	}

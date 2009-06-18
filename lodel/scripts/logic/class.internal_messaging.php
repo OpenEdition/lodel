@@ -414,6 +414,14 @@ class Internal_MessagingLogic extends Logic
 				$dbname = '`'.DATABASE.'_'.$m[1].'`.'.$GLOBALS['tableprefix'];
 				$recipient = $db->getRow("SELECT username, firstname, lastname from {$dbname}users WHERE id='{$idUser}'");
 			}
+			if(!$recipient)
+			{ // deleted user
+				$recipient = array('username'=>'', 'firstname'=>'', 'lastname'=>'');
+			}
+			if(!$sender)
+			{ // deleted user
+				$sender = array('username'=>'', 'firstname'=>'', 'lastname'=>'');
+			}
 			$context['data'] = $datas;
 			$context['data']['sender'] = $sender['username']. ( ($sender['firstname'] || $sender['lastname']) ? " ({$sender['firstname']} {$sender['lastname']})" : '');
 			$context['data']['recipient'] = $recipient['username']. ( ($recipient['firstname'] || $recipient['lastname']) ? " ({$recipient['firstname']} {$recipient['lastname']})" : '');
