@@ -116,24 +116,21 @@ class GenericLogic extends Logic
 	public function viewAction(&$context, &$error)
 	{
 		// define some loop functions
-		if(!function_exists('makeSelectLang'))
-			include 'lang.php';
 		if(!function_exists('loop_edition_fields')) {
 			function loop_edition_fields($context, $funcname)
 			{
 				global $db;
-				if(!function_exists('validfield'))
-					include 'validfunc.php';
-				if ($context['class']) {
+				function_exists('validfield') || include 'validfunc.php';
+				if (!empty($context['class'])) {
 					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
-				}	elseif ($context['type']['class'])	{
+				}	elseif (!empty($context['type']['class']))	{
 					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
 				}	else {
 					trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 				}
-				if(isset($context['classtype']))
+				if(!empty($context['classtype']))
 				{
 					if ($context['classtype'] == "persons") {
 						$criteria = "class='".$class."'";
@@ -144,12 +141,14 @@ class GenericLogic extends Logic
 					}   elseif ($context['classtype'] == "entries") {
 						$criteria = "class='".$class."'";
 					}   else {
+						$context['id'] = @$context['id'];
 						$criteria = "idgroup='". $context['id']."'";
 						$context['idgroup'] = $context['id'];
 					}
 				}
 				else
 				{
+					$context['id'] = @$context['id'];
 					$criteria = "idgroup='". $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
@@ -167,9 +166,12 @@ class GenericLogic extends Logic
 				while (!$result->EOF)	{
 					$localcontext = array_merge($context, $result->fields);
 					$name = $result->fields['name'];
-					$localcontext['value'] = ($result->fields['edition'] != "display" && isset($context['data'][$name]) 
-                                              && is_string($context['data'][$name])) ?
-                                            htmlspecialchars($context['data'][$name]) : '';
+					if(isset($context['data'][$name]))
+					{
+						$localcontext['value'] = ($result->fields['edition'] != "display" && is_string($context['data'][$name])) ?
+                                            htmlspecialchars($context['data'][$name]) : $context['data'][$name];
+					} else $localcontext['value'] = '';
+					
 
 					call_user_func("code_do_$funcname", $localcontext);
 					$result->MoveNext();
@@ -179,7 +181,7 @@ class GenericLogic extends Logic
 				}
 			} //function }}}
 		}
-		$id = (int)$context['id'];
+		$id = @$context['id'];
 		if ($id && !$error) {
 			$vo = $this->_getMainTableDAO()->getById($id);
 			if (!$vo) {
@@ -187,8 +189,8 @@ class GenericLogic extends Logic
 			}
 			$this->_populateContext($vo, $context);
 		}
-
-		$daotype = getDAO($this->_typetable);
+		$context['idtype'] = @$context['idtype'];
+		$daotype = DAO::getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -197,7 +199,7 @@ class GenericLogic extends Logic
         	$this->_populateContext($votype, $context['type']);
         	$ret = false;
 		if ($id && !$error)	{
-			$gvo = getGenericDAO($votype->class, $this->_idfield)->getById($id);
+			$gvo = DAO::getGenericDAO($votype->class, $this->_idfield)->getById($id);
 			if (!$gvo) {
 				trigger_error("ERROR: can't find object $id in the associated table. Please report this bug", E_USER_ERROR);
 			}
@@ -223,8 +225,7 @@ class GenericLogic extends Logic
 	public function validateFields(&$context, &$error)
 	{
 		// get the fields of class
-		if(!function_exists('validfield'))
-			include "validfunc.php";
+		function_exists('validfield') || include "validfunc.php";
 		if (!empty($context['class'])) {
 			validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
@@ -235,14 +236,13 @@ class GenericLogic extends Logic
 			trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 		}
 
-		$daotablefields = getDAO("tablefields");
+		$daotablefields = DAO::getDAO("tablefields");
 		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
 
 		// file to move once the document id is know.
 		$this->files_to_move = array ();
 		$this->_publicfields = array ();
-		if(!isset($GLOBALS['lodelfieldtypes']))
-			include "fieldfunc.php";
+		isset($GLOBALS['lodelfieldtypes']) || include "fieldfunc.php";
 
 		foreach ($fields as $field) {
 			if ($field->g_name) {
@@ -250,7 +250,7 @@ class GenericLogic extends Logic
 			}
 			$type = $field->type;
 			$name = $field->name;
-
+			$context['data'][$name] = @$context['data'][$name];
 			// check if the field is required or not, and rise an error if any problem.
 			$value = &$context['data'][$name];
 
@@ -341,9 +341,9 @@ class GenericLogic extends Logic
 				case 'entries' :
 					// get the type
 					if ($type == "persons") {
-						$dao = getDAO("persontypes");
+						$dao = DAO::getDAO("persontypes");
 					}	else	{
-						$dao = getDAO("entrytypes");
+						$dao = DAO::getDAO("entrytypes");
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
 					$idtype = $vo->id;
@@ -359,7 +359,7 @@ class GenericLogic extends Logic
 							$localcontext[] = array ("g_name" => $key);
 						}
 					}
-					$logic = getLogic($type); // the logic is used to validate
+					$logic = Logic::getLogic($type); // the logic is used to validate
 					if (!is_array($localcontext)) {
 						trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 					}
@@ -433,9 +433,10 @@ class GenericLogic extends Logic
 	 * @param array $files_to_move un tableau contenant les informations de tous les fichiers (nom et type)
 	 * @param object &$vo l'objet virtuel correspondant à l'objet passé par référence
 	 */
-	protected function _moveFiles($id, $files_to_move, &$vo)
+	protected function _moveFiles($id, $files_to_move, $vo)
 	{
-		foreach ($files_to_move as $file)	{
+		foreach ($files_to_move as $file)
+		{
 			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
@@ -488,14 +489,6 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Implémentation par défaut de _populateContextRelatedTables
-	 *
-	 */
-	protected function _populateContextRelatedTables($vo, $context)
-	{
-	}
-
-	/**
 	 * Vérifie que la valeur d'un champ est unique (pas d'autre occurrence dans la table)
 	 *
 	 * @param string $class le nom de la classe de l'objet.
@@ -505,7 +498,7 @@ class GenericLogic extends Logic
 	 */
 	protected function _is_unique($class, $name, $value, $id) {
 		global $db;
- 
+ 		$id = (int)$id;
 		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
 		if ($result == 0) {
 			return true; } else {
@@ -520,13 +513,13 @@ class GenericLogic extends Logic
 	 * @param object &$vo L'objet virtuel à remplir.
 	 * @param array &$context Le tableau contenant les données.
 	 */
-	protected function _populateObject(&$vo, &$context)
+	protected function _populateObject($vo, &$context)
 	{
 		//print_r($context);
 		$class = strtolower(substr(get_class($vo), 0, -2)); // remove the VO from the class name
 		$publicfields = $this->_publicfields();
 		
-		if ($publicfields[$class]) {
+		if (isset($publicfields[$class])) {
 			foreach ($publicfields[$class] as $field => $fielddescr) {
 				$vo->$field = isset($context[$field]) ? $context[$field] : '';
 			}
@@ -561,6 +554,8 @@ class GenericLogic extends Logic
  * @param integer $k par défaut à -1. ???
  * @return $text le texte nettoyé
  */
+if(!function_exists('lodel_strip_tags'))
+{
 function lodel_strip_tags($text, $allowedtags, $k = -1)
 {
 	if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
@@ -572,8 +567,7 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 		$k = -1;
 	} // for call via array_walk
 
-	if(empty($GLOBALS['xhtmlgroups']))
-		include "balises.php";
+	isset($GLOBALS['xhtmlgroups']) || include "balises.php";
 	static $accepted; // cache the accepted balise;
 	global $multiplelevel, $xhtmlgroups;
 
@@ -652,7 +646,7 @@ function lodel_strip_tags($text, $allowedtags, $k = -1)
 	// now, we know the accepted tags
 	return join("", $arr);
 }
-
+}
 /*-----------------------------------*/
 /* loops                             */
 ?>

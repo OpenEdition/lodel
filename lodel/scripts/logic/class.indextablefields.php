@@ -63,14 +63,15 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 
 	/**
 		* edit/add an object Action
 		*/
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
 		$context['condition']="*";
 		return parent::editAction($context,$error);
@@ -82,8 +83,8 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	public function makeSelect(&$context,$var)
 	{
 		switch($var) {
-		case "name" :       
-			$dao=getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
+		case "name" :
+			$dao=DAO::getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
 			$vos=$dao->findMany("status>0","rank,title","type,title");
 			$arr = array();
 			foreach($vos as $vo) {
@@ -130,7 +131,7 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 	}
 

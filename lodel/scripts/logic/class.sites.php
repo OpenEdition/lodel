@@ -95,6 +95,7 @@ class SitesLogic extends Logic
 	 */
 	public function lockAction(&$context, &$error)
 	{
+		$context['id'] = @$context['id'];
 		$ret = $this->_lockOrUnlock($context['id'], 'lock');
 		return $ret;
 	}
@@ -109,6 +110,7 @@ class SitesLogic extends Logic
 	 */
 	public function unlockAction(&$context, &$error)
 	{
+		$context['id'] = @$context['id'];
 		$ret = $this->_lockOrUnlock($context['id'],'unlock');
 		return $ret;
 	}
@@ -124,6 +126,7 @@ class SitesLogic extends Logic
 	protected function _lockOrUnlock($id, $action = 'lock')
 	{
 		global $db;
+		$id = (int)$id;
 		if(!$id) {
 			return '_error';
 		}
@@ -132,10 +135,11 @@ class SitesLogic extends Logic
 
 		if($action == 'lock') // Verouillage du site
 		{
+			$iduser = (int)C::get('id', 'lodeluser');
 			//bloque les tables
 			lock_write ('session', 'sites');
 			// cherche le nom du site
-			$dao = getDAO('sites');
+			$dao = DAO::getDAO('sites');
 			$vo = $dao->find($critere, 'path');
 			if (!$vo->path) {
 				$context['error'] = getlodeltextcontent('error_during_lock_site_the_site_may_have_been_deleted', 'lodeladmin');
@@ -158,8 +162,6 @@ class SitesLogic extends Logic
 		}
 
 		usecurrentdb();
-		if(!function_exists('clearcache'))
-			include 'cachefunc.php';
 		clearcache();
 		return '_back';
 	}

@@ -213,7 +213,7 @@ function myfilemtime($filename)
 
 function update()
 {
-	if(!function_exists('clearcache')) include 'cachefunc.php';
+	function_exists('clearcache') || include 'cachefunc.php';
 	clearcache(false);
 }
 
@@ -222,12 +222,12 @@ function addmeta(&$arr,$meta="")
 	foreach ($arr as $k=>$v) {
 		if (strpos($k,"meta_")===0) {
 			if (!isset($metaarr)) { // cree le hash des meta
-		$metaarr=$meta ? unserialize($meta) : array();
+				$metaarr=$meta ? unserialize($meta) : array();
 			}
 			if ($v) {
-	$metaarr[$k]=$v;
+				$metaarr[$k]=$v;
 			} else {
-	unset($metaarr[$k]);
+				unset($metaarr[$k]);
 			}
 		}
 	}
@@ -293,10 +293,9 @@ function getoption($name)
 		$optionsfile=SITEROOT."CACHE/options_cache.php";
 	
 		if (file_exists($optionsfile)) {
-			require($optionsfile);
+			include($optionsfile);
 		} else {
-			if(!function_exists('cacheOptionsInFile'))
-				include('optionfunc.php');
+			function_exists('cacheOptionsInFile') || include('optionfunc.php');
 			$options_cache = cacheOptionsInFile($optionsfile);
 		}
 	}
@@ -325,9 +324,9 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			trigger_error("ERROR: unknow group for getlodeltext", E_USER_ERROR);
 		}
 	}
-	if ($lang==-1 || ''==$lang) $lang=C::get('lang');
+	if ($lang==-1 || ''==$lang) $lang=C::get('sitelang');
 	if (!$lang) $lang = C::get('installlang', 'cfg'); // if no lang is specified choose the default installation language
-	if(!defined('INC_CONNECT')) include 'connect.php'; // init DB if not already done
+	defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 	global $db;
 
 	if ($group!="site") {
@@ -357,9 +356,8 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 				$arr->Close();
 				break;
 			}
-			if(!function_exists('getLogic')) include 'logic.php';
 			// create the textfield
-            		if(!$logic) $logic=getLogic("texts");
+            		if(!$logic) $logic=Logic::getLogic("texts");
 			$logic->createTexts($name,$group);
 			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
 			$create = true;
@@ -473,52 +471,59 @@ function getPath($id, $urltype,$base='index')
  */
 function download($filename,$originalname="",$contents="")
 {
-  $mimetype = array(
-		    'doc'=>'application/msword',
-		    'htm'=>'text/html',
-		    'html'=>'text/html',
-		    'jpg'=>'image/jpeg',
-		    'gif'=>'image/gif',
-		    'png'=>'image/png',
-		    'pdf'=>'application/pdf',
-		    'txt'=>'text/plain',
-		    'xls'=>'application/vnd.ms-excel'
+	if (!$originalname) $originalname=$filename;
+	$originalname=preg_replace("/.*\//","",$originalname);
+	$ext=substr($originalname,strrpos($originalname,".")+1);
+	$size = $filename ? filesize($filename) : strlen($contents);
+	$mime = getMimeType($ext);
+	get_PMA_define(); 
+	$mimetype = array(
+		'application/msword',
+		'text/html',
+		'text/html',
+		'image/jpeg',
+		'image/gif',
+		'image/png',
+		'application/pdf',
+		'text/plain',
+		'application/vnd.ms-excel',
+		'video/avi',
+		'audio/x-wav',
+		'audio/mpeg',
+		'video/mp4',
+		'video/x-flv',
+		'video/quicktime',
+		'video/mpeg',
+		'application/ogg',
 		    );
-
-  if (!$originalname) $originalname=$filename;
-  $originalname=preg_replace("/.*\//","",$originalname);
-  $ext=substr($originalname,strrpos($originalname,".")+1);
-  $size = $filename ? filesize($filename) : strlen($contents);
-  get_PMA_define(); 
-  if(isset($mimetype[$ext]) && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
-    $mime = $mimetype[$ext];
-    $disposition = "inline";
-  } else {
-    $mime = "application/force-download";
-    $disposition = "attachment";
-  }
-  if ($filename) {
-    $fp=fopen($filename,"rb");
-    if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
-  }
-  // fix for IE catching or PHP bug issue
-  header("Pragma: public");
-  header("Expires: 0"); // set expiration time
-  header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-
-#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
-#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
-
-  header("Content-type: $mime\n");
-  header("Content-transfer-encoding: binary\n");
-  header("Content-length: ".$size."\n");
-  header("Content-disposition: $disposition; filename=\"$originalname\"\n");
-  sleep(1); // don't know why... (from on uk.php.net)
-  if ($filename) {
-    fpassthru($fp); 
-  } else { 
-    echo $contents; 
-  }
+	if(in_array($mime, $mimetype) && !(PMA_USR_BROWSER_AGENT == 'IE' && $ext == "pdf" && PMA_USR_OS != "Mac")){
+		$disposition = "inline";
+	} else {
+		$mime = "application/force-download";
+		$disposition = "attachment";
+	}
+	if ($filename) {
+		$fp=fopen($filename,"rb");
+		if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
+	}
+	// fix for IE catching or PHP bug issue
+	header("Pragma: public");
+	header("Expires: 0"); // set expiration time
+	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+	
+	#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
+	#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
+	
+	header("Content-type: $mime\n");
+	header("Content-transfer-encoding: binary\n");
+	header("Content-length: ".$size."\n");
+	header("Content-disposition: $disposition; filename=\"$originalname\"\n");
+	//  sleep(1); // don't know why... (from on uk.php.net)
+	if ($filename) {
+		fpassthru($fp); 
+	} else { 
+		echo $contents; 
+	}
 }
 
 
@@ -545,47 +550,47 @@ function get_PMA_define()
 
     // 1. Platform
     if (strstr($HTTP_USER_AGENT, 'Win')) {
-        define('PMA_USR_OS', 'Win');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'Win');
     } else if (strstr($HTTP_USER_AGENT, 'Mac')) {
-        define('PMA_USR_OS', 'Mac');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'Mac');
     } else if (strstr($HTTP_USER_AGENT, 'Linux')) {
-        define('PMA_USR_OS', 'Linux');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'Linux');
     } else if (strstr($HTTP_USER_AGENT, 'Unix')) {
-        define('PMA_USR_OS', 'Unix');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'Unix');
     } else if (strstr($HTTP_USER_AGENT, 'OS/2')) {
-        define('PMA_USR_OS', 'OS/2');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'OS/2');
     } else {
-        define('PMA_USR_OS', 'Other');
+        defined('PMA_USR_OS') || define('PMA_USR_OS', 'Other');
     }
 
     // 2. browser and version
     // (must check everything else before Mozilla)
 
     if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
-        define('PMA_USR_BROWSER_VER', $log_version[2]);
-        define('PMA_USR_BROWSER_AGENT', 'OPERA');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[2]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'OPERA');
     } else if (ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
-        define('PMA_USR_BROWSER_VER', $log_version[1]);
-        define('PMA_USR_BROWSER_AGENT', 'IE');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[1]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'IE');
     } else if (ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
-        define('PMA_USR_BROWSER_VER', $log_version[1]);
-        define('PMA_USR_BROWSER_AGENT', 'OMNIWEB');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[1]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'OMNIWEB');
     //} else if (ereg('Konqueror/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
     // Konqueror 2.2.2 says Konqueror/2.2.2
     // Konqueror 3.0.3 says Konqueror/3
     } else if (ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
-        define('PMA_USR_BROWSER_VER', $log_version[2]);
-        define('PMA_USR_BROWSER_AGENT', 'KONQUEROR');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[2]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'KONQUEROR');
     } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)
                && ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)) {
-        define('PMA_USR_BROWSER_VER', $log_version[1] . '.' . $log_version2[1]);
-        define('PMA_USR_BROWSER_AGENT', 'SAFARI');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[1] . '.' . $log_version2[1]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'SAFARI');
     } else if (ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
-        define('PMA_USR_BROWSER_VER', $log_version[1]);
-        define('PMA_USR_BROWSER_AGENT', 'MOZILLA');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', $log_version[1]);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'MOZILLA');
     } else {
-        define('PMA_USR_BROWSER_VER', 0);
-        define('PMA_USR_BROWSER_AGENT', 'OTHER');
+        defined('PMA_USR_BROWSER_VER') || define('PMA_USR_BROWSER_VER', 0);
+        defined('PMA_USR_BROWSER_AGENT') || define('PMA_USR_BROWSER_AGENT', 'OTHER');
     }
 }
 
@@ -627,7 +632,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 			$error = 'imageformat'; return;
 		}
 		$exts = array("gif", "jpg", "png", "swf", "psd", "bmp", "tiff", "tiff", "jpc", "jp2", "jpx", "jb2", "swc", "iff");
-    $ext = $exts[$info[2]-1];
+    		$ext = $exts[$info[2]-1];
 		if (!$ext) { // si l'extension n'est pas bonne
 			$error = 'imageformat'; return;
 		}
@@ -739,7 +744,7 @@ function tmpdir()
         $tmpdir = TMPDIR;
     elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
         $tmpdir = 'CACHE/tmp';
-	
+
     if (!file_exists($tmpdir)) { 
 		mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
 		chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg'))); 
@@ -758,14 +763,15 @@ function myhtmlentities($text)
 function setrecord($table,$id,$set,$context=array())
 {
 	global $db;
-	
+	$id = (int)$id;
 	$table=lq("#_TP_").$table;
 	
 	if ($id>0) { // update
+		$update = "";
 		foreach($set as $k=>$v) {
 			if (is_numeric($k)) { // get it from context
-	$k=$v;
-	$v=$context[$k];
+				$k=$v;
+				$v=$context[$k];
 			}
 			if ($update) $update.=",";
 			$update.="$k=".$db->qstr($v);
@@ -780,8 +786,8 @@ function setrecord($table,$id,$set,$context=array())
 		}
 		foreach($set as $k=>$v) {
 			if (is_numeric($k)) { // get it from context
-	$k=$v;
-	$v=$context[$k];
+				$k=$v;
+				$v=$context[$k];
 			}
 			if ($insert) { $insert.=","; $values.=","; }
 			$insert.=$k;
@@ -789,7 +795,6 @@ function setrecord($table,$id,$set,$context=array())
 		}
 	
 		if ($insert) {
-	
 			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if (!$id) $id=$db->insert_id();
 		}
@@ -813,19 +818,19 @@ function setrecord($table,$id,$set,$context=array())
  * UTF8
  */
 function isUTF8($string)
-	{
-		// From http://w3.org/International/questions/qa-forms-utf-8.html
-		return preg_match('%^(?:
-			  [\x09\x0A\x0D\x20-\x7E]			# ASCII
-			| [\xC2-\xDF][\x80-\xBF]				# non-overlong 2-byte
-			| \xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
-			| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
-			| \xED[\x80-\x9F][\x80-\xBF]			# excluding surrogates
-			| \xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
-			| [\xF1-\xF3][\x80-\xBF]{3}			# planes 4-15
-			| \xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
-		)*$%xs', $string);
-	}
+{
+	// From http://w3.org/International/questions/qa-forms-utf-8.html
+	return preg_match('%^(?:
+			[\x09\x0A\x0D\x20-\x7E]			# ASCII
+		| [\xC2-\xDF][\x80-\xBF]				# non-overlong 2-byte
+		| \xE0[\xA0-\xBF][\x80-\xBF]			# excluding overlongs
+		| [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}	# straight 3-byte
+		| \xED[\x80-\x9F][\x80-\xBF]			# excluding surrogates
+		| \xF0[\x90-\xBF][\x80-\xBF]{2}		# planes 1-3
+		| [\xF1-\xF3][\x80-\xBF]{3}			# planes 4-15
+		| \xF4[\x80-\x8F][\x80-\xBF]{2}		# plane 16
+	)*$%xs', $string);
+}
 
 /**
  * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
@@ -958,7 +963,11 @@ function makeSortKey($text)
 function rightonentity ($action, $context)
 {
 	if (C::get('admin', 'lodeluser')) return true;
-
+	$context['idparent'] = @$context['idparent'];
+	$context['id'] = @$context['id'];
+	$context['status'] = @$context['status'];
+	$context['usergroup'] = @$context['usergroup'];
+	$context['iduser'] = @$context['iduser'];
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
@@ -968,9 +977,9 @@ function rightonentity ($action, $context)
   	// groupright ?
 	if ($context['usergroup']) {
   		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
-  		if (!$groupright)return false;
+  		if (!$groupright) return false;
 	}
-
+	
 	// only admin can work at the base.
 	$editorok= C::get('editor', 'lodeluser') && $context['idparent'];
 	// redactor are ok, only if they own the document and it is not protected.
@@ -1024,25 +1033,7 @@ function sql_in_array($ids)
 
 function getDAO($table)
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$daoclass = $table. 'DAO';
-
-	if(!class_exists($daoclass))
-	{
-		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/dao.php';
-		if(!file_exists($file))
-			trigger_error('ERROR: unknown dao', E_USER_ERROR);
-		
-		include $file;
-		if(!class_exists($daoclass, false) || !is_subclass_of($daoclass, 'DAO'))
-			trigger_error('ERROR: the DAO plugin file MUST extends the DAO OR GenericDAO class', E_USER_ERROR);
-	}
-	
-	$factory[$table] = new $daoclass;
-	return $factory[$table];
+	return DAO::getDAO($table);
 }
 
 /**
@@ -1051,12 +1042,7 @@ function getDAO($table)
  */
 function getGenericDAO($table, $idfield)
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$factory[$table] = new genericDAO ($table,$idfield);
-	return $factory[$table];
+	return DAO::getGenericDao($table, $idfield);
 }
 
 /**
@@ -1098,6 +1084,7 @@ function get_dc_fields($id, $dcfield)
 {
 	$dcfield = 'dc.' . $dcfield;
 	global $db;
+	$id = (int)$id;
 	if ($result = $db->execute(lq("SELECT #_TP_entities.id, #_TP_types.class, #_TP_tablefields.name, #_TP_tablefields.g_name
 	FROM #_TP_entities, #_TP_types, #_TP_tablefields
   	WHERE (#_TP_tablefields.g_name = '$dcfield')
@@ -1108,23 +1095,23 @@ function get_dc_fields($id, $dcfield)
 
 	{
 		if ($row = $result->fields)
-			{
+		{
 			$id  = $row['id'];
 			$id_class_fields[$id]['class'] = $row['class'];
 			$id_class_fields[$id][$row['g_name']] = $row['name'];
 	
-			if ($id_class_fields[$id][$dcfield])
-				{
+			if (!empty($id_class_fields[$id][$dcfield]))
+			{
 				$class_table = "#_TP_".$id_class_fields[$id]['class'];
 				$field = $id_class_fields[$id][$dcfield];
 				$result =$db->getOne(lq("SELECT $field FROM $class_table WHERE identity = '$id'"));
 				if ($result===false) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					}
-  				}
+				}
+			}
   			return $result;
-			} 
-	else return false;
+		} 
+		else return false;
 	}
 else return false;
 }
@@ -1132,11 +1119,8 @@ else return false;
 // Tente de recupérer la liste des locales du système dans un tableau
 function list_system_locales()
 {
-	ob_start();
-	if(system('locale -a')) {
-		$str = ob_get_contents();
-		ob_end_clean();
-		return split("\n", trim($str));
+	if(exec('locale -a', $arr)) {
+		return $arr;
 	}else{
 		return FALSE;
 	}
@@ -1152,16 +1136,19 @@ function getgenericfields(&$context)
 {
 	global $db;
 	#print_r($context);
+	$context['class'] = @$context['class'];
 	$sql = "SELECT name,g_name, defaultvalue 
                FROM {$GLOBALS['tp']}tablefields 
                WHERE class='". $context['class']."' AND g_name!=''";
 	$row = $db->getArray($sql);
 	#print_r($row);
-    $fields = '';
+	$fields = '';
+	$generic = array();
 	foreach ($row as $elem) {
 		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
+	$context['id'] = (int)@$context['id'];
 	//Retrouve les valeurs de $fields
 	$sql = "SELECT ".substr($fields, 0, -1). ' 
                FROM '.$GLOBALS['tp'].$context['class']. " 
@@ -1171,6 +1158,7 @@ function getgenericfields(&$context)
 	foreach ($row as $key => $value) {
 		$values[$key] = $value;
 	}
+	if(!isset($context['generic'])) $context['generic'] = array();
 	//Contruit le tableau des champs génériques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
@@ -1189,7 +1177,7 @@ function getgenericfields(&$context)
                WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
-    $fields = array();
+    	$fields = array();
 	foreach ($row as $elem) {
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
@@ -1205,7 +1193,7 @@ function getgenericfields(&$context)
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
 		foreach($array as $row) {
-			if($cle = $generic[$row['type']]) {
+			if($cle = @$generic[$row['type']]) {
 				$cle = str_replace('.','_',$cle);
 				$context['generic'][$cle][] = $row['g_name'];
 			}
@@ -1262,8 +1250,8 @@ function getgenericfields(&$context)
  */
 function url_path($url)
 {
-	$url_parts = parse_url($url);
-	return $url_parts['path'];
+	$url_parts = @parse_url($url);
+	return $url_parts ? $url_parts['path'] : '';
 }
 
 function rewriteFilename($string) {
@@ -1366,15 +1354,16 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	}
 
 	// set headers
-	$message->setFrom($fromname);
 	$message->setSubject($subject);
+	$message->setFrom($fromname);
+	
 	// body creation
 	$isHTML ? $message->setHTMLBody($body) : $message->setTxtBody($body);
 
 	$aParam = array(
-		"text_charset" => "UTF-8",
-		"html_charset" => "UTF-8",
-		"head_charset" => "UTF-8",
+		"text_charset"  => "UTF-8",
+		"html_charset"  => "UTF-8",
+		"head_charset"  => "UTF-8",
 	);
 	$body =& $message->get($aParam);
 
@@ -1426,6 +1415,13 @@ function getMimeType($ext)
 		case 'txt': return 'text/plain';
 		case 'avi': return 'video/avi';
 		case 'wav': return 'audio/x-wav';
+		case 'mp3': return 'audio/mpeg';
+		case 'mp4': return 'video/mp4';
+		case 'flv': return 'video/x-flv';
+		case 'mov': return 'video/quicktime';
+		case 'mpg':
+		case 'mpeg': return 'video/mpeg';
+		case 'ogg': return 'application/ogg';
 		case 'bin': 
 		default: return 'application/octet-stream';
 	}

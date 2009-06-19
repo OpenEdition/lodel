@@ -191,7 +191,7 @@ function lodelprefix($table)
 
 	$table = substr($table, strlen(C::get('tableprefix', 'cfg')));
 
-	if ($GLOBALS['currentprefix']) {
+	if (@$GLOBALS['currentprefix']) {
 		return $GLOBALS['currentprefix'].$table;
 	}	else {
 		trigger_error("ERROR: currentprefix is not defined", E_USER_ERROR);
@@ -281,8 +281,10 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 			return false;
 		$dirs = '';
 		foreach ($accepteddirs as $dir) {
-			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles) 
-						&& file_exists(SITEROOT.$dir)) {
+			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles)) {
+				if(!file_exists(SITEROOT.$dir)) {
+					if(!@mkdir(SITEROOT.$dir) || !@chmod(SITEROOT.$dir, 0770 & octdec(C::get('filemask', 'cfg')))) continue;
+				} elseif(!is_dir(SITEROOT.$dir)) continue;
 				if ($acceptedexts) {
 					foreach ($acceptedexts as $ext)	{
 						$dirs .= "\\".$dir."\/\*.$ext ".$dir."\/\*\/\*.$ext ";
@@ -302,9 +304,9 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 				return false;
 		}
 	}	else {
+		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 		// use PCLZIP library
-		if(!class_exists('PclZip', false))
-			require 'pclzip/pclzip.lib.php';
+		class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
 		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
@@ -313,6 +315,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		{ // choose the files to extract
 			//echo $p_header['filename'],"<br>";
 			global $user_vars;
+
 			if (preg_match("/^(\.\/)*.*\.(sql|xml)$/", $p_header['filename']))	{ // extract the sql file
 				unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
 				//                   may cause problem if the file is recreated but it's so uncertain !
@@ -320,7 +323,6 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 				return 1;
 			}
 			$exts = $user_vars['acceptedexts'] ? ".*\.(".join("|", $user_vars['acceptedexts']).")$" : "";
-			
 			if (preg_match("/^(\.\/)*(".str_replace("/", "\/", join("|", $user_vars['accepteddirs'])).")\/$exts/", str_replace('//', '/', $p_header['filename']))) {
 				$p_header['filename'] = SITEROOT.$p_header['filename'];
 				if (file_exists($p_header['filename']) && is_file($p_header['filename']))
@@ -341,7 +343,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		$GLOBALS['user_vars'] = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
 		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
 		#echo "ici $res";
-
+		error_reporting($err);
 		if (!$res)
 			trigger_error("ERROR: unable to extract $archive.<br />".$archive->error_string, E_USER_ERROR);
 		unset($archive);

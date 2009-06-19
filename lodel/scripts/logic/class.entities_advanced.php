@@ -94,7 +94,7 @@ class Entities_AdvancedLogic extends Logic
 		}
 		recordurl();
 
-		$id = $context['id'];
+		$id = @$context['id'];
 		if (!$id) {
 			trigger_error("ERROR: give the id ", E_USER_ERROR);
 		}
@@ -108,8 +108,8 @@ class Entities_AdvancedLogic extends Logic
 		}
 		$this->_populateContext($vo, $context);
 
-		$votype  = getDAO('types')->getById($vo->idtype);
-		$this->_populateContext($votype, $context['type']);
+		$votype  = DAO::getDAO('types')->getById($vo->idtype);
+		$this->_populateContext($votype, @$context['type']);
 
 		// look for the source
 		$context['sourcefile'] = file_exists(SITEROOT."lodel/sources/entite-".$id.".source");
@@ -132,10 +132,11 @@ class Entities_AdvancedLogic extends Logic
 	public function changeStatusAction(&$context, &$error)
 	{
 		global $db;
-		$status = (int)$context['status'];
+		$status = @$context['status'];
 		$this->_isAuthorizedStatus($status);
 		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->find("id='". $context['id']. "' AND status*$status>0 AND status<16", 'status,id');
+		$id = @$context['id'];
+		$vo  = $dao->find("id='".$id. "' AND status*$status>0 AND status<16", 'status,id');
 		if (!$vo) {
 			trigger_error("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ", E_USER_ERROR);
 		}
@@ -163,6 +164,7 @@ class Entities_AdvancedLogic extends Logic
 		if (!rightonentity('move', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
+		if(function_exists('loop_move_right')) return 'move';
 		/**
 		 * Boucle permettant de savoir si on a le droit de déplacer l'entité IDDOCUMENT (identifiée
 		 * par son type IDTYPE) dans l'entité courante.
@@ -176,13 +178,15 @@ class Entities_AdvancedLogic extends Logic
 		{
 			static $cache,$idtypes;
 			global $db;
-
+			$context['iddocument'] = @$context['iddocument'];
+			$context['idtype'] = @$context['idtype'];
+			$context['id'] = @$context['id'];
 			//test1 : si le type de l'entité courante peut contenir ce type d'entité
 			if (!isset($cache[$context['idtype']])) {
 				//mise en cache du type du document
 				$idtype = $idtypes[$context['iddocument']];
 				if (!$idtype) { // get the type, we don't have it!
-					$dao = getDAO("entities");
+					$dao = DAO::getDAO("entities");
 					$vo = $dao->getById($context['iddocument'],"idtype");
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}
@@ -194,10 +198,9 @@ class Entities_AdvancedLogic extends Logic
 				}
 			}
 			//test2 : si l'entité courante est une descendante de l'entité IDDOCUMENT
-			if(!function_exists('isChild'))
-				include 'entitiesfunc.php';
+			function_exists('isChild') || include 'entitiesfunc.php';
 			$boolchild = isChild($context['iddocument'], $context['id']);
-			if ($cache[$context['idtype']] && $boolchild) { //si c'est ok
+			if (!empty($cache[$context['idtype']]) && $boolchild) { //si c'est ok
 				if (function_exists("code_do_$funcname")) {
 					call_user_func("code_do_$funcname", $context);
 				}
@@ -223,11 +226,10 @@ class Entities_AdvancedLogic extends Logic
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
-		$id = $context['id']; // which entities
-		$idparent = (int)$context['idparent']; // where to move it
+		$id = @$context['id']; // which entities
+		$idparent = @$context['idparent']; // where to move it
 
-		if(!function_exists('checkTypesCompatibility'))
-			include 'entitiesfunc.php';
+		function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent)) {
 			trigger_error("ERROR: Can move the entities $id into $idparent. Check the editorial model.", E_USER_ERROR);
 		}
@@ -243,7 +245,7 @@ class Entities_AdvancedLogic extends Logic
 		if ($db->affected_Rows()>0) { // effective change
 			// get the new parent hierarchy
 			$result=$db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='$idparent' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	
+			$parents = array();
 			$values = '';
 			$dmax   = 0;
 			while (!$result->EOF) {
@@ -296,7 +298,9 @@ class Entities_AdvancedLogic extends Logic
 	 */
 	public function downloadAction(&$context, &$error)
 	{
-		$id = $context['id'];
+		$id = @$context['id'];
+		$context['type'] = @$context['type'];
+		$multidoc = false;
 		switch($context['type']) {
 		case 'xml':
 			trigger_error('a implementer', E_USER_ERROR);

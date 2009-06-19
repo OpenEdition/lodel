@@ -138,7 +138,7 @@ class siteManage {
 		$this->critere = "id='".C::get('id')."'";
 		$this->lodelhomere = "/^lodel(-[\w.]+)$/";
         	$this->versiondir = 'lodel-'.C::get('version', 'cfg');
-		if(!defined('INC_FUNC')) include 'func.php';
+		defined('INC_FUNC') || include 'func.php';
 	}
 
 	/**
@@ -231,8 +231,7 @@ class siteManage {
 			}
 	
 			// clear the CACHEs
-			if(!function_exists('removefilesincache'))
-				include 'cachefunc.php';
+			function_exists('removefilesincache') || include 'cachefunc.php';
 			removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
 	
 			$result->MoveNext();
@@ -566,14 +565,10 @@ class siteManage {
 			$dbhost = C::get('dbhost', 'cfg');
 			$dbpasswd = C::get('dbpasswd', 'cfg');
 			
-            		if ($GLOBALS['version_mysql'] > 40) {
-				$db_charset = $this->find_mysql_db_charset($GLOBALS['currentdb']);
-			} else { 
-				$db_charset = '';
-			}
+			$db_charset = $this->find_mysql_db_charset($GLOBALS['currentdb']);
 			
             		C::set('command1', "CREATE DATABASE `".$dbname."` $db_charset");
-			C::set('command2', "GRANT ALL ON `".$dbname."`.* TO \"$dbusername\"@\"$dbhost\"".($dbpasswd ? " IDENTIFIED BY '$dbpasswd'" : ''));
+			C::set('command2', "GRANT ALL ON `".$dbname."`.* TO \"$dbusername\"@\"$dbhost\"");
 			$installoption = C::get('installoption', 'cfg');
 			if(false === $installoption)
 				$installoption = C::get('installoption');

@@ -61,12 +61,12 @@ semblent ne pas être utilisée
             return $data;
         } else {
             $ret = array();
-	    $num = $result->getFieldNum();
+	    $num = $GLOBALS['db']->getFieldNum($result);
 //             $num = mysql_num_fields($result);
             $i = 0;
             for($i = 0; $i < $num; $i++) {
-                $meta = $result->fetchField();
-                $name = $result->getFieldName($i);
+                $meta = $GLOBALS['db']->fetchField($result);
+                $name = $GLOBALS['db']->getFieldName($result, $i);
                 if (!$meta) {
                     /* No meta information available -> we guess that it should be converted */
                     if (isset($data[$i])) $ret[$i] = PMA_convert_display_charset($data[$i]);
@@ -106,7 +106,7 @@ semblent ne pas être utilisée
     }
 */
     function PMA_mysql_field_name($result, $field_index) {
-        return PMA_convert_display_charset($result->getFieldName($field_index));
+        return PMA_convert_display_charset($GLOBALS['db']->getFieldName($result, $field_index));
     }
 /*
     function PMA_mysql_field_type($result, $field_index) {

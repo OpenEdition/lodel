@@ -59,8 +59,7 @@
  */
 function makeSelectFieldTypes($value)
 {
-	if(!isset($GLOBALS['lodelfieldtypes']))
-		include_once 'fieldfunc.php';
+	isset($GLOBALS['lodelfieldtypes']) || include_once 'fieldfunc.php';
 	$arr2 = array ();
 	foreach ($GLOBALS['lodelfieldtypes'] as $k => $v) {
 		if ($v) {

@@ -266,7 +266,7 @@ class View
 	 */
 	public function render($tpl, $caching = false)
 	{
-		C::set('tpl', $tpl);
+		C::set('view.tpl', $tpl);
 		
 		if(!isset($this->_cachedfile))
 		{	
@@ -274,7 +274,7 @@ class View
 		}
 
 		C::trigger('preview');
-		$tpl = C::get('tpl');
+		$tpl = C::get('view.tpl');
 
 		$format = C::get('format');
 		$base = $tpl.($format ? '_'.$format : '');
@@ -345,9 +345,56 @@ class View
 	private function _print()
 	{
 		C::trigger('postview');
-		@ob_start('ob_gzhandler'); // try to gzip
-		echo self::$page;
-		@ob_end_flush();
+		// try to gzip the page
+		if(extension_loaded('zlib') && (!ini_get('zlib.output_compression') || !@ini_set('zlib.output_compression', 1)))
+		{
+			if(function_exists('ob_gzhandler') && @ob_start('ob_gzhandler'))
+			{
+				@ob_implicit_flush(0);
+				echo self::$page;
+				@ob_end_flush();
+			}
+			else
+			{
+				if(headers_sent())
+				{
+					$acceptEncoding = false;
+				} 
+				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) 
+				{
+					$acceptEncoding = 'x-gzip';
+				} 
+				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false) 
+				{
+					$acceptEncoding = 'gzip';
+				} 
+				else 
+				{
+					$acceptEncoding = false;
+				}
+				
+				if ($acceptEncoding) 
+				{
+					header('Content-Encoding: ' . $acceptEncoding);
+					echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+					$size = strlen(self::$page);
+					$content = gzcompress(self::$page, 6);
+					$content = substr($content, 0, $size);
+					echo $content;
+					flush();
+				}
+				else
+				{
+					echo self::$page;
+					flush;
+				}
+			}
+		}
+		else
+		{
+			echo self::$page;
+			flush();
+		}
 		self::$page = null; // memory
 	}
 
@@ -405,7 +452,7 @@ class View
 	
 		$tplFile = $base_rep. $tpl. '.html';
 		$blockId = (int)$blockId;
-		$idcontext = (int)$context['id'];
+		$idcontext = (int)@$context['id'];
         	$recalcul = true;
 
 		if(!self::$nocache)
@@ -518,9 +565,9 @@ class View
 			if(!$this->_evalCalled) 
 			{
 				// needed funcs
-				if(!defined('INC_LOOPS')) include 'loops.php';
-				if(!defined('INC_TEXTFUNC')) include 'textfunc.php';
-				if(!defined('INC_FUNC')) include 'func.php'; 
+				defined('INC_LOOPS') || include 'loops.php';
+				defined('INC_TEXTFUNC') || include 'textfunc.php';
+				defined('INC_FUNC') || include 'func.php'; 
 				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
@@ -565,7 +612,7 @@ class View
 		$tpl = $base_rep. $base. '.html';
 		if (!file_exists($tpl)) 
 		{
-			$base_rep = C::get('base_rep.'.$base);
+			$base_rep = C::get('view.base_rep.'.$base);
             		$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
 			if(!$base_rep || !file_exists($tpl = $plugin_base_rep.$base_rep.'/tpl/'.$base.'.html'))
 			{
@@ -697,7 +744,7 @@ class View
         
 		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
 		{
-			if(!function_exists('show_html')) include 'showhtml.php';
+			function_exists('show_html') || include 'showhtml.php';
 			// on affiche la source
 			return show_html($template['contents']);
 		}
@@ -893,8 +940,7 @@ function _indent($source, $indenter = '  ')
 {
 	if(false !== strpos($source, '<?xml')) {
 			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
-			if(!function_exists('indentXML'))
-				include 'xmlfunc.php';
+			function_exists('indentXML') || include 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
 	} elseif(!preg_match("/<[^><]+>/", $source)) {

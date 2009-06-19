@@ -458,9 +458,8 @@ pw.setHelperId('helper');
 		[@INSTALL.ERROR_INVALID_EMAIL] 
 	<?php } ?>
 	<label for="lang">[@INSTALL.LANGUAGE]:</label>
-
 	<select id="lang" name="lang">
-		<?php $install->makeSelectLang($tableprefix); ?>
+		<?php $this->makeSelectLang(); ?>
 	</select>
 	</fieldset>
 	<fieldset class="install">

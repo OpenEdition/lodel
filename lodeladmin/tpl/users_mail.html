@@ -38,34 +38,37 @@
 	</head>
 	<body>
 <p>
-Bonjour,
+[@ADMIN.HI],
 </p>
 <p>
 <IF COND="[#RESTRICTED]">
-Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous permettant d'accéder aux publications sous accès restreint du site "[#SITETITLE]" ([#SITEURL]).
+[@ADMIN.USERS_MAIL_RESTRICTED_PRESENTATION] "[#SITETITLE]" ([#SITEURL]).
 </p>
 <p>
-<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br />
-<strong>Votre mot de passe</strong> : [#TMPPASSWD]
+<strong>[@INSTALL.LOGIN]</strong> : [#USERNAME]<br />
+<strong>[@INSTALL.PASSWORD]</strong> : [#TMPPASSWD]
 </p>
 <p>
-Ce compte sera actif jusqu'au [#EXPIRATION|humandate].
+[@ADMIN.USERS_MAIL_RESTRICTED_ACTIVE] [#EXPIRATION|humandate].
 </p>
 <ELSE />
-Veuillez trouver ci-joint votre nom d'utilisateur et votre mot de passe vous permettant d'accéder à l'interface d'édition du site "[#SITETITLE]" ([#SITEURL]).
+[@ADMIN.USERS_MAIL_PRESENTATION] <IF COND="![#ISLODELADMIN]">[@ADMIN.USERS_MAIL_PRESENTATION_SITE]<ELSE/>[@ADMIN.USERS_MAIL_PRESENTATION_LODELADMIN]</IF> "[#SITETITLE]" ([#SITEURL]).
 </p>
-<h3>-- Accès Lodel</h3>
+<h3>-- [@ADMIN.LODEL_ACCESS]</h3>
 <p>
-<strong>Votre nom d'utilisateur</strong> : [#USERNAME]<br/>
-<strong>Votre mot de passe</strong> : [#TMPPASSWD]<br/>
-L'url de connexion est la suivante : [#SITEURL]<IF COND="![#ISLODELADMIN]">/lodel/edition/</IF>
+<strong>[@INSTALL.LOGIN]</strong> : [#USERNAME]<br/>
+<strong>[@INSTALL.PASSWORD]</strong> : [#TMPPASSWD]<br/>
+[@ADMIN.USERS_MAIL_URL] [#SITEURL]<IF COND="![#ISLODELADMIN]">/lodel/edition/</IF>
+</p>
+<p>
+[@ADMIN.USERS_MAIL_WARNING_PASSWORD]
 </p>
 </IF>
 <p>
-Cordialement,
+[@ADMIN.USERS_MAIL_REGARDS]
 </p>
 <p>
-Les administrateurs du site.
+[@ADMIN.USERS_MAIL_SIGNATURE]
 </p>
 </body>
 </html>

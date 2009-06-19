@@ -182,9 +182,7 @@ class DataLogic
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
 
-		if(!function_exists('importFromZip'))
-			include 'backupfunc.php';
-
+		function_exists('importFromZip') || include 'backupfunc.php';
 		$this->fileExtension = 'zip';
 	}
 
@@ -198,6 +196,7 @@ class DataLogic
 	 */
 	public function importAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 
 		$context['importdir'] = C::get('importdir', 'cfg');
@@ -220,7 +219,6 @@ class DataLogic
 				//noms des répertoires acceptés
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier'/*compat 0.7*/);
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
-					
 					$err = $error['error_extract'] = 'extract';
 					return 'import';
 				}
@@ -233,15 +231,12 @@ class DataLogic
 				}
 				@unlink($sqlfile);
 		
-				if(!function_exists('clearcache'))
-					include 'cachefunc.php';
 				clearcache();
 		
 				// verifie les .htaccess dans le CACHE
 				$this->_checkFiles($context);
 			} while(0);
 		} else {
-			$error['file'] = 'unknown_file';
 			return 'import';
 		}
 		if(!$error) {
@@ -260,10 +255,12 @@ class DataLogic
 	 */
 	public function backupAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		$zipcmd = C::get('zipcmd', 'cfg');
 		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
 		if (isset($context['backup'])) { // si on a demandé le backup
+			set_time_limit(0); 
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
 
@@ -301,6 +298,8 @@ class DataLogic
 
 			// si sauvegarde des répertoires demandée (en + de la base)
 			if (empty($context['sqlonly'])) { // undefined or equal to 0
+					$bad_dirs = array();
+					$good_dirs = array();
 					//verifie que les repertoires sont accessibles en lecture
 					foreach ($sitedirs as $sitedir) {
 						if(is_readable(SITEROOT . $sitedir)){
@@ -310,7 +309,7 @@ class DataLogic
 						}
 					}
 					// initialise $error pour affichage dans le template backup.html
-					if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
+					if (!empty($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
 					
 					// conversion en chaîne pour ligne de commande
 					$dirs = implode(' ', $good_dirs);
@@ -323,8 +322,9 @@ class DataLogic
 					if (!chdir(SITEROOT)) {
 						trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
 					}
-					$prefixdir    = $tmpdir[0] == "/" ? '' : 'lodel/admin/';
+					$prefixdir    = $archivetmp[0] == "/" ? '' : 'lodel/admin/';
 					$excludefiles = $excludes ? " -x ". join(" -x ", $excludes) : "";
+
 					system($zipcmd. " -q $prefixdir$archivetmp -r $dirs $excludefiles");
 					if (!chdir("lodel/admin")) {
 						trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
@@ -334,6 +334,7 @@ class DataLogic
 					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
 				}
 			} else { // Comande PCLZIP
+				$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 				if(!class_exists('PclZip', false))
 					include 'pclzip/pclzip.lib.php';
 				$archive = new PclZip($archivetmp);
@@ -366,6 +367,7 @@ class DataLogic
 				} else {
 					$archive->create($tmpdir. "/". $outfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 				}
+				error_reporting($err);
 			} // end of pclzip option
 
 			if (!file_exists($archivetmp)) {
@@ -406,10 +408,13 @@ class DataLogic
 	 */
 	public function globalbackupAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$context['importdir'] = C::get('importdir', 'cfg');
-		$operation = $context['operation'];
+		
 		if (isset($context['backup'])) {
+            		$operation = @$context['operation'];
+			set_time_limit(0); // pas d'effet en safe mode
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
 			$dirlocked = tempnam(tmpdir(), 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
@@ -426,14 +431,13 @@ class DataLogic
 			}
 
 			$GLOBALS['currentprefix'] = '#_MTP_';
-			set_time_limit(0); // pas d'effet en safe mode
+			
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
 			
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
 			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			chdir(LODELROOT); 
-			set_time_limit(60); // pas d'effet en safe mode
 			$GLOBALS['currentprefix'] = '#_TP_';
 			while (!$result->EOF) {
 				$name = $result->fields['name'];
@@ -488,6 +492,7 @@ class DataLogic
 	 */
 	public function importmodelAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
@@ -564,8 +569,8 @@ class DataLogic
 	 */
 	public function backupmodelAction(&$context, &$error)
 	{
-		$context['importdir'] = $importdir;
-		if ($context['backup']) {
+		$context['importdir'] = C::get('importdir', 'cfg');
+		if (isset($context['backup'])) {
 			if(!$context['title']) {
 				$error['title'] = 'title_required';
 			}
@@ -586,7 +591,7 @@ class DataLogic
 			$tmpfile        = tmpdir(). '/model.sql';
 			$fh             = fopen($tmpfile, 'w');
 			$description    = '<model>
-			<lodelversion>'. $version. '</lodelversion>
+			<lodelversion>'. C::get('version', 'cfg'). '</lodelversion>
 			<date>'. date("Y-m-d"). '</date>
 			<title>
 			'. myhtmlentities(stripslashes($context['title'])). '
@@ -623,7 +628,7 @@ class DataLogic
 			mysql_dump($currentdb, $tables, '', $fh, false, false, true); // get the content
 			
 			// select the optiongroups to export
-			$vos = getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
+			$vos = DAO::getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
 			$ids = array();
 			foreach($vos as $vo) {
 				$ids[] = $vo->id;
@@ -634,7 +639,7 @@ class DataLogic
 			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
 			// Récupère la liste des tables de classe à sauver.
-			$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
+			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 			$tables = array();
 			foreach ($vos as $vo) {
 				$tables[] = lq('#_TP_'. $vo->class);
@@ -705,7 +710,7 @@ class DataLogic
 		}
 		$GLOBALS['currentprefix'] = "#_TP_";
 		$tables = $GLOBALS['lodelsitetables'];
-		$vos = getDAO('classes')->findMany('status > 0', '', 'class, classtype');
+		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class, classtype');
 		foreach ($vos as $vo)	{
 			$tables[] = lq("#_TP_". $vo->class);
 			if ($vo->classtype == 'persons')
@@ -990,7 +995,8 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
-	public function backupxmlmodelAction(&$context, &$error) {
+	public function backupxmlmodelAction(&$context, &$error) 
+	{
 		if (empty($context['backup'])) {
 			return 'backupmodel';
 		}
@@ -1040,7 +1046,9 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 * @return string $tpl nom du template à afficher
 	 */
-	public function importxmlmodelAction(&$context, &$error) {
+	public function importxmlmodelAction(&$context, &$error) 
+	{
+		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$err = '';
 		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
@@ -1092,7 +1100,7 @@ class DataLogic
 			$this->_fieldsToKeep = $meObj->_fieldsToKeep;
 			$this->_changedTables = $meObj->_changedTables;
 			$meObj = null;
-		} elseif($xmlfile) {
+		} elseif(isset($xmlfile)) {
 			// besoin des fonctions de bruno pour conversion entités
 			if(!function_exists('HTML2XML'))
 				include 'textfunc.php';
@@ -1395,7 +1403,7 @@ class DataLogic
 	 */
 	private function _cleanDatabase() {
 		global $db;
-		if(!is_array($this->_existingTables)) return;
+		if(empty($this->_existingTables) || !is_array($this->_existingTables)) return;
 		foreach($this->_existingTables as $table=>$k) {
 			if(FALSE !== strpos($table, '__oldME')) {
 				$db->execute("DROP TABLE `{$table}`");
@@ -1415,7 +1423,7 @@ class DataLogic
 		// tables ME statiques
 		$this->_tables = array($GLOBALS['tableprefix'].'classes'=>true, $GLOBALS['tableprefix'].'tablefields'=>true, $GLOBALS['tableprefix'].'tablefieldgroups'=>true, $GLOBALS['tableprefix'].'types'=>true, $GLOBALS['tableprefix'].'persontypes'=>true, $GLOBALS['tableprefix'].'entrytypes'=>true, $GLOBALS['tableprefix'].'entitytypes_entitytypes'=>true, $GLOBALS['tableprefix'].'internalstyles'=>true, $GLOBALS['tableprefix'].'characterstyles'=>true, $GLOBALS['tableprefix'].'optiongroups'=>true, $GLOBALS['tableprefix'].'options'=>true);
 		// tables ME dynamiques
-		$vos = getDAO('classes')->findMany('status > 0', '', 'class,classtype');
+		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 		foreach($vos as $vo) {
 			$this->_tables[$GLOBALS['tableprefix'].$vo->class] = false;
 			if ($vo->classtype == 'persons') {
@@ -2285,7 +2293,7 @@ class DataLogic
 		$schemaNode->appendChild($model);
 		$descr = $document->createElement("lodelversion");
 		$model->appendChild($descr);
-		$descr->nodeValue = $version;
+		$descr->nodeValue = C::get('version', 'cfg');
 		$descr = $document->createElement("date");
 		$model->appendChild($descr);
 		$descr->nodeValue = date("Y-m-d");
@@ -2418,11 +2426,10 @@ function loop_files_model(&$context, $funcname)
 				if ($unzipcmd && $unzipcmd != "pclzip") {
 	  				$line = `$unzipcmd $dir/$file -c $model`;
 				} else {
-					if(!class_exists('PclZip', false))
-						require "pclzip/pclzip.lib.php";
+					class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
 					$archive = new PclZip("$dir/$file");
 					$arr = $archive->extract(PCLZIP_OPT_BY_NAME, $model,
-										PCLZIP_OPT_EXTRACT_AS_STRING);
+								PCLZIP_OPT_EXTRACT_AS_STRING);
 					$line = $arr[0]['content'];
 				}
 				if (!$line) {
@@ -2445,7 +2452,9 @@ function loop_files_model(&$context, $funcname)
 					}
 				}
 				// check only the major version, sub-version are not checked
-				if (doubleval($localcontext['lodelversion']) != doubleval(C::get('version', 'cfg'))) {
+                		// with xml ME import, we don't need to check the version
+				if (empty($context['xmlimport']) && (empty($localcontext['lodelversion']) ||
+                			doubleval($localcontext['lodelversion']) != doubleval(C::get('version', 'cfg')))) {
 					$localcontext['warning_version'] = 1;
 				}
 				call_user_func("code_do_$funcname", $localcontext);

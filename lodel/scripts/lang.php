@@ -372,11 +372,11 @@ function makeselectlangs_nevernil($selectedlang = "")
  */	
 function makeSelectLang()
 {
-	global $languages;
+	global $languages, $context;
 	echo "<option value=\"\">--</option>\n";
 	foreach ($languages as $l=>$lang) {
 		$l = strtolower($l);
-		$selected = $context['lang'] == $l ? " selected=\"selected\"" : "";
+		$selected = $context['sitelang'] == $l ? " selected=\"selected\"" : "";
 		echo "<option value=\"$l\"$selected>$lang</option>\n";
 	}
 }

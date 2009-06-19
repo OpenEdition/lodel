@@ -85,15 +85,13 @@ class PersonsLogic extends EntriesLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		if(isset($context['id']))
-			$id=(int)$context['id'];
-		else $id = 0;
-		$idtype=$context['idtype'];
+		$id=(int)@$context['id'];
+		$idtype=(int)@$context['idtype'];
 		if (!$idtype) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
-		$status=$context['status'];
+		$status=@$context['status'];
 #echo "status=$status"; print_r ($context);
 		// get the class 
-		$daotype=getDAO ("persontypes");
+		$daotype=DAO::getDAO ("persontypes");
 		$votype=$daotype->getById ($idtype, "class");
 		$class=$context['class']=$votype->class;
 		#print_r($context);
@@ -150,7 +148,7 @@ class PersonsLogic extends EntriesLogic
 		//if ($context['usergrouprec'] && $lodeluser['admin']) change_usergroup_rec($id,$usergroup);
 
 		// save the class table
-		$gdao=getGenericDAO ($class,"idperson");
+		$gdao=DAO::getGenericDAO ($class,"idperson");
 		$gdao->instantiateObject ($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject ($gvo,$context['data']);
@@ -158,8 +156,9 @@ class PersonsLogic extends EntriesLogic
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo,$new);  // save the related table
 		// save the entities_class table
+		$context['identity'] = @$context['identity'];
 		if ($context['identity']) {
-			$dao=getDAO ("relations");
+			$dao=DAO::getDAO ("relations");
 			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
@@ -172,7 +171,7 @@ class PersonsLogic extends EntriesLogic
 				$idrelation=$context['idrelation'] = $vo->idrelation;
 			}
 
-			$gdao=getGenericDAO("entities_".$class,"idrelation");
+			$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;

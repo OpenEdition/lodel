@@ -37,18 +37,20 @@
 
 	<!--[ Propose OOImport ? ]-->
 	<IF COND="![#ID]">
-		<LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
-			<BEFORE>
-				<ul id="actionsOnEntitiesPath">
-				<li>[@EDITION.FORM_IMPORT]</li>
-				<li><ul class="actions">
-			</BEFORE>
-				<li class="isolated"><a onClick="preserveDatas();"  href="oochargement.php?idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.FILE_IMPORT]</a></li>
-			<AFTER>
-				</ul></li>
-				</ul>
-			</AFTER>
-		</LOOP>
+		<IF COND="[#TYPE.IMPORT]">
+			<LOOP NAME="importOO_possible" TABLE="tablefields" WHERE="class='[#TYPE.CLASS]' AND style!='' AND status gt 0" LIMIT="1">
+				<BEFORE>
+					<ul id="actionsOnEntitiesPath">
+					<li>[@EDITION.FORM_IMPORT]</li>
+					<li><ul class="actions">
+				</BEFORE>
+					<li class="isolated"><a onClick="preserveDatas();"  href="oochargement.php?idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.FILE_IMPORT]</a></li>
+				<AFTER>
+					</ul></li>
+					</ul>
+				</AFTER>
+			</LOOP>
+		</IF>
 	<ELSE />
 		<MACRO NAME="ACTIONS_ON_CURRENT_PATH">
 		<FUNC NAME="ADD_AN_ENTITY">
@@ -70,7 +72,7 @@
 	<input type="hidden" name="id" value="[#ID]" />
 	<IF COND="[#IDTACHE]"><input type="hidden" name="idtache" value="[#IDTACHE]" /></IF>
 	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
-	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
+	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /><LET VAR="currentidtype">[#IDTYPE]</LET></IF>
 	<IF COND="![#ID]"><input type="hidden" name="creationmethod" value="form" /></IF><!--[ new entities ]-->
 	<input type="hidden" name="edit" value="1" />
 	<br />
@@ -118,7 +120,7 @@
 	</IF>
 	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 	<dd>
-	<LET VAR="currentidtype">[#IDTYPE]</LET>
+	
 	<LOOP NAME="compatible_types">
 		<BEFORE><select name="idtype"></BEFORE>
 			<IF COND="[#CURRENTIDTYPE] EQ [#ID]">

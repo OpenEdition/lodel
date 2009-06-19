@@ -45,6 +45,11 @@
 			<li><a href="index.php?do=list&amp;lo=users">[@LODELADMIN.MANAGE_LODELADMIN]</a></li>
 			<li><a href="index.php?do=list&amp;lo=sites">[@LODELADMIN.MANAGE_SITES]</a></li>
 			<li><a href="index.php?do=list&amp;lo=translations">[@LODELADMIN.MANAGE_TRANSLATIONS]</a></li>
+			<IF COND="[#LODELUSER.TRANSLATIONMODE]=='interface'">
+				<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=off">[@ADMIN.GET_OUT_TRANSLATION_MODE_FOR_INTERFACE]</a>
+			<ELSE/>
+				<li><a href="index.php?do=set&amp;lo=users&amp;translationmode=interface">[@ADMIN.ENTER_IN_TRANSLATION_MODE_FOR_INTERFACE]</a></li>
+			</IF>
 			<li><a href="index.php?do=globalbackup&amp;lo=data">[@LODELADMIN.GENERAL_BACKUP]</a></li>
 			<li><a href="index.php?do=list&amp;lo=mainplugins">[@ADMIN.PLUGINS]</a></li>
 		</ul>

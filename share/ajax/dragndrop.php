@@ -58,7 +58,7 @@ if(!isset($_POST['site']) || !preg_match("/^[a-z0-9\-]+$/", $_POST['site']) ||
 chdir('../../'.$_POST['site']);
 if(!file_exists('siteconfig.php')) {
 	echo 'error';
-	return;
+	exit();
 }
 
 require 'siteconfig.php';
@@ -72,7 +72,7 @@ try
     if(!authenticate(LEVEL_VISITOR, null, true) || !C::get('visitor', 'lodeluser'))
     {
         echo 'auth';
-        return;
+        exit();
     }
     
     $table = lq("#_TP_entities");
@@ -81,11 +81,11 @@ try
     foreach($tabIds as $v) {
         $id = (int)str_replace('container_','',$v);
         if($id>0) {
-            $db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or trigger_error('', E_USER_ERROR);
+            $db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or trigger_error('error', E_USER_ERROR);
         }
         $i++;
     }
-    include 'cachefunc.php';
+
     removefilesincache('.', './lodel/edition/');
     echo 'ok';
 }

@@ -99,6 +99,7 @@ class Logic
 	protected $rankcriteria;
 	/**#@-*/
 
+	static protected $_logics = array();
 
 	/** 
 	 * Constructeur de la classe.
@@ -111,6 +112,30 @@ class Logic
 		$this->maintable = $maintable;
 	}
 
+	/**
+	* Logic factory
+	* @param string $table the name of the logic to call
+	*/
+	public static function getLogic($table) 
+	{
+		if (isset(self::$_logics[$table])) {
+			return self::$_logics[$table]; // cache
+		}
+
+		$logicclass = $table. 'Logic';
+		if(!class_exists($logicclass))
+		{
+			$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/logic.php';
+			if(!file_exists($file))
+				trigger_error('ERROR: unknown logic', E_USER_ERROR);
+			include $file;
+			if(!class_exists($logicclass,false) || !is_subclass_of($logicclass, 'Logic'))
+				trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
+		}
+		self::$_logics[$table] = new $logicclass;
+	
+		return self::$_logics[$table];
+	}
 
 	/**
 	 * Implémentation par défaut de l'action permettant d'appeler l'affichage d'un objet.
@@ -126,7 +151,7 @@ class Logic
 	public function viewAction(&$context, &$error)
 	{
 		if ($error) return; // nothing to do if it is an error.
-		$id = $context['id'];
+		$id = @$context['id'];
 		if (!$id) return "_ok"; // just add a new Object
 		$vo  = $this->_getMainTableDAO()->getById($id);
 		if (!$vo) //erreur critique
@@ -195,7 +220,7 @@ class Logic
 		
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = (int)$context['id'];
+		$id = @$context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
@@ -205,14 +230,14 @@ class Logic
 			$create = true;
 			$vo = $dao->createObject();
 		}
-		if ($dao->rights['protect']) {
+		if (isset($dao->rights['protect'])) {
 			$vo->protect = isset($context['protect']) && $context['protect'] ? 1 : 0;
 		}
 		// put the context into 
 		$this->_populateObject($vo, $context);
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
-		if(isset($create) && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
+		if(isset($create) && isset($context['lo']) && ('users' == $context['lo'] || 'restricted_users' == $context['lo'])) {
 			$this->_sendPrivateInformation($context);
 		}
 		update();
@@ -237,7 +262,7 @@ class Logic
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		$criterias = array();
-		$id = $context['id'];
+		$id = @$context['id'];
 		if ($groupfields) {
 			$vo  = $this->_getMainTableDAO()->getById($id, $groupfields);
 			foreach (explode(",", $groupfields) as $field) {
@@ -245,7 +270,7 @@ class Logic
 			}
 		}
 		if ($status) $criterias[] = $status;
-
+		$context['dir'] = @$context['dir'];
 		$criteria = join(" AND ", $criterias);
 		$this->_changeRank($id, $context['dir'], $criteria);
 
@@ -266,7 +291,7 @@ class Logic
 	public function deleteAction(&$context, &$error)
 	{
 		global $db;
-		$id = $context['id'];
+		$id = @$context['id'];
 
 		if ($this->isdeletelocked($id)) {
 			trigger_error("This object is locked for deletion. Please report the bug", E_USER_ERROR);
@@ -281,19 +306,6 @@ class Logic
 		return $ret ? $ret : '_back';
 	}
 
-	public function removeAction(&$context, &$error)
-	{
-		// we can reach here ONLY if we are at least admin for table plugins
-		// or adminlodel for table mainplugins
-		if( (C::get('site', 'cfg') && !C::get('admin', 'lodeluser')) ||
-			!C::get('adminlodel', 'lodeluser'))
-		trigger_error('ERROR: You don\'t have the rights to do that', E_USER_ERROR);
-		
-		C::set('remove', true); // @see Dao::delete()
-		
-		return $this->deleteAction($context, $error);
-	}
-
 	/**
 	 * Implémentation par défaut de la fonction right
 	 * 
@@ -305,7 +317,7 @@ class Logic
 	 */
 	public function rights($access) 
 	{
-		return $this->_getMainTableDAO()->rights[$access];
+		return @$this->_getMainTableDAO()->rights[$access];
 	}
 
 	/**
@@ -322,9 +334,11 @@ class Logic
 	{
 		// basic
 		if (is_numeric($id)) {
+			$id = (int)$id;
 			$criteria = "id='". $id. "'";
 			$nbexpected = 1;
 		} else {
+			$id = array_map('intval', $id);
 			$criteria = "id IN ('". join("','", $id). "')";
 			$nbexpected = count($id);
 		}
@@ -340,7 +354,7 @@ class Logic
 	
 	protected function _getMainTableDAO() 
 	{
-		return getDAO($this->maintable);
+		return DAO::getDAO($this->maintable);
 	}
    
 
@@ -396,8 +410,7 @@ class Logic
 		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
 		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
-		if(!function_exists('validfield'))
-			include "validfunc.php";
+		function_exists('validfield') || include "validfunc.php";
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
 			list($type, $condition) = $fielddescr;
@@ -444,7 +457,8 @@ class Logic
 		}
 
 		$conditions=array();
-		foreach ($this->_uniqueFields() as $fields) { // all the unique set of fields
+		$ufields = $this->_uniqueFields();
+		foreach ($ufields as $fields) { // all the unique set of fields
 			foreach ($fields as $field) { // set of fields which has to be unique.
 				$conditions[] = $field. "='". $context[$field]. "'";
 			}
@@ -461,10 +475,17 @@ class Logic
 		return empty($error);
 	}
 
+	/**
+	 * Crée le masque (regexp) en fonction du masque rentré dans l'interface
+	 *
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 */
 	protected function _makeMask(&$context, &$error)
 	{
+		$context['mask']['user'] = @$context['mask']['user'];
 		if($context['mask']['user'] == '') return;
-		if(!defined('PONCTUATION')) include 'utf8_file.php';
+		defined('PONCTUATION') || include 'utf8_file.php';
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {
 			// disable eval options for more security
@@ -605,24 +626,41 @@ class Logic
 		}
 	}
 
-    public function getPublicFields()
-    {
-        return $this->_publicfields();
-    }
+	/**
+	 * Return the public fields
+	 * @access public
+	 */
+	public function getPublicFields()
+	{
+		return $this->_publicfields();
+	}
 
+	/**
+	 * Return the unique fields
+	 * @access protected
+	 */
 	protected function _publicfields() 
 	{
 		trigger_error("call to abstract publicfields", E_USER_ERROR);
 		return array();
 	}
 
-    public function getUniqueFields()
-    {
-        return $this->_uniqueFields();
-    }
+	/**
+	 * Return the unique fields
+	 * @access public
+	 */
+	public function getUniqueFields()
+	{
+		return $this->_uniqueFields();
+	}
 
+	/**
+	 * Return the unique fields
+	 * @access protected
+	 */
 	protected function _uniqueFields() 
 	{
+		trigger_error("call to abstract uniquefields", E_USER_ERROR);
 		return array();
 	}
 
@@ -630,7 +668,7 @@ class Logic
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * @private
 	 */
-	protected function _populateObject(&$vo, &$context) 
+	protected function _populateObject($vo, &$context) 
 	{
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -642,7 +680,7 @@ class Logic
 	 * Populate the context from the object. All fields are outputted.
 	 * @protected
 	 */
-	protected function _populateContext(&$vo, &$context) 
+	protected function _populateContext($vo, &$context) 
 	{
 		$view = (isset($context['do']) && $context['do'] == 'view');
 		foreach ($vo as $k=>$v) {
@@ -681,7 +719,7 @@ class Logic
 	/**
 	 * Used in viewAction to do extra populate in the context 
 	 */
-	protected function _populateContextRelatedTables(&$vo, &$context) {}
+	protected function _populateContextRelatedTables($vo, &$context) {}
 	
 	/**
 	 * process of particular type of fields
@@ -689,15 +727,16 @@ class Logic
 	 * @param array $context the context
 	 * @param int $status the status; by default 0 if no status changed
 	 */
-	protected function _processSpecialFields($type, $context, $status = 0) 
+	protected function _processSpecialFields($type, &$context, $status = 0) 
 	{
 		global $db;
-		$vo = getDAO('entities')->getById($context['id'], 'id, idtype');
-		$votype = getDAO ("types")->getById ($vo->idtype, 'class');
+		$context['id'] = (int)@$context['id'];
+		$vo = DAO::getDAO('entities')->getById($context['id'], 'id, idtype');
+		$votype = DAO::getDAO ("types")->getById ($vo->idtype, 'class');
 		$class = $votype->class;
 		unset($vo,$votype);
 
-		$fields = getDAO("tablefields")->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
+		$fields = DAO::getDAO("tablefields")->findMany ("(class='". $class. "' OR class='entities_". $class. "') AND type='". $type. "' AND status>0 ", "",    "name, type, class");
 		if($fields && $type == 'history') {
 			$updatecrit = "";
 			foreach ($fields as $field) {
@@ -721,8 +760,9 @@ class Logic
 	 */
 	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
 	{
-		if($context['id']) {
-            	$dao = getDAO('users');
+		$context['id'] = @$context['id'];
+		if(!$context['id']) return;
+            	$dao = DAO::getDAO('users');
 		if(C::get('lodeladmin', 'lodeluser')) {
 			usemaindb();
 			$vo = $dao->getById (C::get('id', 'lodeluser'));
@@ -750,18 +790,17 @@ class Logic
 				break;
 			default: //creation
 				$line .= getlodeltextcontents('createdby', 'common');
-			}
-			$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : $context['lodeluser']['lastname']));
-			#print_r($context['lodeluser']);
-			#$line .= ' '.$context['lodeluser']['username'];
-			$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
-			$value = $line;
-			#echo "value=$value";
-			unset($line);
 		}
+		$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : C::get('lastname', 'lodeluser')));
+		#print_r($context['lodeluser']);
+		#$line .= ' '.$context['lodeluser']['username'];
+		$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
+		$value = $line;
+		#echo "value=$value";
+		unset($line);
 	}
 
-/**
+	/**
 	 * Vérification de la valeur du statut (champ status dans les tables)
 	 * @param int $status la valeur du statut à insérer dans la base
 	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
@@ -795,55 +834,46 @@ class Logic
 
 
 /*------------------------------------------------*/
-
 /**
  * Logic factory
- *
  */
-function getLogic($table) 
+if(!function_exists('getLogic'))
 {
-	static $factory; // cache
-	if (isset($factory[$table])) {
-		return $factory[$table]; // cache
-	}
-	$logicclass = $table. 'Logic';
-	if(!class_exists($logicclass))
+	function getLogic($table)
 	{
-		$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/logic.php';
-		if(!file_exists($file))
-			trigger_error('ERROR: unknown logic', E_USER_ERROR);
-		include $file;
-		if(!class_exists($logicclass,false) || !is_subclass_of($logicclass, 'Logic'))
-			trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
+		return Logic::getLogic($table);
 	}
-	$factory[$table] = new $logicclass;
-
-	return $factory[$table];
 }
-
 
 /**
  * function returning the right for $access in the table $table
  */
+if(!function_exists('rights'))
+{
 	function rights($table, $access)
 	{
 		static $cache;
 		if (!isset($cache[$table][$access])) {
-			$cache[$table][$access] = getLogic($table)->rights($access);
+			$cache[$table][$access] = Logic::getLogic($table)->rights($access);
 		}
 		return $cache[$table][$access];
 	}
+}
 
 /**
  * Pipe function to test if an object can be deleted or not
  * (with cache)
  */
-function isdeletelocked($table, $id, $status = 0)
+if(!function_exists('isdeletelocked'))
 {
-	static $cache;
-	if (!isset($cache[$table][$id])) {
-		$cache[$table][$id] = getLogic($table)->isdeletelocked($id, $status);
+	function isdeletelocked($table, $id, $status = 0)
+	{
+		static $cache;
+		$id = (int)$id;
+		if (!isset($cache[$table][$id])) {
+			$cache[$table][$id] = Logic::getLogic($table)->isdeletelocked($id, $status);
+		}
+		return $cache[$table][$id];
 	}
-	return $cache[$table][$id];
 }
 ?>

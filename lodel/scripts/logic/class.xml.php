@@ -65,7 +65,8 @@ class XMLLogic extends Logic {
 	/** 
 	* Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("translations");
 	}
 	
@@ -73,13 +74,13 @@ class XMLLogic extends Logic {
 	* Generate the XML for an entity.
 	* Must have context['id'] given
 	*/
-	public function generateXMLAction (&$context, &$error) {
-
-		if (!$context['id'])
+	public function generateXMLAction (&$context, &$error) 
+	{
+		$id = (int)@$context['id'];
+		if (!$id)
 			trigger_error('ERROR : no id given. Id attribute is required to generate XML file', E_USER_ERROR);
 
 		global $db;
-		$id=$context['id'];
 		//check if the given id is OK
 		$row = $db->getOne(lq("SELECT 1 FROM #_TP_objects WHERE id='$id' AND class='entities'"));
 		if (!$row) {//if the object is not an entity do not generate XML
@@ -92,8 +93,7 @@ class XMLLogic extends Logic {
 		$context['type'] = $row['type'];
 		$context['identity'] = $id;
 
-		if(!function_exists('calculateXML'))
-			include 'xmlfunc.php';
+		function_exists('calculateXML') || include 'xmlfunc.php';
 		$context['contents'] =  $contents = calculateXML ($context);
 		// !! BEWARE !!
 		// validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
@@ -152,8 +152,7 @@ class XMLLogic extends Logic {
 		
 		if (empty($context['class']))
 			trigger_error('ERROR: no class given. Class attribute is required to generate XSD Schema', E_USER_ERROR);
-		if(!function_exists('calculateXML'))
-			include 'xmlfunc.php';
+		function_exists('calculateXML') || include 'xmlfunc.php';
 		//verif if the given class is OK
 		global $db;
 		$class = addslashes($context['class']);

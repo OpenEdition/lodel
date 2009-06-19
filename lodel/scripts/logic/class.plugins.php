@@ -83,8 +83,8 @@ class PluginsLogic extends MainPluginsLogic
 		}
 
 		parent::listAction($context, $error);  // security 
-		if($error)
-			return '_error';
+
+		if($error) return '_error';
 
 		$dao = $this->_getMainTableDao();
 		$vo = $dao->find('name="'.addslashes($context['name']).'"');
@@ -94,15 +94,16 @@ class PluginsLogic extends MainPluginsLogic
 			$new = true;
 			$vo = $dao->createObject();
 			$vo->name = $this->_plugin['name'];
-			$vo->config = (isset($this->_plugin['config']) ? serialize($this->_plugin['config']) : '');
+			$vo->config = @serialize($this->_plugin['config']);
 		}	
 		$vo->status = 1;
 		$context['id'] = $dao->save($vo, $new);
 
 		parent::factory($context, $error, $this->_plugin['name'].'_'.__FUNCTION__, true); // call the enableAction func from the plugin
+
 		@unlink(SITEROOT.'/CACHE/triggers');
 		clearcache();
-		return '_back';
+		return '_location:index.php?lo=plugins&do=list';
 	}
 
 	/**
@@ -119,8 +120,8 @@ class PluginsLogic extends MainPluginsLogic
 		}
 
 		parent::listAction($context, $error); // security 
-		if($error)
-			return '_error';
+
+		if($error) return '_error';
 
 		$dao = $this->_getMainTableDao();
 		$vo = $dao->find('name="'.addslashes($context['name']).'"');
@@ -138,7 +139,7 @@ class PluginsLogic extends MainPluginsLogic
 		
 		@unlink(SITEROOT.'/CACHE/triggers');
 		clearcache();
-		return '_back';
+		return '_location:index.php?lo=plugins&do=list';
 	}
 
 	// begin{publicfields} automatic generation  //

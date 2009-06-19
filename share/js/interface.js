@@ -421,11 +421,14 @@ function manageDesk(shareurl, msgHide, msgShow, site, errorXHR, errorSave)
 }
 
 /* IM - select action */
-function im_action(action, dir, message)
+function im_action(obj, dir)
 {
+	var index = obj.selectedIndex;
+	var action = obj.options[index].value;
+	var message = obj.options[index].innerHTML;
 	switch(action) {
 	
-	case 'view': window.location='index.php?do=view&lo=internal_messaging';
+	case 'view': window.location="index.php?do=view&lo=internal_messaging";
 	break;
 	case 'rest': document.getElementById('im_restore').value=1;document.getElementById('im_form').submit();
 	break;

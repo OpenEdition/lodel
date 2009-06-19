@@ -83,7 +83,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function viewAction (&$context, &$error) 
 	{
-		if (empty($context['id'])) $context['status']=32; //why ?
+		if (empty($context['id'])) $context['status']=32; //why ? dont't know !
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
 	}
@@ -99,7 +99,8 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		$dao = $this->_getMainTableDAO();
-		$vo  = $dao->find('id=' . $context['id'], 'status,id');
+		$id = (int)@$context['id'];
+		$vo  = $dao->find('id=' . $id, 'status,id');
 		if (!$vo) {
 			trigger_error("ERROR: interface error in EntriesLogic::publishAction ", E_USER_ERROR);
 		}
@@ -152,7 +153,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function listAction (&$context, &$error)
 	{
-		$daotype = getDAO ($this->daoname);
+		$daotype = DAO::getDAO ($this->daoname);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -176,9 +177,9 @@ class EntriesLogic extends GenericLogic
 		if (!$idtype) {
 			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
 		}
-		$status = $context['status'];
+		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
-		$daotype = getDAO ("entrytypes");
+		$daotype = DAO::getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");
 		$class = $context['class']=$votype->class;
 		if (!$clean) {
@@ -250,7 +251,7 @@ class EntriesLogic extends GenericLogic
 		$vo->sortkey=makeSortKey($vo->g_name);
 		$id=$context['id']=$dao->save($vo);
 		// save the class table
-		$gdao=getGenericDAO($class,"identry");
+		$gdao=DAO::getGenericDAO($class,"identry");
 		$gdao->instantiateObject($gvo);
 		$context['data']['id']=$context['id'];
 		$this->_populateObject($gvo,$context['data']);
@@ -270,7 +271,7 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction (&$context, &$error) 
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		return parent::changeRankAction($context, $error, 'idparent', '');
 	}
@@ -355,7 +356,7 @@ class EntriesLogic extends GenericLogic
 		if (isset($context['idrelation'])) {
 			$this->idrelation=$context['idrelation'];
 		} else {
-			$vos=getDAO ('relations')->findMany ("id2 ".sql_in_array ($context['id']));
+			$vos=DAO::getDAO ('relations')->findMany ("id2 ".sql_in_array ($context['id']));
 			$this->idrelation=array ();
 			foreach ($vos as $vo) {
 				$this->idrelation[]=$vo->idrelation;
@@ -371,19 +372,19 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		foreach ($this->classes as $class) {
-			$gdao=getGenericDAO ($class, $this->idtype);
+			$gdao=DAO::getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
 		
 			if($this->maintable == 'persons') {
 				if ($this->idrelation) {
-					$gdao=getGenericDAO("entities_".$class,"idrelation");
+					$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
 					$gdao->deleteObject($this->idrelation);
 				}
 			}
 		}
 
 		if ($this->idrelation) {
-			$dao=getDAO ('relations');
+			$dao=DAO::getDAO ('relations');
 			$dao->delete ('idrelation '. sql_in_array ($this->idrelation));
 		}
 	}

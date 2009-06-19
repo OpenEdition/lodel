@@ -131,6 +131,18 @@ class DAO
 	 * @access private
 	 */
 	protected $cache_rightscriteria;
+
+	/**
+	 * Internal cache for DAO objects
+	 * @var array
+	 */
+	static protected $_daos = array();
+
+	/**
+	 * Internal cache for GenericDAO objects
+	 * @var array
+	 */
+	static protected $_gdaos = array();
 	/**#@-*/
 
 	/**
@@ -148,6 +160,48 @@ class DAO
 		$this->sqltable = lq("#_TP_"). $table;
 		$this->uniqueid = $uniqueid;
 		$this->idfield = $idfield;
+	}
+
+	/**
+	* DAO factory
+	*
+	* @param string $table the dao name
+	*/
+	static public function getDAO($table)
+	{
+		if (isset(self::$_daos[$table])) {
+			return self::$_daos[$table]; // cache
+		}
+		$daoclass = $table. 'DAO';
+	
+		if(!class_exists($daoclass))
+		{
+			$file = C::get('sharedir', 'cfg').'/plugins/custom/'.$table.'/dao.php';
+			if(!file_exists($file))
+				trigger_error('ERROR: unknown dao', E_USER_ERROR);
+			
+			include $file;
+			if(!class_exists($daoclass, false) || !is_subclass_of($daoclass, 'DAO'))
+				trigger_error('ERROR: the DAO plugin file MUST extends the DAO OR GenericDAO class', E_USER_ERROR);
+		}
+		
+		self::$_daos[$table] = new $daoclass;
+		return self::$_daos[$table];
+	}
+
+	/**
+	* generic DAO factory
+	*
+	* @param string $table the dao name
+	* @param int $idfield the identifier field
+	*/
+	static public function getGenericDAO($table, $idfield)
+	{
+		if (isset(self::$_gdaos[$table])) {
+			return self::$_gdaos[$table]; // cache
+		}
+		self::$_gdaos[$table] = new genericDAO ($table,$idfield);
+		return self::$_gdaos[$table];
 	}
 
 	/**
@@ -200,7 +254,7 @@ class DAO
 			}
 			if ($update) {
 				$update = 
-				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". $vo->$idfield. "' ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$db->execute('UPDATE '. $this->sqltable. " SET  $update WHERE ". $idfield. "='". (int)$vo->$idfield. "' ". $this->rightscriteria('write')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}	else	{ // new  - Ajout
 			if (isset ($vo->protect))	{ // special processing for the protection
@@ -261,6 +315,7 @@ class DAO
 	 */
 	public function getById($id, $select = "*")
 	{
+		$id = (int)$id;
 		return $this->find($this->idfield. "='$id'", $select);
 	}
 
@@ -275,7 +330,7 @@ class DAO
 	 */
 	public function getByIds($ids, $select = "*")
 	{
-		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", $ids). "')" : "='".$ids."'"), '', $select);
+		return $this->findMany($this->idfield. (is_array($ids) ? " IN ('". join("','", array_map('intval', $ids)). "')" : "='".(int)$ids."'"), '', $select);
 	}
 
 	/**
@@ -421,17 +476,17 @@ class DAO
 		$idfield = $this->idfield;
 		if (is_object($mixed)) {
 			$vo = &$mixed;
-			$id = $vo->$idfield;
+			$id = (int)$vo->$idfield;
 			$criteria = $idfield. "='$id'";
 			//set id on vo to 0
 			$vo->$idfield = 0;
 			$nbid = 1;
 		}	elseif (is_numeric($mixed) && $mixed > 0)	{
-			$id = $mixed;
+			$id = (int)$mixed;
 			$criteria = $idfield. "='$id'";
 			$nbid = 1;
 		}	elseif (is_array($mixed))	{
-			$id = $mixed;
+			$id = array_map('intval', $mixed);
 			$criteria = $idfield. " IN ('". join("','", $id). "')";
 			$nbid = count($id);
 		}	elseif (is_string($mixed) && trim($mixed)) {

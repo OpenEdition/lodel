@@ -70,13 +70,13 @@ function makeobjetstable()
 	$offset = 2000000000;
 
 	$tables = array ("entities" => array ("idtype"), "types" => array ("id"), 
-									"persontypes" => array ("id"), "entrytypes" => array ("id"), 
-									"entries" => array ("id", "idparent", "idtype"), "persons" => array ("id"), 
-									"entites_personnes" => array ("idperson", "idtype"), 
-									"entites_entrees" => array ("identry"), 
-									"typeentites_typeentrees" => array ("identrytype", "identitytype"), 
-									"typeentites_typepersonnes" => array ("idpersontype", "identitytype"), 
-									"typeentites_typeentites" => array ("identitytype", "idtypeentite2"));
+			"persontypes" => array ("id"), "entrytypes" => array ("id"), 
+			"entries" => array ("id", "idparent", "idtype"), "persons" => array ("id"), 
+			"entites_personnes" => array ("idperson", "idtype"), 
+			"entites_entrees" => array ("identry"), 
+			"typeentites_typeentrees" => array ("identrytype", "identitytype"), 
+			"typeentites_typepersonnes" => array ("idpersontype", "identitytype"), 
+			"typeentites_typeentites" => array ("identitytype", "idtypeentite2"));
 
 	foreach ($tables as $table => $idsname)	{
 		foreach ($idsname as $idname)	{
@@ -88,16 +88,16 @@ function makeobjetstable()
 		}
 	}
 
-	$conv = array ("personnes" => array ("entites_personnes" => "idperson",), 
-									"entrees" => array ("entites_entrees" => "identry", "entrees" => "idparent",), 
-									"types" => array ("entites" => "idtype", 
-																		"typeentites_typeentites" => array ("identitytype", "idtypeentite2"), 
-																		"typeentites_typeentrees" => "identitytype", 
-																		"typeentites_typepersonnes" => "identitytype",),
-									"typepersonnes" => array ("typeentites_typepersonnes" => "idpersontype", 
-																						"entites_personnes" => "idtype",), 
-									"typeentrees" => array ("typeentites_typeentrees" => "identrytype", 
-																					"entrees" => "idtype",));
+	$conv = array (	"personnes" => array ("entites_personnes" => "idperson",), 
+			"entrees" => array ("entites_entrees" => "identry", "entrees" => "idparent",), 
+			"types" => array ("entites" => "idtype", 
+			"typeentites_typeentites" => array ("identitytype", "idtypeentite2"), 
+			"typeentites_typeentrees" => "identitytype", 
+			"typeentites_typepersonnes" => "identitytype",),
+			"typepersonnes" => array ("typeentites_typepersonnes" => "idpersontype", 
+			"entites_personnes" => "idtype",), 
+			"typeentrees" => array ("typeentites_typeentrees" => "identrytype", 
+			"entrees" => "idtype",));
 
 	foreach ($conv as $maintable => $changes)	{
 		$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -124,6 +124,7 @@ function makeobjetstable()
 			}
 			$result->MoveNext();
 		}
+		$result->Close();
 		#echo "ok<br />";
 
 	}

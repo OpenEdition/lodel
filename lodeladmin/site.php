@@ -137,7 +137,7 @@ try
 	}
 	
 	// post-traitement
-    	if(!defined('INC_FUNC')) include 'func.php';
+    	defined('INC_FUNC') || include 'func.php';
 	postprocessing(C::getC());
 	
 	View::getView()->render('site');

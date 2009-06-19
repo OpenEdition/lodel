@@ -226,6 +226,10 @@ ln tpl/import.html
 
 ln tpl/edit_users.html
 ln tpl/users.html
+ln tpl/users_mail.html
+
+ln tpl/plugins.html
+ln tpl/edit_plugins.html
 
 ln tpl/importmodel.html
 ln tpl/backupmodel.html

@@ -75,7 +75,7 @@ class OptionsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		return parent::changeRankAction(&$context, &$error, 'idgroup');
 	}
@@ -91,6 +91,8 @@ class OptionsLogic extends Logic {
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{ 
+		$context['title'] = @$context['title'];
+		$context['name'] = @$context['name'];
 		if (!$context['title']) {
 			$context['title'] = $context['name'];
 		}
@@ -119,7 +121,7 @@ class OptionsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(SITEROOT. "CACHE/options");
+		clearcache();
 	}
 
 
@@ -133,19 +135,16 @@ class OptionsLogic extends Logic {
 	{
 		switch($var) {
 		case "userrights":
-			if(!function_exists('makeSelectUserRights'))
-				include("commonselect.php");
+			function_exists('makeSelectUserRights') || include("commonselect.php");
 			$lodeladmin = ((!C::get('site', 'cfg') || SINGLESITE) && defined('backoffice-lodeladmin')) ? TRUE : FALSE;
 			makeSelectUserRights(isset($context['userrights']) ? $context['userrights'] : '', $lodeladmin);
 			break;
 		case "type" :
-			if(!function_exists('makeSelectFieldTypes'))
-				include("commonselect.php");
+			function_exists('makeSelectFieldTypes') || include("commonselect.php");
 			makeSelectFieldTypes(isset($context['type']) ? $context['type'] : '');
 			break;
 		case "edition" :
-			if(!function_exists('makeSelectEdition'))
-				include("commonselect.php");
+			function_exists('makeSelectEdition') || include("commonselect.php");
 			makeSelectEdition(isset($context['edition']) ? $context['edition'] : '');
 			break;
 		}
@@ -159,7 +158,7 @@ class OptionsLogic extends Logic {
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context)
+	protected function _saveRelatedTables($vo,&$context)
 	{
 		// reinitialise le cache surement.
 	}
@@ -216,8 +215,11 @@ class OptionsLogic extends Logic {
 /*-----------------------------------*/
 /* loops                             */
 /*-----------------------------------*/
-function humanfieldtype($text)
+if(!function_exists('humanfieldtype'))
 {
-	return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
+	function humanfieldtype($text)
+	{
+		return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
+	}
 }
 ?>

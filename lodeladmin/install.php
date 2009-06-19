@@ -54,12 +54,13 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
-	if($installlang != $_GET['installlang']) {
-		require_once '../lodel-'.$version.'/scripts/lang.php';
+	if(isset($_GET['installlang']) && $cfg['installlang'] != $_GET['installlang']) {
+		require_once '../lodel-'.$cfg['version'].'/scripts/lang.php';
 		if(in_array(strtoupper($_GET['installlang']), array_keys($GLOBALS['installlanguages']))) {
 			$installlang = $_GET['installlang'];
 		}
 	}
+	if(!isset($installlang)) $installlang = $cfg['installlang'];
 }
 
 error_reporting(E_ALL ^ E_NOTICE);
@@ -100,8 +101,10 @@ if($option1) { $installoption=1; }
 elseif($option2){ $installoption=2; }
 elseif ($erase_and_option1) { $installoption=1; unlink($install->get('lodelconfig')); }
 elseif ($erase_and_option2) { $installoption=2; unlink($install->get('lodelconfig')); }
-if(isset($installoption))
+if(!empty($installoption))
 	$install->set('installoption', $installoption);
+elseif(!empty($cfg['installoption']))
+	$install->set('installoption', $cfg['installoption']);
 
 //
 // Test the PHP version
@@ -127,7 +130,7 @@ switch($tache)
 {
 	case 'plateform':
 		$install->set('plateform', $plateform);
-		$install->installConf($testfile);
+		$install->installConf(__FILE__);
 	break;
 	case 'mysql':
 		$install->majConfDB($newdbusername, $newdbpasswd, $newdbhost);
@@ -139,7 +142,7 @@ switch($tache)
 		}
 		elseif(!$install->manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase))
 		{
-			$erreur_createdatabase=1;
+			$GLOBALS['erreur_createdatabase']=1;
 			$install->include_tpl("install-database.html");
 		}
 	break;
@@ -147,38 +150,50 @@ switch($tache)
 	if(($t = $install->manageAdmin($adminusername, $adminpasswd, $adminpasswd2, $lang, $site, $adminemail)) !== true)
 	{
 		if($t === "error_user")
-			$erreur_empty_user_or_passwd=true;
+			$GLOBALS['erreur_empty_user_or_passwd']=true;
 		elseif($t === "error_passwd")
-			$erreur_admin_passwd=true;
+			$GLOBALS['erreur_admin_passwd']=true;
 		elseif($t === "error_confirmpasswd")
-			$erreur_confirm_passwd=true;
+			$GLOBALS['erreur_confirm_passwd']=true;
 		elseif($t === "error_create")
-			$erreur_create=1;
+			$GLOBALS['erreur_create']=1;
 		elseif($t === "error_email")
-			$erreur_admin_email=true;
+			$GLOBALS['erreur_admin_email']=true;
 
 		$install->include_tpl("install-admin.html");
 	}
 	else
 	{
-		require($install->get('lodelconfig'));	
-		$GLOBALS['tableprefix'] = $tableprefix;
+		require($install->get('lodelconfig'));
+		$GLOBALS['tableprefix'] = $cfg['tableprefix'];
+		require("context.php");
+		$cfg['home'] = LODELROOT.$cfg['home'];
+		C::setCfg($cfg);
 		// log this user in 
 		require_once("connect.php");
 		require_once("loginfunc.php");
-
+		require_once("auth.php");
 		$site="";
 		if (check_auth($adminusername,$adminpasswd,$site)) {
-			open_session($adminusername);
+			$adminpasswd = null;
+			if('error_opensession' === ($name = open_session($adminusername)))
+			{
+				trigger_error('ERROR: cannot open a session ?', E_USER_ERROR);
+			}
+		} 
+		else 
+		{
+			$adminpasswd = null;
+			trigger_error('ERROR: invalid username or password. Strange, please contact lodel@lodel.org', E_USER_ERROR);
 		}
 
 		// on vire le MDP de la mémoire
-		unset($adminpasswd);
+		$adminpasswd = null;
 	}
 	break;
 	case 'htaccess': // mise en place htaccess
-		$erreur_htaccess = $install->set_htaccess($verify, $write, $nohtaccess);
-		if(!empty($erreur_htaccess))
+		$GLOBALS['erreur_htaccess'] = $install->set_htaccess($verify, $write, $nohtaccess);
+		if(!empty($GLOBALS['erreur_htaccess']))
 		{
 			$install->include_tpl("install-htaccess.html");
 		}
@@ -196,8 +211,8 @@ switch($tache)
 		$t = $install->testRights();
 		if($t !== true)
 		{
-			$erreur['functions'] = array();	
-			$erreur['functions'] = $t;
+			$GLOBALS['erreur']['functions'] = array();	
+			$GLOBALS['erreur']['functions'] = $t;
 			$install->include_tpl("install-php.html");
 		}
 	break;
@@ -207,7 +222,7 @@ switch($tache)
 		//
 		if($install->verifyLodelConfig() === "error")
 		{
-			$erreur_exists_but_not_readable=1;
+			$GLOBALS['erreur_exists_but_not_readable']=1;
 			$install->include_tpl('install-lodelconfig.html');
 		}
 		
@@ -216,7 +231,7 @@ switch($tache)
 	break;
 	default:
 		if(!is_bool($installing))
-			$installing = $install->startInstall();
+			$GLOBALS['installing'] = $install->startInstall();
 		$install->include_tpl("install-bienvenue.html");
 	break;
 }
@@ -232,24 +247,23 @@ $install->checkConfig();
 //
 $install->checkFunc();
 
-
 //
 // essaie la connection a la base de donnée
 //
 if($install->checkDB() === "error_cnx")
 {
-	$erreur_connect=1;
+	$GLOBALS['erreur_connect']=1;
 	$install->include_tpl("install-mysql.html");
 }
 
 require($install->get('lodelconfig'));
 // on cherche si on a une database
 if(!$install->get('installoption')) {
-	if(!$installoption) trigger_error('Internal error. Missing installoption value from lodelconfig.php !', E_USER_ERROR);
-	$install->set('installoption', $installoption);
+	if(!$cfg['installoption']) trigger_error('Internal error. Missing installoption value from lodelconfig.php !', E_USER_ERROR);
+	$install->set('installoption', $cfg['installoption']);
 }
-if (!$database) {
-	$resultshowdatabases = $install->seekDB();
+if (!$cfg['database']) {
+	$GLOBALS['resultshowdatabases'] = $install->seekDB();
 	$install->include_tpl("install-database.html");
 }
 
@@ -259,17 +273,17 @@ if($t !== true)
 {
 	if($t === "error_dbselect")
 	{
-		$erreur_usedatabase=1;
+		$GLOBALS['erreur_usedatabase']=1;
 		$install->include_tpl("install-database.html");
 	}
 	elseif($t === "error_tableexist")
 	{
-		$erreur_tablesexist=1;
+		$GLOBALS['erreur_tablesexist']=1;
 		$install->include_tpl("install-database.html");
 	}
 	else
 	{
-		$erreur_createtables = $t;
+		$GLOBALS['erreur_createtables'] = $t;
 		$install->include_tpl("install-database.html");
 	}
 }
@@ -285,9 +299,9 @@ if($install->verifyAdmin() === false)
 //
 // Vérifie la présence des htaccess
 //
-if ($htaccess!="non") {
+if ($cfg['htaccess'] != "non") {
 
-	if(!$erreur_htaccess = $install->checkHtaccess())
+	if(!$GLOBALS['erreur_htaccess'] = $install->checkHtaccess())
 	{
 		$install->include_tpl("install-htaccess.html");
 	}
@@ -296,10 +310,10 @@ if ($htaccess!="non") {
 //
 // Demander des options generales
 //
-$t = $install->askOptions($importdir, $chooseoptions);
+$t = $install->askOptions($newimportdir, $cfg['chooseoptions']);
 if($t === "error")
 {
-	$erreur_importdir=1;
+	$GLOBALS['erreur_importdir']=1;
 	$install->include_tpl("install-options.html");
 }
 elseif($t === false)

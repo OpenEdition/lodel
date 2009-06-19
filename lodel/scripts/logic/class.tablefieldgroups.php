@@ -66,7 +66,8 @@ class TablefieldgroupsLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("tablefieldgroups");
 	}
 
@@ -85,6 +86,7 @@ class TablefieldgroupsLogic extends Logic {
 	public function isdeletelocked($id,$status=0) 
 	{
 		global $db;
+		$id = (int)$id;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_tablefields WHERE idgroup='$id' AND status>-64"));
 		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
@@ -102,7 +104,7 @@ class TablefieldgroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		return parent::changeRankAction(&$context, &$error, 'class');
 	}

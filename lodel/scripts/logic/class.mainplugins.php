@@ -103,13 +103,14 @@ class MainPluginsLogic extends Logic
 		if(!$hook)
 		{
 			include_once $path.$name[0].'/'.$name[0].'.php';
-			if(function_exists($name[1]))
+			if(function_exists($name[0].'_'.$name[1]))
 			{
-				return $name[1]($context,$error);
+				$func = $name[0].'_'.$name[1];
+				return $func($context,$error);
 			}
 			else
 			{
-				if(!class_exists($name[0], false) || get_parent_class($name[0]) !== 'plugins' || !method_exists($name[0], $name[1]))
+				if(!class_exists($name[0], false) || get_parent_class($name[0]) !== 'Plugins' || !method_exists($name[0], $name[1]))
 				{
 					if($return) return false;
 					trigger_error('ERROR: no way to find the plugin', E_USER_ERROR);
@@ -143,12 +144,13 @@ class MainPluginsLogic extends Logic
 		else
 		{
 			include_once $path.$name[0].'/'.$name[0].'.php';
-			if(!function_exists($name[1]))
+			$func = $name[0].'_'.$name[1];
+			if(!function_exists($func))
 			{
 				if($return) return false;
 				trigger_error('ERROR: Invalid hook/function name '.$name[1].' for plugin '.$name[0], E_USER_ERROR);
 			}
-			return $name[1]($context,$error);
+			return $func($context,$error);
 		}
 	}
 
@@ -160,6 +162,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function listAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 		$plugins = array();
 		
@@ -191,215 +195,217 @@ class MainPluginsLogic extends Logic
 		else
 		{
 			$path = C::get('sharedir', 'cfg').'/plugins/custom/';
-			$fd = @opendir($path) or trigger_error("Impossible d'ouvrir $path", E_USER_ERROR);
-	
-			while (($file = readdir($fd)) !== false) 
+			$fd = @opendir($path);
+			if($fd)
 			{
-				if ($file{0} == ".") continue;
-	
-				$file = $path.$file;
-				if(!is_dir($file) || !file_exists($file.'/config.xml') || 
-					(isset($context['name']) && substr($file, - strlen($context['name'])) != $context['name'])) 
-					continue;
-	
-				$errors = array();
-				$pName = basename($file);
-				if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $pName)) continue;
-	
-				$plugin = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
-				
-				if($plugin)
-				{ // already parsed
-					$plugin['config'] = unserialize($plugin['config']); // default configuration
-					unset($plugin['name']);
-					$context['plugins'][$pName] = $plugin;
-					continue;
-				}
-				$plugin = array();
-				$reader = new XMLReader();
-				if(!@$reader->open($file.'/config.xml', 'UTF-8'))
+				while (($file = readdir($fd)) !== false) 
 				{
-					$errors[] = 'Invalid XML for plugin '.$pName;
-					continue;
-				}
-				$reader->read();
-	
-				while($reader->read())
-				{
-					if(XMLReader::ELEMENT !== $reader->nodeType) continue;
-					switch($reader->localName)
+					if ($file{0} == ".") continue;
+		
+					$file = $path.$file;
+					if(!is_dir($file) || !file_exists($file.'/config.xml') || 
+						(isset($context['name']) && substr($file, - strlen($context['name'])) != $context['name'])) 
+						continue;
+		
+					$errors = array();
+					$pName = basename($file);
+					if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $pName)) continue;
+		
+					$plugin = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
+					
+					if($plugin)
+					{ // already parsed
+						$plugin['config'] = unserialize($plugin['config']); // default configuration
+						unset($plugin['name']);
+						$context['plugins'][$pName] = $plugin;
+						continue;
+					}
+					$plugin = array();
+					$reader = new XMLReader();
+					if(!@$reader->open($file.'/config.xml', 'UTF-8'))
 					{
-						case 'sql':
-							$localName = $reader->localName;
-							$reader->read();
-							if(!$reader->hasValue)
-							{
-								$errors[] = 'Missing sql for plugin '.$pName;
-								break 2;
-							}
-							$sql = (bool)$reader->value;
-							if($sql)
-							{
-								if(!file_exists($file.'/dao.php'))
+						$errors[] = 'Invalid XML for plugin '.$pName;
+						continue;
+					}
+					$reader->read();
+		
+					while($reader->read())
+					{
+						if(XMLReader::ELEMENT !== $reader->nodeType) continue;
+						switch($reader->localName)
+						{
+							case 'sql':
+								$localName = $reader->localName;
+								$reader->read();
+								if(!$reader->hasValue)
 								{
-									$errors[] = 'Missing dao file for plugin '.$pName;
+									$errors[] = 'Missing sql for plugin '.$pName;
 									break 2;
 								}
-							}
-							$plugin[$localName] = $sql;
-							break;
-						case 'description':
-						case 'title': 
-							$localName = $reader->localName;
-							$reader->read();
-							if(!$reader->hasValue)
-							{
-								$errors[] = 'Missing '.$localName.' for plugin '.$pName;
-								break 2;
-							}
-							$plugin[$localName] = $reader->value;
-							if('_' === $plugin[$localName]{0})
-								$plugin[$localName] = getlodeltextcontents(substr($plugin[$localName], 1),'lodeladmin');
-							break;
-						case 'hookType':
-							$localName = $reader->localName;
-							$reader->read();
-							if(!$reader->hasValue)
-							{
-								$errors[] = 'Missing hooktype for plugin '.$pName;
-								break 2;
-							}
-							if($reader->value != 'class' && $reader->value != 'func')
-							{
-								$errors[] = 'Invalid hookType '.$reader->value;
-								break 2;
-							}
-							$plugin['hooktype'] = $reader->value;
-							break;
-						case 'triggers': 
-							$localName = $reader->localName;
-							$reader->read();
-							if(!$reader->hasValue)
-							{
-								$errors[] = 'Missing triggers for plugin '.$pName;
-								break 2;
-							}
-							$triggers = explode(',', $reader->value);
-							foreach($this->_triggers as $trigger)
-							{
-								$plugin['trigger_'.$trigger] = (int)in_array($trigger, $triggers); // mysql needs 0 or 1
-							}
-							
-							break;
-						case 'parameters':
-							$reader->read();
-							$i=0;
-							while($reader->read() && 'parameters' !== $reader->localName)
-							{
-								$param = array();
-								$reader->moveToFirstAttribute();
-								do
+								$sql = (bool)$reader->value;
+								if($sql)
 								{
-									switch($reader->localName)
+									if(!file_exists($file.'/dao.php'))
 									{
-										case 'name':
-											if(!$reader->hasValue)
-											{
-												$errors[] = 'Missing attribute name for parameter for plugin '.$pName;
-												break 5;
-											}
-											$param['name'] = $reader->value;
-										break;
-	
-										case 'type':
-											if(!$reader->hasValue)
-											{
-												$errors[] = 'Missing attribute type for parameter for plugin '.$pName;
-												break 5;
-											}
-											$param['type'] = $reader->value;
-											if(!in_array($param['type'], array('boolean', 'text', 'int', 'email', 'lang', 'date', 'mltext', 'datetime', 'file', 'url', 'image', 'number', 'select', 'multipleselect')))
-											{
-												$error[] = 'Bad type '.$param['type'].' for plugin '.$pName;
-											}
-										break;
-	
-										case 'defaultValue':
-											$param['defaultValue'] = $reader->value;
-										break;
-										
-										case 'title':
-											if(!$reader->hasValue)
-											{
-												$errors[] = 'Missing attribute title for parameter for plugin '.$pName;
-												break 5;
-											}
-											$param['title'] = $reader->value;
-											if('_' === $param['title']{0})
-												$param['title'] = getlodeltextcontents(substr($param['title'], 1),'lodeladmin');
-										break;
-	
-										case 'required':
-											$param['required'] = $reader->value == 'true' ? true : false;
-										break;
-	
-										case 'allowedValues':
-											$param['allowedValues'] = explode(',', $reader->value);
-										break;
-										default: break;
+										$errors[] = 'Missing dao file for plugin '.$pName;
+										break 2;
 									}
-								} while($reader->moveToNextAttribute());
-	
-								if(!isset($param['name']) || !isset($param['type']) 
-								|| !isset($param['defaultValue']) || !isset($param['required'])
-								|| !isset($param['title']) || 
-								(($param['type'] == 'select' || $param['type'] == 'multipleselect') &&
-								!isset($param['allowedValues'])))
-								{
-									$errors[] = 'Missing attributes for parameter in plugin '.$pName;
-									break 3;
 								}
-								$name = $param['name'];
-								unset($param['name']);
-								$plugin['config'][$name] = $param;
-								
-								++$i;
+								$plugin[$localName] = $sql;
+								break;
+							case 'description':
+							case 'title': 
+								$localName = $reader->localName;
 								$reader->read();
-							}
-							
-							break;
+								if(!$reader->hasValue)
+								{
+									$errors[] = 'Missing '.$localName.' for plugin '.$pName;
+									break 2;
+								}
+								$plugin[$localName] = $reader->value;
+								if('_' === $plugin[$localName]{0})
+									$plugin[$localName] = getlodeltextcontents(substr($plugin[$localName], 1),'lodeladmin');
+								break;
+							case 'hookType':
+								$localName = $reader->localName;
+								$reader->read();
+								if(!$reader->hasValue)
+								{
+									$errors[] = 'Missing hooktype for plugin '.$pName;
+									break 2;
+								}
+								if($reader->value != 'class' && $reader->value != 'func')
+								{
+									$errors[] = 'Invalid hookType '.$reader->value;
+									break 2;
+								}
+								$plugin['hooktype'] = $reader->value;
+								break;
+							case 'triggers': 
+								$localName = $reader->localName;
+								$reader->read();
+								if(!$reader->hasValue)
+								{
+									$errors[] = 'Missing triggers for plugin '.$pName;
+									break 2;
+								}
+								$triggers = explode(',', $reader->value);
+								foreach($this->_triggers as $trigger)
+								{
+									$plugin['trigger_'.$trigger] = (int)in_array($trigger, $triggers); // mysql needs 0 or 1
+								}
+								
+								break;
+							case 'parameters':
+								$reader->read();
+								$i=0;
+								while($reader->read() && 'parameters' !== $reader->localName)
+								{
+									$param = array();
+									$reader->moveToFirstAttribute();
+									do
+									{
+										switch($reader->localName)
+										{
+											case 'name':
+												if(!$reader->hasValue)
+												{
+													$errors[] = 'Missing attribute name for parameter for plugin '.$pName;
+													break 5;
+												}
+												$param['name'] = $reader->value;
+											break;
+		
+											case 'type':
+												if(!$reader->hasValue)
+												{
+													$errors[] = 'Missing attribute type for parameter for plugin '.$pName;
+													break 5;
+												}
+												$param['type'] = $reader->value;
+												if(!in_array($param['type'], array('boolean', 'text', 'int', 'email', 'lang', 'date', 'mltext', 'datetime', 'file', 'url', 'image', 'number', 'select', 'multipleselect')))
+												{
+													$error[] = 'Bad type '.$param['type'].' for plugin '.$pName;
+												}
+											break;
+		
+											case 'defaultValue':
+												$param['defaultValue'] = $reader->value;
+											break;
+											
+											case 'title':
+												if(!$reader->hasValue)
+												{
+													$errors[] = 'Missing attribute title for parameter for plugin '.$pName;
+													break 5;
+												}
+												$param['title'] = $reader->value;
+												if('_' === $param['title']{0})
+													$param['title'] = getlodeltextcontents(substr($param['title'], 1),'lodeladmin');
+											break;
+		
+											case 'required':
+												$param['required'] = $reader->value == 'true' ? true : false;
+											break;
+		
+											case 'allowedValues':
+												$param['allowedValues'] = explode(',', $reader->value);
+											break;
+											default: break;
+										}
+									} while($reader->moveToNextAttribute());
+		
+									if(!isset($param['name']) || !isset($param['type']) 
+									|| !isset($param['defaultValue']) || !isset($param['required'])
+									|| !isset($param['title']) || 
+									(($param['type'] == 'select' || $param['type'] == 'multipleselect') &&
+									!isset($param['allowedValues'])))
+									{
+										$errors[] = 'Missing attributes for parameter in plugin '.$pName;
+										break 3;
+									}
+									$name = $param['name'];
+									unset($param['name']);
+									$plugin['config'][$name] = $param;
+									
+									++$i;
+									$reader->read();
+								}
+								
+								break;
+		
+							default: break;
+						}
+					}
+					$reader->close();
 	
-						default: break;
-					}
-				}
-				$reader->close();
-
-				if(!isset($plugin['hooktype'])) // only really needed param
-					$errors[] = 'Missing hook type in plugin '.$pName;
-
-				if(empty($errors))
-				{
-					$dao = $this->_getMainTableDao();
-					$vo = $dao->createObject();
-					$vo->name = $pName;
-					$vo->status = 0;
-					$vo->config = @serialize($plugin['config']);
-					$vo->hooktype = $plugin['hooktype'];
-					$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
-					$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
-					foreach($this->_triggers as $trigger)
+					if(!isset($plugin['hooktype'])) // only really needed param
+						$errors[] = 'Missing hook type in plugin '.$pName;
+	
+					if(empty($errors))
 					{
-						$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+						$dao = $this->_getMainTableDao();
+						$vo = $dao->createObject();
+						$vo->name = $pName;
+						$vo->status = 0;
+						$vo->config = @serialize($plugin['config']);
+						$vo->hooktype = $plugin['hooktype'];
+						$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
+						$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
+						foreach($this->_triggers as $trigger)
+						{
+							$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+						}
+						
+						$context['plugins'][$pName] = $plugin;
+						$context['plugins'][$pName]['status'] = 0;
+						$context['plugins'][$pName]['id'] = $dao->save($vo, true);
 					}
+					else $error = array_unique(array_merge((array)$error, $errors));
 					
-					$context['plugins'][$pName] = $plugin;
-					$context['plugins'][$pName]['status'] = 0;
-					$context['plugins'][$pName]['id'] = $dao->save($vo, true);
 				}
-				else $error = array_unique(array_merge((array)$error, $errors));
-				
+				closedir($fd);
 			}
-			closedir($fd);
 		}
 
 		if(!empty($error)) return '_error';
@@ -472,14 +478,16 @@ class MainPluginsLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			return '_location:index.php?lo='.$this->maintable.'&do=list';
 		}
 
-		if(!isset($context['edit']) || !$context['edit'])
+		if(empty($context['edit']))
 			return '_error';
 
 		$err = null;
@@ -493,6 +501,7 @@ class MainPluginsLogic extends Logic
 		$dao = $this->_getMainTableDao();
 
 		$new = false;
+		$context['id'] = (int)@$context['id'];
 		if(!$context['id']) // never enabled
 		{
 			$new = true;
@@ -523,6 +532,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function activateAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			trigger_error('You need to specify the name of the plugin to activate', E_USER_ERROR);
@@ -554,6 +565,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function desactivateAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
 			trigger_error('You need to specify the name of the plugin to activate', E_USER_ERROR);
@@ -585,6 +598,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function enableallAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 
 		if(empty($context['name']))
@@ -604,10 +619,10 @@ class MainPluginsLogic extends Logic
 		$dao->save($vo);
 		unset($dao,$vo);
 
-		$daosites = getDao('sites');
+		$daosites = DAO::getDao('sites');
 		$vos = $daosites->findMany('status>0', 'id', 'name');
 		if(!$vos) return '_back'; // nothing to do
-		$plogic = getLogic('plugins');
+		$plogic = Logic::getLogic('plugins');
 		$home = C::get('home', 'cfg');
 		$database = C::get('database', 'cfg');
 		foreach($vos as $vo)
@@ -630,6 +645,8 @@ class MainPluginsLogic extends Logic
 	 */
 	public function disableallAction(&$context, &$error)
 	{
+		if(!C::get('adminlodel', 'lodeluser')) 
+			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		global $db;
 
 		if(empty($context['name']))
@@ -649,10 +666,10 @@ class MainPluginsLogic extends Logic
 		$dao->save($vo);
 		unset($dao,$vo);
 
-		$daosites = getDao('sites');
+		$daosites = DAO::getDao('sites');
 		$vos = $daosites->findMany('status>0', 'id', 'name');
 		if(!$vos) return '_back'; // nothing to do
-		$plogic = getLogic('plugins');
+		$plogic = Logic::getLogic('plugins');
 		$home = C::get('home', 'cfg');
 		$database = C::get('database', 'cfg');
 		foreach($vos as $vo)
@@ -673,7 +690,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function validateFields(&$context, &$error) 
 	{
-		if(!function_exists('validfield')) include 'validfunc.php';
+		function_exists('validfield') || include 'validfunc.php';
 
 		$filemask = 0777 & octdec(C::get('filemask', 'cfg'));
 
@@ -718,7 +735,7 @@ class MainPluginsLogic extends Logic
 	 * Populate the object from the context.
 	 * @private
 	 */
-	protected function _populateObject(&$vo, &$context) 
+	protected function _populateObject($vo, &$context) 
 	{
 		$vo->name = $this->_plugin['name'];
 		if(is_string($vo->config))
@@ -748,28 +765,36 @@ class MainPluginsLogic extends Logic
 			makeSelectLangs($var);
 			return;
 		}
-
-		foreach($context['plugin']['config'] as $name=>$value)
+		
+		if(!empty($context['plugin']['config']))
 		{
-			if($name != $context['varname']) continue;
-			$current = $value;
-			break;	
+			foreach($context['plugin']['config'] as $name=>$value)
+			{
+				if($name != $context['varname']) continue;
+				$current = $value;
+				break;	
+			}
 		}
 		if(!isset($current)) trigger_error('Invalid parameter '.$varname, E_USER_ERROR);
 
-		foreach($current['allowedValues'] as $k=>$v)
+		if(!empty($current['allowedValues']))
 		{
-			$current['allowedValues'][$v] = $v;
-			unset($current['allowedValues'][$k]);
+			foreach($current['allowedValues'] as $k=>$v)
+			{
+				$current['allowedValues'][$v] = $v;
+				unset($current['allowedValues'][$k]);
+			}
 		}
+
+		$current['defaultValue'] = @$current['defaultValue'];
+
 		// if not defined get the default value
 		$value = isset($current['value']) ? $current['value'] : $current['defaultValue'];
 
 		switch($context['varname'])
 		{
 			case 'userrights':
-				if(!function_exists('makeSelectUserRights'))
-					include 'commonselect.php';
+				function_exists('makeSelectUserRights') || include 'commonselect.php';
 				makeSelectUserRights($value, true, $current['allowedValues']);
 			break;
 			default:
@@ -808,5 +833,4 @@ class MainPluginsLogic extends Logic
 
 
 } // class 
-
 ?>

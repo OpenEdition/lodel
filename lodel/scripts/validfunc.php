@@ -76,8 +76,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	static $tmpdir;
 	static $masks = array();
 
-    	if(!isset($GLOBALS['lodelfieldtypes']))
-        	include 'fieldfunc.php';
+    	isset($GLOBALS['lodelfieldtypes']) || include 'fieldfunc.php';
 
 	if (isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
@@ -91,11 +90,12 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$text = $default;
 		} elseif($name && isset($context['class'])) {
 			if(!isset($masks[$context['class']])) {
-				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext')"));
+				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext') AND mask !=''"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
 					if($fields->fields['mask'] != '') {
-						$mask = unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+						$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+						if(!is_array($mask)) continue;
 						$masks[$context['class']][$fields->fields['name']] = array();
 						$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
 						$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
@@ -128,8 +128,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			require 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql'; // if the class is a reservedword -> error
 		}
@@ -139,8 +138,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-zA-Z][a-zA-Z0-9_]*$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			require 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text)) {
 			return 'reservedsql';
 		}
@@ -150,8 +148,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!preg_match("/^[a-z0-9]{2,}$/", $text)) {
 			return $type;
 		}
-		if(!function_exists('reservedword'))
-			include 'fieldfunc.php';
+		function_exists('reservedword') || include 'fieldfunc.php';
 		if (reservedword($text))
 			return 'reservedsql';
 		break;
@@ -210,8 +207,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'date' :
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -228,8 +224,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'datetime' :
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -246,8 +241,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'time' : 
-		if(!function_exists('mysqldatetime'))
-			include 'date.php';
+		function_exists('mysqldatetime') || include 'date.php';
 		if ($text) {
 			$textx = mysqldatetime($text, $type);
 			if (!$textx || $textx == $type)
@@ -293,7 +287,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		if ($text) {
 			$parsedurl = @parse_url($text);
-			if (!$parsedurl['host'] || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
+			if (!$parsedurl || empty($parsedurl['host']) || !preg_match("/^(http|ftp|https|file|gopher|telnet|nntp|news)$/i", $parsedurl['scheme'])) {
 				return 'url';
 			}
 		}
@@ -315,7 +309,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'entity' :
 		$text = (int)$text;
 		// check it exists
-		$vo = getDAO('entities')->getById($text, "1");
+		$vo = DAO::getDAO('entities')->getById($text, "1");
 		if (!$vo) {
 			return 'entity';
 		}

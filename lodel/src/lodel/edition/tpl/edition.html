@@ -60,8 +60,6 @@ var lastTarget  = null;
 var rootParent  = null;
 var rootSibling = null;
 var interval	= [];
-var ids			= [];
-var xhrs		= [];
 
 Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
 
@@ -434,42 +432,44 @@ function autoScroll(e){
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
 		</BEFORE>
 		<DO>
-		<IF COND="[#COUNT] % 2">
-			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+			<IF COND="[#COUNT] % 2">
+				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+				<ELSE/>
+					<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				</IF>
 			<ELSE/>
-				<li class="line1_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
+					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
+				<ELSE/>
+					<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+				</IF>
 			</IF>
-		<ELSE/>
-			<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
-				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]"><div class="dragndrop"><a class="dragger"><img src="[#SHAREURL]/images/dragndrop.png" title="Drag'n'Drop" alt="Drag'n'Drop" class="dragger"/></a></div>
-			<ELSE/>
-				<li class="line2_entity" id="<IF COND="[#TPLEDITION]">container_</IF>[#ID]">
+			<IF COND="[#TPLEDITION]">
+				<div>
+				<IF COND="[#DISPLAY] eq 'unfolded'">
+					<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], false);" />
+				<ELSE/>
+					<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], true);" />
+				</IF>
+				</div>
 			</IF>
-		</IF>
 			<div class="entityIconsEdition">
 				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="types">
 			</div>
-			<IF COND="[#TPLEDITION]">
-			<div id="unfolder">
-			<IF COND="[#DISPLAY] eq 'unfolded'">
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], false);" />
-			<ELSE/>
-			<img class="unfolder" id="img[#ID]" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="javascript:loadTemplate([#ID], true, false);changeIcon([#ID], true);" />
-			</IF>
-			</div>
-			</IF>
+
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			<div id="container[#ID]" style="display:<IF COND="[#DISPLAY] eq 'unfolded'">block<ELSE/>none</IF>;">
-			<IF COND="[#DISPLAY] eq 'unfolded'">
-				<LET VAR="folder">yes</LET>
-				<USE TEMPLATEFILE="edition" BLOCKID="1"/>
-				<LET VAR="folder"></LET>
-			</IF>
+				<IF COND="[#DISPLAY] eq 'unfolded'">
+					<LET VAR="oldfolder">[#FOLDER]</LET>
+					<LET VAR="folder">yes</LET>
+					<USE TEMPLATEFILE="edition" BLOCKID="1"/>
+					<LET VAR="folder">[#OLDFOLDER]</LET>
+				</IF>
 			</div>
 			</li>
 		</DO>
@@ -490,6 +490,8 @@ function autoScroll(e){
 	<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
 </div>
 <script type="text/javascript">
+var xhrs = [];
+var ids = [];
 function loadTemplate(id, displayWarner, recursive)
 {
 	var container = document.getElementById('container'+id);

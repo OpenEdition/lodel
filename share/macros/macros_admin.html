@@ -557,13 +557,13 @@
 <!--[ --------------- LANG,SELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
 	      <select name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR]>
-		<?php  makeSelect($context,"value","",$context['type']); ?>
+		<?php  makeSelect($context,"value","",@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- MULTIPLESELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'multipleselect'">
 	      <select name="[#VARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
-		<?php  makeSelect($context,"value","",$context['type']); ?>
+		<?php  makeSelect($context,"value","",@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- DATE DATETIME TIME ------------- ]-->	    

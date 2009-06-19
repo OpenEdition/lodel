@@ -66,14 +66,11 @@ div.warner {
 	color:black;
 	display:none;
 }
-div#unfolder {
-	z-index:99;
-	float:left;
-	margin-left:1em;
-	margin-top:1.5em;
-}
 img.unfolder {
-
+	float:left;
+	margin:1.6em 1em;
+	position:absolute;
+	z-index:2;
 }
 ul.listEntities div.entityIconsEdition{
 	z-index:1;
@@ -292,6 +289,7 @@ fieldset{
 	padding: 2ex 1em 2ex 1em;
 	background: #f7f7f7;
 	font-size: 90%;
+	display:block;
 }
 
 fieldset fieldset{
@@ -651,12 +649,8 @@ ul.listEntities li.unfoldedentities ul, ul.listEntities li.unfoldedentities li{
 	font-size: 11px;
 }
 
-ul.listEntities li.unfoldedentities ul li{
-	/*background: #fff;*/
-}
-
 ul.listEntities li.unfoldedentities ul{
-	margin: 0 1em 2ex 1.5em;
+	margin: 0 1em 2ex 0;
 }
 
 ul.listEntities li.unfoldedentities ul ul{
@@ -708,14 +702,17 @@ div.actionOnEntity{
 
 div.actionOnEntity select{
 	color: #0075AB;
+	background-color:white;
 }
 
 div.actionOnEntity option, div.actionOnEntity optgroup{
 	color: black;
+	background-color:white;
 }
 
-div.actionOnEntity option.class{
+div.actionOnEntity select option.class{ 
 	color: #0075AB;
+	background-color:white;
 }
 
 ul.listEntities li.unfoldedentities div.action{
@@ -862,6 +859,8 @@ div.advancedFunc h4{
 	padding: 0 .5em .2ex .5em;
 	background: #fff;
 	border: 1px solid #cecece;
+	line-height:15px;
+	position:absolute;
 	font-size: 100%;
 	overflow: visible;
 }

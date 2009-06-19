@@ -85,9 +85,9 @@ class EntryTypesLogic extends Logic
 	* @return false si l'objet n'est pas protégé en suppression, un message sinon
 	*/
 	public function isdeletelocked($id,$status=0) 
-
 	{
 		global $db;
+		$id = (int)$id;
 		$count=$db->getOne(lq("SELECT count(*) FROM #_TP_entries WHERE idtype='$id' AND status>-64"));
 		if ($db->errorno())  trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		if ($count==0) {
@@ -115,8 +115,7 @@ class EntryTypesLogic extends Logic
 			break;
 		case 'g_type' :
 			#$g_typefields=array("DC.Subject");
-			if(!function_exists('reservedByLodel'))
-				include 'fieldfunc.php';
+			function_exists('reservedByLodel') || include 'fieldfunc.php';
 			$g_typefields = $GLOBALS['g_entrytypes_fields'];#array('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
 			$types=$this->_getMainTableDAO()->findMany('status > 0', '','g_type,title');
 			$arr = array();
@@ -136,8 +135,7 @@ class EntryTypesLogic extends Logic
 			renderOptions($arr2,isset($context['g_type']) ? $context['g_type'] : '');
 			break;
 		case 'gui_user_complexity' :
-			if(!function_exists('makeSelectGuiUserComplexity'))
-				include 'commonselect.php';
+			function_exists('makeSelectGuiUserComplexity') || include 'commonselect.php';
 			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		case 'edition' :
@@ -166,9 +164,10 @@ class EntryTypesLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
+		$id = @$context['id'];
 		// gather information for the following
-		if ($context['id']) {
-			$this->oldvo=$dao->getById($context['id']);
+		if ($id) {
+			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo) trigger_error("ERROR: internal error in EntryTypesLogic::_prepareEdit", E_USER_ERROR);
 		}
 	}
@@ -182,7 +181,7 @@ class EntryTypesLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{
 		if ($vo->type!=$this->oldvo->type) {
 			// name has changed
@@ -200,15 +199,16 @@ class EntryTypesLogic extends Logic
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{
+		$id = @$context['id'];
 		// gather information for the following
-		$this->vo=$dao->getById($context['id']);
+		$this->vo=$dao->getById($id);
 		if (!$this->vo) trigger_error("ERROR: internal error in EntryTypesLogic::_prepareDelete", E_USER_ERROR);
 	}
 
 
 	protected function _deleteRelatedTables($id)
 	{
-		getDAO('tablefields')->delete("type='entries' AND name='".$this->vo->type."'");
+		DAO::getDAO('tablefields')->delete("type='entries' AND name='".$this->vo->type."'");
 	}
 
 
@@ -256,11 +256,13 @@ class EntryTypesLogic extends Logic
 
 /*-----------------------------------*/
 /* loops                             */
-
-function loop_entitytypes($context,$funcname)
+if(!function_exists('loop_entitytypes')) 
 {
-	if(!function_exists('loop_typetable'))
-		include 'typetypefunc.php';
-	loop_typetable ('entitytype', 'entrytype', $context,$funcname,isset($_POST['edit']) ? $context['entitytype'] : -1);
+	function loop_entitytypes($context,$funcname)
+	{
+		function_exists('loop_typetable') || include 'typetypefunc.php';
+		$etype = @$context['entitytype'];
+		loop_typetable ('entitytype', 'entrytype', $context,$funcname,isset($_POST['edit']) ? $etype : -1);
+	}
 }
 ?>

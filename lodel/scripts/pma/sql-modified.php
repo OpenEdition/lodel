@@ -463,7 +463,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
 
     $result      = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     if ($result != FALSE) {
-        $fields_cnt = $result->getFieldNum();
+        $fields_cnt = $GLOBALS['db']->getFieldNum($result);
         $rows_cnt   = $result->RecordCount();
 
         // get the real types of the table's fields (in an array)
@@ -487,7 +487,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
                 $field_set[$j] = PMA_backquote(PMA_mysql_field_name($result, $j), $use_backquotes);
             }
 
-            $type          = $field_types[$field_set[$j]];
+            $type          = @$field_types[$field_set[$j]];
 
             if ($type == 'tinyint' || $type == 'smallint' || $type == 'mediumint' || $type == 'int' ||
                 $type == 'bigint'  || (PMA_MYSQL_INT_VERSION < 40100 && $type == 'timestamp')) {
@@ -596,7 +596,7 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
 
     $result       = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     $current_row  = 0;
-    $fields_cnt   = $result->getFieldNum();
+    $fields_cnt   = $GLOBALS['db']->getFieldNum($result);
     $rows_cnt     = $result->RecordCount();
 
 

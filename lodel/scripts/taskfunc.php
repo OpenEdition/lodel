@@ -65,6 +65,7 @@ function maketask($name, $etape, $context, $id = 0)
 	global $db;
 	if (is_array($context))
 		$context = addslashes(serialize($context));
+	$id = (int)$id;
 	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	return $db->insert_ID();
 }
@@ -116,8 +117,7 @@ function gettypeandclassfromtask($task, & $context)
 		if (!isset($task['idtype']) || !($idtype = $task['idtype']))
 			trigger_error("ERROR: idtype must be given by task in gettypeandclassfromtask", E_USER_ERROR);
 		// get the type 
-		if(!defined('INC_FUNC')) include 'func.php';
-		$votype = getDAO("types")->getById($idtype, "class");
+		$votype = DAO::getDAO("types")->getById($idtype, "class");
 		$context['class'] = $votype->class;
 	}
 }

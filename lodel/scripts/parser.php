@@ -110,7 +110,7 @@ class Parser
 	{
 	}
 	
-	protected function parse_after($contents)
+	protected function parse_after(&$contents)
 	{
 	}
 	
@@ -120,7 +120,7 @@ class Parser
 
 	protected function __construct()
 	{ // constructor
-		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE", "BLOCK");
+		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE", "BLOCK", "TEXT");
 		$this->commandsline = join('|', $this->commands);
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s, __LINE__, __FILE__)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
 		$this->conditions['sql'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"=",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
@@ -148,7 +148,7 @@ class Parser
 		$this->base_rep = str_replace($this->tpl.'.html', '', $in);
 		$this->cache_rep = $cache_rep;
 		$this->blockid = (int)$blockId;
-		$this->signature = preg_replace("/\W+/", "_", $in).'_'.uniqid(); // we need unique name for multiple call to the same template
+		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = $this->macros_txt = $this->charset = $this->ind = $this->countarr = null;
         	$this->refresh = $this->looplevel = 0;
 		$this->loops = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
@@ -284,7 +284,8 @@ PHP;
 						++$i;
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
-						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#') {
+						while (($text{$i} >= 'A' && $text{$i} < 'Z') || $text {$i} == '.' || $text {$i} == '#' || $text {$i} == '_' || 
+							($text {$i}	>= '0' && $text {$i}	<= '9')) {
 							if ($text {$i} == '.') { $is_array = true; }
 							$lang .= $text {$i};
 							++$i;
@@ -299,19 +300,27 @@ PHP;
 					$lang = strtolower($lang);
 					if ($is_var === true) {
 						if ($is_array === true) {
+							// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
+							// ou pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
 							$tab = explode ('.', $lang);
-							if('#' == $tab[1]{0}) {
-								// pour syntaxe LS [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
-								$val = substr($tab[1], 1);
-								$lang = '(isset($context[\''.$tab[0].'\'][(isset($context[\''.$val.'\'])?$context[\''.$val.'\']:null)])?$context[\''.$tab[0].'\'][$context[\''.$val.'\']]:null)';
-							} else {
-								//pour syntaxe LS [#RESUME:#OPTIONS.METADONNEESSITE.LANG]
-								$lang = '(isset($context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\'])?$context[\''.$tab[0].'\'][\''.$tab[1].'\'][\''.$tab[2].'\']:null)';
+							$value = '';
+							foreach($tab as $t)
+							{
+								if('#' == $t{0}) 
+								{
+									$t = substr($t, 1);
+									$value .= '[$context[\''.$t.'\']]';
+								}
+								else
+								{
+									$value .= '[\''.$t.'\']';
+								}
 							}
+							$lang =  '$context'.$value;
 						} else {
-							$lang = '(isset($context[\''.$lang.'\'])?$context[\''.$lang.'\']:null)';
+							$lang = '$context[\''.$lang.'\']';
 						}
-						$pipefunction = '|multilingue('.$lang.')';
+						$pipefunction = '|multilingue(@'.$lang.')';
 					} else	$pipefunction = '|multilingue(\''.$lang.'\')';
 				}
 				
@@ -375,7 +384,7 @@ PHP;
 		switch ($escape) {
 			case 'php' :
 				// traitement normal, php espace
-				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){ \$isSerialized=true;echo serialize(\$tmp); }else{ echo \$tmp; } unset(\$tmp); ?>";
+				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
 				break;
 			case 'quote' :
 					$variable = "\".{$variable}.\"";
@@ -407,7 +416,7 @@ PHP;
 			if(false !== strpos($name, '.')) {
 				$brackets = explode('.', $name);
 				foreach($brackets as $bracket) {
-					$code .= ('(' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
+					$code .= ('@' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
 				}
 			} else {
 				$code = "['{$name}']";
@@ -416,12 +425,12 @@ PHP;
            	 	if('%' === (string)$prefix) {
 				$variable = 
 <<<PHP
-(isset(\$GLOBALS['context']{$code})?\$GLOBALS['context']{$code}:null)
+@\$GLOBALS['context']{$code}
 PHP;
 			} else {
 				$variable = 
 <<<PHP
-(isset(\$context{$code})?\$context{$code}:null)
+@\$context{$code}
 PHP;
 			}
 			unset($code);
@@ -779,7 +788,7 @@ PHP;
                     			{
 						if(!empty($database))
 						{
-							$prefix = (false !== strpos($database, '$context') ? $this->prefix : '');
+							$prefix = (false !== strpos($database, '$context') || false !== strpos($database, '$GLOBALS[\'context\']')) ? $this->prefix : '';
 						}
 						else
 						{
@@ -1123,8 +1132,9 @@ PHP;
 		//
 		$this->fct_txt .= 
 <<<PHP
+if(!function_exists('loop_{$name}')) {
 	function loop_{$name}(\$context){
-		if(!defined('INC_CONNECT')) include 'connect.php';
+		defined('INC_CONNECT') || include 'connect.php';
 		global \$db;
 PHP;
 		if(isset($preprocesslimit))
@@ -1248,6 +1258,7 @@ PHP;
 <<<PHP
 		\$result->Close();
 	}
+}
 PHP;
 	}
 
@@ -1259,33 +1270,41 @@ PHP;
 		if (!empty($contents['DO'])) {
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_do_{$localtpl}{$name}')) {
 	function code_do_{$localtpl}{$name}(\$context) { 
 ?>{$contents['DO']}<?php 
 	}
+}
 PHP;
 		}
 		if (!empty($contents['BEFORE'])) { // genere le code de avant
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_before_{$localtpl}{$name}')) {
 	function code_before_{$localtpl}{$name}(\$context) { 
 ?>{$contents['BEFORE']}<?php 
 	} 
+}
 PHP;
 		}
 		if (!empty($contents['AFTER']))	{ // genere le code de apres
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_after_{$localtpl}{$name}')) {
 	function code_after_{$localtpl}{$name}(\$context) { 
 ?>{$contents['AFTER']}<?php 
 	} 
+}
 PHP;
 		}
 		if (!empty($contents['ALTERNATIVE']))	{ // genere le code de alternative
 			$this->fct_txt .= 
 <<<PHP
+if(!function_exists('code_alter_{$localtpl}{$name}')) {
 	function code_alter_{$localtpl}{$name}(\$context) { 
 ?>{$contents['ALTERNATIVE']}<?php 
 	} 
+}
 PHP;
 		}
 		// fin ajout
@@ -1378,10 +1397,12 @@ PHP;
 				$this->arr = join('', $this->arr);
 				$this->fct_txt .= 
 <<<PHP
+if(!function_exists('{$macrofunc}')) {
     function {$macrofunc}(\$context,\$args) {
         \$context=array_merge(\$context,\$args); 
 ?>{$this->arr}<?php 
     }
+}
 PHP;
 				$this->arr = $tmpArr;
 				$this->ind = $tmpInd;
@@ -1622,7 +1643,7 @@ PHP;
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->_errmsg("LET have no VAR|ARRAY attribut");
 		
-		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}(\[\])?$/i" : "/^{$this->variable_regexp}$/i";
+		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}(\[\]|(\.[#%{$this->variablechar}]{$this->variable_regexp})*)?$/i" : "/^{$this->variable_regexp}$/i";
 
 		if (!preg_match($regexp, $result[2], $res))
 			$this->_errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
@@ -1655,9 +1676,11 @@ PHP;
             		$this->_clearposition();
 			// @ is bad, but we need to avoid notice error from PHP if multi dimensional array is not defined
 			// be carefull on variable erasing !!
-			$this->arr[$this->ind + 1] = (!empty($result[4]) ? '<?php @$GLOBALS[\'context\']' : '<?php @$context');
-			$add = false;
-			if('[]' === substr($var, -2))
+			$this->arr[$this->ind + 1] = '<?php $tmp=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false;if(0!==$tmp&&empty($tmp)){$tmp=array();}';
+			$this->arr[$this->ind + 1] .= (!empty($result[4]) ? '@$GLOBALS[\'context\']' : '@$context');
+			$add = $array = false;
+
+			if(!empty($res[1]) && '[]' === $res[1])
 			{
 				$add = true;
 				$var = substr($var, 0, -2);
@@ -1668,17 +1691,30 @@ PHP;
 				$vars = explode('.', $var);
 				foreach($vars as $v)
 				{
-					$this->arr[$this->ind + 1] .= '[\''.$v.'\']';
+					$c = substr($v, 0, 1);
+					if('%' === $c || '#' === $c || $this->variablechar === $c)
+					{
+						$v = '['.strtoupper($v).']';
+						$this->parse_variable($v, false);
+						$this->arr[$this->ind + 1] .= '['.$v.']';
+					}
+					else
+					{
+						$this->arr[$this->ind + 1] .= '[\''.$v.'\']';
+					}
 				}
+				$array = true;
 			}
 			else
 			{
 				$this->arr[$this->ind + 1] .= '[\''.$var.'\']';
 			}
 			
-			if($add) $this->arr[$this->ind + 1] .= '[]';
+			if($add) $this->arr[$this->ind + 1] .= '[]=';
+			elseif($array) $this->arr[$this->ind + 1] .= '=';
+			else $this->arr[$this->ind + 1] .= '=(array)';
 
-			$this->arr[$this->ind + 1] .= '=($isSerialized?unserialize(ob_get_clean()):ob_get_clean());$isSerialized=false; ?>';
+			$this->arr[$this->ind + 1] .= '$tmp;unset($tmp); ?>';
 		}
 	}
 

@@ -39,6 +39,9 @@
 	#lodel-desk ul li a{
 		background: #0096b7 url("[#SHAREURL]/images/bg_li_group1.png") top left no-repeat;
 	}
+	#lodel-desk ul li a:hover{
+		border:none;
+	}
 	#lodel-desk ul li.admin a{
 		background: #0075ab url("[#SHAREURL]/images/bg_li_admin_group1.png") top left no-repeat;
 	}
@@ -59,16 +62,24 @@
 		background-position: 0 .5ex;
 		background-repeat: no-repeat;
 	}
+	ul.listEntities li ul li div.entityIconsEdition {
+		background-image:url("[#SHAREURL]/images/tree.gif");
+		background-position:0 .5ex;
+		background-repeat:no-repeat;
+		padding-left:2em;
+		margin-left:-2.5em;
+	}
 <IF COND="defined('backoffice') AND FALSE SEQ [#CURRENTURL|strpos('lodel/edition')]">
 	#lodel-container{
 		position: relative;
 	}
 </IF>
 	div.loggedUsers{
-		margin-left:1em;
+		padding-left:1em;
 		font-size: 90%;
-		margin-top:.2em;
+		padding-top:.2em;
 		text-align:left;
+		background-color:#E5E8E3;
 	}
 	
 	div.loggedUsers span#loggedUsers {
@@ -83,7 +94,13 @@
 	div#lodelGlobalDeskDisplayer a {
 		display:block;
 	}
+	div#lodelGlobalDeskDisplayer a:hover {
+		border:none;
+	}
 </IF>
+	.selectred { background-color: red; }
+	.selectorange { background-color: orange; }
+	.selectgreen { background-color: green; }
 </style>
 <div id="lodel-globalDesk" style="<IF COND="!defined('backoffice') AND !defined('backoffice-lodeladmin') AND ![#LODELUSER.DESK]">display:none;<ELSE/>display:block;</IF>">
 <div id="lodel-desk">
@@ -92,9 +109,9 @@
 	<IF COND="[#SITE]">
 		<li>
 			<IF COND="([#CURRENTURL|strpos('lodel/edition')] OR [#LO] EQ 'entries' OR [#LO] EQ 'persons' OR [#LO] EQ 'useroptiongroups') AND ![#CURRENTURL|strpos('page=dashboard')] AND [#LO] NE 'internal_messaging'">
-			 <a class="actif" href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a class="actif" href="[#SITEROOT]lodel/edition/index.php" title="[@COMMON.EDITION]">
 			<ELSE/>
-			 <a href="[#SITEROOT]lodel/index.php" title="[@COMMON.EDITION]">
+			 <a href="[#SITEROOT]lodel/edition/index.php" title="[@COMMON.EDITION]">
 			</IF>
 			[@COMMON.EDITION]
 			</a>
@@ -397,21 +414,21 @@
 </div>
 
 <IF COND="[#LODELUSER.ADMINLODEL]">
-	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username)" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
-		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]">
+	<LOOP NAME="getAdminAuthentifiedUsersName" SELECT="distinct(lodelmain.users.username), lodelmain.users.id" TABLE="lodelmain.session, lodelmain.users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND (site = '[#SITE]' OR site = 'tous les sites') AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights EQ 128">
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
 			<LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF>
 		</DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
-	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5">
-		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+	<LOOP NAME="getAdminAuthUsersName" SELECT="distinct(users.username), users.id" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights">
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 <ELSEIF COND="[#LODELUSER.REDACTOR]">
-	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username)" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser and lodelmain.session.userrights GT 5 AND lodelmain.session.userrights LT '128'">
-		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
-		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
+	<LOOP NAME="getAuthentifiedUsersName" SELECT="distinct(users.username), users.id" TABLE="lodelmain.session, users" WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights">
+		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
+		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
 	</LOOP>
 </IF>
 <IF COND="[%USERSNAME]">

@@ -65,7 +65,8 @@ class Restricted_UsersLogic extends Logic
 {
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct('restricted_users');
 	}
 
@@ -83,7 +84,9 @@ class Restricted_UsersLogic extends Logic
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
-		if (C::get('id', 'lodeluser')==$id && 
+		$id = (int)$id;
+		$userid = (int)C::get('id', 'lodeluser');
+		if ($userid===$id && 
 		( (C::get('site', 'cfg') && !C::get('adminlodel', 'lodeluser')) ||
 		(!C::get('site', 'cfg') && C::get('adminlodel', 'lodeluser')))) {
 			return getlodeltextcontents("cannot_delete_current_user","common");
@@ -93,6 +96,21 @@ class Restricted_UsersLogic extends Logic
 		//) { $error["error_has_entities"]=$count; return "_back"; }
 	}
 
+	/**
+	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 *
+	 * add/edit Action
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
+	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 */
+	public function editAction(&$context, &$error, $clean=false)
+	{
+		$ret = parent::editAction($context, $error);
+		@unlink(SITEROOT.'CACHE/.no_restricted');
+		return $ret;
+	}
 
 	/**
 	 * Suppression du log des sessions d'un utilisateur
@@ -107,8 +125,8 @@ class Restricted_UsersLogic extends Logic
 	public function deletesessionAction(&$context, &$error)
 	{
 		global $db;
-		$id = (int)$context['id'];
-		$session     = (int)C::get('session', 'lodeluser');
+		$id = (int)@$context['id'];
+		$session = (int)C::get('session', 'lodeluser');
 
 		$ids = array();
 		if ($id) { //suppression de toutes les sessions
@@ -146,8 +164,8 @@ class Restricted_UsersLogic extends Logic
 	public function setAction(&$context, &$error)
 	{
 		global $db;
-		$lang = $context['lang'];
-		$translationmode = $context['translationmode'];
+		$lang = @$context['lang'];
+		$translationmode = @$context['translationmode'];
 		if ($lang) {
 			if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) {
 				trigger_error("ERROR: invalid lang", E_USER_ERROR);
@@ -180,19 +198,18 @@ class Restricted_UsersLogic extends Logic
 	public function makeSelect(&$context,$var)
 	{
 		switch($var) {
-		case 'userrights':
-			break;
-		case "lang" :
+			case 'userrights':
+				break;
+			case "lang" :
 			// get the language available in the interface
-			
-			$dao=getDAO("translations");
+			$dao=DAO::getDAO("translations");
 			$list=$dao->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
 			$arr=array();
 			foreach($list as $lang) {
 				$arr[$lang->lang]=$lang->title;
 			}
 			if (!$arr) $arr['fr']=utf8_encode("Français");
-			renderOptions($arr,$context['lang']);
+			renderOptions($arr,$context['sitelang']);
 		}
 	}
 
@@ -208,7 +225,7 @@ class Restricted_UsersLogic extends Logic
 	protected function _setcontext($var, $operation, $value = '')
 	{
 		global $db;
-		$where = "name='". addslashes($_COOKIE[C::get('sessionname', 'cfg')]). "' AND iduser='". C::get('id', 'lodeluser'). "'";
+		$where = "name='". addslashes($_COOKIE[C::get('sessionname', 'cfg')]). "' AND iduser='". (int)C::get('id', 'lodeluser'). "'";
 		$context = $db->getOne(lq("SELECT context FROM $GLOBALS[tp]session WHERE ".$where));
 		if ($db->errorno()) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -239,6 +256,8 @@ class Restricted_UsersLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context) 
 	{
+		$context['passwd'] = @$context['passwd'];
+		$context['username'] = @$context['username'];
 		// encode the password
 		if ($context['passwd']) {
 			$context['tmppasswd'] = $context['passwd'];
@@ -248,7 +267,7 @@ class Restricted_UsersLogic extends Logic
 
 
 
-	protected function _populateContextRelatedTables(&$vo,&$context)
+	protected function _populateContextRelatedTables($vo,&$context)
 	{
 	/*	if ($vo->userrights<=LEVEL_EDITOR) {
 			$dao=&getDAO("users_usergroups");
@@ -268,7 +287,7 @@ class Restricted_UsersLogic extends Logic
 	* @param object $vo l'objet qui a été créé
 	* @param array $context le contexte
 	*/
-	protected function _saveRelatedTables($vo,$context) 
+	protected function _saveRelatedTables($vo,&$context) 
 	{/*
 		global $db;
 		if ($vo->userrights<=LEVEL_EDITOR) {
@@ -293,28 +312,25 @@ class Restricted_UsersLogic extends Logic
 	}
 
 
-	public function validateFields(&$context,&$error) {
+	public function validateFields(&$context,&$error) 
+	{
 		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
-
+		$context['userrights'] = @$context['userrights'];
 		// check the user has the right equal or higher to the new user
 		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		usecurrentdb();
-
+		$context['id'] = @$context['id'];
+		$context['passwd'] = @$context['passwd'];
 		// check the passwd is given for new user.
 		if (!$context['id'] && !trim($context['passwd'])) {
 			$error['passwd']=1;
 			return false;
 		}
 
-		if ($ret) {
-			$error['username']="1"; // report the error on the first field
-			return false;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 
@@ -352,14 +368,15 @@ class Restricted_UsersLogic extends Logic
 	/**
 	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
 	 */
-	protected function _sendPrivateInformation(&$context) {
+	protected function _sendPrivateInformation(&$context) 
+	{
 		global $db;
-		if(!$context['tmppasswd']) return;
+		if(empty($context['tmppasswd'])) return;
 		$row = $db->getRow(lq("SELECT url, title FROM #_MTP_sites WHERE name = '{$context['site']}'"));
 		if(!$row) trigger_error('Error while getting url and title of site for new user mailing', E_USER_ERROR);
 		$context['siteurl'] = str_replace(":80", "", $row['url']);
 		$context['sitetitle'] = $row['title'];
-		$prefix = $context['lodeluser']['adminlodel'] ? lq("#_MTP_") : lq("#_TP_");
+		$prefix = C::get('adminlodel', 'lodeluser') ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '{$context['lodeluser']['id']}'");
 		if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
 		$GLOBALS['nodesk'] = true;

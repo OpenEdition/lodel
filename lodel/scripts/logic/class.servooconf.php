@@ -65,7 +65,8 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct();
 	}
 
@@ -91,14 +92,14 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 	/**
 		* add/edit Action
 		*/
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{ 
 		$this->_getGroup($context);
 		$ret=parent::editAction($context,$error);
 
 		if ($ret=="_error") return $ret;
-		if(!class_exists('ServOO', false))
-			include("servoofunc.php");
+		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
+		if(!class_exists('ServOO', false)) include("servoofunc.php");
 		$client=new ServOO();
 		if ($client->error_message) {
 			if (!empty($context['url'])) $error['url']='+';
@@ -110,9 +111,10 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 		if (preg_match("/^ERROR:/i",$servoover) || $client->error_message) {
 			$error['servoo']=$client->error_message;
+			error_reporting($err);
 			return "_error";
 		}
-
+		error_reporting($err);
 		return $ret=="_ok" ? "edit_options" : $ret;
 	}
 
@@ -124,8 +126,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 		*/
 	function _getGroup(&$context)
 	{
-		$dao=getDAO("optiongroups");
-		$vo=$dao->find("name='servoo'");
+		$vo=DAO::getDAO("optiongroups")->find("name='servoo'");
 		$context['id']=$vo->id;
 
 #    if (!$context['id']) {

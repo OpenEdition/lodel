@@ -154,8 +154,8 @@ class C
 		self::$_triggers['included'] = array();
         	self::$_backupC = array();
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
-        	if(!defined('SITEROOT')) define('SITEROOT', '');
-       		if(!function_exists('checkCacheDir')) include 'cachefunc.php';
+        	defined('SITEROOT') || define('SITEROOT', '');
+       		function_exists('checkCacheDir') || include 'cachefunc.php';
 	}
 
 	/**
@@ -190,6 +190,7 @@ class C
 	{
 		self::$_context = self::$_backupC;
 		$GLOBALS['context'] =& self::$_context;
+		self::$_backupC = array();
 	}
 
 	/**
@@ -297,10 +298,10 @@ class C
 
 		foreach (array('class', 'classtype', 'type', 'textgroups') as $var) 
 		{
-			if (isset(self::$_context[$var]))
+			if (isset(self::$_context[$var]) && self::$_context[$var])
 			{
 				// get the various common parameters
-				if(!function_exists('validfield')) include 'validfunc.php';
+				function_exists('validfield') || include 'validfunc.php';
 				if(!validfield(self::$_context[$var], $var)) 
 					trigger_error("ERROR: a valid $var name is required", E_USER_ERROR);
 			}
@@ -321,12 +322,13 @@ class C
 			self::$_context['version'] = self::get('version', 'cfg');
 			self::$_context['shareurl'] = self::get('shareurl', 'cfg');
 			self::$_context['extensionscripts'] = self::get('extensionscripts', 'cfg');
-			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
+			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['site'] = self::get('site', 'cfg');
 			self::$_context['sharedir'] = self::get('sharedir', 'cfg');
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::get('tableprefix', 'cfg');
 			self::$_context['base_rep'] = array();
+			self::$_context['charset'] = 'utf-8';
 			// get all the triggers in self::$_triggers
 			self::_getTriggers();
 		}
@@ -344,7 +346,7 @@ class C
     
 		if(!(self::$_triggers = getFromCache('triggers')))
 		{
-			if(!defined('INC_CONNECT')) include 'connect.php';
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			$triggers = Plugins::$triggers;
 			self::$_triggers = array();
@@ -400,7 +402,13 @@ class C
 		{
 			if(!isset(self::$_triggers['included'][$trigger]))
 			{
-				include self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php';
+				$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php');
+				if(!$file)
+				{
+					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
+					continue;
+				}
+				include $file;
 				if('class' === $hooktype) 
 				{
 					call_user_func(array($trigger, 'init'), $trigger);
@@ -444,13 +452,13 @@ class C
 			if(!isset(self::${"_{$arr}"})) return false;
 			if(!isset($v))	return self::${"_{$arr}"};
 
-			if(false === strpos($v, '.')) return isset(self::${"_{$arr}"}[$v]) ? self::${"_{$arr}"}[$v] : false;
+			if(false === strpos($v, '.')) return array_key_exists($v, self::${"_{$arr}"}) ? self::${"_{$arr}"}[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::${"_{$arr}"};
 			foreach($vars as $var)
 			{
-				if(!isset($return[$var])) return false;
+				if(!array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -458,13 +466,13 @@ class C
 		}
 		elseif(isset($v))
 		{
-			if(false === strpos($v, '.')) return isset(self::$_context[$v]) ? self::$_context[$v] : false;
+			if(false === strpos($v, '.')) return array_key_exists($v, self::$_context) ? self::$_context[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::$_context;
 			foreach($vars as $var)
 			{
-				if(!isset($return[$var])) return false;
+				if(!array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -485,13 +493,15 @@ class C
 
 	/**
 	 * Merge the passed array into the current context
-	 * Warning : we assume that the values have already been sanitized !!
+	 * Warning : by default, we assume that the values have already been sanitized !!
 	 *
-	 * @param array $datas
+	 * @param array $datas the datas to merge the context with
+	 * @param bool $clean do we have to clean the inputs ?
 	 */
-	static public function mergeC(array &$datas)
+	static public function mergeC(array &$datas, $clean=false)
 	{
-		return (self::$_context = array_merge($datas, self::$_context));
+		if($clean) self::clean($datas);
+		return ((bool)(self::$_context = array_merge($datas, self::$_context)));
 	}
 
 	/**
@@ -503,7 +513,7 @@ class C
 	 */
 	static public function set($n, $v)
 	{
-		if(false === strpos($n, '.')) return ('lodeluser' !== (string)$n ? (self::$_context[$n] = $v) : false);
+		if(false === strpos($n, '.')) return ((bool)('lodeluser' !== (string)$n ? (self::$_context[$n] = $v) : false));
 
 		$vars = explode('.', $n);
 		if('lodeluser' === (string)$vars[0]) return false; // haha
@@ -511,11 +521,11 @@ class C
 		$set =& self::$_context;
 		foreach($vars as $var)
 		{
-			if(!isset($set[$var])) $set[$var] = array();
-			$set =& $set[$var];	
+			if(!array_key_exists($var, $set)) $set[$var] = array();
+			$set =& $set[$var];
 		}
 		
-		return ($set = $v);
+		return ((bool)($set = $v));
 	}
 
 	/**
@@ -528,7 +538,7 @@ class C
 	{
 		if(!isset($n))
 		{
-			if(!isset($v)) return (self::$_lodeluser = self::$_context['lodeluser'] = null);
+			if(!isset($v)) return ((bool)(self::$_lodeluser = self::$_context['lodeluser'] = null));
 			elseif(empty(self::$_lodeluser))
 			{
 				self::$_lodeluser = self::$_context['lodeluser'] = $v;
@@ -543,9 +553,9 @@ class C
         
 		if(false === strpos($n, '.'))
 		{
-			if(isset(self::$_lodeluser[$n]))
+			if(array_key_exists($n, self::$_lodeluser))
 			{
-				return (!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false);
+				return ((bool)(!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
 			}
 			else 
 			{
@@ -553,7 +563,7 @@ class C
 				self::$_context['lodeluser'][$n] = array();
 				self::$_lodeluser[$n] = $v;
 				// don't want to have access to the session id or name in templates
-				return (('idsession' === $n || 'session' === $n) ? true : self::$_context['lodeluser'][$n] = $v);
+				return ((bool)(('idsession' === $n || 'session' === $n) ? true : (self::$_context['lodeluser'][$n] = $v)));
 			}
 		}
 		else
@@ -562,11 +572,11 @@ class C
 			$set =& self::$_lodeluser;
 			foreach($vars as $var)
 			{
-				if(!isset($set[$var])) $set[$var] = array();
+				if(!array_key_exists($var, $set)) $set[$var] = array();
 				$set =& $set[$var];	
 			}
 			
-			return ($set = $v);
+			return ((bool)($set = $v));
 		}
 		return false;
 	}
@@ -604,14 +614,13 @@ class C
 		{
 			checkCacheDir('htmlpurifier');
 		
-			if(!class_exists('HTMLPurifier', false))
-				include 'htmlpurifier/HTMLPurifier.standalone.php';
+			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
 			// custom Lodel filters
-			if(file_exists(self::$_cfg['home'].'htmlpurifierFilters.php')) include 'htmlpurifierFilters.php';
+			!file_exists(self::$_cfg['home'].'htmlpurifierFilters.php') || include 'htmlpurifierFilters.php';
 			// custom personnal filters
-			if(file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php')) include 'htmlpurifierFilters_local.php';
+			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
 			$config->set('Core', 'Encoding', 'UTF-8');
 			$config->set('HTML', 'TidyLevel', 'heavy' );
 			$config->set('Attr', 'EnableID', true);
@@ -676,11 +685,10 @@ function __autoload($class)
 	}
 
 	$file = realpath($file);
-
 	if(!$file) return false;
 
 	include $file;
-	
+
 	return class_exists($class, false);
 }
 ?>

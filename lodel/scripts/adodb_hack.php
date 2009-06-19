@@ -49,7 +49,7 @@
  * @package lodel
  */
 
-
+$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 include "adodb/adodb.inc.php";
 
 if('mysql' === DBDRIVER)
@@ -86,7 +86,10 @@ if('mysql' === DBDRIVER)
             if(!is_object($result))
                 return false;
     
-            return count($result->_fieldobjects);
+	    if(isset($result->_fieldobjects))
+            	return count($result->_fieldobjects);
+	    elseif(isset($result->_numOfRows))
+		return $result->_numOfRows;
         }
     
         public function fetchField(&$result, $i=null)
@@ -154,7 +157,10 @@ elseif('mysqli' === DBDRIVER)
             if(!is_object($result))
                 return false;
 
-            return count($result->_fieldobjects);
+	    if(isset($result->_fieldobjects))
+            	return count($result->_fieldobjects);
+	    elseif(isset($result->_numOfRows))
+		return $result->_numOfRows;
         }
     
         public function fetchField(&$result, $i=null)
@@ -190,4 +196,5 @@ function &lodelADODB_factory($driver)
     $obj = new $driver();
     return $obj;
 }
+error_reporting($err);
 ?>

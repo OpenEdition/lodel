@@ -49,8 +49,7 @@
  * @package lodel
  * @since Fichier ajouté depuis la version 0.8
  */
-if(!class_exists('XMLDB', false))
-	include 'xmldbfunc.php';
+class_exists('XMLDB', false) || include 'xmldbfunc.php';
 
 /**
  * Affichage des champs textes pour la traduction
@@ -190,14 +189,15 @@ class XMLDB_Translations extends XMLDB
 			//
 		case "translations" :
 			// check the lang is ok
-			if ($this->lang != "all" && $this->lang != "" && $this->lang != $record['lang'])
+			if (!empty($record['lang']) && $this->lang != "all" && $this->lang != "" && $this->lang != $record['lang'])
 			{
 				return;
 			}
 			$this->currentlang = $record['lang'];
 			// look for the translation
-			$dao = getDAO("translations");
+			$dao = DAO::getDAO("translations");
 			$vo = $dao->find("lang='".$record['lang']."' AND textgroups='".$this->textgroups."'");
+			if(!$vo) $vo = DAO::getDAO('translations')->createObject();
 			$vo->textgroups = $this->textgroups;
 			foreach ($record as $k => $v)
 			{
@@ -212,7 +212,7 @@ class XMLDB_Translations extends XMLDB
 				//
 		case "texts" :
 			// check the lang is ok
-			if (!$record['lang'] || $this->currentlang != $record['lang'])
+			if (empty($record['lang']) || $this->currentlang != $record['lang'])
 				return;
 			// check the textgroup is ok
 			if (!in_array(strtolower($record['textgroup']), $GLOBALS['translations_textgroups'][$this->textgroups])) {
@@ -220,8 +220,9 @@ class XMLDB_Translations extends XMLDB
 				trigger_error("ERROR: Invalid textgroup : ".$this->textgroups, E_USER_ERROR);
 			}
 			// look for the translation
-			$dao = getDAO("texts");
+			$dao = DAO::getDAO("texts");
 			$vo = $dao->find("name='".$record['name']."' AND textgroup='".$record['textgroup']."' AND lang='".$record['lang']."'");
+			if(!$vo) $vo = DAO::getDAO('texts')->createObject();
 			foreach ($record as $k => $v)
 			{
 				$vo->$k = $v;

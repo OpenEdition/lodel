@@ -48,10 +48,10 @@
 		<LET ARRAY="actions.delAll">[@ADMIN.CLEAR_INTERNAL_MESSAGING]</LET>
 		<li class="isolated">
 			<label for="actions">[@COMMON.ACTIONS] :</label>
-			<select class="barInfo" id="actions">
+			<select class="barInfo" id="actions" onchange="javascript:im_action(this, '[#DIRECTORY]');">
 			<option>--</option>
 			<LOOP NAME="foreach" ARRAY="[#ACTIONS]">
-				<option onclick="javascript:im_action('[#KEY]', '[#DIRECTORY]', '[#VALUE|addslashes]');" value="[#KEY]">[#VALUE]</option>
+				<option value="[#KEY]">[#VALUE]</option>
 			</LOOP>
 			</select>
 		</li>

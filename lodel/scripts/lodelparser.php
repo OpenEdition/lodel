@@ -147,12 +147,11 @@ class LodelParser extends Parser
 	protected function __construct()
 	{ // constructor
 		parent::__construct();
-		$this->commands[] = 'TEXT'; // catch the text
 		$this->variablechar = '@'; // catch the @
 		
 		if(!($this->tablefields = getFromCache('tablefields')))
         	{
-                	include 'tablefields.php';
+                	include_once 'tablefields.php';
 		    	$this->tablefields =& $tablefields;
 		}
         
@@ -162,7 +161,7 @@ class LodelParser extends Parser
 
 		if(isset($this->tablefields[$this->prefix."classes"]) && !($this->classes = getFromCache('classes')))
 		{
-			if(!defined('INC_CONNECT')) include 'connect.php';
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			$obj = $db->CacheExecute($GLOBALS['sqlCacheTime'], "SELECT class,classtype FROM {$GLOBALS['tp']}classes WHERE status>0")
 				or trigger_error('SQL Error:<br/>'.$db->ErrorMsg(), E_USER_ERROR);
@@ -548,8 +547,7 @@ class LodelParser extends Parser
 			if ($textexists->fields['nb'] < $this->nbLangs[$prefix]) { 
 				// text does not exists or not available in every langs
 				// Have to create them
-				if(!function_exists('getLogic')) include "logic.php";
-				getLogic("texts")->createTexts($name, $group);
+				Logic::getLogic("texts")->createTexts($name, $group);
 			}
 			
 			$done[$tag][$group][$name] = true;
@@ -588,7 +586,7 @@ class LodelParser extends Parser
 				return; // no idea what to do...
 			$tf = join("", $this->translationform);
 			$code = <<<PHP
-<?php if (C::get('translationmode', 'lodeluser')=="interface") {
+<?php if (C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site")) {
 if(!function_exists('mkeditlodeltextJS')) include("translationfunc.php"); mkeditlodeltextJS(); ?>
 <hr />
 <form method="post" action="index.php">

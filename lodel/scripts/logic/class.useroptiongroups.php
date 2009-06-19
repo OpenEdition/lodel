@@ -74,7 +74,8 @@ class UserOptionGroupsLogic extends Logic {
 
 	/** Constructor
 	*/
-	public function __construct() {
+	public function __construct() 
+	{
 		parent::__construct("optiongroups"); // UserOptionGroups use the same table as OptionGroups but restrein permitted operations to change the option values.
 	}
 
@@ -84,12 +85,15 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function viewAction(&$context,$error) 
+	public function viewAction(&$context,&$error) 
 	{
 		function loop_useroptions($context,$funcname)
 		{
 			global $db;
-			$result=$db->execute(lq("SELECT * FROM #_TP_options WHERE status > 0 AND idgroup='".$context['id']."' ORDER BY rank,name ")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result=$db->execute(lq("SELECT * FROM #_TP_options 
+						WHERE status > 0 AND idgroup='".$context['id']."' 
+						ORDER BY rank,name ")) 
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while (!$result->EOF) {
 				$localcontext=array_merge($context,$result->fields);
 				$name=$result->fields['name'];
@@ -102,13 +106,15 @@ class UserOptionGroupsLogic extends Logic {
 	}
 
 
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{
 		// get the dao for working with the object
-		$dao=getDAO("options");
+		$dao=DAO::getDAO("options");
+		$context['id'] = (int)@$context['id'];
 		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
-		if(!function_exists('validfield'))
-			include("validfunc.php");
+		
+		function_exists('validfield') || include 'validfunc.php';
+
 		foreach ($options as $option) {
 			if ($option->type=="passwd" && (!isset($context['data'][$option->name]) || !trim($context['data'][$option->name]))) continue; // empty password means we keep the previous one.
 			$valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
@@ -129,7 +135,7 @@ class UserOptionGroupsLogic extends Logic {
 			$option->value=$context['data'][$option->name];
 			if (!$dao->save($option)) trigger_error("You don't have the rights to modify this option", E_USER_ERROR);
 		}
-		@unlink(SITEROOT."CACHE/options");
+		clearcache();
 		return "_back";
 	}
 
@@ -148,7 +154,7 @@ class UserOptionGroupsLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		trigger_error('ERROR: forbidden', E_USER_ERROR);
 	}
@@ -170,8 +176,7 @@ class UserOptionGroupsLogic extends Logic {
 	 */
 	public function makeSelect(&$context, $var)
 	{
-		if(!function_exists('makeselectlangs'))
-			include("lang.php");
+		function_exists('makeselectlangs') || include("lang.php");
 		makeselectlangs(isset($context[$var]) ? $context[$var] : '');
 	}
 

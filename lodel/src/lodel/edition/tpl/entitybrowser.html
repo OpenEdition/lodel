@@ -32,7 +32,6 @@
 <script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <script type="text/javascript">
-<!-- Begin
 function sendValue(id,title)
 {
 	obj=window.opener.document.getElementById('[#CALLER]');
@@ -57,7 +56,8 @@ function sendValues(){
 				if(values[j] && values[j] !== objselect.options[i].value)
 					obj.value += values[j]+',';
 			}
-			objselect.options[i]=null;
+			var n = objselect.options[i];
+			objselect.removeChild(n);
 			--i;
 		}
 	}
@@ -68,13 +68,15 @@ function sendValues(){
 			if(result[2].length > 50) {
 				result[2] = result[2].substr(0,50) + ' ... ';
 			}
-			objselect.options[objselect.length] = new Option(result[2] + ' (' + result[3] + ')',result[1]);
-			obj.value=obj.value+result[1]+',';
+			var opt = window.opener.document.createElement('option');
+			opt.innerHTML = result[2] + ' (' + result[3] + ')';
+			opt.setAttribute('value', result[1]);
+			objselect.appendChild(opt);
+			obj.value += result[1]+',';
 		}
 	}
 	window.close();
 }
-//  End -->
 </script>
 <body id="browser">
 <div class="close">
@@ -95,18 +97,18 @@ function sendValues(){
 			<IF COND="[#TPLEDITION]">
 			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />
 			<IF COND="[#SINGLE]">
-				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE] ([#TYPE])</a>
+				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE|strip_tags] ([#TYPE])</a>
 			<ELSE/>
-				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE|strip_tags] ([#TYPE])
 			</IF>
 			<div style="display:none" id="childContainer[#ID]">
 				<LOOP NAME="entities"></LOOP>	
 			</div>
 			<ELSE/>
 			<IF COND="[#SINGLE]">
-				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE] ([#TYPE])</a>
+				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE|strip_tags] ([#TYPE])</a>
 			<ELSE/>
-				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE] ([#TYPE])
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE|strip_tags] ([#TYPE])
 			</IF>
 			</IF>
 			</li>
@@ -121,18 +123,16 @@ function sendValues(){
 <a href="#" onclick="window.close()" class="action">[@EDITION.CLOSE_THE_WINDOW]</a>
 </div>
 <script type="text/javascript">
-<!-- Begin
-obj=window.opener.document.getElementById('[#CALLER]_select');
+	obj=window.opener.document.getElementById('[#CALLER]_select');
 <IF COND="[#SINGLE]">
-o=document.getElementById('entities'+obj.value);
-if (o) o.style.backgroundColor='orange';
+	o=document.getElementById('entities'+obj.value);
+	if (o) o.style.backgroundColor='orange';
 <ELSE/>
-for(i=0; i<obj.length; i++) {
-	o=document.getElementById('entities'+obj.options[i].value);
-	if(o) o.checked=true;
-}
+	for(i=0; i<obj.length; i++) {
+		o=document.getElementById('entities'+obj.options[i].value);
+		if(o) o.checked=true;
+	}
 </IF>
-//  End -->
 </script>
 </form>
 </body>

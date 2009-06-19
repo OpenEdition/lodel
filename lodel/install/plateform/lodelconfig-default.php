@@ -37,18 +37,18 @@ Installation par defaut sans pre-configuration.
 comment */
 
 # version de Lodel
-$version="0.9";
+$cfg['version']="0.9";
 # revision SVN de la release
-$revision="443X";
+$cfg['revision']="443X";
 
 
 # Racine de lodel sur le systeme
-$pathroot=".";
+$cfg['pathroot']=".";
 
 
 # Base du site
 # ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
-$urlroot="/";
+$cfg['urlroot']="/";
 
 
 # Emplacement des scripts
@@ -56,88 +56,89 @@ $urlroot="/";
 # cette variable est ecrasee dans siteconfig.php a partir de la version 0.5
 # elle pourra alors etre supprimee de ce script
 # cette variable doit se terminer par / obligatoirement.
-$home="";
+$cfg['home']="";
 
 
 # URL contenant les fichiers communs partagés
 # par exemple $shareurl="http://lodel.revues.org/share";
 # la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
-$shareurl=$urlroot."share";
+$cfg['shareurl']=$cfg['urlroot']."share";
 
 # Repertoire contenant les fichiers communs partagés
 # par exemple $sharedir="/var/www/lodel/share";
 # ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
-$sharedir="$pathroot/share";
+$cfg['sharedir']="{$cfg['pathroot']}/share";
 
 
 # Localisation des fichiers archive pour l'import de donnees
-$importdir="";
+$cfg['importdir']="";
 
 # Timeout pour les sessions
 # en seconde
-$timeout=120*60;
+$cfg['timeout']=120*60;
 
 # Timeout pour les cookies
 # en seconde
-$cookietimeout=4*3600;
+$cfg['cookietimeout']=4*3600;
 
 
 # Nom de la base de donnees
-$database="";
+$cfg['database']="";
 
 # Nom d'utilisateur
-$dbusername="";
+$cfg['dbusername']="";
 # Mot de passe
-$dbpasswd="";
+$cfg['dbpasswd']="";
 # Hote de la BD
-$dbhost="";
+$cfg['dbhost']="";
 # temps de cache des résultats SQL
-$sqlCacheTime = 3600*24;
+$cfg['sqlCacheTime'] = 3600*24;
+$GLOBALS['sqlCacheTime']=$cfg['sqlCacheTime'];
 # driver mysql
-$dbDriver = 'mysql';
+$cfg['dbDriver'] = 'mysql';
 
 # contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
-$contactbug="";
+$cfg['contactbug']="";
 
 # Repertoire contenant le binaire de mysql
-$mysqldir="/usr/bin";
+$cfg['mysqldir']="/usr/bin";
 
 # chemin pour la commande zip ou pclzip pour utiliser la librairie pclzip
-$zipcmd="pclzip";
+$cfg['zipcmd']="pclzip";
 
 # chemin pour la commande unzip ou pclzip pour utiliser la librairie pclzip
-$unzipcmd="pclzip";
+$cfg['unzipcmd']="pclzip";
 
 
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
-$tableprefix="lodel_";
+$cfg['tableprefix']="lodel_";
 
 # LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
-$singledatabase="on";
+$cfg['singledatabase']="on";
 
 
 # Nom de la session (cookie)
-$sessionname="session$database";
+$cfg['sessionname']="session{$cfg['database']}";
 
 
 # type d'URL
-$extensionscripts="";      # extension .php ou .html pour les scripts accessibles par les internautes 
+$cfg['extensionscripts']="";      # extension .php ou .html pour les scripts accessibles par les internautes 
 define("URI","id");        # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
 
 # configuration du ServOO
-$servoourl="";
-$servoousername="";
-$servoopasswd="";
+$cfg['servoourl']="";
+$cfg['servoousername']="";
+$cfg['servoopasswd']="";
 # repertoire temporaire d'extraction ServOO
-$tmpoutdir = "";
+$cfg['tmpoutdir']="";
 
 # configuration du proxy pour atteindre le ServOO
-$proxyhost="";
-$proxyport="8080";
+$cfg['proxyhost']="";
+$cfg['proxyport']="8080";
 
  #tableau des types de fichiers acceptés à l'upload
-$authorizedFiles = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg', '.xml');
+$cfg['authorizedFiles'] = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg', '.xml');
 
 # lock les tables.
 # Chez certains hebergeurs n'acceptent pas les LOCK
@@ -147,18 +148,18 @@ define("DONTUSELOCKTABLES",false);
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
-$chooseoptions="";
-$includepath=""; # pour les sites qui ont un include automatique (defini par php.ini)
-$htaccess="on";    # 
-$filemask="0777";
-$usesymlink="";
-$installoption="";
-$installlang="fr";
+$cfg['chooseoptions']="";
+$cfg['includepath']=""; # pour les sites qui ont un include automatique (defini par php.ini)
+$cfg['htaccess']="on";    # 
+$cfg['filemask']="0777";
+$cfg['usesymlink']="";
+$cfg['installoption']="";
+$cfg['installlang']="fr";
 ############################################
 
 # config du cache #
 # @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
-$cacheOptions = array(
+$cfg['cacheOptions'] = array(
 	'cacheDir' => './CACHE/',
 	'lifeTime' => 3600,
 // pour débug : décommenter ici
@@ -171,10 +172,10 @@ $cacheOptions = array(
 	'hashedDirectoryLevel'=>2
 	);
 ##################
-
-$debugMode = false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
-$locale = "fr_FR.UTF8";
-setlocale (LC_ALL,$locale);
+$GLOBALS['cacheOptions'] = $cfg['cacheOptions'];
+$cfg['debugMode']=false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
+$cfg['locale']="fr_FR.UTF8";
+setlocale (LC_ALL,$cfg['locale']);
 
 set_magic_quotes_runtime(0);
 ignore_user_abort();
@@ -182,9 +183,13 @@ ignore_user_abort();
 
 // securite
 $currentdb="";
+$cfg['currentdb']="";
+$GLOBALS['currentdb'] = $cfg['currentdb'];
+
+if (!$cfg['filemask']) {
+	$cfg['filemask'] = 0700;
+}
 
 define ("NORECORDURL",1);
-
 define ("INC_LODELCONFIG",1);
-
 ?>

@@ -52,9 +52,9 @@
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
 				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
-					<LET VAR="iderror"><?php $tmperror = array_keys($context['error']); echo $tmperror[0]; ?></LET>
+					<LET VAR="iderror"><?php $tmperror = array_keys(@$context['error']); echo $tmperror[0]; ?></LET>
 					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
-						<?php $err = array_values($context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
+						<?php $err = array_values(@$context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
 						<LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
 						<IF COND="[#INTERTITLE] EQ ''">
 							<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#TITLE]" />
@@ -170,7 +170,7 @@
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
-  $parameters = explode(',', $context['editionparams']);
+  $parameters = explode(',', @$context['editionparams']);
   if( is_array($parameters) )
   {
     //Advanced mode or not
@@ -194,7 +194,7 @@
     $context['fck_height'] = 400;
     $context['fck_skin'] = 'default';
     $context['fck_autodetectlanguage'] = 'false';
-    $context['fck_language'] = $context['lodeluser']['lang'];
+    $context['fck_language'] = @$context['lodeluser']['lang'];
     $context['fck_mode'] = 'Advanced';
   }
 ?>
@@ -215,13 +215,13 @@
 	<div id="mltext_[#VARNAME]_for_copy" style="display: none;">
 		<label>XXX</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][__lodel_wildcard]" FULLVARNAME="[#VARNAME][__lodel_wildcard]" VALUE="" />
-		<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
+		<a href="javascript:;" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
 	</div>
 	<LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	<div>
 		<label>[(#LANG|humanlang|ucfirst)] :</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
-		<a href="#" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
+		<a href="javascript:;" onclick="deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;">[@COMMON.DELETE]</a>
 	</div>
 	</LOOP>
 	<div>
@@ -296,13 +296,13 @@
 <?php
 				$urlFck = C::get('sharedir', 'cfg') . "/plugins/fckeditor/";
 				require_once($urlFck."fckeditor.php");
-				$oFCKeditor = new FCKeditor($context['fullvarname'], $context['fck_width'], $context['fck_height']) ;
-				$oFCKeditor->ToolbarSet = $context['fck_mode'];
+				$oFCKeditor = new FCKeditor($context['fullvarname'], @$context['fck_width'], @$context['fck_height']) ;
+				$oFCKeditor->ToolbarSet = @$context['fck_mode'];
 				$oFCKeditor->BasePath = $urlFck;
-				$oFCKeditor->Config['SkinPath'] = "skins/".$context['fck_skin']."/";
+				$oFCKeditor->Config['SkinPath'] = "skins/".@$context['fck_skin']."/";
 				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-				$oFCKeditor->Config["AutoDetectLanguage"] = $context['fck_autodetectlanguage'];
-				$oFCKeditor->Config["DefaultLanguage"] = $context['fck_language'];
+				$oFCKeditor->Config["AutoDetectLanguage"] = @$context['fck_autodetectlanguage'];
+				$oFCKeditor->Config["DefaultLanguage"] = @$context['fck_language'];
 				$oFCKeditor->Value = $context['value'];
 				$oFCKeditor->Create();
 ?>
@@ -351,13 +351,13 @@
 <!--[ --------------- LANG,SELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
 	      <select name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR]>
-		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
+		<?php  makeSelect($context,"value",@$context['lo'],@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- MULTIPLESELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'multipleselect'">
 	      <select name="[#FULLVARNAME][]" id="[#VARNAME]" [#EVENTATTR] multiple>
-		<?php  makeSelect($context,"value",$context['lo'],$context['type']); ?>
+		<?php  makeSelect($context,"value",@$context['lo'],@$context['type']); ?>
 	    </select>
 <ELSE/>
 <!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
@@ -408,7 +408,7 @@
 -->
 </script>
 <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" size="7" value="[#VALUE]" />
-<a href="#" onclick="cp_[#VARNAME].select(document.getElementById('[#VARNAME]'),'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
+<a href="javascript:;" onclick="cp_[#VARNAME].select(document.getElementById('[#VARNAME]'),'colorpicker_[#VARNAME]');return false;" name="colorpicker_[#VARNAME]" id="colorpicker_[#VARNAME]">[@ADMIN.CHOOSE_A_COLOR]</a>
 <script type="text/javascript">
 <!--
 document.getElementById('[#VARNAME]').style.backgroundColor='[#VALUE]';
@@ -428,7 +428,7 @@ cp_[#VARNAME].writeDiv();
 <!--[ --------------- ENTITIES ------------- ]-->	    
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
-	<a href="#" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_AN_ENTITY]</a>
+	<a href="javascript:;" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_AN_ENTITY]</a>
 	<input type="hidden" name="entities[[#VARNAME]]" id="[#VARNAME]" />
 	<LOOP NAME="entities_select">
 		<DO>
@@ -455,7 +455,7 @@ cp_[#VARNAME].writeDiv();
 		</ALTERNATIVE>
 	</LOOP>
 	<br /><br />
-	<a href="#" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_ENTITIES]</a>
+	<a href="javascript:;" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;id=[%ID]','','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_ENTITIES]</a>
 	</IF>
 <ELSE/>
 
@@ -1263,40 +1263,34 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFFUNC NAME="STATUS_ICON" REQUIRED="status">
 	<IF COND="[#STATUS]==-32">
 		<img class="statusIcon" src="[#SHAREURL]/images/draft.gif" alt="[@EDITION.PERMANENT_UNPUBLISHED]" title="[@EDITION.PERMANENT_UNPUBLISHED]" />
-	<ELSE/>
-	<IF COND="[#STATUS]==-8">
+	<ELSEIF COND="[#STATUS]==-8">
 		<img class="statusIcon" src="[#SHAREURL]/images/draft.gif" alt="[@EDITION.DRAFT]" title="[@EDITION.DRAFT]" />
-	<ELSE/>
-	<IF COND="[#STATUS]==-1">
+	<ELSEIF COND="[#STATUS]==-1">
 		<img class="statusIcon" src="[#SHAREURL]/images/unpublished.gif" alt="[@EDITION.READY_TO_BE_PUBLISHED]" title="[@EDITION.READY_TO_BE_PUBLISHED]" />
-	<ELSE/>
-	<IF COND="[#STATUS]==1">
+	<ELSEIF COND="[#STATUS]==1">
 		<IF COND="[#CLASS]">
 			<LET VAR="table">[#TP][#CLASS]</LET>
 			<LOOP NAME="getDatePubli" TABLE="[#TABLE]" WHERE="identity = '[#ID]'">
+				<DO>
 				<IF COND="[#DATEPUBLI|isadate] AND [#DATEPUBLI] GT today()">
 					<img class="statusIcon" src="[#SHAREURL]/images/later_published.gif" alt="[@EDITION.LATER_PUBLISHED]" title="[@EDITION.LATER_PUBLISHED]" />
 				<ELSE />
 					<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
 				</IF>
+				</DO>
+				<ALTERNATIVE>
+					<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
+				</ALTERNATIVE>
 			</LOOP>
 		<ELSE />
 			<img class="statusIcon" src="[#SHAREURL]/images/published.gif" alt="[@EDITION.PUBLISHED]" title="[@EDITION.PUBLISHED]" />
 		</IF>
-	<ELSE/>
-	<IF COND="[#STATUS]==8">
+	<ELSEIF COND="[#STATUS]==8">
 		<img class="statusIcon" src="[#SHAREURL]/images/locked.gif" alt="[@EDITION.PROTECTED]" title="[@EDITION.PROTECTED]" />
-	<ELSE/>
-	<IF COND="[#STATUS]==32">
+	<ELSEIF COND="[#STATUS]==32">
 		<img class="statusIcon" src="[#SHAREURL]/images/locked.gif" alt="[@EDITION.PERMANENT_PUBLISHED]" title="[@EDITION.PERMANENT_PUBLISHED]" />
 	<ELSE/>
-
 		unknow ??
-	</IF>
-	</IF>
-	</IF>
-	</IF>
-	</IF>
 	</IF>
 </DEFFUNC>
 
@@ -1497,7 +1491,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<li>
 		<MACRO NAME="BOUTONS_ACTIONS_ENTITIES_PATH">
 		</li>
-		<IF COND="defined('backoffice')">
+		<IF COND="defined('backoffice') AND ![#DO]">
 		<li>
 			<ul class="actions">
 				<li class="isolated"><a href="#" id="displayButton" onclick="javascript:displayAll(this, true, false, null);">[@COMMON.DISPLAY_ALL_SITEMAP]</a></li>
@@ -1993,7 +1987,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 <DEFFUNC NAME="TITRE_AUTEURS_TYPE_DOCUMENT_ALIAS" REQUIRED="id">
 	<div class="document_alias">
-		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="nature='alias' AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
+		<LOOP NAME="getAliases" TABLE="relations, entities, types" WHERE="LENGTH(nature)>1 AND id1='[#ID]' AND entities.id=id2 AND types.id=idtype">
 			<BEFORE>
 				&nbsp;<img src="[#SHAREURL]/images/alias.png" alt="Alias" title="[#NBRESULTS] alias" onclick="if(document.getElementById('aliasContainer[#ID]').style.display == 'none' || document.getElementById('aliasContainer[#ID]').style.display == '') document.getElementById('aliasContainer[#ID]').style.display = 'inline'; else document.getElementById('aliasContainer[#ID]').style.display = 'none';" />
 				<div class="alias_container" id="aliasContainer[#ID]"> [@COMMON.ENTITY_ALIAS_RELATION] :

@@ -231,6 +231,7 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
+    $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
     if(!class_exists('PclZip', false))
     	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
@@ -253,12 +254,14 @@ class ServOO_Client {
 
     if ($ret==0) {
       $this->error_message=$zip->errorInfo(true);
+      error_reporting($err);
       return false;
     }
     $filelist=array();
     foreach($ret as $entry) {
       if ($entry['status']=="ok") $filelist[]=$entry['filename'];
     }
+    error_reporting($err);
     return $filelist;
   }
 
@@ -307,6 +310,7 @@ class ServOO_Client {
 	@unlink($outfilename);
 	return $ret;
     }
+    $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
     if(!class_exists('PclZip', false))
     	require(SERVOOLIBDIR."pclzip/pclzip.lib.php"); // use the modified PclZip !!!!!!
 
@@ -317,6 +321,7 @@ class ServOO_Client {
     if (($list = $zip->listContent()) == 0) {
 	@unlink($outfilename);
       $this->error_message=$zip->errorInfo(true);
+      error_reporting($err);
       return false;
     }
 
@@ -332,6 +337,7 @@ class ServOO_Client {
 	if (!$ret) {
 	  @unlink($outfilename);
 	  $this->error_message=$zip->errorInfo(true);
+	  error_reporting($err);
 	  return false;
 	}
 	$xhtml=$ret[0]['content'];
@@ -380,6 +386,7 @@ class ServOO_Client {
       if ($ret==0) {
 	@unlink($outfilename);
 	$this->error_message=$zip->errorInfo(true);
+	error_reporting($err);
 	return false;
       }
 
@@ -394,8 +401,8 @@ class ServOO_Client {
     }
 
     // remove the archive
-    unlink($outfilename);
-
+    @unlink($outfilename);
+    error_reporting($err);
     return $xhtml;
   }
 
@@ -510,7 +517,11 @@ class ServOO_Client {
    */
 
     function call($operation,$params=array()) {
-
+      if(!is_object($this->_soapclient)) {
+          $this->error=true;
+          $this->error_message='Invalid configuration, can not contact the ServOO';
+	  return false;
+      }
       // sent the file to convert
       $ret = $this->_soapclient->call($operation,
 				      $params,

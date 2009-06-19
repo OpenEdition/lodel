@@ -93,7 +93,7 @@ class TasksLogic extends Logic {
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function changeRankAction(&$context, &$error)
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		trigger_error("TasksLogic::changeRankAction", E_USER_ERROR);
 	}
@@ -102,7 +102,7 @@ class TasksLogic extends Logic {
 		* add/edit Action
 		*/
 
-	public function editAction(&$context,&$error)
+	public function editAction(&$context,&$error, $clean=false)
 	{ trigger_error("TasksLogic::editAction", E_USER_ERROR); }
 
 	/*---------------------------------------------------------------*/
@@ -126,6 +126,7 @@ class TasksLogic extends Logic {
 	*/
 	public function isdeletelocked($id,$status=0)
 	{
+		$id = (int)$id;
 		// basic check. Should be more advanced because of the potential conflict between 
 		// adminlodel adn othe rusers
 		$vo=$this->_getMainTableDAO()->find("id='".$id."' AND user='".C::get('id', 'lodeluser')."'","id");

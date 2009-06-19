@@ -91,7 +91,7 @@ function authenticate($level = 0, $mode = "", $return = false)
                 	if(file_exists(SITEROOT.'./CACHE/.no_restricted')) break;
                 	maintenance();
             
-            		if(!defined('INC_CONNECT')) include 'connect.php';
+            		defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
 			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
@@ -101,7 +101,7 @@ function authenticate($level = 0, $mode = "", $return = false)
                 		break;
             		}
 			list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
-			
+			$name = false;
 			foreach($users as $user) 
 			{
 				$uuser = explode(' ', $user['ip']);
@@ -131,7 +131,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 					$lodeluser['name'] = $row['username'];
 					C::setUser($lodeluser);
 					unset($lodeluser);
-					if(!function_exists('check_expiration')) include 'loginfunc.php';
+					function_exists('check_expiration') || include 'loginfunc.php';
 					if(!check_expiration()) {
 						break 3;
 					}
@@ -154,7 +154,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 		}
 		else break;
 
-        	if(!defined('INC_CONNECT')) include 'connect.php';
+        	defined('INC_CONNECT') || include 'connect.php';
 		global $db;
 
 		if (!($row = $db->getRow(lq("
@@ -208,30 +208,30 @@ function authenticate($level = 0, $mode = "", $return = false)
 		C::setUser($lodeluser);
 		unset($row);
         
-		if(!function_exists('open_session')) include 'loginfunc.php';
-		if('error_opensession' === open_session(C::get('login'), $name))
+		function_exists('open_session') || include 'loginfunc.php';
+		if('error_opensession' === open_session($lodeluser['name'], $name))
 			break;
 
-
-		if($lang = C::get('lang'))
+		$lang = C::get('lang');
+		if($lang && 'set' === C::get('do') && 'users' === C::get('lo'))
 		{
 			$GLOBALS['lang'] = $lang;
 			C::set('sitelang', $lang);
-			C::set('lang', $lang);
 		}
 		elseif(isset($lodeluser['lang'])) 
 		{
 			$GLOBALS['lang'] = $lodeluser['lang'];
 			C::set('sitelang', $lodeluser['lang']);
-			C::set('lang', $lodeluser['lang']);
 		}
+		
+		setLang(C::get('sitelang'));
 		
 // 		usecurrentdb();
 		unset($lodeluser);
         
 		if(!C::get('adminlodel', 'lodeluser')) maintenance();
 			
-		if(isset($_REQUEST['clearcache']))
+		if(C::get('redactor', 'lodeluser') && isset($_REQUEST['clearcache']))
 		{
 			clearcache(true);
 		}
@@ -247,11 +247,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 	$lodeluser = '';
    	maintenance();
 
-	if(!C::get('lang'))
-	{
-		C::set('lang', 'fr'); // fr by default
-		setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
-	}
+	setLang();
 	C::trigger('postauth');
 	// exception
 	if ($level == 0) {
@@ -266,6 +262,54 @@ function authenticate($level = 0, $mode = "", $return = false)
 		header("location: login.php?". $retour);
 		exit;
 	}
+}
+
+function setLang($lang=null)
+{
+	// Langue ?
+	if(!$lang) $lang = C::get('lang');
+	// récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
+	if(!empty($_COOKIE['language']) && !$lang) {
+		if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
+		{
+			$lang = $_COOKIE['language'];
+		}
+		else
+		{
+			$lang = 'fr';
+			setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
+		}
+	}
+	// langue passée en GET ou POST : initialise le cookie
+	else 
+	{
+		if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
+		{
+			// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
+			$lang = C::get('options.metadonneessite.langueprincipale');
+			$lang = !$lang ? 'fr' : $lang;
+		}
+		setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
+	}
+	// do we have to set another locale ?
+	if('fr' !== substr($lang, 0, 2))
+	{
+		$l = strtolower(substr($lang, 0,2));
+		$lu = 'en' === $l ? 'US' : strtoupper($l);
+		if(!@setlocale(LC_ALL, $l.'_'.$lu.'.UTF8'))
+		{ // locale not found, reset it to default french
+			@setlocale(LC_ALL, 'fr_FR.UTF8');
+		}
+		if('tr' === $l)
+		{ // bug with locale tr_TR.UTF8
+		// http://bugs.php.net/bug.php?id=18556
+			@setlocale(LC_CTYPE, 'fr_FR.UTF8');
+		}
+		C::set('locale', $l.'_'.$lu.'.UTF8');
+		unset($l, $lu);
+	}
+	
+	C::set('sitelang', $lang);
 }
 
 /**
@@ -376,8 +420,7 @@ if (C::get('site', 'cfg'))
 { // pas besoin quand on est dans l'admin générale (options définies pour un site)
 	if(!($options = getFromCache('options')))
 	{
-		if(!function_exists('cacheOptionsInFile'))
-			include 'optionfunc.php';
+		function_exists('cacheOptionsInFile') || include 'optionfunc.php';
 		C::set('options', cacheOptionsInFile());
 	}
 	else
@@ -386,49 +429,9 @@ if (C::get('site', 'cfg'))
 		unset($options);
 	}
 }
-
-// Langue ?
-$lang = trim(C::get('lang'));
-// récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
-if(!empty($_COOKIE['language']) && !$lang) {
-	if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
-	{
-		C::set('lang', $_COOKIE['language']);
-	}
-	else
-	{
-		C::set('lang', 'fr'); // fr by default
-		setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
-	}
-}
-// langue passée en GET ou POST : initialise le cookie
-else 
-{
-	if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
-	{
-		// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-		$lang = C::get('options.metadonneessite.langueprincipale');
-		$lang = !$lang ? 'fr' : $lang;
-	}
-	C::set('lang', $lang); // fr by default
-	setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
-	unset($lang);
-}
-
-$lang = C::get('lang');
-// do we have to set another locale ?
-if('fr' !== substr($lang, 0, 2))
-{
-	$l = strtolower(substr(C::get('lang'), 0,2));
-	$lu = 'en' === $l ? 'US' : strtoupper($l);
-	setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
-	unset($l, $lu);
-}
-unset($lang);
-
+setLang();
 // tableaux des langues disponibles
 include 'lang.php';
 C::set('defaultlang', $GLOBALS['languages']);
-C::set('sitelang', C::get('lang'));
 C::set('installlang', C::get('installlang', 'cfg'));
 ?>

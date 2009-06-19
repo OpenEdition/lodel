@@ -50,7 +50,47 @@
  * @since Fichier ajouté depuis la version 0.9
  */
 
+
 /**
+ * Base class for plugins using class as hook
+ * Forces the definition of static methods enableAction and disableAction
+ * Classe servant de base pour les plugins utilisant les hook de type class
+ * Force la définition des méthodes statiques enableAction et disableAction
+ *
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ */
+interface MainPlugins
+{
+	/**
+	 * Called when enabling a plugin
+	 * This method is abstract, it HAS to be defined in child class
+	 *
+	 * @param array $context the $context, by reference
+	 * @param array $error the error array, by reference
+	 */
+	static public function enableAction(&$context, &$error);
+
+	/**
+	 * Called when disabling a plugin
+	 * This method is abstract, it HAS to be defined in child class
+	 *
+	 * @param array $context the $context, by reference
+	 * @param array $error the error array, by reference
+	 */
+	static public function disableAction(&$context, &$error);
+}
+
+
+/**
+ * Base class for plugins using class as hook
  * Classe servant de base pour les plugins utilisant les hook de type class
  *
  * @author Pierre-Alain Mignot
@@ -63,7 +103,7 @@
  * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  */
-abstract class Plugins
+abstract class Plugins implements MainPlugins
 {
 	/**
 	 * @var array
@@ -87,31 +127,13 @@ abstract class Plugins
 	}
 
 	/**
-	 * Return true if the user has the rights higher than asked
+	 * Compare the user rights against level passed in argument
 	 *
-	 * @param int $level the level to check the user to
+	 * @param int $level the level to compare the user rights to
 	 */
 	static protected function _checkRights($level)
 	{
-		return ((int)$level < (int)C::get('rights', 'lodeluser'));
+		return ((bool)(C::get('rights','lodeluser') > $level));
 	}
-
-	/**
-	 * Called when enabling a plugin
-	 * This method is abstract, it HAS to be defined in child class
-	 *
-	 * @param array $context the $context, by reference
-	 * @param array $error the error array, by reference
-	 */
-	abstract static public function enableAction(&$context, &$error);
-
-	/**
-	 * Called when disabling a plugin
-	 * This method is abstract, it HAS to be defined in child class
-	 *
-	 * @param array $context the $context, by reference
-	 * @param array $error the error array, by reference
-	 */
-	abstract static public function disableAction(&$context, &$error);
 }
 ?>

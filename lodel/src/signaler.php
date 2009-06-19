@@ -62,16 +62,16 @@ try
     if (C::get('visitor', 'lodeluser')) {
         recordurl();
     }
-    
+    $context =& C::getC();
     $context['signaler_recaptcha'] = C::get('signaler_recaptcha', 'cfg');
     $context['recaptcha_publickey'] = C::get('recaptcha_publickey', 'cfg');
     include 'recaptchalib.php';
     
     // identifié ? accès à tous les documents
     $critere = C::get('rights', 'lodeluser') > LEVEL_VISITOR ? '' : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
-    if (!function_exists("filtered_mysql_fetch_assoc")) {
-        include_once 'filterfunc.php';
-    }
+    function_exists("filtered_mysql_fetch_assoc") || include_once 'filterfunc.php';
+    $id = C::get('id');
+    $site = C::get('site', 'cfg');
     global $db;
     $result = $db->Execute(lq("
         SELECT #_TP_textes.*, #_TP_entities.*,type 
@@ -83,7 +83,7 @@ try
     if ($result->RecordCount() < 1) {
         $result->Close();
         $context['notfound'] = 1;
-        View::getView()->renderCached('signaler');
+        View::getView()->render('signaler');
         return;
     }
     
@@ -101,17 +101,18 @@ try
             if (!$resp->is_valid) {
                 $context['recaptcha_error'] = $resp->error;
                 C::set('nocache', true);
-                insert_template($context, 'signaler');
+                View::getView()->render('signaler');
                 exit;
             }
         }
         // validation
         do {
+	    $err = false;
             // on vérifie que les mails fournies sont correctes
-            if (empty($context['to']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to']) === 0) {
+            if (empty($context['to']) || !preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to'])) {
                 $err = $context['error_to'] = 1;
             }
-            if (empty($context['from']) || preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from']) === 0) {
+            if (empty($context['from']) || !preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['from'])) {
                 $err = $context['error_from'] = 1;
             }
     
@@ -133,7 +134,7 @@ try
             $content = ob_get_clean();
             
             // envoie le mail
-            if (false === send_mail ($context['to'], $content, $context['subject'], $context['from'], $context['nom_expediteur'])) {
+            if (true !== send_mail ($context['to'], $content, $context['subject'], $context['from'], $context['nom_expediteur'])) {
                 $context['error_mail']=1;
                 break;
             }

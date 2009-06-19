@@ -60,10 +60,10 @@ try
     if ($httpAuth->getHeader())
     {
         // récupère les identifiants (login/password) du header
-        $identifiers = C::clean($httpAuth->getIdentifiers());
+        $identifiers = $httpAuth->getIdentifiers();
+	C::clean($identifiers);
     
-        if(!function_exists('check_auth'))
-            include 'loginfunc.php';
+        function_exists('check_auth') || include 'loginfunc.php';
         
         // les identifiants ne correspondent pas à un utilisateur Lodel
         if (!check_auth($identifiers['login'],$identifiers['password'],C::get('site', 'cfg')))
