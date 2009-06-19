@@ -411,8 +411,9 @@ class DataLogic
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$context['importdir'] = C::get('importdir', 'cfg');
-		$operation = $context['operation'];
+		
 		if (isset($context['backup'])) {
+            		$operation = @$context['operation'];
 			set_time_limit(0); // pas d'effet en safe mode
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
@@ -2425,11 +2426,10 @@ function loop_files_model(&$context, $funcname)
 				if ($unzipcmd && $unzipcmd != "pclzip") {
 	  				$line = `$unzipcmd $dir/$file -c $model`;
 				} else {
-					if(!class_exists('PclZip', false))
-						require "pclzip/pclzip.lib.php";
+					class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
 					$archive = new PclZip("$dir/$file");
 					$arr = $archive->extract(PCLZIP_OPT_BY_NAME, $model,
-										PCLZIP_OPT_EXTRACT_AS_STRING);
+								PCLZIP_OPT_EXTRACT_AS_STRING);
 					$line = $arr[0]['content'];
 				}
 				if (!$line) {
@@ -2452,7 +2452,9 @@ function loop_files_model(&$context, $funcname)
 					}
 				}
 				// check only the major version, sub-version are not checked
-				if (doubleval($localcontext['lodelversion']) != doubleval(C::get('version', 'cfg'))) {
+                		// with xml ME import, we don't need to check the version
+				if (empty($context['xmlimport']) && (empty($localcontext['lodelversion']) ||
+                			doubleval($localcontext['lodelversion']) != doubleval(C::get('version', 'cfg')))) {
 					$localcontext['warning_version'] = 1;
 				}
 				call_user_func("code_do_$funcname", $localcontext);

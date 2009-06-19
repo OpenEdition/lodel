@@ -101,7 +101,7 @@ function authenticate($level = 0, $mode = "", $return = false)
                 		break;
             		}
 			list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
-			
+			$name = false;
 			foreach($users as $user) 
 			{
 				$uuser = explode(' ', $user['ip']);
@@ -131,7 +131,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 					$lodeluser['name'] = $row['username'];
 					C::setUser($lodeluser);
 					unset($lodeluser);
-					if(!function_exists('check_expiration')) include 'loginfunc.php';
+					function_exists('check_expiration') || include 'loginfunc.php';
 					if(!check_expiration()) {
 						break 3;
 					}
@@ -289,7 +289,6 @@ function setLang($lang=null)
 			$lang = C::get('options.metadonneessite.langueprincipale');
 			$lang = !$lang ? 'fr' : $lang;
 		}
-		//C::set('lang', $lang); // fr by default
 		setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
 	}
 	// do we have to set another locale ?
@@ -302,7 +301,7 @@ function setLang($lang=null)
 			@setlocale(LC_ALL, 'fr_FR.UTF8');
 		}
 		if('tr' === $l)
-		{ // the interface iterator disapear with setlocale tr_TR.UTF8
+		{ // bug with locale tr_TR.UTF8
 		// http://bugs.php.net/bug.php?id=18556
 			@setlocale(LC_CTYPE, 'fr_FR.UTF8');
 		}
@@ -311,7 +310,6 @@ function setLang($lang=null)
 	}
 	
 	C::set('sitelang', $lang);
-	unset($lang);
 }
 
 /**

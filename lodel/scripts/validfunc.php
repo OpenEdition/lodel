@@ -90,11 +90,12 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$text = $default;
 		} elseif($name && isset($context['class'])) {
 			if(!isset($masks[$context['class']])) {
-				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext')"));
+				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext') AND mask !=''"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
 					if($fields->fields['mask'] != '') {
-						$mask = unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+						$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+						if(!is_array($mask)) continue;
 						$masks[$context['class']][$fields->fields['name']] = array();
 						$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
 						$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';

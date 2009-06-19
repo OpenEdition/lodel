@@ -967,6 +967,7 @@ function rightonentity ($action, $context)
 	$context['id'] = @$context['id'];
 	$context['status'] = @$context['status'];
 	$context['usergroup'] = @$context['usergroup'];
+	$context['iduser'] = @$context['iduser'];
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));

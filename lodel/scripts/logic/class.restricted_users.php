@@ -96,6 +96,21 @@ class Restricted_UsersLogic extends Logic
 		//) { $error["error_has_entities"]=$count; return "_back"; }
 	}
 
+	/**
+	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 *
+	 * add/edit Action
+	 * @param array $context le tableau des données passé par référence.
+	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
+	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 */
+	public function editAction(&$context, &$error, $clean=false)
+	{
+		$ret = parent::editAction($context, $error);
+		@unlink(SITEROOT.'CACHE/.no_restricted');
+		return $ret;
+	}
 
 	/**
 	 * Suppression du log des sessions d'un utilisateur
