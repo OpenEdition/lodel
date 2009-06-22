@@ -444,11 +444,11 @@ class Logic
 				if(!empty($context['mask']['user']))
 				{
 					$this->_makeMask($context, $error);
-					if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
+					if(!isset($error['mask'])) $context['mask'] = addslashes(serialize($context['mask']));
 				}
 				else
 				{
-					$context['mask'] = null;
+					$context['mask'] = addslashes(serialize(array()));
 				}
 			}
 		}

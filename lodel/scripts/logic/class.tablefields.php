@@ -82,6 +82,9 @@ class TableFieldsLogic extends Logic
 		global $db;
 
 		$ret=parent::viewAction($context,$error);
+		// force array else if mask is empty, it will generate a e_notice error 
+		// see bug http://bugs.php.net/bug.php?id=47903
+		if(!is_array($context['mask'])) $context['mask'] = array();
 		$this->_getClass($context);
 		return $ret;
 	}
