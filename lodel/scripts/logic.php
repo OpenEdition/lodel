@@ -484,7 +484,7 @@ class Logic
 	protected function _makeMask(&$context, &$error)
 	{
 		$context['mask']['user'] = @$context['mask']['user'];
-		if($context['mask']['user'] == '') return;
+		if(!$context['mask']['user']) return;
 		defined('PONCTUATION') || include 'utf8_file.php';
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {

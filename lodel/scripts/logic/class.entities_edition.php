@@ -278,10 +278,17 @@ class Entities_EditionLogic extends GenericLogic
 			return '_back';
 		}
 		$id = @$context['id'];
-		if ($id && (empty($context['idparent']) || empty($context['idtype']))) {
-			$vo  = $this->_getMainTableDAO()->getById($id, "idparent, idtype");
-			$context['idparent'] = $vo->idparent;
-			$context['idtype']   = $vo->idtype;
+		if ($id) {
+			$select = array();
+			if(empty($context['idparent'])) $select[] = 'idparent';
+			if(empty($context['idtype'])) $select[] = 'idtype';
+			if(empty($context['status'])) $select[] = 'status';
+			if($select) {
+				$vo  = $this->_getMainTableDAO()->getById($id, join(',', $select));
+				if(!$vo) trigger_error('ERROR: can not find entity '.$id, E_USER_ERROR);
+				foreach($select as $v)
+					$context[$v] = $vo->$v;
+			}
 		}
 		$idparent = @$context['idparent'];
 		$idtype   = @$context['idtype'];
@@ -319,7 +326,8 @@ class Entities_EditionLogic extends GenericLogic
 				$status=-64;
 				$ret="_error";
 			}
-			if ($status>-64) {
+			else
+			{
 				return "_error";
 			}
 		}
