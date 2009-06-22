@@ -269,7 +269,7 @@ function mysqldatetime($s, $type = 'datetime')
 			return trim($date.' '.$time);
 		} else {
 			$date = mysqldate($s, $type);
-echo '::<br>';var_dump($s);var_dump($date);
+
 			if($date == "bad date")
 				return $type;
 			elseif($type == 'time' && $date)
