@@ -458,7 +458,7 @@ class C
 			$return = self::${"_{$arr}"};
 			foreach($vars as $var)
 			{
-				if(!array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -472,7 +472,7 @@ class C
 			$return = self::$_context;
 			foreach($vars as $var)
 			{
-				if(!array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !array_key_exists($var, $return)) return false;
 				$return = $return[$var];
 			}
 
@@ -521,6 +521,7 @@ class C
 		$set =& self::$_context;
 		foreach($vars as $var)
 		{
+			if(!is_array($set)) $set=array();
 			if(!array_key_exists($var, $set)) $set[$var] = array();
 			$set =& $set[$var];
 		}
@@ -572,6 +573,7 @@ class C
 			$set =& self::$_lodeluser;
 			foreach($vars as $var)
 			{
+				if(!is_array($set)) $set=array();
 				if(!array_key_exists($var, $set)) $set[$var] = array();
 				$set =& $set[$var];	
 			}
