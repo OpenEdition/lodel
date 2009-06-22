@@ -112,7 +112,7 @@ function mysqldate($s, $type)
 			$m = mois($m);
 		}
 		if ($m == 0) {
-			return '';
+			return 'bad date';
 		}
 	
 		if (!isset ($y)) { // la date n'a pas ete mise
@@ -131,7 +131,7 @@ function mysqldate($s, $type)
 		}
 	
 		if (!checkdate($m, $d, $y)) {
-			return '';
+			return 'bad date';
 		}
 	
 		if ($d < 10 && strlen($d) == 1)	{
@@ -269,7 +269,7 @@ function mysqldatetime($s, $type = 'datetime')
 			return trim($date.' '.$time);
 		} else {
 			$date = mysqldate($s, $type);
-
+echo '::<br>';var_dump($s);var_dump($date);
 			if($date == "bad date")
 				return $type;
 			elseif($type == 'time' && $date)
