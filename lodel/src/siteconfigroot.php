@@ -82,4 +82,5 @@ require $cfg['home'].'context.php';
 $cfg['home'] = SITEROOT. $cfg['home'];
 C::setCfg($cfg);
 require $home.'class.errors.php';
+$home=null;
 ?>

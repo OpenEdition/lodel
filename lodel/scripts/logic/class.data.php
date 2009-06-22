@@ -625,7 +625,7 @@ class DataLogic
 			$GLOBALS['currentprefix'] = $currentprefix = '#_TP_';
 			$GLOBALS['showcolumns'] = true; // use by PMA to print the fields.
 			//fait un DUMP de ces tables
-			mysql_dump($currentdb, $tables, '', $fh, false, false, true); // get the content
+			mysql_dump($GLOBALS['currentdb'], $tables, '', $fh, false, false, true); // get the content
 			
 			// select the optiongroups to export
 			$vos = DAO::getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
@@ -634,9 +634,9 @@ class DataLogic
 				$ids[] = $vo->id;
 			}
 			fputs($fh, "DELETE FROM #_TP_optiongroups;\n");
-			mysql_dump($currentdb, array('#_TP_optiongroups'), '', $fh, false, false, true, '*', 'id '. sql_in_array($ids));
+			mysql_dump($GLOBALS['currentdb'], array('#_TP_optiongroups'), '', $fh, false, false, true, '*', 'id '. sql_in_array($ids));
 			fputs($fh, "DELETE FROM #_TP_options;\n");
-			mysql_dump($currentdb,array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
+			mysql_dump($GLOBALS['currentdb'],array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
 			// Récupère la liste des tables de classe à sauver.
 			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
@@ -648,7 +648,7 @@ class DataLogic
 				}
 			}
 			if ($tables) {
-				mysql_dump($currentdb, $tables, '', $fh, true, true, false); // get the table create
+				mysql_dump($GLOBALS['currentdb'], $tables, '', $fh, true, true, false); // get the table create
 			}
 			// it may be better to recreate the field at the import rather 
 			// than using the created field. It may be more robust. Status quo at the moment.
