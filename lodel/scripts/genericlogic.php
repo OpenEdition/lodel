@@ -227,14 +227,16 @@ class GenericLogic extends Logic
 		// get the fields of class
 		function_exists('validfield') || include "validfunc.php";
 		if (!empty($context['class'])) {
-			validfield($context['class'], 'class', '', '', 'data');
+			$ret = validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
 		}	elseif (!empty($context['type']['class'])) {
-			validfield($context['type']['class'], "class", '', '', 'data');
+			$ret = validfield($context['type']['class'], "class", '', '', 'data');
 			$class = $context['type']['class'];
 		}	else {
-			trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
+			trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 		}
+
+		if(true !== $ret) trigger_error('ERROR: invalid class name', E_USER_ERROR);
 
 		$daotablefields = DAO::getDAO("tablefields");
 		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
@@ -243,7 +245,8 @@ class GenericLogic extends Logic
 		$this->files_to_move = array ();
 		$this->_publicfields = array ();
 		isset($GLOBALS['lodelfieldtypes']) || include "fieldfunc.php";
-
+		$context['id'] = @$context['id'];
+		$context['do'] = @$context['do'];
 		foreach ($fields as $field) {
 			if ($field->g_name) {
 				$this->addGenericEquivalent($class, $field->g_name, $field->name); // save the generic field
@@ -276,7 +279,7 @@ class GenericLogic extends Logic
 							!isset ($context['data'][$name]) || // not set
 							$context['data'][$name] === "" || (is_array($context['data'][$name]) && empty($context['data'][$name]))); // or empty
 
-            		if (isset($context['do']) && $context['do'] == "edit" && ($field->edition == "importable" || 
+            		if ($context['do'] == "edit" && ($field->edition == "importable" || 
 					$field->edition == "none" || $field->edition == "display")) {
 
 				// in edition interface and field is not editable in the interface
@@ -288,7 +291,7 @@ class GenericLogic extends Logic
 					$empty = false;
 				}
 			}
-			if (isset($context['id']) && $context['id'] > 0 && (($field->cond == "permanent") || ($field->cond == "defaultnew" && $empty))) {
+			if ($context['id'] > 0 && (($field->cond == "permanent") || ($field->cond == "defaultnew" && $empty))) {
 				// or a permanent field
 				// or field is empty and the default value must not be used
 				unset ($value);
@@ -347,7 +350,7 @@ class GenericLogic extends Logic
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
 					$idtype = $vo->id;
-
+					$context[$type][$idtype] = @$context[$type][$idtype];
 					$localcontext = &$context[$type][$idtype];
 					if (!$localcontext) {
 						break;
@@ -378,6 +381,7 @@ class GenericLogic extends Logic
 					}
 					break;
 				case 'entities' :
+					$context['entities'][$name] = @$context['entities'][$name];
 					$value = &$context['entities'][$name];
 					if (!$value) {
 						// commented by pierre-alain

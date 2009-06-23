@@ -161,44 +161,48 @@ function mois($m)
 	$m = strtolower(utf8_decode($m));
 
 	switch (substr($m, 0, 3))	{
-	case "jan" :
-		return 1;
-	case "fev" :
-		return 2;
-	case "fv" :
-		return 2;
-	case "fév" :
-		return 2;
-	case "mar" :
-		return 3;
-	case "avr" :
-		return 4;
-	case "mai" :
-		return 5;
-	case "aou" :
-		return 8;
-	case "ao" :
-		return 8;
-	case "aoû" :
-		return 8;
-	case "sep" :
-		return 9;
-	case "oct" :
-		return 10;
-	case "nov" :
-		return 11;
-	case "dec" :
-		return 12;
-	case "déc" :
-		return 12;
-	case "dc" :
-		return 12;
+		case "jan" :
+			return 1;
+		case "fev" :
+		case "fv" :
+		case "fév" :
+		case "feb":
+			return 2;
+		case "mar" :
+			return 3;
+		case 'apr':
+		case "avr" :
+			return 4;
+		case 'may':
+		case "mai" :
+			return 5;
+		case "jun":
+			return 6;
+		case "jul":
+			return 7;
+		case "aug":
+		case "aou" :
+		case "ao" :
+		case "aoû" :
+			return 8;
+		case "sep" :
+			return 9;
+		case "oct" :
+			return 10;
+		case "nov" :
+			return 11;
+		case "dec" :
+			return 12;
+		case "déc" :
+			return 12;
+		case "dc" :
+			return 12;
 	}
 	switch (substr($m, 0, 4)) {
-	case "juin" :
-		return 6;
-	case "juil" :
-		return 7;
+		case "juin" :
+			return 6;
+		case "juil" :
+			return 7;
 	}
 	return 0;
 }
@@ -217,6 +221,8 @@ function mysqldatetime($s, $type = 'datetime')
 	if (!$s) {
 		return '';
 	}
+
+	if(('date' == $type && '0000-00-00' == $s) || ('datetime' == $type && '0000-00-00 00:00:00' == $s)) return $s;
 
 	if ($s == 'aujourd\'hui' || $s == 'today' || $s == 'maintenant' || $s == 'now') {
 		$timestamp = time();
