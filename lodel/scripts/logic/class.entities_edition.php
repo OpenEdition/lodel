@@ -116,7 +116,7 @@ class Entities_EditionLogic extends GenericLogic
 				$maxdegree = 0;
 				foreach($context['persons'][$idtype] as $degree => $arr) {
 					if (!is_numeric($degree)) {
-						return;
+						continue;
 					}
 					$localcontext              = array_merge($context,$arr);
 					$localcontext['name']      = $varname;
