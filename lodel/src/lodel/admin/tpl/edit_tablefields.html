@@ -220,6 +220,7 @@
     </span>
   </LOOP>
   <br />
+<IF COND="[#CLASSTYPE] EQ 'entities'">
   <div id="mask" style="display:none">
   <label for="mask">[@ADMIN.MASK_IMPORT] : </label>
   <br class="nobr">
@@ -240,6 +241,7 @@ function displayMask() {
 displayMask();
 </script>
   <br />
+  </IF>
   <label for="allowedtags">[@ADMIN.ALLOWED_TAGS] : 
 		</label>
   <br class="nobr">

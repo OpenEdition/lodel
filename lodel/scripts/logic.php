@@ -440,7 +440,7 @@ class Logic
 					$error[$field]=$valid;
 				}
 			}
-			if('tablefields' == $this->maintable && 'mask' == $field) {
+			if('tablefields' == $this->maintable && 'mask' == $field && 'entities' == $context['classtype']) {
 				if(!empty($context['mask']['user']))
 				{
 					$this->_makeMask($context, $error);
