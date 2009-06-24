@@ -418,9 +418,9 @@ class DataLogic
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
 			$dirlocked = tempnam(tmpdir(), 'lodeldump_'). '.dir'; // this allow to be sure to have a unique dir.
-			mkdir($dirlocked, 0700);
+			@mkdir($dirlocked, 0700);
 			$outfile = 'lodel.sql';
-			$fh = fopen($dirlocked. '/'. $outfile, 'w');
+			$fh = @fopen($dirlocked. '/'. $outfile, 'w');
 			
 			if (!$fh) {
 				trigger_error("ERROR: unable to open a temporary file in write mode", E_USER_ERROR);
@@ -437,33 +437,34 @@ class DataLogic
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
 			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			chdir(LODELROOT); 
 			$GLOBALS['currentprefix'] = '#_TP_';
 			while (!$result->EOF) {
 				$name = $result->fields['name'];
 				$sitepath = $result->fields['path'];
 				if (fputs($fh, 'DROP DATABASE IF EXISTS '. $name. ";\nCREATE DATABASE ". $name. ";USE ". $name. ";\n") === FALSE) {
-				trigger_error("ERROR: unable to write in the temporary file", E_USER_ERROR);
-			}
+					trigger_error("ERROR: unable to write in the temporary file", E_USER_ERROR);
+				}
 				$this->_dump($name, $outfile, $errors, $fh);
-				if (!$context['sqlonly']) { 
+				if (empty($context['sqlonly'])) { 
+					chdir(LODELROOT);
 					if ($sitepath == '/') { $root = ''; } // site à la racine
 					else { $root = $name . '/'; }
 					// liste des répertoires du site à archiver
 					$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
-
+					$bad_dirs = array();
 					//verifie que les repertoires sont accessibles en lecture
 					foreach ($sitedirs as $sitedir) {
 						if(is_readable($root . $sitedir)){ $dirtotar[] = $root . $sitedir;}
 						else { $bad_dirs[] = $root . $sitedir;}
 					}
-					 if (is_array($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
+					if (!empty($bad_dirs)) { isset($error['files']) || $error['files'] = ''; $error['files'] .= implode(', ', $bad_dirs); }
+					chdir('lodeladmin'. (C::get('version', 'cfg') ? '-'. C::get('version', 'cfg') : ''));
 				}
 				$result->MoveNext();
 			}
 			fclose($fh);
 			$db->selectDB(DATABASE); //selectionne la base principale.
-
+			chdir(LODELROOT);
 			// tar les sites et ajoute la base
 			$archivetmp      = tempnam(tmpdir(), 'lodeldump_');
 			$archivefilename = 'lodel-'. date('dmy'). '.tar.gz';

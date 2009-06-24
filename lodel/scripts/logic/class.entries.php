@@ -154,6 +154,7 @@ class EntriesLogic extends GenericLogic
 	public function listAction (&$context, &$error)
 	{
 		$daotype = DAO::getDAO ($this->daoname);
+		$context['idtype'] = @$context['idtype'];
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
 			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
@@ -173,7 +174,7 @@ class EntriesLogic extends GenericLogic
 	public function editAction (&$context, &$error, $clean=false) 
 	{
 		$id = isset($context['id']) ? $context['id'] : '';
-		$idtype=$context['idtype'];
+		$idtype=@$context['idtype'];
 		if (!$idtype) {
 			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
 		}
@@ -212,7 +213,7 @@ class EntriesLogic extends GenericLogic
 				$context['data'][$g_index_key]=$context['g_name'];
 			}
 		}
-
+		$context['data'][$g_index_key] = @$context['data'][$g_index_key];
 		$index_key = &$context['data'][$g_index_key];
 		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
 		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not exist
@@ -293,6 +294,9 @@ class EntriesLogic extends GenericLogic
 			$parent=array ();
 			$ids=array (0);
 			$l=1;
+			$context['type']['sort'] = @$context['type']['sort'];
+			$context['id'] = @$context['id'];
+			$context['idtype'] = @$context['idtype'];
 			do {
 				$result=$db->execute (lq ("
 				SELECT * 
