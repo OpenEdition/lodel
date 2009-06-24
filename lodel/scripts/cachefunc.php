@@ -159,7 +159,7 @@ function checkCacheDir($dir)
  *
  * @param string $filename
  * @param string $siteroot  
- * @return boolean
+ * @return boolean or file contents
  */
 function getFromCache($filename, $siteroot=true)
 {
@@ -187,7 +187,7 @@ function getFromCache($filename, $siteroot=true)
  * @param string $siteroot  
  * @return boolean false or int 
  */
-function writeToCache($filename, &$datas, $siteroot=true)
+function writeToCache($filename, $datas, $siteroot=true)
 {
 	$filename = 'CACHE/'.$filename;
 	if($siteroot) $filename = SITEROOT . $filename;

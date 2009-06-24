@@ -384,12 +384,12 @@ PHP;
 		switch ($escape) {
 			case 'php' :
 				// traitement normal, php espace
-				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
+				$variable = "<?php \$tmp=@{$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
 				break;
 			case 'quote' :
-					$variable = "\".{$variable}.\"";
+					$variable = "\".@{$variable}.\"";
 				break;
-			default : break;
+			default : $variable = "@".$variable; break;
 		}
 		return $variable;
 	}
@@ -425,12 +425,12 @@ PHP;
            	 	if('%' === (string)$prefix) {
 				$variable = 
 <<<PHP
-@\$GLOBALS['context']{$code}
+\$GLOBALS['context']{$code}
 PHP;
 			} else {
 				$variable = 
 <<<PHP
-@\$context{$code}
+\$context{$code}
 PHP;
 			}
 			unset($code);
