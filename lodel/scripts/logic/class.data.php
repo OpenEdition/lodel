@@ -696,7 +696,7 @@ class DataLogic
 		if ($site && C::get('singledatabase', 'cfg') != 'on') {
 			$dbname = DATABASE."_".$site;
 			if (!$fh)	{
-				$fh = fopen($outfile, "w");
+				$fh = @fopen($outfile, "w");
 				$closefh = true;
 			}
 			if (!$fh)
@@ -723,7 +723,7 @@ class DataLogic
 		$tables_nodatadump = $GLOBALS['lodelsitetables_nodatadump'];
 		mysql_dump($dbname, $tables_nodatadump, $outfile, $fh, true, true,false);
 		if ($closefh)
-			fclose($fh);
+			@fclose($fh);
 	}
 
 	/**

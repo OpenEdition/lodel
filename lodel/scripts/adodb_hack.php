@@ -81,7 +81,7 @@ if('mysql' === DBDRIVER)
             return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->table : false;
         }
         
-        public function getFieldNum(&$result)
+        public function getNbRows(&$result)
         {
             if(!is_object($result))
                 return false;
@@ -92,6 +92,14 @@ if('mysql' === DBDRIVER)
 		return $result->_numOfRows;
         }
     
+	public function getFieldNum(&$result)
+	{
+		if(!is_object($result))
+                	return false;
+
+		return count($result->fields);
+	}
+
         public function fetchField(&$result, $i=null)
         {
             if(!is_object($result))
@@ -152,7 +160,15 @@ elseif('mysqli' === DBDRIVER)
             return $result->_fieldobjects[$i]->table;
         }
         
-        public function getFieldNum(&$result)
+	public function getFieldNum(&$result)
+	{
+		if(!is_object($result))
+                	return false;
+
+		return count($result->fields);
+	}
+
+        public function getNbRows(&$result)
         {
             if(!is_object($result))
                 return false;
