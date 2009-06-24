@@ -375,7 +375,7 @@ class siteManage {
 				$dirdest = $arg1;
 			} elseif ($cmd == 'mkdir') {
 				$arg1 = $root. $arg1;
-				if (!file_exists($arg1)) {
+				if (!file_exists($arg1) || !is_writeable($arg1)) {
 					if(!@mkdir($arg1, 0777 & octdec($filemask))) {
 						C::set('error_mkdir', $arg1);
 						View::getView()->render('site-createdir');
@@ -387,9 +387,9 @@ class siteManage {
 				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
 				}
-				if (!file_exists($dest1)) {
-					$toroot = preg_replace(array("/^\.\//", "/([^\/]+)\//", "/[^\/]+$/"),
+				$toroot = preg_replace(array("/^\.\//", "/([^\/]+)\//", "/[^\/]+$/"),
 						array('', '../', ''), "$dirdest/$arg1");
+				if (!file_exists($dest1) || md5_file("$toroot$dirsource/$arg1") != md5_file($dest1)) {
 					$this->slink("$toroot$dirsource/$arg1", $dest1);
 				}
 			} elseif ($cmd == 'cp' || ($cmd == 'ln' && (!$usesymlink || $usesymlink == 'non'))) {
@@ -473,7 +473,7 @@ class siteManage {
 				mkdir($dest, 0777 & octdec(C::get('filemask', 'cfg')));
 			}
 			@chmod($dest, 0777 & octdec(C::get('filemask', 'cfg')));
-			$dir = opendir($src) or trigger_error('Cannot open dir '.$src, E_USER_ERROR);
+			$dir = @opendir($src) or trigger_error('Cannot open dir '.$src, E_USER_ERROR);
 			while ($file = readdir($dir)) {
 				if ($file == '.' || $file == '..') {
 					continue;
@@ -505,11 +505,19 @@ class siteManage {
 			return;
 		}
 		if (file_exists ($dest)) {
-			unlink($dest);
+			if(!@unlink($dest))
+			{
+				View::getView()->render('site-createdir');
+				exit;
+			}
 		}
 		if (!(@copy($src,$dest))) {
 			@chmod(basename($dest), 0777 & octdec(C::get('filemask', 'cfg')));
-			copy($src, $dest);
+			if(!@copy($src, $dest))
+			{
+				View::getView()->render('site-createdir');
+				exit;
+			}
 		}
 		@chmod($dest, 0666 & octdec(C::get('filemask', 'cfg')));
 	}
@@ -673,30 +681,35 @@ class siteManage {
 	 */
 	function createDir()
 	{
+		$installoption = C::get('installoption', 'cfg');
+		if(false === $installoption)
+			$installoption = C::get('installoption');
+
         	$path = C::get('path');
 		if (!$path) {
             		C::set('path', '/'. C::get('name'));
+			$path = '/'. C::get('name');
 		}
-		$dir = LODELROOT. $path;
-		if (!file_exists($dir) || !@opendir($dir)) {
-			$installoption = C::get('installoption', 'cfg');
-			if(false === $installoption)
-				$installoption = C::get('installoption');
-			// il faut creer le repertoire rep
-			if ($installoption == '2' && !C::get('lodeldo')) {
-				C::set('error_nonexists', !file_exists($dir));
-				C::set('error_nonaccess', !@opendir($dir));
-				View::getView()->render('site-createdir');
-				exit();
+		if(C::get('path') != '/')
+		{
+			$dir = LODELROOT. $path;
+			if (!file_exists($dir) || !@opendir($dir)) {
+				// il faut creer le repertoire rep
+				if ((int)$installoption === 2 && !C::get('lodeldo')) {
+					C::set('error_nonexists', !file_exists($dir));
+					C::set('error_nonaccess', !@opendir($dir));
+					View::getView()->render('site-createdir');
+					exit();
+				}
+				// on essaie
+				if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec(C::get('filemask')))) {
+					// on y arrive pas... pas les droits surement
+					C::set('error_mkdir', $dir);
+					View::getView()->render('site-createdir');
+					exit();
+				}
+				@chmod($dir, 0777 & octdec(C::get('filemask')));
 			}
-			// on essaie
-			if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec(C::get('filemask')))) {
-				// on y arrive pas... pas les droits surement
-                		C::set('error_mkdir', 1);
-				View::getView()->render('site-createdir');
-				exit();
-			}
-			@chmod($dir, 0777 & octdec(C::get('filemask')));
 		}
 		
 		// on essaie d'ecrire dans tpl si root
