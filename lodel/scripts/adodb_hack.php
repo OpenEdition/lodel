@@ -54,8 +54,8 @@ include "adodb/adodb.inc.php";
 
 if('mysql' === DBDRIVER)
 {
-    if(!class_exists('ADODB_mysql', false))
-        include 'adodb/drivers/adodb-mysql.inc.php';
+    class_exists('ADODB_mysql', false) || include 'adodb/drivers/adodb-mysql.inc.php';
+
     class lodel_mysql extends ADODB_mysql 
     {
         public $rsPrefix = 'lodel_rs_';
@@ -123,8 +123,8 @@ if('mysql' === DBDRIVER)
 }
 elseif('mysqli' === DBDRIVER)
 {
-    if(!class_exists('ADODB_mysqli', false))
-        include 'adodb/drivers/adodb-mysqli.inc.php';
+    class_exists('ADODB_mysqli', false) || include 'adodb/drivers/adodb-mysqli.inc.php';
+
     class lodel_mysqli extends ADODB_mysqli 
     {
         public $rsPrefix = 'lodel_rs_';

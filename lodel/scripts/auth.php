@@ -264,6 +264,13 @@ function authenticate($level = 0, $mode = "", $return = false)
 	}
 }
 
+/**
+ * Gestion de la langue de l'utilisateur
+ *
+ * Cette fonction gère la langue de l'utilisateur, loggé ou non
+ *
+ * @param string $lang La langue, si loggué
+ */
 function setLang($lang=null)
 {
 	// Langue ?
