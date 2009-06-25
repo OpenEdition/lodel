@@ -72,6 +72,7 @@ try
     function_exists("filtered_mysql_fetch_assoc") || include_once 'filterfunc.php';
     $id = C::get('id');
     $site = C::get('site', 'cfg');
+    defined('INC_CONNECT') || include 'connect.php';
     global $db;
     $result = $db->Execute(lq("
         SELECT #_TP_textes.*, #_TP_entities.*,type 
