@@ -127,6 +127,8 @@ try
             else
                 $context['subject'] .= "un ami (" . $context['from'] . ").";
     
+	    class_exists('View') || include 'View.php'; // should be included by the autoload
+
             ob_start();
             $GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
             // on utilise pas le cache pour le mail généré !!
