@@ -112,10 +112,10 @@ function makefilterfunc()
         if (!$row) return array();
 	$filters = array('.$filterstr.');
 	if(empty($filters)) return $row;
-	$count = $db->getNbRows($result);
+	$count = $result->RecordCount();
 	$ret = array();
         for($i = 0; $i < $count; $i++) {
-            $fieldname[$i] = $db->getFieldName($result, $i);
+            $fieldname[$i] = $result->$db->getFieldName($result, $i);
             $fullfieldname[$i] = $db->getFieldTable($result, $i). ".". $fieldname[$i];
             $ret[$fieldname[$i]] = $row[$fieldname[$i]];
         }
