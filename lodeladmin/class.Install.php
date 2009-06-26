@@ -558,6 +558,13 @@ class Install {
 			"share".$this->versionsuffix."/js"=>5,
 			"share".$this->versionsuffix."/macros"=>5);
 		
+		if((int)$this->installoption === 1)
+		{
+			$dirs['tpl'] = 7;
+			$dirs['tpl/index.html'] = 7;
+			$dirs['tpl/macros_accueil.html'] = 7;
+		}
+	
 		foreach ($dirs as $dir => $mode) {
 			if (!$this->testdirmode($dir,$mode)) { // vérifie les droits sur le répertoire
 				if (!@file_exists(LODELROOT.$dir)){
@@ -799,7 +806,7 @@ class Install {
 		}
 		unlink($this->lodelconfig);
 		// finish !
-		if ($this->installoption=='1') { // essaie de creer automatiquement le site
+		if ((int)$cfg['installoption']===1) { // essaie de creer automatiquement le site
 			header("location: site.php?maindefault=1");
 		}
 		$this->include_tpl("install-fin.html");

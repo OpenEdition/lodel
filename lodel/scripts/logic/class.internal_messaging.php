@@ -185,7 +185,7 @@ class Internal_MessagingLogic extends Logic
 		global $db;
         
         	if(empty($context['directory'])) $context['directory'] = 'inbox';
-        
+        	else $context['directory'] = strtolower($context['directory']);
 		if (isset($context['all'])) {
 			unset($context['all']);
 			$context['escape'] = true;

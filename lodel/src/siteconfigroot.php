@@ -65,7 +65,7 @@ if (!defined("SITEROOT")) {
 
 $cfg['home'] = "lodel{$cfg['versionsuffix']}/scripts/";
 $home = $cfg['home'];
-$cfg['sharedir'] = $cfg['sharedir'].$cfg['versionsuffix'];
+$cfg['sharedir'] = SITEROOT . $cfg['sharedir'].$cfg['versionsuffix'];
 $cfg['shareurl'] .= $cfg['versionsuffix'];
 
 # recaptcha pour la partie signaler
@@ -82,4 +82,5 @@ require $cfg['home'].'context.php';
 $cfg['home'] = SITEROOT. $cfg['home'];
 C::setCfg($cfg);
 require $home.'class.errors.php';
+$home=null;
 ?>

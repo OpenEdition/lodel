@@ -161,7 +161,7 @@ class LodelException extends Exception
 			case E_CORE_WARNING:
 			case E_WARNING:
 			case E_USER_WARNING:
-			case E_COMPILE_WARNING: 
+			case E_COMPILE_WARNING:
 				if(!C::get('debugMode', 'cfg')) break;
 			case E_USER_ERROR:
 			case E_ERROR:
@@ -176,5 +176,5 @@ class LodelException extends Exception
 }
 
 set_error_handler(array('LodelException', 'exception_error_handler'));
-error_reporting(C::get('debugMode', 'cfg') ? (E_ALL | E_STRICT) : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR));
+error_reporting(C::get('debugMode', 'cfg') ? -1 : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR));
 ?>

@@ -181,6 +181,7 @@ function addList($text)
                                                         $options, array('allowextensions' => 'xhtml|jpg|png|gif'),
                                                         'imagesnaming', // callback
                                                         SITEROOT. 'docannexe/tmp'. rand()); // base name for the images
+
                 if ($xhtml === FALSE) {
                     if (strpos($client->error_message, 'Not well-formed XML') !== false) {
                         $arr = explode("/\n/", $client->error_message);

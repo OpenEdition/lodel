@@ -83,14 +83,14 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 	if (!$identitytype || !$idtypetable) {
 		return;
 	}
-	$identitytype = (int)$identitytype;
-	$idtypetable = (int)$idtypetable;
 	$values = array ();
 	if (is_array($idtypetable))	{
+		$identitytype = (int)$identitytype;
 		foreach ($idtypetable as $idtype => $cond) {
 			array_push($values, "('$identitytype','$idtype','*')");
 		}
 	} else {
+		$idtype = (int)$idtype;
 		foreach ($identitytype as $idtype => $cond) {
 			array_push($values, "('$idtype','$idtypetable','*')");
 		}

@@ -191,7 +191,7 @@ class Controller
 			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
-			$context['error'] = array_merge((array)$context['error'], (array)$error);
+			if($error) $context['error'] = array_merge((array)$context['error'], (array)$error);
 
 			if (!$ret) 
 				trigger_error('ERROR: invalid return from the logic.', E_USER_ERROR);

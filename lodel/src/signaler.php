@@ -72,6 +72,7 @@ try
     function_exists("filtered_mysql_fetch_assoc") || include_once 'filterfunc.php';
     $id = C::get('id');
     $site = C::get('site', 'cfg');
+    defined('INC_CONNECT') || include 'connect.php';
     global $db;
     $result = $db->Execute(lq("
         SELECT #_TP_textes.*, #_TP_entities.*,type 
@@ -126,6 +127,8 @@ try
             else
                 $context['subject'] .= "un ami (" . $context['from'] . ").";
     
+	    class_exists('View') || include 'View.php'; // should be included by the autoload
+
             ob_start();
             $GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
             // on utilise pas le cache pour le mail généré !!

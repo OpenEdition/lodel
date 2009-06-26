@@ -114,8 +114,9 @@ class UsersLogic extends Logic
 		$session     = (int)C::get('session', 'lodeluser');
 		usemaindb(); // les sessions sont stockés dans la base principale
 		$ids = array();
+		$where = defined('backoffice-lodeladmin') ? ' AND userrights=128' : ' AND userrights<128';
 		if ($id) { //suppression de toutes les sessions
-			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."' {$where}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$ids[] = $result->fields['id'];
 				$result->MoveNext();

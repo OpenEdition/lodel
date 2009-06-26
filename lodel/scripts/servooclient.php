@@ -143,7 +143,6 @@ class ServOO_Client {
     $this->call("convert",
 		array($outformat,$informat,$att,$options));
 
-
     //    <theAttachedFile href="cid:9393829292aa"/>
     #echo $this->_soapclient->outgoing_payload;
 
@@ -298,8 +297,8 @@ class ServOO_Client {
 			  $user_vars="") 
   {
     $tmpoutdir = C::get('tmpoutdir', 'cfg');
-    if(empty($tmpoutdir) && !empty($outdir)) {
-	$tmpoutdir = $outdir;
+    if(empty($tmpoutdir) && !empty($tmpdir)) {
+	$tmpoutdir = $tmpdir;
     }
 
     $outfilename=tempnam($tmpoutdir,"servooclient");

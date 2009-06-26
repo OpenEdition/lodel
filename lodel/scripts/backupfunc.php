@@ -39,12 +39,12 @@
 ###define("OLDLODELPREFIX","__LODELTP__");
 
 // liste des tables a sauvegarder lors d'un backup de site (dump structure + donnees)
-$GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entities", "#_TP_relations", "#_TP_tablefields", "#_TP_tablefieldgroups", "#_TP_persons", "#_TP_users", "#_TP_usergroups", "#_TP_users_usergroups", "#_TP_types", "#_TP_persontypes", "#_TP_entrytypes", "#_TP_entries", "#_TP_tasks", "#_TP_texts", "#_TP_entitytypes_entitytypes", "#_TP_options", "#_TP_optiongroups", "#_TP_translations", "#_TP_internalstyles", "#_TP_characterstyles", "#_TP_oailogs", "#_TP_oaitokens", "#_TP_restricted_users");
+$GLOBALS['lodelsitetables'] = array ("#_TP_objects", "#_TP_classes", "#_TP_entities", "#_TP_relations", "#_TP_tablefields", "#_TP_tablefieldgroups", "#_TP_persons", "#_TP_users", "#_TP_usergroups", "#_TP_users_usergroups", "#_TP_types", "#_TP_persontypes", "#_TP_entrytypes", "#_TP_entries", "#_TP_tasks", "#_TP_texts", "#_TP_entitytypes_entitytypes", "#_TP_options", "#_TP_optiongroups", "#_TP_translations", "#_TP_internalstyles", "#_TP_characterstyles", "#_TP_oailogs", "#_TP_oaitokens", "#_TP_restricted_users", "#_TP_plugins");
 
 // liste des tables a sauvegarder lors d'un backup de site (dump de la structure seulement, pas des donnees)
 $GLOBALS['lodelsitetables_nodatadump'] = array ("#_TP_search_engine");
 
-$GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session", "#_MTP_internal_messaging");
+$GLOBALS['lodelbasetables'] = array ("#_MTP_sites", "#_MTP_users", "#_MTP_urlstack", "#_MTP_session", "#_MTP_internal_messaging", "#_MTP_mainplugins");
 if(C::get('singledatabase', 'cfg') != 'on') {
 	array_push($GLOBALS['lodelbasetables'], "#_MTP_translations", "#_MTP_texts");
 }
@@ -111,7 +111,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	if ($fh) {
 		$GLOBALS['mysql_dump_file_handle'] = $fh;
 	}	else {
-		$GLOBALS['mysql_dump_file_handle'] = fopen($output, "w");
+		$GLOBALS['mysql_dump_file_handle'] = @fopen($output, "w");
 		if (!$GLOBALS['mysql_dump_file_handle'])
 			trigger_error("ERROR: unable to write file \"$output\"", E_USER_ERROR);
 	}
@@ -144,7 +144,7 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 	}
 	PMA_exportDBFooter($db);
 	if (!$fh) {
-		fclose($GLOBALS['mysql_dump_file_handle']);
+		@fclose($GLOBALS['mysql_dump_file_handle']);
 	}
 }
 

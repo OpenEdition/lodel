@@ -54,8 +54,8 @@ include "adodb/adodb.inc.php";
 
 if('mysql' === DBDRIVER)
 {
-    if(!class_exists('ADODB_mysql', false))
-        include 'adodb/drivers/adodb-mysql.inc.php';
+    class_exists('ADODB_mysql', false) || include 'adodb/drivers/adodb-mysql.inc.php';
+
     class lodel_mysql extends ADODB_mysql 
     {
         public $rsPrefix = 'lodel_rs_';
@@ -81,7 +81,7 @@ if('mysql' === DBDRIVER)
             return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->table : false;
         }
         
-        public function getFieldNum(&$result)
+        public function getNbRows(&$result)
         {
             if(!is_object($result))
                 return false;
@@ -92,6 +92,14 @@ if('mysql' === DBDRIVER)
 		return $result->_numOfRows;
         }
     
+	public function getFieldNum(&$result)
+	{
+		if(!is_object($result))
+                	return false;
+
+		return count($result->fields);
+	}
+
         public function fetchField(&$result, $i=null)
         {
             if(!is_object($result))
@@ -115,8 +123,8 @@ if('mysql' === DBDRIVER)
 }
 elseif('mysqli' === DBDRIVER)
 {
-    if(!class_exists('ADODB_mysqli', false))
-        include 'adodb/drivers/adodb-mysqli.inc.php';
+    class_exists('ADODB_mysqli', false) || include 'adodb/drivers/adodb-mysqli.inc.php';
+
     class lodel_mysqli extends ADODB_mysqli 
     {
         public $rsPrefix = 'lodel_rs_';
@@ -152,7 +160,15 @@ elseif('mysqli' === DBDRIVER)
             return $result->_fieldobjects[$i]->table;
         }
         
-        public function getFieldNum(&$result)
+	public function getFieldNum(&$result)
+	{
+		if(!is_object($result))
+                	return false;
+
+		return count($result->fields);
+	}
+
+        public function getNbRows(&$result)
         {
             if(!is_object($result))
                 return false;

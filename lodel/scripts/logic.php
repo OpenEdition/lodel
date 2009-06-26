@@ -440,15 +440,15 @@ class Logic
 					$error[$field]=$valid;
 				}
 			}
-			if('tablefields' == $this->maintable && 'mask' == $field) {
+			if('tablefields' == $this->maintable && 'mask' == $field && 'entities' == $context['classtype']) {
 				if(!empty($context['mask']['user']))
 				{
 					$this->_makeMask($context, $error);
-					if(!$error['mask']) $context['mask'] = addslashes(serialize($context['mask']));
+					if(!isset($error['mask'])) $context['mask'] = addslashes(serialize($context['mask']));
 				}
 				else
 				{
-					$context['mask'] = null;
+					$context['mask'] = addslashes(serialize(array()));
 				}
 			}
 		}
@@ -484,7 +484,7 @@ class Logic
 	protected function _makeMask(&$context, &$error)
 	{
 		$context['mask']['user'] = @$context['mask']['user'];
-		if($context['mask']['user'] == '') return;
+		if(!$context['mask']['user']) return;
 		defined('PONCTUATION') || include 'utf8_file.php';
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {

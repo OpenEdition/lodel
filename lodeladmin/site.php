@@ -62,7 +62,7 @@ try
 	
 	include 'class.siteManage.php';
 	$website = new siteManage();
-
+	C::set('installoption', C::get('installoption', 'cfg'));
 	if(C::get('maintenance') > 0)
 	{
 		$website->maintenance();
@@ -74,7 +74,7 @@ try
 		elseif(C::get('restore'))
 			$website->restore();
         
-        $result = $db->GetRow("
+        	$result = $db->GetRow("
             SELECT * 
                 FROM `$GLOBALS[tp]sites` 
                 WHERE ".$website->get('critere')." AND (status>0 || status=-32)") 

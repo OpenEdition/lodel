@@ -384,12 +384,12 @@ PHP;
 		switch ($escape) {
 			case 'php' :
 				// traitement normal, php espace
-				$variable = "<?php \$tmp={$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
+				$variable = "<?php \$tmp=@{$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
 				break;
 			case 'quote' :
-					$variable = "\".{$variable}.\"";
+					$variable = "\".@{$variable}.\"";
 				break;
-			default : break;
+			default : $variable = "@".$variable; break;
 		}
 		return $variable;
 	}
@@ -425,12 +425,12 @@ PHP;
            	 	if('%' === (string)$prefix) {
 				$variable = 
 <<<PHP
-@\$GLOBALS['context']{$code}
+\$GLOBALS['context']{$code}
 PHP;
 			} else {
 				$variable = 
 <<<PHP
-@\$context{$code}
+\$context{$code}
 PHP;
 			}
 			unset($code);
@@ -1501,7 +1501,7 @@ PHP;
 		$cond = $this->replace_conditions($cond, "php");
 
 		$this->_clearposition();
-		$this->arr[$this->ind + 1] = '<?php if ('.$cond.') { ?>';
+		$this->arr[$this->ind + 1] = '<?php if('.$cond.'){ ?>';
 		$isendif = false;
 		do {
 			$this->ind += 3;
@@ -1512,7 +1512,7 @@ PHP;
 					$this->_errmsg("ELSE found twice in IF condition", $this->ind);
 				$elsefound = 1;
 				$this->_clearposition();
-				$this->arr[$this->ind + 1] = '<?php } else { ?>';
+				$this->arr[$this->ind + 1] = '<?php }else{ ?>';
 			}	
 			elseif ($this->arr[$this->ind] == "ELSEIF") 
 			{
@@ -1533,7 +1533,7 @@ PHP;
 				$this->parse_variable($cond, false); // parse the attributs
 				$cond = $this->replace_conditions($cond, "php");
 				$this->_clearposition();
-				$this->arr[$this->ind + 1] = '<?php } elseif ('.$cond.') { ?>';
+				$this->arr[$this->ind + 1] = '<?php }elseif('.$cond.'){ ?>';
 			}	
 			elseif ($this->arr[$this->ind] == "/IF") 
 			{
@@ -1580,14 +1580,14 @@ PHP;
 					// condition par défaut
 					if('default' == $attrs['CASE']) {
 						if($begin) {
-							$this->arr[$toput] = '<?php switch ('.$test.') { default: { ?>';
+							$this->arr[$toput] = '<?php switch('.$test.'){ default: { ?>';
 							$begin = false;
 						} else
 							$this->arr[$this->ind + 1] = '<?php default: { ?>';
 					} else {
 						$this->parse_variable($attrs['CASE'], false); // parse the attributs
 						if($begin) {
-							$this->arr[$toput] = '<?php switch ('.$test.') { case "'.quote_code($attrs['CASE']).'": { ?>';
+							$this->arr[$toput] = '<?php switch('.$test.'){ case "'.quote_code($attrs['CASE']).'": { ?>';
 							$begin = false;
 						} else
 							$this->arr[$this->ind + 1] = '<?php case "'.quote_code($attrs['CASE']).'": { ?>';
@@ -1603,9 +1603,9 @@ PHP;
 						$this->parse_variable($case, false); // parse the attributs
 						if($begin) {
                             				if('default' == $case)
-                                				$this->arr[$toput] = '<?php switch ('.$test.') { default:'.($k==$nbCases ? ' { ?>' : ' ?>');
+                                				$this->arr[$toput] = '<?php switch('.$test.'){ default:'.($k==$nbCases ? ' { ?>' : ' ?>');
                             				else
-							    $this->arr[$toput] = '<?php switch ('.$test.') { case "'.quote_code($case).'":'.($k==$nbCases ? ' { ?>' : ' ?>');
+							    $this->arr[$toput] = '<?php switch('.$test.'){ case "'.quote_code($case).'":'.($k==$nbCases ? ' { ?>' : ' ?>');
 							$begin = false;
 						} 
 						else

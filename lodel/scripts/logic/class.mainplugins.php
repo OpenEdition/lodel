@@ -569,7 +569,7 @@ class MainPluginsLogic extends Logic
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
 		{
-			trigger_error('You need to specify the name of the plugin to activate', E_USER_ERROR);
+			trigger_error('You need to specify the name of the plugin to desactivate', E_USER_ERROR);
 		}
 
 		$dao = $this->_getMainTableDao();
