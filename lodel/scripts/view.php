@@ -267,7 +267,8 @@ class View
 	public function render($tpl, $caching = false)
 	{
 		C::set('view.tpl', $tpl);
-		
+		$format = C::get('format');
+		C::set('view.format', $format);
 		if(!isset($this->_cachedfile))
 		{	
 			$this->_makeCachedFileName();
@@ -275,8 +276,7 @@ class View
 
 		C::trigger('preview');
 		$tpl = C::get('view.tpl');
-
-		$format = C::get('format');
+		$format = C::get('view.format');
 		$base = $tpl.($format ? '_'.$format : '');
 	
 		$context =& C::getC();
