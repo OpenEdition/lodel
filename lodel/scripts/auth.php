@@ -212,19 +212,23 @@ function authenticate($level = 0, $mode = "", $return = false)
 		if('error_opensession' === open_session($lodeluser['name'], $name))
 			break;
 
-		$lang = C::get('lang');
-		if($lang && 'set' === C::get('do') && 'users' === C::get('lo'))
-		{
-			$GLOBALS['lang'] = $lang;
-			C::set('sitelang', $lang);
-		}
-		elseif(isset($lodeluser['lang'])) 
-		{
-			$GLOBALS['lang'] = $lodeluser['lang'];
-			C::set('sitelang', $lodeluser['lang']);
-		}
+		if($lodeluser['visitor'])
+		{ // we set the lang only for logged users and not for restricted users, 
+		// which ones can not change their lang in the interface but only in the site
+			$lang = C::get('lang');
+			if($lang && 'set' === C::get('do') && 'users' === C::get('lo'))
+			{
+				$GLOBALS['lang'] = $lang;
+				C::set('sitelang', $lang);
+			}
+			elseif(isset($lodeluser['lang'])) 
+			{
+				$GLOBALS['lang'] = $lodeluser['lang'];
+				C::set('sitelang', $lodeluser['lang']);
+			}
 		
-		setLang(C::get('sitelang'));
+			setLang(C::get('sitelang'));
+		}
 		
 // 		usecurrentdb();
 		unset($lodeluser);
