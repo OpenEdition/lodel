@@ -349,6 +349,7 @@ class GenericLogic extends Logic
 						$dao = DAO::getDAO("entrytypes");
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
+					if(!$vo) break; // strange
 					$idtype = $vo->id;
 					$context[$type][$idtype] = @$context[$type][$idtype];
 					$localcontext = &$context[$type][$idtype];

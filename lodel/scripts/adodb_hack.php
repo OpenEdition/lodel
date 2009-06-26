@@ -67,49 +67,42 @@ if('mysql' === DBDRIVER)
     
         public function getFieldName(&$result, $i)
         {
-            if(!is_object($result))
-                return false;
-    
-            return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->name : false;
+            	if(!is_object($result))
+                	return false;
+
+		return $result->FetchField($i)->name;
         }
     
         public function getFieldTable(&$result, $i)
         {
-            if(!is_object($result))
-                return false;
-    
-            return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i]->table : false;
+            	if(!is_object($result))
+                	return false;
+
+		return $result->FetchField($i)->table;
         }
         
-        public function getNbRows(&$result)
-        {
-            if(!is_object($result))
-                return false;
-    
-	    if(isset($result->_fieldobjects))
-            	return count($result->_fieldobjects);
-	    elseif(isset($result->_numOfRows))
-		return $result->_numOfRows;
-        }
-    
 	public function getFieldNum(&$result)
 	{
 		if(!is_object($result))
                 	return false;
 
-		return count($result->fields);
+		return $result->FieldCount();
 	}
 
+        public function getNbRows(&$result)
+        {
+		if(!is_object($result))
+			return false;
+	
+		return $result->RecordCount();
+        }
+    
         public function fetchField(&$result, $i=null)
         {
-            if(!is_object($result))
-                return false;
-    
-            if(isset($i))
-            {
-                return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i] : false;
-            }
-            return $result->_fieldobjects;
+		if(!is_object($result))
+			return false;
+
+		return $result->FetchField($i);
         }
     }
     
@@ -135,29 +128,23 @@ elseif('mysqli' === DBDRIVER)
 
         public function __construct()
         {
-            parent::__construct();
+            	parent::__construct();
         }
     
         public function getFieldName(&$result, $i)
         {
-            if(!is_object($result))
-                return false;
+            	if(!is_object($result))
+                	return false;
 
-            if(!isset($result->_fieldobjects[$i]))
-                return false;
-    
-            return $result->_fieldobjects[$i]->name;
+		return $result->FetchField($i)->orgname;
         }
     
         public function getFieldTable(&$result, $i)
         {
-            if(!is_object($result))
-                return false;
+            	if(!is_object($result))
+                	return false;
 
-            if(!isset($result->_fieldobjects[$i]))
-                return false;
-    
-            return $result->_fieldobjects[$i]->table;
+		return $result->FetchField($i)->orgtable;
         }
         
 	public function getFieldNum(&$result)
@@ -165,30 +152,23 @@ elseif('mysqli' === DBDRIVER)
 		if(!is_object($result))
                 	return false;
 
-		return count($result->fields);
+		return $result->FieldCount();
 	}
 
         public function getNbRows(&$result)
         {
-            if(!is_object($result))
-                return false;
-
-	    if(isset($result->_fieldobjects))
-            	return count($result->_fieldobjects);
-	    elseif(isset($result->_numOfRows))
-		return $result->_numOfRows;
+		if(!is_object($result))
+			return false;
+	
+		return $result->RecordCount();
         }
     
         public function fetchField(&$result, $i=null)
         {
-            if(!is_object($result))
-                return false;
+		if(!is_object($result))
+			return false;
 
-            if(isset($i))
-            {
-                return isset($result->_fieldobjects[$i]) ? $result->_fieldobjects[$i] : false;
-            }
-            return $result->_fieldobjects;
+		return $result->FetchField($i);
         }
     }
     
@@ -196,7 +176,7 @@ elseif('mysqli' === DBDRIVER)
     {
         public function __construct($queryID,$mode=false)
         {
-            parent::__construct($queryID,$mode);
+		parent::__construct($queryID,$mode);
         }
     }
 }
