@@ -386,13 +386,14 @@ class Entities_EditionLogic extends GenericLogic
 				unset($entry, $entryclass, $daoentries, $daoentrytypes, $Entryfields, $daorelations, $daotablefields, $Filefields); // save some memory
 			}
 			// change the usergroup of the entity ?
-			if (C::get('admin', 'lodeluser') && C::get('usergroup')) {
-				$vo->usergroup = (int)$context['usergroup'];
+			if (C::get('admin', 'lodeluser') && C::get('usergroup', 'lodeluser')) {
+				$vo->usergroup = (int)C::get('usergroup', 'lodeluser');
 			}
 			if ($vo->status<=-64) {  // like a creation
 				$vo->status = $votype->creationstatus;
 				$vo->creationdate = $now;
 			}
+			$vo->idparent = $idparent;
 		} else { //create the entity
 			$new = true;
 			$vo = $dao->createObject ();
