@@ -40,4 +40,49 @@
  * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  */
+
+/**
+ * Classe gérant l'insertion de la TEI dans Lodel en collaboration avec HTMLPurifier
+ *
+ * @package lodel
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.9
+ */
+class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
+{
+	public $name = 'LodelTEI';
+	
+	public function preFilter($html, $config, $context) 
+	{
+		$pre_regex = '#(?:<\?xml\b[^\?]+\?>\s*)?<TEI([^>]+>.+?)</TEI>#si';
+		return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
+	}
+	
+	protected function preFilterCallback($matches)
+	{
+		return '<span class="lodel-TEI">'.htmlentities($matches[1], ENT_QUOTES, 'UTF-8').'</span>';
+	}
+
+	public function postFilter($html, $config, $context) 
+	{
+		$post_regex = '#<span class="lodel-TEI">(.+?)</span>#si';
+		return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
+	}
+	
+	protected function postFilterCallback($matches) 
+	{
+		return '<TEI'.html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8').'</TEI>';
+	}
+}
+$filters[] = new HTMLPurifier_Filter_LodelTEI();
+
 ?>

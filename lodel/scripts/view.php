@@ -340,61 +340,53 @@ class View
 	/**
 	* Print the page 
 	* This function tries to compress the page with gz_handler
-	* It also call the triggers postview
+	* It also call the trigger postview
 	*/
 	private function _print()
 	{
 		C::trigger('postview');
 		// try to gzip the page
-		if(extension_loaded('zlib') && (!ini_get('zlib.output_compression') || !@ini_set('zlib.output_compression', 1)))
+		$encoding = false;
+		if(extension_loaded('zlib') && !ini_get('zlib.output_compression'))
 		{
 			if(function_exists('ob_gzhandler') && @ob_start('ob_gzhandler'))
+				$encoding = 'gzhandler';
+			elseif(!headers_sent())
 			{
-				@ob_implicit_flush(0);
-				echo self::$page;
-				@ob_end_flush();
-			}
-			else
-			{
-				if(headers_sent())
+				if(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) 
 				{
-					$acceptEncoding = false;
-				} 
-				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'], 'x-gzip') !== false) 
-				{
-					$acceptEncoding = 'x-gzip';
+					$encoding = 'x-gzip';
 				} 
 				elseif(strpos(@$_SERVER['HTTP_ACCEPT_ENCODING'],'gzip') !== false) 
 				{
-					$acceptEncoding = 'gzip';
-				} 
-				else 
-				{
-					$acceptEncoding = false;
-				}
-				
-				if ($acceptEncoding) 
-				{
-					header('Content-Encoding: ' . $acceptEncoding);
-					echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-					$size = strlen(self::$page);
-					$content = gzcompress(self::$page, 6);
-					$content = substr($content, 0, $size);
-					echo $content;
-					flush();
-				}
-				else
-				{
-					echo self::$page;
-					flush;
+					$encoding = 'gzip';
 				}
 			}
 		}
-		else
+
+		switch($encoding)
 		{
-			echo self::$page;
-			flush();
+			case 'gzhandler':
+				@ob_implicit_flush(0);
+				echo self::$page;
+				@ob_end_flush();
+				break;
+			case 'gzip':
+			case 'x-gzip':
+				header('Content-Encoding: ' . $encoding);
+				echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+				$size = strlen(self::$page);
+				$content = gzcompress(self::$page, 6);
+				$content = substr($content, 0, $size);
+				echo $content;
+				flush();
+				unset($content);
+			default:
+				echo self::$page;
+				flush();
+				break;
 		}
+
 		self::$page = null; // memory
 	}
 

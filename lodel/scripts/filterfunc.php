@@ -115,7 +115,7 @@ function makefilterfunc()
 	$count = $result->RecordCount();
 	$ret = array();
         for($i = 0; $i < $count; $i++) {
-            $fieldname[$i] = $result->$db->getFieldName($result, $i);
+            $fieldname[$i] = $db->getFieldName($result, $i);
             $fullfieldname[$i] = $db->getFieldTable($result, $i). ".". $fieldname[$i];
             $ret[$fieldname[$i]] = $row[$fieldname[$i]];
         }
