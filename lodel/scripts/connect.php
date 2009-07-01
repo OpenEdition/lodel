@@ -85,7 +85,7 @@ if ($GLOBALS['version_mysql'] > 40) {
 	if ($GLOBALS['db_charset'] === false) {
 		$GLOBALS['db_charset'] = 'utf8';
 	}
-	if('utf8' !== $GLOBALS['db_charset']) trigger_error('Notice: Please use utf8 to avoid encoding problems', E_USER_NOTICE);
+	if('utf8' !== $GLOBALS['db_charset']) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
 	$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
     	C::set('db_charset', $GLOBALS['db_charset']);
 }
