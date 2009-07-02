@@ -43,6 +43,7 @@
 
 /**
  * Classe gérant l'insertion de la TEI dans Lodel en collaboration avec HTMLPurifier
+ * Vérifie que le document est valide XML
  *
  * @package lodel
  * @author Pierre-Alain Mignot
@@ -63,13 +64,25 @@ class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
 	
 	public function preFilter($html, $config, $context) 
 	{
-		$pre_regex = '#(?:<\?xml\b[^\?]+\?>\s*)?<TEI([^>]+>.+?)</TEI>#si';
+		$pre_regex = '#(<\?xml\b[^\?]+\?>\s*)?(<TEI([^>]+>.+?)</TEI>)#si';
 		return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
 	}
 	
 	protected function preFilterCallback($matches)
 	{
-		return '<span class="lodel-TEI">'.htmlentities($matches[1], ENT_QUOTES, 'UTF-8').'</span>';
+		libxml_use_internal_errors(true);
+
+                $doc = new DOMDocument('1.0', 'UTF-8');
+		$doc->resolveExternals = true;
+		$doc->validateOnParse = true;
+		$xml = $matches[1].'<!DOCTYPE TEI SYSTEM "'.C::get('sharedir', 'cfg').'/tei_all.dtd">'.$matches[2];
+                $doc->loadXML($xml);
+
+                $errors = libxml_get_errors();
+
+                if(!empty($errors)) { return ''; }
+
+		return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
 	}
 
 	public function postFilter($html, $config, $context) 
