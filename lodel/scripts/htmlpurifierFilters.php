@@ -80,7 +80,7 @@ class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
 
                 $errors = libxml_get_errors();
 
-                if(!empty($errors)) { return ''; }
+                if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped', E_USER_WARNING); return ''; }
 
 		return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
 	}
