@@ -53,8 +53,8 @@
  * Redimensionner une image
  *
  * <p>Cette fonction utilise la librairie GD de PHP. Il faut donc qu'elle soit installée pour
- * que cette fonction soit utilisable. Si la GD n'est pas installée, la fonction retournera
- * false</p>
+ * que cette fonction soit utilisable. Si la GD n'est pas installée, la fonction essayera avec Imagick, 
+ * et retournera false si l'extension n'est pas installée</p>
  *
  * @param string $taille la nouvelle taille de l'image. Peut être un entier ou une chaine représentant la longueur et la largeur
  * @param string $src l'image source
@@ -64,14 +64,53 @@
 function resize_image($taille, $src, &$dest)
 {
 	do { // exception
+		if (!($gdv = GDVersion())) {
+			if(extension_loaded('imagick'))
+			{
+				$result = @getimagesize($src);
+				if (is_numeric($taille)) 
+				{ // la plus grande taille
+					if ($result[0] > $result[1]) {
+						$width = $taille;
+						$height = 0;
+					}	else {
+						$height = $taille;
+						$width = 0;
+					}
+				}
+				else
+				{
+					if (preg_match("/(\d+)[x\s]+(\d+)/", $taille, $result2)) {
+						$width = $result2[1];
+						$height = $result2[2];
+					}
+					
+				}
+				if(isset($width))
+				{
+					$image = new Imagick($src);
+					$image->setImageFormat('png'); // FORCE png
+					$image->setCompression(Imagick::COMPRESSION_NO);
+					$image->setCompressionQuality(100);
+					// If 0 is provided as a width or height parameter,
+					// aspect ratio is maintained
+					$image->thumbnailImage($width, $height);
+					$dest = preg_replace("/\..*?$/i", ".png", $dest);
+					$image->writeImage($dest);
+					$image->destroy();
+					return true;
+				}
+			}
+			return false; // Pas de Imagick installé
+		}
 		// cherche le type de l'image
 		$result = @getimagesize($src);
 		if ($result[2] == 1 && function_exists("ImageCreateFromGIF"))	{
-			$im = ImageCreateFromGIF($src);
+			$im = @ImageCreateFromGIF($src);
 		}	elseif ($result[2] == 2 && function_exists("ImageCreateFromJPEG")) {
-			$im = ImageCreateFromJPEG($src);
+			$im = @ImageCreateFromJPEG($src);
 		}	elseif ($result[2] == 3 && function_exists("ImageCreateFromPNG"))	{
-			$im = ImageCreateFromPNG($src);
+			$im = @ImageCreateFromPNG($src);
 		}	else {
 			return false;
 		}
@@ -94,17 +133,14 @@ function resize_image($taille, $src, &$dest)
 			$width = $result2[1] ? $result2[1] : $result[0];
 			$height = $result2[2] ? $result2[2] : $result[1];
 		}
-		if (!($gdv = GDVersion())) {
-			return false; // Pas de GD installé
-		}
 		if ($gdv >= 2) { //Sur la GD2 la version a changé
-			$im2 = ImageCreateTrueColor($width, $height);
+			$im2 = @ImageCreateTrueColor($width, $height);
 			if (!$im2) {
 				return false;
 			}
 			// conservation de la transparence
 			imagealphablending($im2, FALSE);
-			imagesavealpha($im2, TRUE);		  
+			imagesavealpha($im2, TRUE);
 			ImageCopyResampled($im2, $im, 0, 0, 0, 0, $width, $height, $result[0], $result[1]);
 		}	else {
 			$im2 = ImageCreate($width, $height);
@@ -126,14 +162,14 @@ function resize_image($taille, $src, &$dest)
 		}
 		if ($result[2] == 2) {
 			if (function_exists("ImageJPEG")) {
-				ImageJPEG($im2, $dest);
+				ImageJPEG($im2, $dest, 100);
 			}	else { // make a PNG rather
 				$dest = preg_replace("/\.jpe?g$/i", ".png", $dest);
 				$result[2] = 2;
 			}
 		}
 		if ($result[2] == 3) {
-			ImagePNG($im2, $dest);
+			ImagePNG($im2, $dest, 0);
 		}
 		return true;
 	}	while (0); // exception
