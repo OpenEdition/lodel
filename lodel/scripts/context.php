@@ -619,10 +619,14 @@ class C
 			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
+			$filters = array();
 			// custom Lodel filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters.php') || include 'htmlpurifierFilters.php';
 			// custom personnal filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
+
+			if(!empty($filters)) $config->set('Filter', 'Custom', $filters);
+
 			$config->set('Core', 'Encoding', 'UTF-8');
 			$config->set('HTML', 'TidyLevel', 'heavy' );
 			$config->set('Attr', 'EnableID', true);
@@ -634,17 +638,15 @@ class C
 			$config->set('HTML', 'SafeEmbed', true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
-			'r2r',   // name
-			'Block',  // content set
-			'Flow', // allowed children
-			'IL8N', // attribute collection
-			array( // attributes
-			'lang' => 'CDATA')
+				'r2r',   // name
+				'Block',  // content set
+				'Flow', // allowed children
+				'IL8N', // attribute collection
+				array( // attributes
+				'lang' => 'CDATA')
 			);
 			$r2r->excludes = array('r2r' => true);
-			
 			self::$filter = new HTMLPurifier($config);
-			unset($config, $def, $r2r);
 		}
 	
 		// htmlpurifier does not support namespaces

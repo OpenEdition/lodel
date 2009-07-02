@@ -521,7 +521,7 @@ class View
 			unset($template);
 		}
 	
-		if(!self::$nocache && isset($cacheDir))
+		if(isset($cacheDir))
 		{
 			$this->_cache->setOption('cacheDir', $cacheDir);
 		}
@@ -538,7 +538,7 @@ class View
 	private function _makeCachedFileName() 
 	{
 		// Calcul du nom du fichier en cache
-		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('lang') .
+		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('sitelang') .
 			"//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
 	}
 
@@ -559,7 +559,7 @@ class View
 				// needed funcs
 				defined('INC_LOOPS') || include 'loops.php';
 				defined('INC_TEXTFUNC') || include 'textfunc.php';
-				defined('INC_FUNC') || include 'func.php'; 
+				defined('INC_FUNC') || include 'func.php';
 				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
@@ -671,7 +671,7 @@ class View
         	unset($contents);
 
 		// si jamais le path a ete modifie on remet par defaut
-		if(!self::$nocache && isset($cacheDir)) 
+		if(isset($cacheDir)) 
 		{
 			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
 			$this->_cache->setOption('cacheDir', $cacheDir);

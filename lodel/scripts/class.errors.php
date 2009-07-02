@@ -49,19 +49,30 @@
  */
 
 // 5.3
-if(!defined('E_DEPRECATED'))
-	define('E_DEPRECATED', 8192);
-if(!defined('E_USER_DEPRECATED'))
-	define('E_USER_DEPRECATED', 16384);
+defined('E_DEPRECATED') || define('E_DEPRECATED', 8192);
+defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', 16384);
 // 5.2
-if(!defined('E_RECOVERABLE_ERROR'))
-	define('E_RECOVERABLE_ERROR', 4096);
+defined('E_RECOVERABLE_ERROR') || define('E_RECOVERABLE_ERROR', 4096);
 // 5.0
-if(!defined('E_STRICT'))
-    define('E_STRICT', 2048); 
+defined('E_STRICT') || define('E_STRICT', 2048); 
 
 class LodelException extends Exception 
 {
+	static $type = array( 	E_ERROR => 'Error',
+				E_WARNING => 'Warning',
+				E_PARSE => 'Parse Error',
+				E_NOTICE => 'Notice',
+				E_CORE_ERROR => 'Core Error',
+				E_CORE_WARNING => 'Core Warning',
+				E_COMPILE_ERROR => 'Compile Error',
+				E_COMPILE_WARNING => 'Compile Warning',
+				E_USER_WARNING => 'Internal Warning',
+				E_USER_ERROR => 'Internal Error',
+				E_USER_NOTICE => 'User Notice',
+				E_STRICT => 'Strict Error',
+				E_RECOVERABLE_ERROR => 'Recoverable Error',
+				E_DEPRECATED => 'Deprecated'
+				);
 	/**
 	 * Constructor
 	 * Will call Exception::__construct, send header if not already done, send mail if $contactbug have been set
@@ -80,21 +91,6 @@ class LodelException extends Exception
 		$this->errno = $errno;
 		$this->errfile = $errfile;
 		$this->errline = $errline;
-		$this->type = array( 	E_ERROR => 'Error',
-					E_WARNING => 'Warning',
-					E_PARSE => 'Parse Error',
-					E_NOTICE => 'Notice',
-					E_CORE_ERROR => 'Core Error',
-					E_CORE_WARNING => 'Core Warning',
-					E_COMPILE_ERROR => 'Compile Error',
-					E_COMPILE_WARNING => 'Compile Warning',
-					E_USER_WARNING => 'Internal Warning',
-					E_USER_ERROR => 'Internal Error',
-					E_USER_NOTICE => 'User Notice',
-					E_STRICT => 'Strict Error',
-					E_RECOVERABLE_ERROR => 'Recoverable Error',
-					E_DEPRECATED => 'Deprecated'
-					);
 
 		if(!headers_sent())
 		{
@@ -105,10 +101,10 @@ class LodelException extends Exception
 
 		if(C::get('contactbug', 'cfg'))
 		{
-			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb'].' - '.C::get('site', 'cfg');
+			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
 			$contenu = "Erreur sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 			$contenu .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno) ? '' : 'PHP ';
-			$contenu .= "Error (".$this->type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : ".$this->errstr;
+			$contenu .= "Error (".self::$type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : ".$this->errstr;
 			@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
 		}	
 	}
@@ -116,12 +112,12 @@ class LodelException extends Exception
 	/**
 	 * Return the error message if logged-in, else a standard message
 	 */
-	public function getContent() 
+	public function getContent()
 	{
-		if(TRUE === $this->debug || C::get('redactor', 'lodeluser')) {
+		if($this->debug || C::get('redactor', 'lodeluser')) {
 			$ret = '</body><p class="error">';
 			$ret .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno ? '' : 'PHP ');
-			$ret .= "Error (".$this->type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : <br />";
+			$ret .= "Error (".self::$type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : <br />";
 			$ret .= $this->errstr.'</p>';
 		} else {
 			$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
@@ -162,7 +158,11 @@ class LodelException extends Exception
 			case E_WARNING:
 			case E_USER_WARNING:
 			case E_COMPILE_WARNING:
-				if(!C::get('debugMode', 'cfg')) break;
+				if(!C::get('debugMode', 'cfg'))
+				{
+					error_log('['.self::$type[$errno].' - '.C::get('site','cfg').'] '.$errstr.' in file '.$errfile.' on line '.$errline, 0);
+					break;
+				}
 			case E_USER_ERROR:
 			case E_ERROR:
 			case E_PARSE:
@@ -176,5 +176,5 @@ class LodelException extends Exception
 }
 
 set_error_handler(array('LodelException', 'exception_error_handler'));
-error_reporting(C::get('debugMode', 'cfg') ? -1 : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR));
+error_reporting(C::get('debugMode', 'cfg') ? -1 : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED));
 ?>
