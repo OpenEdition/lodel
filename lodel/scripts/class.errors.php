@@ -92,6 +92,10 @@ class LodelException extends Exception
 		$this->errfile = $errfile;
 		$this->errline = $errline;
 
+		// we are maybe buffering, so clear it
+		if(!C::get('redactor', 'lodeluser') || !$this->debug)
+			while(@ob_end_clean());
+
 		if(!headers_sent())
 		{
 			header("HTTP/1.0 500 Internal Error");
@@ -104,9 +108,9 @@ class LodelException extends Exception
 			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
 			$contenu = "Erreur sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 			$contenu .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno) ? '' : 'PHP ';
-			$contenu .= "Error (".self::$type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : ".$this->errstr;
+			$contenu .= "Error ".(isset(self::$type[$this->errno]) ? "(".self::$type[$this->errno].")" : '')." in file '".$this->errfile."' on line ".$this->errline." : ".$this->errstr;
 			@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
-		}	
+		}
 	}
 
 	/**
@@ -117,7 +121,7 @@ class LodelException extends Exception
 		if($this->debug || C::get('redactor', 'lodeluser')) {
 			$ret = '</body><p class="error">';
 			$ret .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno ? '' : 'PHP ');
-			$ret .= "Error (".self::$type[$this->errno].") in file '".$this->errfile."' on line ".$this->errline." : <br />";
+			$ret .= "Error ".(isset(self::$type[$this->errno]) ? "(".self::$type[$this->errno].")" : '')." in file '".$this->errfile."' on line ".$this->errline." : <br />";
 			$ret .= $this->errstr.'</p>';
 		} else {
 			$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
@@ -136,7 +140,7 @@ class LodelException extends Exception
 	 * @param string $errfile the file where the error occured
 	 * @param int $errline the line where the error occured
 	 */
-	public static function exception_error_handler($errno, $errstr, $errfile, $errline) 
+	public static function error_handler($errno, $errstr='', $errfile='', $errline=0) 
 	{
 		// if error was triggered by @function
 		// or error level is lower than error code
@@ -173,8 +177,25 @@ class LodelException extends Exception
 		}
 		return true;
 	}
+
+	/**
+	 * Exception handler
+	 *
+	 * @param object $exception the exception object
+	 */
+	public static function exception_handler($exception)
+	{
+		try {
+			throw new LodelException($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
+		} 
+		catch(LodelException $e)
+		{
+			die($e->getContent());
+		}
+	}
 }
 
-set_error_handler(array('LodelException', 'exception_error_handler'));
+set_error_handler(array('LodelException', 'error_handler')); // errors
+set_exception_handler(array('LodelException', 'exception_handler')); // exceptions not catched
 error_reporting(C::get('debugMode', 'cfg') ? -1 : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED));
 ?>

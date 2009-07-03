@@ -757,7 +757,7 @@ class View
 	private function _error($msg, $func, $clearcache) 
 	{
 		// we are maybe buffering, so clear it
-		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		
 		global $db;
@@ -772,7 +772,7 @@ class View
 		if(is_object($db) && $db->ErrorMsg())
 			$err .= "SQL ERROR ".$db->ErrorMsg()."\n";
 
-		if(!C::get('editor', 'lodeluser')) 
+		if(!C::get('redactor', 'lodeluser')) 
 		{
 			if(C::get('contactbug', 'cfg'))
 			{
@@ -798,11 +798,11 @@ class View
 	{
 		global $db;
 		// we are maybe buffering, so clear it
-		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		// on efface le cache on a pu enregistre tout et n'importe quoi
 		clearcache(true);
-		if (C::get('editor', 'lodeluser') || C::get('debugMode', 'cfg'))
+		if (C::get('redactor', 'lodeluser') || C::get('debugMode', 'cfg'))
 		{
 			if ($tablename) 
 			{

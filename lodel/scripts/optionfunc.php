@@ -113,6 +113,7 @@ function cacheOptionsInFile($optionsfile=null)
 
 	if(isset($optionsfile))
 	{
+		$options_cache_return = $options_cache = array();
 		$txt = "<"."?php\n\$options_cache=array(\n";
 		$txt2 = "\n\$options_cache_return=";
 		while (!$result->EOF)   {
@@ -140,6 +141,7 @@ function cacheOptionsInFile($optionsfile=null)
 	}
 	else
 	{
+		$options_cache_return = array();
 		while (!$result->EOF)   {
 			$id = $result->fields['id'];
 			$name = $result->fields['name'];
@@ -150,7 +152,8 @@ function cacheOptionsInFile($optionsfile=null)
 			$result->MoveNext();
 		}
 		$result->Close();
-		writeToCache('options', $options_cache_return);
+		if($options_cache_return)
+			writeToCache('options', $options_cache_return);
 		return $options_cache_return;
 	}
 }
