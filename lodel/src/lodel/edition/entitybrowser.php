@@ -75,7 +75,7 @@ try
     
 
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

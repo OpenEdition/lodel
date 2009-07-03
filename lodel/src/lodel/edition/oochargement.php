@@ -258,7 +258,7 @@ function addList($text)
     View::getView()->render('oochargement', !(bool)$file1);
 
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

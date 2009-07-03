@@ -78,7 +78,7 @@ try
     
     View::getView()->render('checkimport');
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

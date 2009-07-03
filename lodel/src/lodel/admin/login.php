@@ -146,7 +146,7 @@ try
     
     View::getView()->render('login');
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

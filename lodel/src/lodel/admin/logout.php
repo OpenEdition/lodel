@@ -84,7 +84,7 @@ try
         header('Location: '.('' !== SITEROOT ? SITEROOT : './'));
     }
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

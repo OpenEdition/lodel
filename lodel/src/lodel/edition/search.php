@@ -60,7 +60,7 @@ try
 	$class = 'search';
 	include 'search.inc.php';
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

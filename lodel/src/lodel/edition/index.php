@@ -131,7 +131,7 @@ try
 		Controller::getController()->execute(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser', 'tasks', 'xml', 'users', 'plugins'), C::get('lo'));
 	}
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

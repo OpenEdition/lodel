@@ -77,7 +77,7 @@ try
                     'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
     Controller::getController()->execute($authorized_logics);
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

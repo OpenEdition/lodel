@@ -82,7 +82,7 @@ try
     
     else $httpAuth->errorLogin();
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

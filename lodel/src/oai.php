@@ -862,7 +862,7 @@ View::getView()->render($base);
 
 clean_expired_tokens();
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

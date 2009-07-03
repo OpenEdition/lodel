@@ -114,7 +114,7 @@ try
 	Controller::getController()->execute($accepted_logic, $called_logic);
 	exit();
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

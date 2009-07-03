@@ -62,7 +62,7 @@ try
     View::getView()->renderCached('backend');
     exit;
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();
