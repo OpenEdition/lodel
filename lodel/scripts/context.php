@@ -150,6 +150,7 @@ class C
 		self::$_lodeluser = array();
 		self::$_context = array();
 		self::$_cfg = $cfg; // set the config vars
+		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
 		self::$_triggers = array();
 		self::$_triggers['included'] = array();
         	self::$_backupC = array();
@@ -322,7 +323,7 @@ class C
 			self::$_context['version'] = self::get('version', 'cfg');
 			self::$_context['shareurl'] = self::get('shareurl', 'cfg');
 			self::$_context['extensionscripts'] = self::get('extensionscripts', 'cfg');
-			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
+			self::$_context['currenturl'] = 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['site'] = self::get('site', 'cfg');
 			self::$_context['sharedir'] = self::get('sharedir', 'cfg');
