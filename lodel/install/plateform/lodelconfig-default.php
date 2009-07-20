@@ -163,13 +163,14 @@ $cfg['cacheOptions'] = array(
 	'cacheDir' => './CACHE/',
 	'lifeTime' => 3600,
 // pour débug : décommenter ici
-// 	'pearErrorMode' => CACHE_LITE_ERROR_DIE,
-	'pearErrorMode' => CACHE_LITE_ERROR_RETURN,
+// 	'pearErrorMode' => 8,
+	'pearErrorMode' => 1,
 	'fileNameProtection'=>true,
 	'readControl'=>true,
 	'readControlType'=>'crc32',
 	'writeControl'=>true,
-	'hashedDirectoryLevel'=>2
+	'hashedDirectoryLevel'=>2,
+	'fileLocking'=>true
 	);
 ##################
 $GLOBALS['cacheOptions'] = $cfg['cacheOptions'];
