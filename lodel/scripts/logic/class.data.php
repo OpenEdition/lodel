@@ -1067,7 +1067,7 @@ class DataLogic
 		
 		if ($file && $context['delete']) {// extra check. Need more ?
 			if (dirname($file) == 'CACHE') {
-				unlink($file);
+				@unlink($file);
 			}
 		} elseif ($file) {
 			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
@@ -1127,6 +1127,7 @@ class DataLogic
 			}
 			if(!empty($this->_changedFields)) {
 				writeToCache('require_caching/ME.obj', $this, false);
+				unset($this->_changedFields[lq('#_TP_tablefields')]);
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
@@ -1289,12 +1290,11 @@ class DataLogic
 				$ids[] = $tbl[0];
 			}
 			foreach($fields['oldcontent'] as $key=>$value) {
-				if(isset($content[$table]['newcontent'][$value])) { // correspondance
-					if($content[$table]['newcontent'][$value] == $value) continue;
+				if(false !== ($kk = array_search($value, $content[$table]['newcontent']))) { // correspondance
 					foreach($this->_xmlDatas[$table] as $k=>&$tble) {
 						if('fields' === (string)$k || !isset($this->_changedContent['newcontent'][$table])) continue;
 						foreach($this->_changedContent['newcontent'][$table] as $ffield) {
-							if(isset($ffield[$content[$table]['newcontent'][$value]]) && (int)$tble[0] === (int)$ffield[$content[$table]['newcontent'][$value]]) {
+							if((int)$tble[0] === (int)$ffield[0]) {
 								if(in_array($ffield[0], $ids)) { // id déjà présent
 									$oldId = $ffield[0];
 									do { $maxId++; } while(in_array($maxId, $ids));
@@ -1745,7 +1745,7 @@ class DataLogic
 	private function _manageTables(&$context, &$error) {
 		global $db;
 		$classes = lq('#_TP_classes');
-		if(!empty($context['data']['dropped']) && is_array($context['data']['dropped']))
+		if(!empty($context['data']['dropped']) && is_array($context['data']['dropped']) && empty($context['data']['added']) || !is_array($context['data']['added']))
 		{
 			$flipped = !empty($context['data']['added']) && is_array($context['data']['added']) ? array_flip($context['data']['added']) : array();
 			foreach($context['data']['dropped'] as $table=>$equivalent)
@@ -1763,7 +1763,8 @@ class DataLogic
 		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
-				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				switch($classType) {
 					case 'entities': $typeTable = lq('#_TP_types'); break;
 					case 'entries': $typeTable = lq('#_TP_entrytypes'); break;
@@ -1774,6 +1775,7 @@ class DataLogic
 				unset($this->_tables[$flipped[$equivalent]]);
 				$this->_sql[] = "UPDATE `{$tablefield}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
 				$this->_sql[] = "UPDATE `{$typeTable}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
+				$this->_sql[] = "DELETE FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'";
 				if(isset($this->_fieldsToKeep[$flipped[$equivalent]])) {
 					$this->_fieldsToKeep[$table] = $this->_fieldsToKeep[$flipped[$equivalent]];
 					unset($this->_fieldsToKeep[$flipped[$equivalent]]);
