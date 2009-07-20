@@ -389,9 +389,7 @@ class siteManage {
 				}
 				$toroot = preg_replace(array("/^\.\//", "/([^\/]+)\//", "/[^\/]+$/"),
 						array('', '../', ''), "$dirdest/$arg1");
-				if (!file_exists($dest1) || md5_file("$toroot$dirsource/$arg1") != md5_file($dest1)) {
-					$this->slink("$toroot$dirsource/$arg1", $dest1);
-				}
+				$this->slink("$toroot$dirsource/$arg1", $dest1);
 			} elseif ($cmd == 'cp' || ($cmd == 'ln' && (!$usesymlink || $usesymlink == 'non'))) {
 				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
@@ -440,11 +438,6 @@ class siteManage {
 	 */	
 	function slink($src, $dest)
 	{
-		if (file_exists($dest) && md5_file($dest)==md5_file($src)) {
-			return;
-		}
-	
-		// le lien n'existe pas ou on n'y accede pas.
 		@unlink($dest); // detruit le lien s'il existe
 		if (!(@symlink($src,$dest))) {
 			@chmod(basename($dest), 0777 & octdec(C::get('filemask', 'cfg')));
