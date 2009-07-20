@@ -771,7 +771,9 @@ PHP;
 					break;
 				case 'DATABASE' :
 					// si la database est dynamique, on rajoute le préfix pour les tables
-					$database = $value.'.';
+					$value = trim($value);
+					if($value)
+						$database = $value.'.';
 					break;
 				case 'WHERE' :
 					$wheres[] = '('. $this->replace_conditions($value, 'sql'). ')';
@@ -2021,7 +2023,7 @@ PHP;
 
 function stripcommentandcr(& $text)
 {
-	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE).*?\]-->\s*\n?/s"), "", $text);
+	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE|if lt IE|if gt IE).*?\]-->\s*\n?/s"), "", $text);
 }
 
 function quote_code($text)
