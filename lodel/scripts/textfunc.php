@@ -60,7 +60,7 @@ if (is_readable(C::get('home', 'cfg').'textfunc_local.php'))
 
 function pluriel($texte)
 {
-	return isset($texte{1}) ? "s" : "";
+	return intval($texte) > 1 ? "s" : "";
 }
 
 function lettrine($texte)
@@ -1416,5 +1416,10 @@ function lisset($var)
     return isset($var);
 }
 
+
+function lin_array($arr, $search)
+{
+	return in_array($search, (array)$arr);
+}
 define('INC_TEXTFUNC', 1);
 ?>
