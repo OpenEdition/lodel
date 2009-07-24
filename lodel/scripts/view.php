@@ -929,84 +929,125 @@ function generateLangCache($lang, $file, $tags)
  * @return le code indente proprement
  */
 function _indent($source, $indenter = '  ')
-{
+{return $source;
 	if(false !== strpos($source, '<?xml')) {
 			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
 			function_exists('indentXML') || include 'xmlfunc.php';
-			$source = indentXML($source, false, $indenter);
-			return $source;
+			return indentXML($source, false, $indenter);
 	} elseif(!preg_match("/<[^><]+>/", $source)) {
-		$source = _indent_xhtml($source,$indenter);
-		return $source;
+		return _indent_xhtml($source,$indenter);
 	}
 	// on touche pas a l'indentation du code JS, CSS
-	$tmp = preg_split("/(<(?:script|noscript|style)[^>]*>)(.*?)(<\/(?:script|noscript|style)>)/s", 
+	$tmp = preg_split("/(<(?:script|noscript|style)[^>]*>.*?<\/(?:script|noscript|style)>)/is", 
                    $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-	$source = $tab = '';
+	$tab = '';
+	$source = array();
 	$iscode = 0;
 	$nbOpPar = $nbCloPar = 0;
+	$inline = array('a'=>true, 'strong'=>true, 'b'=>true, 'em'=>true, 'i'=>true, 'abbr'=>true, 'acronym'=>true, 'code'=>true, 'cite'=>true, 'span'=>true, 'sub'=>true, 'sup'=>true, 'u'=>true, 's'=>true, 'br'=>true, 'pre'=>true, 'textarea'=>true, 'img'=>true);
+	$nbIndent = strlen($indenter);
+	$isInline = false;
+	$isTextarea = false;
+
 	foreach($tmp as $k=>$texte)
 	{
+		if(!trim($texte)) continue;
+
 		if(0 === strpos($texte, '<script') || 0 === strpos($texte, '<noscript') || 0 === strpos($texte, '<style')) 
 		{
-			$texte = $tab.$texte;
-            if(isset($tmp[$k+1]) && ($tmp[$k+1] != '</script>' && $tmp[$k+1] != '</noscript>' && $tmp[$k+1] != '</style>'))
-                $texte = $texte."\n";
-			$iscode++;
+			$source[] = "\n".$texte."\n";
+			continue;
 		} 
-		elseif('</script>' === $texte || '</noscript>' === $texte || '</style>' === $texte) 
-		{
-			$texte = $tab.$texte."\n";
-			$iscode--;
-		} 
-		elseif($iscode === 0 && ($nbOpPar === $nbCloPar)) 
-		{
- 			// on vire toute l'indentation existante
-            		$texte = strtr($texte, array(
-                            "\n"    => '',
-                            "\r"    => '',
-                            "\t"    => '',
-                            '  '    => ' '));
 
-			// c'est parti on indente
-			$arr = preg_split("/(<(\/?|!?)(?!a\b|strong\b|title\b|h[1-6]\b|b\b|em\b|i\b|abbr\b|acronym\b|code\b|cite\b|span\b|sub\b|sup\b|u\b|s\b|br\b|pre\b|textarea\b)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$texte = '';
-			$nbarr = count($arr);
-			if($nbarr<=1) {
-				$source .= $arr[0];
-				continue;
-			}
+		$texte = strtr($texte, array(
+			"\r"    => '',
+			"\t"    => '',
+			'  '    => ' '));
+
+		// c'est parti on indente
+		$arr = preg_split("/(?:\s*)(<(?:\/?|!?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?>)(?:\s*)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		$texte = '';
+		$nbarr = count($arr);
+		if($nbarr<=1) {
 			$arr[0] = trim($arr[0]);
-			if($arr[0]) $source .= $arr[0];
-			for ($i = 1 ; $i < $nbarr ; $i += 3) {
-				if (!empty($arr[$i +1]) && '!' !== $arr[$i+1]) {
-					$tab = substr($tab, 2); // closing tag
-				}
-				if (substr($arr[$i], -2) == "/>") { // opening closing tag
-					$out = $tab.$arr[$i].$arr[$i +2]."\n";
-				} elseif (empty($arr[$i +1]) && !empty($arr[$i +4])) { // opening follow by a closing tags
-						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
-						$i += 3;
-				} else {
-					$out = $tab.$arr[$i]."\n";
-					if (empty($arr[$i +1])) {
-						$tab .= "$indenter";
-					}
-					if (trim($arr[$i +2])) {
-						$out .= $tab.$arr[$i +2]."\n";
-					}
-				}
-				if(trim($out))
-					$texte .= $out;
-			}
-		} elseif($iscode>0) {
-			$nbOpPar += substr_count($texte, '{');
-			$nbCloPar += substr_count($texte, '}');
+			if($arr[0])
+				$source[] = $arr[0];
+			continue;
 		}
+
+		for($i=0;$i<$nbarr;$i++)
+		{
+			$prefix = substr($arr[$i], 0, 2);
+			if('<?' === $prefix)
+			{ // php code
+				$texte .= "\n".$arr[$i]."\n";
+			}
+			elseif('<!' === $prefix)
+			{ // <!DOCTYPE or <!--
+				$texte .= $arr[$i];
+				if(isset($arr[$i+1]) && ('doctype' === strtolower($arr[$i+1]) || '--' === $arr[$i+1]))
+					++$i;
+			}
+			elseif('/>' === substr($arr[$i], -2))
+			{ // <\w+/>
+				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
+				if(isset($inline[$next]))
+				{
+					$texte .= $arr[$i];
+					$isInline = true;
+				}
+				else
+				{
+					$texte .= $isInline ? $arr[$i] : "\n".$tab.$indenter.$arr[$i];
+				}
+				++$i;
+			}
+			elseif('</' === $prefix)
+			{ // </\w+>
+				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
+				if('textarea' === $next) $isTextarea = false;
+				if(isset($inline[$next]))
+				{
+					$texte .= $arr[$i];
+				}
+				else
+				{
+					$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+					$isInline = false;
+					$tab = substr($tab, $nbIndent);
+				}
+				++$i;
+			}
+			elseif('<' === $prefix{0})
+			{ // <\w+
+				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
+				if('textarea' === $next) $isTextarea = true;
+				if(isset($inline[$next]))
+				{
+					$isInline = true;
+					$texte .= $arr[$i];
+				}
+				else
+				{
+					$tab .= "$indenter";
+					$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+					$isInline = false;
+				}
+				++$i;
+			}
+			else
+			{ // contents
+// 				if(!$isTextarea)
+// 				!$isTextarea || ($arr[$i] = str_replace("\n", '', $arr[$i])); // remove any \n
+				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+			}
+		}
+		
 		if(trim($texte))
-			$source .= $texte;
+			$source[] = $texte;
 	}
-	return $source;
+
+	return join('', $source);
 }
 
 // Function to seperate multiple tags one line (used by function _indent_xhtml)

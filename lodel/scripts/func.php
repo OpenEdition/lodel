@@ -75,7 +75,8 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
+	$context[$key]=str_replace("Â\240","&nbsp;",$val);
+// 	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
       }
     }
   }
@@ -87,7 +88,7 @@ function postprocessing(&$context)
  *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
  *   le tableau $context
  */
-function extract_post($arr=null)
+function extract_post(&$arr=null)
 {
 	if (is_null($arr)) $arr=&$_POST;
 	C::setRequest($arr);
@@ -103,20 +104,12 @@ function clean_request_variable(&$var, $key='')
 
 function magic_addslashes($var) 
 {
-	/*if (!get_magic_quotes_gpc()) {
-		$var = addslashes($var);
-	}*/
-	$var = stripslashes($var);
-	$var = addslashes($var);
-	return $var;
+	return addslashes(stripslashes($var));
 }
 
 function magic_stripslashes($var) 
 {
-	if (get_magic_quotes_gpc()) {
-		$var = stripslashes($var);
-	}
-	return $var;
+	return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
 }
 
 
@@ -400,7 +393,11 @@ function makeurlwithid ($id, $base = 'index')
 			$uri = 'leftid';
 		}
 	}
-    	$id = (int)$id;
+
+	$id = trim($id);
+
+	if(!preg_match('/^(\w+)\.(\d+)$/', $id, $m))
+		$id = (int)$id;
 	
 	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
