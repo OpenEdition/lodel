@@ -929,7 +929,7 @@ function generateLangCache($lang, $file, $tags)
  * @return le code indente proprement
  */
 function _indent($source, $indenter = '  ')
-{return $source;
+{
 	if(false !== strpos($source, '<?xml')) {
 			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
 			function_exists('indentXML') || include 'xmlfunc.php';
@@ -1037,8 +1037,7 @@ function _indent($source, $indenter = '  ')
 			}
 			else
 			{ // contents
-// 				if(!$isTextarea)
-// 				!$isTextarea || ($arr[$i] = str_replace("\n", '', $arr[$i])); // remove any \n
+				$isTextarea || $arr[$i] = str_replace("\n", '', $arr[$i]); // remove any \n, only if we are NOT in <textarea>
 				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
 			}
 		}
