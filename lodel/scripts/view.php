@@ -965,7 +965,7 @@ function _indent($source, $indenter = '  ')
 			'  '    => ' '));
 
 		// c'est parti on indente
-		$arr = preg_split("/(?:\s*)(<(?:\/?|!?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?>)(?:\s*)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		$arr = preg_split("/(?:\s*)(<(?:\/?|!?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?\/?>)(?:\s*)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		$texte = '';
 		$nbarr = count($arr);
 		if($nbarr<=1) {
@@ -979,7 +979,7 @@ function _indent($source, $indenter = '  ')
 		{
 			$prefix = substr($arr[$i], 0, 2);
 			if('<?' === $prefix)
-			{ // php code
+			{ // php/xml code
 				$texte .= "\n".$arr[$i]."\n";
 			}
 			elseif('<!' === $prefix)
