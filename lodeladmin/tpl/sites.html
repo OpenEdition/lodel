@@ -44,22 +44,18 @@
 	<li><span class="intit">[@ADMIN.TITLE_MANAGE_SITE]</span></li>
 	<ul class="actions">
 		<li class="isolated">
-			<a href="site.php?new=1">[@LODELADMIN.ADD_WEBSITE]</a> | 
-<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64 AND status NE -65 AND status NE -1" LIMIT="0,1">
-	<a href="site.php?id=0&amp;maintenance=2">[@COMMON.GOALLMAINTENANCE]</a>
-	<ALTERNATIVE>
-		<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLONLINE]</a>
-	</ALTERNATIVE>		
-</LOOP>
-
-
+			<a href="site.php?new=1">[@LODELADMIN.ADD_WEBSITE]</a>&nbsp;|&nbsp;
+		<LOOP NAME="maintenance" TABLE="sites" SELECT="status" WHERE="status NE -64 AND status NE -65 AND status NE -1" LIMIT="0,1">
+			<a href="site.php?id=0&amp;maintenance=2">[@COMMON.GOALLMAINTENANCE]</a>
+			<ALTERNATIVE>
+				<a href="site.php?id=0&amp;maintenance=1">[@COMMON.GOALLONLINE]</a>
+			</ALTERNATIVE>
+		</LOOP>
 		</li>
 	</ul>
 </ul>
 
-
 <br /><br />
-
 
 <table class="statistics users">
 	<caption>[@LODELADMIN.WEBSITE_ENABLED]</caption>
