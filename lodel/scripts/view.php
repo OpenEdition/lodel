@@ -826,7 +826,7 @@ class View
 
 /**
  * Insertion d'un template dans le context
- * wrapper de la fonction View::renderTemplateFile
+ * wrapper de la fonction View::getIncTpl
  *
  * @param array $context le context
  * @param string $tpl le nom du fichier template
@@ -928,49 +928,54 @@ function generateLangCache($lang, $file, $tags)
  * @param string $indenter les caracteres a utiliser pour l'indentation. Par defaut deux espaces.
  * @return le code indente proprement
  */
-function _indent($source, $indenter = '  ')
+function _indent($source, $indenter = ' ')
 {
-	if(false !== strpos($source, '<?xml')) {
-			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
+	/*if(false !== strpos($source, '<?xml')) {
+			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			function_exists('indentXML') || include 'xmlfunc.php';
 			return indentXML($source, false, $indenter);
-	} elseif(!preg_match("/<[^><]+>/", $source)) {
+	} else*/if(!preg_match("/<[^>]+>/", $source)) {
 		return _indent_xhtml($source,$indenter);
 	}
+
+	$source = strtr($source, array(
+			"\r"    => '',
+			"\t"    => '',
+			'  '    => ' '));
+
 	// on touche pas a l'indentation du code JS, CSS
-	$tmp = preg_split("/(<(?:script|noscript|style)[^>]*>.*?<\/(?:script|noscript|style)>)/is", 
+	$tmp = preg_split("/(?:[\t\n\r]*)(<(?:script|noscript|style)[^>]*>.*?<\/(?:script|noscript|style)>)(?:[\t\n\r]*)/is", 
                    $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 	$tab = '';
 	$source = array();
 	$iscode = 0;
 	$nbOpPar = $nbCloPar = 0;
-	$inline = array('a'=>true, 'strong'=>true, 'b'=>true, 'em'=>true, 'i'=>true, 'abbr'=>true, 'acronym'=>true, 'code'=>true, 'cite'=>true, 'span'=>true, 'sub'=>true, 'sup'=>true, 'u'=>true, 's'=>true, 'br'=>true, 'pre'=>true, 'textarea'=>true, 'img'=>true);
+	// inline tags
+	$inline = array('a'=>true, 'strong'=>true, 'b'=>true, 'em'=>true, 'i'=>true, 'abbr'=>true, 'acronym'=>true, 'code'=>true, 'cite'=>true, 
+			'span'=>true, 'sub'=>true, 'sup'=>true, 'u'=>true, 's'=>true, 'br'=>true, 'pre'=>true, 'textarea'=>true, 'img'=>true,
+			'A'=>true, 'STRONG'=>true, 'B'=>true, 'EM'=>true, 'I'=>true, 'ABBR'=>true, 'ACRONYM'=>true, 'CODE'=>true, 'CITE'=>true, 
+			'SPAN'=>true, 'SUB'=>true, 'SUP'=>true, 'U'=>true, 'S'=>true, 'BR'=>true, 'PRE'=>true, 'TEXTAREA'=>true, 'IMG'=>true);
+	$noIndent = array('textarea'=>true, 'TEXTAREA'=>true);
 	$nbIndent = strlen($indenter);
 	$isInline = false;
-	$isTextarea = false;
+	$escape = false;
 
 	foreach($tmp as $k=>$texte)
 	{
 		if(!trim($texte)) continue;
 
-		if(0 === strpos($texte, '<script') || 0 === strpos($texte, '<noscript') || 0 === strpos($texte, '<style')) 
+		if(0 === stripos($texte, '<script') || 0 === stripos($texte, '<style') || 0 === stripos($texte, '<noscript')) 
 		{
 			$source[] = "\n".$texte."\n";
 			continue;
 		} 
 
-		$texte = strtr($texte, array(
-			"\r"    => '',
-			"\t"    => '',
-			'  '    => ' '));
-
 		// c'est parti on indente
-		$arr = preg_split("/(?:\s*)(<(?:\/?|!?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?\/?>)(?:\s*)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		$arr = preg_split("/(?:[\t\n\r]*)(<(?:[\/!]?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?\/?>)(?:[\t\r\n]*)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		$texte = '';
 		$nbarr = count($arr);
 		if($nbarr<=1) {
-			$arr[0] = trim($arr[0]);
-			if($arr[0])
+			if(trim($arr[0]))
 				$source[] = $arr[0];
 			continue;
 		}
@@ -980,18 +985,17 @@ function _indent($source, $indenter = '  ')
 			$prefix = substr($arr[$i], 0, 2);
 			if('<?' === $prefix)
 			{ // php/xml code
-				$texte .= "\n".$arr[$i]."\n";
+				$texte .= "\n".$arr[$i];
 			}
 			elseif('<!' === $prefix)
 			{ // <!DOCTYPE or <!--
 				$texte .= $arr[$i];
-				if(isset($arr[$i+1]) && ('doctype' === strtolower($arr[$i+1]) || '--' === $arr[$i+1]))
+				if(isset($arr[$i+1]) && ('DOCTYPE' === $arr[$i+1] || '--' === $arr[$i+1]))
 					++$i;
 			}
 			elseif('/>' === substr($arr[$i], -2))
 			{ // <\w+/>
-				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
-				if(isset($inline[$next]))
+				if(isset($arr[$i+1]) && isset($inline[$arr[$i+1]]))
 				{
 					$texte .= $arr[$i];
 					$isInline = true;
@@ -1004,40 +1008,44 @@ function _indent($source, $indenter = '  ')
 			}
 			elseif('</' === $prefix)
 			{ // </\w+>
-				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
-				if('textarea' === $next) $isTextarea = false;
-				if(isset($inline[$next]))
+				if(isset($arr[$i+1]))
 				{
-					$texte .= $arr[$i];
+					if(isset($noIndent[$arr[$i+1]])) $escape = false;
+					if(isset($inline[$arr[$i+1]]))
+					{
+						$texte .= $arr[$i];
+						++$i;
+						continue;
+					}
 				}
-				else
-				{
-					$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
-					$isInline = false;
-					$tab = substr($tab, $nbIndent);
-				}
+
+				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+				$isInline = false;
+				$tab = substr($tab, $nbIndent);
 				++$i;
 			}
 			elseif('<' === $prefix{0})
 			{ // <\w+
-				$next = isset($arr[$i+1]) ? strtolower($arr[$i+1]) : '';
-				if('textarea' === $next) $isTextarea = true;
-				if(isset($inline[$next]))
+				if(isset($arr[$i+1]))
 				{
-					$isInline = true;
-					$texte .= $arr[$i];
+					if(isset($noIndent[$arr[$i+1]])) $escape = true;
+					if(isset($inline[$arr[$i+1]]))
+					{
+						$isInline = true;
+						$texte .= $arr[$i];
+						++$i;
+						continue;
+					}
 				}
-				else
-				{
-					$tab .= "$indenter";
-					$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
-					$isInline = false;
-				}
+
+				$tab .= "$indenter";
+				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+				$isInline = false;
 				++$i;
 			}
-			else
+			elseif(trim($arr[$i], "\t\n\r"))
 			{ // contents
-				$isTextarea || $arr[$i] = str_replace("\n", '', $arr[$i]); // remove any \n, only if we are NOT in <textarea>
+				$escape || $arr[$i] = str_replace("\n", '', $arr[$i]); // remove any \n, only if we are NOT in <textarea>
 				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
 			}
 		}
