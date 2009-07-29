@@ -68,6 +68,7 @@ class Parser
 	protected $codepieces = array (); // code piece definition
 	protected $macros_txt;
 	protected $fct_txt;
+	protected $_cachedVars = array();
 
 	#  var $wantedvars;
 	protected $looplevel = 0;
@@ -127,6 +128,9 @@ class Parser
 		$this->joinedconditions['sql'] = join('|',array_keys($this->conditions['sql']));
 		$this->conditions['php'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"==",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
 		$this->joinedconditions['php'] = join('|',array_keys($this->conditions['php']));
+
+		$cachedVars = getFromCache('parser_vars');
+		$this->_cachedVars = $cachedVars ? $cachedVars : array();
 	}
 
 	public function parse($in, $blockId=0, $cache_rep='', $loop=null)
@@ -163,6 +167,9 @@ class Parser
 		$this->_split_file($contents, '', $this->blockid, $loop); // split the contents into commands
         
         	unset($contents);
+
+		$this->_originalCachedVars = $this->_cachedVars;
+
 		$this->parse_main(); // parse the commands
 		
 		if ($this->ind != $this->countarr)
@@ -189,17 +196,20 @@ PHP;
 		unset($this->fct_txt);
 
 		// clean the open/close php tags
-		$template['contents'] = preg_replace(array ('/\?>[\r\t\n]*<\?(php\b)?/', '/<\?(php\b)?[\t\r\n]*\?>/'), array ("", ""), $template['contents']);
+		$template['contents'] = preg_replace(array ("/\?>[\r\t\n]*<\?(?!xml)(php\b)?/", "/<\?(?!xml)(php\b)?[\t\r\n]*\?>/"), array ("", ""), $template['contents']);
 
 		if ($this->charset != 'utf-8') {
 			#$t=microtime();
-			if(!function_exists('convertHTMLtoUTF8'))
-				include 'utf8.php'; // conversion des caracteres
+			function_exists('convertHTMLtoUTF8') || include 'utf8.php'; // conversion des caracteres
 			$template['contents'] = utf8_encode($template['contents']);
 			convertHTMLtoUTF8($template['contents']);
 		}
         
         	$template['refresh'] = $this->refresh;
+		
+		if($this->_originalCachedVars != $this->_cachedVars)
+			writeToCache('parser_vars', $this->_cachedVars);
+
         	return $template;
 	}
 
@@ -316,7 +326,7 @@ PHP;
 									$value .= '[\''.$t.'\']';
 								}
 							}
-							$lang =  '$context'.$value;
+							$lang = '$context'.$value;
 						} else {
 							$lang = '$context[\''.$lang.'\']';
 						}
@@ -373,7 +383,7 @@ PHP;
 				// build the variable code
 				$varcode = $this->_make_variable_code($varchar, $varname, $pipefunction, $escape);
 				$text = substr_replace($text, $varcode, $startvar, $i - $startvar);
-				$i = $startvar +strlen($varcode); // move the counter
+				$i = $startvar + strlen($varcode); // move the counter
 			} // we found a variable
 			$i = strpos($text, '[', $i);
 		} // while there are some variable
@@ -381,59 +391,54 @@ PHP;
 
 	protected function _escapeVar($variable, $escape)
 	{
-		switch ($escape) {
-			case 'php' :
-				// traitement normal, php espace
-				$variable = "<?php \$tmp=@{$variable};if(is_array(\$tmp)){\$isSerialized=true;echo serialize(\$tmp);}else{echo \$tmp;}unset(\$tmp);?>";
-				break;
-			case 'quote' :
-					$variable = "\".@{$variable}.\"";
-				break;
-			default : $variable = "@".$variable; break;
-		}
-		return $variable;
+		if('php' == $escape)
+			return '<?php $tmp=@'.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}unset($tmp);?>';
+		elseif('quote' == $escape)
+			return '".@'.$variable.'."';
+		else return '@'.$variable;
 	}
 
 	protected function _make_variable_code($prefix, $name, $pipefunction, $escape)
 	{
-		static $vars = array();
-        
-		// in cache ?
-		if(isset($vars[$prefix][$name][$pipefunction][$escape]))
+		$prefix = (string) $prefix;
+		$name = (string) $name;
+		$pipefunction = (string) $pipefunction;
+		$escape = (string) $escape;
+
+		if(isset($this->_cachedVars[$prefix][$name])) 
 		{
-			return $vars[$prefix][$name][$pipefunction][$escape];
+            		$variable = $this->_cachedVars[$prefix][$name]; // var is in cache
 		}
-		elseif(isset($vars[$prefix][$name][$pipefunction]['var'])) 
+        	else
 		{
-            		$vars[$prefix][$name][$pipefunction][$escape] = $this->_escapeVar($vars[$prefix][$name][$pipefunction]['var'], $escape);
-			return $vars[$prefix][$name][$pipefunction][$escape];
-		}
-        
-		$variable = $this->parse_variable_extra($prefix, $name);
-		if ($variable === false) { // has the variable being processed ?
-			$code = '';
-			$name = strtolower($name);
-			if(false !== strpos($name, '.')) {
-				$brackets = explode('.', $name);
-				foreach($brackets as $bracket) {
-					$code .= ('@' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
+			$variable = $this->parse_variable_extra($prefix, $name);
+			if ($variable === false) { // has the variable being processed ?
+				$code = '';
+				$lowname = strtolower($name);
+				if(false !== strpos($lowname, '.')) {
+					$brackets = explode('.', $lowname);
+					foreach($brackets as $bracket) {
+						$code .= ('@' === $bracket{0}) ? '['.$bracket.']' : "['{$bracket}']";
+					}
+				} else {
+					$code = "['{$lowname}']";
 				}
-			} else {
-				$code = "['{$name}']";
-			}
-			
-           	 	if('%' === (string)$prefix) {
-				$variable = 
+				
+				if('%' === (string)$prefix) {
+					$variable = 
 <<<PHP
 \$GLOBALS['context']{$code}
 PHP;
-			} else {
-				$variable = 
+				} else {
+					$variable = 
 <<<PHP
 \$context{$code}
 PHP;
+				}
+				unset($code);
 			}
-			unset($code);
+
+			$this->_cachedVars[$prefix][$name] = $variable; // caching
 		}
 
 		# parse the filter
@@ -501,7 +506,8 @@ PHP;
 			$funcArray[] = $filter;
 			$argsArray[] = $args;
 
-			foreach($funcArray as $k=>$fct) {
+			foreach($funcArray as $k=>$fct) 
+			{
 				if(!$fct) continue;
 
 				if ($fct == "false" || $fct == "true") {
@@ -527,9 +533,7 @@ PHP;
 			unset($funcArray, $argsArray);
 		}
         
-		$vars[$prefix][$name][$pipefunction]['var'] = $variable; // caching
-		$vars[$prefix][$name][$pipefunction][$escape] = $this->_escapeVar($variable, $escape);
-       		return $vars[$prefix][$name][$pipefunction][$escape];
+       		return $this->_escapeVar($variable, $escape);
 	}
 
 	protected function countlines($ind)
@@ -799,7 +803,7 @@ PHP;
 						
 						foreach ($arr as $value) 
                         			{
-							array_push($tables, $database.$prefix.trim($value));
+							$tables[] = $database.$prefix.trim($value);
 						}
 					}
 					break;
@@ -1103,7 +1107,8 @@ PHP;
 					continue;
 				$selectforthistable = array_diff($this->tablefields[$t], $dontselect); // remove dontselect from $tablefields
 				if ($selectforthistable) { // prefix with table name
-					array_push($selectarr, "$t.".join(",$t.", $selectforthistable));
+					$selectarr[] = "$t.".join(",$t.", $selectforthistable);
+// 					array_push($selectarr, "$t.".join(",$t.", $selectforthistable));
 				}
 			}
 			$select = join(",", $selectarr);
@@ -1428,19 +1433,19 @@ PHP;
         	$this->blocks[] = $attrs['ID'];
 		$this->_clearposition();
         
-        if(isset($attrs['DISPLAY']) && !$attrs['DISPLAY'])
-        {
-            ++$this->ind;
-            do {
-                $this->arr[++$this->ind] = '';
-            } while(isset($this->arr[$this->ind+1]) && $this->arr[$this->ind+1] != '/BLOCK');
-            ++$this->ind;
-            
-            if(!isset($this->arr[$this->ind])) $this->errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
-            
-            $this->arr[$this->ind] = '';
-            return;
-        }
+		if(isset($attrs['DISPLAY']) && !$attrs['DISPLAY'])
+		{
+			++$this->ind;
+			do {
+				$this->arr[++$this->ind] = '';
+			} while(isset($this->arr[$this->ind+1]) && $this->arr[$this->ind+1] != '/BLOCK');
+			++$this->ind;
+			
+			if(!isset($this->arr[$this->ind])) $this->errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
+			
+			$this->arr[$this->ind] = '';
+			return;
+		}
         
 		if(isset($attrs['REFRESH']))
 		{
@@ -1895,9 +1900,9 @@ PHP;
 			{
 				if($texte{$i} == "'" && ($i>0 && $texte{$i-1} == '\\')) ++$nb;
 			}
-			if($nb) $open = (true === $open) ? false : true;
+			if($nb) $open = !$open;
 			$t = strtolower(trim($texte));
-			if(false === $open && isset($this->conditions[$style][$t])) {
+			if(!$open && isset($this->conditions[$style][$t])) {
 				$ret .= $this->conditions[$style][$t];
 				continue;
 			}

@@ -185,9 +185,10 @@ class LodelParser extends Parser
 		if(!isset($site)) $site = C::get('site', 'cfg');
 		if(!isset($single)) $single = C::get('singledatabase', 'cfg') != "on";
 		// split the SQL parts into quoted/non-quoted part
-		foreach ($selectparts as $k => $v) {
-			$selectparts[$k] = $this->sqlsplit($v);
-		}
+		$selectparts = array_map(array($this, 'sqlsplit'), $selectparts);
+// 		foreach ($selectparts as $k => $v) {
+// 			$selectparts[$k] = $this->sqlsplit($v);
+// 		}
 
 		$where = & $selectparts['where'];
 
@@ -204,14 +205,18 @@ class LodelParser extends Parser
 		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
 		#		    ),$where);
 		//
+
+		$tablescopy = array_flip($tables);
 		if (!empty($this->classes)) {
 			foreach ($this->classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
-				$ind = array_search($class['class'], $tables);
-				if ($ind === FALSE || $ind === NULL) {
-					continue;
-				}
+				if(isset($tablescopy[$class['class']])) $ind = $tablescopy[$class['class']];
+				else continue;
+// 				$ind = array_search($class['class'], $tables);
+// 				if ($ind === FALSE || $ind === NULL) {
+// 					continue;
+// 				}
 
 				$alias = "alias_".$class['classtype']."_".$class['class'];
 				$aliastype = "aliastype_".$class['classtype']. "_". $class['class'];
@@ -238,7 +243,12 @@ class LodelParser extends Parser
 					trigger_error("ERROR: internal error in lodelparser", E_USER_ERROR);
 				}
 
-				array_push($tables, $class['classtype']. " AS ". $alias, typestable($class['classtype']). " AS ". $aliastype);
+				$tables[] = $class['classtype']. " AS ". $alias;
+				$tablescopy[$class['classtype']. " AS ". $alias] = true;
+				$tables[] = typestable($class['classtype']). " AS ". $aliastype;
+				$tablescopy[typestable($class['classtype']). " AS ". $aliastype] = true;
+
+// 				array_push($tables, $class['classtype']. " AS ". $alias, typestable($class['classtype']). " AS ". $aliastype);
 
 				// put entites just after the class table
 				array_splice($tablesinselect, $ind +1, 0, $alias);
@@ -249,7 +259,9 @@ class LodelParser extends Parser
 				$extrainselect .= ", ".$aliastype. ".type , ". $aliastype. ".class";
 
 				if (($class['classtype'] == "entities" || $class['classtype'] == "entries") && preg_match_sql("/\bparent\b/", $where)) {
-					array_push($tables, $class['classtype']. " AS ". $alias. "_parent");
+					$tables[] = $class['classtype']. " AS ". $alias. "_parent";
+					$tablescopy[$class['classtype']. " AS ". $alias. "_parent"] = true;
+// 					array_push($tables, $class['classtype']. " AS ". $alias. "_parent");
 					$fullid = $class['classtype'] == "entries" ? "g_name" : "identifier";
 					preg_replace_sql("/\bparent\b/", $alias. "_parent.".$fullid, $where);
 					$where[count($where) - 1] .= " AND ". $alias. "_parent.id=". $alias. ".idparent";
@@ -257,20 +269,27 @@ class LodelParser extends Parser
 			}
 		}
 
-		if (in_array("entities", $tables)) {
+		$wherecount = count($where) - 1;
+
+		if (isset($tablescopy['entities'])) {
+			$hasType = isset($tablescopy['types']);
 			if (preg_match_sql("/\bclass\b/", $where) || preg_match_sql("/\btype\b/", $where)) {
-				array_push($tables, "types");
+				$tables[] = 'types';
+				$tablescopy['types'] = true;
+				$hasType = true;
+// 				array_push($tables, "types");
 				protect($selectparts, "entities", "id|status|rank");
-				$jointypesentitiesadded = 1;
-				$where[count($where) - 1] .= " AND entities.idtype=types.id";
+				$where[$wherecount] .= " AND entities.idtype=types.id";
 			}
 			if (preg_match_sql("/\bparent\b/", $where)) {
-				array_push($tables, "entities as entities_parent");
+				$tables[] = "entities AS entities_parent";
+				$tablescopy['entities AS entities_parent'] = true;
+// 				array_push($tables, "entities as entities_parent");
 				protect($selectparts, "entities", "id|idtype|identifier|usergroup|iduser|rank|status|idparent|creationdate|modificationdate|g_title");
 				preg_replace_sql("/\bparent\b/", "entities_parent.identifier", $where);
-				$where[count($where) - 1] .= " AND entities_parent.id=entities.idparent";
+				$where[$wherecount] .= " AND entities_parent.id=entities.idparent";
 			}
-			if (in_array("types", $tables)) { // compatibilite avec avant... et puis c est pratique quand meme.
+			if ($hasType) { // compatibilite avec avant... et puis c est pratique quand meme.
 				$extrainselect .= ", types.type , types.class";
 			}
 		} // fin de entities
@@ -288,17 +307,17 @@ class LodelParser extends Parser
 				if (!$alias){
 					$alias = $main ? $realtable : $table;
 				}
-				if (!isset($this->tablefields[$realtable]) || !in_array("status", $this->tablefields[$realtable]) || $table == "session") {
+				if ($table == "session" || !isset($this->tablefields[$realtable]) || !in_array("status", $this->tablefields[$realtable])) {
 					continue;
 				}
 				// test for ambiguous column name
 				if(!$main) {
-					$alias = (in_array($this->database.".".$table, $tables) || in_array("lodelmain.".$table, $tables) && $site && $single) 
+					$alias = (isset($tablescopy[$this->database.".".$table]) || isset($tablescopy['lodelmain.'.$table]) && $site && $single) 
 						? '`'.$this->database."_".$site.'`.'.$alias : $alias;
 				}
 
 				$lowstatus = ($table == "entities") ? '"-64". (C::get(\'admin\', \'lodeluser\') ? "" : "*('.$alias.'.usergroup IN (".C::get(\'groups\', \'lodeluser\')."))")' : "-64";
-				$where[count($where) - 1] .= " AND (".$alias.".status>\".(C::get('visitor', 'lodeluser') ? $lowstatus : \"0\").\")";
+				$where[$wherecount] .= " AND (".$alias.".status>\".(C::get('visitor', 'lodeluser') ? $lowstatus : \"0\").\")";
 			}
 		}
 		#  echo "where 2:",htmlentities($where),"<br>";
@@ -310,13 +329,15 @@ class LodelParser extends Parser
 			//
 			// persons and entries
 			foreach (array ("persons" => "persontypes", "entries" => "entrytypes") as $table => $typetable) {
-				if (in_array($table, $tables) && preg_match_sql("/\b(type|g_type)\b/", $where)) {
+				if (isset($tablescopy[$table]) && preg_match_sql("/\b(type|g_type)\b/", $where)) {
 					protect($selectparts, $table, "id|status|rank");
-					array_push($tables, $typetable);
-					$where[count($where) - 1] .= " AND ".$table.".idtype=".$typetable.".id";
+					$tables[] = $typetable;
+					$tablescopy[$typetable] = true;
+// 					array_push($tables, $typetable);
+					$where[$wherecount] .= " AND ".$table.".idtype=".$typetable.".id";
 				}
 
-				if (in_array($table, $tables) || isset($aliasbyclasstype[$table]))	{
+				if (isset($tablescopy[$table]) || isset($aliasbyclasstype[$table]))	{
 					if (isset($aliasbyclasstype[$table])) {
 						$class = $classbyclasstype[$table];
 						$table = $aliasbyclasstype[$table];
@@ -327,17 +348,21 @@ class LodelParser extends Parser
 					if (preg_match_sql("/\b(iddocument|identity)\b/", $where)) {
 						// on a besoin de la table croisee entities_persons
 						$alias = "relation_entities_".$table; // use alias for security
-						array_push($tables, "relations as ".$alias); ###,"entities_persons");
+						$tables[] = "relations AS ".$alias;
+						$tablescopy['relations AS '.$alias] = true;
+// 						array_push($tables, "relations as ".$alias); ###,"entities_persons");
 						#print_R($where);
 						preg_replace_sql("/\b(?<!\.)(iddocument|identity)\b/", $alias.".id1", $where);
 						#print_R($where);
-						$where[count($where) - 1] .= " AND $alias.id2=$table.id";
+						$where[$wherecount] .= " AND $alias.id2=$table.id";
 
 						if ($class && $typetable == "persontypes") { // related table for persons only
 							$relatedtable = "entities_".$class;
-							if (!in_array($relatedtable, $tables)) {
-								array_push($tables, $relatedtable);
-								$where[count($where) - 1] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+							if (!isset($tablescopy[$relatedtable])) {
+								$tables[] = $relatedtable;
+								$tablescopy[$relatedtable] = true;
+// 								array_push($tables, $relatedtable);
+								$where[$wherecount] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
 								$extrainselect .= ", ".$relatedtable.".* ";
 							}
 						}
@@ -345,39 +370,48 @@ class LodelParser extends Parser
 				}
 			}
 
-			if (isset($aliasbyclasstype['entities']) || in_array("entities", $tables))	{
-				foreach (array ("persons" => "idperson", "entries" => "identry") as $table => $regexp) {
-
+			if (isset($aliasbyclasstype['entities']) || isset($tablescopy['entities']))
+			{
+				foreach (array ("persons" => "idperson", "entries" => "identry") as $table => $regexp) 
+				{
 					if (!preg_match_sql("/\b($regexp)\b/", $where)) {
 						continue;
 					}
 					// on a besoin de la table croise relation
 					$alias = "relation2_".$table; // use alias for security
-					array_push($tables, "relations as ".$alias);
+					$tables[] = $alias;
+					$tablescopy[$alias] = true;
+// 					array_push($tables, "relations as ".$alias);
 					preg_replace_sql("/\b($regexp)\b/", $alias.".id2", $where);
-					$where[count($where) - 1] .= " AND ".$alias.".id1=". (isset($aliasbyclasstype['entities']) ? $aliasbyclasstype['entities'] : "entities").".id";
+					$where[$wherecount] .= " AND ".$alias.".id1=". (isset($aliasbyclasstype['entities']) ? $aliasbyclasstype['entities'] : "entities").".id";
 
 					if ($table == "persons" && isset($classbyclasstype['persons'])) { // related table for persons only
 						$relatedtable = "entities_".$classbyclasstype['persons'];
-						if (!in_array($relatedtable, $tables)) {
-							array_push($tables, $relatedtable);
-							$where[count($where) - 1] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+						if (!isset($tablescopy[$relatedtable])) {
+							$tables[] = $relatedtable;
+							$tablescopy[$relatedtable] = true;
+// 							array_push($tables, $relatedtable);
+							$where[$wherecount] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
 							$extrainselect .= ", ".$relatedtable.".* ";
 						}
 					}
 				}
 			}
 
-			if (in_array("usergroups", $tables) && preg_match_sql("/\biduser\b/", $where)) {
+			if (isset($tablescopy['usergroups']) && preg_match_sql("/\biduser\b/", $where)) {
 				// on a besoin de la table croise users_groupes
-				array_push($tables, "users_usergroups");
-				$where[count($where) - 1] .= " AND idgroup=usergroups.id";
+				$tables[] = "users_usergroups";
+				$tablescopy['users_usergroups'] = true;
+// 				array_push($tables, "users_usergroups");
+				$where[$wherecount] .= " AND idgroup=usergroups.id";
 			}
-			if (in_array("users", $tables) && in_array("session", $tables))	{
+			if (isset($tablescopy['users']) && isset($tablescopy['session']))
+			{
 				$where[count($where) - 1] .= " AND iduser=users.id";
 			}
-
 		} // site
+
+		unset($tablescopy);
 
 		// join the SQL parts
 		foreach ($selectparts as $k => $v) {
@@ -528,17 +562,18 @@ class LodelParser extends Parser
 		$name = strtolower($name);
 		$group = strtolower($group);
 
-		if (C::get('visitor', 'lodeluser') && !isset($done[$tag][$group][$name])) { // cherche si le texte existe
+		if (C::get('visitor', 'lodeluser') && !isset($done[$tag][$group][$name])) 
+		{ // cherche si le texte existe
             		$prefix = ($group != "site") ? $this->mprefix : $this->prefix;
 			if(!isset($this->nbLangs[$prefix]))
 				$this->nbLangs[$prefix] = $db->CacheGetOne($GLOBALS['sqlCacheTime']*365,"SELECT count(distinct(lang)) FROM {$prefix}translations");
                 
             		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
 			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, 
-				"SELECT count(id) as nb 
+				"SELECT COUNT(id) AS nb 
 					FROM {$prefix}texts 
 					WHERE name=? AND textgroup=? 
-					LIMIT 1", array((string)$name, (string)$group));
+					LIMIT 1", array($name, $group));
             		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
             
 			if ($db->errorno()) {
@@ -650,7 +685,7 @@ PHP;
 				// on traite ce cas séparément
 				preg_match("`<body(.*)[^?]>`", $text, $res);
 				$bodystarttag = strpos($text, "<body");
-			    $bodyendtag = isset($res[0]) ? $bodystarttag + strlen($res[0]) : $bodystarttag;
+			    	$bodyendtag = isset($res[0]) ? $bodystarttag + strlen($res[0]) : $bodystarttag;
 			}
 			if($bodyendtag) {
 				$text = substr_replace($text, $deskbegin, $bodyendtag, 0);
