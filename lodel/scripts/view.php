@@ -928,28 +928,22 @@ function generateLangCache($lang, $file, $tags)
  * @param string $indenter les caracteres a utiliser pour l'indentation. Par defaut deux espaces.
  * @return le code indente proprement
  */
-function _indent($source, $indenter = ' ')
+function _indent($source, $indenter = '  ')
 {
 	/*if(false !== strpos($source, '<?xml')) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			function_exists('indentXML') || include 'xmlfunc.php';
 			return indentXML($source, false, $indenter);
-	} else*/if(!preg_match("/<[^>]+>/", $source)) {
+	} else*/
+	if(!preg_match("/<[^>]+>/", $source)) {
 		return _indent_xhtml($source,$indenter);
 	}
-
-	$source = strtr($source, array(
-			"\r"    => '',
-			"\t"    => '',
-			'  '    => ' '));
 
 	// on touche pas a l'indentation du code JS, CSS
 	$tmp = preg_split("/(?:[\t\n\r]*)(<(?:script|noscript|style)[^>]*>.*?<\/(?:script|noscript|style)>)(?:[\t\n\r]*)/is", 
                    $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 	$tab = '';
-	$source = array();
-	$iscode = 0;
-	$nbOpPar = $nbCloPar = 0;
+	$source = '';
 	// inline tags
 	$inline = array('a'=>true, 'strong'=>true, 'b'=>true, 'em'=>true, 'i'=>true, 'abbr'=>true, 'acronym'=>true, 'code'=>true, 'cite'=>true, 
 			'span'=>true, 'sub'=>true, 'sup'=>true, 'u'=>true, 's'=>true, 'br'=>true, 'pre'=>true, 'textarea'=>true, 'img'=>true,
@@ -960,36 +954,36 @@ function _indent($source, $indenter = ' ')
 	$isInline = false;
 	$escape = false;
 
-	foreach($tmp as $k=>$texte)
+	foreach($tmp as $k=>$arr)
 	{
-		if(!trim($texte)) continue;
+		if(!trim($arr)) continue;
 
-		if(0 === stripos($texte, '<script') || 0 === stripos($texte, '<style') || 0 === stripos($texte, '<noscript')) 
+		if(0 === stripos($arr, '<script') || 0 === stripos($arr, '<style') || 0 === stripos($arr, '<noscript')) 
 		{
-			$source[] = "\n".$texte."\n";
+			$source .= "\n".$arr."\n";
 			continue;
 		} 
 
 		// c'est parti on indente
-		$arr = preg_split("/(?:[\t\n\r]*)(<(?:[\/!]?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?\/?>)(?:[\t\r\n]*)/", $texte, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-		$texte = '';
+		$arr = preg_split("/(?:\n*)(<(?:[\/!]?)(?:\w+:)?([\w-]+)(?:\s[^>]*)?\/?>)(?:\n*)/", strtr($arr, array("\r"=>'',"\t"=>'','  '=>' ')), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		$nbarr = count($arr);
 		if($nbarr<=1) {
 			if(trim($arr[0]))
-				$source[] = $arr[0];
+				$source .= $arr[0];
 			continue;
 		}
 
 		for($i=0;$i<$nbarr;$i++)
 		{
-			$prefix = substr($arr[$i], 0, 2);
+			$trimmed = trim($arr[$i]);
+			$prefix = substr($trimmed, 0, 2);
 			if('<?' === $prefix)
 			{ // php/xml code
-				$texte .= "\n".$arr[$i];
+				$source .= "\n".$trimmed."\n";
 			}
 			elseif('<!' === $prefix)
 			{ // <!DOCTYPE or <!--
-				$texte .= $arr[$i];
+				$source .= $arr[$i];
 				if(isset($arr[$i+1]) && ('DOCTYPE' === $arr[$i+1] || '--' === $arr[$i+1]))
 					++$i;
 			}
@@ -997,12 +991,12 @@ function _indent($source, $indenter = ' ')
 			{ // <\w+/>
 				if(isset($arr[$i+1]) && isset($inline[$arr[$i+1]]))
 				{
-					$texte .= $arr[$i];
+					$source .= $arr[$i];
 					$isInline = true;
 				}
 				else
 				{
-					$texte .= $isInline ? $arr[$i] : "\n".$tab.$indenter.$arr[$i];
+					$source .= $isInline ? $arr[$i] : "\n".$tab.$indenter.$arr[$i];
 				}
 				++$i;
 			}
@@ -1013,13 +1007,13 @@ function _indent($source, $indenter = ' ')
 					if(isset($noIndent[$arr[$i+1]])) $escape = false;
 					if(isset($inline[$arr[$i+1]]))
 					{
-						$texte .= $arr[$i];
+						$source .= $arr[$i];
 						++$i;
 						continue;
 					}
 				}
 
-				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+				$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
 				$isInline = false;
 				$tab = substr($tab, $nbIndent);
 				++$i;
@@ -1032,29 +1026,26 @@ function _indent($source, $indenter = ' ')
 					if(isset($inline[$arr[$i+1]]))
 					{
 						$isInline = true;
-						$texte .= $arr[$i];
+						$source .= $arr[$i];
 						++$i;
 						continue;
 					}
 				}
 
 				$tab .= "$indenter";
-				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+				$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
 				$isInline = false;
 				++$i;
 			}
-			elseif(trim($arr[$i], "\t\n\r"))
+			elseif(trim($arr[$i], "\n"))
 			{ // contents
 				$escape || $arr[$i] = str_replace("\n", '', $arr[$i]); // remove any \n, only if we are NOT in <textarea>
-				$texte .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+				$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
 			}
 		}
-		
-		if(trim($texte))
-			$source[] = $texte;
 	}
 
-	return join('', $source);
+	return trim(preg_replace("/^\s*\n/m", '', $source));
 }
 
 // Function to seperate multiple tags one line (used by function _indent_xhtml)
