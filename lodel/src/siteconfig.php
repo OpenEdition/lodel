@@ -74,6 +74,8 @@ $cfg['signaler_recaptcha'] = false;
 $cfg['recaptcha_privatekey'] = ""; // clé privée recaptcha
 $cfg['recaptcha_publickey'] = ""; // clé publique recaptcha
 
+$cfg['searchEngine'] = false;
+
 ini_set('include_path', SITEROOT. $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
 // important here
 // when this file is included, we are ALWAYS in the site root, so don't concat $home !!
