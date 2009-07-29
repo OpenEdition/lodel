@@ -115,27 +115,27 @@ class C
 	 * array containing configuration values
 	 * @var array
 	 */
-	static private $_cfg;
+	static private $_cfg = array();
 	/** 
 	 * array containing user informations (rights, session, etc..)
 	 * @var array
 	 */
-	static private $_lodeluser;
+	static private $_lodeluser = array();
 	/** 
 	 * array containing the current request
 	 * @var array
 	 */
-    	static public $_context;
+    	static public $_context = array();
 	/** 
 	 * backup of the current request if re-setting context
 	 * @var array
 	 */
-        static private $_backupC;
+        static private $_backupC = array();
 	/** 
 	 * array containing all necessary informations about triggers
 	 * @var array
 	 */
-	static private $_triggers;
+	static private $_triggers = array();
 
 	/**
 	 * Private constructor called by self::setCfg
@@ -147,13 +147,9 @@ class C
 	{
 		header("Content-Type: text/html; charset=UTF-8");
         	self::$filter = null;
-		self::$_lodeluser = array();
-		self::$_context = array();
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
-		self::$_triggers = array();
 		self::$_triggers['included'] = array();
-        	self::$_backupC = array();
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
         	defined('SITEROOT') || define('SITEROOT', '');
        		function_exists('checkCacheDir') || include 'cachefunc.php';
@@ -230,6 +226,22 @@ class C
 			// POST only
 			unset($_GET['login'], $_GET['passwd'], $_GET['passwd2'], $_GET['old_passwd']);
 
+			self::clean($_GET);
+			foreach($_GET as $k=>&$v)
+			{
+				self::$_context[$k] =& $v;
+			}
+
+			if (!empty($_POST)) 
+            		{
+				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
+				self::clean($_POST);
+				foreach($_POST as $k=>&$v)
+				{
+					self::$_context[$k] =& $v;
+				}
+			}
+
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
 			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype', 'identity') as $var) 
 			{
@@ -247,27 +259,18 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
+
 				self::$_context[$var] = (int)self::$_context[$var];
-			}
-
-			self::clean($_GET);
-			foreach($_GET as $k=>&$v)
-			{
-				self::$_context[$k] =& $v;
-			}
-
-			if (!empty($_POST)) 
-            		{
-				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
-				self::clean($_POST);
-				foreach($_POST as $k=>&$v)
-				{
-					self::$_context[$k] =& $v;
-				}
 			} 
 		}
 		else
 		{
+			self::clean($request);
+			foreach($request as $k=>&$v)
+			{
+				self::$_context[$k] =& $v;
+			}
+
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
 			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype', 'identity') as $var) 
 			{
@@ -280,13 +283,8 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
-				self::$_context[$var] = (int)self::$_context[$var];
-			}
 
-			self::clean($request);
-			foreach($request as $k=>&$v)
-			{
-				self::$_context[$k] =& $v;
+				self::$_context[$var] = (int)self::$_context[$var];
 			}
 		}
 
@@ -453,13 +451,13 @@ class C
 			if(!isset(self::${"_{$arr}"})) return false;
 			if(!isset($v))	return self::${"_{$arr}"};
 
-			if(false === strpos($v, '.')) return array_key_exists($v, self::${"_{$arr}"}) ? self::${"_{$arr}"}[$v] : false;
+			if(false === strpos($v, '.')) return isset(self::${"_{$arr}"}[$v]) ? self::${"_{$arr}"}[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::${"_{$arr}"};
 			foreach($vars as $var)
 			{
-				if(!is_array($return) || !array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !isset($return[$var])) return false;
 				$return = $return[$var];
 			}
 
@@ -467,16 +465,16 @@ class C
 		}
 		elseif(isset($v))
 		{
-			if(false === strpos($v, '.')) return array_key_exists($v, self::$_context) ? self::$_context[$v] : false;
+			if(false === strpos($v, '.')) return isset(self::$_context[$v]) ? self::$_context[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::$_context;
 			foreach($vars as $var)
 			{
-				if(!is_array($return) || !array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !isset($return[$var])) return false;
 				$return = $return[$var];
 			}
-
+			
 			return $return;
 		}
 		
@@ -522,8 +520,12 @@ class C
 		$set =& self::$_context;
 		foreach($vars as $var)
 		{
-			if(!is_array($set)) $set=array();
-			if(!array_key_exists($var, $set)) $set[$var] = array();
+			if(!is_array($set))
+			{
+				$set=array();
+				$set[$var] = array();
+			}
+			elseif(!isset($set[$var])) $set[$var] = array();
 			$set =& $set[$var];
 		}
 		
@@ -555,9 +557,9 @@ class C
         
 		if(false === strpos($n, '.'))
 		{
-			if(array_key_exists($n, self::$_lodeluser))
+			if(isset(self::$_lodeluser[$n]))
 			{
-				return ((bool)(!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
+				return ((bool) (!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
 			}
 			else 
 			{
@@ -574,8 +576,12 @@ class C
 			$set =& self::$_lodeluser;
 			foreach($vars as $var)
 			{
-				if(!is_array($set)) $set=array();
-				if(!array_key_exists($var, $set)) $set[$var] = array();
+				if(!is_array($set))
+				{
+					$set = array();
+					$set[$var] = array();
+				}
+				elseif(!isset($set[$var])) $set[$var] = array();
 				$set =& $set[$var];	
 			}
 			
