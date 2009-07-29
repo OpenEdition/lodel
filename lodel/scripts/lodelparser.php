@@ -186,25 +186,8 @@ class LodelParser extends Parser
 		if(!isset($single)) $single = C::get('singledatabase', 'cfg') != "on";
 		// split the SQL parts into quoted/non-quoted part
 		$selectparts = array_map(array($this, 'sqlsplit'), $selectparts);
-// 		foreach ($selectparts as $k => $v) {
-// 			$selectparts[$k] = $this->sqlsplit($v);
-// 		}
 
 		$where = & $selectparts['where'];
-
-		// convertion des codes specifiques dans le where
-		// ce bout de code depend du parenthesage et du trim fait dans parse_loop.
-		#  $where=preg_replace (array(
-		#		    "/\(trash\)/i",
-		#		    "/\(ok\)/i",
-		#		    "/\(rightgroup\)/i"
-		#		    ),
-		#	      array(
-		#		    "status<=0",
-		#		    "status>0",
-		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
-		#		    ),$where);
-		//
 
 		$tablescopy = array_flip($tables);
 		if (!empty($this->classes)) {
@@ -213,10 +196,6 @@ class LodelParser extends Parser
 				// do we have the table class in $tables ?
 				if(isset($tablescopy[$class['class']])) $ind = $tablescopy[$class['class']];
 				else continue;
-// 				$ind = array_search($class['class'], $tables);
-// 				if ($ind === FALSE || $ind === NULL) {
-// 					continue;
-// 				}
 
 				$alias = "alias_".$class['classtype']."_".$class['class'];
 				$aliastype = "aliastype_".$class['classtype']. "_". $class['class'];
@@ -379,8 +358,8 @@ class LodelParser extends Parser
 					}
 					// on a besoin de la table croise relation
 					$alias = "relation2_".$table; // use alias for security
-					$tables[] = $alias;
-					$tablescopy[$alias] = true;
+					$tables[] = "relations AS ".$alias;
+					$tablescopy["relations AS ".$alias] = true;
 // 					array_push($tables, "relations as ".$alias);
 					preg_replace_sql("/\b($regexp)\b/", $alias.".id2", $where);
 					$where[$wherecount] .= " AND ".$alias.".id1=". (isset($aliasbyclasstype['entities']) ? $aliasbyclasstype['entities'] : "entities").".id";
@@ -407,7 +386,7 @@ class LodelParser extends Parser
 			}
 			if (isset($tablescopy['users']) && isset($tablescopy['session']))
 			{
-				$where[count($where) - 1] .= " AND iduser=users.id";
+				$where[$wherecount] .= " AND iduser=users.id";
 			}
 		} // site
 
