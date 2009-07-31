@@ -951,18 +951,21 @@ function _indent($source, $indenter = '  ')
 	$escape = false;
 
 	// c'est parti on indente
-	$arr = preg_split("/(?:[\n\t\r]*)((<(?:[\/!]?))(?:\w+:)?([\w-]+)(?:\s[^>]*?)?(\/?>))(?:[\n\t\r]*)/", trim($source), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+	$arr = preg_split("/(?:[\n\t\r]*)((<(?:[\/!]?))(?:\w+:)?([\w-]+)(?:\s[^>]*?)?(\/?>))(?:[\n\t\r]*)/", 
+			strtr(trim($source), array("\t"=>'','  '=>' ', "\r"=>'')), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 	$source = '';
-	$nbarr = count($arr);
-	if($nbarr<=1) {
+	if(!isset($arr[1])) {
 		if(trim($arr[0]))
 			$source .= $arr[0];
-		continue;
+		return $source;
 	}
-
-	for($i=0;$i<$nbarr;$i++)
+	
+	$i = -1;
+	while(isset($arr[++$i]))
 	{
-		if(isset($arr[$i]{0}) && $arr[$i]{0} === '<')
+		$current =& $arr[$i];
+		if(!isset($current{0})) continue;
+		if($current{0} === '<')
 		{
 			$prefix = isset($arr[$i+1]) ? $arr[$i+1] : '';
 			$tag = isset($arr[$i+2]) ? $arr[$i+2] : '';
@@ -973,13 +976,13 @@ function _indent($source, $indenter = '  ')
 			$prefix = $tag = $suffix = '';
 		}
 
-		if(isset($arr[$i]{0}) && isset($arr[$i]{1}) && '<?' === $arr[$i]{0}.$arr[$i]{1})
+		if(isset($current{1}) && '<?' === $current{0}.$current{1})
 		{ // php/xml code
-			$source .= "\n".$arr[$i]."\n";
+			$source .= "\n".$current."\n";
 		}
 		elseif('<!' === $prefix)
 		{ // <!DOCTYPE or <!--
-			$source .= $arr[$i];
+			$source .= $current;
 			if($tag && ('DOCTYPE' === $tag || '--' === $tag))
 				$i += 3;
 		}
@@ -987,12 +990,12 @@ function _indent($source, $indenter = '  ')
 		{ // <\w+/>
 			if($tag && isset($inline[$tag]))
 			{
-				$source .= $arr[$i];
+				$source .= $current;
 				$isInline = true;
 			}
 			else
 			{
-				$source .= $isInline ? $arr[$i] : "\n".$tab.$indenter.$arr[$i];
+				$source .= $isInline ? $current : "\n".$tab.$indenter.$current;
 			}
 			$i += 3;
 		}
@@ -1003,13 +1006,13 @@ function _indent($source, $indenter = '  ')
 				if(isset($noIndent[$tag])) $escape = false;
 				if(isset($inline[$tag]))
 				{
-					$source .= $arr[$i];
+					$source .= $current;
 					$i += 3;
 					continue;
 				}
 			}
 			$tab = substr($tab, $nbIndent);
-			$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+			$source .= $isInline ? $current : "\n".$tab.$current;
 			$isInline = false;
 			$i += 3;
 		}
@@ -1021,21 +1024,21 @@ function _indent($source, $indenter = '  ')
 				if(isset($inline[$tag]))
 				{
 					$isInline = true;
-					$source .= $arr[$i];
+					$source .= $current;
 					$i += 3;
 					continue;
 				}
 			}
 
-			$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+			$source .= $isInline ? $current : "\n".$tab.$current;
 			$tab .= "$indenter";
 			$isInline = false;
 			$i += 3;
 		}
 		else
 		{ // contents
-			$escape || $arr[$i] = strtr($arr[$i], array("\r"=>'',"\t"=>'','  '=>' ', "\n"=>'')); // remove any \n, only if we are NOT in <textarea>
-			$source .= $isInline ? $arr[$i] : "\n".$tab.$arr[$i];
+			$escape || $arr[$i] = str_replace("\n", '', $arr[$i]);// remove any \n, only if we are NOT in <textarea>
+			$source .= $isInline ? $current : "\n".$tab.$current;
 		}
 	}
 
