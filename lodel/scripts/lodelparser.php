@@ -654,8 +654,10 @@ PHP;
 PHP;
 
 			/* modifs par Pierre-Alain Mignot */
-			$bodystarttag = strpos($text, "<body>");
-			if ($bodystarttag !== false) {
+			$bodystarttag = strpos($text, "<body");
+            		if(false === $bodystarttag) return;
+
+			if ($text{$bodystarttag+5} === '>') {
 				// pas d'attributs dans le body, pas de pbs
 				$bodyendtag = $bodystarttag + 6;
 			} else {
@@ -663,19 +665,12 @@ PHP;
 				// si c'est du LS ca va faire planter le desk
 				// on traite ce cas séparément
 				preg_match("`<body(.*)[^?]>`", $text, $res);
-				$bodystarttag = strpos($text, "<body");
 			    	$bodyendtag = isset($res[0]) ? $bodystarttag + strlen($res[0]) : $bodystarttag;
 			}
+
 			if($bodyendtag) {
 				$text = substr_replace($text, $deskbegin, $bodyendtag, 0);
-				unset($desk);
-				$len = strlen($text) - 30; // optimise a little bit the search
-				if ($len < 0)
-					$len = 0;
-				$endbody = strpos($text, "</body", $len);
-				if ($endbody === false)
-					$endbody = strpos($text, "</body", 0);
-				$text = substr_replace($text, $deskend, $endbody, 0);
+				$text = substr_replace($text, $deskend, strpos($text, "</body>"), 0);
 			}
  		}
  	}
@@ -717,10 +712,11 @@ PHP;
 		$inquote = false;
 		$inphp = false;
 		$escaped = false;
-		$n = strlen($sql);
 		$arr = array ();
 		$ind = 0;
-		for ($i = 0; $i < $n; $i ++) {
+		$i = -1;
+		while(isset($sql{++$i}))
+		{
 			$c = $sql {$i};
 			#echo $c=='"';
 			if (!$escaped) {
@@ -751,31 +747,52 @@ function protect(& $sql, $table, $fields)
 {
 	foreach ($sql as $k => $v) 
     	{
-		$n = count($v);
-		for ($i = 0; $i < $n; $i += 2) {
-			if(!isset($v[$i])) { $sql[$k][$i]=''; continue; }
+		$i = 0;
+		while(isset($v[$i]))
+		{
+			if(!isset($v[$i])) { $sql[$k][$i]=''; $i += 2; continue; }
 			$sql[$k][$i] = preg_replace("/\b(?<!\.)($fields)\b/", "$table.\\1", $v[$i]);
+			$i += 2;
 		}
+// 		$n = count($v);
+// 		for ($i = 0; $i < $n; $i += 2) {
+// 			if(!isset($v[$i])) { $sql[$k][$i]=''; continue; }
+// 			$sql[$k][$i] = preg_replace("/\b(?<!\.)($fields)\b/", "$table.\\1", $v[$i]);
+// 		}
 	}
 }
 
 function preg_match_sql($find, $arr)
 {
-	$n = count($arr);
-	for ($i = 0; $i < $n; $i += 2) {
+	$i = 0;
+	while(isset($arr[$i]))
+	{
 		if (preg_match($find, $arr[$i])) {
 			return true;
 		}
+		$i += 2;
 	}
+// 	$n = count($arr);
+// 	for ($i = 0; $i < $n; $i += 2) {
+// 		if (preg_match($find, $arr[$i])) {
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
 function preg_replace_sql($find, $rpl, & $arr)
 {
-	$n = count($arr);
-	for ($i = 0; $i < $n; $i += 2) {
+	$i = 0;
+	while(isset($arr[$i]))
+	{
 		$arr[$i] = preg_replace($find, $rpl, $arr[$i]);
+		$i += 2;
 	}
+// 	$n = count($arr);
+// 	for ($i = 0; $i < $n; $i += 2) {
+// 		$arr[$i] = preg_replace($find, $rpl, $arr[$i]);
+// 	}
 }
 
 function typestable($classtype)
