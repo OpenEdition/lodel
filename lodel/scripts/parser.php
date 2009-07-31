@@ -198,6 +198,8 @@ PHP;
 		// clean the open/close php tags
 		$template['contents'] = preg_replace(array ("/\?>[\r\t\n]*<\?(?!xml)(php\b)?/", "/<\?(?!xml)(php\b)?[\t\r\n]*\?>/"), array ("", ""), $template['contents']);
 
+		$template['contents'] = strtr($template['contents'], array("\t"=>'','  '=>' ', "\r"=>''));
+
 		if ($this->charset != 'utf-8') {
 			#$t=microtime();
 			function_exists('convertHTMLtoUTF8') || include 'utf8.php'; // conversion des caracteres
@@ -409,7 +411,7 @@ PHP;
 
 				if(!isset($text{$i})) // not a var, just a '[('
 				{
-				return;
+					return;
 				}
 				$varchar = $text{$i};
 
@@ -577,9 +579,9 @@ PHP;
 		}
 
 		if('php' == $escape)
-		return '<?php $tmp='.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null; ?>';
+			return '<?php $tmp='.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null; ?>';
 		elseif('quote' == $escape)
-		return '".'.$variable.'."';
+			return '".'.$variable.'."';
 		else return $variable;
 	}
 
@@ -849,7 +851,7 @@ PHP;
 						}
 						
 						foreach ($arr as $value) 
-                        {
+                        			{
 							$tables[] = $database.$prefix.trim($value);
 						}
 					}

@@ -952,7 +952,7 @@ function _indent($source, $indenter = '  ')
 
 	// c'est parti on indente
 	$arr = preg_split("/(?:[\n\t\r]*)((<(?:[\/!]?))(?:\w+:)?([\w-]+)(?:\s[^>]*?)?(\/?>))(?:[\n\t\r]*)/", 
-			strtr(trim($source), array("\t"=>'','  '=>' ', "\r"=>'')), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+			trim($source), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 	$source = '';
 	if(!isset($arr[1])) {
 		if(trim($arr[0]))
