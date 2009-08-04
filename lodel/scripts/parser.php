@@ -88,6 +88,7 @@ class Parser
 	protected $isLoop; // is the parser called for a loop with refresh
 	protected $conditions;
 	protected $joinedconditions;
+	protected $var_escape; // used in parse_variable for preg_replace_callback callback
 
 	protected function _errmsg($msg, $ind = 0)
 	{
@@ -215,10 +216,23 @@ PHP;
         	return $template;
 	}
 
-	protected function parse_variable(& $text, $escape = 'php')
+	public function parse_variable(& $text, $escape = 'php')
 	{
-		global $context;
-		$i = strpos($text, '[');
+		if(!isset($text{3})) return; // at least 4 chars : [#C]
+
+		$this->var_escape = $escape;
+
+		$text = preg_replace_callback('/\[\(?'. // opening
+				'([#%@])'. // var scope
+				'([A-Z][A-Z_0-9]*)'. // var name
+				'((?:\.(?:[#%])?(?:[A-Z0-9][A-Z_0-9]*))*)'. // array var
+				'((?::(?:[#%])?(?:[A-Z0-9][A-Z_0-9]*))*)'. // multilangue var
+				'((?:\|[a-zA-Z][a-zA-Z_0-9]*(?:\(.*?\))?)*)'. // pipe function
+				'\)?\]/', // closing
+				
+				array($this, '_get_variable_code'), $text);
+
+		/*$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
 
@@ -233,7 +247,7 @@ PHP;
 
 				if(!isset($text{++$i})) // not a var, just a '[('
 				{
-				return;
+					return;
 				}
 				$varchar = $text{$i};
 			}	else {
@@ -246,7 +260,7 @@ PHP;
 		
 				if(!isset($text{++$i})) // not a var, just a '[('
 				{
-				return;
+					return;
 				}
 				$varchar = $text{$i};
 
@@ -261,7 +275,7 @@ PHP;
 
 				if(!isset($text{++$i})) // not a var, just a '[('
 				{
-				return;
+					return;
 				}
 		
 				$varchar = $text{$i};
@@ -384,18 +398,18 @@ PHP;
 					while ($bracket) {
 						if('[' == $varchar)
 						{
-										++$bracket;
-										$mustparse = true; // potentially a new variable
+							++$bracket;
+							$mustparse = true; // potentially a new variable
 						}
 						elseif(']' == $varchar)
 						{
-										--$bracket;
-									}
+							--$bracket;
+						}
 			
-									if ($bracket > 0)
+						if ($bracket > 0)
 						{
-										$pipefunction .= $varchar;
-						$varchar = isset($text{++$i}) ? $text{$i} : '';
+							$pipefunction .= $varchar;
+							$varchar = isset($text{++$i}) ? $text{$i} : '';
 						}
 						else ++$i;
 					}
@@ -433,62 +447,79 @@ PHP;
 				$i = $startvar + strlen($varcode); // move the counter
 			} // we found a variable
 			$i = strpos($text, '[', $i);
-		} // while there are some variable
+		}*/ // while there are some variable
 	}
 
-	protected function _make_variable_code($prefix, $name, $pipefunction, $escape)
+	protected function _get_variable_code($var)
 	{
-		$prefix = (string) $prefix;
-		$name = (string) $name;
-		$pipefunction = (string) $pipefunction;
-
-		if(isset($this->_cachedVars[$prefix][$name])) 
+		if(isset($this->_cachedVars[$var[1]][$var[2].$var[3]])) 
 		{
-            		$variable = $this->_cachedVars[$prefix][$name]; // var is in cache
+            		$variable = $this->_cachedVars[$var[1]][$var[2].$var[3]]; // var is in cache
 		}
-        	else
+		else
 		{
-			$variable = $this->parse_variable_extra($prefix, $name);
-			if ($variable === false) { // has the variable being processed ?
-				$code = '';
-				$lowname = strtolower($name);
-				if(false !== strpos($lowname, '.')) 
-                		{
-					$brackets = explode('.', $lowname);
-					foreach($brackets as $bracket) 
-                    			{
-						$code .= ('lisset($' === substr($bracket, 0, 8)) ? '['.$bracket.']' : "['".$bracket."']";
+			$variable = $this->parse_variable_extra($var[1], $var[2].$var[3]);
+			
+			if(false === $variable)
+			{
+				$variable = $this->_make_variable_code($var[1], $var[2]);
+		
+				if('' !== $var[3])
+				{ // we have an array var
+					$arrvar = explode('.', substr($var[3], 1));
+					$arrname = '';
+					foreach($arrvar as $v)
+					{
+						$c = $v{0};
+						if('#' === $c || '%' === $c)
+						{
+							$arrname .= '[lisset('.$this->_make_variable_code($c, substr($v, 1)).')]';
+						}
+						else
+						{
+							$arrname .= "['".strtolower($v)."']";
+						}
 					}
-				} 
-				else 
-				{
-					$code = "['".$lowname."']";
 				}
-				
-				if('%' === (string)$prefix) 
-                		{
-					$variable = 
-<<<PHP
-lisset(\$GLOBALS['context']{$code})
-PHP;
-				} 
-				else 
-				{
-					$variable = 
-<<<PHP
-lisset(\$context{$code})
-PHP;
+		
+				if('' !== $var[4])
+				{ // we have a multilangue var
+					$arrlang = explode('.', substr($var[4], 1));
+					$varlang = '';
+					$is_var = ($arrlang[0]{0} === '#' || $arrlang[0]{0} === '%');
+					foreach($arrlang as $v)
+					{
+						$c = $v{0};
+						if('#' === $c || '%' === $c)
+						{
+							$varlang .= '[lisset('.$this->_make_variable_code($c, substr($v, 1)).')]';
+						}
+						else
+						{
+							$varlang .= strtolower($v);
+						}
+					}
+					$varlang = $is_var ? 'lisset($context'.$varlang.')' : "'".$varlang."'";
+					$var[5] = '|multilingue('.$varlang.')' . $var[5];
 				}
-				unset($code);
+		
+				if(isset($arrname)) $variable .= $arrname;
+	
+				$variable = 'lisset('.$variable.')';
 			}
 
-			$this->_cachedVars[$prefix][$name] = $variable; // caching
+			$this->_cachedVars[$var[1]][$var[2].$var[3]] = $variable; // caching
 		}
 
-		# parse the filter
-		if ($pipefunction) 
-		{ // traitement particulier ?
-			//echo $pipefunction."<br />";
+		if('' !== $var[5]) // pipefunction
+		{
+			if(false !== strpos($var[5], '[')) // maybe a new var
+			{
+				$escape = $this->var_escape;
+				$this->parse_variable($var[5], false);
+				$this->var_escape = $escape;
+			}
+
 			$filter = $args = '';
 			$currentQuote = false;
 			$open = 0;
@@ -496,10 +527,12 @@ PHP;
 			$funcArray = array();
 			$argsArray = array();
 			$new = false;
-            		$i = 0;
-            		while(isset($pipefunction{++$i}))
+			$i = 0;
+			$pipefunction = $var[5];
+
+			while(isset($pipefunction{++$i}))
 			{
-                		$c = $pipefunction{$i};
+				$c = $pipefunction{$i};
 				if(!$new)
 				{
 					if(!(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z')))
@@ -542,7 +575,7 @@ PHP;
 					$new = false;
 					continue;
 				}
-
+	
 				if(!$open)
 					$filter .= $c;
 				else
@@ -550,21 +583,21 @@ PHP;
 			}
 			$funcArray[] = $filter;
 			$argsArray[] = $args;
-
+	
 			foreach($funcArray as $k=>$fct) 
 			{
 				if(!$fct) continue;
-
+	
 				if ($fct == "false" || $fct == "true") {
 					$fct .= "function";
 				}
 				elseif ($fct == "else") {
 					$fct = "falsefunction";
 				}
-                
+		
 				if('isset' == $fct || 'empty' == $fct)
 					$fct = 'l'.$fct;
-                
+		
 				if ($fct) {
 					if('' !== $argsArray[$k])
 					{
@@ -574,15 +607,40 @@ PHP;
 					$variable = $fct.'('.$variable.$argsArray[$k].')';
 				}
 			}
-			
-			unset($funcArray, $argsArray);
 		}
 
-		if('php' == $escape)
+		if('php' == $this->var_escape)
 			return '<?php $tmp='.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null; ?>';
-		elseif('quote' == $escape)
+		elseif('quote' == $this->var_escape)
 			return '".'.$variable.'."';
 		else return $variable;
+	}
+
+	protected function _make_variable_code($prefix, $name)
+	{
+		$prefix = (string) $prefix;
+		$name = (string) $name;
+
+		$code = '';
+		$lowname = strtolower($name);
+		$code = "['".strtolower($name)."']";
+		
+		if('%' === (string)$prefix) 
+		{
+			$variable = 
+<<<PHP
+\$GLOBALS['context']{$code}
+PHP;
+		} 
+		else 
+		{
+			$variable = 
+<<<PHP
+\$context{$code}
+PHP;
+		}
+
+		return $variable;
 	}
 
 	protected function countlines($ind)
