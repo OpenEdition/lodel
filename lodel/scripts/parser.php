@@ -216,7 +216,7 @@ PHP;
         	return $template;
 	}
 
-	public function parse_variable(& $text, $escape = 'php')
+	protected function parse_variable(& $text, $escape = 'php')
 	{
 		if(!isset($text{3})) return; // at least 4 chars : [#C]
 
