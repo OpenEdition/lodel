@@ -258,7 +258,7 @@ PHP;
 
 				$varname = $varchar;
 
-				if(!isset($text{++$i})) // not a var, just a '[('
+				if(!isset($text{++$i}))
 				{
 					return;
 				}
@@ -268,7 +268,7 @@ PHP;
 				while (($varchar	>= 'A' && $varchar	<= 'Z') || ($varchar	>= '0' && 
 								$varchar	<= '9') || $varchar	== '_' || $varchar	== '.'){
 					$varname .= $varchar;
-					if(!isset($text{++$i})) // not a var, just a '[('
+					if(!isset($text{++$i}))
 					{
 						return;
 					}
@@ -285,7 +285,7 @@ PHP;
 
 						$varname .= $varchar;
 
-						if(!isset($text{++$i})) // not a var, just a '[('
+						if(!isset($text{++$i}))
 						{
 							return;
 						}
@@ -310,13 +310,13 @@ PHP;
 
 				if ($varchar == ':')	{ // a lang
 					$lang = '';
-					if(!isset($text{++$i})) // not a var, just a '[('
+					if(!isset($text{++$i}))
 					{
 						return;
 					}
 					$varchar = $text{$i};
 					if ($varchar == '#') { // pour syntaxe LS [#RESUME:#SITELANG] et [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
-						if(!isset($text{++$i})) // not a var, just a '[('
+						if(!isset($text{++$i}))
 						{
 							return;
 						}
@@ -327,7 +327,7 @@ PHP;
 							($varchar	>= '0' && $varchar	<= '9')) {
 							if ($varchar == '.') { $is_array = true; }
 							$lang .= $varchar;
-							if(!isset($text{++$i})) // not a var, just a '[('
+							if(!isset($text{++$i}))
 							{
 								return;
 							}
@@ -337,7 +337,7 @@ PHP;
 						$is_var = false;
 						while ($varchar >='A' && $varchar < 'Z') {
 							$lang .= $varchar;
-							if(!isset($text{++$i})) // not a var, just a '[('
+							if(!isset($text{++$i}))
 							{
 								return;
 							}
@@ -402,7 +402,7 @@ PHP;
 					}
 				}
 
-				if(!isset($text{$i})) // not a var, just a '[('
+				if(!isset($text{$i}))
 				{
 					return;
 				}
@@ -561,7 +561,7 @@ PHP;
 		}
 
 		if('php' == $escape)
-			return '<?php $tmp='.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null; ?>';
+			return '<?php $tmp='.$variable.';if(!empty($tmp)||0==$tmp){if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null;} ?>';
 		elseif('quote' == $escape)
 			return '".'.$variable.'."';
 		else return $variable;
@@ -988,7 +988,7 @@ PHP;
 					$argumentsstr .= "'".$k."'=>\"".$v."\",";
 				}
 				// clean a little bit, the "" quote
-				$argumentsstr = strtr($argumentsstr, array ('"".'=>'', '.""'=>''));
+// 				$argumentsstr = strtr($argumentsstr, array ('"".'=>'', '.""'=>''));
 				// make the loop call
 				$localtpl = $this->signature.'_';
 				$code = 
@@ -1393,6 +1393,10 @@ PHP;
 		} // caching
 
 		if ($tag == 'FUNC') { // we have a function macro
+			
+			$macrofunc = strtolower('macrofunc_'. $name.'_'. $this->signature);
+			$this->_clearposition();
+
 			$defattr = $this->_decode_attributs($this->macrocode[$name]['attr']);
 			if (!empty($defattr['REQUIRED'])) {
 				$required = explode(',', strtoupper($defattr['REQUIRED']));
@@ -1400,17 +1404,15 @@ PHP;
 
 				// check the validity of the call
 				foreach ($required as $arg) 
-                		{
-                    			$arg = trim($arg);
+				{
+					$arg = trim($arg);
 					if(!$arg) continue;
 					if (!isset ($attrs[$arg])) {
 						$this->_errmsg("the macro $name required the attribut $arg");
 					}
 				}
 			}
-			$macrofunc = strtolower('macrofunc_'. $name.'_'. $this->signature);
-
-			$this->_clearposition();
+			
 			// build the call
 			unset ($attrs['NAME']);
 			$args = '';
@@ -1418,10 +1420,8 @@ PHP;
 				$this->parse_variable($val, 'quote');
 				$args .= '"'. strtolower($attr). '"=>"'. $val. '",';
 			}
-			$this->arr[$this->ind] .= 
-<<<PHP
-<?php {$macrofunc}(\$context,array({$args})); ?>
-PHP;
+			$this->arr[$this->ind] .= '<?php '.$macrofunc.'($context,array('.$args.')); ?>';
+
 			if (!isset($this->funcs[$macrofunc])) 
             		{
 				$this->funcs[$macrofunc] = true;
@@ -1871,26 +1871,6 @@ PHP;
 
 	protected function _decode_attributs($text, $options = '')
 	{ // decode attributs
-// 		if(!preg_match_all('/([A-Z_\-]+)\s*=\s*"([^"]*)"/', $text, $m)) return array();
-// 
-// 		$ret = array();
-// 		if('flat' == $options)
-// 		{
-// 			foreach($m[0] as $k=>$v)
-// 			{
-// 				$ret[] = array('name'=>$m[1][$k], 'value'=>$m[2][$k]);
-// 			}
-// 		}
-// 		else
-// 		{
-// 			foreach($m[0] as $k=>$v)
-// 			{
-// 				$ret[$m[1][$k]] = $m[2][$k];
-// 			}
-// 		}
-// 		return $ret;
-
-		
 		$arr = explode('"', $text);
         	$ret = array();
 		$i = 0;
@@ -1926,10 +1906,15 @@ PHP;
 		$ret = '';
 		$tmp = preg_split("/\b(".$this->joinedconditions[$style].")\b/i", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
 		$open = false;
-		
+
 		foreach($tmp as $texte) 
 		{
-			$t = strtolower(trim($texte));
+			if(isset($texte{3})) // all conditions are less or equals to 3 chars
+			{
+				$ret .= $texte;
+				continue;
+			}
+			$t = strtolower($texte);
 			if(!isset($this->conditions[$style][$t]))
 			{
 				$ret .= $texte;
