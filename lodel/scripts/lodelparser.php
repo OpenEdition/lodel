@@ -404,8 +404,8 @@ class LodelParser extends Parser
 			$extrainselect = ""; // group by function
 		else $extrainselect = $this->lq($extrainselect);
 
-		$tables = array_map(array (& $this, "prefixTableName"), $tables);
-		$tablesinselect = array_map(array (& $this, "prefixTableName"), $tablesinselect);
+		$tables = array_map(array ($this, "prefixTableName"), $tables);
+		$tablesinselect = array_map(array ($this, "prefixTableName"), $tablesinselect);
 	}
 
 	/**
@@ -422,19 +422,19 @@ class LodelParser extends Parser
 	{
 		if (strpos($query, '#_') !== false)	{
 			// the easiest, fast replace
-			$query = strtr($query, array('#_TP_'=>$GLOBALS['tableprefix'], '#_MTP_' => $this->mprefix));
+			$query = strtr($query, array('#_TP_'=>$GLOBALS['tp'], '#_MTP_' => $this->mprefix));
 	
 			// any other ?
 			if (strpos($query, '#_') !== false) {
 				$cmd = array (
-		'#_entitiestypesjoin_' => "{$GLOBALS['tp']}types INNER JOIN {$GLOBALS['tp']}entities 
-					ON {$GLOBALS['tp']}types.id={$GLOBALS['tp']}entities.idtype",
+		'#_entitiestypesjoin_' => $GLOBALS['tp'].'types INNER JOIN '.$GLOBALS['tp'].'entities 
+					ON '.$GLOBALS['tp'].'types.id='.$GLOBALS['tp'].'entities.idtype',
 	
-		'#_tablefieldsandgroupsjoin_' => "{$GLOBALS['tp']}tablefieldgroups INNER JOIN {$GLOBALS['tp']}tablefields 
-					ON {$GLOBALS['tp']}tablefields.idgroup={$GLOBALS['tp']}tablefieldgroups.id",
+		'#_tablefieldsandgroupsjoin_' => $GLOBALS['tp'].'tablefieldgroups INNER JOIN '.$GLOBALS['tp'].'tablefields 
+					ON '.$GLOBALS['tp'].'tablefields.idgroup='.$GLOBALS['tp'].'tablefieldgroups.id',
 	
-		'#_tablefieldgroupsandclassesjoin_' => "{$GLOBALS['tp']}tablefieldgroups INNER JOIN {$GLOBALS['tp']}classes 
-					ON {$GLOBALS['tp']}classes.class={$GLOBALS['tp']}tablefieldgroups.class");
+		'#_tablefieldgroupsandclassesjoin_' => $GLOBALS['tp'].'tablefieldgroups INNER JOIN '.$GLOBALS['tp'].'classes 
+					ON '.$GLOBALS['tp'].'classes.class='.$GLOBALS['tp'].'tablefieldgroups.class');
 	
 				$query = strtr($query, $cmd);
 			}
@@ -797,13 +797,16 @@ function preg_replace_sql($find, $rpl, & $arr)
 
 function typestable($classtype)
 {
-	switch ($classtype) {
-	case "entities" :
-		return "types";
-	case "entries" :
-		return "entrytypes";
-	case "persons" :
-		return "persontypes";
-	}
+	if('entities' == $classtype) return 'types';
+	elseif('entries' == $classtype) return 'entrytypes';
+	elseif('persons' == $classtype) return 'persontypes';
+// 	switch ($classtype) {
+// 	case "entities" :
+// 		return "types";
+// 	case "entries" :
+// 		return "entrytypes";
+// 	case "persons" :
+// 		return "persontypes";
+// 	}
 }
 ?>
