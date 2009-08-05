@@ -88,7 +88,6 @@ class Parser
 	protected $isLoop; // is the parser called for a loop with refresh
 	protected $conditions;
 	protected $joinedconditions;
-	protected $var_escape; // used in parse_variable for preg_replace_callback callback
 
 	protected function _errmsg($msg, $ind = 0)
 	{
@@ -125,7 +124,7 @@ class Parser
 		$this->commands = array ("USE", "MACRO", "FUNC", "LOOP", "IF", "LET", "ELSE", "ELSEIF", "DO", "DOFIRST", "DOLAST", "BEFORE", "AFTER", "ALTERNATIVE", "ESCAPE", "CONTENT", "SWITCH", "CASE", "BLOCK", "TEXT");
 		$this->commandsline = join('|', $this->commands);
 		$this->codepieces = array ('sqlfetchassoc' => "mysql_fetch_assoc(%s)", 'sqlquery' => "mysql_query(%s)", 'sqlerror' => "or mymysql_error(%s,%s, __LINE__, __FILE__)", 'sqlfree' => "mysql_free_result(%s)", 'sqlnumrows' => "mysql_num_rows(%s)");
-		$this->conditions['sql'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"=",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
+		$this->conditions['sql'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"=",'ne'=>'!=', 'and'=>'&&', 'or'=> '||');
 		$this->joinedconditions['sql'] = join('|',array_keys($this->conditions['sql']));
 		$this->conditions['php'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"==",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
 		$this->joinedconditions['php'] = join('|',array_keys($this->conditions['php']));
@@ -199,15 +198,13 @@ PHP;
 		// clean the open/close php tags
 		$template['contents'] = preg_replace(array ("/\?>[\r\t\n]*<\?(?!xml)(php\b)?/", "/<\?(?!xml)(php\b)?[\t\r\n]*\?>/"), array ("", ""), $template['contents']);
 
-		$template['contents'] = strtr($template['contents'], array("\t"=>'','  '=>' ', "\r"=>''));
-
 		if ($this->charset != 'utf-8') {
 			#$t=microtime();
 			function_exists('convertHTMLtoUTF8') || include 'utf8.php'; // conversion des caracteres
 			$template['contents'] = utf8_encode($template['contents']);
 			convertHTMLtoUTF8($template['contents']);
 		}
-        
+
         	$template['refresh'] = $this->refresh;
 		
 		if($this->_originalCachedVars != $this->_cachedVars)
@@ -220,19 +217,7 @@ PHP;
 	{
 		if(!isset($text{3})) return; // at least 4 chars : [#C]
 
-		$this->var_escape = $escape;
-
-		$text = preg_replace_callback('/\[\(?'. // opening
-				'([#%@])'. // var scope
-				'([A-Z][A-Z_0-9]*)'. // var name
-				'((?:\.(?:[#%])?(?:[A-Z0-9][A-Z_0-9]*))*)'. // array var
-				'((?::(?:[#%])?(?:[A-Z0-9][A-Z_0-9]*))*)'. // multilangue var
-				'((?:\|[a-zA-Z][a-zA-Z_0-9]*(?:\(.*?\))?)*)'. // pipe function
-				'\)?\]/', // closing
-				
-				array($this, '_get_variable_code'), $text);
-
-		/*$i = strpos($text, '[');
+		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
 
@@ -292,23 +277,23 @@ PHP;
 
 				if($varchar == '#' || $varchar == '%') { // syntaxe [#VAR.#VAR] pour les tableaux !
 					do {
-						$tmpvarname = '';
 						$isvar = false;
 
 						if($varchar == '#' || $varchar == '%') {
-							$tmpvarname = '['.$varchar;
 							$isvar = true;
 						}
 
+						$varname .= $varchar;
+
 						if(!isset($text{++$i})) // not a var, just a '[('
 						{
-						return;
+							return;
 						}
 			
 						$varchar = $text{$i};
 						while (($varchar	>= 'A' && $varchar	<= 'Z') || ($varchar	>= '0' && 
 									$varchar	<= '9') || $varchar	== '_') {
-							$tmpvarname .= $varchar;
+							$varname .= $varchar;
 							if(!isset($text{++$i})) // not a var, just a '[('
 							{
 								return;
@@ -316,12 +301,6 @@ PHP;
 							$varchar = $text{$i};
 						}
 
-						if($isvar) {
-							$tmpvarname .= ']';
-							$this->parse_variable($tmpvarname, false);
-						}
-
-						$varname .= $tmpvarname;
                         			if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
 					} 
                     			while($varchar != ']' && $varchar != '|' && $varchar != ':');
@@ -447,79 +426,52 @@ PHP;
 				$i = $startvar + strlen($varcode); // move the counter
 			} // we found a variable
 			$i = strpos($text, '[', $i);
-		}*/ // while there are some variable
+		} // while there are some variable
 	}
 
-	protected function _get_variable_code($var)
+	protected function _make_variable_code($prefix, $varname, $pipefunction, $escape)
 	{
-		if(isset($this->_cachedVars[$var[1]][$var[2].$var[3]])) 
+		$prefix = (string)$prefix;
+		$varname = (string)$varname;
+		$pipefunction = (string)$pipefunction;
+
+		if(isset($this->_cachedVars[$prefix][$varname])) 
 		{
-            		$variable = $this->_cachedVars[$var[1]][$var[2].$var[3]]; // var is in cache
+            		$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
 		}
 		else
 		{
-			$variable = $this->parse_variable_extra($var[1], $var[2].$var[3]);
+			$variable = $this->parse_variable_extra($prefix, $varname);
 			
 			if(false === $variable)
 			{
-				$variable = $this->_make_variable_code($var[1], $var[2]);
-		
-				if('' !== $var[3])
+				if(false !== strpos($varname, '.'))
 				{ // we have an array var
-					$arrvar = explode('.', substr($var[3], 1));
-					$arrname = '';
+					$arrvar = explode('.', $varname);
+					$variable = '%' === $prefix ? '$GLOBALS[\'context\']' : '$context';
 					foreach($arrvar as $v)
 					{
 						$c = $v{0};
 						if('#' === $c || '%' === $c)
 						{
-							$arrname .= '[lisset('.$this->_make_variable_code($c, substr($v, 1)).')]';
+							$variable .= '[lisset('.('%' === $c ? '$GLOBALS[\'context\'][\''.strtolower(substr($v, 1)).'\']' : '$context[\''.strtolower(substr($v, 1)).'\']').')]';
 						}
 						else
 						{
-							$arrname .= "['".strtolower($v)."']";
+							$variable .= "['".strtolower($v)."']";
 						}
 					}
 				}
+				else $variable = ('%' === $prefix) ? '$GLOBALS[\'context\'][\''.strtolower($varname).'\']' : '$context[\''.strtolower($varname).'\']';
 		
-				if('' !== $var[4])
-				{ // we have a multilangue var
-					$arrlang = explode('.', substr($var[4], 1));
-					$varlang = '';
-					$is_var = ($arrlang[0]{0} === '#' || $arrlang[0]{0} === '%');
-					foreach($arrlang as $v)
-					{
-						$c = $v{0};
-						if('#' === $c || '%' === $c)
-						{
-							$varlang .= '[lisset('.$this->_make_variable_code($c, substr($v, 1)).')]';
-						}
-						else
-						{
-							$varlang .= strtolower($v);
-						}
-					}
-					$varlang = $is_var ? 'lisset($context'.$varlang.')' : "'".$varlang."'";
-					$var[5] = '|multilingue('.$varlang.')' . $var[5];
-				}
-		
-				if(isset($arrname)) $variable .= $arrname;
-	
 				$variable = 'lisset('.$variable.')';
 			}
 
-			$this->_cachedVars[$var[1]][$var[2].$var[3]] = $variable; // caching
+			$this->_cachedVars[$prefix][$varname] = $variable; // caching
 		}
 
-		if('' !== $var[5]) // pipefunction
+		if($pipefunction) // pipefunction
 		{
-			if(false !== strpos($var[5], '[')) // maybe a new var
-			{
-				$escape = $this->var_escape;
-				$this->parse_variable($var[5], false);
-				$this->var_escape = $escape;
-			}
-
 			$filter = $args = '';
 			$currentQuote = false;
 			$open = 0;
@@ -528,7 +480,6 @@ PHP;
 			$argsArray = array();
 			$new = false;
 			$i = 0;
-			$pipefunction = $var[5];
 
 			while(isset($pipefunction{++$i}))
 			{
@@ -609,38 +560,11 @@ PHP;
 			}
 		}
 
-		if('php' == $this->var_escape)
+		if('php' == $escape)
 			return '<?php $tmp='.$variable.';if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null; ?>';
-		elseif('quote' == $this->var_escape)
+		elseif('quote' == $escape)
 			return '".'.$variable.'."';
 		else return $variable;
-	}
-
-	protected function _make_variable_code($prefix, $name)
-	{
-		$prefix = (string) $prefix;
-		$name = (string) $name;
-
-		$code = '';
-		$lowname = strtolower($name);
-		$code = "['".strtolower($name)."']";
-		
-		if('%' === (string)$prefix) 
-		{
-			$variable = 
-<<<PHP
-\$GLOBALS['context']{$code}
-PHP;
-		} 
-		else 
-		{
-			$variable = 
-<<<PHP
-\$context{$code}
-PHP;
-		}
-
-		return $variable;
 	}
 
 	protected function countlines($ind)
@@ -993,6 +917,7 @@ PHP;
 		if (empty($selectparts['where'])) $selectparts['where'] = '1';
 		$this->parse_loop_extra($tables, $tablesinselect, $extrainselect, $selectparts);
 		//
+
 		foreach ($selectparts as $k => $v) {
 			$selectparts[$k] = $this->prefixTablesInSQL($v);
 		}
@@ -1060,7 +985,7 @@ PHP;
 				// build the array for the arguments:
 				$argumentsstr = '';
 				foreach ($arguments as $k => $v) {
-					$argumentsstr .= "'$k'=>\"$v\",";
+					$argumentsstr .= "'".$k."'=>\"".$v."\",";
 				}
 				// clean a little bit, the "" quote
 				$argumentsstr = strtr($argumentsstr, array ('"".'=>'', '.""'=>''));
@@ -1945,26 +1870,45 @@ PHP;
 	}
 
 	protected function _decode_attributs($text, $options = '')
-	{
-		// decode attributs
-		$arr = explode('"', $text);
-        	$ret = array();
-		$i = 0;
-        	while(isset($arr[$i])) {
-			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
-			if (!$attr)
-            		{
-                		$i += 2;
-				continue;
-            		}
-			if ($options == "flat")	{
-				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
-			}	else {
-				$ret[$attr] = $arr[$i +1];
+	{ // decode attributs
+		if(!preg_match_all('/([A-Z_]+)\s*=\s*"([^"]*)"/', $text, $m)) return array();
+
+		$ret = array();
+		if('flat' == $options)
+		{
+			foreach($m[0] as $k=>$v)
+			{
+				$ret[] = array('name'=>$m[1][$k], 'value'=>$m[2][$k]);
 			}
-            		$i += 2;
+		}
+		else
+		{
+			foreach($m[0] as $k=>$v)
+			{
+				$ret[$m[1][$k]] = $m[2][$k];
+			}
 		}
 		return $ret;
+
+		
+// 		$arr = explode('"', $text);
+//         	$ret = array();
+// 		$i = 0;
+//         	while(isset($arr[$i])) {
+// 			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
+// 			if (!$attr)
+//             		{
+//                 		$i += 2;
+// 				continue;
+//             		}
+// 			if ($options == "flat")	{
+// 				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
+// 			}	else {
+// 				$ret[$attr] = $arr[$i +1];
+// 			}
+//             		$i += 2;
+// 		}
+// 		return $ret;
 	}
 
 	protected function _clearposition()
@@ -1984,6 +1928,12 @@ PHP;
 		
 		foreach($tmp as $texte) 
 		{
+			$t = strtolower(trim($texte));
+			if(!isset($this->conditions[$style][$t]))
+			{
+				$ret .= $texte;
+				continue;
+			}
 			$i=-1;
 			$nb = 0;
             		while(isset($texte{++$i}))
@@ -1991,12 +1941,12 @@ PHP;
 				if($texte{$i} == "'" && ($i>0 && $texte{$i-1} == '\\')) ++$nb;
 			}
 			if($nb) $open = !$open;
-			$t = strtolower(trim($texte));
-			if(!$open && isset($this->conditions[$style][$t])) {
+			
+			if(!$open) 
+			{
 				$ret .= $this->conditions[$style][$t];
-				continue;
 			}
-			$ret .= $texte;
+			else $ret .= $texte;
 		}
 		return $ret;
 	}
@@ -2005,7 +1955,7 @@ PHP;
 	{
 		if($blockId == 0 && !isset($loop)) 
 		{
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b([^>]*?)\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($contents);
 		}
 		else
@@ -2084,7 +2034,7 @@ PHP;
 			$this->_checkforrefreshattribut($attrs);
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
 			unset($attrs);
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b([^>]*?)\/?>/", $block, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $block, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($block);
 		}
 
@@ -2092,35 +2042,32 @@ PHP;
 		// parse the variables
 		$this->parse_variable($arr[0]);
 
-		// repair bad splitting
-        	// bug [#4454]
-		$i = 2;
+		$i = 3;
 		while(isset($arr[$i]))
 		{
-			$nbQuotes = substr_count($arr[$i], '"');
-			if(0 === $nbQuotes) 
-			{
-				$nbQuotes = substr_count($arr[$i], "'");
-				if(0 === $nbQuotes) 
-				{
-					$this->parse_variable($arr[$i+1]); // parse the content
-					$i += 3;
-					continue;
-				}
-			}
+// 			$nbQuotes = substr_count($arr[$i], '"');
+// 			if(0 === $nbQuotes) 
+// 			{
+// 				$nbQuotes = substr_count($arr[$i], "'");
+// 				if(0 === $nbQuotes) 
+// 				{
+// 					$this->parse_variable($arr[$i+1]); // parse the content
+// 					$i += 3;
+// 					continue;
+// 				}
+// 			}
+// 		
+// 			if($nbQuotes % 2) 
+// 			{
+// 				$pos = strpos($arr[$i+1], '>');
+// 				$arr[$i] .= '>'.substr($arr[$i+1], 0, $pos);
+// 				$arr[$i+1] = substr_replace($arr[$i+1], '', 0, $pos+1);
+// 			}
 		
-			if($nbQuotes % 2) 
-			{
-				$pos = strpos($arr[$i+1], '>');
-				$arr[$i] .= '>'.substr($arr[$i+1], 0, $pos);
-				$arr[$i+1] = substr_replace($arr[$i+1], '', 0, $pos+1);
-			}
-		
-			$this->parse_variable($arr[$i+1]); // parse the content
+			$this->parse_variable($arr[$i]); // parse the content
 		
 			$i += 3;
 		}
-
 		
 		if (empty($this->arr)) {
 			$this->ind = 0;
@@ -2141,7 +2088,7 @@ PHP;
 
 function stripcommentandcr(& $text)
 {
-	return preg_replace(array ("/\r/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE|if lt IE|if gt IE).*?\]-->\s*\n?/s"), "", $text);
+	return preg_replace(array ("/[\r\t]+/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE|if lt IE|if gt IE).*?\]-->\s*\n?/s"), "", $text);
 }
 
 function quote_code($text)
