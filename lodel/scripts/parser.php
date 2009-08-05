@@ -1895,16 +1895,17 @@ PHP;
         	$ret = array();
 		$i = 0;
         	while(isset($arr[$i])) {
-			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
+			$attr = trim($arr[$i]);
 			if (!$attr)
             		{
                 		$i += 2;
 				continue;
             		}
+			$attr = substr($attr, 0, -1);
 			if ($options == "flat")	{
 				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
 			}	else {
-				$ret[$attr] = $arr[$i +1];
+				$ret[$attr] = trim($arr[$i +1]);
 			}
             		$i += 2;
 		}
