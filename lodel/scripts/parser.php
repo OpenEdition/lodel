@@ -1871,44 +1871,44 @@ PHP;
 
 	protected function _decode_attributs($text, $options = '')
 	{ // decode attributs
-		if(!preg_match_all('/([A-Z_]+)\s*=\s*"([^"]*)"/', $text, $m)) return array();
-
-		$ret = array();
-		if('flat' == $options)
-		{
-			foreach($m[0] as $k=>$v)
-			{
-				$ret[] = array('name'=>$m[1][$k], 'value'=>$m[2][$k]);
-			}
-		}
-		else
-		{
-			foreach($m[0] as $k=>$v)
-			{
-				$ret[$m[1][$k]] = $m[2][$k];
-			}
-		}
-		return $ret;
-
-		
-// 		$arr = explode('"', $text);
-//         	$ret = array();
-// 		$i = 0;
-//         	while(isset($arr[$i])) {
-// 			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
-// 			if (!$attr)
-//             		{
-//                 		$i += 2;
-// 				continue;
-//             		}
-// 			if ($options == "flat")	{
-// 				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
-// 			}	else {
-// 				$ret[$attr] = $arr[$i +1];
+// 		if(!preg_match_all('/([A-Z_\-]+)\s*=\s*"([^"]*)"/', $text, $m)) return array();
+// 
+// 		$ret = array();
+// 		if('flat' == $options)
+// 		{
+// 			foreach($m[0] as $k=>$v)
+// 			{
+// 				$ret[] = array('name'=>$m[1][$k], 'value'=>$m[2][$k]);
 // 			}
-//             		$i += 2;
+// 		}
+// 		else
+// 		{
+// 			foreach($m[0] as $k=>$v)
+// 			{
+// 				$ret[$m[1][$k]] = $m[2][$k];
+// 			}
 // 		}
 // 		return $ret;
+
+		
+		$arr = explode('"', $text);
+        	$ret = array();
+		$i = 0;
+        	while(isset($arr[$i])) {
+			$attr = trim(substr($arr[$i], 0, strpos($arr[$i], "=")));
+			if (!$attr)
+            		{
+                		$i += 2;
+				continue;
+            		}
+			if ($options == "flat")	{
+				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
+			}	else {
+				$ret[$attr] = $arr[$i +1];
+			}
+            		$i += 2;
+		}
+		return $ret;
 	}
 
 	protected function _clearposition()
@@ -1955,7 +1955,7 @@ PHP;
 	{
 		if($blockId == 0 && !isset($loop)) 
 		{
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_\-]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($contents);
 		}
 		else
@@ -2034,7 +2034,7 @@ PHP;
 			$this->_checkforrefreshattribut($attrs);
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
 			unset($attrs);
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $block, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_\-]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $block, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($block);
 		}
 
