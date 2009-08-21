@@ -82,7 +82,7 @@ class MainPluginsLogic extends Logic
 				trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		parent::__construct(isset($logic) ? $logic : 'mainplugins');
 
-		$this->_triggers = Plugins::$triggers;
+		$this->_triggers = Plugins::getTriggers();
 
 		C::set('triggers', $this->_triggers);
 	}
@@ -115,7 +115,7 @@ class MainPluginsLogic extends Logic
 					if($return) return false;
 					trigger_error('ERROR: no way to find the plugin', E_USER_ERROR);
 				}
-				return call_user_func_array(array($name[0], $name[1]), array(&$context,&$error));
+				return Plugins::get($name[0])->$name[1]($context, $error);
 			}
 		}
 		elseif('class' === $hook)
@@ -124,13 +124,11 @@ class MainPluginsLogic extends Logic
 			{
 				include $path.$name[0].'/'.$name[0].'.php';
 
-				if(get_parent_class($name[0]) !== 'plugins')
+				if(get_parent_class($name[0]) !== 'Plugins')
 				{
 					if($return) return false;
 					trigger_error('ERROR: the plugin '.$name[0].' does not extends class "plugins"', E_USER_ERROR);
 				}
-
-				call_user_func(array($name[0], 'init'), $name[0]);
 			}
 
 			if(!method_exists($name[0], $name[1]))
@@ -138,8 +136,7 @@ class MainPluginsLogic extends Logic
 				if($return) return false;
 				trigger_error('ERROR: the function '.$name[1].' does not exist', E_USER_ERROR);
 			}
-			// return $name[0]::$name[1]($context,$error); // PHP 5.3
-			return call_user_func_array(array($name[0], $name[1]), array(&$context,&$error));
+			return Plugins::get($name[0])->$name[1]($context, $error);
 		}
 		else
 		{
@@ -211,15 +208,6 @@ class MainPluginsLogic extends Logic
 					$pName = basename($file);
 					if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $pName)) continue;
 		
-					$plugin = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
-					
-					if($plugin)
-					{ // already parsed
-						$plugin['config'] = unserialize($plugin['config']); // default configuration
-						unset($plugin['name']);
-						$context['plugins'][$pName] = $plugin;
-						continue;
-					}
 					$plugin = array();
 					$reader = new XMLReader();
 					if(!@$reader->open($file.'/config.xml', 'UTF-8'))
@@ -284,11 +272,6 @@ class MainPluginsLogic extends Logic
 							case 'triggers': 
 								$localName = $reader->localName;
 								$reader->read();
-								if(!$reader->hasValue)
-								{
-									$errors[] = 'Missing triggers for plugin '.$pName;
-									break 2;
-								}
 								$triggers = explode(',', $reader->value);
 								foreach($this->_triggers as $trigger)
 								{
@@ -384,10 +367,16 @@ class MainPluginsLogic extends Logic
 	
 					if(empty($errors))
 					{
+						$p = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
 						$dao = $this->_getMainTableDao();
 						$vo = $dao->createObject();
+						if($p)
+						{
+							$vo->id = $p['id'];
+							$status = $p['status'];	
+						}
 						$vo->name = $pName;
-						$vo->status = 0;
+						$vo->status = isset($status) ? $status : 0;
 						$vo->config = @serialize($plugin['config']);
 						$vo->hooktype = $plugin['hooktype'];
 						$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
@@ -398,7 +387,7 @@ class MainPluginsLogic extends Logic
 						}
 						
 						$context['plugins'][$pName] = $plugin;
-						$context['plugins'][$pName]['status'] = 0;
+						$context['plugins'][$pName]['status'] = $vo->status;
 						$context['plugins'][$pName]['id'] = $dao->save($vo, true);
 					}
 					else $error = array_unique(array_merge((array)$error, $errors));

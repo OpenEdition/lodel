@@ -99,7 +99,15 @@ class PluginsLogic extends MainPluginsLogic
 		$vo->status = 1;
 		$context['id'] = $dao->save($vo, $new);
 
-		parent::factory($context, $error, $this->_plugin['name'].'_'.__FUNCTION__, true); // call the enableAction func from the plugin
+		$ret = parent::factory($context, $error, $this->_plugin['name'].'_'.__FUNCTION__, true); // call the enableAction func from the plugin
+
+		if('_error' === $ret || $error)
+		{
+			$vo = $dao->find('name="'.addslashes($context['name']).'"');
+			$vo->status = 0;
+			$dao->save($vo);
+			return '_error';
+		}
 
 		@unlink(SITEROOT.'/CACHE/triggers');
 		clearcache();
