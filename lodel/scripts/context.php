@@ -125,12 +125,12 @@ class C
 	 * array containing the current request
 	 * @var array
 	 */
-    	static public $_context = array();
+    	static private $_context = array();
 	/** 
 	 * backup of the current request if re-setting context
 	 * @var array
 	 */
-        static private $_backupC = array();
+    	static private $_backupC = array();
 	/** 
 	 * array containing all necessary informations about triggers
 	 * @var array
@@ -259,7 +259,15 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
-
+				if('id' == $var || 'idtype' == $var)
+				{
+					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					{
+						self::$_context[$var] = (int)$m[2];
+						self::$_cfg['site_ext'] = (string)$m[1];
+						continue;
+					}
+				}
 				self::$_context[$var] = (int)self::$_context[$var];
 			} 
 		}
@@ -283,7 +291,15 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
-
+				if('id' == $var || 'idtype' == $var)
+				{
+					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					{
+						self::$_context[$var] = (int)$m[2];
+						self::$_context['site_ext'] = (string)$m[1];
+						continue;
+					}
+				}
 				self::$_context[$var] = (int)self::$_context[$var];
 			}
 		}
@@ -291,7 +307,7 @@ class C
 		// valid the request
 		if (isset(self::$_context['do']))
 		{
-			if(!preg_match("/^([a-zA-Z]+_)?[a-zA-Z]+$/", self::$_context['do'])) 
+			if(!preg_match("/^(_[a-zA-Z]+_)?[a-zA-Z]+$/", self::$_context['do'])) 
 				trigger_error("ERROR: invalid action", E_USER_ERROR);
 		}
 
@@ -347,7 +363,7 @@ class C
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
-			$triggers = Plugins::$triggers;
+			$triggers = Plugins::getTriggers();
 			self::$_triggers = array();
 			foreach($triggers as $trigger)
 			{
@@ -408,10 +424,6 @@ class C
 					continue;
 				}
 				include $file;
-				if('class' === $hooktype) 
-				{
-					call_user_func(array($trigger, 'init'), $trigger);
-				}
 				self::$_triggers['included'][$trigger] = true;
 			}
             
@@ -420,11 +432,7 @@ class C
 				case 'class':
 					if(!method_exists($trigger, $name))
 						trigger_error('Invalid trigger : '.$trigger.'::'.$name, E_USER_ERROR);
-					// important here : we need to pass the context by reference
-					// only possible with call_user_func_array
-					// until people go to 5.3
-					call_user_func_array(array($trigger, $name), array(&self::$_context));
-					// return $trigger::$name(self::$_context); // PHP 5.3
+					Plugins::get($trigger)->$name(self::$_context);
 					break;
 				
 				case 'func':
@@ -547,7 +555,7 @@ class C
 			{
 				self::$_lodeluser = self::$_context['lodeluser'] = $v;
                 		// don't want to have access to the session id or name in templates
-				unset(self::$_context['lodeluser']['session'],self::$_context['lodeluser']['idsession']);
+				self::$_context['lodeluser']['session'] = self::$_context['lodeluser']['idsession'] = null;
 				return true;
 			}
 			else return false;
@@ -637,7 +645,7 @@ class C
 			$config->set('Core', 'Encoding', 'UTF-8');
 			$config->set('HTML', 'TidyLevel', 'heavy' );
 			$config->set('Attr', 'EnableID', true);
-			$config->set('Cache', 'SerializerPath', realpath('./CACHE/htmlpurifier/') );
+			$config->set('Cache', 'SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
 			$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 			$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
 			$config->set('HTML', 'DefinitionRev', 1);
@@ -662,6 +670,40 @@ class C
 		$data = self::$filter->purify($data);
 		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
 		return true;
+	}
+}
+
+/**
+ * Classe représentant les données d'une requête
+ *
+ * @package lodel
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Fichier ajouté depuis la version 0.9
+ */
+class Context extends ArrayObject
+{
+	public function __construct(array &$datas)
+	{
+		parent::__construct($datas, self::ARRAY_AS_PROPS);
+	}
+
+	public function __get($var)
+	{
+		return $this->offsetGet($var);
+	}
+
+	public function __set($var, $value)
+	{
+		return $this->offsetSet($var, $value);
 	}
 }
 
