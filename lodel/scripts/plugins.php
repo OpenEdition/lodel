@@ -103,6 +103,7 @@ abstract class Plugins
 	{
 		if(!isset(self::$_instances[$plugin]))
 		{
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			$enabled = $db->GetOne(lq('SELECT status FROM #_TP_plugins WHERE name='.$db->quote($plugin)));
 			if(!$enabled) trigger_error('ERROR: sorry this plugin is not enabled, please contact your administrator', E_USER_ERROR);
