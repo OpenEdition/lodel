@@ -988,7 +988,7 @@ PHP;
 					$argumentsstr .= "'".$k."'=>\"".$v."\",";
 				}
 				// clean a little bit, the "" quote
-// 				$argumentsstr = strtr($argumentsstr, array ('"".'=>'', '.""'=>''));
+				$argumentsstr = strtr($argumentsstr, array ('"".'=>'', '.""'=>''));
 				// make the loop call
 				$localtpl = $this->signature.'_';
 				$code = 
@@ -1681,7 +1681,7 @@ PHP;
 		if (!preg_match("/\b(VAR|ARRAY)\s*=\s*\"([^\"]*)\"(\s* GLOBAL=\"([^\"]*)\")?/", $this->arr[$this->ind + 1], $result))
 			$this->_errmsg("LET have no VAR|ARRAY attribut");
 		
-		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}(\[\]|(\.[#%{$this->variablechar}]{$this->variable_regexp})*)?$/i" : "/^{$this->variable_regexp}$/i";
+		$regexp = 'ARRAY' == $result[1] ? "/^{$this->variable_regexp}((\.[#%{$this->variablechar}]{$this->variable_regexp})*(\[\])?)?$/i" : "/^{$this->variable_regexp}$/i";
 
 		if (!preg_match($regexp, $result[2], $res))
 			$this->_errmsg("Variable \"$result[2]\" in LET is not a valid variable", $this->ind);
@@ -1719,7 +1719,7 @@ PHP;
 
 			$add = $array = false;
 
-			if(!empty($res[1]) && '[]' === $res[1])
+			if(!empty($res[3]))
 			{
 				$add = true;
 				$var = substr($var, 0, -2);
@@ -1852,7 +1852,7 @@ PHP;
 				$escaped = false;
 				$quotec = $c;
 			} elseif ($c == "." && $str2) { // table dot ?
-				if('lodelmain' !== $str2) 
+				if('lodelmain' !== $str2 && '`' !== $str2) 
 				{
 					$prefixedtable = $this->prefixTableName($str2);
 					if ($prefixedtable != $str2)	{
@@ -1861,7 +1861,7 @@ PHP;
 					}
 					$str2 = '';
 				} else $str2 .= $c;
-			} elseif(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z') || ('_' == $c)) {
+			} elseif(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z') || ('_' == $c) || '`' == $c) {
 				$str2 .= $c;
 			} else $str2 = '';
 			$str .= $c;
