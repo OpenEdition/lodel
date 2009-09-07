@@ -145,6 +145,12 @@ class View
 	private $_cache;
 
 	/**
+	* indicates if we must regenerate the page
+	* @var bool
+	*/
+	private $_regen;
+
+	/**
 	 * page which will be displayed
 	 * cached for trigger postview
 	 * @var string
@@ -164,6 +170,7 @@ class View
 	 */
 	private function __construct() 
 	{
+		$this->_regen = (bool) (C::get('recalcultpl') && C::get('admin', 'lodeluser'));
 		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
 		$this->_evalCalled = false;
 		$this->_cachedfile = null;
@@ -282,7 +289,7 @@ class View
 		$context =& C::getC();
 
 		// we try to reach the cache only if asked and no POST datas
-		if($caching && !self::$nocache) 
+		if($caching && !self::$nocache && !$this->_regen) 
 		{
 			if(!isset($this->_cache))
 			{
@@ -452,14 +459,14 @@ class View
 			if($blockId > 0)
 			{
 				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
-				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-				$blockId.$sum.'//'.C::get('qs', 'cfg');
+					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+					$blockId.$sum.'//'.C::get('qs', 'cfg');
 			}
 			elseif(isset($loopName))
 			{
 				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
-				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-				$loopName.$sum.'//'.C::get('qs', 'cfg');
+					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+					$loopName.$sum.'//'.C::get('qs', 'cfg');
 			}
 			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
 				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
@@ -482,18 +489,21 @@ class View
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
 			
-			$recalcul = false;
-			
-			if($contents = $this->_cache->get($template_cache, $group))
+			if(!$this->_regen)
 			{
-				$pos = strpos($contents, "\n");
-				$timestamp = (int)substr($contents, 0, $pos);
-				if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
-				else $contents = substr($contents, $pos+1);
-			}
-			else
-			{
-				$recalcul = true;
+				$recalcul = false;
+				
+				if($contents = $this->_cache->get($template_cache, $group))
+				{
+					$pos = strpos($contents, "\n");
+					$timestamp = (int)substr($contents, 0, $pos);
+					if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
+					else $contents = substr($contents, $pos+1);
+				}
+				else
+				{
+					$recalcul = true;
+				}
 			}
 		}
         
@@ -507,7 +517,7 @@ class View
 				if(!isset($this->_cache))
 				{
 					$this->_cache = new Cache_Lite($this->_cacheOptions);
-				}
+				} 
 				elseif(isset($cacheDir))
 				{
 					$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
@@ -564,7 +574,7 @@ class View
 				$this->_evalCalled = true;
 			}
 			
-            		$filename = './CACHE/require_caching/'.uniqid(mt_rand(), true);
+            		$filename = $this->_cacheOptions['cacheDir'].'require_caching/'.uniqid(mt_rand(), true);
 
 			$fh = @fopen($filename, 'w+b');
 			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
@@ -651,8 +661,9 @@ class View
 			{
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
-		
-			$contents = $this->_cache->get($template_cache, $group);
+			
+			if(!$this->_regen)
+				$contents = $this->_cache->get($template_cache, $group);
 		}
         
 		if($contents && !(C::get('debugMode', 'cfg') && $this->_cache->lastModified() < @filemtime($tpl)) )
@@ -961,6 +972,7 @@ function _indent($source, $indenter = '  ')
 	}
 	
 	$i = -1;
+	$closingTag = false;
 	while(isset($arr[++$i]))
 	{
 		$current =& $arr[$i];
@@ -978,16 +990,19 @@ function _indent($source, $indenter = '  ')
 
 		if(isset($current{1}) && '<?' === $current{0}.$current{1})
 		{ // php/xml code
+			$closingTag = false;
 			$source .= "\n".$current."\n";
 		}
 		elseif('<!' === $prefix)
 		{ // <!DOCTYPE or <!--
+			$closingTag = false;
 			$source .= $current;
 			if($tag && ('DOCTYPE' === $tag || '--' === $tag))
 				$i += 3;
 		}
 		elseif('/>' === $suffix)
 		{ // <\w+/>
+			$closingTag = false;
 			if($tag && isset($inline[$tag]))
 			{
 				$source .= $current;
@@ -995,7 +1010,8 @@ function _indent($source, $indenter = '  ')
 			}
 			else
 			{
-				$source .= $isInline ? $current : "\n".$tab.$indenter.$current;
+				$source .= $isInline ? $current : "\n".$tab.$current."\n".$tab;
+				$closingTag = $isInline ? false : true;
 			}
 			$i += 3;
 		}
@@ -1010,14 +1026,18 @@ function _indent($source, $indenter = '  ')
 					$i += 3;
 					continue;
 				}
+				$isInline = false;
 			}
+			if($closingTag) $source = substr($source, 0, -$nbIndent);
 			$tab = substr($tab, $nbIndent);
-			$source .= $isInline ? $current : "\n".$tab.$current;
+			$source .= $isInline ? $current : $current."\n".$tab;
+			$closingTag = $isInline ? false : true;
 			$isInline = false;
 			$i += 3;
 		}
 		elseif('<' === $prefix)
 		{ // <\w+
+			$closingTag = false;
 			if($tag)
 			{
 				if(isset($noIndent[$tag])) $escape = true;
@@ -1037,8 +1057,9 @@ function _indent($source, $indenter = '  ')
 		}
 		else
 		{ // contents
+			$closingTag = false;
 			$escape || $arr[$i] = str_replace("\n", '', $arr[$i]);// remove any \n, only if we are NOT in <textarea>
-			$source .= $isInline ? $current : "\n".$tab.$current;
+			$source .= $current;
 		}
 	}
 
