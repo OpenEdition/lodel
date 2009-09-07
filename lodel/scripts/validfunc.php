@@ -93,18 +93,16 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext') AND mask !=''"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
-					if($fields->fields['mask'] != '') {
-						$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
-						if(!is_array($mask)) continue;
-						$masks[$context['class']][$fields->fields['name']] = array();
-						$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
-						$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
-					}
+					$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+					if(!is_array($mask)) continue;
+					$masks[$context['class']][$fields->fields['name']] = array();
+					$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
+					$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
 					$fields->MoveNext();
 				}
 				unset($mask);
 			}
-			if(isset($masks[$context['class']][$name]['lodel'])) {
+			if(!empty($masks[$context['class']][$name]['lodel'])) {
 				$ret = @preg_match($masks[$context['class']][$name]['lodel'], $text);
 				if(FALSE === $ret) trigger_error('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.', E_USER_ERROR);
 				// doesn't validate mask
