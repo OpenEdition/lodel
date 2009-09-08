@@ -94,7 +94,11 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				if(!$fields) return true;
 				while(!$fields->EOF) {
 					$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
-					if(!is_array($mask)) continue;
+					if(!is_array($mask))
+					{
+						$fields->MoveNext();
+						continue;
+					}
 					$masks[$context['class']][$fields->fields['name']] = array();
 					$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
 					$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
