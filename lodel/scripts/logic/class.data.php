@@ -662,7 +662,7 @@ class DataLogic
 			$dirs = array();
 			$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			foreach($dirstest as $dir) {
-				if ($context[$dir]) {
+				if (isset($context[$dir])) {
 					$dirs[] = $dir;
 				}
 			}
@@ -1209,6 +1209,7 @@ class DataLogic
 					$types = lq('#_TP_types');
 					$entrytypes = lq('#_TP_entrytypes');
 					$persontypes = lq('#_TP_persontypes');
+					$this->_updateTypes(true, $error);
 					$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}` ORDER BY id");
 					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}` ORDER BY id");
 					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}` ORDER BY id");
