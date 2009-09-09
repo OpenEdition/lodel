@@ -301,7 +301,7 @@ PHP;
 							$varchar = $text{$i};
 						}
 
-                        			if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
+                        			//if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
 					} 
                     			while($varchar != ']' && $varchar != '|' && $varchar != ':');
 				}
