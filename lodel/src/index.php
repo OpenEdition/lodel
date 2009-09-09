@@ -75,7 +75,7 @@ try
 		recordurl();
 	}
 
-	if(!C::get('debugMode', 'cfg'))
+	if(!C::get('debugMode', 'cfg') && !C::get('visitor', 'lodeluser'))
 	{
 		if(View::getView()->renderIfCacheIsValid()) exit();
 	}
@@ -83,7 +83,7 @@ try
     	$accepted_logic = array();
 	$called_logic = null;
 
-	if (!C::get('editor', 'lodeluser') && ($do = C::get('do'))) 
+	if ($do = C::get('do'))
 	{
 		if ($do === 'edit' || $do === 'view') 
 		{
@@ -97,15 +97,28 @@ try
 				trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
 			}
 			unset($vo);
-			$lodeluser['rights']  = LEVEL_EDITOR; // grant temporary
-			$lodeluser['editor']  = 1;
-			C::setUser($lodeluser);
-            		$_REQUEST['clearcache'] = false;
-            		C::set('nocache', false);
-            		unset($lodeluser);
+			if(!C::get('editor', 'lodeluser'))
+			{
+				$lodeluser['temporary'] = true;
+				$lodeluser['rights']  = LEVEL_REDACTOR; // grant temporary
+				$lodeluser['visitor'] = 1;
+				$lodeluser['groups'] = 1;
+				$lodeluser['editor']  = 0;
+				$lodeluser['redactor'] = 1;
+				$lodeluser['admin']	= 0;
+				$lodeluser['adminlodel'] = 0;
+				$GLOBALS['nodesk'] = true;
+				C::setUser($lodeluser);
+				unset($lodeluser);
+				$_REQUEST['clearcache'] = false;
+				C::set('nocache', false);
+			}
 			$accepted_logic = array('entities_edition');
             		C::set('lo', 'entities_edition');
 			$called_logic = 'entities_edition';
+		} elseif('_' === $do{0}) {
+			$accepted_logic = array('plugins');
+			C::set('lo', 'plugins');
 		} else {
 			trigger_error('ERROR: unknown action', E_USER_ERROR);
 		}
