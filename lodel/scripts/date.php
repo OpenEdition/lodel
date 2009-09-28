@@ -261,7 +261,7 @@ function mysqldatetime($s, $type = 'datetime')
 			if(count($datetime)>2)
 			{
 				$date = mysqldate($datetime[0].' '.$datetime[1].' '.$datetime[2], 'date');
-				$time = mysqldate($datetime[3], 'time');
+				$time = isset($datetime[3]) ? mysqldate($datetime[3], 'time') : '';
 			}
 			else
 			{
