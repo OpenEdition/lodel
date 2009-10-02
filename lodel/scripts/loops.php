@@ -303,6 +303,10 @@ function loop_rss($context, $funcname, $arguments)
 			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
+	if(isset($arguments['timeout']) && is_numeric($arguments['timeout']) && $arguments['timeout'] > 0)
+	{
+		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
+	}
 	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
 	$rss = fetch_rss($arguments['url'], isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
@@ -398,7 +402,7 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	}
 
 	$local_context = $context;
-	$local_context['pages'] = $pages;
+	$local_context['pages'] = $cache[$funcname];
 	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname", $local_context);
 		return;
