@@ -314,7 +314,7 @@ class EntriesLogic extends GenericLogic
 					if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
 					do {
 						$i++;
-						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+						$d=$rank[$id]=(isset($rank[$idparent]) ? $rank[$idparent]+($i*1.0)/$l : ($i*1.0)/$l);
 					} while(isset($arr["p$d"]));
 					$arr["p$d"]=array($id,$fullname);
 					$parent[$id]=$fullname;
