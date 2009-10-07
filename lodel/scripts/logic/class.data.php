@@ -816,6 +816,7 @@ class DataLogic
 	
 		if ($zipcmd && $zipcmd != 'pclzip')	{ //commande ZIP
 			if ($zipdirs)	{
+				$files = '';
 				foreach ($zipdirs as $dir) {
 					foreach ($acceptedexts as $ext)	{
 						$files .= " $dir/*.$ext";
@@ -845,6 +846,7 @@ class DataLogic
 					#echo $p_header['stored_filename'],"<br>";
 					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
 				}
+				$files = array();
 				// end of function to exclude files
 				foreach ($zipdirs as $dir) {
 					$files[] = SITEROOT.$dir;
