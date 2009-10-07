@@ -367,6 +367,7 @@ class MainPluginsLogic extends Logic
 	
 					if(empty($errors))
 					{
+						$status = 0;
 						$p = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
 						$dao = $this->_getMainTableDao();
 						$vo = $dao->createObject();
@@ -448,12 +449,14 @@ class MainPluginsLogic extends Logic
 		}
 
 		unset($context['plugin']['config']['sql']);
-
-		foreach($context['plugin']['config'] as $k=>$v)
+		if(!empty($context['plugin']['config']))
 		{
-			if(!isset($v['value'])) 
+			foreach($context['plugin']['config'] as $k=>$v)
 			{
-				$context['plugin']['config'][$k]['value'] = isset($v['defaultValue']) ? $v['defaultValue'] : null;
+				if(!isset($v['value'])) 
+				{
+					$context['plugin']['config'][$k]['value'] = isset($v['defaultValue']) ? $v['defaultValue'] : null;
+				}
 			}
 		}
 
