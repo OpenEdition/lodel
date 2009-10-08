@@ -1528,7 +1528,7 @@ PHP;
 		// ouch !
 		if(false !== stripos($attrs['COND'], ' like '))
 		{
-			$cond = preg_replace(array( "/(\[#[\w'\[\]\|\$\\\]*?\]) like (\/.*\/)/i", 
+			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/.*\/)/i", 
 					                    "/'([\w'\[\]\$\\\]*?)' like (\/.*\/)/i"), 
 			                    array('preg_match("\\2is", \\1, $context[\'matches\'])',
 				                'preg_match("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
@@ -1562,7 +1562,7 @@ PHP;
 				// RE ouch !
 				if(false !== stripos($attrs['COND'], ' like '))
 				{
-					$cond = preg_replace(array( "/(\[#[\w'\[\]\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
+					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
 							                    "/'([\w'\[\]\$\\\]*?)' like (\/[^\/]*\/)/i"), 
 					                    array('preg_match("\\2i", \\1, $context[\'matches\'])',
 						                        'preg_match("\\2i", "\\1", $context[\'matches\'])'), $attrs['COND']);
@@ -1577,7 +1577,7 @@ PHP;
 			{
 				$isendif = 1;
 			}	
-			else $this->_errmsg("incorrect tags \"".$this->arr[$this->ind]."\" in IF condition", $this->ind);
+			else $this->_errmsg("incorrect tag \"".$this->arr[$this->ind]."\" in IF condition", $this->ind);
 		}	
         	while (!$isendif && $this->ind < $this->countarr);
 
@@ -1881,7 +1881,7 @@ PHP;
                 		$i += 2;
 				continue;
             		}
-			$attr = substr($attr, 0, -1);
+			$attr = trim(substr($attr, 0, -1));
 			if ($options == "flat")	{
 				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
 			}	else {
