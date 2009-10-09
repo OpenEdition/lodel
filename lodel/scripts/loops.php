@@ -308,7 +308,7 @@ function loop_rss($context, $funcname, $arguments)
 		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
 	}
 	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
-	$rss = fetch_rss($arguments['url'], isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+	$rss = fetch_rss(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
 		if (C::get('visitor', 'lodeluser')) {
 			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
