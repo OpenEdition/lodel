@@ -1026,7 +1026,7 @@ class DataLogic
 		$dirs = array();
 		$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 		foreach($dirstest as $dir) {
-			if ($context[$dir]) {
+			if (!empty($context[$dir])) {
 				$dirs[] = $dir;
 			}
 		}
