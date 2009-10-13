@@ -307,6 +307,7 @@ function loop_rss($context, $funcname, $arguments)
 	{
 		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
 	}
+	$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
 	$rss = fetch_rss(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
@@ -315,6 +316,7 @@ function loop_rss($context, $funcname, $arguments)
 		}	else {
 			if (C::get('contactbug', 'cfg'))
 				@mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+			error_reporting($err);
 			return;
 		}
 	}
@@ -357,6 +359,7 @@ function loop_rssitem($context, $funcname, $arguments)
 	if (!is_object($context['rssobject']) || !isset($context['rssobject']->items)) {
 		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $localcontext);
+		error_reporting($err);
 		return;
 	}
 
@@ -387,6 +390,7 @@ function loop_rssitem($context, $funcname, $arguments)
 	}
 	if (function_exists("code_after_$funcname"))
 		call_user_func("code_after_$funcname", $localcontext);
+	error_reporting($err);
 } //end loop rss tiem
 
 /**
