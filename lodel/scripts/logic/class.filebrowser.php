@@ -179,7 +179,7 @@ if(!function_exists('loop_filelist'))
 			//
 			$localcontext['name']=$file;
 			$localcontext['size']=nicefilesize(filesize(UPLOADDIR."/".$file));
-			$localcontext['checked']=$context['file'][$file] ? "checked=\"checked\"" : "";
+			$localcontext['checked']=isset($context['file'][$file]) ? "checked=\"checked\"" : "";
 			call_user_func("code_do_$funcname",$localcontext);
 		}
 		closedir($dh);
