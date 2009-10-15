@@ -79,11 +79,6 @@
 class LodelParser extends Parser
 {
 	/**
-	 * booléen indiquant si l'on a déjà charger le générateur de filtres
-	 * @var bool
-	 */
-	protected $filterfunc_loaded = FALSE;
-	/**
 	 * Tableau associatif concernant le status des textes
 	 *
 	 * @var array
@@ -502,11 +497,7 @@ class LodelParser extends Parser
 		if ($filtered) 
         	{
 			$options['sqlfetchassoc'] = 'filtered_mysql_fetch_assoc($context,%s)';
-			if (!$this->filterfunc_loaded)
-            		{
-				$this->filterfunc_loaded = TRUE;
-				$this->fct_txt .= 'if (!function_exists("filtered_mysql_fetch_assoc")) include_once("filterfunc.php");';
-			}
+			$this->fct_txt .= 'if (!function_exists("filtered_mysql_fetch_assoc")) include_once("filterfunc.php");';
 		}
 		else
 		{
