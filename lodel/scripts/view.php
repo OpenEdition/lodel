@@ -458,17 +458,17 @@ class View
         	{
 			if($blockId > 0)
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
 					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
 					$blockId.$sum.'//'.C::get('qs', 'cfg');
 			}
 			elseif(isset($loopName))
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
 					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
 					$loopName.$sum.'//'.C::get('qs', 'cfg');
 			}
-			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
 				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
 				C::get('qs', 'cfg');
 		
