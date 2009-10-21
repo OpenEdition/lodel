@@ -371,6 +371,13 @@ class View
 			}
 		}
 
+		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
+		{
+			function_exists('show_html') || include 'showhtml.php';
+			// on affiche la source
+			self::$page = show_html(self::$page);
+		}
+
 		switch($encoding)
 		{
 			case 'gzhandler':
@@ -745,13 +752,6 @@ class View
 			}
 		}
         
-		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
-		{
-			function_exists('show_html') || include 'showhtml.php';
-			// on affiche la source
-			return show_html($template['contents']);
-		}
-        
 		return $template['contents'];
 	}
 
@@ -1026,12 +1026,11 @@ function _indent($source, $indenter = '  ')
 					$i += 3;
 					continue;
 				}
-				$isInline = false;
+				$isInline = isset($inline[$arr[$i-2]]) || isset($inline[$arr[$i-3]]);
 			}
-			if($closingTag) $source = substr($source, 0, -$nbIndent);
 			$tab = substr($tab, $nbIndent);
-			$source .= $isInline ? $current : $current."\n".$tab;
-			$closingTag = $isInline ? false : true;
+			$source .= $isInline || !$closingTag ? $current : "\n".$tab.$current;
+			$closingTag = true;
 			$isInline = false;
 			$i += 3;
 		}
