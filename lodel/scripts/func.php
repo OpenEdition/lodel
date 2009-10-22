@@ -1122,12 +1122,13 @@ function mystripslashes (&$var)
  */
 function _indent($source, $indenter = '  ')
 {
-	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
+/*	if(preg_match('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', $source)) {
 			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			require_once 'xmlfunc.php';
 			$source = indentXML($source, false, $indenter);
 			return $source;
-	} elseif(!preg_match("/<[^><]+>/", $source)) {
+	} else*/
+	if(!preg_match("/<[^><]+>/", $source)) {
 		$source = _indent_xhtml($source,$indenter);
 		return $source;
 	}
