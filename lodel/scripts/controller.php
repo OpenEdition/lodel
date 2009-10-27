@@ -176,6 +176,13 @@ class Controller
 	
 		if ($isInternal || !empty($context['do'])) 
 		{
+			if(!isset($lo)) $lo = C::get('lo');
+	                if ($lo != 'texts' && !in_array($lo, $logics)) {
+				trigger_error("ERROR: unknown logic", E_USER_ERROR);
+			}
+			if('plugins' === $lo && '_' === $context['do']{0})
+				$context['do'] = substr($context['do'], 1);
+
 			$do = $context['do'].'Action';
 			if ($do == 'backAction') 
 			{
@@ -183,14 +190,6 @@ class Controller
 				return;
 			}
 		
-			if(!isset($lo)) $lo = C::get('lo');
-			if ($lo != 'texts' && !in_array($lo, $logics)) {
-				trigger_error("ERROR: unknown logic", E_USER_ERROR);
-			}
-
-			if('plugins' === $lo && '_' === $context['do']{0})
-				$context['do'] = substr($context['do'], 1);
-
 			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
