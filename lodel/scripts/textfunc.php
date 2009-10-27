@@ -1638,7 +1638,7 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
  */
 function lexplode($text, $delimiter) 
 {
-	return explode($delimiter, (array)$text);
+	return explode($delimiter, $text);
 }
 
 /**
