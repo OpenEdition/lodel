@@ -97,6 +97,14 @@ abstract class Plugins
 				trigger_error('ERROR: can not fetch config values for plugin '.$classname, E_USER_ERROR);
 			$this->_config = unserialize($config);
 		}
+		
+		if(!empty($this->_config))
+		{
+			foreach($this->_config as $var=>$values)
+			{
+				if(!isset($values['value']) && isset($values['defaultValue'])) $this->_config[$var]['value'] = $values['defaultValue'];
+			}
+		}
 	}
 
 	static public function get($plugin)

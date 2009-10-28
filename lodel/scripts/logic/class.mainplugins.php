@@ -171,7 +171,7 @@ class MainPluginsLogic extends Logic
 		{ // get enabled plugins from lodeladmin
 			if(isset($context['name']))
 			{
-				$query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0 AND name="'.addslashes($context['name']).'"');
+				$query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0 AND name='.$db->quote($context['name']));
 			}
 			else $query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0');
 
@@ -181,7 +181,7 @@ class MainPluginsLogic extends Logic
 			{
 				$plugin = $plugObj->fields;
 				// plugin already enabled ?
-				$plugin['status'] = $db->GetOne($query.' WHERE name="'.addslashes($plugin['name']).'"');
+				$plugin['status'] = $db->GetOne($query.' WHERE name='.$db->quote($plugin['name']));
 				$plugin['config'] = unserialize($plugin['config']);
 				$context['plugins'][$plugin['name']] = $plugin;
 				unset($context['plugins'][$plugin['name']]['name']);
@@ -212,7 +212,7 @@ class MainPluginsLogic extends Logic
 					$reader = new XMLReader();
 					if(!@$reader->open($file.'/config.xml', 'UTF-8'))
 					{
-						$errors[] = 'Invalid XML for plugin '.$pName;
+						$errors[] = 'Invalid config file for plugin '.$pName;
 						continue;
 					}
 					$reader->read();
@@ -367,29 +367,27 @@ class MainPluginsLogic extends Logic
 	
 					if(empty($errors))
 					{
-						$status = 0;
-						$p = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
-						$dao = $this->_getMainTableDao();
-						$vo = $dao->createObject();
-						if($p)
+						isset($dao) || $dao = $this->_getMainTableDao();
+						$vo = $dao->find('name='.$db->quote($pName));
+						if(!$vo)
 						{
-							$vo->id = $p['id'];
-							$status = $p['status'];	
+							$vo = $dao->createObject();
+							$vo->name = $pName;
+							$vo->status = 0;
+							$vo->config = @serialize($plugin['config']);
+							$vo->hooktype = $plugin['hooktype'];
+							$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
+							$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
+							foreach($this->_triggers as $trigger)
+							{
+								$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+							}
+							$vo->id = $dao->save($vo, true);
 						}
-						$vo->name = $pName;
-						$vo->status = isset($status) ? $status : 0;
-						$vo->config = @serialize($plugin['config']);
-						$vo->hooktype = $plugin['hooktype'];
-						$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
-						$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
-						foreach($this->_triggers as $trigger)
-						{
-							$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
-						}
-						
+
 						$context['plugins'][$pName] = $plugin;
 						$context['plugins'][$pName]['status'] = $vo->status;
-						$context['plugins'][$pName]['id'] = $dao->save($vo, true);
+						$context['plugins'][$pName]['id'] = $vo->id;
 					}
 					else $error = array_unique(array_merge((array)$error, $errors));
 					
@@ -428,6 +426,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function viewAction(&$context, &$error)
 	{
+		global $db;
 		if(empty($context['name']))
 		{
 			return '_location:index.php?lo='.$this->maintable.'&do=list';
@@ -437,7 +436,7 @@ class MainPluginsLogic extends Logic
 		if($error)
 			return '_error';
 
-		$vo = $this->_getMainTableDAO()->find('name="'.addslashes($context['name']).'"');
+		$vo = $this->_getMainTableDAO()->find('name='.$db->quote($context['name']));
 		if($vo) 
 		{// plugin found, means that the plugin has already been enabled or is actually in use
 			$context['plugin']['config'] = unserialize($vo->config);
@@ -508,7 +507,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$this->_populateObject($vo, $context);
-
+		
 		$context['id'] = $dao->save($vo, $new);
 
 		clearcache();
@@ -532,7 +531,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -565,7 +564,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -600,7 +599,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -647,7 +646,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
