@@ -471,6 +471,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function editAction(&$context,&$error, $clean=false)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
@@ -523,6 +524,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function activateAction(&$context, &$error)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
@@ -556,6 +558,7 @@ class MainPluginsLogic extends Logic
 	 */
 	public function desactivateAction(&$context, &$error)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
