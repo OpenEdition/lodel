@@ -277,44 +277,7 @@ class Controller
 		
 		$context['identifier'] = C::get('identifier');
 		
-		if(C::get('site_ext', 'cfg') && $context['id'])
-		{ // external object
-			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
-			global $db;
-			$db->SelectDB(DATABASE.'_'.C::get('site_ext', 'cfg')); // select the remote DB
-			$class = $db->CacheGetOne(lq("SELECT class FROM #_TP_objects WHERE id='{$context['id']}'"));
-			if ($db->errorno() && C::get('rights', 'lodeluser') > LEVEL_VISITOR) {
-				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			}
-			if (!$class) { 
-				header("HTTP/1.0 404 Not Found");
-				header("Status: 404 Not Found");
-				header("Connection: Close");
-				if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-					include C::get('home', 'cfg')."../../missing.html";
-				} else {
-					header('Location: not-found.html');
-				}
-				exit;
-			}
-
-			switch($class)
-			{
-				case 'entrytypes':
-				$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) 
-					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				$context['type'] = $result->fields;
-				$result->Close();
-				usecurrentdb();
-				View::getView()->renderCached($result->fields['tplindex'].'_ext');
-				exit;
-				case 'entries':
-				$this->_printIndex($context['id'], 'entries', $context);
-				exit;
-				default: break;
-			}
-		}
-		elseif ($context['id'] || $context['identifier']) 
+		if ($context['id'] || $context['identifier']) 
 		{ // ID ou IDENTIFIER
 			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 			global $db;
@@ -710,9 +673,6 @@ class Controller
 			trigger_error('ERROR: internal error in printIndex', E_USER_ERROR);
 		}
 
-		if(C::get('site_ext', 'cfg')) // select the remote DB if not already done
-			$db->SelectDB(DATABASE.'_'.C::get('site_ext', 'cfg'));
-
 		// get the index
 		$critere = C::get('visitor', 'lodeluser') ? 'AND status>-64' : 'AND status>0';
 		$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
@@ -747,7 +707,7 @@ class Controller
 			}
 			exit;
 		}
-		$base            = C::get('site_ext', 'cfg') ? $row['tpl'].'_ext' : $row['tpl'];
+		$base            = $row['tpl'];
 		$context['type'] = $row;
 	
 		// get the associated table
@@ -762,9 +722,6 @@ class Controller
 		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
 		merge_and_filter_fields($context, $context['type']['class'], $row);
-
-		if(C::get('site_ext', 'cfg'))
-			usecurrentdb();
 
 		View::getView()->renderCached($base);
 		exit;
