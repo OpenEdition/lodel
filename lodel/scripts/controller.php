@@ -193,6 +193,7 @@ class Controller
 			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
+
 			if($error) $context['error'] = array_merge((array)$context['error'], (array)$error);
 
 			if (!$ret) 
@@ -214,9 +215,13 @@ class Controller
 				
 				$ret = '_next';
 			}
-
+			
 			//Appel de la vue nécessaire
 			switch($ret) {
+				case '_ajax': // ajax request, we just have to die here, the logic manages the rest
+					exit;
+				break;
+
 				case '_next' : 
 					// controller called by a script
 					C::reset();
@@ -233,6 +238,7 @@ class Controller
 					// user to use \' in there text
 					#require_once 'func.php';
 					mystripslashes($context);
+					$error = array();
 					if(false !== ($p = strpos($do, '_')))
 					{ // plugin call
 						Logic::getLogic('mainplugins')->factory($context, $error, substr($do, 0, $p).'_viewAction');
@@ -242,6 +248,7 @@ class Controller
 						$logic = Logic::getLogic($lo);
 						if(method_exists($logic, 'viewAction'))
 							$logic->viewAction($context, $error); // in case anything is needed to be put in the context
+						
 					}
 					$context['error'] = array_merge((array)$context['error'], (array)$error);
 				case '_ok' :
@@ -269,9 +276,46 @@ class Controller
 		} 
 		
 		$context['identifier'] = C::get('identifier');
-		// ID ou IDENTIFIER
-		if ($context['id'] || $context['identifier']) 
-		{
+		
+		if(C::get('site_ext', 'cfg') && $context['id'])
+		{ // external object
+			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
+			global $db;
+			$db->SelectDB(DATABASE.'_'.C::get('site_ext', 'cfg')); // select the remote DB
+			$class = $db->CacheGetOne(lq("SELECT class FROM #_TP_objects WHERE id='{$context['id']}'"));
+			if ($db->errorno() && C::get('rights', 'lodeluser') > LEVEL_VISITOR) {
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			}
+			if (!$class) { 
+				header("HTTP/1.0 404 Not Found");
+				header("Status: 404 Not Found");
+				header("Connection: Close");
+				if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
+					include C::get('home', 'cfg')."../../missing.html";
+				} else {
+					header('Location: not-found.html');
+				}
+				exit;
+			}
+
+			switch($class)
+			{
+				case 'entrytypes':
+				$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$context['type'] = $result->fields;
+				$result->Close();
+				usecurrentdb();
+				View::getView()->renderCached($result->fields['tplindex'].'_ext');
+				exit;
+				case 'entries':
+				$this->_printIndex($context['id'], 'entries', $context);
+				exit;
+				default: break;
+			}
+		}
+		elseif ($context['id'] || $context['identifier']) 
+		{ // ID ou IDENTIFIER
 			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 			global $db;
 			do { // exception block
@@ -610,7 +654,7 @@ class Controller
 		} while (!$base && !$identifier && $id); 
 	
 		if (isset($relocation)) { 
-			header('location: '. makeurlwithid('index', $row['id']));
+			header('location: '. makeurlwithid('index', $id));
 			exit;
 		}
 		$context = array_merge($context, $row);
@@ -665,7 +709,10 @@ class Controller
 		default:
 			trigger_error('ERROR: internal error in printIndex', E_USER_ERROR);
 		}
-	
+
+		if(C::get('site_ext', 'cfg')) // select the remote DB if not already done
+			$db->SelectDB(DATABASE.'_'.C::get('site_ext', 'cfg'));
+
 		// get the index
 		$critere = C::get('visitor', 'lodeluser') ? 'AND status>-64' : 'AND status>0';
 		$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
@@ -700,7 +747,7 @@ class Controller
 			}
 			exit;
 		}
-		$base            = $row['tpl'];
+		$base            = C::get('site_ext', 'cfg') ? $row['tpl'].'_ext' : $row['tpl'];
 		$context['type'] = $row;
 	
 		// get the associated table
@@ -715,6 +762,10 @@ class Controller
 		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
 		merge_and_filter_fields($context, $context['type']['class'], $row);
+
+		if(C::get('site_ext', 'cfg'))
+			usecurrentdb();
+
 		View::getView()->renderCached($base);
 		exit;
 	}
