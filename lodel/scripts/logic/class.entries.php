@@ -83,6 +83,58 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function viewAction (&$context, &$error) 
 	{
+		if(!function_exists('loop_entities_select'))
+		{
+			function loop_entities_select($context, $funcname)
+			{
+				global $db;
+				$varname = @$context['varname'];
+				if (!$varname) {
+					if (function_exists("code_alter_$funcname")) {
+						call_user_func("code_alter_$funcname",$context);
+					}
+					return;
+				}
+				$values = null;
+				if(isset($context['entities'][$varname]))
+				{
+					$values = $context['entities'][$varname];
+				}
+				elseif(is_numeric($nb = substr($varname, -1)))
+				{
+					$varname = substr($varname, 0, -1);
+					if(isset($context['entities'][$varname][$nb])) $values = $context['entities'][$varname][$nb];
+				}
+				$ids = array();
+				if($values)
+				{
+					if(!is_array($values))
+					{
+						$ids = preg_split("/,/", $values, -1, PREG_SPLIT_NO_EMPTY);
+					}
+					else $ids = $values;
+	
+					if($ids)
+					{
+						$result = $db->execute(lq("
+						SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition 
+							FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) 
+							WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						while (!$result->EOF) {
+							$localcontext = array_merge($context, $result->fields);
+							call_user_func("code_do_$funcname", $localcontext);
+							$result->MoveNext();
+						}
+					}
+				}
+				if (function_exists("code_after_$funcname")) {
+					$localcontext = $context;
+					$localcontext['all'] = join(',', $ids);
+					call_user_func("code_after_$funcname",$localcontext);
+				}
+			}
+		}
 		if (empty($context['id'])) $context['status']=32; //why ? dont't know !
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
@@ -197,6 +249,9 @@ class EntriesLogic extends GenericLogic
 		if (!$g_index_key) {
 			trigger_error("ERROR: The generic field 'index key' is required. Please edit your editorial model.", E_USER_ERROR);
 		}
+		
+		$vo = null;
+
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
 		if (isset ($context['g_name'])) {
