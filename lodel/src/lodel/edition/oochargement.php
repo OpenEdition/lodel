@@ -176,7 +176,7 @@ function addList($text)
                     $ext = '';
     
                 $options = array('block' => true,	'inline' => true);
-                $outformat = isset($therequest['sortiexhtml']) ? 'W2L-XHTML' : 'W2L-XHTMLLodel';
+                $outformat = isset($context['sortiexhtml']) ? 'W2L-XHTML' : 'W2L-XHTMLLodel';
                 $xhtml = $client->convertToXHTML($source, $ext, $outformat, $tmpdir, '',
                                                         $options, array('allowextensions' => 'xhtml|jpg|png|gif'),
                                                         'imagesnaming', // callback
@@ -211,7 +211,7 @@ function addList($text)
                         }
                     }
                 }
-            if (isset($therequest['sortieoo']) || isset($therequest['sortiexhtml'])) {
+            if (isset($context['sortieoo']) || isset($context['sortiexhtml'])) {
                 die(htmlentities($xhtml));
             }
     
@@ -222,7 +222,7 @@ function addList($text)
                 break;
             }
             
-            if (isset($therequest['sortiexmloo']) || isset($therequest['sortie'])) {
+            if (isset($context['sortiexmloo']) || isset($context['sortie'])) {
                 die($xhtml);
             }
     
