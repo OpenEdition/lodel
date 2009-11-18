@@ -171,23 +171,23 @@ class OptiongroupsLogic extends Logic {
 	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
-		$context['id'] = (int)@$context['id'];
-		$context['idparent'] = (int)@$context['idparent'];
+		$id = (int)@$context['id'];
+		$idparent = (int)@$context['idparent'];
 		if ($id) //it is an edition
 		{
 			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo)
 				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
-			if($context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
+			if($idparent != $this->oldvo->idparent) //can't change the parent of an optiongroup !
 				trigger_error("ERROR : Changing the parent of a group is forbidden", E_USER_ERROR);
 			
 		}
 		else //it is an add
 		{
 			//if it is an add - the optiongroup inherit the exportpolicy
-			if($context['idparent'])
+			if($idparent)
 			{
-					$voparent = $dao->getById($context['idparent'],"id,exportpolicy");
+					$voparent = $dao->getById($idparent,"id,exportpolicy");
 					$context['exportpolicy'] = $voparent->exportpolicy;
 			}
 		}
