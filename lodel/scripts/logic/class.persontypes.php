@@ -111,7 +111,7 @@ class PersonTypesLogic extends Logic
 			makeSelectGuiUserComplexity(isset($context['gui_user_complexity']) ? $context['gui_user_complexity'] : '');
 			break;
 		case 'g_type' :
-			function_exists('reservedByLodel') || include 'fielfunc.php';
+			function_exists('reservedByLodel') || include 'fieldfunc.php';
 			$g_typefields = $GLOBALS['g_persontypes_fields'];
 			$types = $this->_getMainTableDAO()->findMany('status > 0', '', 'g_type, title');
 			$arr = array();
