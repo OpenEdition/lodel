@@ -1145,6 +1145,7 @@ function getgenericfields(&$context)
 		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
+	$values = array();
 	$context['id'] = (int)@$context['id'];
 	//Retrouve les valeurs de $fields
 	$sql = "SELECT ".substr($fields, 0, -1). ' 
@@ -1159,7 +1160,7 @@ function getgenericfields(&$context)
 	//Contruit le tableau des champs génériques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
-		$context['generic'][$g_name] = $values[$name];
+		$context['generic'][$g_name] = isset($values[$name]) ? $values[$name] : '';
 	}
 	unset($fields);
 	unset($values);
