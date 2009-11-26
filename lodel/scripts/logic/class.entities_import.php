@@ -349,8 +349,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
 				
 				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)
-				$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname,"\xC2\xA0\x00\x1F\x20");
-				$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
+				if(isset($g_name['firstname']) && !empty($firstname))
+					$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname,"\xC2\xA0\x00\x1F\x20");
+				if(isset($g_name['familyname']) && !empty($name))
+					$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
 			} // for each person
 		}
   	}
