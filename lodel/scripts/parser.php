@@ -1876,16 +1876,16 @@ PHP;
 		$i = 0;
         	while(isset($arr[$i])) {
 			$attr = trim($arr[$i]);
-			if (!$attr)
+			if (!trim($arr[$i]))
             		{
                 		$i += 2;
 				continue;
             		}
-			$attr = trim(substr($attr, 0, -1));
+			$attr = trim(substr($arr[$i], 0, -1));
 			if ($options == "flat")	{
-				$ret[] = array ("name" => $attr, "value" => trim($arr[$i +1]));
+				$ret[] = array ("name" => $attr, "value" => $arr[$i +1]);
 			}	else {
-				$ret[$attr] = trim($arr[$i +1]);
+				$ret[$attr] = $arr[$i +1];
 			}
             		$i += 2;
 		}
