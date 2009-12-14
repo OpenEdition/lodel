@@ -1331,6 +1331,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	{
 		foreach($m[1] as $img)
 		{
+			if(false !== strpos($img, 'http://', $img)) continue;
 			$r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
 			if(PEAR::isError($r))
 			{
