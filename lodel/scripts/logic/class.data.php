@@ -1222,6 +1222,10 @@ class DataLogic
 					$context['error'] = $error;
 					return 'importxmlmodel';
 				}
+				// suppression ancien types
+				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
+				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
+				$this->_executeSQL();
 			}
 		}
 
@@ -1235,7 +1239,7 @@ class DataLogic
 		}		
 		return 'importxmlmodel';
 	}
-
+	
 	private function _updateTypeClass($datas, $error)
 	{
 		global $db;
@@ -2202,11 +2206,6 @@ class DataLogic
 						}
 					}
 				}
-				// suppression ancien types
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
-				$error = $this->_executeSQL();
-				if($error) return false;
 				// suppression des doublons
 				$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `{$entitytypeTable}` GROUP BY identitytype, identitytype2 HAVING nb > 1");
 				if ($result) {
