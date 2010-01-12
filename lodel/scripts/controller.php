@@ -385,7 +385,10 @@ class Controller
 				}
 				$where[] = $field.'='.$db->quote($request[$field]);
 			}
-			$vo = getDAO($type)->find(join(' AND ', $where), 'id');
+			if('indextablefields' === $type)
+				$vo = getDAO('tablefields')->find(join(' AND ', $where), 'id');
+			else
+				$vo = getDAO($type)->find(join(' AND ', $where), 'id');
 			unset($where);
 			
 			$request['id'] = $vo ? $vo->id : 0;
