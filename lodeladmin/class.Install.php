@@ -166,13 +166,13 @@ class Install {
 	{
 		@include($this->lodelconfig);
 		require "../lodel".$this->versionsuffix."/scripts/auth.php";
-		if (@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd'])) {
-			@mysql_select_db($cfg['database']);
+		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
+			@mysql_select_db(C::get('database','cfg'));
 			$this->set_mysql_charset();
 		
 			// test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
 		
-			$result=mysql_query("SELECT username FROM `".$cfg['tableprefix']."users` LIMIT 0,1");
+			$result=mysql_query("SELECT username FROM `".C::get('tableprefix','cfg')."users` LIMIT 0,1");
 			if ($result && mysql_num_rows($result)>0)
 				authenticate(LEVEL_ADMINLODEL);
 		} else {
