@@ -504,7 +504,7 @@ function notes($texte, $type)
 	// be cool... just select the paragraph or division.
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
-	$notere = '<a class="(foot|end)note(definition|symbol)[^>]*>';
+	$notere = '<a[^>]*class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
 			case 1: // seulement les astérisques
@@ -1095,6 +1095,7 @@ function HTML2XML($str, $reverse=false){
 	$replace = array(
 		"&quot;" => "&#34;",
 		"&amp;" => "&#38;",
+		"&AMP;" => "&#38;",
 		"&apos;" => "&#39;",
 		"&lt;" => "&#60;",
 		"&gt;" => "&#62;",
@@ -1372,7 +1373,7 @@ function getParentByType($id,$type,$return=false){
 
                         echo $idparent;
                 }else{
-                        $idparent = getParentByType($idparent, $type);
+                        $idparent = getParentByType($idparent, $type, $return);
 			if($return) return $idparent;
 
                         echo $idparent;
