@@ -855,7 +855,7 @@ function paranumber($texte, $styles='texte')
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
 	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
+	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
 
 	// on récupère les paragraphes à numéroter
 	preg_match_all($regexp, $tmpTexte, $m);
