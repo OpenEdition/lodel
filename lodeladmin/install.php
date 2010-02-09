@@ -37,6 +37,7 @@
 $version = "0.9";
 /************************************ !! VERSION !! **************************************/
 
+error_reporting(E_ALL ^ E_NOTICE);
 
 require "class.Install.php";
 $test = false;
@@ -62,8 +63,6 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	}
 	if(!isset($installlang)) $installlang = $cfg['installlang'];
 }
-
-error_reporting(E_ALL ^ E_NOTICE);
 
 if($test) {
 	// Version of lodel to be installed.
