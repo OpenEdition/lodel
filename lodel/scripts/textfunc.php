@@ -477,8 +477,8 @@ function replace($str, $search, $replace){
  * implemente preg_replace
  */
  
-function reg_replace($str, $search, $replace){
-   return preg_replace($search, $replace, $str);
+function reg_replace($str, $search, $replace, $limit = -1, &$cpt){
+   return preg_replace($search, $replace, $str, $limit, $cpt);
 }
 
 
