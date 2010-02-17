@@ -424,7 +424,7 @@
 
 
 <DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id">
+	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id" ORDER="identifier">
 		<BEFORE>
 			<hr /><ul class="listEntities">
 		</BEFORE>
