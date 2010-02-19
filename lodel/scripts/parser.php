@@ -940,10 +940,13 @@ PHP;
 			$iclose = $this->ind;
 			do {
 				$iclose += 3;
-				if ($this->arr[$iclose] == '/LOOP')
-					--$looplevel;
-				if ($this->arr[$iclose] == 'LOOP')
-					++$looplevel;
+				if(isset($this->arr[$iclose]))
+				{
+					if ($this->arr[$iclose] == '/LOOP')
+						--$looplevel;
+					if ($this->arr[$iclose] == 'LOOP')
+						++$looplevel;
+				}
 			}	while ($iclose < $this->countarr && $looplevel);
 			$md5contents = md5(join(array_slice($this->arr, $this->ind, $iclose - $this->ind)));
 			// ok, we have the content, now we can decide what to do.
@@ -1532,6 +1535,7 @@ PHP;
 					                    "/'([\w'\[\]\$\\\]*?)' like (\/.*\/)/i"), 
 			                    array('preg_match("\\2is", \\1, $context[\'matches\'])',
 				                'preg_match("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
+
 		}
 		else $cond = $attrs['COND'];
         
@@ -1871,21 +1875,14 @@ PHP;
 
 	protected function _decode_attributs($text, $options = '')
 	{ // decode attributs
-		$arr = explode('"', $text);
+		$arr = preg_split('/\s*([A-Z_\-]+)\s*=\s*(".*?(?<!\\\\)")\s*/', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         	$ret = array();
 		$i = 0;
         	while(isset($arr[$i])) {
-			$attr = trim($arr[$i]);
-			if (!trim($arr[$i]))
-            		{
-                		$i += 2;
-				continue;
-            		}
-			$attr = trim(substr($arr[$i], 0, -1));
 			if ($options == "flat")	{
-				$ret[] = array ("name" => $attr, "value" => $arr[$i +1]);
+				$ret[] = array ("name" => $arr[$i], "value" => isset($arr[$i + 1]) ? trim($arr[$i+1], '"') : '');
 			}	else {
-				$ret[$attr] = $arr[$i +1];
+				$ret[$arr[$i]] = isset($arr[$i + 1]) ? trim($arr[$i+1], '"') : '';
 			}
             		$i += 2;
 		}
@@ -1941,7 +1938,7 @@ PHP;
 	{
 		if($blockId == 0 && !isset($loop)) 
 		{
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_\-]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/', $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($contents);
 		}
 		else
@@ -2020,7 +2017,7 @@ PHP;
 			$this->_checkforrefreshattribut($attrs);
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
 			unset($attrs);
-			$arr = preg_split("/<(\/?(?:".$this->commandsline."))\b((?:\s*[A-Z_\-]+\s*=\s*\"[^\"]*\"\s*)*)\s*\/?>/", $block, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/', $block, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($block);
 		}
 
