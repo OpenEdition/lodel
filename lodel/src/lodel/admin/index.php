@@ -50,23 +50,24 @@
  * @package lodel/source/lodel/admin
  */
 define('backoffice', true);
+define('backoffice-admin', true);
 require 'siteconfig.php';
 
 try
 {
-    include 'auth.php';
-    authenticate(LEVEL_VISITOR);
+	include 'auth.php';
+	authenticate(LEVEL_VISITOR);
 
-    if (isset($_GET['page'])) { // call a special page (and template)
-        $page = $_GET['page'];
-        if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-            trigger_error('invalid page', E_USER_ERROR);
-        }
-        View::getView()->renderCached($page);
-        exit;
-    }
+	if (isset($_GET['page'])) { // call a special page (and template)
+		$page = $_GET['page'];
+		if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
+			trigger_error('invalid page', E_USER_ERROR);
+		}
+		View::getView()->renderCached($page);
+		exit;
+	}
 
-    $authorized_logics = array('entrytypes', 'persontypes',
+    	$authorized_logics = array('entrytypes', 'persontypes',
                     'entries', 'persons',
                     'tablefieldgroups', 'tablefields', 'indextablefields',
                     'translations', 'texts',
@@ -75,7 +76,12 @@ try
                     'options', 'optiongroups', 'useroptiongroups', 'servooconf',
                     'internalstyles', 'characterstyles', 'entities_index',
                     'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
-    Controller::getController()->execute($authorized_logics);
+
+	$do = C::get('do');
+	if(!empty($do) && '_' === $do{0})
+		C::set('lo', 'plugins');
+
+    	Controller::getController()->execute($authorized_logics);
 }
 catch(LodelException $e)
 {
