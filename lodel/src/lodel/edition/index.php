@@ -102,7 +102,8 @@ try
 	} else {
 		// automatic logic
 		if(!C::get('lo')) {
-			switch (C::get('do')) { // Detection automatique de la logique en fonction de l'action
+			$do = C::get('do');
+			switch ($do) { // Detection automatique de la logique en fonction de l'action
 				case 'move':
 				case 'preparemove':
 				case 'changestatus':
@@ -122,7 +123,7 @@ try
 					$lo = 'entities_import';
 					break;
 				default :
-					$lo = 'entities';
+					$lo = '_' === $do{0} ? 'plugins' : 'entities';
 					break;
 			}
 			C::set('lo', $lo);
