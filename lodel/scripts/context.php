@@ -423,7 +423,7 @@ class C
 					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
 					continue;
 				}
-				include $file;
+				include_once $file;
 				self::$_triggers['included'][$trigger] = true;
 			}
             

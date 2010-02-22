@@ -122,7 +122,7 @@ class MainPluginsLogic extends Logic
 		{
 			if(!class_exists($name[0], false))
 			{
-				include $path.$name[0].'/'.$name[0].'.php';
+				include_once $path.$name[0].'/'.$name[0].'.php';
 
 				if(get_parent_class($name[0]) !== 'Plugins')
 				{
