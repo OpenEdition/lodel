@@ -165,7 +165,7 @@ class Parser
 		$contents = stripcommentandcr($contents);
 
 		$this->_split_file($contents, '', $this->blockid, $loop); // split the contents into commands
-        
+
         	unset($contents);
 
 		$this->_originalCachedVars = $this->_cachedVars;
@@ -1875,7 +1875,7 @@ PHP;
 
 	protected function _decode_attributs($text, $options = '')
 	{ // decode attributs
-		$arr = preg_split('/\s*([A-Z_\-]+)\s*=\s*(".*?(?<!\\\\)")\s*/', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		$arr = preg_split('/\s*([A-Z_\-]+)\s*=\s*(".*?(?<!\\\\)")\s*/s', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
         	$ret = array();
 		$i = 0;
         	while(isset($arr[$i])) {
@@ -1938,7 +1938,7 @@ PHP;
 	{
 		if($blockId == 0 && !isset($loop)) 
 		{
-			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/', $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/s', $contents, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($contents);
 		}
 		else
@@ -2017,7 +2017,7 @@ PHP;
 			$this->_checkforrefreshattribut($attrs);
 			if(isset($attrs['CHARSET'])) $this->charset = $attrs['CHARSET'];
 			unset($attrs);
-			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/', $block, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/s', $block, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($block);
 		}
 
