@@ -824,7 +824,7 @@ class DataLogic
 				}
 				if (!chdir(SITEROOT))
 					trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
-				$prefixdir = $tmpdir[0] == '/' ? '' : 'lodel/admin/';
+				$prefixdir = $archivetmp[0] == '/' ? '' : 'lodel/admin/';
 				system($zipcmd." -q $prefixdir$archivetmp $files");
 				if (!chdir("lodel/admin"))
 					trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
