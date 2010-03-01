@@ -336,14 +336,15 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				// ok, we have the prefix
 				// try to guess
 				// ok, on cherche maintenant a separer le name et le firstname
+				$person = trim($person, "\xC2\xA0\x00\x1F\x20");
 				$name=$person;
 				while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
 				if ($name) {
 					$firstname=str_replace ($name, "", $person);
 				} else { // sinon coupe apres le premiere espace
-					if (preg_match ("/^(.*?)\s+([^\s]+)$/i", trim ($person), $result)) {
+					if (preg_match ("/^(.*?)\s+([^\s]+)$/i",$person, $result)) {
 						$firstname=$result[1]; $name=$result[2];
-					} else $name=$person;
+					} else {$name = $person;}
 				}
 				//$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
 				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
