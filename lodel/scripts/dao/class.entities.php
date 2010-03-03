@@ -132,7 +132,7 @@ class entitiesDAO extends DAO
 	{
 		if (!isset($this->cache_rightscriteria[$access])) {
 			parent::rightscriteria($access);
-			if (!C::get('admin', 'lodeluser')) {
+			if (!C::get('admin', 'lodeluser') && C::get('groups', 'lodeluser')) {
 				$this->cache_rightscriteria[$access].=" AND usergroup IN (".C::get('groups', 'lodeluser').")";
 			}
 		}
