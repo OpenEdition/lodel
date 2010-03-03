@@ -288,7 +288,7 @@ class EntriesLogic extends GenericLogic
 				$dao->instantiateObject ($vo);
 				$vo->id=$id;
 			} else {
-				if (!$votype->newbyimportallowed && $context['lo']!="entries") { return "_error"; }
+				if (!$votype->newbyimportallowed && (!isset($context['lo']) || $context['lo']!="entries")) { return "_error"; }
 				$new=true;
 				$vo=$dao->createObject();
 				$vo->status=$status ? $status : -1;
