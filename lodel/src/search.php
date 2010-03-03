@@ -55,6 +55,7 @@ require 'siteconfig.php';
 try
 {
     include 'auth.php';
+    include_once 'connect.php';
     authenticate();
     include 'search.inc.php';
 }
