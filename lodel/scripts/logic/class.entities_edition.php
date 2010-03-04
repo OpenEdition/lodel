@@ -342,7 +342,7 @@ class Entities_EditionLogic extends GenericLogic
 				trigger_error("ERROR: entity is locked. No operation is allowed", E_USER_ERROR);
 			}
 			// possibly document reloading
-			if(isset($context['reload']) && $context['reload']) {
+/*			if(isset($context['reload']) && $context['reload']) {
 				// let's deal with document reloading problem : PDF file and entries disapeared :
 				$daotablefields = DAO::getDAO("tablefields");
 				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");
@@ -358,7 +358,7 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 				// entries
-				$daorelations = DAO::getDAO("relations");
+			/*	$daorelations = DAO::getDAO("relations");
 				$Entryfields = $daorelations->findMany("id1='{$id}' AND nature = 'E'", "", "id2");
 				$daoentries = DAO::getDAO("entries");
 				$daoentrytypes = DAO::getDAO("entrytypes");
@@ -384,7 +384,22 @@ class Entities_EditionLogic extends GenericLogic
 						$context['entries'][$entry->idtype][$pos]['data'][$indexfield->name] = null;
 				}
 				unset($entry, $entryclass, $daoentries, $daoentrytypes, $Entryfields, $daorelations, $daotablefields, $Filefields); // save some memory
-			}
+*/
+//			}
+
+			$Filefields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",   "name");
+                        foreach($Filefields as $ffield) {
+                                $gdaoaf = DAO::getGenericDAO ($class, "identity");
+                                $tmpfile = $gdaoaf->getById($id, $ffield->name);
+                                $fieldname = $ffield->name;
+                                if($context['data'][$ffield->name] == 'deleted') {
+                                        $context['data'][$ffield->name] = '';
+                                } elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
+                                        $name = $ffield->name;
+                                        $context['data'][$ffield->name] = $tmpfile->$name;
+                                }
+                        }
+
 			// change the usergroup of the entity ?
 			if (C::get('admin', 'lodeluser') && C::get('usergroup', 'lodeluser')) {
 				$vo->usergroup = (int)C::get('usergroup', 'lodeluser');
