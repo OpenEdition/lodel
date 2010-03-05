@@ -1461,9 +1461,9 @@ PHP;
 		$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 
 		if(!($attrs['ID'] = (int)$attrs['ID']))
-			$this->_errmsg("Incorrect ID for block number ".count($this->blocks)+1);
+			$this->_errmsg("Incorrect ID for block number ".(count($this->blocks)+1));
 		if(in_array($attrs['ID'], $this->blocks))
-			$this->_errmsg("Duplicate ID for block number ".count($this->blocks)+1);
+			$this->_errmsg("Duplicate ID for block number ".(count($this->blocks)+1));
         	$this->blocks[] = $attrs['ID'];
 		$this->_clearposition();
         
