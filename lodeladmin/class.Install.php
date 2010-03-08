@@ -206,7 +206,7 @@ class Install {
 			}
 			@chmod($this->lodelconfig,$chmod);
 			@include($this->lodelconfig);
-			$this->maj_lodelconfig(array("home"=>'{$cfg[\'pathroot\']}/lodel'.$this->versionsuffix.'/scripts/'));
+			$this->maj_lodelconfig(array("home"=>$cfg['pathroot']."/lodel".$this->versionsuffix.'/scripts/'));
 		} else {
 			trigger_error("ERROR: ".$this->lodelconfigplatform." does not exist. Internal error, please report this bug.", E_USER_ERROR);
 		}
@@ -393,9 +393,11 @@ class Install {
 
 		$adminusername=addslashes($adminusername);
 		$pass=md5($adminpasswd.$adminusername);
+		$adminemail = addslashes($adminemail);
+		
 		$adminpasswd2 = null;
 		if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) trigger_error("ERROR: invalid lang", E_USER_ERROR);
-		
+		$lang = addslashes($lang);
 		if (!@mysql_query("REPLACE INTO ".$cfg['tableprefix']."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','$adminemail',128,'$lang')")) {
 			unset($pass);
 			return "error_create";
