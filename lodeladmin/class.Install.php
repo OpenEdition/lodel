@@ -121,7 +121,6 @@ class Install {
 	 * Instancie un objet de la classe
 	 *
 	 * @param string $lodelconfig chemin vers fichier lodelconfig temporaire
-	 * @param array $context le contexte passé par référence
 	 */
 	public function __construct($lodelconfig, $have_chmod, $plateformdir)
 	{
@@ -164,15 +163,14 @@ class Install {
 	 */
 	public function testInstallDB()
 	{
-		@include($this->lodelconfig);
 		require "../lodel".$this->versionsuffix."/scripts/auth.php";
-		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
-			@mysql_select_db(C::get('database','cfg'));
+		if (@mysql_connect(C::get('dbhost', 'cfg'), C::get('dbusername', 'cfg'),C::get('dbpasswd', 'cfg'))) {
+			@mysql_select_db(C::get('database'));
 			$this->set_mysql_charset();
 		
 			// test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
 		
-			$result=mysql_query("SELECT username FROM `".C::get('tableprefix','cfg')."users` LIMIT 0,1");
+			$result=@mysql_query("SELECT username FROM `".C::get('tableprefix', 'cfg')."users` LIMIT 0,1");
 			if ($result && mysql_num_rows($result)>0)
 				authenticate(LEVEL_ADMINLODEL);
 		} else {
@@ -200,13 +198,13 @@ class Install {
 			if (!@copy($this->lodelconfigplatform,$this->lodelconfig)) { trigger_error("probl&egrave;me de droits... &eacute;trange on a d&eacute;j&agrave; v&eacute;rifi&eacute;", E_USER_ERROR); }
 			if (file_exists(LODELROOT."lodelloader.php")) {
 				// the installer has been use, let's chmod safely
-				$chmod=fileperms(LODELROOT."lodel-".$this->versioninstall);
+				$chmod=fileperms(__FILE__);
 			} else {
 				$chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
 			}
 			@chmod($this->lodelconfig,$chmod);
 			@include($this->lodelconfig);
-			$this->maj_lodelconfig(array("home"=>$cfg['pathroot']."/lodel".$this->versionsuffix.'/scripts/'));
+			$this->maj_lodelconfig(array("home"=>$cfg['pathroot'].'/lodel'.$this->versionsuffix.'/scripts/'));
 		} else {
 			trigger_error("ERROR: ".$this->lodelconfigplatform." does not exist. Internal error, please report this bug.", E_USER_ERROR);
 		}
@@ -287,17 +285,18 @@ class Install {
 		@include($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
 		if($erasetables)
 		{
-			mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
+			@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
 			
 			/*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
 			if ($version_mysql_num[0].$version_mysql_num[1] > 40)
 					{ mysql_query('SET NAMES UTF8'); }*/
-			mysql_select_db($cfg['database']); // selectionne la database
+
+			@mysql_select_db($cfg['database']); // selectionne la database
 
 			$this->set_mysql_charset();
 			// erase the table of each site
 			
-			$result=mysql_query("SELECT name FROM ".$cfg['tableprefix']."sites") or trigger_error(mysql_error(), E_USER_ERROR);
+			$result=@mysql_query("SELECT name FROM ".$cfg['tableprefix']."sites") or trigger_error(mysql_error(), E_USER_ERROR);
 
 			if ($singledatabase) {
 				// currently singledatabase implies single site ! That's shame but...
@@ -307,12 +306,12 @@ class Install {
 					trigger_error("Sans tableprefix les tables ne peuvent pas etre efface en toute securite. Veuillez effacer vous-même les tables de Lodel. Merci.", E_USER_ERROR);
 				} else {
 					// get all table names.
-					$result=mysql_list_tables($cfg['database']);
+					$result=@mysql_list_tables($cfg['database']);
 
-					while ($row = mysql_fetch_row($result)) {
+					while ($row = @mysql_fetch_row($result)) {
 						if (preg_match("/^{$cfg['tableprefix']}/",$row[0])) {
 							// let's drop it
-							mysql_query("DROP TABLE $row[0]");
+							@mysql_query("DROP TABLE $row[0]");
 						}
 					}
 				}
@@ -338,15 +337,10 @@ class Install {
 
 			$this->maj_lodelconfig($set);
 			if ($createdatabase) { // il faut creer la database
-				mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
-				$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
-				if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
-					mysql_query('SET NAMES UTF8');
-					$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
-				} else { 
-					$db_charset = '';
-				}
-				if (!mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
+				@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
+				$this->set_mysql_charset();
+				$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+				if (!@mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
 					return false;
 				}
 			} else {
@@ -393,11 +387,9 @@ class Install {
 
 		$adminusername=addslashes($adminusername);
 		$pass=md5($adminpasswd.$adminusername);
-		$adminemail = addslashes($adminemail);
-		
 		$adminpasswd2 = null;
 		if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) trigger_error("ERROR: invalid lang", E_USER_ERROR);
-		$lang = addslashes($lang);
+		
 		if (!@mysql_query("REPLACE INTO ".$cfg['tableprefix']."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','$adminemail',128,'$lang')")) {
 			unset($pass);
 			return "error_create";
@@ -637,7 +629,8 @@ class Install {
 			$this->include_tpl("install-mysql.html");
 			return false;
 		} elseif (!@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd'])) { // tente une connexion
-			return "error_cnx";
+			$GLOBALS['erreur_connect']=1;
+			$this->include_tpl("install-mysql.html");
 		}
 	}
 
@@ -666,8 +659,11 @@ class Install {
 		@include($this->lodelconfig);
 		$sitesexistsrequest="SELECT id,status FROM ".$cfg['tableprefix']."sites LIMIT 1";
 
-		if (!mysql_select_db($cfg['database'])) { // ok, database est defini, on tente la connection
+		if (!@mysql_select_db($cfg['database'])) { // ok, database est defini, on tente la connection
 			return "error_dbselect";
+		} elseif($this->find_mysql_db_charset($cfg['database'], $charset) && 'utf8' !== $charset) {
+			$GLOBALS['erreur_utf8'] = true;
+			$this->include_tpl("install-database.html");
 		} elseif ($erasetables || !@mysql_query($sitesexistsrequest)) {   // regarde si la table sites exists ?
 			// non, alors on cree les tables
 
@@ -696,7 +692,7 @@ class Install {
 			if (!$ret) { // does not support LOCK table
 				$this->maj_lodelconfig("DONTUSELOCKTABLES",true);
 			} else {
-				mysql_query("UNLOCK TABLES") or trigger_error(mysql_error(), E_USER_ERROR);
+				@mysql_query("UNLOCK TABLES") or trigger_error(mysql_error(), E_USER_ERROR);
 			}
 		} elseif ($tache=="database") { // the table site already exists but we just have asked for which database... check what to do.
 			// ask for erasing the table content or not.
@@ -714,8 +710,8 @@ class Install {
 	public function verifyAdmin()
 	{
 		@include($this->lodelconfig);
-		$result=mysql_query("SELECT id FROM ".$cfg['tableprefix']."users LIMIT 1") or trigger_error(mysql_error(), E_USER_ERROR);
-		if (!mysql_num_rows($result)) { // il faut demander la creation d'un admin
+		$result=@mysql_query("SELECT id FROM ".$cfg['tableprefix']."users LIMIT 1") or trigger_error(mysql_error(), E_USER_ERROR);
+		if (!@mysql_num_rows($result)) { // il faut demander la creation d'un admin
 			return false;
 		}
 		return true;
@@ -825,7 +821,7 @@ class Install {
 	private function maj_lodelconfig($var,$val=-1)
 	{
 		// lit le fichier
-		$text=$oldtext=file_get_contents($this->lodelconfig);
+		$text=$oldtext=@file_get_contents($this->lodelconfig);
 		//  if (!$text) trigger_error("ERROR: $lodelconfig can't be read. Internal error, please report this bug", E_USER_ERROR);
 		
 		if (is_array($var)) {
@@ -881,13 +877,13 @@ class Install {
 	private function mysql_query_file($filename,$droptables=false, $db)
 	{
 		@include($this->lodelconfig);
-		$table_charset = $this->find_mysql_db_charset($db);
+		
 		// commenté par P.A. le 09/10/08, UTF8 uniquement à partir de Lodel > 0.8.7
 // 		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
 // 			$filename = str_replace('init-translations.sql', 'init-translations_utf8.sql', $filename);
 // 		}
 		$sqlfile=preg_replace('/#_M?TP_/',$cfg['tableprefix'], file_get_contents($filename));
-		$sqlfile=str_replace('_CHARSET_', $table_charset , $sqlfile);
+		$sqlfile=str_replace('_CHARSET_', ' CHARACTER SET utf8 COLLATE utf8_general_ci' , $sqlfile);
 		if (!$sqlfile) return;
 		
 		$len=strlen($sqlfile);
@@ -899,7 +895,7 @@ class Install {
 				for (; $i<$len; $i++) {
 					if ($sqlfile{$i}=="\n") break;
 					$sqlfile{$i}=" ";
-				}      
+				}
 			} elseif ($c=="'") {
 				$i++;
 				for (; $i<$len; $i++) {
@@ -913,12 +909,12 @@ class Install {
 				if ($cmd) {
 					// should we drop tables before create them ?
 					if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.$cfg['tableprefix'].'(\w+)/',$cmd,$result)) {
-						if (!mysql_query('DROP TABLE IF EXISTS '.$result[1])) {
+						if (!@mysql_query('DROP TABLE IF EXISTS '.$result[1])) {
 							$err.="$cmd <font COLOR=red>".mysql_error().'</font><br>';
 						}
 					}
 					// execute the command
-					if (!mysql_query($cmd)) {
+					if (!@mysql_query($cmd)) {
 						$err.="$cmd <font COLOR=red>".mysql_error().'</font><br>';
 					}
 				}
@@ -1014,7 +1010,7 @@ class Install {
 		<html>
 		<body>
 		Unable to access the file  <strong><?php echo $filename; ?></strong><br />
-		Please check your directory  tpl and the file <?php echo $filename; ?> exist and are accessible by the web-serveur. Please report the bug if everything is alright.<br>
+		Please check your directory tpl and the file <?php echo $filename; ?> exist and are accessible by the web-server. Please report the bug if everything is alright.<br>
 		<br />
 		</body>
 		</html>
@@ -1140,17 +1136,18 @@ class Install {
 	 */	
 	private function set_mysql_charset() 
 	{
-		$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
-		$version_mysql_num = $version_mysql[0] . $version_mysql[1];
-	
-		if ($version_mysql_num > 40) {
-			$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
-			if ($db_charset = mysql_fetch_row($result)) {
-				mysql_query('SET NAMES '. $db_charset[1]);
-			} else {
-				mysql_query('SET NAMES UTF8'); 
-			}
-		}
+		@mysql_query('SET NAMES UTF8');
+// 		$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+// 		$version_mysql_num = $version_mysql[0] . $version_mysql[1];
+// 	
+// 		if ($version_mysql_num > 40) {
+// 			$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
+// 			if ($db_charset = mysql_fetch_row($result)) {
+// 				mysql_query('SET NAMES '. $db_charset[1]);
+// 			} else {
+// 				mysql_query('SET NAMES UTF8'); 
+// 			}
+// 		}
 	}
 	
 	/**
@@ -1160,17 +1157,17 @@ class Install {
 	 *
 	 * @param string $database nom de la base de données
 	 */	
-	private function find_mysql_db_charset($database) 
+	private function find_mysql_db_charset($database, &$charset = null, &$collation = null)
 	{
 		@mysql_select_db($database);
-		$result = mysql_query("SHOW VARIABLES LIKE '%_database'");
-		while ($row = mysql_fetch_array($result)) {
-			if ($row['Variable_name'] == 'character_set_database') { $db_charset =  $row['Value'];}
-			if ($row['Variable_name'] == 'collation_database') { $db_collation =  $row['Value'];}
+		$result = @mysql_query("SHOW VARIABLES LIKE '%_database'");
+		while ($row = @mysql_fetch_array($result)) {
+			if ($row['Variable_name'] == 'character_set_database') { $charset =  $row['Value'];}
+			if ($row['Variable_name'] == 'collation_database') { $collation =  $row['Value'];}
 		}
 		
-		if (is_string($db_charset) && is_string($db_collation)) {
-			$set_db_charset = " CHARACTER SET $db_charset COLLATE $db_collation";
+		if (!empty($charset) && !empty($collation)) {
+			$set_db_charset = " CHARACTER SET $charset COLLATE $collation";
 		} else {
 			$set_db_charset = '';
 		}

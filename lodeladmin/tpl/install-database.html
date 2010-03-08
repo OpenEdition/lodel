@@ -41,6 +41,9 @@ include "tpl/install-openhtml.html";
 <?php if ($installoption==1) { // OPTION 1 ?>
 <p>
 [@INSTALL.CHOOSE_EXISTING_DATABASE_OR_CREATE_NEW]<br/>[@INSTALL.PROVIDER_USUALLY_CREATES_DATABASE_SEE_TECHNICAL_SUPPORT]</p>
+<p>
+<strong class="error">[@INSTALL.WARNING_BETTER_USE_UTF8]</strong>
+</p>
 <?php } else { // OPTION 2 ?>
 <p>
 [@INSTALL.CAN_USE_EXISTING_DATABASE_BUT_BETTER_CREATE_NEW_DEDICATED_LODEL] <?php if (!$createdatabase) { ?> [@INSTALL.EXAMPLE_LODELDB] <?php } ?> :
@@ -92,6 +95,12 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 	<input type="submit" name="erasetables" value="[@INSTALL.ERASE_DATA]" />
 </form>
 <br/>
+<?php } ?>
+
+<?php  if ($erreur_utf8) { ?>
+<p class="error">
+<strong>[@INSTALL.ERROR]</strong>: [@INSTALL.WARNING_BETTER_USE_UTF8]
+</p> 
 <?php } ?>
 
 <form method="post" action="install.php">

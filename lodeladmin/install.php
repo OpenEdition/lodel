@@ -33,25 +33,27 @@
  *     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.*/
 
 
+error_reporting(E_ALL ^ E_NOTICE);
+
+// import Posted variables for the Register Off case.
+// this should be nicely/safely integrated inside the code, but that's
+// a usefull little hack at the moment
+if (!((bool) ini_get("register_globals"))) {
+	extract($_REQUEST,EXTR_SKIP);
+}
+
 /************************************ !! VERSION !! **************************************/
 $version = "0.9";
 /************************************ !! VERSION !! **************************************/
 
-error_reporting(E_ALL ^ E_NOTICE);
-
 require "class.Install.php";
-$test = false;
+
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
 // securise l'entree
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) 
 {
-	// import Posted variables for the Register Off case.
-	// this should be nicely/safely integrated inside the code, but that's
-	// a usefull little hack at the moment
-	if (!((bool) ini_get("register_globals"))) { 
-		extract($_REQUEST,EXTR_SKIP);
-	}
-	$test = $installing = true;
+
+	$installing = true;
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
@@ -62,22 +64,13 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 		}
 	}
 	if(!isset($installlang)) $installlang = $cfg['installlang'];
-}
-
-if($test) {
 	// Version of lodel to be installed.
 	$install->set('versioninstall', $version);
 	$install->set('versionsuffix', "-".$install->get('versioninstall'));   # versioning
 	$install->testInstallDB();
-} else
+}
+else
 {
-	// import Posted variables for the Register Off case.
-	// this should be nicely/safely integrated inside the code, but that's
-	// a usefull little hack at the moment
-	if (!((bool) ini_get("register_globals"))) { 
-		extract($_REQUEST,EXTR_SKIP);
-	}
-	
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	// Version of lodel to be installed.
 	$install->set('versioninstall', $version);
@@ -168,7 +161,7 @@ switch($tache)
 		require("context.php");
 		$cfg['home'] = LODELROOT.$cfg['home'];
 		C::setCfg($cfg);
-		// log this user in 
+		// log this user in
 		require_once("connect.php");
 		require_once("loginfunc.php");
 		require_once("auth.php");
@@ -182,12 +175,12 @@ switch($tache)
 		} 
 		else 
 		{
-			$adminpasswd = null;
+   			$adminpasswd = null;
 			trigger_error('ERROR: invalid username or password. Strange, please contact lodel@lodel.org', E_USER_ERROR);
 		}
 
 		// on vire le MDP de la mémoire
-		$adminpasswd = null;
+  		$adminpasswd = null;
 	}
 	break;
 	case 'htaccess': // mise en place htaccess
@@ -249,11 +242,7 @@ $install->checkFunc();
 //
 // essaie la connection a la base de donnée
 //
-if($install->checkDB() === "error_cnx")
-{
-	$GLOBALS['erreur_connect']=1;
-	$install->include_tpl("install-mysql.html");
-}
+$install->checkDB();
 
 require($install->get('lodelconfig'));
 // on cherche si on a une database
