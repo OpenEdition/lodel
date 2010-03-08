@@ -183,20 +183,22 @@
     //Height (by default will be 400px)
     $context['fck_height'] = (isset($parameters[2]) ? intval($parameters[2]) : 400);
     //Language (by default will be empty)
-    $context['fck_language'] = (isset($parameters[3]) ? trim($parameters[3]) : $context['lodeluser']['lang']);
+    $context['fck_language'] = (isset($parameters[3]) ? trim($parameters[3]) : C::get('lang','lodeluser'));
     $context['fck_autodetectlanguage'] = (isset($parameters[4]) ? trim($parameters[4]) : false);
 	//SkinName (by default will be default :p)
-    $context['fck_skin'] = (isset($parameters[5]) ? trim($parameters[5]) : 'silver');
+    $context['fck_skin'] = (isset($parameters[5]) ? trim($parameters[5]) : 'v2');
   }
   else
   {
     $context['fck_width'] = 600;
     $context['fck_height'] = 400;
-    $context['fck_skin'] = 'default';
+    $context['fck_skin'] = 'v2';
     $context['fck_autodetectlanguage'] = 'false';
-    $context['fck_language'] = @$context['lodeluser']['lang'];
+    $context['fck_language'] = C::get('lang','lodeluser');
     $context['fck_mode'] = 'Advanced';
   }
+
+  if(!$context['fck_language']) $context['fck_language'] = C::get('sitelang');
 ?>
 </DEFMACRO>
 
@@ -294,17 +296,48 @@
 ?>
 		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
 <?php
-				$urlFck = C::get('sharedir', 'cfg') . "/plugins/fckeditor/";
-				require_once($urlFck."fckeditor.php");
-				$oFCKeditor = new FCKeditor($context['fullvarname'], @$context['fck_width'], @$context['fck_height']) ;
-				$oFCKeditor->ToolbarSet = @$context['fck_mode'];
-				$oFCKeditor->BasePath = $urlFck;
-				$oFCKeditor->Config['SkinPath'] = "skins/".@$context['fck_skin']."/";
-				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-				$oFCKeditor->Config["AutoDetectLanguage"] = @$context['fck_autodetectlanguage'];
-				$oFCKeditor->Config["DefaultLanguage"] = @$context['fck_language'];
-				$oFCKeditor->Value = $context['value'];
-				$oFCKeditor->Create();
+	if(!C::get('fckeditor_included')) {?>
+		<script type="text/javascript" src="[#SHAREURL]/plugins/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript">
+			replaceCKEDITOR = function(obj) {
+				if(!obj.status) {
+					CKEDITOR.replace(obj.getAttribute('name'), {
+						'toolbar'         : '[#FCK_MODE]',
+						'language'        : '[#FCK_LANGUAGE]',
+						'height'          : '[#FCK_HEIGHT]',
+						'width'           : '[#FCK_WIDTH]',
+						'skin'            : '[#FCK_SKIN]'
+					});
+					obj.status = 1;
+				}
+			}; 
+			var l = function() {
+				var textareas = document.getElementsByTagName('textarea');
+				if(textareas) {
+					var ck = 0;
+					var i=0;
+					for(i=0;textareas[i];i++) {
+						ck = textareas[i].getAttribute('fckeditor');
+						ckname = textareas[i].getAttribute('name');
+						if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
+							replaceCKEDITOR(textareas[i]);
+						}
+					}
+				}
+			}
+			if(window.addEventListener) {
+				window.addEventListener('load', l, true);
+			} else {
+				if(window.attachEvent) {
+					window.attachEvent('onload', l);
+				}
+			}
+		</script>
+	<?
+		C::set('fckeditor_included', true);
+	}
+	?>
+		<textarea name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] fckeditor="1" width="[#FCK_WIDTH]px" height="[#FCK_HEIGHT]px" mode="[#FCK_MODE]">[#VALUE]</textarea>
 ?>
 		</IF>
     	<ELSE/>

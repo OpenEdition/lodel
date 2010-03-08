@@ -127,6 +127,20 @@ function addlanginmltext(obj,name){
 	changeNameAttributes(clone,lang);
 
 	document.getElementById('mltext_'+name).appendChild(clone);
+
+	var textareas = document.getElementById('mltext_'+name).getElementsByTagName('textarea');
+	if(textareas) {
+		var ck = 0;
+		var i=0;
+		for(i=0;textareas[i];i++) {
+			ck = textareas[i].getAttribute('fckeditor');
+			ckname = textareas[i].getAttribute('name');
+			if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
+				replaceCKEDITOR(textareas[i]);
+			}
+		}
+	}
+
 	obj.selectedIndex=0;
 }
 
@@ -157,6 +171,21 @@ function addpersons(obj,name) {
 	changeNameAttributes(clone,degreeobj[0].value);
 	
 	document.getElementById('persons_'+name).appendChild(clone);
+
+	var textareas = document.getElementById('persons_'+name).getElementsByTagName('textarea');
+
+	if(textareas) {
+		var ck = 0;
+		var i=0;
+		for(i=0;textareas[i];i++) {
+			ck = textareas[i].getAttribute('fckeditor');
+			ckname = textareas[i].getAttribute('name');
+			if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
+				replaceCKEDITOR(textareas[i]);
+			}
+		}
+	}
+
 	obj.selectedIndex=0;
 }
 
