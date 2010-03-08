@@ -198,7 +198,10 @@
     $context['fck_mode'] = 'Advanced';
   }
 
-  if(!$context['fck_language']) $context['fck_language'] = C::get('sitelang');
+  if(empty($context['fck_language']))
+  { 
+      $context['fck_language'] = C::get('sitelang'); 
+  }
 ?>
 </DEFMACRO>
 
@@ -289,17 +292,23 @@
 	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
-				$context["value"] = str_replace("\n","",$context["value"]);
-				$context["value"] = str_replace("\r","",$context["value"]);
-				$context['value'] = html_entity_decode(stripslashes($context['value']));
-				$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+			$context["value"] = str_replace("\n","",$context["value"]);
+			$context["value"] = str_replace("\r","",$context["value"]);
+			$context['value'] = html_entity_decode(stripslashes($context['value']));
+			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
 ?>
-		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
+	<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
 <?php
 	if(!C::get('fckeditor_included')) {?>
 		<script type="text/javascript" src="[#SHAREURL]/plugins/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript">replaceCKEDITOR = new Array();</script>
+<?php 
+		C::set('fckeditor_included', true);
+	}
+	if(!C::get('fckeditor_'.$context['fck_mode'])) {?>
+	
 		<script type="text/javascript">
-			replaceCKEDITOR = function(obj) {
+			replaceCKEDITOR['[#FCK_MODE]'] = function(obj) {
 				if(!obj.status) {
 					CKEDITOR.replace(obj.getAttribute('name'), {
 						'toolbar'         : '[#FCK_MODE]',
@@ -314,13 +323,13 @@
 			var l = function() {
 				var textareas = document.getElementsByTagName('textarea');
 				if(textareas) {
-					var ck = 0;
 					var i=0;
 					for(i=0;textareas[i];i++) {
-						ck = textareas[i].getAttribute('fckeditor');
-						ckname = textareas[i].getAttribute('name');
+						var ck = textareas[i].getAttribute('fckeditor');
+						var ckname = textareas[i].getAttribute('name');
+						var mode = textareas[i].getAttribute('mode');	
 						if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
-							replaceCKEDITOR(textareas[i]);
+							replaceCKEDITOR[mode](textareas[i]);
 						}
 					}
 				}
@@ -333,12 +342,12 @@
 				}
 			}
 		</script>
-	<?
-		C::set('fckeditor_included', true);
+	<?php
+		C::set('fckeditor_'.$context['fck_mode'], true);
 	}
 	?>
-		<textarea name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] fckeditor="1" width="[#FCK_WIDTH]px" height="[#FCK_HEIGHT]px" mode="[#FCK_MODE]">[#VALUE]</textarea>
-?>
+
+			<textarea name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] fckeditor="1" width="[#FCK_WIDTH]px" height="[#FCK_HEIGHT]px" mode="[#FCK_MODE]">[#VALUE]</textarea>
 		</IF>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
