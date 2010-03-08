@@ -98,19 +98,39 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
 		$context['id'] = @$task['identity'];
-		class_exists('XMLImportParser', false) || include "xmlimport.php";
-		$parser=new XMLImportParser();
-		$parser->init (@$context['class']);
-		$parser->parse (file_get_contents (@$task['fichier']), $this);
-		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
-		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
-			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
-		} else {
-			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
-		}
-		@unlink ($sourcefile);
-		copy (@$task['source'], $sourcefile);
-		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
+		// restore the entity
+		$contents = @unserialize(base64_decode(file_get_contents($task['fichier'])));
+		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
+		$context['idtype'] = $task['idtype'];
+		$context['idparent'] = $task['idparent'];
+		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
+		$context['persons'] = !empty($contents['contents']['persons']) ? $contents['contents']['persons'] : array();
+		$context['entities'] = !empty($contents['contents']['entities']) ? $contents['contents']['entities'] : array();
+		$context['data'] = $contents['contents'];
+		$context['creationmethod'] = "otx";
+		$context['creationinfo'] = $task['sourceoriginale'];
+		$source = $task['source'];
+		$odt = $task['odt'];
+		unset($task, $contents);
+		$ret = $this->editAction($context, $error, 'FORCE');
+		$this->id = $context['id'];
+		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
+		@unlink ($sourcefileodt);
+		copy ($odt, $sourcefileodt);
+		@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
+// 		class_exists('XMLImportParser', false) || include "xmlimport.php";
+// 		$parser=new XMLImportParser();
+// 		$parser->init (@$context['class']);
+// 		$parser->parse (file_get_contents (@$task['fichier']), $this);
+// 		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
+// 		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
+// 			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
+// 		} else {
+// 			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+// 		}
+// 		@unlink ($sourcefile);
+// 		copy (@$task['source'], $sourcefile);
+// 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		if ($idtask) { // close the task
 			DAO::getDAO('tasks')->deleteObject ($idtask);
 		}
