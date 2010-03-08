@@ -93,45 +93,53 @@ function couper($texte, $long)
 /**
  * Cut text keeping whole words
  */
-function cuttext($text, $length)
+function cuttext($text, $length, $dots=false)
 {
-	$GLOBALS['textfunc_hasbeencut'] = false;
-	$open = strpos($text, "<");
-	if ($open === false || $open > $length){
-		return cut_without_tags($text, $length);}
-	$length -= $open;
-	$stack = array ();
-	while ($open !== FALSE) {
-		$close = strpos($text, ">", $open);
-		if ($text[$open +1] == "/") {
-			array_pop($stack); // fermante
-		}	elseif ($tags[$close -1] != "/") {
-			array_push($stack, "</".preg_replace("/\s.*/", "", substr($text, $open +1, $close -1 - $open)).">"); // ouvrante
-		}
-		$open = strpos($text, "<", $close);
-		$piecelen = $open -1 - $close;
-		if ($open === FALSE || $piecelen > $length)
-			return substr($text, 0, $close +1).cut_without_tags(substr($text, $close +1, $length +2), $length).// 2 pour laisser de la marge
-			join("", array_reverse($stack));
-		$length -= $piecelen;
-	}
-	return $text;
+        $GLOBALS['textfunc_hasbeencut'] = false;
+        $encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+        $open = mb_strpos($text, "<", 0, $encoding);
+        if ($open === false || $open > $length){
+                return cut_without_tags($text, $length, $dots);}
+        $length -= $open;
+        $stack = array ();
+        while ($open !== FALSE) {
+                $close = mb_strpos($text, ">", $open, $encoding);
+                if (mb_substr($text, $open+1, 1, $encoding) == "/") {
+                        array_pop($stack); // fermante
+                }       elseif (mb_substr($text, $close-1, 1, $encoding) != "/") {
+                        $tag = mb_substr($text, $open +1, $close -1 - $open, $encoding);
+                        if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
+                        else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
+                }
+                $open = mb_strpos($text, "<", $close, $encoding);
+                $piecelen = $open -1 - $close;
+                if ($open === FALSE || $piecelen > $length)
+                {
+                        if($dots) array_push($stack, ' (...)');
+                        return mb_substr($text, 0, $close +1, $encoding).cut_without_tags(mb_substr($text, $close +1, $length +2, $encoding), $length).// 2 pour laisser de la marge
+                        join("", array_reverse($stack));
+                }
+                $length -= $piecelen;
+        }
+        return $text;
 }
 
-function cut_without_tags($text, $length)
+function cut_without_tags($text, $length, $dots=false)
 {
-	$text2 = substr($text." ", 0, $length);
-	if (strlen($text2) < strlen($text)) {
-		$GLOBALS['textfunc_hasbeencut'] = true;
-	}
-	$last_space_position = strrpos($text2, " ");
-	
-	if (!($last_space_position === false)) {
-		// supprime le dernier espace et tout ce qu'il y a derrière
-		//$text2 = substr($text2, 0, $last_space_position);
-		$text2 = preg_replace("/\S+$/", "", $text2);
-	}
-		return $text2;
+        $encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+        $text2 = mb_substr($text." ", 0, $length, $encoding);
+        if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
+                $GLOBALS['textfunc_hasbeencut'] = true;
+        }
+//      $last_space_position = mb_strrpos($text2, " ", $encoding);
+
+//      if (!($last_space_position === false)) {
+                // supprime le dernier espace et tout ce qu'il y a derrière
+                //$text2 = substr($text2, 0, $last_space_position);
+                $text2 = rtrim($text2);
+//      }
+
+        return (($GLOBALS['textfunc_hasbeencut'] && $dots) ? $text2.' (...)' : $text2);
 }
 
 function hasbeencut()
@@ -496,7 +504,7 @@ function notes($texte, $type)
 	// be cool... just select the paragraph or division.
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
-	$notere = '<a class="(foot|end)note(definition|symbol)[^>]*>';
+	$notere = '<a[^>]+class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
 			case 1: // seulement les astérisques
@@ -1087,6 +1095,7 @@ function HTML2XML($str, $reverse=false){
 	$replace = array(
 		"&quot;" => "&#34;",
 		"&amp;" => "&#38;",
+		"&AMP;" => "&#38;",
 		"&apos;" => "&#39;",
 		"&lt;" => "&#60;",
 		"&gt;" => "&#62;",
@@ -1350,7 +1359,7 @@ function HTML2XML($str, $reverse=false){
 * @param string $type 
 */
 
-function getParentByType($id,$type){
+function getParentByType($id,$type,$return = false){
         $q = "SELECT idparent FROM $GLOBALS[tp]entities WHERE id = '$id'";
         $r = mysql_query($q);
         if($idparent = @mysql_result($r, 0)){
@@ -1360,9 +1369,11 @@ function getParentByType($id,$type){
                 $ltype = mysql_result($r2, 0);
                 //echo mysql_error();
                 if($ltype == $type){
+			if($return) return $idparent;
                         echo $idparent;
                 }else{
-                        getParentByType($idparent, $type);
+	                $idparent = getParentByType($idparent, $type,$return);
+			if($return) return $idparent;
                 }
         }else{
                 return(FALSE);

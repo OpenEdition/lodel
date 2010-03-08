@@ -320,6 +320,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				// try to guess
 				if (!$have_firstname && !$have_familyname) {
 					// ok, on cherche maintenant a separer le name et le firstname
+					$person = trim($person, "\xC2\xA0\x00\x1F\x20");
 					$name=$person;
 					while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
 					if ($name) {
