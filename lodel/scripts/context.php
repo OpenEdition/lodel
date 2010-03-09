@@ -631,7 +631,7 @@ class C
 		{
 			checkCacheDir('htmlpurifier');
 		
-			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
+			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
 			$filters = array();
@@ -640,17 +640,17 @@ class C
 			// custom personnal filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
 
-			if(!empty($filters)) $config->set('Filter', 'Custom', $filters);
+			if(!empty($filters)) $config->set('Filter.Custom', $filters);
 
-			$config->set('Core', 'Encoding', 'UTF-8');
-			$config->set('HTML', 'TidyLevel', 'heavy' );
-			$config->set('Attr', 'EnableID', true);
-			$config->set('Cache', 'SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
-			$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-			$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
-			$config->set('HTML', 'DefinitionRev', 1);
-			$config->set('HTML', 'SafeObject', true);
-			$config->set('HTML', 'SafeEmbed', true);
+			$config->set('Core.Encoding', 'UTF-8');
+			$config->set('HTML.TidyLevel', 'heavy' );
+			$config->set('Attr.EnableID', true);
+			$config->set('Cache.SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
+			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
+			$config->set('HTML.DefinitionRev', 1);
+			$config->set('HTML.SafeObject', true);
+			$config->set('HTML.SafeEmbed', true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
 				'r2r',   // name
@@ -670,40 +670,6 @@ class C
 		$data = self::$filter->purify($data);
 		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
 		return true;
-	}
-}
-
-/**
- * Classe représentant les données d'une requête
- *
- * @package lodel
- * @author Pierre-Alain Mignot
- * @copyright 2001-2002, Ghislain Picard, Marin Dacos
- * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
- */
-class Context extends ArrayObject
-{
-	public function __construct(array &$datas)
-	{
-		parent::__construct($datas, self::ARRAY_AS_PROPS);
-	}
-
-	public function __get($var)
-	{
-		return $this->offsetGet($var);
-	}
-
-	public function __set($var, $value)
-	{
-		return $this->offsetSet($var, $value);
 	}
 }
 
