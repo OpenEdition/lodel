@@ -89,7 +89,7 @@ function mysqldate($s, $type)
 	}
 	if (!isset($delimiter)) {
 		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
-			return $s . '-00-00';
+			return $s . '-01-01';
 		} elseif(strlen($s) > 0) {
 			return "bad date";
 		} else { 
