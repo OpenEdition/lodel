@@ -231,7 +231,7 @@ class Logic
 			$vo = $dao->createObject();
 		}
 		if (isset($dao->rights['protect'])) {
-			$vo->protect = isset($context['protect']) && $context['protect'] ? 1 : 0;
+			$vo->protect = isset($context['protected']) && $context['protected'] ? 1 : 0;
 		}
 		// put the context into 
 		$this->_populateObject($vo, $context);
