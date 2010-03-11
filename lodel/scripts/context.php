@@ -631,7 +631,7 @@ class C
 		{
 			checkCacheDir('htmlpurifier');
 		
-			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
+			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
 			$filters = array();
@@ -642,15 +642,15 @@ class C
 
 			if(!empty($filters)) $config->set('Filter', 'Custom', $filters);
 
-			$config->set('Core', 'Encoding', 'UTF-8');
-			$config->set('HTML', 'TidyLevel', 'heavy' );
-			$config->set('Attr', 'EnableID', true);
-			$config->set('Cache', 'SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
-			$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-			$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
-			$config->set('HTML', 'DefinitionRev', 1);
-			$config->set('HTML', 'SafeObject', true);
-			$config->set('HTML', 'SafeEmbed', true);
+			$config->set('Core.Encoding', 'UTF-8');
+			$config->set('HTML.TidyLevel', 'heavy' );
+			$config->set('Attr.EnableID', true);
+			$config->set('Cache.SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
+			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
+			$config->set('HTML.DefinitionRev', 1);
+			$config->set('HTML.SafeObject', true);
+			$config->set('HTML.SafeEmbed', true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
 				'r2r',   // name
