@@ -60,7 +60,7 @@
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
-			<IF COND="[#COUNT]%2">
+			<IF COND="[#COUNT] % 2">
 				<tr class="ligne_admin1">
 			<ELSE/>
 				<tr class="ligne_admin2">
@@ -68,8 +68,8 @@
 			<td>[#TITLE]</td>
 			<td>[#LANG]</td>
 			<td style="color: #CC9933;" align="left">
-				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
-				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">&nbsp;
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">&nbsp;
 				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
 			</td>
 			<td>
@@ -96,23 +96,23 @@
 					<td class="texte_noir_gras">[#LANG]</td>
 					<td>&nbsp;</td>
 				</LOOP>
-					
+			<td>[@ADMIN.TEXT]</td>	
 		</tr>
 		<LOOP NAME="alltexts">
 		<DO>
 			<MACRO NAME="TR_LIST">
-			<td >
+			<td>
 				[(#NAME|strtoupper|cuttext(30))]
 			</td>
 			<LOOP NAME="lang_and_text">
 				<td>
-					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&amp;lo=texts&amp;id=[#ID]">E</a>
+					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&amp;lo=texts&amp;id=[#ID]" onmouseover="document.getElementById('contents_[#NAME]').innerHTML='&quot; [#CONTENTS|addslashes] &quot;';" onmouseout="document.getElementById('contents_[#NAME]').innerHTML='';">E</a>
 				</td>
 				<td align="right">
-						<a href="index.php?do=delete&amp;lo=texts&amp;id=[#ID]">[@COMMON.DELETE](*)</a>
+					<a href="index.php?do=delete&amp;lo=texts&amp;id=[#ID]">[@COMMON.DELETE](*)</a>
 				</td>
 			</LOOP>
-		
+			<td id="contents_[#NAME]"></td>
 		</DO>
 		</LOOP>
 		</table>
