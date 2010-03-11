@@ -55,6 +55,7 @@
 		<th class="status">[@ADMIN.STYLE]</th>
 		<th class="status">[@ADMIN.SURROUNDING]</th>
 		<th class="status">[@ADMIN.CONVERSION]</th>
+		<th class="status">[@ADMIN.TEI_EQUIVALENT]</th>
 		<th class="status">[@ADMIN.GREEDY]</td>
 		<td class="empty">&nbsp;</td>
 	</tr>
@@ -64,6 +65,7 @@
 			<th class="type">[#STYLE|nbsp]</th>
 			<td>[#SURROUNDING|nbsp]</td>
 			<td>[#CONVERSION|htmlspecialchars|nbsp]</td>
+			<td>[#OTX|nbsp]</td>
 			<td><IF COND="[#GREEDY]">[@COMMON.YES]<ELSE />[@COMMON.NO]</IF></td>
 			<td class="actions">
        			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">

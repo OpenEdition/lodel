@@ -54,6 +54,7 @@
 	<tr>
 		<th class="status">[@ADMIN.STYLE]</th>
 		<th class="status">[@ADMIN.CONVERSION]</th>
+		<th class="status">[@ADMIN.TEI_EQUIVALENT]</th>
 		<td class="empty">&nbsp;</td>
 	</tr>
 	<LOOP NAME="characterstyles" TABLE="characterstyles" ORDER="rank" WHERE="status gt 0">
@@ -61,6 +62,7 @@
 			<MACRO NAME="TR_LIST">
 			<th class="type">[#STYLE|nbsp]</th>
 			<td>[#CONVERSION|htmlspecialchars|nbsp]</td>
+			<td>[#OTX|nbsp]</td>
 			<td class="actions">
        			 <FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 			 <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
