@@ -363,7 +363,7 @@ function vignette($text, $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	function_exists('resize_image') || include("images.php");
-	if (!resize_image($width, $text, $vignettefile, "+"))
+	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
 }

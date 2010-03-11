@@ -200,7 +200,7 @@ function reservedword($name)
 		'VARCHARACTER', 'VARYING', 'WARNINGS', 'WHEN', 'WHERE', 'WHILE', 
 		'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL',
 		# reservés par LODEL
-		'STATUS', 'RANK', 'CLASS', 'TYPE', 'ID', 'IDENTITY', 'IDRELATION', 'IDPARENT', 'IDTYPE', 'IDUSER', 'IDPERSON', 'IDENTRY', 'ERROR', 'TPL', 'TPLCREATION', 'TPLEDITION', 'EDIT',);
+		'STATUS', 'RANK', 'CLASS', 'TYPE', 'ID', 'IDENTITY', 'IDRELATION', 'IDPARENT', 'IDTYPE', 'IDUSER', 'IDPERSON', 'IDENTRY', 'ERROR', 'TPL', 'TPLCREATION', 'TPLEDITION', 'EDIT', 'FORMAT', 'PAGE', 'DO', 'LO');
 	}
 	return (in_array(strtoupper($name), $reserved_words));
 }

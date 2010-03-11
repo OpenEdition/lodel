@@ -82,7 +82,7 @@ function show_html($chaine)
 	// ce tableau sert au comptage des balises ouvrante/fermante
 	$suivi = array ();
 	// ce tableau contient les balises ouvrante/fermante
-	$tags = array ('html', 'head', 'script', 'noscript', 'div', 'center', 'table', 'td', 'tr', 'select', 'map', 'iframe', 'body', 'title', 'font', 'form', 'left', 'abbrev', 'acronym', 'textarea', 'author', 'blockquote', 'code', 'dl', 'dd', 'dt', 'option', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'noframes', 'note', 'ul', 'ol', 'pre', 'tt', 'layer');
+	$tags = array ('html', 'head', 'script', 'noscript', 'div', 'center', 'table', 'td', 'tr', 'select', 'map', 'iframe', 'body', 'title', 'font', 'form', 'left', 'abbrev', 'acronym', 'textarea', 'author', 'blockquote', 'code', 'dl', 'dd', 'dt', 'option', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'noframes', 'note', 'ul', 'ol', 'pre', 'tt', 'layer', 'span', 'strong');
 	// ce tableau contient les balises qui seront laisses dans le corps du texte
 	$tagsi = array ('a', 'b', 'address', 'i', 'u', 'blink', 'applet', 'embed', 'sub', 'sup');
 	// toutes les autres balises sont ramenees en debut de ligne.

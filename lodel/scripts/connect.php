@@ -60,7 +60,11 @@ defined("DBPASSWD")	|| define("DBPASSWD", C::get('dbpasswd', 'cfg'));
 defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
 defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
-include 'adodb_hack.php';
+$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
+include "adodb/adodb.inc.php";
+error_reporting($err);
+// include 'adodb_hack.php';
+
 // connect to the database server
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
 $GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug

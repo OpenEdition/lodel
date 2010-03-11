@@ -64,45 +64,72 @@
 function resize_image($taille, $src, &$dest)
 {
 	do { // exception
-		if (!($gdv = GDVersion())) {
-			if(extension_loaded('imagick'))
-			{
-				$result = @getimagesize($src);
-				if (is_numeric($taille)) 
-				{ // la plus grande taille
-					if ($result[0] > $result[1]) {
-						$width = $taille;
-						$height = 0;
-					}	else {
-						$height = $taille;
-						$width = 0;
-					}
-				}
-				else
-				{
-					if (preg_match("/(\d+)[x\s]+(\d+)/", $taille, $result2)) {
-						$width = $result2[1];
-						$height = $result2[2];
-					}
-					
-				}
-				if(isset($width))
-				{
-					$image = new Imagick($src);
-					$image->setImageFormat('png'); // FORCE png
-					$image->setCompression(Imagick::COMPRESSION_NO);
-					$image->setCompressionQuality(100);
-					// If 0 is provided as a width or height parameter,
-					// aspect ratio is maintained
-					$image->thumbnailImage($width, $height);
-					$dest = preg_replace("/\..*?$/i", ".png", $dest);
-					$image->writeImage($dest);
-					$image->destroy();
-					return true;
+		
+/*		if(extension_loaded('imagick'))
+		{
+			$result = @getimagesize($src);
+			if (is_numeric($taille))
+			{ // la plus grande taille
+				if ($result[0] > $result[1]) {
+					$width = $taille;
+					$height = 0;
+				}	else {
+					$height = $taille;
+					$width = 0;
 				}
 			}
-			return false; // Pas de Imagick installé
+			elseif (preg_match("/(\d+)[x\s]+(\d+)/", $taille, $result2)) {
+					$width = $result2[1];
+					$height = $result2[2];
+			}
+
+			if(!isset($width)) return false;
+
+			$image = new Imagick($src);
+			$jpg = substr($src, -4) === '.jpg' || substr($src, -4) === 'jpeg';
+
+			if(!$jpg && substr($src, -4) === '.png')
+			{
+				if($image->getImageColors() > 256)
+				{
+					$type = $image->getImageType();
+					$dest = str_replace('.png', '.jpg', $dest);
+					$image->setImageFormat('jpg');
+					$jpg = true;
+				}
+			}
+
+			if(file_exists($dest))
+			{
+				$image->destroy();
+				return true;
+			}
+
+			$colors = $image->getImageColors();
+			$colorSpace = $image->getImageColorspace();
+			$depth = $image->getImageDepth();
+			isset($type) || $type = $image->getImageType();
+			$compr = $image->getImageCompressionQuality();
+
+			$image->thumbnailImage($width, $height);
+			$image->quantizeImage($colors, $colorSpace, $depth, false, false);
+			$image->setImageType($type);
+			$image->setImageDepth($depth);
+
+			$image->setImageCompression($jpg ? Imagick::COMPRESSION_JPEG : imagick::COMPRESSION_LZW);
+			
+			$image->setImageCompressionQuality($compr > 0 && $compr < 80 ? $compr : 80);
+
+			$image->writeImage($dest);
+
+			$image->destroy();
+
+			return true;
 		}
+		else*/if (!($gdv = GDVersion())) {
+			return false; // Pas de Imagick ni de GD installé
+		}
+
 		// cherche le type de l'image
 		$result = @getimagesize($src);
 		if ($result[2] == 1 && function_exists("ImageCreateFromGIF"))	{
@@ -157,7 +184,7 @@ function resize_image($taille, $src, &$dest)
 				ImageGIF($im2, $dest);
 			}	else { // sometimes writing GIF is not allowed... make a PNG it's anyway better.
 				$dest = preg_replace("/\.gif$/i", ".png", $dest);
-				$result[2] = 2;
+				$result[2] = 3;
 			}
 		}
 		if ($result[2] == 2) {
@@ -165,11 +192,11 @@ function resize_image($taille, $src, &$dest)
 				ImageJPEG($im2, $dest, 100);
 			}	else { // make a PNG rather
 				$dest = preg_replace("/\.jpe?g$/i", ".png", $dest);
-				$result[2] = 2;
+				$result[2] = 3;
 			}
 		}
 		if ($result[2] == 3) {
-			ImagePNG($im2, $dest, 0);
+			ImagePNG($im2, $dest, 9, PNG_ALL_FILTERS);
 		}
 		return true;
 	}	while (0); // exception

@@ -78,7 +78,6 @@ function open_session($login, $name = null)
 	C::setUser($login, 'name');
 	// by default, we want the desk
 	C::setUser(true, 'desk');
-	$contextstr = addslashes(serialize(C::getC(null, 'lodeluser')));
 	$expire = $timeout + time();
 	$expire2 = time() + $cookietimeout;
 	// clean the url - nettoyage de l'url

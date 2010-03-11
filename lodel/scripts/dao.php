@@ -229,7 +229,16 @@ class DAO
 		}
 
 		if (isset ($vo->rank) && $vo->rank == 0) { // initialize the rank
-			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64');
+			$where = '';
+			if('entries' === $this->table)
+			{
+				$where = ' AND idtype='.$vo->idtype.' AND idparent='.$vo->idparent;
+			}
+			elseif('entities' === $this->table)
+			{
+				$where = ' AND idparent='.$vo->idparent;
+			}
+			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64'.$where);
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}

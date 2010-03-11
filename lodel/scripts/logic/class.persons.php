@@ -109,9 +109,11 @@ class PersonsLogic extends EntriesLogic
 			$$g=trim($context['data'][$equiv[$g]]);
 		}
 
-		if (!$familyname && !$firstname) { $error[$equiv['familyname']]="+"; return "_error"; }
+		if (empty($familyname) && empty($firstname)) { $error[$equiv['familyname']]="+"; return "_error"; }
 		// get the dao for working with the object
 		$dao=$this->_getMainTableDAO();
+
+		$vo = false;
 
 		if (!$id && ($familyname || $firstname)) {
 			// search if the person exists

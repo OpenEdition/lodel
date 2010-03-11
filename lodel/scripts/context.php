@@ -149,7 +149,6 @@ class C
         	self::$filter = null;
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
-		self::$_triggers['included'] = array();
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
         	defined('SITEROOT') || define('SITEROOT', '');
        		function_exists('checkCacheDir') || include 'cachefunc.php';
@@ -211,7 +210,14 @@ class C
 				foreach($_GET as $k=>$v)
 				{
 					if('clearcache' !== $k && !('id' === $k && (int)$v === 0))
-					$uri .= $k."=".$v.'&';
+					{
+						if(is_array($v))
+						{
+							foreach($v as $kk => $vv)
+								$uri .= $k[$kk]."=".$vv.'&';
+						}
+						else $uri .= $k."=".$v.'&';
+					}
 				}
 			}
 		
@@ -220,7 +226,7 @@ class C
 		}
 		
 		self::$_context = $GLOBALS['context'] = array(); // (re)init context
-        
+
 		if(empty($request))
 		{
 			// POST only
@@ -401,6 +407,20 @@ class C
             		$trigObj->Close();
             		writeToCache('triggers', self::$_triggers);
 		}
+
+		// bootstrap for all activated plugins
+		foreach(self::$_triggers as $name=>$values)
+		{
+			if('trigger_' === substr($name, 0, 8)) continue;
+			
+			$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$name.'/'.$name.'.php');
+			if(!$file)
+			{
+				trigger_error('ERROR: invalid plugin '.$name, E_USER_WARNING);
+				continue;
+			}
+			include $file;
+		}
 	}
 
 	/**
@@ -415,18 +435,6 @@ class C
 
 		foreach(self::$_triggers['trigger_'.$name] as $trigger=>$hooktype)
 		{
-			if(!isset(self::$_triggers['included'][$trigger]))
-			{
-				$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php');
-				if(!$file)
-				{
-					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
-					continue;
-				}
-				include_once $file;
-				self::$_triggers['included'][$trigger] = true;
-			}
-            
 			switch($hooktype)
 			{
 				case 'class':

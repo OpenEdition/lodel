@@ -401,8 +401,7 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	//Local cache
 	static $cache;
 	if (!isset ($cache[$funcname]))	{
-		$pages = _constructPages($context, $funcname, $arguments);
-		$cache[$funcname] = $pages;
+		$cache[$funcname] = _constructPages($context, $funcname, $arguments);
 	}
 
 	$local_context = $context;

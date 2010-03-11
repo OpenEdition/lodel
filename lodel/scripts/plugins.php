@@ -113,8 +113,9 @@ abstract class Plugins
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
+			usecurrentdb();
 			$enabled = $db->GetOne(lq('SELECT status FROM #_TP_plugins WHERE name='.$db->quote($plugin)));
-			if(!$enabled) trigger_error('ERROR: sorry this plugin is not enabled, please contact your administrator', E_USER_ERROR);
+			if(!$enabled) trigger_error('ERROR: sorry the plugin '.$plugin.' is not enabled, please contact your administrator', E_USER_ERROR);
 			self::$_instances[$plugin] = new $plugin($plugin);
 		}
 

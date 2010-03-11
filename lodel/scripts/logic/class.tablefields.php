@@ -290,6 +290,11 @@ class TableFieldsLogic extends Logic
 				clearcache();
 			}
 		}
+		elseif(isset($this->oldvo->name) && $this->oldvo->name!=$vo->name)
+		{
+			$db->execute(lq('UPDATE #_TP_relations SET nature='.$db->quote($vo->name).' WHERE nature='.$db->quote($this->oldvo->name)))
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		}
 		unset($this->oldvo);
 	}
 
@@ -324,6 +329,10 @@ class TableFieldsLogic extends Logic
 		}
 		if ($this->vo->type!="entities") {
 			$db->execute(lq("ALTER TABLE #_TP_".$this->vo->class." DROP ".$this->vo->name)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		}
+		else
+		{
+			$db->execute(lq("DELETE FROM #_TP_relations WHERE nature=".$db->quote($this->vo->name)))  or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		unset($this->vo);
 

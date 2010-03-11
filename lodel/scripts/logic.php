@@ -370,32 +370,69 @@ class Logic
 			$dir = $dir == "up" ? -1 : 1;
  		}
 
-		$desc = $dir>0 ? "" : "DESC";
-
 		$dao = $this->_getMainTableDAO();
-		$vos = $dao->findMany($criteria, "rank $desc, id $desc", "id, rank");
-
-		$count = count($vos);
-		$newrank = $dir>0 ? 1 : $count;
-		for ($i = 0 ; $i < $count ; $i++) {
-			if ($vos[$i]->id == $id) {
-				// exchange with the next if it exists
-				if (!isset($vos[$i+1])) {
-					break;
+		$vos = $dao->findMany($criteria, "rank", "id, rank");
+		$rankedvos = array();
+		$rank = 1;
+		foreach($vos as $vo)
+		{
+			if($vo->id == $id)
+			{
+				if(!isset($rankedvos[$rank + $dir]))
+					$rankedvos[$rank + $dir] = $vo;
+				else
+				{
+					$rankedvos[$rank+$dir+1] = $rankedvos[$rank + $dir];
+					$rankedvos[$rank+$dir] = $vo;
 				}
-				$vos[$i+1]->rank = $newrank;
-				$dao->save($vos[$i+1]);
-				$newrank+= $dir;
+				$rank -= $dir;
 			}
-			if ($vos[$i]->rank != $newrank) { // rebuild the rank if necessary
-				$vos[$i]->rank = $newrank;
-				$dao->save($vos[$i]);
-			}
-			if ($vos[$i]->id == $id) {
-				++$i;
-			}
-			$newrank+= $dir;
+			elseif(!isset($rankedvos[$rank]))
+				$rankedvos[$rank] = $vo;
+			elseif(!isset($rankedvos[$rank+$dir]))
+				$rankedvos[$rank+$dir] = $vo;
+			else $rankedvos[$rank+2*$dir] = $vo;
+
+			++$rank;
 		}
+
+		if(count($rankedvos) !== count($vos))
+			trigger_error('ERROR: Logic::_changeRank error, please report this bug to lodel@lodel.org', E_USER_ERROR);
+
+		foreach($rankedvos as $k=>$vo)
+		{
+			$vo->rank = $k;
+			$dao->save($vo);
+		}
+
+		return;
+
+// 		$desc = $dir>0 ? "" : "DESC";
+// 
+// 		$dao = $this->_getMainTableDAO();
+// 		$vos = $dao->findMany($criteria, "rank $desc, id $desc", "id, rank");
+// 
+// 		$count = count($vos);
+// 		$newrank = $dir>0 ? 1 : $count;
+// 		for ($i = 0 ; $i < $count ; $i++) {
+// 			if ($vos[$i]->id == $id) {
+// 				// exchange with the next if it exists
+// 				if (!isset($vos[$i+1])) {
+// 					break;
+// 				}
+// 				$vos[$i+1]->rank = $newrank;
+// 				$dao->save($vos[$i+1]);
+// 				$newrank+= $dir;
+// 			}
+// 			if ($vos[$i]->rank != $newrank) { // rebuild the rank if necessary
+// 				$vos[$i]->rank = $newrank;
+// 				$dao->save($vos[$i]);
+// 			}
+// 			if ($vos[$i]->id == $id) {
+// 				++$i;
+// 			}
+// 			$newrank+= $dir;
+// 		}
 	}
 
 	/**
@@ -810,7 +847,7 @@ class Logic
 	//echo $this->maintable . '<p>' . $status . '<p>';
 		switch ($this->maintable) {
 			case 'entities' :
-				$this->_authorizedStatus = array(-64, -8, -1, 1, 8, 17, 24);
+				$this->_authorizedStatus = C::get('temporary', 'lodeluser') ? array(-1) : array(-64, -8, -1, 1, 8, 17, 24);
 				break;
 			case 'persons' :
 			case 'entries' :

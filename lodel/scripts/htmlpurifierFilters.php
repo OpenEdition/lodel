@@ -58,44 +58,48 @@
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.9
  */
-class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
+// need to be logged in and in backoffice
+if(defined('backoffice') && C::get('redactor', 'lodeluser'))
 {
-	public $name = 'LodelTEI';
-	
-	public function preFilter($html, $config, $context) 
+	class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
 	{
-		$pre_regex = '#(<\?xml\b[^\?]+\?>\s*)?(<TEI([^>]+>.+?)</TEI>)#si';
-		return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
+		public $name = 'LodelTEI';
+		
+		public function preFilter($html, $config, $context) 
+		{
+			$pre_regex = '#(<\?xml\b[^\?]+\?>\s*)?(<TEI([^>]+>.+?)</TEI>)#si';
+			return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
+		}
+		
+		protected function preFilterCallback($matches)
+		{
+			libxml_use_internal_errors(true);
+
+			$doc = new DOMDocument('1.0', 'UTF-8');
+			$doc->resolveExternals = true;
+			$doc->validateOnParse = true;
+			$xml = $matches[1].'<!DOCTYPE TEI SYSTEM "'.C::get('sharedir', 'cfg').'/tei_all.dtd">'.$matches[2];
+			$doc->loadXML($xml);
+
+			$errors = libxml_get_errors();
+
+			if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped', E_USER_WARNING); return ''; }
+
+			return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
+		}
+
+		public function postFilter($html, $config, $context) 
+		{
+			$post_regex = '#<span class="lodel-TEI">(.+?)</span>#si';
+			return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
+		}
+		
+		protected function postFilterCallback($matches) 
+		{
+			return '<TEI'.html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8').'</TEI>';
+		}
 	}
-	
-	protected function preFilterCallback($matches)
-	{
-		libxml_use_internal_errors(true);
 
-                $doc = new DOMDocument('1.0', 'UTF-8');
-		$doc->resolveExternals = true;
-		$doc->validateOnParse = true;
-		$xml = $matches[1].'<!DOCTYPE TEI SYSTEM "'.C::get('sharedir', 'cfg').'/tei_all.dtd">'.$matches[2];
-                $doc->loadXML($xml);
-
-                $errors = libxml_get_errors();
-
-                if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped', E_USER_WARNING); return ''; }
-
-		return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
-	}
-
-	public function postFilter($html, $config, $context) 
-	{
-		$post_regex = '#<span class="lodel-TEI">(.+?)</span>#si';
-		return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
-	}
-	
-	protected function postFilterCallback($matches) 
-	{
-		return '<TEI'.html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8').'</TEI>';
-	}
+	$filters[] = new HTMLPurifier_Filter_LodelTEI();
 }
-$filters[] = new HTMLPurifier_Filter_LodelTEI();
-
 ?>

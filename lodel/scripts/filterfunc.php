@@ -104,10 +104,8 @@ function makefilterfunc()
     	$result->Close();
 
 	// build the function with filtering
-    	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
+    	if(FALSE === @file_put_contents($cacheDir."filterfunc.php", '<'.'?php 
     function filtered_mysql_fetch_assoc($context, $result) {
-	defined(\'INC_CONNECT\') || include \'connect.php\';
-	global $db;
         $row = $result->FetchRow();
         if (!$row) return array();
 	$filters = array('.$filterstr.');
@@ -115,8 +113,9 @@ function makefilterfunc()
 	$count = $result->RecordCount();
 	$ret = array();
         for($i = 0; $i < $count; $i++) {
-            $fieldname[$i] = $db->getFieldName($result, $i);
-            $fullfieldname[$i] = $db->getFieldTable($result, $i). ".". $fieldname[$i];
+	    $field = $result->FetchField($i);
+            $fieldname[$i] = isset($field->orgname) ? $field->orgname : $field->name;
+            $fullfieldname[$i] = (isset($field->orgtable) ? $field->orgtable : $field->table). ".". $fieldname[$i];
             $ret[$fieldname[$i]] = $row[$fieldname[$i]];
         }
         $localcontext=array_merge($context, $ret);
@@ -150,6 +149,6 @@ function makefilterfunc()
         }
     }
     ?'.'>')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
-	@chmod("CACHE/filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
+	@chmod($cacheDir."filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
 }
 ?>
