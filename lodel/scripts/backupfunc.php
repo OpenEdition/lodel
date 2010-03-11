@@ -307,6 +307,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 		// use PCLZIP library
 		class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
+		$archivename = $archive;
 		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
@@ -345,7 +346,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#echo "ici $res";
 		error_reporting($err);
 		if (!$res)
-			trigger_error("ERROR: unable to extract $archive.<br />".$archive->error_string, E_USER_ERROR);
+			trigger_error("ERROR: unable to extract $archivename.<br />".$archive->error_string, E_USER_ERROR);
 		unset($archive);
 		if (filesize($sqlfile) <= 0)
 			return false;
