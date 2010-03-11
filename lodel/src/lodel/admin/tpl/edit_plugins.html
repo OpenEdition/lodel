@@ -38,10 +38,10 @@
 	<li><span class="intit">[@ADMIN.TITLE_CONFIGURE_PLUGIN]</span></li>
 </ul>
 <br/>
+
 <LOOP NAME="errors">
 	<p class="error">[#ERROR]</p>
 </LOOP>
-<IF COND="![#ERRORS] AND ![#ERROR]">
 <form method="post" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
 <input type="hidden" name="edit" value="1"/>
 <input type="hidden" name="do" value="edit"/>
@@ -66,5 +66,4 @@
 </fieldset>
 <MACRO NAME="EDIT_SUBMIT_BAR">
 </form>
-</IF>
 <MACRO NAME="CLOSE_HTML">

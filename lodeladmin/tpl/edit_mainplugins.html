@@ -38,8 +38,11 @@
 	<li><span class="intit">[@ADMIN.TITLE_CONFIGURE_PLUGIN]</span></li>
 </ul>
 <br/>
+
 <LOOP NAME="errors">
-	<p class="error">[#ERROR]</p>
+	<IF COND="[#ERROR] NE '+'">
+		<p class="error">[#ERROR]</p>
+	</IF>
 </LOOP>
 
 <form method="post" enctype="multipart/form-data" action="<?php echo basename($_SERVER['PHP_SELF']); ?>">
@@ -55,7 +58,6 @@
 <LOOP NAME="foreach" ARRAY="[#PLUGIN.CONFIG]">
 	<ALTERNATIVE>[@ADMIN.NO_CONFIGURATION]</ALTERNATIVE>
 	<DO>
-		<LOOP NAME="fielderror" FIELD="[#KEY]"><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#KEY]"></FUNC></span></LOOP>
 		<label for="[#KEY]">[#VALUE.TITLE] <IF COND="[#VALUE.REQUIRED]"><span class="optional">(*)</span> </IF>:</label>
 		<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#KEY]" TYPE="[#VALUE.TYPE]" VALUE="[#VALUE.VALUE]" FULLVARNAME="data[[#KEY]]"/>
 		<br class="nobr">
