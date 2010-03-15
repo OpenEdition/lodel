@@ -118,6 +118,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		@unlink ($sourcefileodt);
 		copy ($odt, $sourcefileodt);
 		@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
+		file_put_contents(SITEROOT."lodel/sources/entite-".$this->id.".tei");
+		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));
 // 		class_exists('XMLImportParser', false) || include "xmlimport.php";
 // 		$parser=new XMLImportParser();
 // 		$parser->init (@$context['class']);

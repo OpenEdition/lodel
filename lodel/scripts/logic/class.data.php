@@ -1019,7 +1019,7 @@ class DataLogic
 			$context['error'] = $error;
 			return 'backupmodel';
 		}
-		$xml = $this->_generateXML($context);
+		$xml = $this->generateXML($context);
 
 		$tmpfile = tmpdir(). '/model.xml';
 		file_put_contents($tmpfile, $xml);
@@ -2289,7 +2289,7 @@ class DataLogic
 	 *
 	 * @param array $context le contexte passé par référence
 	 */
-	private function _generateXML(&$context) {
+	public function generateXML(&$context) {
 		global $db;
 		
 		// besoin des fonctions de bruno pour conversion entités
