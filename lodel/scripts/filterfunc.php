@@ -104,7 +104,7 @@ function makefilterfunc()
     	$result->Close();
 
 	// build the function with filtering
-    	if(FALSE === @file_put_contents($cacheDir."filterfunc.php", '<'.'?php 
+    	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
     function filtered_mysql_fetch_assoc($context, $result) {
         $row = $result->FetchRow();
         if (!$row) return array();
