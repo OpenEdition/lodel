@@ -463,7 +463,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
 
     $result      = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     if ($result != FALSE) {
-        $fields_cnt = $GLOBALS['db']->getFieldNum($result);
+        $fields_cnt = $result->FieldCount();
         $rows_cnt   = $result->RecordCount();
 
         // get the real types of the table's fields (in an array)
@@ -596,7 +596,7 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
 
     $result       = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     $current_row  = 0;
-    $fields_cnt   = $GLOBALS['db']->getFieldNum($result);
+    $fields_cnt   = $result->FieldCount();
     $rows_cnt     = $result->RecordCount();
 
 
