@@ -772,7 +772,7 @@ function loop_alphabetSpec($context, $funcname)
 	if(empty($context['table']) || empty($context['field']))
 		trigger_error("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.", E_USER_ERROR);
 
-	$whereSelect = '';
+	$whereSelect = $whereCount = '';
 
 	if(!empty($context['idtype'])) {
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
