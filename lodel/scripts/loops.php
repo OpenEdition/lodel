@@ -774,14 +774,17 @@ function loop_alphabetSpec($context, $funcname)
 
 	$whereSelect = $whereCount = '';
 
-	if(!empty($context['idtype'])) {
+	if(!empty($context['idtype'])) { // classtype
+		$table = $context['table'];
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
 		$whereCount = " idtype = '{$context['idtype']}' AND ";
+	} else { // class
+		$table = $context['table'].' LEFT JOIN #_TP_entities ON (#_TP_'.$context['table'].'.identity=#_TP_entities.id)';
 	}
 	$status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
 	$whereSelect .= !empty($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
 	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l 
-			FROM #_TP_{$context['table']} 
+			FROM #_TP_{$table} 
 			{$whereSelect} 
 			ORDER BY l";
 	
@@ -799,7 +802,7 @@ function loop_alphabetSpec($context, $funcname)
 			$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
 	
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$table} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
