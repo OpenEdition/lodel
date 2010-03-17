@@ -786,6 +786,13 @@ function loop_alphabetSpec($context, $funcname)
 			ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
+	if(empty($lettres))
+	{
+		if(function_exists('code_alter_'.$funcname))
+			call_user_func('code_alter_'.$funcname, $context);
+
+		return;
+	}
 
 	foreach($lettres as &$lettre) {
 		if($lettre['l'] != '<' && $lettre['l'] != '>' && $lettre['l'] != ' ')
