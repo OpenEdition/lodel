@@ -1223,8 +1223,8 @@ class DataLogic
 					return 'importxmlmodel';
 				}
 				// suppression ancien types
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
+				$this->_sql[] = lq("DELETE FROM `#_TP_entitytypes` WHERE identitytype NOT IN (SELECT id FROM `#_TP_types`) AND identitytype != '0';\n");
+				$this->_sql[] = lq("DELETE FROM `#_TP_entitytypes` WHERE identitytype2 NOT IN (SELECT id FROM `#_TP_types`) AND identitytype2 != '0';\n");
 				$this->_executeSQL();
 			}
 		}
