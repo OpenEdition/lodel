@@ -1533,8 +1533,8 @@ PHP;
 		{
 			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/.*\/)/i", 
 					                    "/'([\w'\[\]\$\\\]*?)' like (\/.*\/)/i"), 
-			                    array('preg_match("\\2is", \\1, $context[\'matches\'])',
-				                'preg_match("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
+			                    array('preg_match_all("\\2is", \\1, $context[\'matches\'])',
+				                'preg_match_all("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
 
 		}
 		else $cond = $attrs['COND'];
@@ -1568,8 +1568,8 @@ PHP;
 				{
 					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
 							                    "/'([\w'\[\]\$\\\]*?)' like (\/[^\/]*\/)/i"), 
-					                    array('preg_match("\\2i", \\1, $context[\'matches\'])',
-						                        'preg_match("\\2i", "\\1", $context[\'matches\'])'), $attrs['COND']);
+					                    array('preg_match_all("\\2i", \\1, $context[\'matches\'])',
+						                        'preg_match_all("\\2i", "\\1", $context[\'matches\'])'), $attrs['COND']);
 				}
 				else $cond = $attrs['COND'];
 				$this->parse_variable($cond, false); // parse the attributs
