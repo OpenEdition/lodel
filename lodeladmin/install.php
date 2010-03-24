@@ -58,7 +58,6 @@ $lodelconfig = "CACHE/lodelconfig-cfg.php";
 // securise l'entree
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) 
 {
-
 	$installing = true;
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
@@ -91,14 +90,14 @@ if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la r
 
 ini_set('include_path',LODELROOT. "lodel".$install->get('versionsuffix')."/scripts" .PATH_SEPARATOR . LODELROOT . "share".$install->get('versionsuffix'). PATH_SEPARATOR . ini_get("include_path"));
 
-
 //
 // option
 //
-if($option1) { $installoption=1; }
-elseif($option2){ $installoption=2; }
-elseif ($erase_and_option1) { $installoption=1; unlink($install->get('lodelconfig')); }
-elseif ($erase_and_option2) { $installoption=2; unlink($install->get('lodelconfig')); }
+if(!empty($option1)) { $installoption=1; }
+elseif(!empty($option2)){ $installoption=2; }
+elseif (!empty($erase_and_option1)) { $installoption=1; unlink($install->get('lodelconfig')); }
+elseif (!empty($erase_and_option2)) { $installoption=2; unlink($install->get('lodelconfig')); }
+
 if(!empty($installoption))
 	$install->set('installoption', $installoption);
 elseif(!empty($cfg['installoption']))
@@ -123,6 +122,8 @@ $install->set('protecteddir', array("lodel".$install->get('versionsuffix'),
 		    "tpl",
 		    "lodeladmin".$install->get('versionsuffix')."/CACHE",
 		    "lodeladmin".$install->get('versionsuffix')."/tpl"));
+
+if(!isset($tache)) $tache = false;
 
 switch($tache)
 {
