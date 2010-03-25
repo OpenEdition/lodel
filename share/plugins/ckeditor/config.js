@@ -44,7 +44,7 @@ CKEDITOR.editorConfig = function( config )
 	
 	config.toolbar_Basic =
 	[
-	    ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', 'Outdent','Indent','-', 'Link', 'Unlink','-','About']
+	    ['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', 'Outdent','Indent','-', 'Link', 'Unlink','-','About','-','Source']
 	];
 	
 	config.toolbar_Simple = [
@@ -56,4 +56,5 @@ CKEDITOR.editorConfig = function( config )
          ['FontFormat'],
          ['About','-','Source']
      ];
+	config.resize_enabled = false;
 };
