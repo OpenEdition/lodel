@@ -94,7 +94,7 @@ function authenticate($level = 0, $mode = "", $return = false)
             		defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
-			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
+			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
 			if(!$users)
             		{
                 		touch(SITEROOT.'./CACHE/.no_restricted');
@@ -104,6 +104,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			$name = false;
 			foreach($users as $user) 
 			{
+				if(empty($user['ip'])) continue;
 				$uuser = explode(' ', $user['ip']);
 				foreach($uuser as $ip)
 				{
