@@ -112,6 +112,8 @@ class PersonsLogic extends EntriesLogic
 		if (empty($familyname) && empty($firstname)) { $error[$equiv['familyname']]="+"; return "_error"; }
 		// get the dao for working with the object
 		$dao=$this->_getMainTableDAO();
+		
+		$vo = false;
 
 		$vo = false;
 
