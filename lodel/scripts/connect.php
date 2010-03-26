@@ -97,6 +97,8 @@ if ($GLOBALS['version_mysql'] > 40) {
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'] = C::get('tableprefix', 'cfg');
 
+C::set('siteinfos', $GLOBALS['db']->CacheGetRow($GLOBALS['sqlCacheTime'], lq('SELECT * FROM #_MTP_sites WHERE name='.$GLOBALS['db']->quote(C::get('site', 'cfg')))));
+
 /**
  * Déclenche une erreur lors d'une erreur concernant la base de données
  * @deprecated
