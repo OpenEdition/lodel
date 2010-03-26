@@ -115,8 +115,6 @@ class PersonsLogic extends EntriesLogic
 		
 		$vo = false;
 
-		$vo = false;
-
 		if (!$id && ($familyname || $firstname)) {
 			// search if the person exists
 			// ajout de slashes pour le SELECT dans la base 
