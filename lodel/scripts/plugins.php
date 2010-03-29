@@ -144,7 +144,7 @@ abstract class Plugins
 	 */
 	protected function _checkRights($level)
 	{
-		return ((bool)(C::get('rights','lodeluser') > $level));
+		return ((bool)(C::get('rights','lodeluser') >= $level));
 	}
 
 	/**
