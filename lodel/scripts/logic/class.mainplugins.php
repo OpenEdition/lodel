@@ -688,6 +688,8 @@ class MainPluginsLogic extends Logic
 
 		$filemask = 0777 & octdec(C::get('filemask', 'cfg'));
 
+		if(empty($this->_plugin['config'])) return true;
+
 		foreach($this->_plugin['config'] as $name=>$param)
 		{
 			if('sql' == $name) continue;
