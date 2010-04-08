@@ -102,7 +102,7 @@ function couper($texte, $long)
 function cuttext($text, $length, $dots=false)
 {
 	$GLOBALS['textfunc_hasbeencut'] = false;
-	$encoding = mb_detect_encoding($text, 'UTF-8, utf-8, utf-85, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$open = mb_strpos($text, "<", 0, $encoding);
 	if ($open === false || $open > $length){
 		return cut_without_tags($text, $length, $dots);}
@@ -132,7 +132,7 @@ function cuttext($text, $length, $dots=false)
 
 function cut_without_tags($text, $length, $dots=false)
 {
-	$encoding = mb_detect_encoding($text, 'UTF-8, utf-8, utf-85, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$text2 = mb_substr($text." ", 0, $length, $encoding);
 	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
@@ -155,7 +155,7 @@ function hasbeencut()
 
 function couperpara($texte, $long)
 {
-	$encoding = mb_detect_encoding($texte, 'UTF-8, utf-8, utf-85, Windows-1252', true);
+	$encoding = mb_detect_encoding($texte, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
 	$pos = -1;
 	do {
 		$pos = mb_strpos($texte, "</p>", $pos +1, $encoding);
