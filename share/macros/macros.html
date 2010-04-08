@@ -3,12 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -80,15 +80,15 @@
 	</fieldset>
 </DEFMACRO>
 
-<!--[ Macro utilisée pour afficher les résultats d'une boucle sur plusieurs pages
-	Doit être appelée dans la balise <AFTER>
+<!--[ Macro utilisÃ©e pour afficher les rÃ©sultats d'une boucle sur plusieurs pages
+	Doit Ãªtre appelÃ©e dans la balise <AFTER>
 ]-->
 <DEFMACRO NAME="PRINT_PAGE_SCALE">
 	<LOOP NAME="page_scale">
 		<BEFORE>
 			<div class="pagination">
 				<IF COND="[#PREVIOUSURL]">
-					<a href="[#PREVIOUSURL]" title="Page précédente">&lt;&lt;</a>
+					<a href="[#PREVIOUSURL]" title="Page prÃ©cÃ©dente">&lt;&lt;</a>
 				</IF>
 		</BEFORE>
 		<DO>
@@ -96,7 +96,7 @@
 				&nbsp;...&nbsp;
 			</IF>
 			<IF COND="[#URLPAGE] NE ''">
-				<a class="linkpage" href="[#URLPAGE]" title="Page numéro [#PAGENUMBER]">
+				<a class="linkpage" href="[#URLPAGE]" title="Page numÃ©ro [#PAGENUMBER]">
 			<ELSE/>
 				<span class="currentpage">
 			</IF>

@@ -7,12 +7,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -91,7 +91,7 @@ class Parser
 
 	protected function _errmsg($msg, $ind = 0)
 	{
-		// À REVOIR : déterminer le numéro de ligne dans le template
+		// Ã€ REVOIR : dÃ©terminer le numÃ©ro de ligne dans le template
 		//if ($ind)
 		//$line = "line ".$this->linearr[$ind];
 		//trigger_error("LODELSCRIPT ERROR line $line (".$this->infilename."): $msg", E_USER_ERROR);
@@ -583,7 +583,7 @@ PHP;
 			switch ($this->arr[$this->ind])	{
 			case 'CONTENT' :
 			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
-			$this->charset = isset($attrs['CHARSET']) ? $attrs['CHARSET'] : "iso-8859-1";
+			$this->charset = isset($attrs['CHARSET']) ? $attrs['CHARSET'] : "utf-8";
 			// attribut refresh
 			$this->_checkforrefreshattribut($attrs);
 			$this->_clearposition();
@@ -805,7 +805,7 @@ PHP;
 				case 'NAME' :
 					break;
 				case 'DATABASE' :
-					// si la database est dynamique, on rajoute le préfix pour les tables
+					// si la database est dynamique, on rajoute le prÃ©fix pour les tables
 					$value = trim($value);
 					if($value)
 						$database = $value.'.';
@@ -1354,7 +1354,7 @@ PHP;
 	/**
 	 * Parse les fonctions Lodelscript.
 	 *
-	 * Un simple appel à parse_MACRO.
+	 * Un simple appel Ã  parse_MACRO.
 	 * @see parse_MACRO
 	 */
 	protected function parse_FUNC()
@@ -1365,9 +1365,9 @@ PHP;
 	/**
 	 * Parse les macros Lodelscript.
 	 *
-	 * Un simple appel à parse_MACRO.
+	 * Un simple appel Ã  parse_MACRO.
 	 *
-	 * @param string $tag définit la macro ou la func Lodelscript
+	 * @param string $tag dÃ©finit la macro ou la func Lodelscript
 	 * @see parse_MACRO
 	 */
 	protected function parse_MACRO($tag = 'MACRO')
@@ -1619,7 +1619,7 @@ PHP;
 				$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 				if (isset($attrs['CASE'])) {
 					$this->_clearposition();
-					// condition par défaut
+					// condition par dÃ©faut
 					if('default' == $attrs['CASE']) {
 						if($begin) {
 							$this->arr[$toput] = '<?php switch('.$test.'){ default: { ?>';
@@ -1693,7 +1693,7 @@ PHP;
         	$var = strtolower($res[0]);
 
 		if('VAR' == $result[1]) {
-			// commenté septembre 2008 par pierre-alain car pas d'utilité trouvée ?!?
+			// commentÃ© septembre 2008 par pierre-alain car pas d'utilitÃ© trouvÃ©e ?!?
 			//$this->parse_variable($result[2], false); // parse the attributs
 			$this->_clearposition();
 			$this->arr[$this->ind + 1] = '<?php ob_start(); ?>';
@@ -1896,7 +1896,7 @@ PHP;
 	}
 
 	/*
-	réécrit suite bug signalé par François Lermigeaux sur lodel-devel
+	rÃ©Ã©crit suite bug signalÃ© par FranÃ§ois Lermigeaux sur lodel-devel
 	*/
 	protected function replace_conditions(&$text, $style)
 	{

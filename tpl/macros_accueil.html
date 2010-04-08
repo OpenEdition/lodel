@@ -3,12 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -38,7 +38,7 @@ Auteur : Marin Dacos. 2002. ]-->
 <!--[ Macros d'ouverture et de fermeture de headers       ]-->
 <!--[ *************************************************** ]-->
 
-<!--[ Déclare que c'est du HTML ]-->
+<!--[ DÃ©clare que c'est du HTML ]-->
 
 <DEFMACRO NAME="HEADER_HEAD_OPEN">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -46,7 +46,7 @@ Auteur : Marin Dacos. 2002. ]-->
 	<head>
 </DEFMACRO> 
 
-<!--[ Déclare le charset (jeux de caractère, dépendant de la langue principale utilisée) ]-->
+<!--[ DÃ©clare le charset (jeux de caractÃ¨re, dÃ©pendant de la langue principale utilisÃ©e) ]-->
 
 <DEFMACRO NAME="CHARSET_FR">  
 	<meta http-equiv="Content-Type" content="text/html; charset=[#CHARSET]">
@@ -59,7 +59,7 @@ Auteur : Marin Dacos. 2002. ]-->
 	</head>
 	<BODY bgcolor="#FFFFFF"  text="Black" vlink="black" link="black" ALINK="black" onLoad="" MARGINWIDTH="0" MARGINHEIGHT="0" rightmargin="0" leftmargin="0" topmargin="0" bottommargin="0"> 
 	<!--[ Affiche le tableau de bord (desk) au sommet de la page pour les
-	utilisateurs logués, comme l'admin, l'éditeur, les rédacteurs, etc. ]-->
+	utilisateurs loguÃ©s, comme l'admin, l'Ã©diteur, les rÃ©dacteurs, etc. ]-->
 
 	<IF COND="[#VISITEUR]">
 		<?php insert_template ("desk");?>
@@ -83,15 +83,15 @@ Auteur : Marin Dacos. 2002. ]-->
 </DEFMACRO>
 
 <!--[ Interdit l'indexation de la page par les moteurs.
-	Très utile pour éviter les redondances des divers formats de pages.
-	Evitons de faire du bruit sur les moteurs, et le web en sortira clarifié.
+	TrÃ¨s utile pour Ã©viter les redondances des divers formats de pages.
+	Evitons de faire du bruit sur les moteurs, et le web en sortira clarifiÃ©.
 ]-->
 
 <DEFMACRO NAME="NOROBOTS">   
 	<meta NAME="ROBOTS" CONTENT="follow, noindex">
 </DEFMACRO>
 
-<!--[ Certaines publication souhaitent insérer une barre de navigation, la voici ]-->
+<!--[ Certaines publication souhaitent insÃ©rer une barre de navigation, la voici ]-->
 <DEFMACRO NAME="BARRE_VERTICALE">
 	<?php insert_template ("barre");?> 
 </DEFMACRO>
@@ -103,19 +103,19 @@ Auteur : Marin Dacos. 2002. ]-->
 	</html>
 </DEFMACRO>
 
-<!--[ Mention de l'adhésion du site à Revues.org ]-->
+<!--[ Mention de l'adhÃ©sion du site Ã  Revues.org ]-->
 
 <DEFMACRO NAME="REVUES_ORG">
 <table width="100%" border="0" cellspacing="2" cellpadding="2" align="center">
 	<tr>
 		<td  class="texte_trespetit_centre">
-			Page générée par
+			Page gÃ©nÃ©rÃ©e par
 			<a href="http://www.lodel.org">
 				 LODEL
 			</a>
 			|
-			Nous adhérons à
-			<a href="http://www.revues.org/" NAME="Fédération de revues en sciences humaines et sociales">
+			Nous adhÃ©rons Ã 
+			<a href="http://www.revues.org/" NAME="FÃ©dÃ©ration de revues en sciences humaines et sociales">
 				www.revues.org
 			</a>
 		</td>
@@ -124,8 +124,8 @@ Auteur : Marin Dacos. 2002. ]-->
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche les articles : boutons, auteur, titre cliquable et publication concernée ]-->
-<!--[ Cette macro est plutôt destinée aux index ]-->
+<!--[ Affiche les articles : boutons, auteur, titre cliquable et publication concernÃ©e ]-->
+<!--[ Cette macro est plutÃ´t destinÃ©e aux index ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="AFFICHE_ARTICLES">		
@@ -153,9 +153,9 @@ Auteur : Marin Dacos. 2002. ]-->
 
 <!--[ *************************************************** ]-->
 <!--[ Ligne_article affiche en 1 ligne un point, l'auteur cliquable ]-->
-<!--[ le titre et des boutons supplémentaires pour les    ]-->
-<!--[ les admin/editeurs/rédacteur                        ]-->
-<!--[ Cette macro est plutôt destinée aux sommaires       ]-->
+<!--[ le titre et des boutons supplÃ©mentaires pour les    ]-->
+<!--[ les admin/editeurs/rÃ©dacteur                        ]-->
+<!--[ Cette macro est plutÃ´t destinÃ©e aux sommaires       ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="LIGNE_ARTICLE">
@@ -185,7 +185,7 @@ Auteur : Marin Dacos. 2002. ]-->
 	</LOOP>
 </DEFMACRO>
 
-<!--[ Crée un gros bloc qui affiche le titre du numéro ou de la rubrique, sauf s'il est vide,
+<!--[ CrÃ©e un gros bloc qui affiche le titre du numÃ©ro ou de la rubrique, sauf s'il est vide,
 auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introduction]-->
 
 <DEFMACRO NAME="TITRE_PUBLICATION">
@@ -257,8 +257,8 @@ auquel cas il affiche le nom de la revue. Il affiche aussi le texte d'introducti
 <br>
 </DEFMACRO>
 
-<!--[ Propose de signaler la page en cours à quelqu'un
-Attention, cette routine sera changée bientôt
+<!--[ Propose de signaler la page en cours Ã  quelqu'un
+Attention, cette routine sera changÃ©e bientÃ´t
 ]-->
 
 <DEFMACRO NAME="SIGNALER">
@@ -286,10 +286,10 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Navigation numéro suivant et précédent              ]-->
+<!--[ Navigation numÃ©ro suivant et prÃ©cÃ©dent              ]-->
 <!--[ *************************************************** ]-->
 
-<!--[ Numéro précédent ]-->
+<!--[ NumÃ©ro prÃ©cÃ©dent ]-->
 
 <DEFMACRO NAME="NUMEROPRECEDENT">
 	&nbsp;	&nbsp;	&nbsp;
@@ -301,7 +301,7 @@ Attention, cette routine sera changée bientôt
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
-<!--[ Numéro suivant ]-->
+<!--[ NumÃ©ro suivant ]-->
 
 <DEFMACRO NAME="NUMEROSUIVANT">
 	&nbsp;	&nbsp;	&nbsp;
@@ -313,7 +313,7 @@ Attention, cette routine sera changée bientôt
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
-<!--[ Précédent [ Sans distinction de numéro ou document ] ]-->
+<!--[ PrÃ©cÃ©dent [ Sans distinction de numÃ©ro ou document ] ]-->
 
 <DEFMACRO NAME="PRECEDENT">
 	&nbsp;	&nbsp;	&nbsp;
@@ -325,7 +325,7 @@ Attention, cette routine sera changée bientôt
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
-<!--[ Suivant [ Sans distinction de numéro ou document ] ]-->
+<!--[ Suivant [ Sans distinction de numÃ©ro ou document ] ]-->
 
 <DEFMACRO NAME="SUIVANT">
 	&nbsp;	&nbsp;	&nbsp;
@@ -337,7 +337,7 @@ Attention, cette routine sera changée bientôt
 	&nbsp;	&nbsp;	&nbsp;
 </DEFMACRO>
 
-<!--[ Permet de naviguer vers le numéro suivant, précédent, ou vers la liste des sommaires ]-->
+<!--[ Permet de naviguer vers le numÃ©ro suivant, prÃ©cÃ©dent, ou vers la liste des sommaires ]-->
 
 <DEFMACRO NAME="NUMEROS_PRECEDENT_SOMMAIRES_SUIVANT">
 <TABLE width="100%" border="0" cellspacing="0" cellpadding="0" align="CENTER" valign="TOP"  bordercolor="Black">
@@ -349,10 +349,10 @@ Attention, cette routine sera changée bientôt
 				<MACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
 				<BR>
 				<font color="#000000">
-					Numéro précédent
+					NumÃ©ro prÃ©cÃ©dent
 				</font>
 			</A>
-			<!--[ Si plus de numéro précédent, retour index.html ]-->
+			<!--[ Si plus de numÃ©ro prÃ©cÃ©dent, retour index.html ]-->
 		<ELSE/>
 			<a href="index.html">
 				<MACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
@@ -376,11 +376,11 @@ Attention, cette routine sera changée bientôt
 				<MACRO NAME="GIF_GROS_NUMERO_SUIVANT">
 				<BR>
 				<font color="#000000">
-					Numéro suivant
+					NumÃ©ro suivant
 				</font>
 			</A>
 		<ELSE/>
-			<!--[ Si plus de numéro suivant, retour index.html ]-->
+			<!--[ Si plus de numÃ©ro suivant, retour index.html ]-->
 			<a href="index.html">
 				<MACRO NAME="GIF_GROS_NUMERO_SUIVANT">
 				<BR>
@@ -395,10 +395,10 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Navigation articles suivants et précédents          ]-->
+<!--[ Navigation articles suivants et prÃ©cÃ©dents          ]-->
 <!--[ *************************************************** ]-->
 
-<!--[ Bouton de navigation "article suivant" très sobre   ]-->
+<!--[ Bouton de navigation "article suivant" trÃ¨s sobre   ]-->
 
 <DEFMACRO NAME="ARTICLE_SUIVANT">
 <IF COND="[#NEXT]">
@@ -418,12 +418,12 @@ Attention, cette routine sera changée bientôt
 </IF>
 </DEFMACRO>
 
-<!--[ Bouton de navigation "article précédent" très sobre ]-->
+<!--[ Bouton de navigation "article prÃ©cÃ©dent" trÃ¨s sobre ]-->
 
 <DEFMACRO NAME="ARTICLE_PRECEDENT">
 	<IF COND="[#PREV]">
 	
-	<!--[ S'il y un article précédent, affiche cet article ]-->
+	<!--[ S'il y un article prÃ©cÃ©dent, affiche cet article ]-->
 	&nbsp;&nbsp;&nbsp;
 	<a href="[#PREV]">
 		<MACRO NAME="GIF_ARTICLE_PRECEDENT">
@@ -438,14 +438,14 @@ Attention, cette routine sera changée bientôt
 	</IF>
 </DEFMACRO>
 
-<!--[ Ensemble de boutons article suivant / sommaire  / article précédent  ]-->
+<!--[ Ensemble de boutons article suivant / sommaire  / article prÃ©cÃ©dent  ]-->
 
 <DEFMACRO NAME="ARTICLE_SUIVANT_PRECEDENT">
 <TABLE width="330" border="0" cellspacing="0" cellpadding="15" align="CENTER" valign="TOP"  bordercolor="Black" class="navigation">
 	<TR>
 		<TD WIDTH="15%" align="center">
 
-			<!--[ va vers article arrière ou, à défaut, vers sommaire ]-->
+			<!--[ va vers article arriÃ¨re ou, Ã  dÃ©faut, vers sommaire ]-->
 			<IF COND="[#PREV]">
 				<a href="[#PREV]">
 					<MACRO NAME="GIF_ARTICLE_PRECEDENT">
@@ -459,12 +459,12 @@ Attention, cette routine sera changée bientôt
 		</IF>
 		</TD>
 		<TD WIDTH="70%" align="center">
-			<a name="Sommaire du numéro" id="Sommaire du numéro" href="sommaire.html?id=[#IDPUBLICATION]">
+			<a name="Sommaire du numÃ©ro" id="Sommaire du numÃ©ro" href="sommaire.html?id=[#IDPUBLICATION]">
 				<MACRO NAME="GIF_LOGO_86X62">
 			</A>
 		</TD>
 
-		<!--[ va vers article avant ou, à défaut, vers sommaire ]-->
+		<!--[ va vers article avant ou, Ã  dÃ©faut, vers sommaire ]-->
 		<TD WIDTH="15%" align="center">
 		<IF COND="[#NEXT]">
 			&nbsp;&nbsp;&nbsp;
@@ -483,8 +483,8 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche un bouton d'une couleur si le texte intégral existe, ]-->
-<!--[ d'une autre s'il n'y a que le résumé ]-->
+<!--[ Affiche un bouton d'une couleur si le texte intÃ©gral existe, ]-->
+<!--[ d'une autre s'il n'y a que le rÃ©sumÃ© ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="BOUTONS_COLORES">
@@ -545,7 +545,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ -------------------------------- ]-->
-<!--[ Affiche les rubriques d'une série  ]-->
+<!--[ Affiche les rubriques d'une sÃ©rie  ]-->
 <!--[ -------------------------------- ]-->
 
 <DEFMACRO NAME="LISTE_RUBRIQUES">
@@ -584,7 +584,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ -------------------------------------------------- ]-->
-<!--[ -- Affiche les articles classés par regroupements- ]-->
+<!--[ -- Affiche les articles classÃ©s par regroupements- ]-->
 <!--[ -------------------------------------------------- ]-->
 
 <DEFMACRO NAME="ARTICLES_PAR_REGROUPEMENTS">
@@ -642,11 +642,11 @@ Attention, cette routine sera changée bientôt
 
 <!--[ *************************************************** ]-->
 <!--[ Affiche la liste des auteurs d'un document entre virgules      ]-->
-<!--[ Les auteurs ne sont pas cliquables (voir auteurs_with_url pour ça)  ]-->
+<!--[ Les auteurs ne sont pas cliquables (voir auteurs_with_url pour Ã§a)  ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="AUTEURS">
-<!--[ Je ne donne pas de nom à cette boucle pour pouvoir l'appeler deux fois dans un template ]-->
+<!--[ Je ne donne pas de nom Ã  cette boucle pour pouvoir l'appeler deux fois dans un template ]-->
 <strong>
         <LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
                 <DOFIRST>[#PRENOM] [#NOMFAMILLE]</DOFIRST>
@@ -664,7 +664,7 @@ Attention, cette routine sera changée bientôt
 <DEFMACRO NAME="AUTEURS_WITH_URL">
 <LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
 
-	<!--[ boucle sans titre car elle est parfois appelée 2 fois ds la même page]-->
+	<!--[ boucle sans titre car elle est parfois appelÃ©e 2 fois ds la mÃªme page]-->
 	<DOFIRST>
 		<a href="auteur.html?id=[#ID]">
 		<font color="black">
@@ -698,13 +698,13 @@ Attention, cette routine sera changée bientôt
 <!--[ *************************************************** ]-->
 <!--[ Affiche la liste des auteurs d'un document entre virgules      ]-->
 <!--[ Les auteurs sont cliquables (lien vers index par auteurs)      ]-->
-<!--[ L'affichage est destiné aux sommaires : il permet une respirati ]-->
+<!--[ L'affichage est destinÃ© aux sommaires : il permet une respirati ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="AUTEURS_SOMMAIRES">
 <strong>
 <LOOP TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-	<!--[ boucle sans titre car elle est parfois appelée 2 fois ds la même page]-->
+	<!--[ boucle sans titre car elle est parfois appelÃ©e 2 fois ds la mÃªme page]-->
 	<DOFIRST>
 		<a href="auteur.html?id=[#ID]">
 		<font color="black">
@@ -752,16 +752,16 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Liste des numéros et liste des rubriques               ]-->
+<!--[ Liste des numÃ©ros et liste des rubriques               ]-->
 <!--[ *************************************************** ]-->
 
 
-<!--[  Menu déroulant affichant la liste des publications de type numéro, de parent 8, publiées ]-->
+<!--[  Menu dÃ©roulant affichant la liste des publications de type numÃ©ro, de parent 8, publiÃ©es ]-->
 
 <DEFMACRO NAME="PUBLICATIONS_NUMEROS_PARENT8">
 <form name="pub_menu_A">
 	<select name="menu_types" onChange="MM_jumpMenu('parent',this,0)">
-	<option value="index.html">Numéros</option>
+	<option value="index.html">NumÃ©ros</option>
 	<LOOP NAME="pub_menu_A" TABLE="publications" WHERE="ok" WHERE="type='numero'" WHERE="idparent='21'" ORDER="ordre DESC">
 		<option value="sommaire.html?id=[#ID]">[#NOM]</option>
 	</LOOP>
@@ -769,7 +769,7 @@ Attention, cette routine sera changée bientôt
 </form>
 </DEFMACRO>
 
-<!--[  Menu déroulant affichant la liste des publications de type rubrique, publiées ]-->
+<!--[  Menu dÃ©roulant affichant la liste des publications de type rubrique, publiÃ©es ]-->
 
 <DEFMACRO NAME="PUBLICATIONS_RUBRIQUES">
 <form name="pub_menu_B">
@@ -813,10 +813,10 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>	
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche la liste des publications de type rubrique, publiées, sans parent ]-->
+<!--[ Affiche la liste des publications de type rubrique, publiÃ©es, sans parent ]-->
 <!--[ *************************************************** ]-->
 
-<!--[ Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. ]-->
+<!--[ Attention, l'identifiant indiquÃ© ici varie pour chaque sÃ©rie, revue, etc. ]-->
 <DEFMACRO NAME="LISTE_GRANDES_RUBRIQUES_ID2">
 <LOOP NAME="liste_grands_rubriques_id2" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" WHERE="idparent='2'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
@@ -825,7 +825,7 @@ Attention, cette routine sera changée bientôt
 </LOOP>
 </DEFMACRO>
 
-<!--[ Attention, l'identifiant indiqué ici varie pour chaque série, revue, etc. ]-->
+<!--[ Attention, l'identifiant indiquÃ© ici varie pour chaque sÃ©rie, revue, etc. ]-->
 <DEFMACRO NAME="LISTE_GRANDES_RUBRIQUES_ID19">
 <LOOP NAME="liste_grands_rubriques_id19" TABLE="publications" WHERE="ok" WHERE="type='rubrique'" WHERE="idparent='19'" ORDER="ordre ASC">
 	<a href="sommaire.html?id=[#ID]">
@@ -835,7 +835,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche la liste des publications de type numéro, publiées ]-->
+<!--[ Affiche la liste des publications de type numÃ©ro, publiÃ©es ]-->
 <!--[ *************************************************** ]-->
 
 <!--[ Affichage simple ]-->
@@ -882,7 +882,7 @@ Attention, cette routine sera changée bientôt
 <ALTERNATIVE>
 	<tr>
 		<td>
-	Aucun numéro disponible actuellement
+	Aucun numÃ©ro disponible actuellement
 		</td>
 	</tr>
 </ALTERNATIVE></LOOP>
@@ -890,11 +890,11 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche le dernier numéro (en fonction du champ date) ]-->
+<!--[ Affiche le dernier numÃ©ro (en fonction du champ date) ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="DERNIER_NUMERO">		
-<!--[ Affiche uniquement le dernier numéro ]-->
+<!--[ Affiche uniquement le dernier numÃ©ro ]-->
 <LOOP NAME="dernier_numero" TABLE="publications" ORDER="date DESC" WHERE="ok" WHERE="type='numero'" LIMIT="0,1">
 		<a href="sommaire.html?id=[#ID]">
 			[#NOM]<br>
@@ -915,7 +915,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ *************************************************** ]-->
-<!--[ Affiche la dernière rubrique (en fonction du champ date) ]-->
+<!--[ Affiche la derniÃ¨re rubrique (en fonction du champ date) ]-->
 <!--[ *************************************************** ]-->
 
 <DEFMACRO NAME="DERNIERE_RUBRIQUE">
@@ -966,7 +966,7 @@ Attention, cette routine sera changée bientôt
 				<strong>
 					<a name="[#TITRE]" href="[#LIEN]" target="[#TITRE]">[#TITRE]</a>
 				</strong>
-			<!--[ S'il s'agit d'un rédacteur, des fonctions sont proposées ]-->
+			<!--[ S'il s'agit d'un rÃ©dacteur, des fonctions sont proposÃ©es ]-->
 			<!--[ modifier, ajouter, up/down                               ]-->
 		<IF COND="[#DROITREDACTEUR]">
 			<MACRO NAME="EDIT_DOCANNEXE">	
@@ -977,7 +977,7 @@ Attention, cette routine sera changée bientôt
 	</TABLE>
 </AFTER>
 </LOOP>
-	<!--[ Propose aux rédacteurs d'ajouter un document  -]-->
+	<!--[ Propose aux rÃ©dacteurs d'ajouter un document  -]-->
 	<IF COND="[#DROITREDACTEUR]">
 		<a href="lodel/edition/docannexe.php?iddocument=[#ID]">
 			<span class="texte_tres_petit">
@@ -1019,7 +1019,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
-<!--[ Affiche les 1500 premiers caractères de l'introduction d'une publication ]-->
+<!--[ Affiche les 1500 premiers caractÃ¨res de l'introduction d'une publication ]-->
 <!--[ Lettrine : non Ouverture de table : non                ]-->
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
 
@@ -1039,7 +1039,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
-<!--[ Table alphabétique qui peut se placer en début d'index ]-->
+<!--[ Table alphabÃ©tique qui peut se placer en dÃ©but d'index ]-->
 <!--[ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX ]-->
 
 <DEFMACRO NAME="TABLE_ALPHA">
@@ -1049,7 +1049,7 @@ Attention, cette routine sera changée bientôt
 			&nbsp;
 		</td>
 		<td width="74%" align="center"> 
-			<!--[ Menu permettant d'accéder à la lettre désirée ]-->
+			<!--[ Menu permettant d'accÃ©der Ã  la lettre dÃ©sirÃ©e ]-->
 			<hr width="50%">
 			<a href="#A">A</a> - 
 			<a href="#B">B</a> - 
@@ -1107,7 +1107,7 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_ARTICLE_PRECEDENT">
-	<IMG SRC="images/gauche2.gif" WIDTH="15" HEIGHT="19" BORDER="0" ALT="Article précédent">
+	<IMG SRC="images/gauche2.gif" WIDTH="15" HEIGHT="19" BORDER="0" ALT="Article prÃ©cÃ©dent">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_ARTICLE_PRECEDENT_SOMMAIRE">
@@ -1119,15 +1119,15 @@ Attention, cette routine sera changée bientôt
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_GROS_NUMERO_PRECEDENT">
-	<IMG SRC="images/fleche_gauche.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="Numéro précédent">
+	<IMG SRC="images/fleche_gauche.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="NumÃ©ro prÃ©cÃ©dent">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_GROS_NUMERO_SUIVANT">
-	<IMG SRC="images/fleche_droite.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="Numéro suivant">
+	<IMG SRC="images/fleche_droite.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="NumÃ©ro suivant">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_PRECEDENT">
-	<IMG SRC="images/fleche_gauche.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="Précédent">
+	<IMG SRC="images/fleche_gauche.gif" WIDTH="16" HEIGHT="16" BORDER="0" ALT="PrÃ©cÃ©dent">
 </DEFMACRO>
 
 <DEFMACRO NAME="GIF_SUIVANT">
@@ -1148,7 +1148,7 @@ Attention, cette routine sera changée bientôt
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
 
-<!--[ Routine javascript destinée à faire des menus déroulants menant à une URL ]-->
+<!--[ Routine javascript destinÃ©e Ã  faire des menus dÃ©roulants menant Ã  une URL ]-->
 
 <DEFMACRO NAME="JS_JUMPMENU">   
 	<script language="JavaScript"><!--
@@ -1161,7 +1161,7 @@ Attention, cette routine sera changée bientôt
 	--></script>
 </DEFMACRO>
 
-<!--[ Routine javascript permettant de changer une image survolée par la souris ]-->
+<!--[ Routine javascript permettant de changer une image survolÃ©e par la souris ]-->
 
 <DEFMACRO NAME="JS_SWAP_IMAGE">   
 <script language="JavaScript"><!--
@@ -1192,7 +1192,7 @@ Attention, cette routine sera changée bientôt
 --></script>
 </DEFMACRO>
 
-<!--[ Fonction javascript d'ouverture de fenêtre ]-->
+<!--[ Fonction javascript d'ouverture de fenÃªtre ]-->
 
 <DEFMACRO NAME="JS_OUVRE_FENETRE"> 
 <script language="JavaScript"><!-- 
@@ -1207,8 +1207,8 @@ Attention, cette routine sera changée bientôt
 <!--[ Fonction javascript permettant de reculer d'une page  ]-->
 
 <DEFMACRO NAME="JS_RECULE"> 
-	<a href="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;"><IMG SRC="/www/revues/images/back.gif" WIDTH="60" HEIGHT="60" BORDER="0" ALT="page précédente / back">
-	Page précédente
+	<a href="javascript:history.back()" OnMouseOver="window.status='Retour-Back';return true;"><IMG SRC="/www/revues/images/back.gif" WIDTH="60" HEIGHT="60" BORDER="0" ALT="page prÃ©cÃ©dente / back">
+	Page prÃ©cÃ©dente
 </A>
 </DEFMACRO>
 
@@ -1225,7 +1225,7 @@ Attention, cette routine sera changée bientôt
 <!--[ METADONNEES HTML ]-->
 
 <META NAME="GENERATOR" CONTENT="LODEL 2002">
-<META NAME="DESCRIPTION" CONTENT="Test, revue de démonstration de LODEL. Adhère à la fédération www.revues.org">
+<META NAME="DESCRIPTION" CONTENT="Test, revue de dÃ©monstration de LODEL. AdhÃ¨re Ã  la fÃ©dÃ©ration www.revues.org">
 <LOOP NAME="meta_auteurs" TABLE="personnes" WHERE="type='auteur'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="author" CONTENT="[#PRENOM] [#NOMFAMILLE]">
 </LOOP>
@@ -1241,7 +1241,7 @@ Attention, cette routine sera changée bientôt
 <!--[ METADONNEES DUBLIN CORE ]-->
 
 <META NAME="DC.Title" CONTENT="[(#TITRE|textebrut)] [(#SOUSTITRE|textebrut)]">
-<META NAME="DC.Publisher" CONTENT="Société historique du Centre-Est">
+<META NAME="DC.Publisher" CONTENT="SociÃ©tÃ© historique du Centre-Est">
 <LOOP NAME="meta_dc_motscles" TABLE="entrees" WHERE="type='motcle'" WHERE="iddocument='[#ID]'" ORDER="ordre">
 <META NAME="DC.Subject" CONTENT="[#NOM]">
 </LOOP>
@@ -1260,8 +1260,8 @@ Attention, cette routine sera changée bientôt
 <IF COND="[#RESUME:FR]">
 <META NAME="DC.Description" lang="fr" CONTENT="[(#RESUME:FR|textebrut)]">
 <ELSE/>
-<!--[ Ici, j'utilise une astuce : si pas de résumé, je cherche à faire passer]-->
-<!--[ comme résumé les 1500 premiers caractères du texte ou du texte d'intro]-->
+<!--[ Ici, j'utilise une astuce : si pas de rÃ©sumÃ©, je cherche Ã  faire passer]-->
+<!--[ comme rÃ©sumÃ© les 1500 premiers caractÃ¨res du texte ou du texte d'intro]-->
 <META NAME="DC.Description" lang="fr" CONTENT="[(#TEXTE|textebrut|couper(1500))]">
 </IF>
 <META NAME="DC.Description" lang="en" CONTENT="[(#RESUME:EN|textebrut)]">
@@ -1271,7 +1271,7 @@ Attention, cette routine sera changée bientôt
 
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
-<!--[ FONCTIONS RESERVEES AUX ADMINISTRATEURS, EDITEURS, REDAC., VISITEURS LOGUéS ]-->
+<!--[ FONCTIONS RESERVEES AUX ADMINISTRATEURS, EDITEURS, REDAC., VISITEURS LOGUÃ©S ]-->
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
 <!--[ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ]-->
 
@@ -1294,8 +1294,8 @@ Attention, cette routine sera changée bientôt
 </IF>
 </DEFMACRO>
 
-<!--[ affiche le statut et permet aux éditeurs de publier ]-->
-<!--[ Afin d'éviter de générer des 404 par erreur, la dépublication ne se fait pas ici ]-->
+<!--[ affiche le statut et permet aux Ã©diteurs de publier ]-->
+<!--[ Afin d'Ã©viter de gÃ©nÃ©rer des 404 par erreur, la dÃ©publication ne se fait pas ici ]-->
 
 <DEFMACRO NAME="OFFLINE_DOCUMENT">
 <IF COND="[#DROITEDITEUR]">
@@ -1313,7 +1313,7 @@ Attention, cette routine sera changée bientôt
 </IF>
 </DEFMACRO>
 
-<!--[ Affiche aux rédacteurs boutons pour changer l'ordre ]-->
+<!--[ Affiche aux rÃ©dacteurs boutons pour changer l'ordre ]-->
 <!--[ d'affichage des documents                           ]-->
 
 <DEFMACRO NAME="UP_DOWN_DOCUMENT">   
@@ -1331,7 +1331,7 @@ Attention, cette routine sera changée bientôt
 </IF>
 </DEFMACRO>
 
-<!--[ Affiche aux rédacteurs boutons pour changer l'ordre ]-->
+<!--[ Affiche aux rÃ©dacteurs boutons pour changer l'ordre ]-->
 <!--[ d'affichage des documents annexes                   ]-->
 <!--[ et pour modifier le document annexe ou se description ]-->
 

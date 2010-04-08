@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  */
@@ -52,14 +52,14 @@
 /**
  * Redimensionner une image
  *
- * <p>Cette fonction utilise la librairie GD de PHP. Il faut donc qu'elle soit installée pour
- * que cette fonction soit utilisable. Si la GD n'est pas installée, la fonction essayera avec Imagick, 
- * et retournera false si l'extension n'est pas installée</p>
+ * <p>Cette fonction utilise la librairie GD de PHP. Il faut donc qu'elle soit installÃ©e pour
+ * que cette fonction soit utilisable. Si la GD n'est pas installÃ©e, la fonction essayera avec Imagick, 
+ * et retournera false si l'extension n'est pas installÃ©e</p>
  *
- * @param string $taille la nouvelle taille de l'image. Peut être un entier ou une chaine représentant la longueur et la largeur
+ * @param string $taille la nouvelle taille de l'image. Peut Ãªtre un entier ou une chaine reprÃ©sentant la longueur et la largeur
  * @param string $src l'image source
- * @param string &$dest l'image redimensionnée
- * @return boolean true si l'image a bien pue être transformée.
+ * @param string &$dest l'image redimensionnÃ©e
+ * @return boolean true si l'image a bien pue Ãªtre transformÃ©e.
  */
 function resize_image($taille, $src, &$dest)
 {
@@ -127,7 +127,7 @@ function resize_image($taille, $src, &$dest)
 			return true;
 		}
 		else*/if (!($gdv = GDVersion())) {
-			return false; // Pas de Imagick ni de GD installé
+			return false; // Pas de Imagick ni de GD installÃ©
 		}
 
 		// cherche le type de l'image
@@ -160,7 +160,7 @@ function resize_image($taille, $src, &$dest)
 			$width = $result2[1] ? $result2[1] : $result[0];
 			$height = $result2[2] ? $result2[2] : $result[1];
 		}
-		if ($gdv >= 2) { //Sur la GD2 la version a changé
+		if ($gdv >= 2) { //Sur la GD2 la version a changÃ©
 			$im2 = @ImageCreateTrueColor($width, $height);
 			if (!$im2) {
 				return false;
@@ -205,10 +205,10 @@ function resize_image($taille, $src, &$dest)
 }
 
 /**
- * Récupère le numéro de version de la GD si celle-ci est installée
+ * RÃ©cupÃ¨re le numÃ©ro de version de la GD si celle-ci est installÃ©e
  * Get which version of GD is installed, if any.
  *
- * @return  la version (1 or 2) de l'extension GD installée
+ * @return  la version (1 or 2) de l'extension GD installÃ©e
  */
 function GDVersion()
 {

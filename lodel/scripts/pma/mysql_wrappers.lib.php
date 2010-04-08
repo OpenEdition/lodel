@@ -14,8 +14,8 @@
 if (!defined('PMA_MYSQL_WRAPPERS_LIB_INCLUDED')){
     define('PMA_MYSQL_WRAPPERS_LIB_INCLUDED', 1);
 /*
-certaines fonctions commentées le 22-01-09 par pierre-alain
-semblent ne pas être utilisée
+certaines fonctions commentÃ©es le 22-01-09 par pierre-alain
+semblent ne pas Ãªtre utilisÃ©e
 */
 /*
     function PMA_mysql_dbname($result, $row, $field = FALSE) {

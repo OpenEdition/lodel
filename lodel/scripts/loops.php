@@ -1,18 +1,18 @@
 <?php
 /**
- * Boucles Lodelscript prédéfinies
+ * Boucles Lodelscript prÃ©dÃ©finies
  * PHP versions 4 et 5, 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -633,9 +633,9 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 }
 
 /**
- * Parcours un tableau passé en argument de la LOOP : 
+ * Parcours un tableau passÃ© en argument de la LOOP : 
  * <LOOP NAME="foreach" ARRAY="[#MONARRAY]">
- * On considère que le tableau est passé par l'argument array
+ * On considÃ¨re que le tableau est passÃ© par l'argument array
  * 
  */
 function loop_foreach(&$context, $funcname, $arguments)
@@ -666,16 +666,16 @@ function loop_foreach(&$context, $funcname, $arguments)
 }
 
 /**
- * Liste les types compatibles pour une entité. Cette boucle permet de construire
- * la liste de modification du type d'une entité. 
+ * Liste les types compatibles pour une entitÃ©. Cette boucle permet de construire
+ * la liste de modification du type d'une entitÃ©. 
  * 
- * Elle vérifie les types que peut contenir le type parent (si on est pas à la racine).
- * Si l'entité contient des enfants, elle vérifie
+ * Elle vÃ©rifie les types que peut contenir le type parent (si on est pas Ã  la racine).
+ * Si l'entitÃ© contient des enfants, elle vÃ©rifie
  * aussi que les enfants peuvent contenir un type.
  *
- * @param array $context le contexte passé par référence
+ * @param array $context le contexte passÃ© par rÃ©fÃ©rence
  * @param string $funcname le nom de la fonction loop
- * @param array $arguments les arguments éventuels
+ * @param array $arguments les arguments Ã©ventuels
  */
 function loop_compatible_types(&$context, $funcname, $arguments)
 {
@@ -692,7 +692,7 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 		$types = $db->getArray($sql);
 		foreach ($types as $row) {
 			if(checkTypesCompatibility(0, $context['idparent'],$row['id'])) {
-				//pour chaque enfant il faut tester si il peut être contenu dans le type testé.
+				//pour chaque enfant il faut tester si il peut Ãªtre contenu dans le type testÃ©.
 				if(childCanBeInThisType($row['id'],$context['id'])) {
 					$compatible_types[] = $row;
 				}
@@ -719,23 +719,23 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 }
 
 /**
- * Test si un type $type peut être  appliqué à une entité $id suivant le type de ses enfants.
+ * Test si un type $type peut Ãªtre  appliquÃ© Ã  une entitÃ© $id suivant le type de ses enfants.
  *
- * Cette fonction est utilisée dans loop_compatible type
+ * Cette fonction est utilisÃ©e dans loop_compatible type
  *
  * @param integer $type l'identifiant du type
- * @param integer $id l'identifiant de l'entité
+ * @param integer $id l'identifiant de l'entitÃ©
  */
 function childCanBeInThisType($type,$id)
 {
 	global $db;
 	$id = (int)$id;
-	if($id == 0) { //si id = 0 cela veut dire qu'on est en création d'entité
+	if($id == 0) { //si id = 0 cela veut dire qu'on est en crÃ©ation d'entitÃ©
 		return true;
 	}
 	$sql = lq("SELECT id,idtype FROM #_TP_entities WHERE idparent='$id'");
 	$entities = $db->getArray($sql);
-	//pour chaque entité on teste si elle peut être contenu dans $type
+	//pour chaque entitÃ© on teste si elle peut Ãªtre contenu dans $type
 	foreach($entities as $entity) {
 		$query = lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='".$entity['idtype']."' AND identitytype2='".$type."'");
 		$condition = $db->getOne($query);
@@ -761,7 +761,7 @@ function loop_alphabet($context, $funcname)
 }
 
 /**
- * Boucle Lodelscript qui affiche la première lettre (distincte) de tous les tuples d'un champ
+ * Boucle Lodelscript qui affiche la premiÃ¨re lettre (distincte) de tous les tuples d'un champ
  *
  * @param array $context le contexte
  * @param string $funcname le nom de la fonction
@@ -810,7 +810,7 @@ function loop_alphabetSpec($context, $funcname)
 		call_user_func("code_do_$funcname", $context);
 	}
 	
-	// bug PHP : si on ne passe le tableau en référence, il modifie la derniere valeur du tableau et vire les références !!!
+	// bug PHP : si on ne passe le tableau en rÃ©fÃ©rence, il modifie la derniere valeur du tableau et vire les rÃ©fÃ©rences !!!
 	foreach($lettres as &$lettre) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
