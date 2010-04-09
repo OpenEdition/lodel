@@ -131,6 +131,8 @@ class TranslationsLogic extends Logic {
 
 	public function listAction(&$context,&$errro) 
 	{
+		include_once 'translationfunc.php';
+
 		$this->_setTextGroups($context);
 		if(!function_exists('loop_textgroups')) {
 		function loop_textgroups(&$context,$funcname)
@@ -148,7 +150,7 @@ class TranslationsLogic extends Logic {
 		{
 			global $db,$distincttexts,$alltexts_cache;
 			$context['textgroup'] = @$context['textgroup'];
-			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' AND lang IN (SELECT distinct(lang) FROM #_TP_translations) ORDER BY lang, name")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result=$db->execute(lq("SELECT * FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' AND lang IN (SELECT distinct(lang) FROM #_TP_translations) ORDER BY lang, name")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 			$distincttexts=array();
 			while(!$result->EOF) {
@@ -203,7 +205,7 @@ class TranslationsLogic extends Logic {
 						$result->MoveNext();
 					}
 				}
-				$row=$alltexts_cache[$lang][$context['name']];
+				$row=@$alltexts_cache[$lang][$context['name']];
 				$localcontext=$row ? array_merge($context,$row) : $context;
 				call_user_func("code_do_".$funcname,$localcontext);
 			}

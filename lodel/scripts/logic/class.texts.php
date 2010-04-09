@@ -77,13 +77,13 @@ class TextsLogic extends Logic
 		*/
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		$id = @$context['id'];
-		if ($id) {
-			// normal edit
-			$ret = parent::editAction($context,$error);
-            		clearcache();
-            		return $ret;
-		}
+// 		$id = @$context['id'];
+// 		if ($id) {
+// 			// normal edit
+// 			$ret = parent::editAction($context,$error);
+//             		clearcache();
+//             		return $ret;
+// 		}
 		$dao = $this->_getMainTableDAO();
 		// Sauvegarde massive
 		if (isset($context['contents']) && is_array($context['contents'])) {
@@ -130,6 +130,7 @@ class TextsLogic extends Logic
 			$vo->lang = @$context['lang'];
 			$vo->name = strtolower(@$context['name']);
 			$vo->textgroup = @$context['textgroup'];
+			$vo->id = @$context['id'];
 			if (!$vo->status) {
 				$vo->status=-1;
 			}

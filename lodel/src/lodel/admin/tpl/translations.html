@@ -42,36 +42,32 @@
 		</li>
 	</ul>
 </ul>
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
-	<br/>
-	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
-</div>
-<br /><br />
 
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+<table class="translations">
+	<CAPTION><h1>[@ADMIN.LIST_TRANSLATIONS_LANG]</h1></CAPTION>
+	<tr style="border:none;"><td colspan="4" style="text-align:right;border:none;"><a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>&nbsp;-&nbsp;<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a></td></tr>
 	<tr>
-		<td class="texte_noir_gras">[@COMMON.LANG]</td>
-		<td class="texte_noir_gras">[@LODELADMIN.CODE]</td>
-		<td>&nbsp;</td>
-		<td class="texte_noir_gras">[@LODELADMIN.TRANSLATE_GROUPS]</td>
+		<th>[@COMMON.LANG]</th>
+		<th>[@LODELADMIN.CODE]</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+<!--[		<th>[@LODELADMIN.TRANSLATE_GROUPS]</th>]-->
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
 			<IF COND="[#COUNT] % 2">
-				<tr class="ligne_admin1">
+				<tr class="line1">
 			<ELSE/>
-				<tr class="ligne_admin2">
+				<tr class="line2">
 			</IF>
 			<td>[#TITLE]</td>
 			<td>[#LANG]</td>
+			<td><MACRO NAME="EXPORTER_IMPORTER_TRANSLATION"></td>
 			<td style="color: #CC9933;" align="left">
 				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">&nbsp;
-				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">&nbsp;
-				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
+				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
 			</td>
+<!--[
 			<td>
 			<LET VAR="currentlang">[#LANG]</LET>
 			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
@@ -80,49 +76,83 @@
 				</a>&nbsp;
 			</LOOP>
 		  </td>
+]-->
 		</tr>
 		</DO>
 	</LOOP>
 </table>
 
-<hr/>
-<h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
+<LET ARRAY="statuses[]">-1</LET>
+<LET ARRAY="statuses[]">1</LET>
+<LET ARRAY="statuses[]">2</LET>
+
 <LOOP NAME="textgroups">
-	<h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
-	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<table class="translations" border="0" cellspacing="0" cellpadding="5">
+		<CAPTION><h1>Groupe [(#TEXTGROUP|strtoupper)]</h1></CAPTION>
 		<tr>
-			<td class="texte_noir_gras">[@COMMON.NAME]</td>
-				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="lang">
-					<td class="texte_noir_gras">[#LANG]</td>
-					<td>&nbsp;</td>
-				</LOOP>
-			<td>[@ADMIN.TEXT]</td>	
+			<th>[@COMMON.NAME]</th>
+			<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+				<th>
+					<a href="index.php?do=list&amp;lo=texts&amp;textgroup=[#TEXTGROUP]&amp;lang=[#LANG]">[#TITLE]</a>
+				</th>
+			</LOOP>
 		</tr>
+		<LET VAR="i" GLOBAL="1">0</LET>
 		<LOOP NAME="alltexts">
 		<DO>
-			<MACRO NAME="TR_LIST">
+			<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+			<tr class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
 			<td>
 				[(#NAME|strtoupper|cuttext(30))]
 			</td>
 			<LOOP NAME="lang_and_text">
 				<td>
-					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&amp;lo=texts&amp;id=[#ID]" onmouseover="document.getElementById('contents_[#NAME]').innerHTML='&quot; [#CONTENTS|addslashes] &quot;';" onmouseout="document.getElementById('contents_[#NAME]').innerHTML='';">E</a>
-				</td>
-				<td align="right">
-					<a href="index.php?do=delete&amp;lo=texts&amp;id=[#ID]">[@COMMON.DELETE](*)</a>
+					<a href="javascript:;" title="[@COMMON.MODIFY]" id="contents_[#ID]" onclick="display([#ID]);" style="color:[#STATUS|lodeltextcolor];"><IF COND="[#CONTENTS]">[#CONTENTS]<ELSE/>@[#NAME|strtolower]</IF></a>
+					<form id="form_[#ID]" class="hidden" action="index.php?do=edit&amp;lo=texts&amp;id=[#ID]" method="POST" enctype="application/x-www-form-urlencoded">
+						<textarea name="contents" rows="5" cols="50">[#CONTENTS]</textarea><br/>
+						<select name="status" class="select[#STATUS|lodeltextcolor]" onchange="selectchanged(this);">
+						<LOOP NAME="foreach" ARRAY="[#STATUSES]">
+							<option value="[#VALUE]" class="select[#VALUE|lodeltextcolor]"<IF COND="[#STATUS] EQ [#VALUE]"> selected="selected"</IF>>&nbsp;&nbsp;</option>
+						</LOOP>
+						</select>
+						<input type="hidden" name="lang" value="[#LANG]"/>
+						<input type="hidden" name="id" value="[#ID]"/>
+						<input type="hidden" name="lo" value="texts"/>
+						<input type="hidden" name="do" value="edit"/>
+						<input type="hidden" name="name" value="[#NAME|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
+						<input type="hidden" name="textgroup" value="[#TEXTGROUP|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
+						<input type="hidden" name="protected" value="<IF COND="abs([#STATUS]) ge 32">1<ELSE/>0</IF>"/>
+						<input type="submit" class="button" value="[@COMMON.MODIFY]"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.CANCEL]" onclick="display([#ID]);"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.DELETE]" onclick="window.location='index.php?lo=texts&amp;do=delete&amp;id=[#ID]';"/>
+					</form>
 				</td>
 			</LOOP>
-			<td id="contents_[#NAME]"></td>
+			</tr>
 		</DO>
 		</LOOP>
-		</table>
+	</table>
 </LOOP>
 <br /><br />
-<span class="texte_info">
-	(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT]<br />
-	[@LODELADMIN.HOWTO_LITTLETEXTS].
-</span>
+<span class="texte_info">(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT]<br />[@LODELADMIN.HOWTO_LITTLETEXTS].</span>
 <br /><br />
 <input class="form" type="button" value="[@COMMON.OK]"  onClick="javascript:window.location='index.php'">
-
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+<?php mkeditlodeltextJS(); ?>
+<script type="text/javascript">
+var display = function(id) {
+	var c = $('contents_'+id);
+	var f = $('form_'+id);
+	if(c && f) {
+		if(c.hasClass('hidden')) {
+			f.addClass('hidden');
+			c.removeClass('hidden');
+		} else {
+			c.addClass('hidden');
+			f.removeClass('hidden');
+		}
+	}
+};
+</script>
 <MACRO NAME="CLOSE_HTML">
