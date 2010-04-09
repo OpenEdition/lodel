@@ -150,7 +150,16 @@ class TranslationsLogic extends Logic {
 		{
 			global $db,$distincttexts,$alltexts_cache;
 			$context['textgroup'] = @$context['textgroup'];
-			$result=$db->execute(lq("SELECT t.* FROM #_TP_texts t JOIN #_TP_translations tr ON (t.lang=tr.lang AND t.textgroup=tr.textgroups) WHERE t.status>=-1 AND tr.status>=-1 AND t.textgroup='".$context['textgroup']."' ORDER BY tr.rank, t.name")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(defined('backoffice-lodeladmin'))
+			{
+				$sql = "SELECT t.* FROM #_TP_texts t JOIN #_TP_translations tr ON (t.lang=tr.lang) WHERE t.status>=-1 AND tr.status>=-1 AND t.textgroup='".$context['textgroup']."' ORDER BY tr.rank, t.name";
+			}
+			else
+			{
+				$sql = "SELECT t.* FROM #_TP_texts t JOIN #_TP_translations tr ON (t.lang=tr.lang AND t.textgroup=tr.textgroups) WHERE t.status>=-1 AND tr.status>=-1 AND t.textgroup='".$context['textgroup']."' ORDER BY tr.rank, t.name";
+			}
+
+			$result=$db->execute(lq($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 			$distincttexts=array();
 			while(!$result->EOF) {
