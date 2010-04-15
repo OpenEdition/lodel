@@ -158,9 +158,9 @@ function mysqldate($s, $type)
  */
 function mois($m)
 {
-	$m = strtolower(utf8_decode($m));
+	$m = strtolower($m);
 
-	switch (substr($m, 0, 3))	{
+	switch (mb_substr($m, 0, 3, 'UTF-8'))	{
 		case "jan" :
 			return 1;
 		case "fev" :
@@ -221,7 +221,6 @@ function mysqldatetime($s, $type = 'datetime')
 	if (!$s) {
 		return '';
 	}
-
 	if(('date' == $type && '0000-00-00' == $s) || ('datetime' == $type && '0000-00-00 00:00:00' == $s)) return $s;
 
 	if ($s == 'aujourd\'hui' || $s == 'today' || $s == 'maintenant' || $s == 'now') {
