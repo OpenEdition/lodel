@@ -1316,6 +1316,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
+		"\x20\x13" => "-"
 	);
 
 	$body = wordwrap(strtr($body, $replace), 70);
@@ -1408,6 +1409,7 @@ function getMimeType($ext)
 		case 'rtf': return 'application/rtf';
 		case 'tar': return 'application/x-tar';
 		case 'zip': return 'multipart/x-zip';
+		case 'epub': return 'application/x-zip';
 		case 'gzip': return 'multipart/x-gzip';
 		case 'htm':
 		case 'html': return 'text/html';
