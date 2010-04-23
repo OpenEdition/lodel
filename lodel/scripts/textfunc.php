@@ -853,13 +853,11 @@ function paranumber($texte, $styles='texte')
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
-	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
+	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*?<\/\\1>/s", "", $texte);
 	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
-
+	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/s';
 	// on récupère les paragraphes à numéroter
 	preg_match_all($regexp, $tmpTexte, $m);
-
 	// on effectue la numérotation et on remplace dans le texte
 	foreach($m[0] as $k=>$paragraphe) {
 		$tmpTexte2 = explode($paragraphe, $texte, 2);
@@ -980,6 +978,7 @@ function cleanBadChars($str){
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
+		"\x20\x13" => "-"
 	);
 	$str = HTML2XML($str);
 	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
