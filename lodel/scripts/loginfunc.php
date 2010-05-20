@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -78,7 +78,6 @@ function open_session($login, $name = null)
 	C::setUser($login, 'name');
 	// by default, we want the desk
 	C::setUser(true, 'desk');
-	$contextstr = addslashes(serialize(C::getC(null, 'lodeluser')));
 	$expire = $timeout + time();
 	$expire2 = time() + $cookietimeout;
 	// clean the url - nettoyage de l'url
@@ -127,9 +126,9 @@ function open_session($login, $name = null)
 
 
 /**
- * Vérifie que le login et le password sont bon pour le site concerné
+ * VÃ©rifie que le login et le password sont bon pour le site concernÃ©
  *
- * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
+ * En plus de vÃ©rifier qu'un utilisateur peut se connecter, cette fonction met en variables
  * globales les informations de l'utilisateur
  *
  * @param string $login le nom d'utilisateur
@@ -232,7 +231,7 @@ function check_auth($login, $passwd)
 		{
 			if(!function_exists('cleanEntities'))
 				include ('entitiesfunc.php');
-			cleanEntities(); // nettoyage de la table entities (supprime les entites à -64 modifiées il y a + de 12h)
+			cleanEntities(); // nettoyage de la table entities (supprime les entites Ã  -64 modifiÃ©es il y a + de 12h)
 		}
 
 		C::trigger('postlogin');
@@ -245,9 +244,9 @@ function check_auth($login, $passwd)
 }
 
 /**
- * Vérifie que le compte d'utilisateur n'a pas été suspendu
+ * VÃ©rifie que le compte d'utilisateur n'a pas Ã©tÃ© suspendu
  *
- * Si le status de l'utilisateur est égale à 10 (utilisateur suspendu) ou à 11 (utilisateur protégé suspendu), on retourne false, sinon true
+ * Si le status de l'utilisateur est Ã©gale Ã  10 (utilisateur suspendu) ou Ã  11 (utilisateur protÃ©gÃ© suspendu), on retourne false, sinon true
  *
  * @return boolean un booleen indiquant si le compte est suspendu (false) ou pas (true)
  */
@@ -264,7 +263,7 @@ function check_suspended()
             where id = '".C::get('id', 'lodeluser')."' AND username = '".C::get('name', 'lodeluser')."'"));
 	}
 	
-	//on a pas de status. Deux possibilités : soit cest pas la bonne base, soit l'utilisateur n'existe pas (deja vérifié avant, donc exclu)
+	//on a pas de status. Deux possibilitÃ©s : soit cest pas la bonne base, soit l'utilisateur n'existe pas (deja vÃ©rifiÃ© avant, donc exclu)
 	if(!$status) {
  		C::set('datab', DATABASE);
 		$status = $db->getOne(lq("
@@ -282,14 +281,14 @@ function check_suspended()
 /**
  * Modifie le mot de passe apres suspension d'un compte
  *
- * Permet à l'utilisateur ayant un compte suspendu de le réactiver en modifiant son mot de passe
+ * Permet Ã  l'utilisateur ayant un compte suspendu de le rÃ©activer en modifiant son mot de passe
  *
- * @param string $datab base de données à utiliser
+ * @param string $datab base de donnÃ©es Ã  utiliser
  * @param string $login le nom d'utilisateur
  * @param string $old_passwd l'ancien mot de passe
  * @param string $passwd le mot de passe
- * @param string $passwd2 vérif même mot de passe
- * @return string 3 retours possibles : true (mot de passe changé et compte réactivé), false (pas d'utilisateur correspondant), 'error_passwd' (le mot de passe n'est pas au bon format)
+ * @param string $passwd2 vÃ©rif mÃªme mot de passe
+ * @return string 3 retours possibles : true (mot de passe changÃ© et compte rÃ©activÃ©), false (pas d'utilisateur correspondant), 'error_passwd' (le mot de passe n'est pas au bon format)
  */
 function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 {
@@ -332,9 +331,9 @@ function change_passwd($datab, $login, $old_passwd, $passwd, $passwd2)
 }
 
 /**
- * Vérifie que le login et le password sont bon pour le site concerné
- * Concerne uniquement les accès restreints côté site
- * En plus de vérifier qu'un utilisateur peut se connecter, cette fonction met en variables
+ * VÃ©rifie que le login et le password sont bon pour le site concernÃ©
+ * Concerne uniquement les accÃ¨s restreints cÃ´tÃ© site
+ * En plus de vÃ©rifier qu'un utilisateur peut se connecter, cette fonction met en variables
  * globales les informations de l'utilisateur
  *
  * @param string $login le nom d'utilisateur
@@ -374,7 +373,7 @@ function check_auth_restricted($login, $passwd)
 }
 
 /**
- * Vérifie que le compte d'utilisateur restreint n'a pas expiré
+ * VÃ©rifie que le compte d'utilisateur restreint n'a pas expirÃ©
  *
  * @return boolean un booleen indiquant si le compte est suspendu (false) ou pas (true)
  */
@@ -397,7 +396,7 @@ function check_expiration()
 }
 
 /**
- * Vérifie la messagerie de l'utilisateur. S'il a un message avec priorité alors on redirige vers la messagerie
+ * VÃ©rifie la messagerie de l'utilisateur. S'il a un message avec prioritÃ© alors on redirige vers la messagerie
  *
  */
 function check_internal_messaging()
@@ -416,7 +415,7 @@ function check_internal_messaging()
 	} elseif(defined('backoffice-lodeladmin')) {
 		$url_retour .= 'index.php?do=list&lo=internal_messaging';
 	} else {
-		// où sommes-nous ??
+		// oÃ¹ sommes-nous ??
 		return false;
 	}
     

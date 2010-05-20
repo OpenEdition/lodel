@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -53,7 +53,7 @@
 
 
 /**
- * Nettoyage du répertoire de CACHE
+ * Nettoyage du rÃ©pertoire de CACHE
  *
  * Cette fonction appelle removefilesincache() si $allCache = true
  * @param bool $allCache
@@ -69,7 +69,7 @@ function clearcache($allCache=true)
 		}	else {
 			removefilesincache(".");
 		}
-	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
+	} else { // seules les donnÃ©es ont Ã©tÃ© modifiÃ©es : on supprime seulement les fichiers HTML mis en cache
 		if ($site) {
 			$options = C::get('cacheOptions', 'cfg');
 			$cache = new Cache_Lite($options);
@@ -94,10 +94,10 @@ function clearcache($allCache=true)
 }
 
 /**
- * Nettoyage des fichiers du répertoire de CACHE
+ * Nettoyage des fichiers du rÃ©pertoire de CACHE
  *
- * On ajoute le répertoire CACHE dans le code, ce qui empêche de détruire le contenu d'un autre
- * répertoire.
+ * On ajoute le rÃ©pertoire CACHE dans le code, ce qui empÃªche de dÃ©truire le contenu d'un autre
+ * rÃ©pertoire.
  */
 function removefilesincache()
 {
@@ -111,13 +111,13 @@ function removefilesincache()
 
 		if(!is_dir($rep)) continue;
 
-		// fichiers/répertoires gérés indépendament de cache_lite
+		// fichiers/rÃ©pertoires gÃ©rÃ©s indÃ©pendament de cache_lite
 		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
 		while (($file = readdir($fd)) !== false) {
 			if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching'))
 				continue;
 			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+			if (is_dir($file)) { //si c'est un rÃ©pertoire on execute la fonction rÃ©cursivement
 				removefilesincache($file);
 			} else {@unlink($file);}
 		}

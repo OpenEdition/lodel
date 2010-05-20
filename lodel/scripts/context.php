@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,26 +40,26 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
 
 
 /**
- * Classe gérant les accès en lecture/écriture dans le context
+ * Classe gÃ©rant les accÃ¨s en lecture/Ã©criture dans le context
  * This class manages the read/write from/into the context
  * 
  * Exemples :
  * Examples :
  * <code>
- * // la configuration ne peut être mise qu'une seule fois 
- * // et DOIT absolument doit être appellée afin que l'objet s'instancie
+ * // la configuration ne peut Ãªtre mise qu'une seule fois 
+ * // et DOIT absolument doit Ãªtre appellÃ©e afin que l'objet s'instancie
  * // configuration can only be set one time and HAS to be called first, it inits the object
  * $conf = array('dbusername'=>'user', 'dbpasswd'=>'passwd');
  * C::setCfg($conf); 
@@ -76,28 +76,28 @@
  *
  * @package lodel
  * @author Pierre-Alain Mignot
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaêl Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃªl Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.9
+ * @since Classe ajoutÃ©e depuis la version 0.9
  */
 
 /**
- * Classe gérant le context
+ * Classe gÃ©rant le context
  *
  * @package lodel
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
 class C
 {
@@ -149,7 +149,6 @@ class C
         	self::$filter = null;
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
-		self::$_triggers['included'] = array();
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
         	defined('SITEROOT') || define('SITEROOT', '');
        		function_exists('checkCacheDir') || include 'cachefunc.php';
@@ -211,7 +210,14 @@ class C
 				foreach($_GET as $k=>$v)
 				{
 					if('clearcache' !== $k && !('id' === $k && (int)$v === 0))
-					$uri .= $k."=".$v.'&';
+					{
+						if(is_array($v))
+						{
+							foreach($v as $kk => $vv)
+								$uri .= $k[$kk]."=".$vv.'&';
+						}
+						else $uri .= $k."=".$v.'&';
+					}
 				}
 			}
 		
@@ -220,7 +226,7 @@ class C
 		}
 		
 		self::$_context = $GLOBALS['context'] = array(); // (re)init context
-        
+
 		if(empty($request))
 		{
 			// POST only
@@ -401,6 +407,20 @@ class C
             		$trigObj->Close();
             		writeToCache('triggers', self::$_triggers);
 		}
+
+		// bootstrap for all activated plugins
+		foreach(self::$_triggers as $name=>$values)
+		{
+			if('trigger_' === substr($name, 0, 8)) continue;
+			
+			$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$name.'/'.$name.'.php');
+			if(!$file)
+			{
+				trigger_error('ERROR: invalid plugin '.$name, E_USER_WARNING);
+				continue;
+			}
+			include $file;
+		}
 	}
 
 	/**
@@ -415,18 +435,6 @@ class C
 
 		foreach(self::$_triggers['trigger_'.$name] as $trigger=>$hooktype)
 		{
-			if(!isset(self::$_triggers['included'][$trigger]))
-			{
-				$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php');
-				if(!$file)
-				{
-					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
-					continue;
-				}
-				include_once $file;
-				self::$_triggers['included'][$trigger] = true;
-			}
-            
 			switch($hooktype)
 			{
 				case 'class':
@@ -640,7 +648,7 @@ class C
 			// custom personnal filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
 
-			if(!empty($filters)) $config->set('Filter', 'Custom', $filters);
+			if(!empty($filters)) $config->set('Filter.Custom', $filters);
 
 			$config->set('Core.Encoding', 'UTF-8');
 			$config->set('HTML.TidyLevel', 'heavy' );
@@ -670,40 +678,6 @@ class C
 		$data = self::$filter->purify($data);
 		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
 		return true;
-	}
-}
-
-/**
- * Classe représentant les données d'une requête
- *
- * @package lodel
- * @author Pierre-Alain Mignot
- * @copyright 2001-2002, Ghislain Picard, Marin Dacos
- * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
- */
-class Context extends ArrayObject
-{
-	public function __construct(array &$datas)
-	{
-		parent::__construct($datas, self::ARRAY_AS_PROPS);
-	}
-
-	public function __get($var)
-	{
-		return $this->offsetGet($var);
-	}
-
-	public function __set($var, $value)
-	{
-		return $this->offsetSet($var, $value);
 	}
 }
 

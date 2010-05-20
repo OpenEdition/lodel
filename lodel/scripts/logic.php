@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -41,24 +41,24 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
 /**
- * Classe des logiques métiers.
+ * Classe des logiques mÃ©tiers.
  * 
- * <p>Cette classe définit les actions de base des différentes logiques métiers utilisées dans Lodel.
- * Elle est la classe 'mère' des logiques métiers se trouvant dans le répertoire /logic.
- * Elles est aussi la liaison entre la couche d'abstraction de la base de données (DAO/VO) et la
+ * <p>Cette classe dÃ©finit les actions de base des diffÃ©rentes logiques mÃ©tiers utilisÃ©es dans Lodel.
+ * Elle est la classe 'mÃ¨re' des logiques mÃ©tiers se trouvant dans le rÃ©pertoire /logic.
+ * Elles est aussi la liaison entre la couche d'abstraction de la base de donnÃ©es (DAO/VO) et la
  * vue</p>.
  *
  * @package lodel
@@ -66,15 +66,15 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @see controler.php
  * @see view.php
  */
@@ -92,7 +92,7 @@ class Logic
 	protected $maintable;
 
 	/**
-	 * critère SQL du rang
+	 * critÃ¨re SQL du rang
 	 * Give the SQL criteria which make a group from the ranking point of view.
 	 * @var string
 	 */
@@ -138,15 +138,15 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de l'action permettant d'appeler l'affichage d'un objet.
+	 * ImplÃ©mentation par dÃ©faut de l'action permettant d'appeler l'affichage d'un objet.
 	 *
-	 * Cette fonction récupère les données de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
-	 * met ces données dans le context (utilisation de la fonction privée _populateContext())
+	 * Cette fonction rÃ©cupÃ¨re les donnÃ©es de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
+	 * met ces donnÃ©es dans le context (utilisation de la fonction privÃ©e _populateContext())
 	 * 
 	 * view an object Action
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function viewAction(&$context, &$error)
 	{
@@ -162,21 +162,21 @@ class Logic
 		if('tablefields' == $this->maintable && !empty($context['mask'])) {
 			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
 		}
-		//ajout d'informations supplémentaires dans le contexte (éventuellement)
+		//ajout d'informations supplÃ©mentaires dans le contexte (Ã©ventuellement)
 		$ret=$this->_populateContextRelatedTables($vo, $context); 
 
 		return $ret ? $ret : "_ok";
 	}
 
 	/**
-	 * Implémentation par défaut de l'action de copie d'un objet.
-	 * Récupère l'objet que l'on veut créer et le copie en ajoutant un prefixe devant.
+	 * ImplÃ©mentation par dÃ©faut de l'action de copie d'un objet.
+	 * RÃ©cupÃ¨re l'objet que l'on veut crÃ©er et le copie en ajoutant un prefixe devant.
 	 *
 	 * copy an object Action
 	 *
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function copyAction(&$context, &$error)
 	{
@@ -197,18 +197,18 @@ class Logic
 	}
 
 	/**
-	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 * ImplÃ©menation de l'action d'ajout ou d'Ã©dition d'un objet.
 	 *
-	 * <p>Cette fonction crée un nouvel objet ou édite un objet existant. Dans un premier temps les
-	 * données sont validées (suivant leur type) puis elles sont rentrées dans la base de données <em>via</em> la DAO associée à l'objet.
-	 * Utilise _prepareEdit() pour effectuer des opérations de préparation avant l'édition de l'objet puis _populateContext() pour ajouter des informations supplémentaires au context. Et enfin _saveRelatedTables() pour sauver d'éventuelles informations dans des tables liées.
+	 * <p>Cette fonction crÃ©e un nouvel objet ou Ã©dite un objet existant. Dans un premier temps les
+	 * donnÃ©es sont validÃ©es (suivant leur type) puis elles sont rentrÃ©es dans la base de donnÃ©es <em>via</em> la DAO associÃ©e Ã  l'objet.
+	 * Utilise _prepareEdit() pour effectuer des opÃ©rations de prÃ©paration avant l'Ã©dition de l'objet puis _populateContext() pour ajouter des informations supplÃ©mentaires au context. Et enfin _saveRelatedTables() pour sauver d'Ã©ventuelles informations dans des tables liÃ©es.
 	 * </p>
 	
 	 * add/edit Action
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les donnÃ©es (par dÃ©faut Ã  false).
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{
@@ -231,7 +231,7 @@ class Logic
 			$vo = $dao->createObject();
 		}
 		if (isset($dao->rights['protect'])) {
-			$vo->protect = isset($context['protect']) && $context['protect'] ? 1 : 0;
+			$vo->protect = isset($context['protected']) && $context['protected'] ? 1 : 0;
 		}
 		// put the context into 
 		$this->_populateObject($vo, $context);
@@ -245,19 +245,19 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de l'action qui permet de changer le rang d'un objet. 
+	 * ImplÃ©mentation par dÃ©faut de l'action qui permet de changer le rang d'un objet. 
 	 * 
-	 * Cette action modifie la rang (rank) d'un objet. Peut-être restreinte à un status particulier
-	 * et à un étage particulier (groupe).
+	 * Cette action modifie la rang (rank) d'un objet. Peut-Ãªtre restreinte Ã  un status particulier
+	 * et Ã  un Ã©tage particulier (groupe).
 	 *
 	 * Change rank action
 	 * Default implementation
 	 *
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @param string $groupfields champ de groupe. Utilisé pour limité le changement de rang à un étage. Par défaut vide.
-	 * @param string $status utilisé pour changer le rang d'objets ayant un status particulier. il s'agit d'une condition. Par défaut est : status>0
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param string $groupfields champ de groupe. UtilisÃ© pour limitÃ© le changement de rang Ã  un Ã©tage. Par dÃ©faut vide.
+	 * @param string $status utilisÃ© pour changer le rang d'objets ayant un status particulier. il s'agit d'une condition. Par dÃ©faut est : status>0
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
@@ -279,14 +279,14 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de l'action qui permet de supprimer un objet.
-	 * <p>Cette action vérifie tout d'abord que l'objet peut-être supprimé puis prépare
+	 * ImplÃ©mentation par dÃ©faut de l'action qui permet de supprimer un objet.
+	 * <p>Cette action vÃ©rifie tout d'abord que l'objet peut-Ãªtre supprimÃ© puis prÃ©pare
 	 * la suppression (fonction _prepareDelete()) et enfin utilise la DAO pour supprimer l'objet</p>
 	 * Delete
 	 * Default implementation
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function deleteAction(&$context, &$error)
 	{
@@ -307,13 +307,13 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de la fonction right
+	 * ImplÃ©mentation par dÃ©faut de la fonction right
 	 * 
-	 * Cette fonction permet de retourner les droits pour un niveau d'accès particulier
+	 * Cette fonction permet de retourner les droits pour un niveau d'accÃ¨s particulier
 	 * 
 	 * Return the right for a given kind of access
-	 * @param string $access le niveau d'accès
-	 * @return integer entier représentant le droit pour l'accès demandé.
+	 * @param string $access le niveau d'accÃ¨s
+	 * @return integer entier reprÃ©sentant le droit pour l'accÃ¨s demandÃ©.
 	 */
 	public function rights($access) 
 	{
@@ -321,14 +321,14 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de isdeletelocked()
+	 * ImplÃ©mentation par dÃ©faut de isdeletelocked()
 	 *
-	 * Indique si un objet donné est supprimable pour l'utilisateur courant.
+	 * Indique si un objet donnÃ© est supprimable pour l'utilisateur courant.
 	 *
 	 * Say whether an object (given by its id and status if possible) is deletable by the current user or not
-	 * @param integer $id l'identifiant numérique de l'objet
-	 * @param integer $status status de l'objet. Par défaut vaut 0.
-	 * @return boolean un booléen indiquant si l'objet peut être supprimé.
+	 * @param integer $id l'identifiant numÃ©rique de l'objet
+	 * @param integer $status status de l'objet. Par dÃ©faut vaut 0.
+	 * @return boolean un boolÃ©en indiquant si l'objet peut Ãªtre supprimÃ©.
 	 */
 	public function isdeletelocked($id, $status=0)
 	{
@@ -370,32 +370,69 @@ class Logic
 			$dir = $dir == "up" ? -1 : 1;
  		}
 
-		$desc = $dir>0 ? "" : "DESC";
-
 		$dao = $this->_getMainTableDAO();
-		$vos = $dao->findMany($criteria, "rank $desc, id $desc", "id, rank");
-
-		$count = count($vos);
-		$newrank = $dir>0 ? 1 : $count;
-		for ($i = 0 ; $i < $count ; $i++) {
-			if ($vos[$i]->id == $id) {
-				// exchange with the next if it exists
-				if (!isset($vos[$i+1])) {
-					break;
+		$vos = $dao->findMany($criteria, "rank", "id, rank");
+		$rankedvos = array();
+		$rank = 1;
+		foreach($vos as $vo)
+		{
+			if($vo->id == $id)
+			{
+				if(!isset($rankedvos[$rank + $dir]))
+					$rankedvos[$rank + $dir] = $vo;
+				else
+				{
+					$rankedvos[$rank+$dir+1] = $rankedvos[$rank + $dir];
+					$rankedvos[$rank+$dir] = $vo;
 				}
-				$vos[$i+1]->rank = $newrank;
-				$dao->save($vos[$i+1]);
-				$newrank+= $dir;
+				$rank -= $dir;
 			}
-			if ($vos[$i]->rank != $newrank) { // rebuild the rank if necessary
-				$vos[$i]->rank = $newrank;
-				$dao->save($vos[$i]);
-			}
-			if ($vos[$i]->id == $id) {
-				++$i;
-			}
-			$newrank+= $dir;
+			elseif(!isset($rankedvos[$rank]))
+				$rankedvos[$rank] = $vo;
+			elseif(!isset($rankedvos[$rank+$dir]))
+				$rankedvos[$rank+$dir] = $vo;
+			else $rankedvos[$rank+2*$dir] = $vo;
+
+			++$rank;
 		}
+
+		if(count($rankedvos) !== count($vos))
+			trigger_error('ERROR: Logic::_changeRank error, please report this bug to lodel@lodel.org', E_USER_ERROR);
+
+		foreach($rankedvos as $k=>$vo)
+		{
+			$vo->rank = $k;
+			$dao->save($vo);
+		}
+
+		return;
+
+// 		$desc = $dir>0 ? "" : "DESC";
+// 
+// 		$dao = $this->_getMainTableDAO();
+// 		$vos = $dao->findMany($criteria, "rank $desc, id $desc", "id, rank");
+// 
+// 		$count = count($vos);
+// 		$newrank = $dir>0 ? 1 : $count;
+// 		for ($i = 0 ; $i < $count ; $i++) {
+// 			if ($vos[$i]->id == $id) {
+// 				// exchange with the next if it exists
+// 				if (!isset($vos[$i+1])) {
+// 					break;
+// 				}
+// 				$vos[$i+1]->rank = $newrank;
+// 				$dao->save($vos[$i+1]);
+// 				$newrank+= $dir;
+// 			}
+// 			if ($vos[$i]->rank != $newrank) { // rebuild the rank if necessary
+// 				$vos[$i]->rank = $newrank;
+// 				$dao->save($vos[$i]);
+// 			}
+// 			if ($vos[$i]->id == $id) {
+// 				++$i;
+// 			}
+// 			$newrank+= $dir;
+// 		}
 	}
 
 	/**
@@ -406,8 +443,8 @@ class Logic
 	{
 		global $db;
 		
-		// Noms des logics qui sont traitées par des formulaires dans lesquels il y a des champs de type file ou image, et qui ont besoin d'un traitement particulier pour ces champs (i.e. pas des docs annexes)
-		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
+		// Noms des logics qui sont traitÃ©es par des formulaires dans lesquels il y a des champs de type file ou image, et qui ont besoin d'un traitement particulier pour ces champs (i.e. pas des docs annexes)
+		// Ne concerne que la partie admin de l'interface, ajoutÃ© pour les icÃ´nes liÃ©es aux classes et aux types
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
 		$adminFormLogics = array ('classes', 'entrytypes', 'persontypes', 'types');
 		function_exists('validfield') || include "validfunc.php";
@@ -427,7 +464,7 @@ class Logic
 				if (($type == "image" || $type == "file") && in_array($this->maintable, $adminFormLogics)){
 					// traitement particulier des champs de type file et images dans les formulaires de la partie admin
 					
-					// répertoire de destination pour les fichiers et les images : array ($field, $répertoire)
+					// rÃ©pertoire de destination pour les fichiers et les images : array ($field, $rÃ©pertoire)
 					$directory =array ('icon' => 'lodel/icons');
 					$valid = validfield($context[$field], $type, "",$field, "", $directory[$field]);
 				} else {
@@ -476,10 +513,10 @@ class Logic
 	}
 
 	/**
-	 * Crée le masque (regexp) en fonction du masque rentré dans l'interface
+	 * CrÃ©e le masque (regexp) en fonction du masque rentrÃ© dans l'interface
 	 *
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
 	 */
 	protected function _makeMask(&$context, &$error)
 	{
@@ -801,16 +838,16 @@ class Logic
 	}
 
 	/**
-	 * Vérification de la valeur du statut (champ status dans les tables)
-	 * @param int $status la valeur du statut à insérer dans la base
-	 * @return bool true si le paramètre $status correspond à une valeur autorisée, sinon déclenche une erreur php
+	 * VÃ©rification de la valeur du statut (champ status dans les tables)
+	 * @param int $status la valeur du statut Ã  insÃ©rer dans la base
+	 * @return bool true si le paramÃ¨tre $status correspond Ã  une valeur autorisÃ©e, sinon dÃ©clenche une erreur php
 	 */
 	protected function _isAuthorizedStatus($status)
 	{
 	//echo $this->maintable . '<p>' . $status . '<p>';
 		switch ($this->maintable) {
 			case 'entities' :
-				$this->_authorizedStatus = array(-64, -8, -1, 1, 8, 17, 24);
+				$this->_authorizedStatus = C::get('temporary', 'lodeluser') ? array(-1) : array(-64, -8, -1, 1, 8, 17, 24);
 				break;
 			case 'persons' :
 			case 'entries' :

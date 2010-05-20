@@ -76,9 +76,3 @@ if ( CKEDITOR.env.ie )
 	}
 }
 */
-
-/**
- * Fired when a CKEDITOR core object is fully loaded and ready for interaction.
- * @name CKEDITOR#loaded
- * @event
- */

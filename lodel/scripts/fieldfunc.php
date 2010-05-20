@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier de définition des types de champs de Lodel
+ * Fichier de dÃ©finition des types de champs de Lodel
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,25 +40,25 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
-//Gestion des champs génériques
+//Gestion des champs gÃ©nÃ©riques
 
-// Champs génériques pour les types d'index
+// Champs gÃ©nÃ©riques pour les types d'index
 $GLOBALS['g_entrytypes_fields'] = array ('DC.Subject', 'DC.Coverage', 'DC.Rights', 'oai.set');
-// Champs génériques pour les types d'index de personnes
+// Champs gÃ©nÃ©riques pour les types d'index de personnes
 $GLOBALS['g_persontypes_fields'] = array('DC.Creator', 'DC.Contributor');
-//Champs génériques pour les entités
+//Champs gÃ©nÃ©riques pour les entitÃ©s
 $GLOBALS['g_entities_fields'] = array(
 					// Champs Dublin Core
 					'DC.Title',
@@ -88,11 +88,11 @@ $GLOBALS['g_entities_fields'] = array(
 					'DCTERMS.ISSN',
 					'DCTERMS.EISSN',
 					'generic_icon');
-//Champs génériques pour les entrées d'index
+//Champs gÃ©nÃ©riques pour les entrÃ©es d'index
 $GLOBALS['g_entries_fields'] = array('Index key');
-//Champs génériques pour les entrées d'index de personnes
+//Champs gÃ©nÃ©riques pour les entrÃ©es d'index de personnes
 $GLOBALS['g_persons_fields'] = array('Firstname', 'Familyname', 'Title');
-//Champs génériques pour les champs liés aux personnes et aux entités
+//Champs gÃ©nÃ©riques pour les champs liÃ©s aux personnes et aux entitÃ©s
 $GLOBALS['g_entities_persons_fields'] = array('Title');
 
 
@@ -130,9 +130,9 @@ $GLOBALS['g_entities_persons_fields'] = array('Title');
 
 // le style doit etre parfaitement valide
 /**
- * Décode le style multilingue - détection de la langue
- * @param string $style le ou les styles à décoder 
- * @return un tableau contenant la liste des styles décodés
+ * DÃ©code le style multilingue - dÃ©tection de la langue
+ * @param string $style le ou les styles Ã  dÃ©coder 
+ * @return un tableau contenant la liste des styles dÃ©codÃ©s
  */
 function decode_mlstyle($style)
 {
@@ -154,10 +154,10 @@ function decode_mlstyle($style)
 }
 
 /**
- * Indique si un mot est un mot réservé par Lodel
+ * Indique si un mot est un mot rÃ©servÃ© par Lodel
  *
  * @param string $name le mot
- * @return boolean un booleen indiquant si le mot est reservé ou non
+ * @return boolean un booleen indiquant si le mot est reservÃ© ou non
  */
 function reservedword($name)
 {
@@ -199,8 +199,8 @@ function reservedword($name)
 		'UTC_TIME', 'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 
 		'VARCHARACTER', 'VARYING', 'WARNINGS', 'WHEN', 'WHERE', 'WHILE', 
 		'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL',
-		# reservés par LODEL
-		'STATUS', 'RANK', 'CLASS', 'TYPE', 'ID', 'IDENTITY', 'IDRELATION', 'IDPARENT', 'IDTYPE', 'IDUSER', 'IDPERSON', 'IDENTRY', 'ERROR', 'TPL', 'TPLCREATION', 'TPLEDITION', 'EDIT',);
+		# reservÃ©s par LODEL
+		'STATUS', 'RANK', 'CLASS', 'TYPE', 'ID', 'IDENTITY', 'IDRELATION', 'IDPARENT', 'IDTYPE', 'IDUSER', 'IDPERSON', 'IDENTRY', 'ERROR', 'TPL', 'TPLCREATION', 'TPLEDITION', 'EDIT', 'FORMAT', 'PAGE', 'DO', 'LO');
 	}
 	return (in_array(strtoupper($name), $reserved_words));
 }

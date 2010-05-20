@@ -27,12 +27,14 @@ CKEDITOR.plugins.add( 'format',
 			{
 				label : lang.label,
 				title : lang.panelTitle,
+				voiceLabel : lang.voiceLabel,
 				className : 'cke_format',
+				multiSelect : false,
+
 				panel :
 				{
 					css : editor.skin.editor.css.concat( config.contentsCss ),
-					multiSelect : false,
-					attributes : { 'aria-label' : lang.panelTitle }
+					voiceLabel : lang.panelVoiceLabel
 				},
 
 				init : function()

@@ -111,7 +111,6 @@ $events['instanceReady'] = 'function (evt) {
 // Create second instance.
 $CKEditor->editor("editor2", $initialValue, $config, $events);
 ?>
-			<p>
 				<input type="submit" value="Submit"/>
 			</p>
 		</form>

@@ -11,9 +11,7 @@ CKEDITOR.plugins.add( 'domiterator' );
 
 (function()
 {
-	/**
-	 * @name CKEDITOR.dom.iterator
-	 */
+
 	function iterator( range )
 	{
 		if ( arguments.length < 1 )

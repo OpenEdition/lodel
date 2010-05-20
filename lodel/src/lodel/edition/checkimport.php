@@ -1,6 +1,6 @@
 <?php
 /**
- * Vérification d'un import
+ * VÃ©rification d'un import
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source/lodel/edition
@@ -55,89 +55,28 @@ require 'siteconfig.php';
 
 try
 {
-	include 'auth.php';
-	authenticate(LEVEL_REDACTOR);
-	
-	include 'taskfunc.php';
-	include 'xmlimport.php';
-	include 'class.checkImportHandler.php';
-	$idtask = (int)C::get('idtask');
-	$task              = gettask($idtask);
-	$context['reload'] = (bool)C::get('reload');
-	gettypeandclassfromtask($task, $context);
-
-	$context = array_merge($context, unserialize(base64_decode(file_get_contents($task['fichier']))));
-	$context['idtype'] = $task['idtype'];
-	if(!empty($context['contents']['entries']))
-		$context['entries'] = $context['contents']['entries'];
-	if(!empty($context['contents']['persons']))
-		$context['persons'] = $context['contents']['persons'];
-	if(!empty($context['contents']['entities']))
-		$context['relations'] = $context['contents']['entities'];
-	
-	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities']);
-	
-	$node = null;
-	if(!empty($context['otxreport']))
-	{
-		$reader = new XMLReader(); // parse OTX logs
-    	$reader->XML($context['otxreport'], 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
-    	$tree = array();
-    	$isMetas = 0;
-    	$nbItem = 0;
-    	while($reader->read())
-    	{
-    		if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
-    		('document-meta' !== $reader->localName && !$isMetas)) continue;
-    		
-    		++$isMetas;
-    		
-    		if(XMLReader::ELEMENT === $reader->nodeType)
-    		{
-    			if('document-meta' === $reader->localName)
-    			{
-    				$context['otx_report'][++$nbItem] = array();
-    				continue;
-    			}
-    			$tree[] = $reader->localName;
-    			$node =& $context['otx_report'][$nbItem];
-    			foreach($tree as $t)
-    			{
-    				isset($node[$t]) || $node[$t] = array();
-    				$node =& $node[$t];
-    			}
-    			
-    			if($reader->isEmptyElement)
-    			{
-    				array_pop($tree);
-    				$node = array();
-    				if($reader->hasAttributes)
-    				{
-    					$reader->moveToFirstAttribute();
-    					do
-    					{
-    						$node[$reader->localName] = $reader->value;
-    					} while($reader->moveToNextAttribute());
-    				}
-    			}
-    			else $node = '';
-    		}
-    		elseif(XMLReader::END_ELEMENT === $reader->nodeType)
-    		{
-    			if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
-    			('document-meta' !== $reader->localName && !$isMetas)) continue;
-    			array_pop($tree);
-    			if('document-meta' === $reader->localName) --$isMetas;
-    		}
-    		elseif(XMLReader::TEXT === $reader->nodeType)
-    		{
-    			$node .= $reader->value;
-    		}
-    	}
-    	$reader->close();
-	}	
-	$context['multidoc'] = $task['multidoc'] ? true : false;
-	View::getView()->render('checkimport');
+    include 'auth.php';
+    authenticate(LEVEL_REDACTOR);
+    
+    include 'taskfunc.php';
+    include 'xmlimport.php';
+    include 'class.checkImportHandler.php';
+    $idtask = (int)C::get('idtask');
+    $task              = gettask($idtask);
+    $context['reload'] = (bool)C::get('reload');
+    gettypeandclassfromtask($task, $context);
+    
+    $text = file_get_contents($task['fichier']);
+    
+    $handler = new XMLImportHandler();
+    $parser  = new XMLImportParser();
+    $parser->init($context['class']);
+    $parser->parse($text, $handler);
+    
+    $context['tablecontents'] = $handler->contents();
+    $context['multidoc']      = isset($handler->multidoc) ? $handler->multidoc : false;
+    
+    View::getView()->render('checkimport');
 }
 catch(LodelException $e)
 {

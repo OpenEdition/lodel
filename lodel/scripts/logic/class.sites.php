@@ -31,14 +31,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
@@ -52,14 +52,14 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class SitesLogic extends Logic 
@@ -76,7 +76,7 @@ class SitesLogic extends Logic
 	/**
 	 * Construction des balises select HTML pour cet objet
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @param string $var le nom de la variable du select
 	 */
 	public function makeSelect(&$context, $var)
@@ -88,10 +88,10 @@ class SitesLogic extends Logic
 	/**
 	 * Bloque un site
 	 *
-	 * Met le status d'un site à 32
+	 * Met le status d'un site Ã  32
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function lockAction(&$context, &$error)
 	{
@@ -101,12 +101,12 @@ class SitesLogic extends Logic
 	}
 
 	/**
-	 * Débloque un site
+	 * DÃ©bloque un site
 	 *
-	 * Met le status d'un site à 1
+	 * Met le status d'un site Ã  1
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function unlockAction(&$context, &$error)
 	{
@@ -117,7 +117,7 @@ class SitesLogic extends Logic
 
 
 	/**
-	 * Bloque ou débloque
+	 * Bloque ou dÃ©bloque
 	 *
 	 * @access private
 	 * @param integer $id identifiant du site
@@ -151,7 +151,7 @@ class SitesLogic extends Logic
 			$db->execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			unlock();
 
-		} else if ($action == 'unlock') { // Déverouillage du site
+		} else if ($action == 'unlock') { // DÃ©verouillage du site
 
 			$db->execute(lq("UPDATE #_MTP_sites SET status = 1 WHERE $critere")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			//deverouille les tables

@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -140,7 +140,7 @@ function cut_without_tags($text, $length, $dots=false)
 // 	$last_space_position = mb_strrpos($text2, " ", $encoding);
 	
 // 	if (!($last_space_position === false)) {
-		// supprime le dernier espace et tout ce qu'il y a derrière
+		// supprime le dernier espace et tout ce qu'il y a derriÃ¨re
 		//$text2 = substr($text2, 0, $last_space_position);
 		$text2 = rtrim($text2);
 // 	}
@@ -363,7 +363,7 @@ function vignette($text, $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	function_exists('resize_image') || include("images.php");
-	if (!resize_image($width, $text, $vignettefile, "+"))
+	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
 }
@@ -427,7 +427,7 @@ function removeimages($text)
 }
 
 /**
-* Fonction qui enleve les tags spécifiés
+* Fonction qui enleve les tags spÃ©cifiÃ©s
 */
 
 function removetags($text, $tags)
@@ -458,7 +458,7 @@ function isadate($text)
 }
 
 /**
- * Fonction qui remplace les guillemets d'un texte par leur name d'entité (&quot;)
+ * Fonction qui remplace les guillemets d'un texte par leur name d'entitÃ© (&quot;)
  */
 function replacequotationmark($text)
 {
@@ -502,12 +502,12 @@ function eq($str, $texte)
 }
 
 /**
- * Fonction permettant de récupérer les notes du texte
+ * Fonction permettant de rÃ©cupÃ©rer les notes du texte
  *
  * @author Mickael Sellapin
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à parser
- * @param var $type type des notes présentes dans le texte
+ * @param string $texte le texte Ã  parser
+ * @param var $type type des notes prÃ©sentes dans le texte
  */
 
 function notes($texte, $type)
@@ -518,10 +518,10 @@ function notes($texte, $type)
 	$notere = '<a\b[^>]+class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
-			case 1: // seulement les astérisques
+			case 1: // seulement les astÃ©risques
 				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
 				break;
-			case 2: // astérisques et lettres
+			case 2: // astÃ©risques et lettres
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[a-zA-Z]+\]?)<\/a>/i', $results[0]);
 				break;
 			case 3: // seulement les lettres
@@ -536,7 +536,7 @@ function notes($texte, $type)
 			case 6: // seulement les nombres
 				$notes = preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i', $results[0]);
 				break;
-			case 7: // nombres et astérisques
+			case 7: // nombres et astÃ©risques
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[0-9]+\]?)<\/a>/i', $results[0]);
 				break;
 			default:
@@ -677,7 +677,7 @@ function today_with_hour()
 }
 
 /**
- * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
+ * Retourne le texte si la date est dÃ©passÃ©e, sinon retourne une chaine vide.
  */
 
 function hideifearlier($text, $date)
@@ -812,7 +812,7 @@ function defaultvalue($var1, $var2)
 
 
 /**
- * Fonction utilisée ci dessous pour la numérotation des paragraphes
+ * Fonction utilisÃ©e ci dessous pour la numÃ©rotation des paragraphes
  */
 
 function replacement($arg0, $arg1, $arg2, $arg3)
@@ -830,14 +830,14 @@ function replacement($arg0, $arg1, $arg2, $arg3)
  * Filtre de numerotation des paragraphes
  * 
  * Ajoute un <span class="paranumber"> contenant une ancre avec le numero du paragraphe
- * aux paragraphes ayant le style texte par défaut.
+ * aux paragraphes ayant le style texte par dÃ©faut.
  *
- * Les paramètres sont modifiables dans le template et écrasent les paramètres par défaut.
+ * Les paramÃ¨tres sont modifiables dans le template et Ã©crasent les paramÃ¨tres par dÃ©faut.
  *
  * @author Mickael Sellapin
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à numéroter passé par référence
- * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
+ * @param string $texte le texte Ã  numÃ©roter passÃ© par rÃ©fÃ©rence
+ * @param string $styles chaine contenant les styles par dÃ©faut ou s'applique la numerotation (les styles sont separes par des ";")
  */
 function paranumber($texte, $styles='texte')
 {
@@ -852,15 +852,13 @@ function paranumber($texte, $styles='texte')
 	for($i=1; $i < $length_tab_classes; $i++) {
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
-	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
-	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
+	// on veut pas de numÃ©rotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
+	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*?<\/\\1>/s", "", $texte);
 	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
-
-	// on récupère les paragraphes à numéroter
+	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/s';
+	// on rÃ©cupÃ¨re les paragraphes Ã  numÃ©roter
 	preg_match_all($regexp, $tmpTexte, $m);
-
-	// on effectue la numérotation et on remplace dans le texte
+	// on effectue la numÃ©rotation et on remplace dans le texte
 	foreach($m[0] as $k=>$paragraphe) {
 		$tmpTexte2 = explode($paragraphe, $texte, 2);
 		$texte = $tmpTexte2[0].str_replace($paragraphe, replacement($m[1][$k], $m[3][$k], $m[4][$k], $m[5][$k]), $paragraphe).$tmpTexte2[1];
@@ -869,8 +867,8 @@ function paranumber($texte, $styles='texte')
 }
 
 
-/** renvoie le type mime d'un fichier par le système (a+ windows)
-* @author Bruno Cénou
+/** renvoie le type mime d'un fichier par le systÃ¨me (a+ windows)
+* @author Bruno CÃ©nou
 * @param  string $filename le nom du fichier
 * @param bool $return 
 */
@@ -884,7 +882,7 @@ function getFileMime($filename, $return=false){
 
 
 /** renvoie le type seul d'un fichier 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param  string $filename le nom du fichier
 */
 
@@ -895,7 +893,7 @@ function getFileType($filename){
 
 
 /** Transforme une date MySql en timestamp UNIX 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $date 
 */
 
@@ -905,7 +903,7 @@ function mysql2TS($date){
 }
 
 /** Transforme une date MySql en timestamp UNIX 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -914,7 +912,7 @@ function time2Date($time){
 }
 
 /** Transforme un timestamp MySql en date MySql 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $date 
 */
 
@@ -924,7 +922,7 @@ function date2Time($date){
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -933,7 +931,7 @@ function LSgmstrftime($time){
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -941,8 +939,8 @@ function formatIdentifier($str) {
 	return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
 }
 
-/** Nettoyage des caractères windows illegaux + nettoyage pour flux XML
-* @author Bruno Cénou
+/** Nettoyage des caractÃ¨res windows illegaux + nettoyage pour flux XML
+* @author Bruno CÃ©nou
 * @param string $str 
 */
 
@@ -980,6 +978,7 @@ function cleanBadChars($str){
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
+		"\x20\x13" => "-"
 	);
 	$str = HTML2XML($str);
 	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
@@ -987,8 +986,8 @@ function cleanBadChars($str){
 	return $str;
 }
 
-/** convertit entités html en entités xml 
-* @author Bruno Cénou
+/** convertit entitÃ©s html en entitÃ©s xml 
+* @author Bruno CÃ©nou
 * @param string $str 
 * @param bool $reverse xml->html
 */
@@ -1515,8 +1514,8 @@ function HTML2XML($str, $reverse=false)
 }
 
 
-/** récupère l'ID du parent d'une entité en fonction de son type
-* @author Bruno Cénou
+/** rÃ©cupÃ¨re l'ID du parent d'une entitÃ© en fonction de son type
+* @author Bruno CÃ©nou
 * @param int $id 
 * @param string $type 
 */
@@ -1548,9 +1547,9 @@ function getParentByType($id,$type, $return=false){
  * Crypte les emails pour qu'ils ne soient pas reconnaissable par les robots spam
  * 
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à modifier
- * @param bool $codeInclude inclut directement le JS dans la page. défaut à false (fichier JS séparé)
- * @return $texte le texte avec les emails cryptés
+ * @param string $texte le texte Ã  modifier
+ * @param bool $codeInclude inclut directement le JS dans la page. dÃ©faut Ã  false (fichier JS sÃ©parÃ©)
+ * @return $texte le texte avec les emails cryptÃ©s
  */
 function cryptEmails($texte, $codeInclude = FALSE)
 {
@@ -1565,7 +1564,7 @@ function cryptEmails($texte, $codeInclude = FALSE)
 		$texte = $javascript . $texte;
 	}
 
-	// on récupère tous les liens mail contenus dans le texte
+	// on rÃ©cupÃ¨re tous les liens mail contenus dans le texte
 	if(preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches))
 	{
 		foreach($matches[0] as $k=>$mail) {
@@ -1576,15 +1575,15 @@ function cryptEmails($texte, $codeInclude = FALSE)
 			// email dans le contenu du lien ?
 			if(array(0=>$matches[2][$k]) != ($content = explode("@", $matches[2][$k]))) { 
 				/* 
-				on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
-				résultat dans le code source de la page avec test@domaine.com : 
+				on met des span cachÃ©s dans le contenu du lien pour Ã©viter que les robots puissent rÃ©cupÃ¨rer le mail
+				rÃ©sultat dans le code source de la page avec test@domaine.com : 
 				test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
 				*/
 				$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
 				$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
 			}
 	
-			// création du lien crypté : la balise href ne contient rien, le onclick déclenche l'appel à la fonction JS
+			// crÃ©ation du lien cryptÃ© : la balise href ne contient rien, le onclick dÃ©clenche l'appel Ã  la fonction JS
 			$newLink = "<a href=\"javascript:;\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
 			$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
 			$newLink .= "</a>";
@@ -1600,8 +1599,8 @@ function cryptEmails($texte, $codeInclude = FALSE)
  * Nettoie les mises en forme locales sur les appels de notes
  * 
  * @author Pierre-Alain Mignot
- * @param string $text le texte à modifier
- * @return $text le texte filtré
+ * @param string $text le texte Ã  modifier
+ * @return $text le texte filtrÃ©
  */
 function cleanCallNotes($text)
 {
@@ -1612,10 +1611,10 @@ function cleanCallNotes($text)
  * Coloration syntaxique de code
  * 
  * @author Pierre-Alain Mignot
- * @param string $text le code à colorer
- * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. défaut xml
- * @param bool $lineNumbers numérotation des lignes. défaut à true
- * @return $text le texte coloré
+ * @param string $text le code Ã  colorer
+ * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. dÃ©faut xml
+ * @param bool $lineNumbers numÃ©rotation des lignes. dÃ©faut Ã  true
+ * @return $text le texte colorÃ©
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
@@ -1628,12 +1627,12 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
 }
 
 /**
- * implémentation de la fonction explode
+ * implÃ©mentation de la fonction explode
  * utile pour les tableaux
  *
  * @author Pierre-Alain Mignot
- * @param string $text le texte à découper
- * @param string $delimiter le délimiteur
+ * @param string $text le texte Ã  dÃ©couper
+ * @param string $delimiter le dÃ©limiteur
  * @return array
  */
 function lexplode($text, $delimiter) 
@@ -1642,7 +1641,7 @@ function lexplode($text, $delimiter)
 }
 
 /**
- * fonction permettant de faire des opérations mathématiques simples
+ * fonction permettant de faire des opÃ©rations mathÃ©matiques simples
  *
  * @author Pierre-Alain Mignot
  * @param mixed $text
@@ -1663,10 +1662,10 @@ function lmath($text, $operator, $var)
 }
 
 /**
- * implémente empty()
+ * implÃ©mente empty()
  *
  * @author Pierre-Alain Mignot
- * @param mixed $var la variable à tester
+ * @param mixed $var la variable Ã  tester
  */
 function lempty($var)
 {
@@ -1674,14 +1673,14 @@ function lempty($var)
 }
 
 /**
- * implémente isset()
+ * implÃ©mente isset()
  *
- * cette fonction est utilisée en interne par le parser
- * pour initialiser une variable si vide, et éviter les E_NOTICE
- * ! à ne pas modifier !
+ * cette fonction est utilisÃ©e en interne par le parser
+ * pour initialiser une variable si vide, et Ã©viter les E_NOTICE
+ * ! Ã  ne pas modifier !
  *
  * @author Pierre-Alain Mignot
- * @param mixed $var la variable à tester
+ * @param mixed $var la variable Ã  tester
  */
 function &lisset(&$var = null)
 {
@@ -1689,11 +1688,11 @@ function &lisset(&$var = null)
 }
 
 /**
- * implémente in_array()
+ * implÃ©mente in_array()
  *
  * @author Pierre-Alain Mignot
  * @param array $arr la variable sur laquelle tester
- * @param mixed $search la valeur à rechercher
+ * @param mixed $search la valeur Ã  rechercher
  */
 function lin_array($arr, $search)
 {

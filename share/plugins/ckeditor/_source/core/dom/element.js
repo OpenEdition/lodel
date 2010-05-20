@@ -243,13 +243,10 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 				lastChild = lastChild.getPrevious();
 			if ( !lastChild || !lastChild.is || !lastChild.is( 'br' ) )
 			{
-				var bogus = CKEDITOR.env.opera ?
+				this.append(
+					CKEDITOR.env.opera ?
 						this.getDocument().createText('') :
-						this.getDocument().createElement( 'br' );
-
-				CKEDITOR.env.gecko && bogus.setAttribute( 'type', '_moz' );
-
-				this.append( bogus );
+						this.getDocument().createElement( 'br' ) );
 			}
 		},
 
@@ -621,6 +618,7 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 			}
 
 			return (
+			/** @ignore */
 			this.getName = function()
 				{
 					return nodeName;
@@ -991,16 +989,8 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 
 		removeAttributes : function ( attributes )
 		{
-			if ( CKEDITOR.tools.isArray( attributes ) )
-			{
-				for ( var i = 0 ; i < attributes.length ; i++ )
-					this.removeAttribute( attributes[ i ] );
-			}
-			else
-			{
-				for ( var attr in attributes )
-					attributes.hasOwnProperty( attr ) && this.removeAttribute( attr );
-			}
+			for ( var i = 0 ; i < attributes.length ; i++ )
+				this.removeAttribute( attributes[ i ] );
 		},
 
 		/**
@@ -1356,7 +1346,7 @@ CKEDITOR.tools.extend( CKEDITOR.dom.element.prototype,
 				if ( attrName in skipAttributes )
 					continue;
 
-				if ( attrName == 'checked' && ( attrValue = this.getAttribute( attrName ) ) )
+				if( attrName == 'checked' && ( attrValue = this.getAttribute( attrName ) ) )
 					dest.setAttribute( attrName, attrValue );
 				// IE BUG: value attribute is never specified even if it exists.
 				else if ( attribute.specified ||

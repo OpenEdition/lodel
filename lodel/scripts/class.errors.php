@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -38,14 +38,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
 
 // 5.3
@@ -87,10 +87,10 @@ class LodelException extends Exception
 		parent::__construct();
 		
 		$this->debug = (bool)C::get('debugMode', 'cfg');
-		$this->errstr = nl2br($errstr);
-		$this->errno = $errno;
-		$this->errfile = $errfile;
-		$this->errline = $errline;
+		$this->message = nl2br($errstr);
+		$this->code = $errno;
+		$this->file = $errfile;
+		$this->line = $errline;
 
 		// we are maybe buffering, so clear it
 		if(!C::get('redactor', 'lodeluser') || !$this->debug)
@@ -107,8 +107,8 @@ class LodelException extends Exception
 		{
 			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
 			$contenu = "Erreur sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
-			$contenu .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno) ? '' : 'PHP ';
-			$contenu .= "Error ".(isset(self::$type[$this->errno]) ? "(".self::$type[$this->errno].")" : '')." in file '".$this->errfile."' on line ".$this->errline." : ".$this->errstr;
+			$contenu .= (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code) ? '' : 'PHP ';
+			$contenu .= "Error ".(isset(self::$type[$this->code]) ? "(".self::$type[$this->code].")" : '')." in file '".$this->file."' on line ".$this->line." : ".$this->message;
 			@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
 		}
 	}
@@ -120,9 +120,9 @@ class LodelException extends Exception
 	{
 		if($this->debug || C::get('redactor', 'lodeluser')) {
 			$ret = '</body><p class="error">';
-			$ret .= (E_USER_ERROR == $this->errno || E_USER_NOTICE == $this->errno || E_USER_WARNING == $this->errno ? '' : 'PHP ');
-			$ret .= "Error ".(isset(self::$type[$this->errno]) ? "(".self::$type[$this->errno].")" : '')." in file '".$this->errfile."' on line ".$this->errline." : <br />";
-			$ret .= $this->errstr.'</p>';
+			$ret .= (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code ? '' : 'PHP ');
+			$ret .= "Error ".(isset(self::$type[$this->code]) ? "(".self::$type[$this->code].")" : '')." in file '".$this->file."' on line ".$this->line." : <br />";
+			$ret .= $this->message.'</p>';
 		} else {
 			$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
             		if(C::get('contactbug', 'cfg'))
@@ -172,7 +172,8 @@ class LodelException extends Exception
 			case E_PARSE:
 			case E_CORE_ERROR:
 			case E_COMPILE_ERROR:
-			default: throw new LodelException($errstr, $errno, $errfile, $errline);
+			default: 
+				self::exception_handler(new LodelException($errstr, $errno, $errfile, $errline));
 			break;
 		}
 		return true;

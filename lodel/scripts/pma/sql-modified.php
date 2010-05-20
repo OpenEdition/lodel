@@ -5,7 +5,7 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
  *
  *  Home page: http://www.lodel.org
@@ -249,7 +249,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         if ($result != FALSE && $result->RecordCount() > 0) {
             $tmpres        = PMA_mysql_fetch_array($result);
             // Fix for case problems with winwin, thanks to
-            // Pawe³ Szczepañski <pauluz at users.sourceforge.net>
+            // PaweÂ³ SzczepaÃ±ski <pauluz at users.sourceforge.net>
             $pos           = strpos($tmpres[1], ' (');
 
             // Fix a problem with older versions of mysql
@@ -463,7 +463,7 @@ function PMA_getTableContentFast($db, $table, $crlf, $error_url, $sql_query)
 
     $result      = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     if ($result != FALSE) {
-        $fields_cnt = $GLOBALS['db']->getFieldNum($result);
+        $fields_cnt = $result->FieldCount();
         $rows_cnt   = $result->RecordCount();
 
         // get the real types of the table's fields (in an array)
@@ -596,7 +596,7 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
 
     $result       = PMA_mysql_query($sql_query) or PMA_mysqlDie('', $sql_query, '', $error_url);
     $current_row  = 0;
-    $fields_cnt   = $GLOBALS['db']->getFieldNum($result);
+    $fields_cnt   = $result->FieldCount();
     $rows_cnt     = $result->RecordCount();
 
 

@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des classes d'objets du système
+ * Logique des classes d'objets du systÃ¨me
  *
  * PHP version 5
  *
@@ -31,33 +31,33 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 /**
- * Classe de logique des classes du système - Fille de la classe Logic
+ * Classe de logique des classes du systÃ¨me - Fille de la classe Logic
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class ClassesLogic extends Logic 
@@ -72,16 +72,16 @@ class ClassesLogic extends Logic
 	}
 
 	/**
-	 *  Indique si un objet est protégé en suppression
+	 *  Indique si un objet est protÃ©gÃ© en suppression
 	 *
-	 * Cette méthode indique si un objet, identifié par son identifiant numérique et
-	 * éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	 * pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	 * Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	 * Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	 * pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	 * booleen false.
 	 *
 	 * @param integer $id identifiant de l'objet
 	 * @param integer $status status de l'objet
-	 * @return false si l'objet n'est pas protégé en suppression, un message sinon
+	 * @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	 */
 	public function isdeletelocked($id, $status = 0)
 	{
@@ -112,7 +112,7 @@ class ClassesLogic extends Logic
 	}
 
 	/**
-	 * Indique le nom de la table type associée avec le type de classe
+	 * Indique le nom de la table type associÃ©e avec le type de classe
 	 *
 	 * Return the type table associated with the classtype
 	 * @param string $classtype le type de la classe
@@ -131,11 +131,11 @@ class ClassesLogic extends Logic
 	}
 
 	/**
-	 * Préparation de l'action Edit
+	 * PrÃ©paration de l'action Edit
 	 *
 	 * @access private
-	 * @param object $dao la DAO utilisée
-	 * @param array &$context le context passé par référence
+	 * @param object $dao la DAO utilisÃ©e
+	 * @param array &$context le context passÃ© par rÃ©fÃ©rence
 	 */
 	protected function _prepareEdit ($dao, &$context)
 	{
@@ -149,18 +149,18 @@ class ClassesLogic extends Logic
 	}
 
 	/**
-	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 * ImplÃ©menation de l'action d'ajout ou d'Ã©dition d'un objet.
 	 *
-	 * <p>Cette fonction crée un nouvel objet ou édite un objet existant. Dans un premier temps les
-	 * données sont validées (suivant leur type) puis elles sont rentrées dans la base de données <em>via</em> la DAO associée à l'objet.
-	 * Utilise _prepareEdit() pour effectuer des opérations de préparation avant l'édition de l'objet puis _populateContext() pour ajouter des informations supplémentaires au context. Et enfin _saveRelatedTables() pour sauver d'éventuelles informations dans des tables liées.
+	 * <p>Cette fonction crÃ©e un nouvel objet ou Ã©dite un objet existant. Dans un premier temps les
+	 * donnÃ©es sont validÃ©es (suivant leur type) puis elles sont rentrÃ©es dans la base de donnÃ©es <em>via</em> la DAO associÃ©e Ã  l'objet.
+	 * Utilise _prepareEdit() pour effectuer des opÃ©rations de prÃ©paration avant l'Ã©dition de l'objet puis _populateContext() pour ajouter des informations supplÃ©mentaires au context. Et enfin _saveRelatedTables() pour sauver d'Ã©ventuelles informations dans des tables liÃ©es.
 	 * </p>
 	
 	 * add/edit Action
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les donnÃ©es (par dÃ©faut Ã  false).
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{
@@ -197,11 +197,11 @@ class ClassesLogic extends Logic
 		return $ret ? $ret : "_back";
 	}
 	/**
-	 * Sauve des données dans des tables liées éventuellement
+	 * Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	 *
-	 * Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	 * AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	 *
-	 * @param object $vo l'objet qui a été créé
+	 * @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	 * @param array $context le contexte
 	 */
 	protected function _saveRelatedTables ($vo, &$context) 
@@ -249,13 +249,13 @@ class ClassesLogic extends Logic
 	}
 
 	/**
-	 * Appelé avant l'action delete
+	 * AppelÃ© avant l'action delete
 	 *
-	 * Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	 * préliminaires à une suppression.
+	 * Cette mÃ©thode est appelÃ©e avant l'action delete pour effectuer des vÃ©rifications
+	 * prÃ©liminaires Ã  une suppression.
 	 *
-	 * @param object $dao la DAO utilisée
-	 * @param array &$context le contexte passé par référénce
+	 * @param object $dao la DAO utilisÃ©e
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rÃ©nce
 	 */
 	protected function _prepareDelete ($dao, &$context) 
 	{
@@ -266,9 +266,9 @@ class ClassesLogic extends Logic
 		}
 	}
 	/**
-	 * Suppression éventuelle dans des tables liées
+	 * Suppression Ã©ventuelle dans des tables liÃ©es
 	 *
-	 * @param integer $id identifiant numérique de l'objet supprimé
+	 * @param integer $id identifiant numÃ©rique de l'objet supprimÃ©
 	 */
 	protected function _deleteRelatedTables ($id) {
 		global $db;

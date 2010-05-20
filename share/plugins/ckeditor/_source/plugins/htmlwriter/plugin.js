@@ -171,13 +171,8 @@ CKEDITOR.htmlWriter = CKEDITOR.tools.createClass(
 		 */
 		attribute : function( attName, attValue )
 		{
-
-			if ( typeof attValue == 'string' )
-			{
-				this.forceSimpleAmpersand && ( attValue = attValue.replace( /&amp;/g, '&' ) );
-				// Browsers don't always escape quote in attribute values. (#4683)
-				attValue = attValue.replace( /"/g, '&quot;' );
-			}
+			if ( this.forceSimpleAmpersand )
+				attValue = attValue.replace( /&amp;/, '&' );
 
 			this._.output.push( ' ', attName, '="', attValue, '"' );
 		},

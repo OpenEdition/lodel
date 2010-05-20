@@ -4,12 +4,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  *  Home page: http://www.lodel.org
  *
@@ -179,7 +179,7 @@ table.internal_messaging tr td.im_date_line2 {
 	width:15%;
 }
 
-/* Affichage des alias côté interface */
+/* Affichage des alias cÃ´tÃ© interface */
 div.alias {
 	position:relative;
 	margin-top:7em;
@@ -235,7 +235,7 @@ h2.formHead{
 	color: #0096b7;
 }
 
-/* Permet d'insérer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
+/* Permet d'insÃ©rer un texte signifiant lorsqu'on utilise une image en bg (par ex)*/
 .hidden{
 	display: none;
 }
@@ -253,7 +253,7 @@ h2.formHead{
 	color: red;
 }
 
-/* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
+/* les styles du desk sont dans desk.html afin de ne pas interfÃ©rer avec les styles du site */
 
 /* Container general au dessous du desk */
 
@@ -494,7 +494,7 @@ input.localChooseON{
 }
 
 
-/* les mises en formes locales doivent être visibles*/
+/* les mises en formes locales doivent Ãªtre visibles*/
 
 #checkbalisage{
 	border-collapse: collapse;
@@ -1111,7 +1111,7 @@ div.close{
 }
 
 
-/**************** Menu général Administration ************************/
+/**************** Menu gÃ©nÃ©ral Administration ************************/
 
 #adminGroup{
 	margin: 0 0 0 35px;
@@ -1135,7 +1135,7 @@ div.close{
 	font-size: 90%;
 }
 
-/*************** Fin Menu général Administration ********************/
+/*************** Fin Menu gÃ©nÃ©ral Administration ********************/
 
 /************************** oochargement *****************************/
 
@@ -1319,10 +1319,36 @@ div.close{
 
 #sitesLodel #licence {
 	padding:1em;
-	border-top:1px solid #DADBDC;
+	border-top:1px solid #CCCCCC;
 	font-size:.8em;
 }
 
 #sitesLodel td.action a:hover {
 	color:#000;
+}
+
+table.translations
+{
+	margin:2em;
+	font-size:90%;
+}
+
+table.translations tr.line2
+{
+	background-color:#F6F6F6;
+}
+
+table.translations th
+{
+	background-color:#E5E8E3;
+}
+
+table.translations td
+{
+	padding:.5em;
+}
+
+table.translations tr, table.translations td
+{
+	border:1px solid #DADBDC;
 }

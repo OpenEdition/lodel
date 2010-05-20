@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier pour gérer la connection à la base de donnée - initialise les connexions
+ * Fichier pour gÃ©rer la connection Ã  la base de donnÃ©e - initialise les connexions
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -60,10 +60,14 @@ defined("DBPASSWD")	|| define("DBPASSWD", C::get('dbpasswd', 'cfg'));
 defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
 defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
-include 'adodb_hack.php';
+$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
+include "adodb/adodb.inc.php";
+error_reporting($err);
+// include 'adodb_hack.php';
+
 // connect to the database server
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
-$GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
+$GLOBALS['db']->debug = false; // mettre Ã  true pour activer le mode debug
 $single = C::get('singledatabase', 'cfg') != "on";
 $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::get('site', 'cfg') : DATABASE;
 
@@ -93,8 +97,10 @@ if ($GLOBALS['version_mysql'] > 40) {
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'] = C::get('tableprefix', 'cfg');
 
+C::set('siteinfos', $GLOBALS['db']->CacheGetRow($GLOBALS['sqlCacheTime'], lq('SELECT * FROM #_MTP_sites WHERE name='.$GLOBALS['db']->quote(C::get('site', 'cfg')))));
+
 /**
- * Déclenche une erreur lors d'une erreur concernant la base de données
+ * DÃ©clenche une erreur lors d'une erreur concernant la base de donnÃ©es
  * @deprecated
  */
 function dberror()
@@ -105,7 +111,7 @@ function dberror()
 
 
 /**
- * Positionne la connexion de la base de données sur la table principale (en cas d'installation 
+ * Positionne la connexion de la base de donnÃ©es sur la table principale (en cas d'installation 
  * multisite.
  */
 function usemaindb()
@@ -118,8 +124,8 @@ function usemaindb()
 }
 
 /**
- * Positionne la connexion de la base de données sur la base de données du site (si Lodel est
- * installé en multisite, l'unique base sinon
+ * Positionne la connexion de la base de donnÃ©es sur la base de donnÃ©es du site (si Lodel est
+ * installÃ© en multisite, l'unique base sinon
  */
 function usecurrentdb()
 {
@@ -133,12 +139,12 @@ function usecurrentdb()
 /**
  * Lodel Query : 
  *
- * Transforme les requêtes en résolvant les jointures et en cherchant les bonnes
- * tables dans les bases de données (suivant notamment le préfix utilisé pour le nommage des
+ * Transforme les requÃªtes en rÃ©solvant les jointures et en cherchant les bonnes
+ * tables dans les bases de donnÃ©es (suivant notamment le prÃ©fix utilisÃ© pour le nommage des
  * tables).
  *
- * @param string $query la requête à traduire
- * @return string la requête traduite
+ * @param string $query la requÃªte Ã  traduire
+ * @return string la requÃªte traduite
  */
 function lq($query)
 {
@@ -165,13 +171,13 @@ function lq($query)
 }
 
 /**
- * Fonction nécessaire pour la gestion des id numériques uniques (dans la table object)
+ * Fonction nÃ©cessaire pour la gestion des id numÃ©riques uniques (dans la table object)
  *
  * get a unique id
  * fonction for handling unique id
  *
- * @param string $table le nom de la table dans laquelle on veut insérer un objet
- * @return integer Un entier correspondant à l'id inséré.
+ * @param string $table le nom de la table dans laquelle on veut insÃ©rer un objet
+ * @return integer Un entier correspondant Ã  l'id insÃ©rÃ©.
  */
 function uniqueid($table)
 {
@@ -185,7 +191,7 @@ function uniqueid($table)
  * Suppression d'un identifiant uniques (table objets)
  *
  * erase a unique id.
- * Cette fonction accepte en entrée un id ou un tableau d'id
+ * Cette fonction accepte en entrÃ©e un id ou un tableau d'id
  *
  * @param integer or array un id ou un tableau d'ids.
  */
@@ -207,8 +213,8 @@ function deleteuniqueid($id)
 /**
  * Recherche d'une variable MySQL
  *
- * @param string $database_name nom de la base de donnée
- * @param string $var nom de la variable recherchée
+ * @param string $database_name nom de la base de donnÃ©e
+ * @param string $var nom de la variable recherchÃ©e
  * @return valeur de la variable
  */
 function mysql_find_db_variable ($database_name, $var = 'character_set_database') 

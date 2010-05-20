@@ -31,11 +31,7 @@ CKEDITOR.lang['hr'] =
 	 * Screenreader titles. Please note that screenreaders are not always capable
 	 * of reading non-English words. So be careful while translating it.
 	 */
-	editorTitle : 'Rich text editor, %1, press ALT 0 for help.', // MISSING
-
-	// ARIA descriptions.
-	toolbar	: 'Toolbar', // MISSING
-	editor	: 'Rich Text Editor', // MISSING
+	editorTitle		: 'Text editor, %1',
 
 	// Toolbar buttons without dialogs.
 	source			: 'Kôd',
@@ -72,12 +68,12 @@ CKEDITOR.lang['hr'] =
 		flash			: 'Flash',
 		form			: 'Form',
 		checkbox		: 'Checkbox',
-		radio			: 'Radio Button',
+		radio		: 'Radio Button',
 		textField		: 'Text Field',
 		textarea		: 'Textarea',
 		hiddenField		: 'Hidden Field',
 		button			: 'Button',
-		select			: 'Selection Field',
+		select	: 'Selection Field',
 		imageButton		: 'Image Button',
 		notSet			: '<nije postavljeno>',
 		id				: 'Id',
@@ -92,19 +88,11 @@ CKEDITOR.lang['hr'] =
 		cssStyle		: 'Stil',
 		ok				: 'OK',
 		cancel			: 'Poništi',
-		close			: 'Close', // MISSING
-		preview			: 'Preview', // MISSING
 		generalTab		: 'Općenito',
 		advancedTab		: 'Napredno',
-		validateNumberFailed : 'Ova vrijednost nije broj.',
+		validateNumberFailed	: 'Ova vrijednost nije broj.',
 		confirmNewPage	: 'Sve napravljene promjene će biti izgubljene ukoliko ih niste snimili. Sigurno želite učitati novu stranicu?',
 		confirmCancel	: 'Neke od opcija su promjenjene. Sigurno želite zatvoriti ovaj prozor?',
-		options			: 'Options', // MISSING
-		target			: 'Target', // MISSING
-		targetNew		: 'New Window (_blank)', // MISSING
-		targetTop		: 'Topmost Window (_top)', // MISSING
-		targetSelf		: 'Same Window (_self)', // MISSING
-		targetParent	: 'Parent Window (_parent)', // MISSING
 
 		// Put the voice-only part of the label in the span.
 		unavailable		: '%1<span class="cke_accessibility">, nedostupno</span>'
@@ -128,17 +116,22 @@ CKEDITOR.lang['hr'] =
 		upload		: 'Pošalji',
 		advanced	: 'Napredno',
 		type		: 'Link vrsta',
-		toUrl		: 'URL', // MISSING
 		toAnchor	: 'Sidro na ovoj stranici',
 		toEmail		: 'E-Mail',
-		targetFrame		: '<okvir>',
-		targetPopup		: '<popup prozor>',
+		target		: 'Meta',
+		targetNotSet	: '<nije postavljeno>',
+		targetFrame	: '<okvir>',
+		targetPopup	: '<popup prozor>',
+		targetNew	: 'Novi prozor (_blank)',
+		targetTop	: 'Vršni prozor (_top)',
+		targetSelf	: 'Isti prozor (_self)',
+		targetParent	: 'Roditeljski prozor (_parent)',
 		targetFrameName	: 'Ime ciljnog okvira',
 		targetPopupName	: 'Naziv popup prozora',
 		popupFeatures	: 'Mogućnosti popup prozora',
 		popupResizable	: 'Promjenjiva veličina',
 		popupStatusBar	: 'Statusna traka',
-		popupLocationBar: 'Traka za lokaciju',
+		popupLocationBar	: 'Traka za lokaciju',
 		popupToolbar	: 'Traka s alatima',
 		popupMenuBar	: 'Izborna traka',
 		popupFullScreen	: 'Cijeli ekran (IE)',
@@ -150,6 +143,7 @@ CKEDITOR.lang['hr'] =
 		popupTop		: 'Gornja pozicija',
 		id				: 'Id',
 		langDir			: 'Smjer jezika',
+		langDirNotSet	: '<nije postavljeno>',
 		langDirLTR		: 'S lijeva na desno (LTR)',
 		langDirRTL		: 'S desna na lijevo (RTL)',
 		acccessKey		: 'Pristupna tipka',
@@ -209,13 +203,13 @@ CKEDITOR.lang['hr'] =
 		columns		: 'Kolona',
 		border		: 'Veličina okvira',
 		align		: 'Poravnanje',
+		alignNotSet	: '<nije postavljeno>',
 		alignLeft	: 'Lijevo',
 		alignCenter	: 'Središnje',
 		alignRight	: 'Desno',
 		width		: 'Širina',
 		widthPx		: 'piksela',
 		widthPc		: 'postotaka',
-		widthUnit	: 'width unit', // MISSING
 		height		: 'Visina',
 		cellSpace	: 'Prostornost ćelija',
 		cellPad		: 'Razmak ćelija',
@@ -266,7 +260,7 @@ CKEDITOR.lang['hr'] =
 			invalidHeight	: 'Visina ćelije mora biti broj.',
 			invalidRowSpan	: 'Rows span mora biti cijeli broj.',
 			invalidColSpan	: 'Columns span mora biti cijeli broj.',
-			chooseColor		: 'Choose' // MISSING
+			chooseColor : 'Choose' // MISSING
 		},
 
 		row :
@@ -313,7 +307,13 @@ CKEDITOR.lang['hr'] =
 		menu		: 'Form svojstva',
 		action		: 'Akcija',
 		method		: 'Metoda',
-		encoding	: 'Encoding'
+		encoding	: 'Encoding',
+		target		: 'Meta',
+		targetNotSet	: '<nije postavljeno>',
+		targetNew	: 'Novi prozor (_blank)',
+		targetTop	: 'Vršni prozor (_top)',
+		targetSelf	: 'Isti prozor (_self)',
+		targetParent	: 'Roditeljski prozor (_parent)'
 	},
 
 	// Select Field Dialog.
@@ -371,31 +371,27 @@ CKEDITOR.lang['hr'] =
 		title		: 'Svojstva slika',
 		titleButton	: 'Image Button svojstva',
 		menu		: 'Svojstva slika',
-		infoTab		: 'Info slike',
+		infoTab	: 'Info slike',
 		btnUpload	: 'Pošalji na server',
-		upload		: 'Pošalji',
-		alt			: 'Alternativni tekst',
+		url		: 'URL',
+		upload	: 'Pošalji',
+		alt		: 'Alternativni tekst',
 		width		: 'Širina',
-		height		: 'Visina',
+		height	: 'Visina',
 		lockRatio	: 'Zaključaj odnos',
-		unlockRatio	: 'Unlock Ratio', // MISSING
 		resetSize	: 'Obriši veličinu',
-		border		: 'Okvir',
-		hSpace		: 'HSpace',
-		vSpace		: 'VSpace',
+		border	: 'Okvir',
+		hSpace	: 'HSpace',
+		vSpace	: 'VSpace',
 		align		: 'Poravnaj',
 		alignLeft	: 'Lijevo',
 		alignRight	: 'Desno',
+		preview	: 'Pregledaj',
 		alertUrl	: 'Unesite URL slike',
-		linkTab		: 'Link',
+		linkTab	: 'Link',
 		button2Img	: 'Želite li promijeniti odabrani gumb u jednostavnu sliku?',
 		img2Button	: 'Želite li promijeniti odabranu sliku u gumb?',
-		urlMissing	: 'Image source URL is missing.', // MISSING
-		validateWidth	: 'Width must be a whole number.', // MISSING
-		validateHeight	: 'Height must be a whole number.', // MISSING
-		validateBorder	: 'Border must be a whole number.', // MISSING
-		validateHSpace	: 'HSpace must be a whole number.', // MISSING
-		validateVSpace	: 'VSpace must be a whole number.' // MISSING
+		urlMissing : 'Image source URL is missing.' // MISSING
 	},
 
 	// Flash Dialog
@@ -403,51 +399,51 @@ CKEDITOR.lang['hr'] =
 	{
 		properties		: 'Flash svojstva',
 		propertiesTab	: 'Svojstva',
-		title			: 'Flash svojstva',
-		chkPlay			: 'Auto Play',
-		chkLoop			: 'Ponavljaj',
-		chkMenu			: 'Omogući Flash izbornik',
-		chkFull			: 'Omogući Fullscreen',
- 		scale			: 'Omjer',
+		title		: 'Flash svojstva',
+		chkPlay		: 'Auto Play',
+		chkLoop		: 'Ponavljaj',
+		chkMenu		: 'Omogući Flash izbornik',
+		chkFull		: 'Omogući Fullscreen',
+ 		scale		: 'Omjer',
 		scaleAll		: 'Prikaži sve',
 		scaleNoBorder	: 'Bez okvira',
 		scaleFit		: 'Točna veličina',
 		access			: 'Script Access',
 		accessAlways	: 'Uvijek',
-		accessSameDomain: 'Ista domena',
-		accessNever		: 'Nikad',
-		align			: 'Poravnaj',
-		alignLeft		: 'Lijevo',
-		alignAbsBottom	: 'Abs dolje',
-		alignAbsMiddle	: 'Abs sredina',
+		accessSameDomain	: 'Ista domena',
+		accessNever	: 'Nikad',
+		align		: 'Poravnaj',
+		alignLeft	: 'Lijevo',
+		alignAbsBottom: 'Abs dolje',
+		alignAbsMiddle: 'Abs sredina',
 		alignBaseline	: 'Bazno',
-		alignBottom		: 'Dolje',
-		alignMiddle		: 'Sredina',
-		alignRight		: 'Desno',
+		alignBottom	: 'Dolje',
+		alignMiddle	: 'Sredina',
+		alignRight	: 'Desno',
 		alignTextTop	: 'Vrh teksta',
-		alignTop		: 'Vrh',
-		quality			: 'Kvaliteta',
-		qualityBest		: 'Best',
-		qualityHigh		: 'High',
-		qualityAutoHigh	: 'Auto High',
-		qualityMedium	: 'Medium',
-		qualityAutoLow	: 'Auto Low',
-		qualityLow		: 'Low',
-		windowModeWindow: 'Window',
-		windowModeOpaque: 'Opaque',
-		windowModeTransparent : 'Transparent',
-		windowMode		: 'Vrsta prozora',
-		flashvars		: 'Varijable za Flash',
-		bgcolor			: 'Boja pozadine',
-		width			: 'Širina',
-		height			: 'Visina',
-		hSpace			: 'HSpace',
-		vSpace			: 'VSpace',
-		validateSrc		: 'Molimo upišite URL link',
-		validateWidth	: 'Širina mora biti broj.',
-		validateHeight	: 'Visina mora biti broj.',
-		validateHSpace	: 'HSpace mora biti broj.',
-		validateVSpace	: 'VSpace mora biti broj.'
+		alignTop	: 'Vrh',
+		quality		: 'Kvaliteta',
+		qualityBest		 : 'Best',
+		qualityHigh		 : 'High',
+		qualityAutoHigh	 : 'Auto High',
+		qualityMedium	 : 'Medium',
+		qualityAutoLow	 : 'Auto Low',
+		qualityLow		 : 'Low',
+		windowModeWindow	 : 'Window',
+		windowModeOpaque	 : 'Opaque',
+		windowModeTransparent	 : 'Transparent',
+		windowMode	: 'Vrsta prozora',
+		flashvars	: 'Varijable za Flash',
+		bgcolor	: 'Boja pozadine',
+		width	: 'Širina',
+		height	: 'Visina',
+		hSpace	: 'HSpace',
+		vSpace	: 'VSpace',
+		validateSrc : 'Molimo upišite URL link',
+		validateWidth : 'Širina mora biti broj.',
+		validateHeight : 'Visina mora biti broj.',
+		validateHSpace : 'HSpace mora biti broj.',
+		validateVSpace : 'VSpace mora biti broj.'
 	},
 
 	// Speller Pages Dialog
@@ -481,21 +477,20 @@ CKEDITOR.lang['hr'] =
 
 	elementsPath :
 	{
-		eleLabel : 'Elements path', // MISSING
 		eleTitle : '%1 element'
 	},
 
-	numberedlist	: 'Brojčana lista',
-	bulletedlist	: 'Obična lista',
-	indent			: 'Pomakni udesno',
-	outdent			: 'Pomakni ulijevo',
+	numberedlist : 'Brojčana lista',
+	bulletedlist : 'Obična lista',
+	indent : 'Pomakni udesno',
+	outdent : 'Pomakni ulijevo',
 
 	justify :
 	{
-		left	: 'Lijevo poravnanje',
-		center	: 'Središnje poravnanje',
-		right	: 'Desno poravnanje',
-		block	: 'Blok poravnanje'
+		left : 'Lijevo poravnanje',
+		center : 'Središnje poravnanje',
+		right : 'Desno poravnanje',
+		block : 'Blok poravnanje'
 	},
 
 	blockquote : 'Blockquote',
@@ -506,59 +501,61 @@ CKEDITOR.lang['hr'] =
 		cutError	: 'Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog izrezivanja. Molimo koristite kraticu na tipkovnici (Ctrl+X).',
 		copyError	: 'Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog kopiranja. Molimo koristite kraticu na tipkovnici (Ctrl+C).',
 		pasteMsg	: 'Molimo zaljepite unutar doljnjeg okvira koristeći tipkovnicu (<STRONG>Ctrl+V</STRONG>) i kliknite <STRONG>OK</STRONG>.',
-		securityMsg	: 'Zbog sigurnosnih postavki Vašeg pretraživača, editor nema direktan pristup Vašem međuspremniku. Potrebno je ponovno zalijepiti tekst u ovaj prozor.',
-		pasteArea	: 'Paste Area' // MISSING
+		securityMsg	: 'Zbog sigurnosnih postavki Vašeg pretraživača, editor nema direktan pristup Vašem međuspremniku. Potrebno je ponovno zalijepiti tekst u ovaj prozor.'
 	},
 
 	pastefromword :
 	{
-		confirmCleanup	: 'Tekst koji želite zalijepiti čini se da je kopiran iz Worda. Želite li prije očistiti tekst?',
-		toolbar			: 'Zalijepi iz Worda',
-		title			: 'Zalijepi iz Worda',
-		error			: 'It was not possible to clean up the pasted data due to an internal error' // MISSING
+		confirmCleanup : 'Tekst koji želite zalijepiti čini se da je kopiran iz Worda. Želite li prije očistiti tekst?',
+		toolbar : 'Zalijepi iz Worda',
+		title : 'Zalijepi iz Worda',
+		error : 'It was not possible to clean up the pasted data due to an internal error' // MISSING
 	},
 
 	pasteText :
 	{
-		button	: 'Zalijepi kao čisti tekst',
-		title	: 'Zalijepi kao čisti tekst'
+		button : 'Zalijepi kao čisti tekst',
+		title : 'Zalijepi kao čisti tekst'
 	},
 
 	templates :
 	{
-		button			: 'Predlošci',
-		title			: 'Predlošci sadržaja',
-		insertOption	: 'Zamijeni trenutne sadržaje',
-		selectPromptMsg	: 'Molimo odaberite predložak koji želite otvoriti<br>(stvarni sadržaj će biti izgubljen):',
-		emptyListMsg	: '(Nema definiranih predložaka)'
+		button : 'Predlošci',
+		title : 'Predlošci sadržaja',
+		insertOption: 'Zamijeni trenutne sadržaje',
+		selectPromptMsg: 'Molimo odaberite predložak koji želite otvoriti<br>(stvarni sadržaj će biti izgubljen):',
+		emptyListMsg : '(Nema definiranih predložaka)'
 	},
 
 	showBlocks : 'Prikaži blokove',
 
 	stylesCombo :
 	{
-		label		: 'Stil',
-		panelTitle	: 'Formatting Styles', // MISSING
-		panelTitle1	: 'Block stilovi',
-		panelTitle2	: 'Inline stilovi',
-		panelTitle3	: 'Object stilovi'
+		label : 'Stil',
+		voiceLabel : 'Stilovi',
+		panelVoiceLabel : 'Odaberite stil',
+		panelTitle1 : 'Block stilovi',
+		panelTitle2 : 'Inline stilovi',
+		panelTitle3 : 'Object stilovi'
 	},
 
 	format :
 	{
-		label		: 'Format',
-		panelTitle	: 'Format',
+		label : 'Format',
+		voiceLabel : 'Format',
+		panelTitle : 'Format',
+		panelVoiceLabel : 'Odaberite format paragrafa',
 
-		tag_p		: 'Normal',
-		tag_pre		: 'Formatirano',
-		tag_address	: 'Address',
-		tag_h1		: 'Heading 1',
-		tag_h2		: 'Heading 2',
-		tag_h3		: 'Heading 3',
-		tag_h4		: 'Heading 4',
-		tag_h5		: 'Heading 5',
-		tag_h6		: 'Heading 6',
-		tag_div		: 'Normal (DIV)'
+		tag_p : 'Normal',
+		tag_pre : 'Formatirano',
+		tag_address : 'Address',
+		tag_h1 : 'Heading 1',
+		tag_h2 : 'Heading 2',
+		tag_h3 : 'Heading 3',
+		tag_h4 : 'Heading 4',
+		tag_h5 : 'Heading 5',
+		tag_h6 : 'Heading 6',
+		tag_div : 'Normal (DIV)'
 	},
 
 	div :
@@ -580,25 +577,26 @@ CKEDITOR.lang['hr'] =
 
 	font :
 	{
-		label		: 'Font',
-		voiceLabel	: 'Font',
-		panelTitle	: 'Font'
+		label : 'Font',
+		voiceLabel : 'Font',
+		panelTitle : 'Font',
+		panelVoiceLabel : 'Odaberite font'
 	},
 
 	fontSize :
 	{
-		label		: 'Veličina',
-		voiceLabel	: 'Veličina slova',
-		panelTitle	: 'Veličina'
+		label : 'Veličina',
+		voiceLabel : 'Veličina slova',
+		panelTitle : 'Veličina',
+		panelVoiceLabel : 'Odaberite veličinu slova'
 	},
 
 	colorButton :
 	{
-		textColorTitle	: 'Boja teksta',
-		bgColorTitle	: 'Boja pozadine',
-		panelTitle		: 'Colors', // MISSING
-		auto			: 'Automatski',
-		more			: 'Više boja...'
+		textColorTitle : 'Boja teksta',
+		bgColorTitle : 'Boja pozadine',
+		auto : 'Automatski',
+		more : 'Više boja...'
 	},
 
 	colors :
@@ -647,30 +645,30 @@ CKEDITOR.lang['hr'] =
 
 	scayt :
 	{
-		title			: 'Provjeri pravopis tijekom tipkanja (SCAYT)',
-		enable			: 'Omogući SCAYT',
-		disable			: 'Onemogući SCAYT',
-		about			: 'O SCAYT',
-		toggle			: 'Omoguću/Onemogući SCAYT',
-		options			: 'Opcije',
-		langs			: 'Jezici',
-		moreSuggestions	: 'Više prijedloga',
-		ignore			: 'Zanemari',
-		ignoreAll		: 'Zanemari sve',
-		addWord			: 'Dodaj riječ',
-		emptyDic		: 'Naziv rječnika ne smije biti prazno.',
-		optionsTab		: 'Opcije',
-		languagesTab	: 'Jezici',
-		dictionariesTab	: 'Rječnici',
-		aboutTab		: 'O SCAYT'
+		title : 'Provjeri pravopis tijekom tipkanja (SCAYT)',
+		enable : 'Omogući SCAYT',
+		disable : 'Onemogući SCAYT',
+		about : 'O SCAYT',
+		toggle : 'Omoguću/Onemogući SCAYT',
+		options : 'Opcije',
+		langs : 'Jezici',
+		moreSuggestions : 'Više prijedloga',
+		ignore : 'Zanemari',
+		ignoreAll : 'Zanemari sve',
+		addWord : 'Dodaj riječ',
+		emptyDic : 'Naziv rječnika ne smije biti prazno.',
+		optionsTab : 'Opcije',
+		languagesTab : 'Jezici',
+		dictionariesTab : 'Rječnici',
+		aboutTab : 'O SCAYT'
 	},
 
 	about :
 	{
-		title		: 'O CKEditoru',
-		dlgTitle	: 'O CKEditoru',
-		moreInfo	: 'Za informacije o licencama posjetite našu web stranicu:',
-		copy		: 'Copyright &copy; $1. All rights reserved.'
+		title : 'O CKEditoru',
+		dlgTitle : 'O CKEditoru',
+		moreInfo : 'Za informacije o licencama posjetite našu web stranicu:',
+		copy : 'Copyright &copy; $1. All rights reserved.'
 	},
 
 	maximize : 'Povećaj',
@@ -678,22 +676,22 @@ CKEDITOR.lang['hr'] =
 
 	fakeobjects :
 	{
-		anchor	: 'Sidro',
-		flash	: 'Flash animacija',
-		div		: 'Prijelom stranice',
-		unknown	: 'Nepoznati objekt'
+		anchor : 'Sidro',
+		flash : 'Flash animacija',
+		div : 'Prijelom stranice',
+		unknown : 'Nepoznati objekt'
 	},
 
 	resize : 'Povuci za promjenu veličine',
 
 	colordialog :
 	{
-		title		: 'Select color', // MISSING
-		highlight	: 'Highlight', // MISSING
-		selected	: 'Selected', // MISSING
-		clear		: 'Clear' // MISSING
+		title : 'Select color', // MISSING
+		highlight : 'Highlight', // MISSING
+		selected : 'Selected', // MISSING
+		clear : 'Clear' // MISSING
 	},
 
-	toolbarCollapse	: 'Collapse Toolbar', // MISSING
-	toolbarExpand	: 'Expand Toolbar' // MISSING
+	toolbarCollapse : 'Collapse Toolbar', // MISSING
+	toolbarExpand : 'Expand Toolbar' // MISSING
 };

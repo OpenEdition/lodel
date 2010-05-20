@@ -25,10 +25,6 @@ CKEDITOR.dom.node = function( domNode )
 	{
 		switch ( domNode.nodeType )
 		{
-			// Safari don't consider document as element node type. (#3389)
-			case CKEDITOR.NODE_DOCUMENT :
-				return new CKEDITOR.dom.document( domNode );
-
 			case CKEDITOR.NODE_ELEMENT :
 				return new CKEDITOR.dom.element( domNode );
 
@@ -51,13 +47,6 @@ CKEDITOR.dom.node.prototype = new CKEDITOR.dom.domObject();
  * @example
  */
 CKEDITOR.NODE_ELEMENT = 1;
-
-/**
- * Document node type.
- * @constant
- * @example
- */
-CKEDITOR.NODE_DOCUMENT = 9;
 
 /**
  * Text node type.
@@ -205,30 +194,27 @@ CKEDITOR.tools.extend( CKEDITOR.dom.node.prototype,
 				var parentNode = node.parentNode;
 				var currentIndex = -1;
 
-				if ( parentNode )
+				for ( var i = 0 ; i < parentNode.childNodes.length ; i++ )
 				{
-					for ( var i = 0 ; i < parentNode.childNodes.length ; i++ )
+					var candidate = parentNode.childNodes[i];
+
+					if ( normalized &&
+							candidate.nodeType == 3 &&
+							candidate.previousSibling &&
+							candidate.previousSibling.nodeType == 3 )
 					{
-						var candidate = parentNode.childNodes[i];
-
-						if ( normalized &&
-								candidate.nodeType == 3 &&
-								candidate.previousSibling &&
-								candidate.previousSibling.nodeType == 3 )
-						{
-							continue;
-						}
-
-						currentIndex++;
-
-						if ( candidate == node )
-							break;
+						continue;
 					}
 
-					address.unshift( currentIndex );
+					currentIndex++;
+
+					if ( candidate == node )
+						break;
 				}
 
-				node = parentNode;
+				address.unshift( currentIndex );
+
+				node = node.parentNode;
 			}
 
 			return address;
@@ -246,6 +232,7 @@ CKEDITOR.tools.extend( CKEDITOR.dom.node.prototype,
 			var document = new CKEDITOR.dom.document( this.$.ownerDocument || this.$.parentNode.ownerDocument );
 
 			return (
+			/** @ignore */
 			this.getDocument = function()
 				{
 					return document;

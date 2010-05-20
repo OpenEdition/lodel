@@ -1,10 +1,10 @@
 <?php
 /**
- * Fichier utilitaire pour gérer l'authentification de Lodel
+ * Fichier utilitaire pour gÃ©rer l'authentification de Lodel
  *
- * Ce script définit les méthodes de base pour l'authentification.
- * Il se charge aussi d'initialiser le context, ainsi que le jeu de caractère utilisé
- * *IMPORTANT* : ce script devrait être transformé en classe.
+ * Ce script dÃ©finit les mÃ©thodes de base pour l'authentification.
+ * Il se charge aussi d'initialiser le context, ainsi que le jeu de caractÃ¨re utilisÃ©
+ * *IMPORTANT* : ce script devrait Ãªtre transformÃ© en classe.
  *
  * PHP versions 4 et 5
  *
@@ -12,12 +12,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -45,12 +45,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -73,12 +73,12 @@ define("INTERFACE_SIMPLE", 16);
 /**
  * Gestion de l'authentification.
  *
- * Cette fonction gère l'authentification suivant le niveau de l'utilisateur.
+ * Cette fonction gÃ¨re l'authentification suivant le niveau de l'utilisateur.
  * Le niveau de l'utilsateur est un entier parmis :
  * LEVEL_RESTRICTEDUSER : 5, LEVEL_VISITOR : 10, LEVEL_REDACTOR : 20, LEVEL_EDITOR : 30, LEVEL_ADMIN : 40,
  * LEVEL_ADMINLODEL : 128.
  *
- * @param integer $level Le niveau de l'utilisateur. Par défaut 0
+ * @param integer $level Le niveau de l'utilisateur. Par dÃ©faut 0
  */
 function authenticate($level = 0, $mode = "", $return = false)
 {
@@ -94,7 +94,7 @@ function authenticate($level = 0, $mode = "", $return = false)
             		defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
-			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0 AND ip != ''"));
+			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
 			if(!$users)
             		{
                 		touch(SITEROOT.'./CACHE/.no_restricted');
@@ -104,6 +104,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			$name = false;
 			foreach($users as $user) 
 			{
+				if(empty($user['ip'])) continue;
 				$uuser = explode(' ', $user['ip']);
 				foreach($uuser as $ip)
 				{
@@ -137,7 +138,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 					}
 					$name = open_session($row['username']);
 					unset($row);
-					// si on arrive là c'est qu'on est bon, on s'éjecte du foreach
+					// si on arrive lÃ  c'est qu'on est bon, on s'Ã©jecte du foreach
 					break 2;
 				}
 			}
@@ -246,7 +247,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 
 // 	usecurrentdb();
     	C::setUser();
-	// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
+	// on est pas loggÃ© : pour Ã©viter des attaques par DOS on dÃ©sactive le clearcache
 	C::set('nocache', false);
 	$lodeluser = '';
    	maintenance();
@@ -271,15 +272,15 @@ function authenticate($level = 0, $mode = "", $return = false)
 /**
  * Gestion de la langue de l'utilisateur
  *
- * Cette fonction gère la langue de l'utilisateur, loggé ou non
+ * Cette fonction gÃ¨re la langue de l'utilisateur, loggÃ© ou non
  *
- * @param string $lang La langue, si loggué
+ * @param string $lang La langue, si logguÃ©
  */
 function setLang($lang=null)
 {
 	// Langue ?
 	if(!$lang) $lang = C::get('lang');
-	// récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
+	// rÃ©cupÃ¨re langue dans le cookie (s'il existe et si la langue n'est pas passÃ©e en GET ou en POST)
 	if(!empty($_COOKIE['language']) && !$lang) {
 		if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
 		{
@@ -291,12 +292,12 @@ function setLang($lang=null)
 			setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
 		}
 	}
-	// langue passée en GET ou POST : initialise le cookie
+	// langue passÃ©e en GET ou POST : initialise le cookie
 	else 
 	{
 		if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
 		{
-			// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
+			// spÃ©cifique ME Revues.org : si langue du site renseignÃ©, alors la langue par dÃ©faut prend cette valeur
 			$lang = C::get('options.metadonneessite.langueprincipale');
 			$lang = !$lang ? 'fr' : $lang;
 		}
@@ -324,9 +325,9 @@ function setLang($lang=null)
 }
 
 /**
- * Enregistre l'url pour la session donnée
+ * Enregistre l'url pour la session donnÃ©e
  *
- * Cette fonction enregistre l'url courante (url du script) pour une session donnée.
+ * Cette fonction enregistre l'url courante (url du script) pour une session donnÃ©e.
  * Cela est utile pour la navigation dans l'interface
  */
 function recordurl()
@@ -343,12 +344,12 @@ function recordurl()
  * ATTENTION! FONTION A DEPLACER DANS UN MEILLEUR SCRIPT
  * Rajoute des arguments dans une URL
  *
- * Cette fonction permet de rajouter un argument à une URL donnée. Elle teste si
- * l'URL contient déjà des arguments et ajoute alors l'argument supplémentaire en fin
+ * Cette fonction permet de rajouter un argument Ã  une URL donnÃ©e. Elle teste si
+ * l'URL contient dÃ©jÃ  des arguments et ajoute alors l'argument supplÃ©mentaire en fin
  *
  * @param string $url l'URL
- * @param string $extraarg l'argument supplémentaire
- * @return string l'url avec l'argument supplémentaire
+ * @param string $extraarg l'argument supplÃ©mentaire
+ * @return string l'url avec l'argument supplÃ©mentaire
  */
 function mkurl($url, $extraarg)
 {
@@ -360,10 +361,10 @@ function mkurl($url, $extraarg)
 }
 
 /**
- * Récuperer les charsets acceptés par un navigateur
+ * RÃ©cuperer les charsets acceptÃ©s par un navigateur
  *
- * Test des jeux de caractéres supportés par un navigateur. Ce test est fait grâce aux
- * informations fournis par le navigateur dans la requête HTTP (utilisation de la superglobale
+ * Test des jeux de caractÃ©res supportÃ©s par un navigateur. Ce test est fait grÃ¢ce aux
+ * informations fournis par le navigateur dans la requÃªte HTTP (utilisation de la superglobale
  * $_SERVER)
  *
  * @param string $charset le charset
@@ -371,7 +372,7 @@ function mkurl($url, $extraarg)
  */
 function getacceptedcharset($charset)
 {
-	// Détermine le charset a fournir au navigateur
+	// DÃ©termine le charset a fournir au navigateur
 	$browserversion = array ("opera" => 6, "netscape" => 4, "msie" => 4, "ie" => 4, "mozilla" => 3);
 	if (!$charset)	{
 		// Si ce n'est pas envoye par l'url ou par cookie, on recupere ce que demande le navigateur.
@@ -381,7 +382,7 @@ function getacceptedcharset($charset)
 				return "utf-8";
 			}
 			else {
-				return "iso-8859-1";
+				return "utf-8";
 			}
 			// Sinon on analyse le HTTP_USER_AGENT retourn par le navigateur et si ca matche on vrifie 
 			// que la version du navigateur est suprieure ou gale  la version dclare unicode
@@ -390,7 +391,7 @@ function getacceptedcharset($charset)
 			return "utf-8";
 		}
 		else {
-			return "iso-8859-1"; // Si on a rien trouvé on renvoie de l'iso
+			return "utf-8"; // Si on a rien trouvÃ© on renvoie de l'iso
 		}
 	}	else {
 		return $charset;
@@ -400,8 +401,8 @@ function getacceptedcharset($charset)
 /**
  * Le site est-il en maintenance ?
  *
- * Vérifie le status d'un site. Si le fichier ./CACHE/.lock est présent c'est que le site est bloqué
- * Cette fonction est appellée uniquement si on n'est pas loggé en tant qu'admin lodel
+ * VÃ©rifie le status d'un site. Si le fichier ./CACHE/.lock est prÃ©sent c'est que le site est bloquÃ©
+ * Cette fonction est appellÃ©e uniquement si on n'est pas loggÃ© en tant qu'admin lodel
  *
  * This function checks if the file ./CACHE/.lock exists and return the maintenance page if it is so 
  * This function is called only if we are not logged in as an adminlodel
@@ -428,7 +429,7 @@ C::setRequest();
 
 // Tableau des options du site dans le $context
 if (C::get('site', 'cfg')) 
-{ // pas besoin quand on est dans l'admin générale (options définies pour un site)
+{ // pas besoin quand on est dans l'admin gÃ©nÃ©rale (options dÃ©finies pour un site)
 	if(!($options = getFromCache('options')))
 	{
 		function_exists('cacheOptionsInFile') || include 'optionfunc.php';

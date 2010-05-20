@@ -81,7 +81,6 @@ CKEDITOR.dialog.add( 'anchor', function( editor )
 						type : 'text',
 						id : 'txtName',
 						label : editor.lang.anchor.name,
-						required: true,
 						validate : function()
 						{
 							if ( !this.getValue() )

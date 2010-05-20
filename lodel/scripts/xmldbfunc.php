@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,16 +39,16 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
 /**
@@ -58,11 +58,11 @@
  * @package lodel
  * @author Ghislain Picard
  * @author Jean Lamy
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  */
 class XMLDB
 {
@@ -70,12 +70,12 @@ class XMLDB
 	 * @access private
 	 */
 	/**
-	 * Préfix des tables
+	 * PrÃ©fix des tables
 	 * @var string
 	 */
 	var $tp;
 	/**
-	 * Les tables à inclure et les informations sur les relations, elements, tags
+	 * Les tables Ã  inclure et les informations sur les relations, elements, tags
 	 * @var array
 	 */
 	var $tables; // contains the table to includes and information of relationshiop,element,tags
@@ -87,7 +87,7 @@ class XMLDB
 	var $documentroot;
 
 	/**
-	 * L'en-tête
+	 * L'en-tÃªte
 	 * @var string
 	 */
 	var $header;
@@ -133,7 +133,7 @@ class XMLDB
 	 * Constructeur
 	 *
 	 *
-	 * @param string $documentroot l'élement racine
+	 * @param string $documentroot l'Ã©lement racine
 	 * @param string $tableprefix le prefix des tables
 	 */
 	function XMLDB($documentroot = '', $tableprefix = '')
@@ -154,7 +154,7 @@ class XMLDB
 		}
 	}
 	/**
-	 * Définit un tag pour une ligne
+	 * DÃ©finit un tag pour une ligne
 	 * @param string $table le nom de la table
 	 * @param string $rowtag ??
 	 */
@@ -231,7 +231,7 @@ class XMLDB
 		$this->tables[$tablechild]['child'] = true;
 	}
 	/**
-	 * Définition d'un header XML
+	 * DÃ©finition d'un header XML
 	 *
 	 * @param string $xml le header XML
 	 */
@@ -260,7 +260,7 @@ class XMLDB
 	}
 
 	/**
-	 * Ecrire le XML dans une chaine de caractère
+	 * Ecrire le XML dans une chaine de caractÃ¨re
 	 *
 	 * @return string le XML
 	 */
@@ -361,7 +361,7 @@ class XMLDB
 	 *
 	 * generic output function
 	 *
-	 * @param string $string la chaîne à écrire
+	 * @param string $string la chaÃ®ne Ã  Ã©crire
 	 * @access private
 	 */
 	function _write($string)
@@ -374,9 +374,9 @@ class XMLDB
 	}
 
 	/**
-	 * Lecture d'un fichier XML (depuis une chaîne)
+	 * Lecture d'un fichier XML (depuis une chaÃ®ne)
 	 *
-	 * @param string $xml la chaîne contenant le XML
+	 * @param string $xml la chaÃ®ne contenant le XML
 	 */
 	function readFromString($xml)
 	{
@@ -430,10 +430,10 @@ class XMLDB
 	/**
 	 * Insertion d'une ligne
 	 *
-	 * Cette fonction est abstraite. Elle doit être définie dans une classe dérivée.
+	 * Cette fonction est abstraite. Elle doit Ãªtre dÃ©finie dans une classe dÃ©rivÃ©e.
 	 *
 	 * @param string $currenttable la table courante
-	 * @param  array $rows les données à insérer
+	 * @param  array $rows les donnÃ©es Ã  insÃ©rer
 	 */
 	function insertRow($currentable, $rows)
 	{

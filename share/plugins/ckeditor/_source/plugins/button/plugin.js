@@ -134,14 +134,10 @@ CKEDITOR.ui.button.prototype =
 		output.push(
 			'<span class="cke_button">',
 			'<a id="', id, '"' +
-				' class="', classes, '"',
-				env.gecko && env.version >= 10900 && !env.hc  ? '' : '" href="javascript:void(\''+ ( this.title || '' ).replace( "'"+ '' )+ '\')"',
+				' class="', classes, '" href="javascript:void(\'', ( this.title || '' ).replace( "'", '' ), '\')"' +
 				' title="', this.title, '"' +
 				' tabindex="-1"' +
-				' hidefocus="true"' +
-			    ' role="button"' +
-				' aria-labelledby="' + id + '_label"' +
-				( this.hasArrow ?  ' aria-haspopup="true"' : '' ) );
+				' hidefocus="true"' );
 
 		// Some browsers don't cancel key events in the keydown but in the
 		// keypress.
@@ -174,7 +170,7 @@ CKEDITOR.ui.button.prototype =
 
 		output.push(
 					'></span>' +
-					'<span id="', id, '_label" class="cke_label">', this.label, '</span>' );
+					'<span class="cke_label">', this.label, '</span>' );
 
 		if ( this.hasArrow )
 		{
@@ -195,27 +191,25 @@ CKEDITOR.ui.button.prototype =
 	setState : function( state )
 	{
 		if ( this._.state == state )
-			return false;
-
-		this._.state = state;
+			return;
 
 		var element = CKEDITOR.document.getById( this._.id );
 
 		if ( element )
 		{
 			element.setState( state );
-			state == CKEDITOR.TRISTATE_DISABLED ?
-				element.setAttribute( 'aria-disabled', true ) :
-				element.removeAttribute( 'aria-disabled' );
 
-			state == CKEDITOR.TRISTATE_ON ?
-				element.setAttribute( 'aria-pressed', true ) :
-				element.removeAttribute( 'aria-pressed' );
+			var htmlTitle = this.title,
+				unavailable = this._.editor.lang.common.unavailable,
+				labelElement = element.getChild( 1 );
 
-			return true;
+			if ( state == CKEDITOR.TRISTATE_DISABLED )
+				htmlTitle = unavailable.replace( '%1', this.title );
+
+			labelElement.setHtml( htmlTitle );
 		}
-		else
-			return false;
+
+		this._.state = state;
 	}
 };
 

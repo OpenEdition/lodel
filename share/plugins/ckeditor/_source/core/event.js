@@ -77,8 +77,7 @@ if ( !CKEDITOR.event )
 			 * Registers a listener to a specific event in the current object.
 			 * @param {String} eventName The event name to which listen.
 			 * @param {Function} listenerFunction The function listening to the
-			 *		event. A single {@link CKEDITOR.eventInfo} object instanced
-			 *		is passed to this function containing all the event data.
+			 *		event.
 			 * @param {Object} [scopeObj] The object used to scope the listener
 			 *		call (the this object. If omitted, the current object is used.
 			 * @param {Object} [listenerData] Data to be sent as the

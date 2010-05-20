@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entités - indexation moteur de recherche
+ * Logique des entitÃ©s - indexation moteur de recherche
  *
  * PHP versions 5
  *
@@ -31,41 +31,41 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
  
 /**
- * Classe de logique des entités (gestion de l'indexation dans le moteur de recherche)
+ * Classe de logique des entitÃ©s (gestion de l'indexation dans le moteur de recherche)
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class Entities_IndexLogic extends Logic 
 {
 	/**
-	 * Tableau des équivalents génériques
+	 * Tableau des Ã©quivalents gÃ©nÃ©riques
 	 *
 	 * @var array
 	 */
@@ -83,8 +83,8 @@ class Entities_IndexLogic extends Logic
 	 * Add an object to the search_engine. An object is added only its type must be indexed 
 	 * and if its fields have weight defined > 0
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	*/
 	public function addIndexAction (&$context, &$error)
 	{
@@ -131,8 +131,8 @@ class Entities_IndexLogic extends Logic
 	 * delete an objet from the index
 	 * needed parameters
 	 * 	- object id
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function deleteIndexAction(&$context,&$error) {
 		$id = @$context["id"];
@@ -145,8 +145,8 @@ class Entities_IndexLogic extends Logic
 
 	/**
 	 * clean the index of all objet
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function cleanIndexAction(&$context,&$error)
 	{
@@ -158,8 +158,8 @@ class Entities_IndexLogic extends Logic
 	/**
 	 * Rebuild entirely the Index
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function rebuildIndexAction(&$context, &$error) 
 	{
@@ -186,7 +186,7 @@ class Entities_IndexLogic extends Logic
 			if ( ($current - $start) < $prudent_timeout)
 				$result->MoveNext();
 			else {
-				//80% du timeout est dépassé il faut rediriger.
+				//80% du timeout est dÃ©passÃ© il faut rediriger.
 				header("Location: index.php?do=rebuildIndex&lo=entities_index&clean=0");
 			}
 		}
@@ -243,7 +243,7 @@ class Entities_IndexLogic extends Logic
 	protected function _splitInTokens ($string, $regs = 0)
 	{
 		if(!$regs)
-			$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
+			$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Ã‚Â«Ã‚Â»\342\200\230\342\200\231\342\200\234\342\200\235";
 		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );//non alphanum chars cleaning
 		$tokens = preg_split("/[\s]+/", $string );//Separate string in tokens
 		return $tokens;	
