@@ -48,45 +48,146 @@
 <div id="meDescriptor">
 <LOOP NAME="getClasses" TABLE="classes" ORDER="rank">
 	<h3>[#TITLE]</h3>
-	<LOOP NAME="getTYPES" TABLE="types" WHERE="class = '[#CLASS]'" ORDER="rank">
-		<BEFORE>
-			<h4>[@COMMON.TYPES]</h4>
-			<ul>
-		</BEFORE>
-		<DO>
-			<li>[#TITLE]</li>
-		</DO>
-		<AFTER>
-			</ul>
-		</AFTER>
-	</LOOP>
-
-	<LOOP NAME="getFieldsGroups" TABLE="tablefieldgroups" WHERE="class = '[#CLASS]'" ORDER="rank">
-		<BEFORE>
-			<h4>[@COMMON.FIELDS]</h4>
-		</BEFORE>
+	<h4>[@COMMON.CLASS]</h4>
+	<table class="statistics">
+		<tr>
+			<th class="status">[@COMMON.NAME]</th>
+			<th class="status">[@COMMON.TYPE]</th>
+			<th class="status">[@COMMON.ALTERTITLE]</th>
+			<th class="status">[@ADMIN.ICON]</th>
+		</tr>
+		<tr>
+			<td>[#CLASS]</td>
+			<td>[#CLASSTYPE]</td>
+			<td>
+				<LET ARRAY="output" GLOBAL="1"></LET>
+				<LET VAR="value">[#ALTERTITLE]</LET>
+				<LOOP NAME="mltext">
+					<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
+				</LOOP>
+				<IF COND="[%OUTPUT]">
+					[%OUTPUT|join(', ')]
+				</IF>
+			</td>
+			<td>
+				<IF COND="[#ICON]"><img src="../../[#ICON]" alt="[#CLASS]"/></IF>
+			</td>
+		</tr>
+	</table>
+	<IF COND="[#CLASSTYPE] EQ 'entities'">
+		<LOOP NAME="getTYPES" TABLE="types" WHERE="class = '[#CLASS]'" ORDER="rank">
+			<BEFORE>
+				<h4>[@COMMON.TYPES]</h4>
+				<table class="statistics">
+					<tr>
+						<th class="status">[@COMMON.TITLE]</th>
+						<th class="status">[@COMMON.NAME]</th>
+						<th class="status">[@COMMON.ALTERTITLE]</th>
+					</tr>
+			</BEFORE>
+			<DO>
+				<tr>
+					<td>[#TITLE]</td>
+					<td>[#TYPE]</td>
+					<td>
+						<LET ARRAY="output" GLOBAL="1"></LET>
+						<LET VAR="value">[#ALTERTITLE]</LET>
+						<LOOP NAME="mltext">
+							<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
+						</LOOP>
+						<IF COND="[%OUTPUT]">
+							[%OUTPUT|join(', ')]
+						</IF>
+					</td>
+				</tr>
+			</DO>
+			<AFTER>
+				</table>
+			</AFTER>
+		</LOOP>
+		<LOOP NAME="getFieldsGroups" TABLE="tablefieldgroups" WHERE="class = '[#CLASS]'" ORDER="rank">
+			<BEFORE>
+				<h4>[@COMMON.FIELDS]</h4>
+			</BEFORE>
+			<table class="statistics">
+				<caption>[#TITLE]</caption>
+				<tr>
+					<th class="status">[@COMMON.TITLE]</th>
+					<th class="status">[@COMMON.NAME]</th>
+					<th class="status">[@COMMON.TYPE]</th>
+					<th class="status">[@COMMON.STYLE]</th>
+					<th class="status">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]</th>
+					<th class="status">[@COMMON.LS_VARIABLE]</th>
+				</tr>
+				<LOOP NAME="getFields" TABLE="tablefields" WHERE="idgroup = '[#ID]'" ORDER="rank">
+					<tr>
+					<th class="type">[#TITLE]</th>
+					<td>[#NAME]</td>
+					<td>[#TYPE]</td>
+					<td>[#STYLE|lexplode(',')|join('<br/>')]</td>
+					<td>[#GUI_USER_COMPLEXITY]</td>
+					<td>[#[#NAME|strtoupper]]</td>
+					</tr>
+				</LOOP>
+			</table>
+		</LOOP>
+	<ELSE/>
+		<LET VAR="table">#_TP_<IF COND="[#CLASSTYPE] EQ 'entries'">entrytypes<ELSE/>persontypes</IF></LET>
+		<LOOP NAME="getOtherTYPES" TABLE="[#TABLE]" WHERE="class = '[#CLASS]'" ORDER="rank">
+			<BEFORE>
+				<h4>[@COMMON.TYPES]</h4>
+				<table class="statistics">
+					<tr>
+						<th class="status">[@COMMON.TITLE]</th>
+						<th class="status">[@COMMON.NAME]</th>
+						<th class="status">[@COMMON.ALTERTITLE]</th>
+						<th class="status">[@COMMON.STYLE]</th>
+					</tr>
+			</BEFORE>
+			<DO>
+				<tr>
+					<td>[#TITLE]</td>
+					<td>[#TYPE]</td>
+					<td>
+						<LET ARRAY="output" GLOBAL="1"></LET>
+						<LET VAR="value">[#ALTERTITLE]</LET>
+						<LOOP NAME="mltext">
+							<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
+						</LOOP>
+						<IF COND="[%OUTPUT]">
+							[%OUTPUT|join(', ')]
+						</IF>
+					</td>
+					<td>
+						[#STYLE|lexplode(',')|join('<br/>')]
+					</td>
+				</tr>
+			</DO>
+			<AFTER>
+				</table>
+			</AFTER>
+		</LOOP>
+		<h4>[@COMMON.FIELDS]</h4>
 		<table class="statistics">
 			<caption>[#TITLE]</caption>
 			<tr>
 				<th class="status">[@COMMON.TITLE]</th>
 				<th class="status">[@COMMON.NAME]</th>
 				<th class="status">[@COMMON.TYPE]</th>
-				<th class="status">[@COMMON.STYLE]</th>
 				<th class="status">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]</th>
 				<th class="status">[@COMMON.LS_VARIABLE]</th>
 			</tr>
-			<LOOP NAME="getFields" TABLE="tablefields" WHERE="idgroup = '[#ID]'" ORDER="rank">
+			<LOOP NAME="getRelatedFields" TABLE="tablefields" WHERE="class='[#CLASS]' OR class = 'entities_[#CLASS]'" ORDER="rank">
 				<tr>
 				<th class="type">[#TITLE]</th>
 				<td>[#NAME]</td>
 				<td>[#TYPE]</td>
-				<td>[#STYLE|wordwrap(75, '<br/>',true)]</td>
 				<td>[#GUI_USER_COMPLEXITY]</td>
 				<td>[#[#NAME|strtoupper]]</td>
 				</tr>
 			</LOOP>
 		</table>
-	</LOOP>
+	</IF>
 </LOOP>
 </div>
 <MACRO NAME="CLOSE_HTML">
