@@ -184,7 +184,9 @@
 			<tr>
 				<th class="status">[@COMMON.TITLE]</th>
 				<th class="status">[@COMMON.NAME]</th>
+				<th class="status">[@COMMON.ALTERTITLE]</th>
 				<th class="status">[@COMMON.TYPE]</th>
+				<th class="status">[@COMMON.STYLE]</th>
 				<th class="status">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY]</th>
 				<th class="status">[@COMMON.LS_VARIABLE]</th>
 			</tr>
@@ -192,7 +194,18 @@
 				<tr>
 				<th class="type">[#TITLE]</th>
 				<td>[#NAME]</td>
+				<td>
+					<LET ARRAY="output" GLOBAL="1"></LET>
+					<LET VAR="value">[#ALTERTITLE]</LET>
+					<LOOP NAME="mltext">
+						<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
+					</LOOP>
+					<IF COND="[%OUTPUT]">
+						[%OUTPUT|join('<br/>')]
+					</IF>
+				</td>
 				<td>[#TYPE]</td>
+				<td>[#STYLE|lexplode(',')|join('<br/>')]</td>
 				<td>[#GUI_USER_COMPLEXITY]</td>
 				<td>[#[#NAME|strtoupper]]</td>
 				</tr>
