@@ -59,7 +59,7 @@
  * @since Fichier ajouté depuis la version 0.9
  */
 // need to be logged in and in backoffice
-if(defined('backoffice') && C::get('redactor', 'lodeluser'))
+if(defined('backoffice'))
 {
 	class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
 	{
