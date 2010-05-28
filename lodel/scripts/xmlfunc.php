@@ -253,6 +253,8 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 		call_user_func("code_before_$funcname", $context);
 	}
 
+	$class = false;
+
 	while (!$result->EOF) {
 		$row = $result->fields;
 		if (!$class) {
@@ -304,6 +306,8 @@ function loop_person_relations_fields(&$context, $funcname)
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
 	}
+
+	$class = false;
 
 	while (!$result->EOF) {
 		$row = $result->fields;
