@@ -43,6 +43,16 @@
 	</ul>
 </ul>
 
+<div id="warner_error" class="hidden">
+	<img src="[#SHAREURL]/images/alerte_rouge.png" title="[@INSTALL.ERROR]" alt="[@INSTALL.ERROR]"/>&nbsp;
+	<span id="warner_error_container" class="error"></span>
+</div>
+<div id="warner_success" class="hidden fullshadow">
+	<img src="[#SHAREURL]/images/alerte_vert.png" title="[@ADMIN.SUCCESS]" alt="[@ADMIN.SUCCESS]"/>&nbsp;
+	<span id="warner_success_container"></span>
+</div>
+<div id="warner" class="warner fullshadow"><img src="[#SHAREURL]/images/patienter.png" title="[@COMMON.PLEASE_WAIT_WHILE_LOADING]" alt="[@COMMON.PLEASE_WAIT_WHILE_LOADING]"/>&nbsp;[@COMMON.PLEASE_WAIT_WHILE_LOADING]</div>
+
 <table class="translations">
 	<CAPTION><h1>[@ADMIN.LIST_TRANSLATIONS_LANG]</h1></CAPTION>
 	<tr style="border:none;"><td colspan="4" style="text-align:right;border:none;"><a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>&nbsp;-&nbsp;<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a></td></tr>
@@ -107,9 +117,9 @@
 			</td>
 			<LOOP NAME="lang_and_text">
 				<td>
-					<a href="javascript:;" title="[@COMMON.MODIFY]" id="contents_[#ID]" onclick="display([#ID]);" style="color:[#STATUS|lodeltextcolor];"><IF COND="[#CONTENTS]">[#CONTENTS]<ELSE/>@[#NAME|strtolower]</IF></a>
+					<a href="javascript:;" title="[@COMMON.MODIFY]" id="contents_[#ID]" onclick="tr.display([#ID]);" style="color:[#STATUS|lodeltextcolor];"><IF COND="[#CONTENTS]">[#CONTENTS]<ELSE/>@[#NAME|strtolower]</IF></a>
 					<form id="form_[#ID]" class="hidden" action="index.php?do=edit&amp;lo=texts&amp;id=[#ID]" method="POST" enctype="application/x-www-form-urlencoded">
-						<textarea name="contents" rows="5" cols="50">[#CONTENTS]</textarea><br/>
+						<textarea id="text_[#ID]" name="contents" rows="5" cols="50">[#CONTENTS]</textarea><br/>
 						<select name="status" class="select[#STATUS|lodeltextcolor]" onchange="selectchanged(this);">
 						<LOOP NAME="foreach" ARRAY="[#STATUSES]">
 							<option value="[#VALUE]" class="select[#VALUE|lodeltextcolor]"<IF COND="[#STATUS] EQ [#VALUE]"> selected="selected"</IF>>&nbsp;&nbsp;</option>
@@ -122,8 +132,8 @@
 						<input type="hidden" name="name" value="[#NAME|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
 						<input type="hidden" name="textgroup" value="[#TEXTGROUP|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
 						<input type="hidden" name="protected" value="<IF COND="abs([#STATUS]) ge 32">1<ELSE/>0</IF>"/>
-						<input type="submit" class="button" value="[@COMMON.MODIFY]"/>&nbsp;
-						<input type="button" class="button" value="[@COMMON.CANCEL]" onclick="display([#ID]);"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.MODIFY]" onclick="tr.validateTranslation([#ID]);"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.CANCEL]" onclick="tr.display([#ID]);"/>&nbsp;
 						<input type="button" class="button" value="[@COMMON.DELETE]" onclick="window.location='index.php?lo=texts&amp;do=delete&amp;id=[#ID]';"/>
 					</form>
 				</td>
@@ -141,18 +151,104 @@
 <script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
 <?php mkeditlodeltextJS(); ?>
 <script type="text/javascript">
-var display = function(id) {
-	var c = $('contents_'+id);
-	var f = $('form_'+id);
-	if(c && f) {
-		if(c.hasClass('hidden')) {
-			f.addClass('hidden');
-			c.removeClass('hidden');
-		} else {
-			c.addClass('hidden');
-			f.removeClass('hidden');
-		}
-	}
+
+var Translations = {};
+Translations = function() {
+	this.init();
 };
+Translations.prototype = {
+	errorDelay:null,
+	mouseX:0,
+	mouseY:0,
+	init:function() {
+
+	},
+	display:function(id) {
+		var c = $('contents_'+id);
+		var f = $('form_'+id);
+		if(c && f) {
+			if(c.hasClass('hidden')) {
+				f.addClass('hidden');
+				c.removeClass('hidden');
+			} else {
+				c.addClass('hidden');
+				f.removeClass('hidden');
+			}
+		}
+	},
+	validateTranslation:function(id) {
+		if(!$('text_'+id).get('value').trim()) { return; }
+		var r = new Request.HTML({
+			url:'index.php?do=edit&lo=texts&id='+id,
+			onFailure:function(xhr) {
+				$clear(this.errorDelay);
+				var nbLoad = $('warner').get('loading').toInt();
+				if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+				if(0 === nbLoad) {
+					$('warner').setStyle('display', 'none');
+				}
+				$('warner_error_container').set('html', xhr.responseText.stripTags());
+				var screen = window.getSize();
+				var scroll = window.getScroll();
+				var margin = $('warner_error').measure(function(){return {x:this.getSize().x / 2, y:this.getSize().y / 2};});
+				var left = this.mouseX - margin.x;
+				var top = this.mouseY + margin.y - scroll.y;
+				if(left < 0) { left = 0; }
+				if(top > screen.y) { top = screen.y - margin.y; }
+				$('warner_error').setStyles({'top':top, 'left':left});
+				if($('warner_error').hasClass('hidden')) {
+					$('warner_error').removeClass('hidden');
+				}
+				this.errorDelay = $('warner_error').addClass.delay(5000, $('warner_error'), 'hidden');
+			}.bind(this),
+			onRequest:function() {
+				var screen = window.getSize();
+				var scroll = window.getScroll();
+				var margin = $('warner').measure(function(){return {x:this.getSize().x / 2, y:this.getSize().y / 2};});
+				var left = this.mouseX - margin.x;
+				var top = this.mouseY + margin.y - scroll.y;
+				if(left < 0) { left = 0; }
+				if(top > screen.y) { top = screen.y - margin.y; }
+				$('warner').setStyles({'top':top, 'left':left, 'display':'block'});
+				var nbLoad = $('warner').get('loading');
+				if(!nbLoad) { nbLoad = 1; }
+				else { ++nbLoad; }
+				$('warner').set('loading', nbLoad);
+			}.bind(this),
+			onComplete:function(responseTree, responseElements, responseHTML, responseJavaScript) {
+				if('auth' == responseHTML) {
+					window.location = "login.php?error_timeout=1&url_retour=" + encodeURIComponent(location.pathname + location.search);
+					return false;
+				}
+				var nbLoad = $('warner').get('loading').toInt();
+				if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+				if(0 === nbLoad) {
+					$('warner').setStyle('display', 'none');
+				}
+			},
+			onSuccess:function() {
+				$('warner_success_container').set('text', '[@ADMIN.SUCCESS]');
+				var left = this.mouseX - 30 - ($('warner').measure(function(){return (this.getSize().x / 2);}));
+				if(left < 0) { left = 0; }
+				$('warner_success').setStyles({'top':this.mouseY + 20, 'left':left});
+				if($('warner_success').hasClass('hidden')) {
+					$('warner_success').removeClass('hidden');
+				}
+				this.successDelay = $('warner_success').addClass.delay(3000, $('warner_success'), 'hidden');
+				$('contents_'+id).set('text', $('text_'+id).get('value'));
+				this.display(id);
+			}.bind(this)
+		});
+		r.post($('form_'+id));
+	}
+}
+
+var tr = new Translations();
+
+document.addEvent('mousemove', function(e) {
+	this.mouseX = e.page.x;
+	this.mouseY = e.page.y;
+}.bind(tr));
+
 </script>
 <MACRO NAME="CLOSE_HTML">
