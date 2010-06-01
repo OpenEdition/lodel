@@ -2020,7 +2020,6 @@ PHP;
 			$arr = preg_split('/<(\/?(?:'.$this->commandsline.'))\b((?:\s*[A-Z_\-]+\s*=\s*".*?(?<!\\\\)"\s*)*)\s*\/?>/s', $block, -1, PREG_SPLIT_DELIM_CAPTURE);
             		unset($block);
 		}
-
 		unset($contents);
 		// parse the variables
 		$this->parse_variable($arr[0]);

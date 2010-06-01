@@ -305,6 +305,7 @@ class ServOO_Client {
     $ret=$this->convertToFile($infilename,$informat,
 			      $outformat,$outfilename,
 			      $options);
+
     if (!$ret) {
 	@unlink($outfilename);
 	return $ret;
