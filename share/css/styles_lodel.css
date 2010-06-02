@@ -59,11 +59,11 @@ div.warner {
 	z-index:99;
 	position:fixed;
 	left:25%;
-	border:3px solid #AAAAAA;
+	border:3px solid #0096b7;
 	font-weight:bold;
 	padding:1em;
-	background:#FFFFFF none repeat scroll 0 0;
-	color:black;
+	background-color:#d9eaed;
+	color:#0096b7;
 	display:none;
 }
 img.unfolder {
@@ -1351,4 +1351,44 @@ table.translations td
 table.translations tr, table.translations td
 {
 	border:1px solid #DADBDC;
+}
+
+div#warner_error
+{
+	padding:1em 0 0 2em;
+	position:fixed;
+	z-index:99;
+	border:3px solid red;
+	background-color:white;
+	padding:1em;
+}
+
+div#warner_success
+{
+	z-index:99;
+	position:fixed;
+	padding:1em;
+	background-color:#38aa62;
+	border:3px solid #00772f;
+	left:25%;
+	color:white;
+	font-size:80%;
+}
+
+div#warner
+{
+	font-size:80%;
+}
+
+div#warner_success img, div#warner_error img, div#warner img
+{
+	vertical-align:middle;
+}
+
+.fullshadow
+{
+	box-shadow:0 0 10px gray;
+	-moz-box-shadow:0 0 10px gray;
+	-webkit-box-shadow:0 0 10px gray;
+	-khtml-box-shadow:0 0 10px gray;
 }
