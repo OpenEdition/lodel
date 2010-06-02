@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -41,19 +41,19 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
 
 /**
- * Classe gérant la partie 'vue' du modèle MVC. Cette classe est un singleton.
+ * Classe gÃ©rant la partie 'vue' du modÃ¨le MVC. Cette classe est un singleton.
  * 
  * Exemple d'utilisation de ce singleton :
  * <code>
@@ -70,14 +70,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see logic.php
  * @see controler.php
  */
@@ -91,7 +91,7 @@ class View
 	private $_cachedfile;
     
 	/**
-	* Le nom réel du fichier mis dans le cache par Cache_Lite
+	* Le nom rÃ©el du fichier mis dans le cache par Cache_Lite
 	* @var string
 	*/
 	private $_cachedfilename;
@@ -103,7 +103,7 @@ class View
 	private $_cacheOptions;
 
 	/**
-	 * $this->_eval() a-t-elle été déjà appellée ?
+	 * $this->_eval() a-t-elle Ã©tÃ© dÃ©jÃ  appellÃ©e ?
 	 * @var bool
 	 */
 	private $_evalCalled;
@@ -121,19 +121,19 @@ class View
 	private $_site;
 
 	/**
-	* lien relatif vers le répertoire lodel/scripts/
+	* lien relatif vers le rÃ©pertoire lodel/scripts/
 	* @var string
 	*/
 	private $_home;
 	
     	/**
-	* timestamp correspondant à l'appel de la vue
+	* timestamp correspondant Ã  l'appel de la vue
 	* @var int
 	*/
 	static public $time;
 
     	/**
-	* micro time correspondant à l'appel de la vue
+	* micro time correspondant Ã  l'appel de la vue
 	* @var int
 	*/
 	static public $microtime;
@@ -143,6 +143,12 @@ class View
 	* @var object
 	*/
 	private $_cache;
+
+	/**
+	* indicates if we must regenerate the page
+	* @var bool
+	*/
+	private $_regen;
 
 	/**
 	 * page which will be displayed
@@ -159,11 +165,12 @@ class View
 	static public $nocache;
     
 	/** 
-	 * Constructeur privé
+	 * Constructeur privÃ©
 	 * @access private
 	 */
 	private function __construct() 
 	{
+		$this->_regen = (bool) (C::get('recalcultpl') && C::get('admin', 'lodeluser'));
 		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
 		$this->_evalCalled = false;
 		$this->_cachedfile = null;
@@ -186,8 +193,8 @@ class View
 
 	/**
 	 * 'Getter' de ce singleton.
-	 * Cette fonction évite l'initialisation inutile de la classe si une instance de celle-ci existe
-	 * déjà.
+	 * Cette fonction Ã©vite l'initialisation inutile de la classe si une instance de celle-ci existe
+	 * dÃ©jÃ .
 	 *
 	 * @return object l'instance de la classe view
 	 */
@@ -202,14 +209,14 @@ class View
 	}
 
 	/**
-	 * Fonction qui redirige l'utilisateur vers la page précédente
+	 * Fonction qui redirige l'utilisateur vers la page prÃ©cÃ©dente
 	 * 
-	 * <p>Cette fonction selectionne l'URL précédente dans la pile des URL (table urlstack). Ceci est
-	 * fait suivant le niveau de profondeur choisi (par défaut 1).<br />
-	 * Si une URL est trouvée, toutes les autres URLS de l'historique (pour la session en cours) sont
-	 * supprimées et une redirection est faite sur cette page.<br />
-	 * Si aucune URL n'est trouvée alors la redirection est faite sur l'accueil (index.php).</p>
-	 * @param integer $back le nombre de retour en arrière qu'il faut faire. Par défaut est égal à 1.
+	 * <p>Cette fonction selectionne l'URL prÃ©cÃ©dente dans la pile des URL (table urlstack). Ceci est
+	 * fait suivant le niveau de profondeur choisi (par dÃ©faut 1).<br />
+	 * Si une URL est trouvÃ©e, toutes les autres URLS de l'historique (pour la session en cours) sont
+	 * supprimÃ©es et une redirection est faite sur cette page.<br />
+	 * Si aucune URL n'est trouvÃ©e alors la redirection est faite sur l'accueil (index.php).</p>
+	 * @param integer $back le nombre de retour en arriÃ¨re qu'il faut faire. Par dÃ©faut est Ã©gal Ã  1.
 	 */
 	public function back($back = 1)
 	{
@@ -218,8 +225,8 @@ class View
 		$idsession = C::get('idsession', 'lodeluser');
 		$offset = $back-1;
 		usemaindb();
-		// selectionne les urls dans la pile grâce à l'idsession et suivant la
-		// la profondeur indiquée (offset)
+		// selectionne les urls dans la pile grÃ¢ce Ã  l'idsession et suivant la
+		// la profondeur indiquÃ©e (offset)
 		$result = $db->selectLimit(lq("
               SELECT id, url 
                 FROM #_MTP_urlstack 
@@ -237,7 +244,7 @@ class View
                     WHERE id>='{$id}' AND idsession='{$idsession}' AND site='".$this->_site."'")) 
                 		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-			$newurl = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
+			$newurl = 'http'.(C::get('https', 'cfg') ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
 		} else {
 			$ext = defined('backoffice') || defined('backoffice-lodeladmin') ? 'php' : C::get('extensionscripts');
 			$newurl = "index.". $ext;
@@ -255,13 +262,13 @@ class View
 	/**
 	 * Fonction Render
 	 *
-	 * Affiche une page particulière en utilisant le contexte (tableau $context) et le nom du template
-	 * passé en argument.
-	 * Cette fonction gère la mise en cache et le recalcule si nécessaire. C'est-à-dire si celui-ci
-	 * n'existe pas, si celui-ci n'est plus à jour, n'est plus valide,...
+	 * Affiche une page particuliÃ¨re en utilisant le contexte (tableau $context) et le nom du template
+	 * passÃ© en argument.
+	 * Cette fonction gÃ¨re la mise en cache et le recalcule si nÃ©cessaire. C'est-Ã -dire si celui-ci
+	 * n'existe pas, si celui-ci n'est plus Ã  jour, n'est plus valide,...
 	 * 
-	 * @param string $tpl Le nom du template utilisé pour l'affichage
-	 * @param boolean $caching Si on doit utiliser le cache ou non (par défaut à false)
+	 * @param string $tpl Le nom du template utilisÃ© pour l'affichage
+	 * @param boolean $caching Si on doit utiliser le cache ou non (par dÃ©faut Ã  false)
 	 *
 	 */
 	public function render($tpl, $caching = false)
@@ -282,7 +289,7 @@ class View
 		$context =& C::getC();
 
 		// we try to reach the cache only if asked and no POST datas
-		if($caching && !self::$nocache) 
+		if($caching && !self::$nocache && !$this->_regen) 
 		{
 			if(!isset($this->_cache))
 			{
@@ -324,12 +331,12 @@ class View
 	}
 
 	/**
-	 * Fonction qui affiche une page déjà en cache
+	 * Fonction qui affiche une page dÃ©jÃ  en cache
 	 * 
-	 * Alternative à la fonction render.
+	 * Alternative Ã  la fonction render.
 	 *
-	 * @param string $tpl Le nom du template utilisé pour l'affichage
-	 * @return retourne la même chose que la fonction render
+	 * @param string $tpl Le nom du template utilisÃ© pour l'affichage
+	 * @return retourne la mÃªme chose que la fonction render
 	 * @see render()
 	 */
 	public function renderCached($tpl)
@@ -364,6 +371,13 @@ class View
 			}
 		}
 
+		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
+		{
+			function_exists('show_html') || include 'showhtml.php';
+			// on affiche la source
+			self::$page = show_html(self::$page);
+		}
+
 		switch($encoding)
 		{
 			case 'gzhandler':
@@ -392,7 +406,7 @@ class View
 
 	/**
 	* Fonction essayant de retourner le cache si celui-ci est valide
-	* utilisée uniquement côté site
+	* utilisÃ©e uniquement cÃ´tÃ© site
 	*/
 	public function renderIfCacheIsValid()
 	{
@@ -420,11 +434,11 @@ class View
 	/**
 	 * Fonction qui affiche une template inclus
 	 * 
-	 * @param array $context le contexte passé par référence
-	 * @param string $tpl Le nom du template utilisé pour l'affichage
-	 * @param string $cache_rep répertoire cache (optionnel)
-	 * @param string $base_rep lien vers le répertoire contenant le tpl
-	 * @param int $blockId numéro du block (optionnel)
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param string $tpl Le nom du template utilisÃ© pour l'affichage
+	 * @param string $cache_rep rÃ©pertoire cache (optionnel)
+	 * @param string $base_rep lien vers le rÃ©pertoire contenant le tpl
+	 * @param int $blockId numÃ©ro du block (optionnel)
 	 * @param string $loopName nom de la loop (optionnel)
 	 * @return string le template html
 	 */
@@ -451,17 +465,17 @@ class View
         	{
 			if($blockId > 0)
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
-				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-				$blockId.$sum.'//'.C::get('qs', 'cfg');
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
+					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+					$blockId.$sum.'//'.C::get('qs', 'cfg');
 			}
 			elseif(isset($loopName))
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
-				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-				$loopName.$sum.'//'.C::get('qs', 'cfg');
+				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
+					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+					$loopName.$sum.'//'.C::get('qs', 'cfg');
 			}
-			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('lang') ."//". 
+			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
 				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
 				C::get('qs', 'cfg');
 		
@@ -482,18 +496,21 @@ class View
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
 			
-			$recalcul = false;
-			
-			if($contents = $this->_cache->get($template_cache, $group))
+			if(!$this->_regen)
 			{
-				$pos = strpos($contents, "\n");
-				$timestamp = (int)substr($contents, 0, $pos);
-				if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
-				else $contents = substr($contents, $pos+1);
-			}
-			else
-			{
-				$recalcul = true;
+				$recalcul = false;
+				
+				if($contents = $this->_cache->get($template_cache, $group))
+				{
+					$pos = strpos($contents, "\n");
+					$timestamp = (int)substr($contents, 0, $pos);
+					if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
+					else $contents = substr($contents, $pos+1);
+				}
+				else
+				{
+					$recalcul = true;
+				}
 			}
 		}
         
@@ -507,7 +524,7 @@ class View
 				if(!isset($this->_cache))
 				{
 					$this->_cache = new Cache_Lite($this->_cacheOptions);
-				}
+				} 
 				elseif(isset($cacheDir))
 				{
 					$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
@@ -521,7 +538,7 @@ class View
 			unset($template);
 		}
 	
-		if(!self::$nocache && isset($cacheDir))
+		if(isset($cacheDir))
 		{
 			$this->_cache->setOption('cacheDir', $cacheDir);
 		}
@@ -530,7 +547,7 @@ class View
 	}
 
 	/**
-	 * Modifie le nom du fichier à utiliser pour mettre en cache 
+	 * Modifie le nom du fichier Ã  utiliser pour mettre en cache 
 	 *
 	 * Cette fonction calcule le nom du fichier mis en cache uniquement pour la page principale
 	 * et non pour les templates inclus dynamiquement
@@ -538,17 +555,17 @@ class View
 	private function _makeCachedFileName() 
 	{
 		// Calcul du nom du fichier en cache
-		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('lang') .
+		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('sitelang') .
 			"//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
 	}
 
 	/**
-	* Fonction qui execute le code PHP (si présent)
+	* Fonction qui execute le code PHP (si prÃ©sent)
     	* Evaluate the contents only if PHP code inside
 	*
-	* @param string $contents contenu à évaluer
+	* @param string $contents contenu Ã  Ã©valuer
 	* @param array $context le context
-	* @return le contenu du code évalué
+	* @return le contenu du code Ã©valuÃ©
 	*/
 	private function _eval($contents, &$context) 
 	{
@@ -559,12 +576,12 @@ class View
 				// needed funcs
 				defined('INC_LOOPS') || include 'loops.php';
 				defined('INC_TEXTFUNC') || include 'textfunc.php';
-				defined('INC_FUNC') || include 'func.php'; 
+				defined('INC_FUNC') || include 'func.php';
 				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
 			
-            		$filename = './CACHE/require_caching/'.uniqid(mt_rand(), true);
+            		$filename = $this->_cacheOptions['cacheDir'].'require_caching/'.uniqid(mt_rand(), true);
 
 			$fh = @fopen($filename, 'w+b');
 			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
@@ -593,8 +610,8 @@ class View
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
-	* @param string $base_rep chemin vers répertoire tpl
+	* @param string $cache_rep chemin vers rÃ©pertoire cache si diffÃ©rent de ./CACHE/
+	* @param string $base_rep chemin vers rÃ©pertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
 	* @param int $blockId (optionnel) numero du block
 	* @param string $loopName (optionnel) nom de la loop
@@ -651,8 +668,9 @@ class View
 			{
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
-		
-			$contents = $this->_cache->get($template_cache, $group);
+			
+			if(!$this->_regen)
+				$contents = $this->_cache->get($template_cache, $group);
 		}
         
 		if($contents && !(C::get('debugMode', 'cfg') && $this->_cache->lastModified() < @filemtime($tpl)) )
@@ -671,7 +689,7 @@ class View
         	unset($contents);
 
 		// si jamais le path a ete modifie on remet par defaut
-		if(!self::$nocache && isset($cacheDir)) 
+		if(isset($cacheDir)) 
 		{
 			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
 			$this->_cache->setOption('cacheDir', $cacheDir);
@@ -726,7 +744,7 @@ class View
 			$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
 			$this->_cache->save($timestamp."\n".$template['contents'], $this->_cachedfile, $this->_site.'_page');
 			unset($timestamp);
-			// si jamais le path a été modifié on remet par défaut
+			// si jamais le path a Ã©tÃ© modifiÃ© on remet par dÃ©faut
 			if(isset($cacheDir)) 
 			{
 				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
@@ -734,34 +752,27 @@ class View
 			}
 		}
         
-		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
-		{
-			function_exists('show_html') || include 'showhtml.php';
-			// on affiche la source
-			return show_html($template['contents']);
-		}
-        
 		return $template['contents'];
 	}
 
 	/**
-	 * Fonction gérant les erreurs
-	 * Affiche une erreur limité si non loggé
+	 * Fonction gÃ©rant les erreurs
+	 * Affiche une erreur limitÃ© si non loggÃ©
 	 * Accessoirement, on nettoie le cache
 	 *
 	 * @param string $msg message d'erreur
-	 * @param string $func nom de la fonction générant l'erreur
+	 * @param string $func nom de la fonction gÃ©nÃ©rant l'erreur
 	 * @param bool $clearcache a-t-on besoin de nettoyer le cache ?
 	 * @see _eval()
 	 */
 	private function _error($msg, $func, $clearcache) 
 	{
 		// we are maybe buffering, so clear it
-		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		
 		global $db;
-		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages si demandé
+		// erreur on peut avoir enregistrÃ© n'importe quoi dans le cache, on efface les pages si demandÃ©
 		if($clearcache)
 		{
 			clearcache(true);
@@ -772,7 +783,7 @@ class View
 		if(is_object($db) && $db->ErrorMsg())
 			$err .= "SQL ERROR ".$db->ErrorMsg()."\n";
 
-		if(!C::get('editor', 'lodeluser')) 
+		if(!C::get('redactor', 'lodeluser')) 
 		{
 			if(C::get('contactbug', 'cfg'))
 			{
@@ -790,19 +801,19 @@ class View
 	* Fonction qui permet d'envoyer les erreurs lors du calcul des templates
 	*
 	* @param string $query la requete SQL
-	* @param string $tablename le nom de la table SQL (par défaut vide)
+	* @param string $tablename le nom de la table SQL (par dÃ©faut vide)
 	* @param string $line ligne contenant l'erreur
-	* @param string $file fichier contenant l'erreur (par défaut dans ./CACHE/require_caching/)
+	* @param string $file fichier contenant l'erreur (par dÃ©faut dans ./CACHE/require_caching/)
 	*/
 	public function myMysqlError($query, $tablename = '', $line, $file)
 	{
 		global $db;
 		// we are maybe buffering, so clear it
-		if(!C::get('editor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		// on efface le cache on a pu enregistre tout et n'importe quoi
 		clearcache(true);
-		if (C::get('editor', 'lodeluser') || C::get('debugMode', 'cfg'))
+		if (C::get('redactor', 'lodeluser') || C::get('debugMode', 'cfg'))
 		{
 			if ($tablename) 
 			{
@@ -826,7 +837,7 @@ class View
 
 /**
  * Insertion d'un template dans le context
- * wrapper de la fonction View::renderTemplateFile
+ * wrapper de la fonction View::getIncTpl
  *
  * @param array $context le context
  * @param string $tpl le nom du fichier template
@@ -930,83 +941,129 @@ function generateLangCache($lang, $file, $tags)
  */
 function _indent($source, $indenter = '  ')
 {
-	if(false !== strpos($source, '<?xml')) {
-			/*$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);*/
+	/*if(false !== strpos($source, '<?xml')) {
+			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
 			function_exists('indentXML') || include 'xmlfunc.php';
-			$source = indentXML($source, false, $indenter);
-			return $source;
-	} elseif(!preg_match("/<[^><]+>/", $source)) {
-		$source = _indent_xhtml($source,$indenter);
+			return indentXML($source, false, $indenter);
+	} else*/
+	if(!preg_match("/<[^>]+>/", $source)) { // no tags
+		return _indent_xhtml($source,$indenter);
+	}
+
+	$tab = '';
+	// inline tags
+	$inline = array('a'=>true, 'strong'=>true, 'b'=>true, 'em'=>true, 'i'=>true, 'abbr'=>true, 'acronym'=>true, 'code'=>true, 'cite'=>true, 
+			'span'=>true, 'sub'=>true, 'sup'=>true, 'u'=>true, 's'=>true, 'br'=>true, 'pre'=>true, 'textarea'=>true, 'img'=>true,
+			'A'=>true, 'STRONG'=>true, 'B'=>true, 'EM'=>true, 'I'=>true, 'ABBR'=>true, 'ACRONYM'=>true, 'CODE'=>true, 'CITE'=>true, 
+			'SPAN'=>true, 'SUB'=>true, 'SUP'=>true, 'U'=>true, 'S'=>true, 'BR'=>true, 'PRE'=>true, 'TEXTAREA'=>true, 'IMG'=>true);
+	$noIndent = array('textarea'=>true, 'TEXTAREA'=>true, 'script'=>true, 'SCRIPT'=>true, 'noscript'=>true, 'NOSCRIPT'=>true, 'style'=>true, 'STYLE'=>true);
+	$nbIndent = strlen($indenter);
+	$isInline = false;
+	$escape = false;
+
+	// c'est parti on indente
+	$arr = preg_split("/(?:[\n\t\r]*)((<(?:[\/!]?))(?:\w+:)?([\w-]+)(?:\s[^>]*?)?(\/?>))(?:[\n\t\r]*)/", 
+			trim($source), -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+	$source = '';
+	if(!isset($arr[1])) {
+		if(trim($arr[0]))
+			$source .= $arr[0];
 		return $source;
 	}
-	// on touche pas a l'indentation du code JS, CSS
-	$tmp = preg_split("/(<(?:script|noscript|style)[^>]*>)(.*?)(<\/(?:script|noscript|style)>)/s", 
-                   $source, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-	$source = $tab = '';
-	$iscode = 0;
-	$nbOpPar = $nbCloPar = 0;
-	foreach($tmp as $k=>$texte)
+	
+	$i = -1;
+	$closingTag = false;
+	while(isset($arr[++$i]))
 	{
-		if(0 === strpos($texte, '<script') || 0 === strpos($texte, '<noscript') || 0 === strpos($texte, '<style')) 
+		$current =& $arr[$i];
+		if(!isset($current{0})) continue;
+		if($current{0} === '<')
 		{
-			$texte = $tab.$texte;
-            if(isset($tmp[$k+1]) && ($tmp[$k+1] != '</script>' && $tmp[$k+1] != '</noscript>' && $tmp[$k+1] != '</style>'))
-                $texte = $texte."\n";
-			$iscode++;
-		} 
-		elseif('</script>' === $texte || '</noscript>' === $texte || '</style>' === $texte) 
-		{
-			$texte = $tab.$texte."\n";
-			$iscode--;
-		} 
-		elseif($iscode === 0 && ($nbOpPar === $nbCloPar)) 
-		{
- 			// on vire toute l'indentation existante
-            		$texte = strtr($texte, array(
-                            "\n"    => '',
-                            "\r"    => '',
-                            "\t"    => '',
-                            '  '    => ' '));
-
-			// c'est parti on indente
-			$arr = preg_split("/(<(\/?|!?)(?!a\b|strong\b|title\b|h[1-6]\b|b\b|em\b|i\b|abbr\b|acronym\b|code\b|cite\b|span\b|sub\b|sup\b|u\b|s\b|br\b|pre\b|textarea\b)(?:\w+:)?[\w-]+(?:\s[^>]*)?>)/i", $texte, -1, PREG_SPLIT_DELIM_CAPTURE);
-			$texte = '';
-			$nbarr = count($arr);
-			if($nbarr<=1) {
-				$source .= $arr[0];
-				continue;
-			}
-			$arr[0] = trim($arr[0]);
-			if($arr[0]) $source .= $arr[0];
-			for ($i = 1 ; $i < $nbarr ; $i += 3) {
-				if (!empty($arr[$i +1]) && '!' !== $arr[$i+1]) {
-					$tab = substr($tab, 2); // closing tag
-				}
-				if (substr($arr[$i], -2) == "/>") { // opening closing tag
-					$out = $tab.$arr[$i].$arr[$i +2]."\n";
-				} elseif (empty($arr[$i +1]) && !empty($arr[$i +4])) { // opening follow by a closing tags
-						$out = $tab.$arr[$i].$arr[$i +2].$arr[$i +3].$arr[$i +5]."\n";
-						$i += 3;
-				} else {
-					$out = $tab.$arr[$i]."\n";
-					if (empty($arr[$i +1])) {
-						$tab .= "$indenter";
-					}
-					if (trim($arr[$i +2])) {
-						$out .= $tab.$arr[$i +2]."\n";
-					}
-				}
-				if(trim($out))
-					$texte .= $out;
-			}
-		} elseif($iscode>0) {
-			$nbOpPar += substr_count($texte, '{');
-			$nbCloPar += substr_count($texte, '}');
+			$prefix = isset($arr[$i+1]) ? $arr[$i+1] : '';
+			$tag = isset($arr[$i+2]) ? $arr[$i+2] : '';
+			$suffix = isset($arr[$i+3]) ? $arr[$i+3] : '';
 		}
-		if(trim($texte))
-			$source .= $texte;
+		else
+		{
+			$prefix = $tag = $suffix = '';
+		}
+
+		if(isset($current{1}) && '<?' === $current{0}.$current{1})
+		{ // php/xml code
+			$closingTag = false;
+			$source .= "\n".$current."\n";
+		}
+		elseif('<!' === $prefix)
+		{ // <!DOCTYPE or <!--
+			$closingTag = false;
+			$source .= $current;
+			if($tag && ('DOCTYPE' === $tag || '--' === $tag))
+				$i += 3;
+		}
+		elseif('/>' === $suffix)
+		{ // <\w+/>
+			$closingTag = false;
+			if($tag && isset($inline[$tag]))
+			{
+				$source .= $current;
+				$isInline = true;
+			}
+			else
+			{
+				$source .= $isInline ? $current : "\n".$tab.$current."\n".$tab;
+				$closingTag = $isInline ? false : true;
+			}
+			$i += 3;
+		}
+		elseif('</' === $prefix)
+		{ // </\w+>
+			if($tag)
+			{
+				if(isset($noIndent[$tag])) $escape = false;
+				if(isset($inline[$tag]))
+				{
+					$source .= $current;
+					$i += 3;
+					continue;
+				}
+				$isInline = isset($inline[$arr[$i-2]]) || isset($inline[$arr[$i-3]]);
+			}
+			$tab = substr($tab, $nbIndent);
+			$source .= $isInline || !$closingTag ? $current : "\n".$tab.$current;
+			$closingTag = true;
+			$isInline = false;
+			$i += 3;
+		}
+		elseif('<' === $prefix)
+		{ // <\w+
+			$closingTag = false;
+			if($tag)
+			{
+				if(isset($noIndent[$tag])) $escape = true;
+				if(isset($inline[$tag]))
+				{
+					$isInline = true;
+					$source .= $current;
+					$i += 3;
+					continue;
+				}
+			}
+
+			$source .= $isInline ? $current : "\n".$tab.$current;
+			$tab .= "$indenter";
+			$isInline = false;
+			$i += 3;
+		}
+		else
+		{ // contents
+			$closingTag = false;
+			$escape || $arr[$i] = str_replace("\n", '', $arr[$i]);// remove any \n, only if we are NOT in <textarea>
+			$source .= $current;
+		}
 	}
-	return $source;
+
+	// we trim and remove empty lines
+	return trim(preg_replace("/^\s*\n/m", '', $source));
 }
 
 // Function to seperate multiple tags one line (used by function _indent_xhtml)

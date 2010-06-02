@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source
@@ -67,7 +67,7 @@ try
     $context['recaptcha_publickey'] = C::get('recaptcha_publickey', 'cfg');
     include 'recaptchalib.php';
     
-    // identifié ? accès à tous les documents
+    // identifiÃ© ? accÃ¨s Ã  tous les documents
     $critere = C::get('rights', 'lodeluser') > LEVEL_VISITOR ? '' : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
     function_exists("filtered_mysql_fetch_assoc") || include_once 'filterfunc.php';
     $id = C::get('id');
@@ -109,7 +109,7 @@ try
         // validation
         do {
 	    $err = false;
-            // on vérifie que les mails fournies sont correctes
+            // on vÃ©rifie que les mails fournies sont correctes
             if (empty($context['to']) || !preg_match("/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/", $context['to'])) {
                 $err = $context['error_to'] = 1;
             }
@@ -121,7 +121,7 @@ try
                 break;
             }
             $row = $db->getRow(lq("SELECT url FROM #_MTP_sites WHERE name='{$site}'"));
-            $context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . " sur {$row['url']} ". utf8_encode(' signalé par ');
+            $context['subject'] = 'Un article de ' . $context['options']['metadonneessite']['titresite'] . " sur {$row['url']} signalÃ© par ";
             if(!empty($context['nom_expediteur']))
                 $context['subject'] .= $context['nom_expediteur'];
             else
@@ -130,8 +130,8 @@ try
 	    class_exists('View') || include 'View.php'; // should be included by the autoload
 
             ob_start();
-            $GLOBALS['nodesk'] = true; // on veut pas le desk pour la génération du mail !
-            // on utilise pas le cache pour le mail généré !!
+            $GLOBALS['nodesk'] = true; // on veut pas le desk pour la gÃ©nÃ©ration du mail !
+            // on utilise pas le cache pour le mail gÃ©nÃ©rÃ© !!
             C::set('nocache', true);
             insert_template($context, 'signaler-mail');
             $content = ob_get_clean();
@@ -148,7 +148,7 @@ try
     
     View::getView()->renderCached('signaler');
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

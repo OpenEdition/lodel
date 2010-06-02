@@ -1,14 +1,15 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8"/>
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -174,11 +175,11 @@
    </DO>
    </LOOP>
 <!--[ *********************** ELEMENT META *********************************]-->
-<!--[ Définition de l'élément meta qui contient tous les types de la classe ]-->
+<!--[ DÃ©finition de l'Ã©lÃ©ment meta qui contient tous les types de la classe ]-->
 <!--[ *********************** ELEMENT META *********************************]-->
 		<xsd:element name="meta">
 		<xsd:annotation>
-	<xsd:documentation xml:lang="fr">L'élément meta contient la liste des types de la classe</xsd:documentation>
+	<xsd:documentation xml:lang="fr">L'Ã©lÃ©ment meta contient la liste des types de la classe</xsd:documentation>
 	<xsd:documentation xml:lang="en">meta element contains the list of class types</xsd:documentation>
 </xsd:annotation>
 		<xsd:complexType>
@@ -201,7 +202,7 @@
 <!--[ End of element document ]-->
 
 
-<!--[ Définition des types ]-->
+<!--[ DÃ©finition des types ]-->
 <LOOP NAME="personnesclassesxsd" TABLE="classes" WHERE="classtype='persons' AND status GT 0">
 <DO>
 <xsd:complexType name="type[#CLASS|ucfirst]">
@@ -468,5 +469,5 @@
   </xsd:sequence>
 </xsd:group>
 
-<!--[ Fin du schéma ]-->
+<!--[ Fin du schÃ©ma ]-->
 </xsd:schema>

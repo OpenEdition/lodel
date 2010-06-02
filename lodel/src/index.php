@@ -1,8 +1,8 @@
 <?php
 /**
- * Fichier racine - porte d'entrée principale du site
+ * Fichier racine - porte d'entrÃ©e principale du site
  *
- * Ce fichier permet de faire appel aux différentes entités (documents), via leur id, leur
+ * Ce fichier permet de faire appel aux diffÃ©rentes entitÃ©s (documents), via leur id, leur
  * identifier (lien permanent). Il permet aussi d'appeler un template particulier (via l'argument
  * page=)
  * Voici des exemples d'utilisations
@@ -19,12 +19,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -51,12 +51,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/source
@@ -75,7 +75,7 @@ try
 		recordurl();
 	}
 
-	if(!C::get('debugMode', 'cfg'))
+	if(!C::get('debugMode', 'cfg') && !C::get('visitor', 'lodeluser'))
 	{
 		if(View::getView()->renderIfCacheIsValid()) exit();
 	}
@@ -83,7 +83,7 @@ try
     	$accepted_logic = array();
 	$called_logic = null;
 
-	if (!C::get('editor', 'lodeluser') && ($do = C::get('do'))) 
+	if ($do = C::get('do'))
 	{
 		if ($do === 'edit' || $do === 'view') 
 		{
@@ -97,15 +97,28 @@ try
 				trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
 			}
 			unset($vo);
-			$lodeluser['rights']  = LEVEL_EDITOR; // grant temporary
-			$lodeluser['editor']  = 1;
-			C::setUser($lodeluser);
-            		$_REQUEST['clearcache'] = false;
-            		C::set('nocache', false);
-            		unset($lodeluser);
+			if(!C::get('editor', 'lodeluser'))
+			{
+				$lodeluser['temporary'] = true;
+				$lodeluser['rights']  = LEVEL_REDACTOR; // grant temporary
+				$lodeluser['visitor'] = 1;
+				$lodeluser['groups'] = 1;
+				$lodeluser['editor']  = 0;
+				$lodeluser['redactor'] = 1;
+				$lodeluser['admin']	= 0;
+				$lodeluser['adminlodel'] = 0;
+				$GLOBALS['nodesk'] = true;
+				C::setUser($lodeluser);
+				unset($lodeluser);
+				$_REQUEST['clearcache'] = false;
+				C::set('nocache', false);
+			}
 			$accepted_logic = array('entities_edition');
             		C::set('lo', 'entities_edition');
 			$called_logic = 'entities_edition';
+		} elseif('_' === $do{0}) {
+			$accepted_logic = array('plugins');
+			C::set('lo', 'plugins');
 		} else {
 			trigger_error('ERROR: unknown action', E_USER_ERROR);
 		}
@@ -114,7 +127,7 @@ try
 	Controller::getController()->execute($accepted_logic, $called_logic);
 	exit();
 }
-catch(Exception $e)
+catch(LodelException $e)
 {
 	echo $e->getContent();
 	exit();

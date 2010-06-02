@@ -3,12 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -51,7 +51,7 @@
 			<IF COND="[#VARNAME] eq 'identifier'">
 				<FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="" />
 			<ELSE/>
-				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spécial dans le cas d'une personne -->
+				<IF COND="[#VARNAME] eq 'persons'"> <!-- traitement spÃ©cial dans le cas d'une personne -->
 					<LET VAR="iderror"><?php $tmperror = array_keys(@$context['error']); echo $tmperror[0]; ?></LET>
 					<LOOP NAME="gettitleperson" TABLE="persontypes" WHERE="id='[#IDERROR]'">
 						<?php $err = array_values(@$context['error'][$context['iderror']][1]); $context['error'] = $err[0]; ?>
@@ -121,7 +121,7 @@
 <DEFMACRO NAME="AFFICHER_CHAMPS_DU_GROUPE_EDITION">
 <!--[ Permet de lister tous les champs d'un groupe de    ]-->
 <!--[ champs                                             ]-->
-	<!--[ Valeur par défaut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
+	<!--[ Valeur par dÃ©faut : 64 pour couvrir cas des types publics (utilisateurs sans niveau de complexite) ]-->
         <IF COND="[#LODELUSER.GUI_COMPLEXITY]">
                 <LET VAR="lodeluser_gui_complexity">[#LODELUSER.GUI_COMPLEXITY]</LET>
         <ELSE />
@@ -183,28 +183,33 @@
     //Height (by default will be 400px)
     $context['fck_height'] = (isset($parameters[2]) ? intval($parameters[2]) : 400);
     //Language (by default will be empty)
-    $context['fck_language'] = (isset($parameters[3]) ? trim($parameters[3]) : $context['lodeluser']['lang']);
+    $context['fck_language'] = (isset($parameters[3]) ? trim($parameters[3]) : C::get('lang','lodeluser'));
     $context['fck_autodetectlanguage'] = (isset($parameters[4]) ? trim($parameters[4]) : false);
 	//SkinName (by default will be default :p)
-    $context['fck_skin'] = (isset($parameters[5]) ? trim($parameters[5]) : 'silver');
+    $context['fck_skin'] = (isset($parameters[5]) ? trim($parameters[5]) : 'v2');
   }
   else
   {
     $context['fck_width'] = 600;
     $context['fck_height'] = 400;
-    $context['fck_skin'] = 'default';
+    $context['fck_skin'] = 'v2';
     $context['fck_autodetectlanguage'] = 'false';
-    $context['fck_language'] = @$context['lodeluser']['lang'];
+    $context['fck_language'] = C::get('lang','lodeluser');
     $context['fck_mode'] = 'Advanced';
+  }
+
+  if(empty($context['fck_language']))
+  { 
+      $context['fck_language'] = C::get('sitelang'); 
   }
 ?>
 </DEFMACRO>
 
 <!--[ *********************************************************** ]-->
-<!--[ Gestion de l'édition des champs dans la feuille de styles XSL.
-	Il s'agit de la macro utilisée dans les templates générés automatiquement. Elle fait un peu
-	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien à cause du nom de la
-	variable qui diffère.]-->
+<!--[ Gestion de l'Ã©dition des champs dans la feuille de styles XSL.
+	Il s'agit de la macro utilisÃ©e dans les templates gÃ©nÃ©rÃ©s automatiquement. Elle fait un peu
+	double emploi avec l'autre (PRINT_EDIT_FIELD) mais on n'y peut rien Ã  cause du nom de la
+	variable qui diffÃ¨re.]-->
 <!--[*************************************************************]-->
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
@@ -287,25 +292,62 @@
 	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
-				$context["value"] = str_replace("\n","",$context["value"]);
-				$context["value"] = str_replace("\r","",$context["value"]);
-				$context['value'] = html_entity_decode(stripslashes($context['value']));
-				$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
+			$context["value"] = str_replace("\n","",$context["value"]);
+			$context["value"] = str_replace("\r","",$context["value"]);
+			$context['value'] = html_entity_decode(stripslashes($context['value']));
+			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
 ?>
-		<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
+	<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
 <?php
-				$urlFck = C::get('sharedir', 'cfg') . "/plugins/fckeditor/";
-				require_once($urlFck."fckeditor.php");
-				$oFCKeditor = new FCKeditor($context['fullvarname'], @$context['fck_width'], @$context['fck_height']) ;
-				$oFCKeditor->ToolbarSet = @$context['fck_mode'];
-				$oFCKeditor->BasePath = $urlFck;
-				$oFCKeditor->Config['SkinPath'] = "skins/".@$context['fck_skin']."/";
-				$oFCKeditor->Config["EditorAreaCSS"] = "css/fck_editorarea.css";
-				$oFCKeditor->Config["AutoDetectLanguage"] = @$context['fck_autodetectlanguage'];
-				$oFCKeditor->Config["DefaultLanguage"] = @$context['fck_language'];
-				$oFCKeditor->Value = $context['value'];
-				$oFCKeditor->Create();
-?>
+	if(!C::get('fckeditor_included')) {?>
+		<script type="text/javascript" src="[#SHAREURL]/plugins/ckeditor/ckeditor.js"></script>
+		<script type="text/javascript">replaceCKEDITOR = new Array();</script>
+<?php 
+		C::set('fckeditor_included', true);
+	}
+	if(!C::get('fckeditor_'.$context['fck_mode'])) {?>
+	
+		<script type="text/javascript">
+			replaceCKEDITOR['[#FCK_MODE]'] = function(obj) {
+				if(!obj.status) {
+					CKEDITOR.replace(obj.getAttribute('name'), {
+						'toolbar'         : '[#FCK_MODE]',
+						'language'        : '[#FCK_LANGUAGE]',
+						'height'          : '[#FCK_HEIGHT]',
+						'width'           : '[#FCK_WIDTH]',
+						'skin'            : '[#FCK_SKIN]'
+					});
+					obj.status = 1;
+				}
+			}; 
+			var l = function() {
+				var textareas = document.getElementsByTagName('textarea');
+				if(textareas) {
+					var i=0;
+					for(i=0;textareas[i];i++) {
+						var ck = textareas[i].getAttribute('fckeditor');
+						var ckname = textareas[i].getAttribute('name');
+						var mode = textareas[i].getAttribute('mode');	
+						if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
+							replaceCKEDITOR[mode](textareas[i]);
+						}
+					}
+				}
+			}
+			if(window.addEventListener) {
+				window.addEventListener('load', l, true);
+			} else {
+				if(window.attachEvent) {
+					window.attachEvent('onload', l);
+				}
+			}
+		</script>
+	<?php
+		C::set('fckeditor_'.$context['fck_mode'], true);
+	}
+	?>
+
+			<textarea name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] fckeditor="1" width="[#FCK_WIDTH]px" height="[#FCK_HEIGHT]px" mode="[#FCK_MODE]">[#VALUE]</textarea>
 		</IF>
     	<ELSE/>
 		<IF COND="[#EDITIONPARAMS] gt 1">
@@ -990,7 +1032,7 @@ addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTY
 </DEFMACRO>
 
 <!--[
-Affichage du titre internationalisé.
+Affichage du titre internationalisÃ©.
 Utilise altertitle et le filtre multiligue.
 Si c'est vide alors utilise le champ title
 
@@ -1002,7 +1044,7 @@ Si c'est vide alors utilise le champ title
 
 
 <!--[
-C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admin !!
+C'est ignoble de remettre cette macro lÃ  alors qu'elle est dÃ©jÃ  dans macros_admin !!
 
 ]-->
 
@@ -1014,20 +1056,20 @@ C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_admi
 
 <!--[ 
 
-Macros rapatriées de lodel/src/lodel/edition/tpl
+Macros rapatriÃ©es de lodel/src/lodel/edition/tpl
 
 ]-->
 
 <!--[ ************************************************** ]-->
-<!--[ * Macros de l'édition. 2002                        ]-->
+<!--[ * Macros de l'Ã©dition. 2002                        ]-->
 <!--[ Auteur : Marin Dacos, Nicolas Nutten               ]-->
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 23/09/03 *********************** ]-->
+<!--[ Macro rajoutÃ©e le 23/09/03 *********************** ]-->
 <!--[ Cette macro est utile aux fichiers tpl :           ]-->
 <!--[ document.html                                      ]-->
 <DEFMACRO NAME="JS_SIMULE_SUBMIT">
-<!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
+<!--[ Met la valeur "true" dans le champ cachÃ© "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
 	
@@ -1041,7 +1083,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ ************************************************** ]-->
 
 
-<!--[ Macros rajoutées le 11/09/03 ********************* ]-->
+<!--[ Macros rajoutÃ©es le 11/09/03 ********************* ]-->
 <DEFMACRO NAME="PUBLICATIONS_PROTEGEES">
 	<LOOP NAME="publications_protegees">
 		<BEFORE>
@@ -1090,8 +1132,8 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajoutée le 17/09/03 *********************** ]-->
-<!--[ Macro servant à publication.html et                ]-->
+<!--[ Macro rajoutÃ©e le 17/09/03 *********************** ]-->
+<!--[ Macro servant Ã  publication.html et                ]-->
 <!--[ extrainfo.html                                     ]-->
 <DEFMACRO NAME="AFFICHER_PERSONNES">
 	<table class="table_form_popup" width="90%" cellpadding="5" cellspacing="0" border="0">
@@ -1296,17 +1338,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 
 
-<!--[ ************************************** Rajout intégration maquette ************************************** ]-->
+<!--[ ************************************** Rajout intÃ©gration maquette ************************************** ]-->
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
 	
-	/* on pré-charge les image */
-	//img1=new Image(82,18); /* on déclare les images */
+	/* on prÃ©-charge les image */
+	//img1=new Image(82,18); /* on dÃ©clare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pré-charge */
+	//img1.src="image1.gif"; /* on les prÃ©-charge */
 	//img2.src="image2.gif";
-	/* on déclare la fonction qui affiche les Rollovers */
+	/* on dÃ©clare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}

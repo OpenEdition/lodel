@@ -10,12 +10,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -42,24 +42,24 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id:
  */
 
 /**
- * Classe gérant la DAO (Database Abstraction Object)
+ * Classe gÃ©rant la DAO (Database Abstraction Object)
  * 
- * <p>Cette classe définit un ensemble de méthodes permettant d'effectuer les opérations
- * courantes sur la base de données : sélection, insertion, mise à jour, suppression. Au lieu
- * d'effectuer soit même les requêtes SQL et de traiter les résultats SQL sous forme de tableau,
- * les méthodes de cette classe retourne leurs résultat sous forme d'objet : les Virtual Objet
+ * <p>Cette classe dÃ©finit un ensemble de mÃ©thodes permettant d'effectuer les opÃ©rations
+ * courantes sur la base de donnÃ©es : sÃ©lection, insertion, mise Ã  jour, suppression. Au lieu
+ * d'effectuer soit mÃªme les requÃªtes SQL et de traiter les rÃ©sultats SQL sous forme de tableau,
+ * les mÃ©thodes de cette classe retourne leurs rÃ©sultat sous forme d'objet : les Virtual Objet
  *  (VO).</p>
  * <p>Exemple d'utilisation (factice)
  * <code>
@@ -76,15 +76,15 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see controler.php
  * @see view.php
  */
@@ -100,20 +100,20 @@ class DAO
 	public $table;
 
 	/**
-	 * Nom de la table avec et préfixe et éventuellement la jointure pour le SELECT
+	 * Nom de la table avec et prÃ©fixe et Ã©ventuellement la jointure pour le SELECT
 	 * Table name with the prefix, and potential join for views.
 	 * @var string
 	 */
 	public $sqltable;
 
 	/**
-	 * Uniqueid. Vrai si la table utilise une clé primaire (clé unique).
+	 * Uniqueid. Vrai si la table utilise une clÃ© primaire (clÃ© unique).
 	 * @var integer
 	 */
 	public $uniqueid;
 
 	/**
-	 * Tableau associatif avec les droits requis pour lire, écrire et protéger
+	 * Tableau associatif avec les droits requis pour lire, Ã©crire et protÃ©ger
 	 * Assoc array with the right level required to read, write, protect
 	 * @var array
 	 */
@@ -126,7 +126,7 @@ class DAO
 	public $idfield;
 
 	/**
-	 * Tableau de cache stockant les critères SQL correspondants aux droit d'accès sur les objets
+	 * Tableau de cache stockant les critÃ¨res SQL correspondants aux droit d'accÃ¨s sur les objets
 	 * @see rightsCriteria()
 	 * @access private
 	 */
@@ -148,11 +148,11 @@ class DAO
 	/**
 	 * Constructeur de classe
 	 *
-	 * Positionne les variables privées de la classe.
+	 * Positionne les variables privÃ©es de la classe.
 	 *
 	 * @param string $table le nom de la table et de la classe.
-	 * @param boolean $uniqueid Par défaut à 'false'. Indique si la table utilise une clé primaire.
-	 * @param string $idfield Par défaut à 'id'. Indique le nom du champ identifiant
+	 * @param boolean $uniqueid Par dÃ©faut Ã  'false'. Indique si la table utilise une clÃ© primaire.
+	 * @param string $idfield Par dÃ©faut Ã  'id'. Indique le nom du champ identifiant
 	 */
 	public function __construct($table, $uniqueid = false, $idfield = "id")
 	{
@@ -208,9 +208,9 @@ class DAO
 	 * Ajout/Modification d'enregistrement
 	 * Main function to add/modify records
 	 *
-	 * @param object &$vo l'objet virtuel à sauvegarder.
-	 * @param boolean $forcecreate Par défaut à false. Indique si on doit forcer la création.
-	 * @return $idfield l'identifiant de l'enregistrement créé ou modifié.
+	 * @param object &$vo l'objet virtuel Ã  sauvegarder.
+	 * @param boolean $forcecreate Par dÃ©faut Ã  false. Indique si on doit forcer la crÃ©ation.
+	 * @return $idfield l'identifiant de l'enregistrement crÃ©Ã© ou modifiÃ©.
 	 */
 	public function save(&$vo, $forcecreate = false) // $set,$context=array())
 	{
@@ -229,21 +229,30 @@ class DAO
 		}
 
 		if (isset ($vo->rank) && $vo->rank == 0) { // initialize the rank
-			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64');
+			$where = '';
+			if('entries' === $this->table)
+			{
+				$where = ' AND idtype='.$vo->idtype.' AND idparent='.$vo->idparent;
+			}
+			elseif('entities' === $this->table)
+			{
+				$where = ' AND idparent='.$vo->idparent;
+			}
+			$rank = $db->getOne('SELECT MAX(rank) FROM '.$this->sqltable.' WHERE status>-64'.$where);
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 			$vo->rank = $rank +1;
 		}
 		$this->quote($vo);
-		if (isset($vo->$idfield) && $vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
-			$update = ''; //critère de mise à jour
+		if (isset($vo->$idfield) && $vo->$idfield > 0 && !$forcecreate) { // Update - Mise Ã  jour
+			$update = ''; //critÃ¨re de mise Ã  jour
 			if (isset ($vo->protect))	{ // special processing for the protection
 				$update = 'status=(2*(status>0)-1)'. ($vo->protect ? '*32' : ''); //reglage du status
 				unset ($vo->status);
 				unset ($vo->protect);
 			}
-			foreach ($vo as $k => $v)	{ // ajout de chaque champ à la requete update
+			foreach ($vo as $k => $v)	{ // ajout de chaque champ Ã  la requete update
 				if (!isset ($v) || $k == $idfield) {
 					continue;
 				}
@@ -288,11 +297,11 @@ class DAO
 	}
 
 	/**
-	 * Ajout de slashes dans champ pour la protection des données dans la requête SQL
+	 * Ajout de slashes dans champ pour la protection des donnÃ©es dans la requÃªte SQL
 	 *
 	 * Quote the field in the object
 	 *
-	 * @param object &$vo Objet virtuel passé par référence
+	 * @param object &$vo Objet virtuel passÃ© par rÃ©fÃ©rence
 	 */
 	public function quote(&$vo)
 	{
@@ -304,12 +313,12 @@ class DAO
 	}
 
 	/**
-	 * Récuperer un objet par son identifiant
+	 * RÃ©cuperer un objet par son identifiant
 	 *
 	 * Function to get a value object
 	 *
 	 * @param integer $id l'identifiant de l'objet
-	 * @param string $select les champs à récuperer
+	 * @param string $select les champs Ã  rÃ©cuperer
 	 * @return object un objet virtuel contenant les champs de l'objet
 	 * @see fonction find()
 	 */
@@ -320,11 +329,11 @@ class DAO
 	}
 
 	/**
-	 * Récuperer des objects grâce aux identifiants
+	 * RÃ©cuperer des objects grÃ¢ce aux identifiants
 	 *
 	 * Function to get many value object
 	 * @param array $ids le tableau des identifiant
-	 * @param string $select les champs à récuperer
+	 * @param string $select les champs Ã  rÃ©cuperer
 	 * @return array un tableau d'objet virtuels
 	 * @see fonction find(), getById()
 	 */
@@ -334,13 +343,13 @@ class DAO
 	}
 
 	/**
-	 * Trouver un objet suivant certains critères et en sélectionnant certains champs
+	 * Trouver un objet suivant certains critÃ¨res et en sÃ©lectionnant certains champs
 	 *
 	 * Function to get a value object
 	 *
-	 * @param string $criteria les critères SQL de recherche
-	 * @param string $select les critères SQL de sélection (par défaut : SELECT *)
-	 * @return l'objet virtuel trouvé sinon null
+	 * @param string $criteria les critÃ¨res SQL de recherche
+	 * @param string $select les critÃ¨res SQL de sÃ©lection (par dÃ©faut : SELECT *)
+	 * @return l'objet virtuel trouvÃ© sinon null
 	 */
 	public function find($criteria, $select = "*")
 	{
@@ -364,14 +373,14 @@ class DAO
 	}
 
 	/**
-	 * Trouver un ensemble d'objet correspondant à des critères
+	 * Trouver un ensemble d'objet correspondant Ã  des critÃ¨res
 	 *
 	 * Function to get many value object
 	 *
-	 * @param string $criteria les critères SQL de recherches
-	 * @param string $order le critère SQL de tri des résultats. (par défaut vide)
-	 * @param string $select les champs à sélectionner. (par défaut *).
-	 * @return array Un tableau de VO correspondant aux résultats de la requête
+	 * @param string $criteria les critÃ¨res SQL de recherches
+	 * @param string $order le critÃ¨re SQL de tri des rÃ©sultats. (par dÃ©faut vide)
+	 * @param string $select les champs Ã  sÃ©lectionner. (par dÃ©faut *).
+	 * @return array Un tableau de VO correspondant aux rÃ©sultats de la requÃªte
 	 */
 	public function findMany($criteria, $order = '', $select = '*')
 	{
@@ -404,11 +413,11 @@ class DAO
 	}
 
 	/**
-	 * Compter le nombre d'éléments correspondant à tel critère
+	 * Compter le nombre d'Ã©lÃ©ments correspondant Ã  tel critÃ¨re
 	 *
 	 * Return the number of element matching a criteria
 	 *
-	 * @param string $criteria Les critères SQL de la requête.
+	 * @param string $criteria Les critÃ¨res SQL de la requÃªte.
 	 */
 	public function count($criteria)
 	{
@@ -421,10 +430,10 @@ class DAO
 	}
 
 	/**
-	 * Crée un nouvel objet virtuel (VO)
+	 * CrÃ©e un nouvel objet virtuel (VO)
 	 * Create a new Value Object
 	 *
-	 * @return object Le VO instancié
+	 * @return object Le VO instanciÃ©
 	 */
 	public function createObject()
 	{
@@ -454,7 +463,7 @@ class DAO
 	 * Suppression d'un objet - fonction qui ne fait qu'appeller deleteObject
 	 * Function to delete an object value.
 	 * @param mixed object or numeric id or an array of ids or criteria
-	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
+	 * @return boolean un booleen indiquant l'Ã©tat de la suppression de l'objet
 	 */
 	public function delete($mixed)
 	{
@@ -463,7 +472,7 @@ class DAO
 	/**
 	 * Suppression d'un objet ou d'un tableau d'objet (tableau d'identifiant)
 	 * @param mixed object or numeric id or an array of ids or criteria
-	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
+	 * @return boolean un booleen indiquant l'Ã©tat de la suppression de l'objet
 	 */
 	public function deleteObject(&$mixed)
 	{
@@ -528,11 +537,11 @@ class DAO
 	}
 
 	/**
-	 * Suppression de plusieurs objets suivant un critère particulier
+	 * Suppression de plusieurs objets suivant un critÃ¨re particulier
 	 * Function to delete many object value given a criteria
 	 *
-	 * @param string critères SQL pour la suppression
-	 * @return boolean un booleen indiquant l'état de la suppression de l'objet
+	 * @param string critÃ¨res SQL pour la suppression
+	 * @return boolean un booleen indiquant l'Ã©tat de la suppression de l'objet
 	 */
 	public function deleteObjects($criteria)
 	{
@@ -566,12 +575,12 @@ class DAO
 	}
 
 	/**
-	 * Récupère le critère SQL correspondant aux droits d'accès en lecture et en écriture
+	 * RÃ©cupÃ¨re le critÃ¨re SQL correspondant aux droits d'accÃ¨s en lecture et en Ã©criture
 	 *
 	 * Return the criteria depending on the write/read access
 	 *
-	 * @param string $access le niveau d'accès pour lequel on souhaite avoir le critère SQL
-	 * @return string Le critère SQL correspond au droit d'accès
+	 * @param string $access le niveau d'accÃ¨s pour lequel on souhaite avoir le critÃ¨re SQL
+	 * @return string Le critÃ¨re SQL correspond au droit d'accÃ¨s
 	 */
 	public function rightscriteria($access)
 	{
@@ -594,7 +603,7 @@ class DAO
 	/**
 	 * Remplit un VO depuis une ligne d'un ResultSet SQL
 	 *
-	 * @param objet $vo Le VO à remplir passé par référence
+	 * @param objet $vo Le VO Ã  remplir passÃ© par rÃ©fÃ©rence
 	 * @param array $row La ligne du ResultSet SQL
 	 * @access private
 	 */

@@ -28,14 +28,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  * @version CVS:$Id: class.mainplugins.php 4646 2009-01-28 14:53:49Z mignot $
  */
 
@@ -48,14 +48,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.9
+ * @since Classe ajoutÃ© depuis la version 0.9
  * @see logic.php
  */
 class MainPluginsLogic extends Logic
@@ -82,7 +82,7 @@ class MainPluginsLogic extends Logic
 				trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		parent::__construct(isset($logic) ? $logic : 'mainplugins');
 
-		$this->_triggers = Plugins::$triggers;
+		$this->_triggers = Plugins::getTriggers();
 
 		C::set('triggers', $this->_triggers);
 	}
@@ -115,22 +115,20 @@ class MainPluginsLogic extends Logic
 					if($return) return false;
 					trigger_error('ERROR: no way to find the plugin', E_USER_ERROR);
 				}
-				return call_user_func_array(array($name[0], $name[1]), array(&$context,&$error));
+				return Plugins::get($name[0])->$name[1]($context, $error);
 			}
 		}
 		elseif('class' === $hook)
 		{
 			if(!class_exists($name[0], false))
 			{
-				include $path.$name[0].'/'.$name[0].'.php';
+				include_once $path.$name[0].'/'.$name[0].'.php';
 
-				if(get_parent_class($name[0]) !== 'plugins')
+				if(get_parent_class($name[0]) !== 'Plugins')
 				{
 					if($return) return false;
 					trigger_error('ERROR: the plugin '.$name[0].' does not extends class "plugins"', E_USER_ERROR);
 				}
-
-				call_user_func(array($name[0], 'init'), $name[0]);
 			}
 
 			if(!method_exists($name[0], $name[1]))
@@ -138,8 +136,7 @@ class MainPluginsLogic extends Logic
 				if($return) return false;
 				trigger_error('ERROR: the function '.$name[1].' does not exist', E_USER_ERROR);
 			}
-			// return $name[0]::$name[1]($context,$error); // PHP 5.3
-			return call_user_func_array(array($name[0], $name[1]), array(&$context,&$error));
+			return Plugins::get($name[0])->$name[1]($context, $error);
 		}
 		else
 		{
@@ -157,8 +154,8 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Liste des plugins
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function listAction(&$context, &$error)
 	{
@@ -174,7 +171,7 @@ class MainPluginsLogic extends Logic
 		{ // get enabled plugins from lodeladmin
 			if(isset($context['name']))
 			{
-				$query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0 AND name="'.addslashes($context['name']).'"');
+				$query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0 AND name='.$db->quote($context['name']));
 			}
 			else $query = lq('SELECT * FROM #_MTP_mainplugins WHERE status>0');
 
@@ -184,7 +181,7 @@ class MainPluginsLogic extends Logic
 			{
 				$plugin = $plugObj->fields;
 				// plugin already enabled ?
-				$plugin['status'] = $db->GetOne($query.' WHERE name="'.addslashes($plugin['name']).'"');
+				$plugin['status'] = $db->GetOne($query.' WHERE name='.$db->quote($plugin['name']));
 				$plugin['config'] = unserialize($plugin['config']);
 				$context['plugins'][$plugin['name']] = $plugin;
 				unset($context['plugins'][$plugin['name']]['name']);
@@ -211,20 +208,11 @@ class MainPluginsLogic extends Logic
 					$pName = basename($file);
 					if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $pName)) continue;
 		
-					$plugin = $db->GetRow(lq('SELECT * FROM #_MTP_mainplugins where name="'.addslashes($pName).'"'));
-					
-					if($plugin)
-					{ // already parsed
-						$plugin['config'] = unserialize($plugin['config']); // default configuration
-						unset($plugin['name']);
-						$context['plugins'][$pName] = $plugin;
-						continue;
-					}
 					$plugin = array();
 					$reader = new XMLReader();
 					if(!@$reader->open($file.'/config.xml', 'UTF-8'))
 					{
-						$errors[] = 'Invalid XML for plugin '.$pName;
+						$errors[] = 'Invalid config file for plugin '.$pName;
 						continue;
 					}
 					$reader->read();
@@ -284,11 +272,6 @@ class MainPluginsLogic extends Logic
 							case 'triggers': 
 								$localName = $reader->localName;
 								$reader->read();
-								if(!$reader->hasValue)
-								{
-									$errors[] = 'Missing triggers for plugin '.$pName;
-									break 2;
-								}
 								$triggers = explode(',', $reader->value);
 								foreach($this->_triggers as $trigger)
 								{
@@ -384,22 +367,27 @@ class MainPluginsLogic extends Logic
 	
 					if(empty($errors))
 					{
-						$dao = $this->_getMainTableDao();
-						$vo = $dao->createObject();
-						$vo->name = $pName;
-						$vo->status = 0;
-						$vo->config = @serialize($plugin['config']);
-						$vo->hooktype = $plugin['hooktype'];
-						$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
-						$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
-						foreach($this->_triggers as $trigger)
+						isset($dao) || $dao = $this->_getMainTableDao();
+						$vo = $dao->find('name='.$db->quote($pName));
+						if(!$vo)
 						{
-							$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+							$vo = $dao->createObject();
+							$vo->name = $pName;
+							$vo->status = 0;
+							$vo->config = @serialize($plugin['config']);
+							$vo->hooktype = $plugin['hooktype'];
+							$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
+							$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
+							foreach($this->_triggers as $trigger)
+							{
+								$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+							}
+							$vo->id = $dao->save($vo, true);
 						}
-						
+
 						$context['plugins'][$pName] = $plugin;
-						$context['plugins'][$pName]['status'] = 0;
-						$context['plugins'][$pName]['id'] = $dao->save($vo, true);
+						$context['plugins'][$pName]['status'] = $vo->status;
+						$context['plugins'][$pName]['id'] = $vo->id;
 					}
 					else $error = array_unique(array_merge((array)$error, $errors));
 					
@@ -433,11 +421,12 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Affichage d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function viewAction(&$context, &$error)
 	{
+		global $db;
 		if(empty($context['name']))
 		{
 			return '_location:index.php?lo='.$this->maintable.'&do=list';
@@ -447,7 +436,7 @@ class MainPluginsLogic extends Logic
 		if($error)
 			return '_error';
 
-		$vo = $this->_getMainTableDAO()->find('name="'.addslashes($context['name']).'"');
+		$vo = $this->_getMainTableDAO()->find('name='.$db->quote($context['name']));
 		if($vo) 
 		{// plugin found, means that the plugin has already been enabled or is actually in use
 			$context['plugin']['config'] = unserialize($vo->config);
@@ -459,12 +448,14 @@ class MainPluginsLogic extends Logic
 		}
 
 		unset($context['plugin']['config']['sql']);
-
-		foreach($context['plugin']['config'] as $k=>$v)
+		if(!empty($context['plugin']['config']))
 		{
-			if(!isset($v['value'])) 
+			foreach($context['plugin']['config'] as $k=>$v)
 			{
-				$context['plugin']['config'][$k]['value'] = isset($v['defaultValue']) ? $v['defaultValue'] : null;
+				if(!isset($v['value'])) 
+				{
+					$context['plugin']['config'][$k]['value'] = isset($v['defaultValue']) ? $v['defaultValue'] : null;
+				}
 			}
 		}
 
@@ -475,11 +466,12 @@ class MainPluginsLogic extends Logic
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant
 	 *
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function editAction(&$context,&$error, $clean=false)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
@@ -516,7 +508,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$this->_populateObject($vo, $context);
-
+		
 		$context['id'] = $dao->save($vo, $new);
 
 		clearcache();
@@ -527,11 +519,12 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Enable a plugin. Must be configured before (== has already an entry in the database)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function activateAction(&$context, &$error)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
@@ -540,7 +533,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -560,11 +553,12 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Disable a plugin. Must be configured before (== has already an entry in the database)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function desactivateAction(&$context, &$error)
 	{
+		global $db;
 		if(!C::get('adminlodel', 'lodeluser')) 
 			trigger_error('You don\'t have the rights to do that !', E_USER_ERROR);
 		if(empty($context['name']))
@@ -573,7 +567,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -593,8 +587,8 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Enable a plugin for all sites. The plugins must be configured before (== has already an entry in the database)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function enableallAction(&$context, &$error)
 	{
@@ -608,7 +602,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -640,8 +634,8 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Disable a plugin for all sites. The plugins must be configured before (== has already an entry in the database)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function disableallAction(&$context, &$error)
 	{
@@ -655,7 +649,7 @@ class MainPluginsLogic extends Logic
 		}
 
 		$dao = $this->_getMainTableDao();
-		$vo = $dao->find('name="'.addslashes($context['name']).'"');
+		$vo = $dao->find('name='.$db->quote($context['name']));
 		if(!$vo)
 		{
 			$error[] = 'Cannot find the plugin '.$context['name'];
@@ -693,6 +687,8 @@ class MainPluginsLogic extends Logic
 		function_exists('validfield') || include 'validfunc.php';
 
 		$filemask = 0777 & octdec(C::get('filemask', 'cfg'));
+
+		if(empty($this->_plugin['config'])) return true;
 
 		foreach($this->_plugin['config'] as $name=>$param)
 		{
@@ -751,9 +747,9 @@ class MainPluginsLogic extends Logic
 	/**
 	 * Construction des balises select HTML pour cet objet
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @param string $var le nom de la variable du select
-	 * @param string $edittype le type d'édition
+	 * @param string $edittype le type d'Ã©dition
 	 */
 	public function makeSelect(&$context, $var, $edittype)
 	{

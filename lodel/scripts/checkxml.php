@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,24 +39,24 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
  */
 
 /**
- * Vérifie le contenu d'un fichier.
+ * VÃ©rifie le contenu d'un fichier.
  *
- * Cette méthode récupère le contenu d'un fichier et appelle la méthode checkstring
+ * Cette mÃ©thode rÃ©cupÃ¨re le contenu d'un fichier et appelle la mÃ©thode checkstring
  *
  * @param string $filename le nom du fichier
- * @param integer $error (n'est pas utilisé dans la fonction) par défaut à 0
+ * @param integer $error (n'est pas utilisÃ© dans la fonction) par dÃ©faut Ã  0
  * @return un booleen indiquant si le XML est valide ou non.
  */
 function checkfile($filename, $error = 0)
@@ -66,10 +66,10 @@ function checkfile($filename, $error = 0)
 }
 
 /**
- * Vérifie le XML d'une chaine de caractère
+ * VÃ©rifie le XML d'une chaine de caractÃ¨re
  *
- * @param string &$text la chaine de caractère
- * @param integer $error (n'est pas utilisé dans la fonction) par défaut à 0
+ * @param string &$text la chaine de caractÃ¨re
+ * @param integer $error (n'est pas utilisÃ© dans la fonction) par dÃ©faut Ã  0
  * @return un booleen indiquant si le XML est valide ou non.
  */
 function checkstring(&$text, $error = 0)
@@ -83,7 +83,7 @@ function checkstring(&$text, $error = 0)
 
 	if (!xml_parse($xml_parser, $text))	{
 		if (!$error) {
-			echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp poster un rapport de bug sur <a href="http://sourceforge.net/projects/lodel/">http://sourceforge.net/projects/lodel<a/>. Pensez &agrave; joindre le fichier.<br />En attendant que le problème soit résolu, essayez de changer le stylage de votre fichier.</p><p><hr /></p>';
+			echo '<h1>ERROR</h1><p>Le fichier produit n\'est pas XML. Veuillez svp poster un rapport de bug sur <a href="http://sourceforge.net/projects/lodel/">http://sourceforge.net/projects/lodel<a/>. Pensez &agrave; joindre le fichier.<br />En attendant que le problÃ¨me soit rÃ©solu, essayez de changer le stylage de votre fichier.</p><p><hr /></p>';
 
 			include C::get('home', 'cfg')."xmlfunc.php";
 			$text = indentXML($text);

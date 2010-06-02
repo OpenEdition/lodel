@@ -1,18 +1,18 @@
 <?php
 /**
- * Boucles Lodelscript prédéfinies
+ * Boucles Lodelscript prÃ©dÃ©finies
  * PHP versions 4 et 5, 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -303,14 +303,20 @@ function loop_rss($context, $funcname, $arguments)
 			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
+	if(isset($arguments['timeout']) && is_numeric($arguments['timeout']) && $arguments['timeout'] > 0)
+	{
+		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
+	}
+	$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
-	$rss = fetch_rss($arguments['url'], isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+	$rss = fetch_rss(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
 	if (!$rss) {
 		if (C::get('visitor', 'lodeluser')) {
 			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
 		}	else {
 			if (C::get('contactbug', 'cfg'))
 				@mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+			error_reporting($err);
 			return;
 		}
 	}
@@ -353,6 +359,7 @@ function loop_rssitem($context, $funcname, $arguments)
 	if (!is_object($context['rssobject']) || !isset($context['rssobject']->items)) {
 		if (function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $localcontext);
+		error_reporting($err);
 		return;
 	}
 
@@ -383,6 +390,7 @@ function loop_rssitem($context, $funcname, $arguments)
 	}
 	if (function_exists("code_after_$funcname"))
 		call_user_func("code_after_$funcname", $localcontext);
+	error_reporting($err);
 } //end loop rss tiem
 
 /**
@@ -393,12 +401,11 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	//Local cache
 	static $cache;
 	if (!isset ($cache[$funcname]))	{
-		$pages = _constructPages($context, $funcname, $arguments);
-		$cache[$funcname] = $pages;
+		$cache[$funcname] = _constructPages($context, $funcname, $arguments);
 	}
 
 	$local_context = $context;
-	$local_context['pages'] = $pages;
+	$local_context['pages'] = $cache[$funcname];
 	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname", $local_context);
 		return;
@@ -626,9 +633,9 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 }
 
 /**
- * Parcours un tableau passé en argument de la LOOP : 
+ * Parcours un tableau passÃ© en argument de la LOOP : 
  * <LOOP NAME="foreach" ARRAY="[#MONARRAY]">
- * On considère que le tableau est passé par l'argument array
+ * On considÃ¨re que le tableau est passÃ© par l'argument array
  * 
  */
 function loop_foreach(&$context, $funcname, $arguments)
@@ -659,16 +666,16 @@ function loop_foreach(&$context, $funcname, $arguments)
 }
 
 /**
- * Liste les types compatibles pour une entité. Cette boucle permet de construire
- * la liste de modification du type d'une entité. 
+ * Liste les types compatibles pour une entitÃ©. Cette boucle permet de construire
+ * la liste de modification du type d'une entitÃ©. 
  * 
- * Elle vérifie les types que peut contenir le type parent (si on est pas à la racine).
- * Si l'entité contient des enfants, elle vérifie
+ * Elle vÃ©rifie les types que peut contenir le type parent (si on est pas Ã  la racine).
+ * Si l'entitÃ© contient des enfants, elle vÃ©rifie
  * aussi que les enfants peuvent contenir un type.
  *
- * @param array $context le contexte passé par référence
+ * @param array $context le contexte passÃ© par rÃ©fÃ©rence
  * @param string $funcname le nom de la fonction loop
- * @param array $arguments les arguments éventuels
+ * @param array $arguments les arguments Ã©ventuels
  */
 function loop_compatible_types(&$context, $funcname, $arguments)
 {
@@ -685,7 +692,7 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 		$types = $db->getArray($sql);
 		foreach ($types as $row) {
 			if(checkTypesCompatibility(0, $context['idparent'],$row['id'])) {
-				//pour chaque enfant il faut tester si il peut être contenu dans le type testé.
+				//pour chaque enfant il faut tester si il peut Ãªtre contenu dans le type testÃ©.
 				if(childCanBeInThisType($row['id'],$context['id'])) {
 					$compatible_types[] = $row;
 				}
@@ -712,23 +719,23 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 }
 
 /**
- * Test si un type $type peut être  appliqué à une entité $id suivant le type de ses enfants.
+ * Test si un type $type peut Ãªtre  appliquÃ© Ã  une entitÃ© $id suivant le type de ses enfants.
  *
- * Cette fonction est utilisée dans loop_compatible type
+ * Cette fonction est utilisÃ©e dans loop_compatible type
  *
  * @param integer $type l'identifiant du type
- * @param integer $id l'identifiant de l'entité
+ * @param integer $id l'identifiant de l'entitÃ©
  */
 function childCanBeInThisType($type,$id)
 {
 	global $db;
 	$id = (int)$id;
-	if($id == 0) { //si id = 0 cela veut dire qu'on est en création d'entité
+	if($id == 0) { //si id = 0 cela veut dire qu'on est en crÃ©ation d'entitÃ©
 		return true;
 	}
 	$sql = lq("SELECT id,idtype FROM #_TP_entities WHERE idparent='$id'");
 	$entities = $db->getArray($sql);
-	//pour chaque entité on teste si elle peut être contenu dans $type
+	//pour chaque entitÃ© on teste si elle peut Ãªtre contenu dans $type
 	foreach($entities as $entity) {
 		$query = lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='".$entity['idtype']."' AND identitytype2='".$type."'");
 		$condition = $db->getOne($query);
@@ -754,7 +761,7 @@ function loop_alphabet($context, $funcname)
 }
 
 /**
- * Boucle Lodelscript qui affiche la première lettre (distincte) de tous les tuples d'un champ
+ * Boucle Lodelscript qui affiche la premiÃ¨re lettre (distincte) de tous les tuples d'un champ
  *
  * @param array $context le contexte
  * @param string $funcname le nom de la fonction
@@ -764,25 +771,38 @@ function loop_alphabetSpec($context, $funcname)
 	global $db;
 	if(empty($context['table']) || empty($context['field']))
 		trigger_error("ERROR: loop_alphabetSpec requires arguments 'table' and 'field'.", E_USER_ERROR);
-	if(!empty($context['idtype'])) {
+
+	$whereSelect = $whereCount = '';
+
+	if(!empty($context['idtype'])) { // classtype
+		$table = $context['table'];
 		$whereSelect = "WHERE idtype = '{$context['idtype']}'";
 		$whereCount = " idtype = '{$context['idtype']}' AND ";
+	} else { // class
+		$table = $context['table'].' LEFT JOIN #_TP_entities ON (#_TP_'.$context['table'].'.identity=#_TP_entities.id)';
 	}
 	$status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
-	$whereSelect .= isset($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
+	$whereSelect .= !empty($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
 	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l 
-			FROM #_TP_{$context['table']} 
+			FROM #_TP_{$table} 
 			{$whereSelect} 
 			ORDER BY l";
 	
 	$lettres = $db->getArray(lq($sql));
+	if(empty($lettres))
+	{
+		if(function_exists('code_alter_'.$funcname))
+			call_user_func('code_alter_'.$funcname, $context);
+
+		return;
+	}
 
 	foreach($lettres as &$lettre) {
 		if($lettre['l'] != '<' && $lettre['l'] != '>' && $lettre['l'] != ' ')
 			$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
 	
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
+	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$table} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
@@ -790,7 +810,7 @@ function loop_alphabetSpec($context, $funcname)
 		call_user_func("code_do_$funcname", $context);
 	}
 	
-	// bug PHP : si on ne passe le tableau en référence, il modifie la derniere valeur du tableau et vire les références !!!
+	// bug PHP : si on ne passe le tableau en rÃ©fÃ©rence, il modifie la derniere valeur du tableau et vire les rÃ©fÃ©rences !!!
 	foreach($lettres as &$lettre) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];

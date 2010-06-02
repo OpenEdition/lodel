@@ -4,12 +4,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -33,56 +33,73 @@
  *
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  */
 
 /**
- * Classe gérant l'insertion de la TEI dans Lodel en collaboration avec HTMLPurifier
+ * Classe gÃ©rant l'insertion de la TEI dans Lodel en collaboration avec HTMLPurifier
+ * VÃ©rifie que le document est valide XML
  *
  * @package lodel
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
-class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
+// need to be logged in and in backoffice
+if(defined('backoffice'))
 {
-	public $name = 'LodelTEI';
-	
-	public function preFilter($html, $config, $context) 
+	class HTMLPurifier_Filter_LodelTEI extends HTMLPurifier_Filter
 	{
-		$pre_regex = '#(?:<\?xml\b[^\?]+\?>\s*)?<TEI([^>]+>.+?)</TEI>#si';
-		return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
-	}
-	
-	protected function preFilterCallback($matches)
-	{
-		return '<span class="lodel-TEI">'.htmlentities($matches[1], ENT_QUOTES, 'UTF-8').'</span>';
+		public $name = 'LodelTEI';
+		
+		public function preFilter($html, $config, $context) 
+		{
+			$pre_regex = '#(<\?xml\b[^\?]+\?>\s*)?(<TEI([^>]+>.+?)</TEI>)#si';
+			return preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
+		}
+		
+		protected function preFilterCallback($matches)
+		{
+			libxml_use_internal_errors(true);
+
+			$doc = new DOMDocument('1.0', 'UTF-8');
+			$doc->resolveExternals = true;
+			$doc->validateOnParse = true;
+			$xml = $matches[1].'<!DOCTYPE TEI SYSTEM "'.C::get('sharedir', 'cfg').'/tei_all.dtd">'.$matches[2];
+			$doc->loadXML($xml);
+
+			$errors = libxml_get_errors();
+
+			if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped', E_USER_WARNING); return ''; }
+
+			return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
+		}
+
+		public function postFilter($html, $config, $context) 
+		{
+			$post_regex = '#<span class="lodel-TEI">(.+?)</span>#si';
+			return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
+		}
+		
+		protected function postFilterCallback($matches) 
+		{
+			return '<TEI'.html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8').'</TEI>';
+		}
 	}
 
-	public function postFilter($html, $config, $context) 
-	{
-		$post_regex = '#<span class="lodel-TEI">(.+?)</span>#si';
-		return preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
-	}
-	
-	protected function postFilterCallback($matches) 
-	{
-		return '<TEI'.html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8').'</TEI>';
-	}
+	$filters[] = new HTMLPurifier_Filter_LodelTEI();
 }
-$filters[] = new HTMLPurifier_Filter_LodelTEI();
-
 ?>

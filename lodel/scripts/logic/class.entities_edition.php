@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entités - edition
+ * Logique des entitÃ©s - edition
  *
  * PHP version 5
  *
@@ -31,40 +31,40 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 /**
- * Classe de logique des entités (gestion de l'édition)
+ * Classe de logique des entitÃ©s (gestion de l'Ã©dition)
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class Entities_EditionLogic extends GenericLogic 
 {
 
 	/**
-	 * Tableau des équivalents génériques
+	 * Tableau des Ã©quivalents gÃ©nÃ©riques
 	 *
 	 * @var array
 	 */
@@ -81,8 +81,8 @@ class Entities_EditionLogic extends GenericLogic
 	/**
 	 * Affichage d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function viewAction(&$context, &$error)
 	{
@@ -239,7 +239,7 @@ class Entities_EditionLogic extends GenericLogic
 		$ret = parent::viewAction($context, $error);
 
 		//if ((!$context['id'] || (preg_match ("/servoo.*/", $context['creationmethod']) &&  $context['status'] == -64)) && !$error) { // add
-		if (empty($context['id']) && !$error) { // add : récupération des valeurs par défaut
+		if (empty($context['id']) && !$error) { // add : rÃ©cupÃ©ration des valeurs par dÃ©faut
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['type']['class']. "' AND status>0 AND type!='passwd'", "",	"name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
@@ -249,7 +249,7 @@ class Entities_EditionLogic extends GenericLogic
 	
 		if (isset($context['check']) && !$error) {
 			$context['status'] = -1;
-			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
+			//il semble nÃ©cessaire de nettoyer request pour eviter les requetes pÃ©tÃ©es.
 			C::clean($context);
 			return $this->editAction($context, $error);
 		}
@@ -261,13 +261,13 @@ class Entities_EditionLogic extends GenericLogic
 	/**
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant
 	 *
-	 * Ajout d'une nouvelle entité. Dans un premier temps on vérifie si l'utilisateur
-	 * possède les bons droits pour modifier ou ajouter cette entité. Ensuite les différents
-	 * champs de l'entité sont validés. Si ceux-ci sont valide, alors l'objet est créé dans
-	 * la base de données et les objets liés sont aussi créés : personnes, entrées d'index
+	 * Ajout d'une nouvelle entitÃ©. Dans un premier temps on vÃ©rifie si l'utilisateur
+	 * possÃ¨de les bons droits pour modifier ou ajouter cette entitÃ©. Ensuite les diffÃ©rents
+	 * champs de l'entitÃ© sont validÃ©s. Si ceux-ci sont valide, alors l'objet est crÃ©Ã© dans
+	 * la base de donnÃ©es et les objets liÃ©s sont aussi crÃ©Ã©s : personnes, entrÃ©es d'index
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function editAction (&$context, &$error, $clean = false)
 	{
@@ -309,7 +309,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		$class = $context['class']=$votype->class;
 		$context['lo'] = @$context['lo'];
-		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
+		// RÃ©cupÃ©ration des valeurs par dÃ©faut pour les champs vides Ã€ L'IMPORT
 		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
 			foreach($fields as $field) {
@@ -342,7 +342,7 @@ class Entities_EditionLogic extends GenericLogic
 				trigger_error("ERROR: entity is locked. No operation is allowed", E_USER_ERROR);
 			}
 			// possibly document reloading
-			if(isset($context['reload']) && $context['reload']) {
+/*			if(isset($context['reload']) && $context['reload']) {
 				// let's deal with document reloading problem : PDF file and entries disapeared :
 				$daotablefields = DAO::getDAO("tablefields");
 				$Filefields = $daotablefields->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",	"name");
@@ -358,7 +358,7 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 				// entries
-				$daorelations = DAO::getDAO("relations");
+			/*	$daorelations = DAO::getDAO("relations");
 				$Entryfields = $daorelations->findMany("id1='{$id}' AND nature = 'E'", "", "id2");
 				$daoentries = DAO::getDAO("entries");
 				$daoentrytypes = DAO::getDAO("entrytypes");
@@ -384,7 +384,22 @@ class Entities_EditionLogic extends GenericLogic
 						$context['entries'][$entry->idtype][$pos]['data'][$indexfield->name] = null;
 				}
 				unset($entry, $entryclass, $daoentries, $daoentrytypes, $Entryfields, $daorelations, $daotablefields, $Filefields); // save some memory
-			}
+*/
+//			}
+
+			$Filefields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",   "name");
+                        foreach($Filefields as $ffield) {
+                                $gdaoaf = DAO::getGenericDAO ($class, "identity");
+                                $tmpfile = $gdaoaf->getById($id, $ffield->name);
+                                $fieldname = $ffield->name;
+                                if($context['data'][$ffield->name] == 'deleted') {
+                                        $context['data'][$ffield->name] = '';
+                                } elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
+                                        $name = $ffield->name;
+                                        $context['data'][$ffield->name] = $tmpfile->$name;
+                                }
+                        }
+
 			// change the usergroup of the entity ?
 			if (C::get('admin', 'lodeluser') && C::get('usergroup', 'lodeluser')) {
 				$vo->usergroup = (int)C::get('usergroup', 'lodeluser');
@@ -455,7 +470,7 @@ class Entities_EditionLogic extends GenericLogic
 		if ($ret=="_error") {
 			return "_error";
 		}
-		// pour indexer aller dans lodel/admin/ et cliquer sur réindexer
+		// pour indexer aller dans lodel/admin/ et cliquer sur rÃ©indexer
         	// ou activer l'option dans le siteconfig.php
 		if (C::get('searchEngine', 'cfg') && $votype->search) {
 			$lo_entities_index = new Entities_IndexLogic();
@@ -463,7 +478,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		update();
 
-		// pour import de plusieurs entités à la suite
+		// pour import de plusieurs entitÃ©s Ã  la suite
 		if(isset($context['next_entity'])) {
 			if ((string)$context['next_entity'] === 'yes') { return $ret = "_next"; }
 			else { return $ret = "_back"; }
@@ -479,9 +494,9 @@ class Entities_EditionLogic extends GenericLogic
 	/**
 	 * Construction des balises select HTML pour cet objet
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @param string $var le nom de la variable du select
-	 * @param string $edittype le type d'édition
+	 * @param string $edittype le type d'Ã©dition
 	 */
 	public function makeSelect(&$context, $var, $edittype)
 	{
@@ -503,21 +518,21 @@ class Entities_EditionLogic extends GenericLogic
 	}
 
 	/**
-	 * Déplace les liens images quand un nouvel identifiant est connu
+	 * DÃ©place les liens images quand un nouvel identifiant est connu
 	 *
-	 * Cette méthode n'est pas définie ici.
+	 * Cette mÃ©thode n'est pas dÃ©finie ici.
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @access private
 	 */
 	protected function _moveImages(&$context) {}
 
 	/**
-	 * Sauve des données dans des tables liées éventuellement
+	 * Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	 *
-	 * Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	 * AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	 *
-	 * @param object $vo l'objet qui a été créé
+	 * @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	 * @param array $context le contexte
 	 */
 	protected function _saveRelatedTables($vo,&$context) 
@@ -533,7 +548,7 @@ class Entities_EditionLogic extends GenericLogic
 		if ($vo->status >= 1) {
 			$status = 1;
 		}
-		//Mise à jour des softs relations
+		//Mise Ã  jour des softs relations
 		Logic::getLogic('entities')->_publishSoftRelation(array($vo->id), $vo->status);
 
 		// Entries and Persons
@@ -629,10 +644,10 @@ class Entities_EditionLogic extends GenericLogic
 	/**
 	 * Suppression des relations dites 'soft'
 	 *
-	 * Suppression des personnes ou entrées d'indexs liées à une entité
+	 * Suppression des personnes ou entrÃ©es d'indexs liÃ©es Ã  une entitÃ©
 	 *
-	 * @param array $ids les identifiants des objets liés
-	 * @param string $nature la nature des objets liés
+	 * @param array $ids les identifiants des objets liÃ©s
+	 * @param string $nature la nature des objets liÃ©s
 	 */
 	//most of this should be transfered in the entries and persons logic
 	protected function _deleteSoftRelation ($ids, $nature = '')
@@ -713,7 +728,7 @@ class Entities_EditionLogic extends GenericLogic
 
 
 	/**
-	 * Récupère le groupe utilisateur d'une nouvelle entité
+	 * RÃ©cupÃ¨re le groupe utilisateur d'une nouvelle entitÃ©
 	 * return the usergroup for new entity
 	 *
 	 * @param array $contextle contexte
@@ -745,12 +760,12 @@ class Entities_EditionLogic extends GenericLogic
 	}
 
 	/**
-	 * Création des relations avec les parents d'une entité
+	 * CrÃ©ation des relations avec les parents d'une entitÃ©
 	 *
-	 * Cette méthode crée les relations entre une entité et tous ses ancêtres. 
+	 * Cette mÃ©thode crÃ©e les relations entre une entitÃ© et tous ses ancÃªtres. 
 	 *
-	 * @param integer identifiant de la nouvelle entité
-	 * @param integer identifiant du parent direct de la nouvelle entité
+	 * @param integer identifiant de la nouvelle entitÃ©
+	 * @param integer identifiant du parent direct de la nouvelle entitÃ©
 	*/
 	protected function _createRelationWithParents($id, $idparent)
 	{
@@ -768,10 +783,10 @@ class Entities_EditionLogic extends GenericLogic
 	}
 
 	/**
-	 * Utilisé dans la méthode viewAction() pour remplir le contexte d'information supplémentaire
+	 * UtilisÃ© dans la mÃ©thode viewAction() pour remplir le contexte d'information supplÃ©mentaire
 	 *
-	 * @param object &$vo l'objet utilisé dans viewAction
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param object &$vo l'objet utilisÃ© dans viewAction
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 */
 	protected function _populateContextRelatedTables($vo, &$context)
 	{
@@ -856,13 +871,13 @@ class Entities_EditionLogic extends GenericLogic
 	}
 
 	/**
-	 * Calcul des identifiants littéraux d'une entité
+	 * Calcul des identifiants littÃ©raux d'une entitÃ©
 	 *
-	 * Cette méthode permet de générer un identifiant littéral, utilisé pour les liens permanents
-	 * pour une entité. Elle utilise son titre
+	 * Cette mÃ©thode permet de gÃ©nÃ©rer un identifiant littÃ©ral, utilisÃ© pour les liens permanents
+	 * pour une entitÃ©. Elle utilise son titre
 	 *
-	 * @param integer $id identifiant numérique de l'entité
-	 * @param string $title titre générique de l'entité
+	 * @param integer $id identifiant numÃ©rique de l'entitÃ©
+	 * @param string $title titre gÃ©nÃ©rique de l'entitÃ©
 	 */
 	protected function _calculateIdentifier($id, $title)
 	{

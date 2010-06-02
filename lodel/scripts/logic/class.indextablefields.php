@@ -30,14 +30,14 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
@@ -49,14 +49,14 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class IndexTableFieldsLogic extends TableFieldsLogic {
@@ -114,21 +114,21 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 		*/
 
 	/**
-	* Préparation de l'action Edit
+	* PrÃ©paration de l'action Edit
 	*
 	* @access private
-	* @param object $dao la DAO utilisée
-	* @param array &$context le context passé par référence
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le context passÃ© par rÃ©fÃ©rence
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
 	}
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
@@ -136,13 +136,13 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 	}
 
 	/**
-	* Appelé avant l'action delete
+	* AppelÃ© avant l'action delete
 	*
-	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	* préliminaires à une suppression.
+	* Cette mÃ©thode est appelÃ©e avant l'action delete pour effectuer des vÃ©rifications
+	* prÃ©liminaires Ã  une suppression.
 	*
-	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le contexte passÃ© par rÃ©fÃ©rÃ©nce
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{     

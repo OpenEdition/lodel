@@ -31,14 +31,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
@@ -52,14 +52,14 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class OptiongroupsLogic extends Logic {
@@ -75,7 +75,7 @@ class OptiongroupsLogic extends Logic {
 	/**
 	 * Construction des balises select HTML pour cet objet
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @param string $var le nom de la variable du select
 	 */
 	public function makeSelect(&$context, $var)
@@ -125,8 +125,8 @@ class OptiongroupsLogic extends Logic {
 	/**
 	 * Changement du rang d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
@@ -134,16 +134,16 @@ class OptiongroupsLogic extends Logic {
 	}
 
 	/**
-	*  Indique si un objet est protégé en suppression
+	*  Indique si un objet est protÃ©gÃ© en suppression
 	*
-	* Cette méthode indique si un objet, identifié par son identifiant numérique et
-	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	* Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	* pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	* booleen false.
 	*
 	* @param integer $id identifiant de l'objet
 	* @param integer $status status de l'objet
-	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	* @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	*/
 	public function isdeletelocked($id, $status = 0)
 	{
@@ -162,32 +162,32 @@ class OptiongroupsLogic extends Logic {
 	
 	
 	/**
-	* Préparation de l'action Edit
+	* PrÃ©paration de l'action Edit
 	*
 	* @access private
-	* @param object $dao la DAO utilisée
-	* @param array &$context le context passé par référence
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le context passÃ© par rÃ©fÃ©rence
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
 		// gather information for the following
-		$context['id'] = (int)@$context['id'];
-		$context['idparent'] = (int)@$context['idparent'];
+		$id = (int)@$context['id'];
+		$idparent = (int)@$context['idparent'];
 		if ($id) //it is an edition
 		{
 			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo)
 				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
-			if($context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
+			if($idparent != $this->oldvo->idparent) //can't change the parent of an optiongroup !
 				trigger_error("ERROR : Changing the parent of a group is forbidden", E_USER_ERROR);
 			
 		}
 		else //it is an add
 		{
 			//if it is an add - the optiongroup inherit the exportpolicy
-			if($context['idparent'])
+			if($idparent)
 			{
-					$voparent = $dao->getById($context['idparent'],"id,exportpolicy");
+					$voparent = $dao->getById($idparent,"id,exportpolicy");
 					$context['exportpolicy'] = $voparent->exportpolicy;
 			}
 		}
@@ -199,8 +199,8 @@ class OptiongroupsLogic extends Logic {
 	 *
 	 * Ajout d'un groupe d'option
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{
@@ -210,11 +210,11 @@ class OptiongroupsLogic extends Logic {
 	}
 	
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
@@ -245,8 +245,8 @@ class OptiongroupsLogic extends Logic {
 	/**
 	 * Suppression d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function deleteAction(&$context,&$error)
 	{

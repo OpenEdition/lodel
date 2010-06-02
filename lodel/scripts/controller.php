@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,20 +40,20 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 // {{{ class
 /**
- * Classe gérant la partie contrôleur du modèle MVC utilisé par Lodel 0.8
+ * Classe gÃ©rant la partie contrÃ´leur du modÃ¨le MVC utilisÃ© par Lodel 0.8
  * 
  * 
  *
@@ -63,14 +63,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @see logic.php
  * @see view.php
  */
@@ -105,8 +105,8 @@ class Controller
 	 * Constructeur de la classe Controller.
 	 *
 	 * Ce constructeur se charge du nettoyage des variables $_POST, $_GET dans un premier temps. Puis
-	 * suivant la logique appelée et l'action demandée il se charge d'appeler la bonne logique métier.
-	 * Enfin, suivant le résultat de cet appel il appelle vue correspondante.
+	 * suivant la logique appelÃ©e et l'action demandÃ©e il se charge d'appeler la bonne logique mÃ©tier.
+	 * Enfin, suivant le rÃ©sultat de cet appel il appelle vue correspondante.
 	 *
 	 *
 	 * exemple :
@@ -118,9 +118,9 @@ class Controller
 	 * ?>
 	 * </code>
 	 *
-	 * @param array $logics Les logiques métiers acceptées par le point d'entrée
-	 * @param string $lo La logique métier appelée. Par défaut cette valeur est vide
-	 * @param array $request La requête à traiter, si elle n'est passée ni en GET ni en POST (dans un script par ex.) : utilisé pour l'import massif de XML
+	 * @param array $logics Les logiques mÃ©tiers acceptÃ©es par le point d'entrÃ©e
+	 * @param string $lo La logique mÃ©tier appelÃ©e. Par dÃ©faut cette valeur est vide
+	 * @param array $request La requÃªte Ã  traiter, si elle n'est passÃ©e ni en GET ni en POST (dans un script par ex.) : utilisÃ© pour l'import massif de XML
 	 * 
 	 */
 	private function __construct()
@@ -176,21 +176,24 @@ class Controller
 	
 		if ($isInternal || !empty($context['do'])) 
 		{
+			if(!isset($lo)) $lo = C::get('lo');
+	                if ($lo != 'texts' && !in_array($lo, $logics)) {
+				trigger_error("ERROR: unknown logic", E_USER_ERROR);
+			}
+			if('plugins' === $lo && '_' === $context['do']{0})
+				$context['do'] = substr($context['do'], 1);
+
 			$do = $context['do'].'Action';
 			if ($do == 'backAction') 
 			{
-				View::getView()->back(2); //revient 2 rang en arrière dans l'historique.
+				View::getView()->back(2); //revient 2 rang en arriÃ¨re dans l'historique.
 				return;
 			}
 		
-			if(!isset($lo)) $lo = C::get('lo');
-			if ($lo != 'texts' && !in_array($lo, $logics)) {
-				trigger_error("ERROR: unknown logic", E_USER_ERROR);
-			}
-	
 			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
+
 			if($error) $context['error'] = array_merge((array)$context['error'], (array)$error);
 
 			if (!$ret) 
@@ -212,9 +215,13 @@ class Controller
 				
 				$ret = '_next';
 			}
-
-			//Appel de la vue nécessaire
+			
+			//Appel de la vue nÃ©cessaire
 			switch($ret) {
+				case '_ajax': // ajax request, we just have to die here, the logic manages the rest
+					exit;
+				break;
+
 				case '_next' : 
 					// controller called by a script
 					C::reset();
@@ -231,6 +238,7 @@ class Controller
 					// user to use \' in there text
 					#require_once 'func.php';
 					mystripslashes($context);
+					$error = array();
 					if(false !== ($p = strpos($do, '_')))
 					{ // plugin call
 						Logic::getLogic('mainplugins')->factory($context, $error, substr($do, 0, $p).'_viewAction');
@@ -240,6 +248,7 @@ class Controller
 						$logic = Logic::getLogic($lo);
 						if(method_exists($logic, 'viewAction'))
 							$logic->viewAction($context, $error); // in case anything is needed to be put in the context
+						
 					}
 					$context['error'] = array_merge((array)$context['error'], (array)$error);
 				case '_ok' :
@@ -267,9 +276,9 @@ class Controller
 		} 
 		
 		$context['identifier'] = C::get('identifier');
-		// ID ou IDENTIFIER
+		
 		if ($context['id'] || $context['identifier']) 
-		{
+		{ // ID ou IDENTIFIER
 			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 			global $db;
 			do { // exception block
@@ -325,7 +334,7 @@ class Controller
 			View::getView()->renderCached($context['page']);
 			exit;
 		} else {
-			//tente de récupérer le path - parse la query string pour trouver l'entité
+			//tente de rÃ©cupÃ©rer le path - parse la query string pour trouver l'entitÃ©
 			$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
 			
 			if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
@@ -337,7 +346,7 @@ class Controller
 					$this->_printEntities($id, '', $context);
 				}
 			} else {
-				// rien à faire.
+				// rien Ã  faire.
 			}
 		}
 		View::getView()->renderCached('index');
@@ -376,7 +385,10 @@ class Controller
 				}
 				$where[] = $field.'='.$db->quote($request[$field]);
 			}
-			$vo = getDAO($type)->find(join(' AND ', $where), 'id');
+			if('indextablefields' === $type)
+				$vo = getDAO('tablefields')->find(join(' AND ', $where), 'id');
+			else
+				$vo = getDAO($type)->find(join(' AND ', $where), 'id');
 			unset($where);
 			
 			$request['id'] = $vo ? $vo->id : 0;
@@ -434,7 +446,7 @@ class Controller
 				break;
 			}
 		
-			//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
+			//vÃ©rifie que le compte n'est pas en suspend. Si c'est le cas, on amÃ¨ne l'utilisateur Ã  modifier son mdp, sinon on l'identifie
 			if(!check_expiration()) {
 				$context['error_expiration'] = $err = 1;
 				C::setUser();
@@ -523,7 +535,7 @@ class Controller
 		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
 		
-		// que fait-on suivant l'action demandée
+		// que fait-on suivant l'action demandÃ©e
 		switch($do) 
 		{
 			case 'listAction' :
@@ -562,13 +574,13 @@ class Controller
 	}
 
 	/**
-	* Affichage d'une entité
+	* Affichage d'une entitÃ©
 	*
-	* Affiche une entité grâce à son id, son identifiant. Appelle la vue associée
+	* Affiche une entitÃ© grÃ¢ce Ã  son id, son identifiant. Appelle la vue associÃ©e
 	*
-    	* @param integer $id identifiant numérique de l'index
+    	* @param integer $id identifiant numÃ©rique de l'index
 	* @param string $identifier 
-   	 * @param array &$context le context par référence
+   	 * @param array &$context le context par rÃ©fÃ©rence
 	*/
 	private function _printEntities($id, $identifier, &$context)
 	{
@@ -600,7 +612,7 @@ class Controller
 				}
 				exit; 
 			}
-			$base = $row['tpl']; // le template à utiliser pour l'affichage
+			$base = $row['tpl']; // le template Ã  utiliser pour l'affichage
 			if (!$base) { 
 				$id = $row['idparent'];
 				$relocation = TRUE;
@@ -608,7 +620,7 @@ class Controller
 		} while (!$base && !$identifier && $id); 
 	
 		if (isset($relocation)) { 
-			header('location: '. makeurlwithid('index', $row['id']));
+			header('location: '. makeurlwithid('index', $id));
 			exit;
 		}
 		$context = array_merge($context, $row);
@@ -630,9 +642,9 @@ class Controller
 
 		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
-		//Merge $row et applique les filtres définis dans le ME
+		//Merge $row et applique les filtres dÃ©finis dans le ME
 		merge_and_filter_fields($context, $context['class'], $row);
-		getgenericfields($context); // met les champs génériques de l'entité dans le contexte
+		getgenericfields($context); // met les champs gÃ©nÃ©riques de l'entitÃ© dans le contexte
 		View::getView()->renderCached($base);
 		exit;
 	}
@@ -640,9 +652,9 @@ class Controller
 	/**
 	* Affichage d'un objet de type index
 	*
-	* @param integer $id identifiant numérique de l'index
+	* @param integer $id identifiant numÃ©rique de l'index
 	* @param string $classtype type de la classe
-	* @param array &$context le context par référence
+	* @param array &$context le context par rÃ©fÃ©rence
 	*/
 	private function _printIndex($id, $classtype, &$context)
 	{
@@ -663,7 +675,7 @@ class Controller
 		default:
 			trigger_error('ERROR: internal error in printIndex', E_USER_ERROR);
 		}
-	
+
 		// get the index
 		$critere = C::get('visitor', 'lodeluser') ? 'AND status>-64' : 'AND status>0';
 		$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
@@ -713,6 +725,7 @@ class Controller
 		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
 
 		merge_and_filter_fields($context, $context['type']['class'], $row);
+
 		View::getView()->renderCached($base);
 		exit;
 	}

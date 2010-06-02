@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des types d'entrées
+ * Logique des types d'entrÃ©es
  *
  * PHP version 5
  *
@@ -31,35 +31,35 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
 
 /**
- * Classe de logique des types d'entrées
+ * Classe de logique des types d'entrÃ©es
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class EntryTypesLogic extends Logic
@@ -73,16 +73,16 @@ class EntryTypesLogic extends Logic
 
 
 	/**
-	*  Indique si un objet est protégé en suppression
+	*  Indique si un objet est protÃ©gÃ© en suppression
 	*
-	* Cette méthode indique si un objet, identifié par son identifiant numérique et
-	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	* Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	* pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	* booleen false.
 	*
 	* @param integer $id identifiant de l'objet
 	* @param integer $status status de l'objet
-	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	* @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
@@ -156,11 +156,11 @@ class EntryTypesLogic extends Logic
 		*/
 
 	/**
-	* Préparation de l'action Edit
+	* PrÃ©paration de l'action Edit
 	*
 	* @access private
-	* @param object $dao la DAO utilisée
-	* @param array &$context le context passé par référence
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le context passÃ© par rÃ©fÃ©rence
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
@@ -174,28 +174,28 @@ class EntryTypesLogic extends Logic
 
 
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
 	{
-		if ($vo->type!=$this->oldvo->type) {
+		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type) {
 			// name has changed
 			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 	/**
-	* Appelé avant l'action delete
+	* AppelÃ© avant l'action delete
 	*
-	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	* préliminaires à une suppression.
+	* Cette mÃ©thode est appelÃ©e avant l'action delete pour effectuer des vÃ©rifications
+	* prÃ©liminaires Ã  une suppression.
 	*
-	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le contexte passÃ© par rÃ©fÃ©rÃ©nce
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{

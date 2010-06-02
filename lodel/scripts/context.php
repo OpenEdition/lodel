@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,26 +40,26 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
 
 
 /**
- * Classe gérant les accès en lecture/écriture dans le context
+ * Classe gÃ©rant les accÃ¨s en lecture/Ã©criture dans le context
  * This class manages the read/write from/into the context
  * 
  * Exemples :
  * Examples :
  * <code>
- * // la configuration ne peut être mise qu'une seule fois 
- * // et DOIT absolument doit être appellée afin que l'objet s'instancie
+ * // la configuration ne peut Ãªtre mise qu'une seule fois 
+ * // et DOIT absolument doit Ãªtre appellÃ©e afin que l'objet s'instancie
  * // configuration can only be set one time and HAS to be called first, it inits the object
  * $conf = array('dbusername'=>'user', 'dbpasswd'=>'passwd');
  * C::setCfg($conf); 
@@ -76,28 +76,28 @@
  *
  * @package lodel
  * @author Pierre-Alain Mignot
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaêl Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃªl Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.9
+ * @since Classe ajoutÃ©e depuis la version 0.9
  */
 
 /**
- * Classe gérant le context
+ * Classe gÃ©rant le context
  *
  * @package lodel
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.9
+ * @since Fichier ajoutÃ© depuis la version 0.9
  */
 class C
 {
@@ -115,27 +115,27 @@ class C
 	 * array containing configuration values
 	 * @var array
 	 */
-	static private $_cfg;
+	static private $_cfg = array();
 	/** 
 	 * array containing user informations (rights, session, etc..)
 	 * @var array
 	 */
-	static private $_lodeluser;
+	static private $_lodeluser = array();
 	/** 
 	 * array containing the current request
 	 * @var array
 	 */
-    	static public $_context;
+    	static private $_context = array();
 	/** 
 	 * backup of the current request if re-setting context
 	 * @var array
 	 */
-        static private $_backupC;
+    	static private $_backupC = array();
 	/** 
 	 * array containing all necessary informations about triggers
 	 * @var array
 	 */
-	static private $_triggers;
+	static private $_triggers = array();
 
 	/**
 	 * Private constructor called by self::setCfg
@@ -147,12 +147,8 @@ class C
 	{
 		header("Content-Type: text/html; charset=UTF-8");
         	self::$filter = null;
-		self::$_lodeluser = array();
-		self::$_context = array();
 		self::$_cfg = $cfg; // set the config vars
-		self::$_triggers = array();
-		self::$_triggers['included'] = array();
-        	self::$_backupC = array();
+		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
         	defined('SITEROOT') || define('SITEROOT', '');
        		function_exists('checkCacheDir') || include 'cachefunc.php';
@@ -214,7 +210,14 @@ class C
 				foreach($_GET as $k=>$v)
 				{
 					if('clearcache' !== $k && !('id' === $k && (int)$v === 0))
-					$uri .= $k."=".$v.'&';
+					{
+						if(is_array($v))
+						{
+							foreach($v as $kk => $vv)
+								$uri .= $k[$kk]."=".$vv.'&';
+						}
+						else $uri .= $k."=".$v.'&';
+					}
 				}
 			}
 		
@@ -223,11 +226,27 @@ class C
 		}
 		
 		self::$_context = $GLOBALS['context'] = array(); // (re)init context
-        
+
 		if(empty($request))
 		{
 			// POST only
 			unset($_GET['login'], $_GET['passwd'], $_GET['passwd2'], $_GET['old_passwd']);
+
+			self::clean($_GET);
+			foreach($_GET as $k=>&$v)
+			{
+				self::$_context[$k] =& $v;
+			}
+
+			if (!empty($_POST)) 
+            		{
+				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
+				self::clean($_POST);
+				foreach($_POST as $k=>&$v)
+				{
+					self::$_context[$k] =& $v;
+				}
+			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
 			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype', 'identity') as $var) 
@@ -246,27 +265,26 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
-				self::$_context[$var] = (int)self::$_context[$var];
-			}
-
-			self::clean($_GET);
-			foreach($_GET as $k=>&$v)
-			{
-				self::$_context[$k] =& $v;
-			}
-
-			if (!empty($_POST)) 
-            		{
-				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
-				self::clean($_POST);
-				foreach($_POST as $k=>&$v)
+				if('id' == $var || 'idtype' == $var)
 				{
-					self::$_context[$k] =& $v;
+					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					{
+						self::$_context[$var] = (int)$m[2];
+						self::$_cfg['site_ext'] = (string)$m[1];
+						continue;
+					}
 				}
+				self::$_context[$var] = (int)self::$_context[$var];
 			} 
 		}
 		else
 		{
+			self::clean($request);
+			foreach($request as $k=>&$v)
+			{
+				self::$_context[$k] =& $v;
+			}
+
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
 			foreach (array('id', 'idgroup', 'idclass', 'idparent', 'idtype', 'identity') as $var) 
 			{
@@ -279,20 +297,23 @@ class C
 					self::$_context[$var] = 0;
 					continue;
 				}
+				if('id' == $var || 'idtype' == $var)
+				{
+					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					{
+						self::$_context[$var] = (int)$m[2];
+						self::$_context['site_ext'] = (string)$m[1];
+						continue;
+					}
+				}
 				self::$_context[$var] = (int)self::$_context[$var];
-			}
-
-			self::clean($request);
-			foreach($request as $k=>&$v)
-			{
-				self::$_context[$k] =& $v;
 			}
 		}
 
 		// valid the request
 		if (isset(self::$_context['do']))
 		{
-			if(!preg_match("/^([a-zA-Z]+_)?[a-zA-Z]+$/", self::$_context['do'])) 
+			if(!preg_match("/^(_[a-zA-Z]+_)?[a-zA-Z]+$/", self::$_context['do'])) 
 				trigger_error("ERROR: invalid action", E_USER_ERROR);
 		}
 
@@ -322,7 +343,7 @@ class C
 			self::$_context['version'] = self::get('version', 'cfg');
 			self::$_context['shareurl'] = self::get('shareurl', 'cfg');
 			self::$_context['extensionscripts'] = self::get('extensionscripts', 'cfg');
-			self::$_context['currenturl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
+			self::$_context['currenturl'] = 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['site'] = self::get('site', 'cfg');
 			self::$_context['sharedir'] = self::get('sharedir', 'cfg');
@@ -348,7 +369,7 @@ class C
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
-			$triggers = Plugins::$triggers;
+			$triggers = Plugins::getTriggers();
 			self::$_triggers = array();
 			foreach($triggers as $trigger)
 			{
@@ -386,6 +407,20 @@ class C
             		$trigObj->Close();
             		writeToCache('triggers', self::$_triggers);
 		}
+
+		// bootstrap for all activated plugins
+		foreach(self::$_triggers as $name=>$values)
+		{
+			if('trigger_' === substr($name, 0, 8)) continue;
+			
+			$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$name.'/'.$name.'.php');
+			if(!$file)
+			{
+				trigger_error('ERROR: invalid plugin '.$name, E_USER_WARNING);
+				continue;
+			}
+			include $file;
+		}
 	}
 
 	/**
@@ -400,32 +435,12 @@ class C
 
 		foreach(self::$_triggers['trigger_'.$name] as $trigger=>$hooktype)
 		{
-			if(!isset(self::$_triggers['included'][$trigger]))
-			{
-				$file = realpath(self::$_cfg['sharedir'].'/plugins/custom/'.$trigger.'/'.$trigger.'.php');
-				if(!$file)
-				{
-					trigger_error('ERROR: invalid file name '.$file, E_USER_WARNING);
-					continue;
-				}
-				include $file;
-				if('class' === $hooktype) 
-				{
-					call_user_func(array($trigger, 'init'), $trigger);
-				}
-				self::$_triggers['included'][$trigger] = true;
-			}
-            
 			switch($hooktype)
 			{
 				case 'class':
 					if(!method_exists($trigger, $name))
 						trigger_error('Invalid trigger : '.$trigger.'::'.$name, E_USER_ERROR);
-					// important here : we need to pass the context by reference
-					// only possible with call_user_func_array
-					// until people go to 5.3
-					call_user_func_array(array($trigger, $name), array(&self::$_context));
-					// return $trigger::$name(self::$_context); // PHP 5.3
+					Plugins::get($trigger)->$name(self::$_context);
 					break;
 				
 				case 'func':
@@ -452,13 +467,13 @@ class C
 			if(!isset(self::${"_{$arr}"})) return false;
 			if(!isset($v))	return self::${"_{$arr}"};
 
-			if(false === strpos($v, '.')) return array_key_exists($v, self::${"_{$arr}"}) ? self::${"_{$arr}"}[$v] : false;
+			if(false === strpos($v, '.')) return isset(self::${"_{$arr}"}[$v]) ? self::${"_{$arr}"}[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::${"_{$arr}"};
 			foreach($vars as $var)
 			{
-				if(!is_array($return) || !array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !isset($return[$var])) return false;
 				$return = $return[$var];
 			}
 
@@ -466,16 +481,16 @@ class C
 		}
 		elseif(isset($v))
 		{
-			if(false === strpos($v, '.')) return array_key_exists($v, self::$_context) ? self::$_context[$v] : false;
+			if(false === strpos($v, '.')) return isset(self::$_context[$v]) ? self::$_context[$v] : false;
 
 			$vars = explode('.', $v);
 			$return = self::$_context;
 			foreach($vars as $var)
 			{
-				if(!is_array($return) || !array_key_exists($var, $return)) return false;
+				if(!is_array($return) || !isset($return[$var])) return false;
 				$return = $return[$var];
 			}
-
+			
 			return $return;
 		}
 		
@@ -521,8 +536,12 @@ class C
 		$set =& self::$_context;
 		foreach($vars as $var)
 		{
-			if(!is_array($set)) $set=array();
-			if(!array_key_exists($var, $set)) $set[$var] = array();
+			if(!is_array($set))
+			{
+				$set=array();
+				$set[$var] = array();
+			}
+			elseif(!isset($set[$var])) $set[$var] = array();
 			$set =& $set[$var];
 		}
 		
@@ -544,7 +563,7 @@ class C
 			{
 				self::$_lodeluser = self::$_context['lodeluser'] = $v;
                 		// don't want to have access to the session id or name in templates
-				unset(self::$_context['lodeluser']['session'],self::$_context['lodeluser']['idsession']);
+				self::$_context['lodeluser']['session'] = self::$_context['lodeluser']['idsession'] = null;
 				return true;
 			}
 			else return false;
@@ -554,9 +573,9 @@ class C
         
 		if(false === strpos($n, '.'))
 		{
-			if(array_key_exists($n, self::$_lodeluser))
+			if(isset(self::$_lodeluser[$n]))
 			{
-				return ((bool)(!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
+				return ((bool) (!isset($v) ? (self::$_lodeluser[$n] = self::$_context['lodeluser'][$n] = $v) : false));
 			}
 			else 
 			{
@@ -573,8 +592,12 @@ class C
 			$set =& self::$_lodeluser;
 			foreach($vars as $var)
 			{
-				if(!is_array($set)) $set=array();
-				if(!array_key_exists($var, $set)) $set[$var] = array();
+				if(!is_array($set))
+				{
+					$set = array();
+					$set[$var] = array();
+				}
+				elseif(!isset($set[$var])) $set[$var] = array();
 				$set =& $set[$var];	
 			}
 			
@@ -616,35 +639,37 @@ class C
 		{
 			checkCacheDir('htmlpurifier');
 		
-			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.standalone.php';
+			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
+			$filters = array();
 			// custom Lodel filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters.php') || include 'htmlpurifierFilters.php';
 			// custom personnal filters
 			!file_exists(self::$_cfg['home'].'htmlpurifierFilters_local.php') || include 'htmlpurifierFilters_local.php';
-			$config->set('Core', 'Encoding', 'UTF-8');
-			$config->set('HTML', 'TidyLevel', 'heavy' );
-			$config->set('Attr', 'EnableID', true);
-			$config->set('Cache', 'SerializerPath', realpath('./CACHE/htmlpurifier/') );
-			$config->set('HTML', 'Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-			$config->set('HTML', 'DefinitionID', 'r2r:ml no namespaces allowed');
-			$config->set('HTML', 'DefinitionRev', 1);
-			$config->set('HTML', 'SafeObject', true);
-			$config->set('HTML', 'SafeEmbed', true);
+
+			if(!empty($filters)) $config->set('Filter.Custom', $filters);
+
+			$config->set('Core.Encoding', 'UTF-8');
+			$config->set('HTML.TidyLevel', 'heavy' );
+			$config->set('Attr.EnableID', true);
+			$config->set('Cache.SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
+			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
+			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
+			$config->set('HTML.DefinitionRev', 1);
+			$config->set('HTML.SafeObject', true);
+			$config->set('HTML.SafeEmbed', true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
-			'r2r',   // name
-			'Block',  // content set
-			'Flow', // allowed children
-			'IL8N', // attribute collection
-			array( // attributes
-			'lang' => 'CDATA')
+				'r2r',   // name
+				'Block',  // content set
+				'Flow', // allowed children
+				'IL8N', // attribute collection
+				array( // attributes
+				'lang' => 'CDATA')
 			);
 			$r2r->excludes = array('r2r' => true);
-			
 			self::$filter = new HTMLPurifier($config);
-			unset($config, $def, $r2r);
 		}
 	
 		// htmlpurifier does not support namespaces

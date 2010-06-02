@@ -5,12 +5,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  *  Home page: http://www.lodel.org
  *
@@ -46,13 +46,18 @@ if (!((bool) ini_get("register_globals"))) {
 $version = "0.9";
 /************************************ !! VERSION !! **************************************/
 
+if(false === strpos($_SERVER['REQUEST_URI'], 'lodeladmin-'.$version))
+{
+	header('Location: '. str_replace('lodeladmin', 'lodeladmin-'.$version, $_SERVER['REQUEST_URI']));
+	exit;
+}
+
 require "class.Install.php";
 
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
 // securise l'entree
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) 
 {
-
 	$installing = true;
 	$install = new Install($lodelconfig, $have_chmod, $plateformdir);
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
@@ -85,14 +90,14 @@ if (!defined("LODELROOT")) define("LODELROOT","../"); // acces relatif vers la r
 
 ini_set('include_path',LODELROOT. "lodel".$install->get('versionsuffix')."/scripts" .PATH_SEPARATOR . LODELROOT . "share".$install->get('versionsuffix'). PATH_SEPARATOR . ini_get("include_path"));
 
-
 //
 // option
 //
-if($option1) { $installoption=1; }
-elseif($option2){ $installoption=2; }
-elseif ($erase_and_option1) { $installoption=1; unlink($install->get('lodelconfig')); }
-elseif ($erase_and_option2) { $installoption=2; unlink($install->get('lodelconfig')); }
+if(!empty($option1)) { $installoption=1; }
+elseif(!empty($option2)){ $installoption=2; }
+elseif (!empty($erase_and_option1)) { $installoption=1; unlink($install->get('lodelconfig')); }
+elseif (!empty($erase_and_option2)) { $installoption=2; unlink($install->get('lodelconfig')); }
+
 if(!empty($installoption))
 	$install->set('installoption', $installoption);
 elseif(!empty($cfg['installoption']))
@@ -117,6 +122,8 @@ $install->set('protecteddir', array("lodel".$install->get('versionsuffix'),
 		    "tpl",
 		    "lodeladmin".$install->get('versionsuffix')."/CACHE",
 		    "lodeladmin".$install->get('versionsuffix')."/tpl"));
+
+if(!isset($tache)) $tache = false;
 
 switch($tache)
 {
@@ -179,7 +186,7 @@ switch($tache)
 			trigger_error('ERROR: invalid username or password. Strange, please contact lodel@lodel.org', E_USER_ERROR);
 		}
 
-		// on vire le MDP de la mémoire
+		// on vire le MDP de la mÃ©moire
   		$adminpasswd = null;
 	}
 	break;
@@ -193,7 +200,7 @@ switch($tache)
 	case 'options': // maj des options lodel
 		$install->maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri);
 	break;
-	case 'downloadlodelconfig': // téléchargement du fichier de conf ?
+	case 'downloadlodelconfig': // tÃ©lÃ©chargement du fichier de conf ?
 		$install->downloadlodelconfig($log_version);
 	break;
 	case 'showlodelconfig': // affichage du contenu du fichier lodelconfig ?
@@ -210,7 +217,7 @@ switch($tache)
 	break;
 	case 'lodelconfig':
 		//
-		// Vérifie maintenant que les lodelconfig sont les meme que celui qu'on vient de produire
+		// VÃ©rifie maintenant que les lodelconfig sont les meme que celui qu'on vient de produire
 		//
 		if($install->verifyLodelConfig() === "error")
 		{
@@ -240,7 +247,7 @@ $install->checkConfig();
 $install->checkFunc();
 
 //
-// essaie la connection a la base de donnée
+// essaie la connection a la base de donnÃ©e
 //
 $install->checkDB();
 
@@ -277,7 +284,7 @@ if($t !== true)
 }
 
 //
-// Vérifie qu'il y a un administrateur Lodel, sinon demande la creation
+// VÃ©rifie qu'il y a un administrateur Lodel, sinon demande la creation
 //
 if($install->verifyAdmin() === false)
 {
@@ -285,7 +292,7 @@ if($install->verifyAdmin() === false)
 }
 
 //
-// Vérifie la présence des htaccess
+// VÃ©rifie la prÃ©sence des htaccess
 //
 if ($cfg['htaccess'] != "non") {
 

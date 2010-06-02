@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier du parser XML - Analyse les éléments d'un document XML
+ * Fichier du parser XML - Analyse les Ã©lÃ©ments d'un document XML
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,24 +39,24 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
 // cette fonction parse un document XML et le met dans une structure equivalente a xml_parse_into_struct, mais seul le namespace qualifie est parse
 /**
- * Retourne le dernier élément d'un tableau
+ * Retourne le dernier Ã©lÃ©ment d'un tableau
  *
- * @param array &$arr le tableau passé par référence
- * @return le dernier élément du tableau
+ * @param array &$arr le tableau passÃ© par rÃ©fÃ©rence
+ * @return le dernier Ã©lÃ©ment du tableau
  */
 function array_last(& $arr)
 {
@@ -68,8 +68,8 @@ function array_last(& $arr)
  *
  * Analyse le fichier XML $text et le place dans deux tableaux : le premier $index contient
  * des pointeurs sur la position des valeurs correspondantes dans le tableau $values. Ces
- * deux paramètres sont passés par références.
- * @param string &$text les données à parser
+ * deux paramÃ¨tres sont passÃ©s par rÃ©fÃ©rences.
+ * @param string &$text les donnÃ©es Ã  parser
  * @param array &$values 
  * @param array &$index contient des pointeurs sur la position des valeurs correspondantes dans
  * le tableau values
@@ -113,11 +113,11 @@ function rebuild_opentag($name, $attrs)
 }
 
 /**
- * Analyse le début d'élément XML
+ * Analyse le dÃ©but d'Ã©lÃ©ment XML
  *
  *
  * @param resource $parser le parser XML
- * @param string $name le nom de l'élément
+ * @param string $name le nom de l'Ã©lÃ©ment
  * @param array $attrs les attributs
  */
 function xml_parse_into_struct_ns_startElement($parser, $name, $attrs)
@@ -144,10 +144,10 @@ function xml_parse_into_struct_ns_startElement($parser, $name, $attrs)
 }
 
 /**
- * Analyse la fin d'un élément XML
+ * Analyse la fin d'un Ã©lÃ©ment XML
  *
  * @param resource $parser le parser XML
- * @param string $name le nom de l'élément
+ * @param string $name le nom de l'Ã©lÃ©ment
  */
 function xml_parse_into_struct_ns_endElement($parser, $name)
 {
@@ -175,10 +175,10 @@ function xml_parse_into_struct_ns_endElement($parser, $name)
 }
 
 /**
- * Analyse les données contenues dans un élément
+ * Analyse les donnÃ©es contenues dans un Ã©lÃ©ment
  *
  * @param resource $parser le parser XML
- * @param string $data les données
+ * @param string $data les donnÃ©es
  */
 function xml_parse_into_struct_ns_characterHandler($parser, $data)
 {

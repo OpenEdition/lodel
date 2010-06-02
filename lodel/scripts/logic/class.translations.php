@@ -32,14 +32,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
@@ -57,14 +57,14 @@ $GLOBALS['translations_textgroups']=array(
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class TranslationsLogic extends Logic {
@@ -131,6 +131,8 @@ class TranslationsLogic extends Logic {
 
 	public function listAction(&$context,&$errro) 
 	{
+		include_once 'translationfunc.php';
+
 		$this->_setTextGroups($context);
 		if(!function_exists('loop_textgroups')) {
 		function loop_textgroups(&$context,$funcname)
@@ -148,7 +150,16 @@ class TranslationsLogic extends Logic {
 		{
 			global $db,$distincttexts,$alltexts_cache;
 			$context['textgroup'] = @$context['textgroup'];
-			$result=$db->execute(lq("SELECT status,contents,name,id,lang FROM #_TP_texts WHERE status>=-1 AND textgroup='".$context['textgroup']."' AND lang IN (SELECT distinct(lang) FROM #_TP_translations) ORDER BY lang, name")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(defined('backoffice-lodeladmin'))
+			{
+				$sql = "SELECT t.* FROM #_TP_texts t JOIN #_TP_translations tr ON (t.lang=tr.lang) WHERE t.status>=-1 AND tr.status>=-1 AND t.textgroup='".$context['textgroup']."' ORDER BY tr.rank, t.name";
+			}
+			else
+			{
+				$sql = "SELECT t.* FROM #_TP_texts t JOIN #_TP_translations tr ON (t.lang=tr.lang AND t.textgroup=tr.textgroups) WHERE t.status>=-1 AND tr.status>=-1 AND t.textgroup='".$context['textgroup']."' ORDER BY tr.rank, t.name";
+			}
+
+			$result=$db->execute(lq($sql)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 			$distincttexts=array();
 			while(!$result->EOF) {
@@ -203,7 +214,7 @@ class TranslationsLogic extends Logic {
 						$result->MoveNext();
 					}
 				}
-				$row=$alltexts_cache[$lang][$context['name']];
+				$row=@$alltexts_cache[$lang][$context['name']];
 				$localcontext=$row ? array_merge($context,$row) : $context;
 				call_user_func("code_do_".$funcname,$localcontext);
 			}
@@ -340,11 +351,11 @@ class TranslationsLogic extends Logic {
 	}
 
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
@@ -392,13 +403,13 @@ class TranslationsLogic extends Logic {
 	}
 
 	/**
-	 * Suppression dans les tables liées
+	 * Suppression dans les tables liÃ©es
 	 *
-	 * @param integer $id identifiant numérique de l'objet supprimé
+	 * @param integer $id identifiant numÃ©rique de l'objet supprimÃ©
 	 */
 	protected function _deleteRelatedTables($id) 
 	{
-		//il faut supprimer les texts associés à la traduction
+		//il faut supprimer les texts associÃ©s Ã  la traduction
 		global $db;
 
 		if (!$this->vo) {
@@ -412,13 +423,13 @@ class TranslationsLogic extends Logic {
 	}
 
 	/**
-	* Appelé avant l'action delete
+	* AppelÃ© avant l'action delete
 	*
-	* Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	* préliminaires à une suppression.
+	* Cette mÃ©thode est appelÃ©e avant l'action delete pour effectuer des vÃ©rifications
+	* prÃ©liminaires Ã  une suppression.
 	*
-	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le contexte passÃ© par rÃ©fÃ©rÃ©nce
 	*/
 	protected function _prepareDelete($dao, &$context)
 	{

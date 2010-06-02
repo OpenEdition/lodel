@@ -7,12 +7,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -66,23 +66,18 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see parser.php
  */
 class LodelParser extends Parser
 {
-	/**
-	 * booléen indiquant si l'on a déjà charger le générateur de filtres
-	 * @var bool
-	 */
-	protected $filterfunc_loaded = FALSE;
 	/**
 	 * Tableau associatif concernant le status des textes
 	 *
@@ -91,7 +86,7 @@ class LodelParser extends Parser
 	protected $textstatus = array ('-1' => ' traduire', '1' => ' revoir', '2' => 'traduit');
 	
 	/**
-	 * Tableau associatif concernant le status associé à la couleur
+	 * Tableau associatif concernant le status associÃ© Ã  la couleur
 	 *
 	 * @var array
 	 */
@@ -106,7 +101,7 @@ class LodelParser extends Parser
 
 	/**
 	 * Nombre de langues disponibles
-	 * Tient compte de la base utilisée
+	 * Tient compte de la base utilisÃ©e
 	 * @var array
 	 */
 	protected $nbLangs = array();
@@ -117,17 +112,17 @@ class LodelParser extends Parser
 	protected $classes = array();
 
 	/**
-	 * Tableau des tables/champs, référence vers $tablefields
+	 * Tableau des tables/champs, rÃ©fÃ©rence vers $tablefields
 	 */
 	protected $tablefields;
 
     	/** instance de la classe */
     	static private $_instance;
     
-	/** préfixe currentdb */
+	/** prÃ©fixe currentdb */
     	protected $prefix;
 
-	/** préfixe maindb */
+	/** prÃ©fixe maindb */
     	protected $mprefix;
 
 	/** singleton */
@@ -185,33 +180,17 @@ class LodelParser extends Parser
 		if(!isset($site)) $site = C::get('site', 'cfg');
 		if(!isset($single)) $single = C::get('singledatabase', 'cfg') != "on";
 		// split the SQL parts into quoted/non-quoted part
-		foreach ($selectparts as $k => $v) {
-			$selectparts[$k] = $this->sqlsplit($v);
-		}
+		$selectparts = array_map(array($this, 'sqlsplit'), $selectparts);
 
 		$where = & $selectparts['where'];
 
-		// convertion des codes specifiques dans le where
-		// ce bout de code depend du parenthesage et du trim fait dans parse_loop.
-		#  $where=preg_replace (array(
-		#		    "/\(trash\)/i",
-		#		    "/\(ok\)/i",
-		#		    "/\(rightgroup\)/i"
-		#		    ),
-		#	      array(
-		#		    "status<=0",
-		#		    "status>0",
-		#		    '".($GLOBALS[lodeluser][admin] ? "1" : "(usergroup IN ($GLOBALS[lodeluser][groups]))")."'
-		#		    ),$where);
-		//
+		$tablescopy = array_flip($tables);
 		if (!empty($this->classes)) {
 			foreach ($this->classes as $class) {
 				// manage the linked tables...
 				// do we have the table class in $tables ?
-				$ind = array_search($class['class'], $tables);
-				if ($ind === FALSE || $ind === NULL) {
-					continue;
-				}
+				if(isset($tablescopy[$class['class']])) $ind = $tablescopy[$class['class']];
+				else continue;
 
 				$alias = "alias_".$class['classtype']."_".$class['class'];
 				$aliastype = "aliastype_".$class['classtype']. "_". $class['class'];
@@ -238,7 +217,12 @@ class LodelParser extends Parser
 					trigger_error("ERROR: internal error in lodelparser", E_USER_ERROR);
 				}
 
-				array_push($tables, $class['classtype']. " AS ". $alias, typestable($class['classtype']). " AS ". $aliastype);
+				$tables[] = $class['classtype']. " AS ". $alias;
+				$tablescopy[$class['classtype']. " AS ". $alias] = true;
+				$tables[] = typestable($class['classtype']). " AS ". $aliastype;
+				$tablescopy[typestable($class['classtype']). " AS ". $aliastype] = true;
+
+// 				array_push($tables, $class['classtype']. " AS ". $alias, typestable($class['classtype']). " AS ". $aliastype);
 
 				// put entites just after the class table
 				array_splice($tablesinselect, $ind +1, 0, $alias);
@@ -249,7 +233,9 @@ class LodelParser extends Parser
 				$extrainselect .= ", ".$aliastype. ".type , ". $aliastype. ".class";
 
 				if (($class['classtype'] == "entities" || $class['classtype'] == "entries") && preg_match_sql("/\bparent\b/", $where)) {
-					array_push($tables, $class['classtype']. " AS ". $alias. "_parent");
+					$tables[] = $class['classtype']. " AS ". $alias. "_parent";
+					$tablescopy[$class['classtype']. " AS ". $alias. "_parent"] = true;
+// 					array_push($tables, $class['classtype']. " AS ". $alias. "_parent");
 					$fullid = $class['classtype'] == "entries" ? "g_name" : "identifier";
 					preg_replace_sql("/\bparent\b/", $alias. "_parent.".$fullid, $where);
 					$where[count($where) - 1] .= " AND ". $alias. "_parent.id=". $alias. ".idparent";
@@ -257,20 +243,27 @@ class LodelParser extends Parser
 			}
 		}
 
-		if (in_array("entities", $tables)) {
+		$wherecount = count($where) - 1;
+
+		if (isset($tablescopy['entities'])) {
+			$hasType = isset($tablescopy['types']);
 			if (preg_match_sql("/\bclass\b/", $where) || preg_match_sql("/\btype\b/", $where)) {
-				array_push($tables, "types");
+				$tables[] = 'types';
+				$tablescopy['types'] = true;
+				$hasType = true;
+// 				array_push($tables, "types");
 				protect($selectparts, "entities", "id|status|rank");
-				$jointypesentitiesadded = 1;
-				$where[count($where) - 1] .= " AND entities.idtype=types.id";
+				$where[$wherecount] .= " AND entities.idtype=types.id";
 			}
 			if (preg_match_sql("/\bparent\b/", $where)) {
-				array_push($tables, "entities as entities_parent");
+				$tables[] = "entities AS entities_parent";
+				$tablescopy['entities AS entities_parent'] = true;
+// 				array_push($tables, "entities as entities_parent");
 				protect($selectparts, "entities", "id|idtype|identifier|usergroup|iduser|rank|status|idparent|creationdate|modificationdate|g_title");
 				preg_replace_sql("/\bparent\b/", "entities_parent.identifier", $where);
-				$where[count($where) - 1] .= " AND entities_parent.id=entities.idparent";
+				$where[$wherecount] .= " AND entities_parent.id=entities.idparent";
 			}
-			if (in_array("types", $tables)) { // compatibilite avec avant... et puis c est pratique quand meme.
+			if ($hasType) { // compatibilite avec avant... et puis c est pratique quand meme.
 				$extrainselect .= ", types.type , types.class";
 			}
 		} // fin de entities
@@ -288,17 +281,17 @@ class LodelParser extends Parser
 				if (!$alias){
 					$alias = $main ? $realtable : $table;
 				}
-				if (!isset($this->tablefields[$realtable]) || !in_array("status", $this->tablefields[$realtable]) || $table == "session") {
+				if ($table == "session" || !isset($this->tablefields[$realtable]) || !in_array("status", $this->tablefields[$realtable])) {
 					continue;
 				}
 				// test for ambiguous column name
 				if(!$main) {
-					$alias = (in_array($this->database.".".$table, $tables) || in_array("lodelmain.".$table, $tables) && $site && $single) 
+					$alias = (isset($tablescopy[$this->database.".".$table]) || isset($tablescopy['lodelmain.'.$table]) && $site && $single) 
 						? '`'.$this->database."_".$site.'`.'.$alias : $alias;
 				}
 
 				$lowstatus = ($table == "entities") ? '"-64". (C::get(\'admin\', \'lodeluser\') ? "" : "*('.$alias.'.usergroup IN (".C::get(\'groups\', \'lodeluser\')."))")' : "-64";
-				$where[count($where) - 1] .= " AND (".$alias.".status>\".(C::get('visitor', 'lodeluser') ? $lowstatus : \"0\").\")";
+				$where[$wherecount] .= " AND (".$alias.".status>\".(C::get('visitor', 'lodeluser') ? $lowstatus : \"0\").\")";
 			}
 		}
 		#  echo "where 2:",htmlentities($where),"<br>";
@@ -310,13 +303,15 @@ class LodelParser extends Parser
 			//
 			// persons and entries
 			foreach (array ("persons" => "persontypes", "entries" => "entrytypes") as $table => $typetable) {
-				if (in_array($table, $tables) && preg_match_sql("/\b(type|g_type)\b/", $where)) {
+				if (isset($tablescopy[$table]) && preg_match_sql("/\b(type|g_type)\b/", $where)) {
 					protect($selectparts, $table, "id|status|rank");
-					array_push($tables, $typetable);
-					$where[count($where) - 1] .= " AND ".$table.".idtype=".$typetable.".id";
+					$tables[] = $typetable;
+					$tablescopy[$typetable] = true;
+// 					array_push($tables, $typetable);
+					$where[$wherecount] .= " AND ".$table.".idtype=".$typetable.".id";
 				}
 
-				if (in_array($table, $tables) || isset($aliasbyclasstype[$table]))	{
+				if (isset($tablescopy[$table]) || isset($aliasbyclasstype[$table]))	{
 					if (isset($aliasbyclasstype[$table])) {
 						$class = $classbyclasstype[$table];
 						$table = $aliasbyclasstype[$table];
@@ -327,17 +322,21 @@ class LodelParser extends Parser
 					if (preg_match_sql("/\b(iddocument|identity)\b/", $where)) {
 						// on a besoin de la table croisee entities_persons
 						$alias = "relation_entities_".$table; // use alias for security
-						array_push($tables, "relations as ".$alias); ###,"entities_persons");
+						$tables[] = "relations AS ".$alias;
+						$tablescopy['relations AS '.$alias] = true;
+// 						array_push($tables, "relations as ".$alias); ###,"entities_persons");
 						#print_R($where);
 						preg_replace_sql("/\b(?<!\.)(iddocument|identity)\b/", $alias.".id1", $where);
 						#print_R($where);
-						$where[count($where) - 1] .= " AND $alias.id2=$table.id";
+						$where[$wherecount] .= " AND $alias.id2=$table.id";
 
 						if ($class && $typetable == "persontypes") { // related table for persons only
 							$relatedtable = "entities_".$class;
-							if (!in_array($relatedtable, $tables)) {
-								array_push($tables, $relatedtable);
-								$where[count($where) - 1] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+							if (!isset($tablescopy[$relatedtable])) {
+								$tables[] = $relatedtable;
+								$tablescopy[$relatedtable] = true;
+// 								array_push($tables, $relatedtable);
+								$where[$wherecount] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
 								$extrainselect .= ", ".$relatedtable.".* ";
 							}
 						}
@@ -345,39 +344,48 @@ class LodelParser extends Parser
 				}
 			}
 
-			if (isset($aliasbyclasstype['entities']) || in_array("entities", $tables))	{
-				foreach (array ("persons" => "idperson", "entries" => "identry") as $table => $regexp) {
-
+			if (isset($aliasbyclasstype['entities']) || isset($tablescopy['entities']))
+			{
+				foreach (array ("persons" => "idperson", "entries" => "identry") as $table => $regexp) 
+				{
 					if (!preg_match_sql("/\b($regexp)\b/", $where)) {
 						continue;
 					}
 					// on a besoin de la table croise relation
 					$alias = "relation2_".$table; // use alias for security
-					array_push($tables, "relations as ".$alias);
+					$tables[] = "relations AS ".$alias;
+					$tablescopy["relations AS ".$alias] = true;
+// 					array_push($tables, "relations as ".$alias);
 					preg_replace_sql("/\b($regexp)\b/", $alias.".id2", $where);
-					$where[count($where) - 1] .= " AND ".$alias.".id1=". (isset($aliasbyclasstype['entities']) ? $aliasbyclasstype['entities'] : "entities").".id";
+					$where[$wherecount] .= " AND ".$alias.".id1=". (isset($aliasbyclasstype['entities']) ? $aliasbyclasstype['entities'] : "entities").".id";
 
 					if ($table == "persons" && isset($classbyclasstype['persons'])) { // related table for persons only
 						$relatedtable = "entities_".$classbyclasstype['persons'];
-						if (!in_array($relatedtable, $tables)) {
-							array_push($tables, $relatedtable);
-							$where[count($where) - 1] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
+						if (!isset($tablescopy[$relatedtable])) {
+							$tables[] = $relatedtable;
+							$tablescopy[$relatedtable] = true;
+// 							array_push($tables, $relatedtable);
+							$where[$wherecount] .= " AND ".$relatedtable.".idrelation=".$alias.".idrelation";
 							$extrainselect .= ", ".$relatedtable.".* ";
 						}
 					}
 				}
 			}
 
-			if (in_array("usergroups", $tables) && preg_match_sql("/\biduser\b/", $where)) {
+			if (isset($tablescopy['usergroups']) && preg_match_sql("/\biduser\b/", $where)) {
 				// on a besoin de la table croise users_groupes
-				array_push($tables, "users_usergroups");
-				$where[count($where) - 1] .= " AND idgroup=usergroups.id";
+				$tables[] = "users_usergroups";
+				$tablescopy['users_usergroups'] = true;
+// 				array_push($tables, "users_usergroups");
+				$where[$wherecount] .= " AND idgroup=usergroups.id";
 			}
-			if (in_array("users", $tables) && in_array("session", $tables))	{
-				$where[count($where) - 1] .= " AND iduser=users.id";
+			if (isset($tablescopy['users']) && isset($tablescopy['session']))
+			{
+				$where[$wherecount] .= " AND iduser=users.id";
 			}
-
 		} // site
+
+		unset($tablescopy);
 
 		// join the SQL parts
 		foreach ($selectparts as $k => $v) {
@@ -391,37 +399,37 @@ class LodelParser extends Parser
 			$extrainselect = ""; // group by function
 		else $extrainselect = $this->lq($extrainselect);
 
-		$tables = array_map(array (& $this, "prefixTableName"), $tables);
-		$tablesinselect = array_map(array (& $this, "prefixTableName"), $tablesinselect);
+		$tables = array_map(array ($this, "prefixTableName"), $tables);
+		$tablesinselect = array_map(array ($this, "prefixTableName"), $tablesinselect);
 	}
 
 	/**
 	* Lodel Query : 
 	*
-	* Transforme les requêtes en résolvant les jointures et en cherchant les bonnes
-	* tables dans les bases de données (suivant notamment le préfix utilisé pour le nommage des
+	* Transforme les requÃªtes en rÃ©solvant les jointures et en cherchant les bonnes
+	* tables dans les bases de donnÃ©es (suivant notamment le prÃ©fix utilisÃ© pour le nommage des
 	* tables).
 	*
-	* @param string $query la requête à traduire
-	* @return string la requête traduite
+	* @param string $query la requÃªte Ã  traduire
+	* @return string la requÃªte traduite
 	*/
 	public function lq($query)
 	{
 		if (strpos($query, '#_') !== false)	{
 			// the easiest, fast replace
-			$query = strtr($query, array('#_TP_'=>$GLOBALS['tableprefix'], '#_MTP_' => $this->mprefix));
+			$query = strtr($query, array('#_TP_'=>$GLOBALS['tp'], '#_MTP_' => $this->mprefix));
 	
 			// any other ?
 			if (strpos($query, '#_') !== false) {
 				$cmd = array (
-		'#_entitiestypesjoin_' => "{$GLOBALS['tp']}types INNER JOIN {$GLOBALS['tp']}entities 
-					ON {$GLOBALS['tp']}types.id={$GLOBALS['tp']}entities.idtype",
+		'#_entitiestypesjoin_' => $GLOBALS['tp'].'types INNER JOIN '.$GLOBALS['tp'].'entities 
+					ON '.$GLOBALS['tp'].'types.id='.$GLOBALS['tp'].'entities.idtype',
 	
-		'#_tablefieldsandgroupsjoin_' => "{$GLOBALS['tp']}tablefieldgroups INNER JOIN {$GLOBALS['tp']}tablefields 
-					ON {$GLOBALS['tp']}tablefields.idgroup={$GLOBALS['tp']}tablefieldgroups.id",
+		'#_tablefieldsandgroupsjoin_' => $GLOBALS['tp'].'tablefieldgroups INNER JOIN '.$GLOBALS['tp'].'tablefields 
+					ON '.$GLOBALS['tp'].'tablefields.idgroup='.$GLOBALS['tp'].'tablefieldgroups.id',
 	
-		'#_tablefieldgroupsandclassesjoin_' => "{$GLOBALS['tp']}tablefieldgroups INNER JOIN {$GLOBALS['tp']}classes 
-					ON {$GLOBALS['tp']}classes.class={$GLOBALS['tp']}tablefieldgroups.class");
+		'#_tablefieldgroupsandclassesjoin_' => $GLOBALS['tp'].'tablefieldgroups INNER JOIN '.$GLOBALS['tp'].'classes 
+					ON '.$GLOBALS['tp'].'classes.class='.$GLOBALS['tp'].'tablefieldgroups.class');
 	
 				$query = strtr($query, $cmd);
 			}
@@ -489,11 +497,7 @@ class LodelParser extends Parser
 		if ($filtered) 
         	{
 			$options['sqlfetchassoc'] = 'filtered_mysql_fetch_assoc($context,%s)';
-			if (!$this->filterfunc_loaded)
-            		{
-				$this->filterfunc_loaded = TRUE;
-				$this->fct_txt .= 'if (!function_exists("filtered_mysql_fetch_assoc")) include_once("filterfunc.php");';
-			}
+			$this->fct_txt .= 'if (!function_exists("filtered_mysql_fetch_assoc")) include_once("filterfunc.php");';
 		}
 		else
 		{
@@ -528,17 +532,18 @@ class LodelParser extends Parser
 		$name = strtolower($name);
 		$group = strtolower($group);
 
-		if (C::get('visitor', 'lodeluser') && !isset($done[$tag][$group][$name])) { // cherche si le texte existe
+		if (C::get('visitor', 'lodeluser') && !isset($done[$tag][$group][$name])) 
+		{ // cherche si le texte existe
             		$prefix = ($group != "site") ? $this->mprefix : $this->prefix;
 			if(!isset($this->nbLangs[$prefix]))
 				$this->nbLangs[$prefix] = $db->CacheGetOne($GLOBALS['sqlCacheTime']*365,"SELECT count(distinct(lang)) FROM {$prefix}translations");
                 
             		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
 			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, 
-				"SELECT count(id) as nb 
+				"SELECT COUNT(id) AS nb 
 					FROM {$prefix}texts 
 					WHERE name=? AND textgroup=? 
-					LIMIT 1", array((string)$name, (string)$group));
+					LIMIT 1", array($name, $group));
             		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
             
 			if ($db->errorno()) {
@@ -640,28 +645,23 @@ PHP;
 PHP;
 
 			/* modifs par Pierre-Alain Mignot */
-			$bodystarttag = strpos($text, "<body>");
-			if ($bodystarttag !== false) {
+			$bodystarttag = strpos($text, "<body");
+            		if(false === $bodystarttag) return;
+
+			if ($text{$bodystarttag+5} === '>') {
 				// pas d'attributs dans le body, pas de pbs
 				$bodyendtag = $bodystarttag + 6;
 			} else {
 				// on a des attributs dans la balise body.
 				// si c'est du LS ca va faire planter le desk
-				// on traite ce cas séparément
+				// on traite ce cas sÃ©parÃ©ment
 				preg_match("`<body(.*)[^?]>`", $text, $res);
-				$bodystarttag = strpos($text, "<body");
-			    $bodyendtag = isset($res[0]) ? $bodystarttag + strlen($res[0]) : $bodystarttag;
+			    	$bodyendtag = isset($res[0]) ? $bodystarttag + strlen($res[0]) : $bodystarttag;
 			}
+
 			if($bodyendtag) {
 				$text = substr_replace($text, $deskbegin, $bodyendtag, 0);
-				unset($desk);
-				$len = strlen($text) - 30; // optimise a little bit the search
-				if ($len < 0)
-					$len = 0;
-				$endbody = strpos($text, "</body", $len);
-				if ($endbody === false)
-					$endbody = strpos($text, "</body", 0);
-				$text = substr_replace($text, $deskend, $endbody, 0);
+				$text = substr_replace($text, $deskend, strpos($text, "</body>"), 0);
 			}
  		}
  	}
@@ -703,10 +703,11 @@ PHP;
 		$inquote = false;
 		$inphp = false;
 		$escaped = false;
-		$n = strlen($sql);
 		$arr = array ();
 		$ind = 0;
-		for ($i = 0; $i < $n; $i ++) {
+		$i = -1;
+		while(isset($sql{++$i}))
+		{
 			$c = $sql {$i};
 			#echo $c=='"';
 			if (!$escaped) {
@@ -737,42 +738,66 @@ function protect(& $sql, $table, $fields)
 {
 	foreach ($sql as $k => $v) 
     	{
-		$n = count($v);
-		for ($i = 0; $i < $n; $i += 2) {
-			if(!isset($v[$i])) { $sql[$k][$i]=''; continue; }
+		$i = 0;
+		while(isset($v[$i]))
+		{
+			if(!isset($v[$i])) { $sql[$k][$i]=''; $i += 2; continue; }
 			$sql[$k][$i] = preg_replace("/\b(?<!\.)($fields)\b/", "$table.\\1", $v[$i]);
+			$i += 2;
 		}
+// 		$n = count($v);
+// 		for ($i = 0; $i < $n; $i += 2) {
+// 			if(!isset($v[$i])) { $sql[$k][$i]=''; continue; }
+// 			$sql[$k][$i] = preg_replace("/\b(?<!\.)($fields)\b/", "$table.\\1", $v[$i]);
+// 		}
 	}
 }
 
 function preg_match_sql($find, $arr)
 {
-	$n = count($arr);
-	for ($i = 0; $i < $n; $i += 2) {
+	$i = 0;
+	while(isset($arr[$i]))
+	{
 		if (preg_match($find, $arr[$i])) {
 			return true;
 		}
+		$i += 2;
 	}
+// 	$n = count($arr);
+// 	for ($i = 0; $i < $n; $i += 2) {
+// 		if (preg_match($find, $arr[$i])) {
+// 			return true;
+// 		}
+// 	}
 	return false;
 }
 
 function preg_replace_sql($find, $rpl, & $arr)
 {
-	$n = count($arr);
-	for ($i = 0; $i < $n; $i += 2) {
+	$i = 0;
+	while(isset($arr[$i]))
+	{
 		$arr[$i] = preg_replace($find, $rpl, $arr[$i]);
+		$i += 2;
 	}
+// 	$n = count($arr);
+// 	for ($i = 0; $i < $n; $i += 2) {
+// 		$arr[$i] = preg_replace($find, $rpl, $arr[$i]);
+// 	}
 }
 
 function typestable($classtype)
 {
-	switch ($classtype) {
-	case "entities" :
-		return "types";
-	case "entries" :
-		return "entrytypes";
-	case "persons" :
-		return "persontypes";
-	}
+	if('entities' == $classtype) return 'types';
+	elseif('entries' == $classtype) return 'entrytypes';
+	elseif('persons' == $classtype) return 'persontypes';
+// 	switch ($classtype) {
+// 	case "entities" :
+// 		return "types";
+// 	case "entries" :
+// 		return "entrytypes";
+// 	case "persons" :
+// 		return "persontypes";
+// 	}
 }
 ?>

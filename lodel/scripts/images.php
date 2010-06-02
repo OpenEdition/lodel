@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -39,12 +39,12 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  */
@@ -52,26 +52,92 @@
 /**
  * Redimensionner une image
  *
- * <p>Cette fonction utilise la librairie GD de PHP. Il faut donc qu'elle soit installée pour
- * que cette fonction soit utilisable. Si la GD n'est pas installée, la fonction retournera
- * false</p>
+ * <p>Cette fonction utilise la librairie GD de PHP. Il faut donc qu'elle soit installÃ©e pour
+ * que cette fonction soit utilisable. Si la GD n'est pas installÃ©e, la fonction essayera avec Imagick, 
+ * et retournera false si l'extension n'est pas installÃ©e</p>
  *
- * @param string $taille la nouvelle taille de l'image. Peut être un entier ou une chaine représentant la longueur et la largeur
+ * @param string $taille la nouvelle taille de l'image. Peut Ãªtre un entier ou une chaine reprÃ©sentant la longueur et la largeur
  * @param string $src l'image source
- * @param string &$dest l'image redimensionnée
- * @return boolean true si l'image a bien pue être transformée.
+ * @param string &$dest l'image redimensionnÃ©e
+ * @return boolean true si l'image a bien pue Ãªtre transformÃ©e.
  */
 function resize_image($taille, $src, &$dest)
 {
 	do { // exception
+		
+/*		if(extension_loaded('imagick'))
+		{
+			$result = @getimagesize($src);
+			if (is_numeric($taille))
+			{ // la plus grande taille
+				if ($result[0] > $result[1]) {
+					$width = $taille;
+					$height = 0;
+				}	else {
+					$height = $taille;
+					$width = 0;
+				}
+			}
+			elseif (preg_match("/(\d+)[x\s]+(\d+)/", $taille, $result2)) {
+					$width = $result2[1];
+					$height = $result2[2];
+			}
+
+			if(!isset($width)) return false;
+
+			$image = new Imagick($src);
+			$jpg = substr($src, -4) === '.jpg' || substr($src, -4) === 'jpeg';
+
+			if(!$jpg && substr($src, -4) === '.png')
+			{
+				if($image->getImageColors() > 256)
+				{
+					$type = $image->getImageType();
+					$dest = str_replace('.png', '.jpg', $dest);
+					$image->setImageFormat('jpg');
+					$jpg = true;
+				}
+			}
+
+			if(file_exists($dest))
+			{
+				$image->destroy();
+				return true;
+			}
+
+			$colors = $image->getImageColors();
+			$colorSpace = $image->getImageColorspace();
+			$depth = $image->getImageDepth();
+			isset($type) || $type = $image->getImageType();
+			$compr = $image->getImageCompressionQuality();
+
+			$image->thumbnailImage($width, $height);
+			$image->quantizeImage($colors, $colorSpace, $depth, false, false);
+			$image->setImageType($type);
+			$image->setImageDepth($depth);
+
+			$image->setImageCompression($jpg ? Imagick::COMPRESSION_JPEG : imagick::COMPRESSION_LZW);
+			
+			$image->setImageCompressionQuality($compr > 0 && $compr < 80 ? $compr : 80);
+
+			$image->writeImage($dest);
+
+			$image->destroy();
+
+			return true;
+		}
+		else*/if (!($gdv = GDVersion())) {
+			return false; // Pas de Imagick ni de GD installÃ©
+		}
+
 		// cherche le type de l'image
 		$result = @getimagesize($src);
 		if ($result[2] == 1 && function_exists("ImageCreateFromGIF"))	{
-			$im = ImageCreateFromGIF($src);
+			$im = @ImageCreateFromGIF($src);
 		}	elseif ($result[2] == 2 && function_exists("ImageCreateFromJPEG")) {
-			$im = ImageCreateFromJPEG($src);
+			$im = @ImageCreateFromJPEG($src);
 		}	elseif ($result[2] == 3 && function_exists("ImageCreateFromPNG"))	{
-			$im = ImageCreateFromPNG($src);
+			$im = @ImageCreateFromPNG($src);
 		}	else {
 			return false;
 		}
@@ -94,17 +160,14 @@ function resize_image($taille, $src, &$dest)
 			$width = $result2[1] ? $result2[1] : $result[0];
 			$height = $result2[2] ? $result2[2] : $result[1];
 		}
-		if (!($gdv = GDVersion())) {
-			return false; // Pas de GD installé
-		}
-		if ($gdv >= 2) { //Sur la GD2 la version a changé
-			$im2 = ImageCreateTrueColor($width, $height);
+		if ($gdv >= 2) { //Sur la GD2 la version a changÃ©
+			$im2 = @ImageCreateTrueColor($width, $height);
 			if (!$im2) {
 				return false;
 			}
 			// conservation de la transparence
 			imagealphablending($im2, FALSE);
-			imagesavealpha($im2, TRUE);		  
+			imagesavealpha($im2, TRUE);
 			ImageCopyResampled($im2, $im, 0, 0, 0, 0, $width, $height, $result[0], $result[1]);
 		}	else {
 			$im2 = ImageCreate($width, $height);
@@ -121,19 +184,19 @@ function resize_image($taille, $src, &$dest)
 				ImageGIF($im2, $dest);
 			}	else { // sometimes writing GIF is not allowed... make a PNG it's anyway better.
 				$dest = preg_replace("/\.gif$/i", ".png", $dest);
-				$result[2] = 2;
+				$result[2] = 3;
 			}
 		}
 		if ($result[2] == 2) {
 			if (function_exists("ImageJPEG")) {
-				ImageJPEG($im2, $dest);
+				ImageJPEG($im2, $dest, 100);
 			}	else { // make a PNG rather
 				$dest = preg_replace("/\.jpe?g$/i", ".png", $dest);
-				$result[2] = 2;
+				$result[2] = 3;
 			}
 		}
 		if ($result[2] == 3) {
-			ImagePNG($im2, $dest);
+			ImagePNG($im2, $dest, 9, PNG_ALL_FILTERS);
 		}
 		return true;
 	}	while (0); // exception
@@ -142,10 +205,10 @@ function resize_image($taille, $src, &$dest)
 }
 
 /**
- * Récupère le numéro de version de la GD si celle-ci est installée
+ * RÃ©cupÃ¨re le numÃ©ro de version de la GD si celle-ci est installÃ©e
  * Get which version of GD is installed, if any.
  *
- * @return  la version (1 or 2) de l'extension GD installée
+ * @return  la version (1 or 2) de l'extension GD installÃ©e
  */
 function GDVersion()
 {

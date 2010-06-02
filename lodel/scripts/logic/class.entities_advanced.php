@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entités - avancée
+ * Logique des entitÃ©s - avancÃ©e
  *
  * PHP version 5
  *
@@ -31,42 +31,42 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
 
 /**
- * Classe de logique des entités (gestion avancée)
+ * Classe de logique des entitÃ©s (gestion avancÃ©e)
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class Entities_AdvancedLogic extends Logic
 {
 
 	/**
-	 * Tableau des équivalents génériques
+	 * Tableau des Ã©quivalents gÃ©nÃ©riques
 	 *
 	 * @var array
 	 */
@@ -84,8 +84,8 @@ class Entities_AdvancedLogic extends Logic
 	/**
 	 * Affichage d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function viewAction(&$context, &$error)
 	{
@@ -121,13 +121,13 @@ class Entities_AdvancedLogic extends Logic
 	}
 
 	/**
-	 * Changer le status d'une entité
+	 * Changer le status d'une entitÃ©
 	 *
-	 * Modifie le status d'une entité en utilisant la valeur passée dans le context :
+	 * Modifie le status d'une entitÃ© en utilisant la valeur passÃ©e dans le context :
 	 * $context['status'].
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function changeStatusAction(&$context, &$error)
 	{
@@ -151,13 +151,13 @@ class Entities_AdvancedLogic extends Logic
 	}
 
 	/**
-	 * Préparation du déplacement  d'une entité.
+	 * PrÃ©paration du dÃ©placement  d'une entitÃ©.
 	 *
-	 * Cette méthode est appelée avant l'action move. Elle prépare le déplacement en vérifiant
-	 * certaines conditions à celui-ci.
+	 * Cette mÃ©thode est appelÃ©e avant l'action move. Elle prÃ©pare le dÃ©placement en vÃ©rifiant
+	 * certaines conditions Ã  celui-ci.
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function prepareMoveAction(&$context, &$error)
 	{
@@ -166,12 +166,12 @@ class Entities_AdvancedLogic extends Logic
 		}
 		if(function_exists('loop_move_right')) return 'move';
 		/**
-		 * Boucle permettant de savoir si on a le droit de déplacer l'entité IDDOCUMENT (identifiée
-		 * par son type IDTYPE) dans l'entité courante.
-		 * On teste si le type de l'entité courante peut contenir le type de l'entité ID.
-		 * On doit aussi tester si l'entité courante n'est pas un descendant de IDDOCUMENT
+		 * Boucle permettant de savoir si on a le droit de dÃ©placer l'entitÃ© IDDOCUMENT (identifiÃ©e
+		 * par son type IDTYPE) dans l'entitÃ© courante.
+		 * On teste si le type de l'entitÃ© courante peut contenir le type de l'entitÃ© ID.
+		 * On doit aussi tester si l'entitÃ© courante n'est pas un descendant de IDDOCUMENT
 		 *
-		 * @param array $context le context passé par référence
+		 * @param array $context le context passÃ© par rÃ©fÃ©rence
 		 * @param string $funcname le nom de la fonction
 		 */
 		function loop_move_right(&$context,$funcname)
@@ -181,7 +181,7 @@ class Entities_AdvancedLogic extends Logic
 			$context['iddocument'] = @$context['iddocument'];
 			$context['idtype'] = @$context['idtype'];
 			$context['id'] = @$context['id'];
-			//test1 : si le type de l'entité courante peut contenir ce type d'entité
+			//test1 : si le type de l'entitÃ© courante peut contenir ce type d'entitÃ©
 			if (!isset($cache[$context['idtype']])) {
 				//mise en cache du type du document
 				$idtype = $idtypes[$context['iddocument']];
@@ -190,14 +190,14 @@ class Entities_AdvancedLogic extends Logic
 					$vo = $dao->getById($context['iddocument'],"idtype");
 					$idtype = $idtypes[$context['iddocument']]=$vo->idtype;
 				}
-				// récupère la condition sur les deux types testé.
+				// rÃ©cupÃ¨re la condition sur les deux types testÃ©.
 				$condition = $db->getOne(lq("SELECT cond FROM #_TP_entitytypes_entitytypes WHERE identitytype='". $idtype. "' AND identitytype2='". $context['idtype']. "'"));
 				$cache[$context['idtype']] = (bool)$condition;
 				if ($db->errorno()) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			}
-			//test2 : si l'entité courante est une descendante de l'entité IDDOCUMENT
+			//test2 : si l'entitÃ© courante est une descendante de l'entitÃ© IDDOCUMENT
 			function_exists('isChild') || include 'entitiesfunc.php';
 			$boolchild = isChild($context['iddocument'], $context['id']);
 			if (!empty($cache[$context['idtype']]) && $boolchild) { //si c'est ok
@@ -214,10 +214,10 @@ class Entities_AdvancedLogic extends Logic
 	}
 
 	/**
-	 * Déplacer une entité
+	 * DÃ©placer une entitÃ©
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function moveAction(&$context, &$error)
 	{
@@ -291,10 +291,10 @@ class Entities_AdvancedLogic extends Logic
 	}
 
 	/**
-	 * Récuperer le fichier source correspondant à une entité
+	 * RÃ©cuperer le fichier source correspondant Ã  une entitÃ©
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function downloadAction(&$context, &$error)
 	{

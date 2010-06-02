@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier utilitaire proposant des fonctions souvent utilisées dans Lodel
+ * Fichier utilitaire proposant des fonctions souvent utilisÃ©es dans Lodel
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -41,12 +41,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -75,7 +75,8 @@ function postprocessing(&$context)
       if (is_array($val)) {
 	postprocessing($context[$key]);
       } else {
-	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
+	$context[$key]=str_replace("Ã‚\240","&nbsp;",$val);
+// 	$context[$key]=str_replace(array("\n","Ã‚\240"),array(" ","&nbsp;"),$val);
       }
     }
   }
@@ -84,10 +85,10 @@ function postprocessing(&$context)
 
 
 /**
- *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
+ *   Extrait toutes les variables passÃ©es par la mÃ©thode post puis les stocke dans 
  *   le tableau $context
  */
-function extract_post($arr=null)
+function extract_post(&$arr=null)
 {
 	if (is_null($arr)) $arr=&$_POST;
 	C::setRequest($arr);
@@ -103,20 +104,12 @@ function clean_request_variable(&$var, $key='')
 
 function magic_addslashes($var) 
 {
-	/*if (!get_magic_quotes_gpc()) {
-		$var = addslashes($var);
-	}*/
-	$var = stripslashes($var);
-	$var = addslashes($var);
-	return $var;
+	return addslashes(stripslashes($var));
 }
 
 function magic_stripslashes($var) 
 {
-	if (get_magic_quotes_gpc()) {
-		$var = stripslashes($var);
-	}
-	return $var;
+	return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
 }
 
 
@@ -189,21 +182,21 @@ function myaddslashes (&$var)
 
 
 /**
- * Fonction permettant de vérifier l'existence d'un fichier correctement !
+ * Fonction permettant de vÃ©rifier l'existence d'un fichier correctement !
  *
- * @param string $file fichier à tester
+ * @param string $file fichier Ã  tester
 */
 function myfileexists($file) {
-	// plus important : on supprime  le cache généré par les fonctions de stat de fichier !
-	// ça pompe des ressources mais ça évite les warnings PHP
+	// plus important : on supprime  le cache gÃ©nÃ©rÃ© par les fonctions de stat de fichier !
+	// Ã§a pompe des ressources mais Ã§a Ã©vite les warnings PHP
 	clearstatcache();
 	return file_exists($file); // on retourne le test du fichier
 }
 
 /**
- * Retourne la dernière date de modif de $filename
+ * Retourne la derniÃ¨re date de modif de $filename
  *
- * @param string $filename fichier à tester
+ * @param string $filename fichier Ã  tester
 */
 function myfilemtime($filename)
 {
@@ -246,7 +239,7 @@ function translate_xmldata($data)
 function unlock()
 {
 	global $db;
-	// Déverrouille toutes les tables verrouillées
+	// DÃ©verrouille toutes les tables verrouillÃ©es
 	// fonction lock_write()
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES) {
 		$db->execute(lq("UNLOCK TABLES")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -257,7 +250,7 @@ function unlock()
 function lock_write()
 {
 	global $db;
-  // Verrouille toutes les tables MySQL en écriture
+  // Verrouille toutes les tables MySQL en Ã©criture
   $list = func_get_args();
 	if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
 		$db->execute(lq("LOCK TABLES #_MTP_". join (" WRITE ,"."#_MTP_", $list)." WRITE")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -400,7 +393,11 @@ function makeurlwithid ($id, $base = 'index')
 			$uri = 'leftid';
 		}
 	}
-    	$id = (int)$id;
+
+	$id = trim($id);
+
+	if(!preg_match('/^(\w+)\.(\d+)$/', $id, $m))
+		$id = (int)$id;
 	
 	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
@@ -432,15 +429,15 @@ function makeurlwithfile($id) {
 }
 
 /**
- * retourne le chemin complet vers une entitée *
- * @param integer $id identifiant numérique de l'entitée * 
- * @param string $urltype le type d'url utilisée(path,querystring)
+ * retourne le chemin complet vers une entitÃ©e *
+ * @param integer $id identifiant numÃ©rique de l'entitÃ©e * 
+ * @param string $urltype le type d'url utilisÃ©e(path,querystring)
  * @return string le chemin
- * @since fonction ajoutée en 0.8
+ * @since fonction ajoutÃ©e en 0.8
  */
 function getPath($id, $urltype,$base='index')
 {
-	$urltype = 'querystring'; //la version actuelle de lodel ne gère que le type path
+	$urltype = 'querystring'; //la version actuelle de lodel ne gÃ¨re que le type path
 // 	if($urltype!='path' && $urltype!='querystring') {
 // 		return;
 // 	}
@@ -665,18 +662,18 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 }
 
 /**
- * Vérifie que le répertoire $dir, un répertoire de docannexe existe. Dans le cas
- * contraire le crée
+ * VÃ©rifie que le rÃ©pertoire $dir, un rÃ©pertoire de docannexe existe. Dans le cas
+ * contraire le crÃ©e
  *
- * @param string $dir le nom du répertoire
+ * @param string $dir le nom du rÃ©pertoire
  */
 function checkdocannexedir($dir)
 {
 	if(defined("SITEROOT"))
-	{//si le siteroot est défini
+	{//si le siteroot est dÃ©fini
 		$rep = SITEROOT . $dir;
 		if(!file_exists(SITEROOT . "docannexe/image"))
-		{// il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
+		{// il n'y a pas de rÃ©pertoire docannexe/image dans le siteroot, on essaye de le crÃ©er
 			if (!@mkdir(SITEROOT . "docannexe/image",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe/image\"", E_USER_ERROR);//peut rien faire
 			}
@@ -695,9 +692,9 @@ function checkdocannexedir($dir)
 		}
 	}
 	if(defined("SITEROOT"))
-	{//si le siteroot est défini
+	{//si le siteroot est dÃ©fini
 		if(!file_exists(SITEROOT . "docannexe/file"))
-		{//il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
+		{//il n'y a pas de rÃ©pertoire docannexe/image dans le siteroot, on essaye de le crÃ©er
 			if (!@mkdir(SITEROOT . "docannexe/file",0777 & octdec(C::get('filemask', 'cfg')), true)) {
 				trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);//peut rien faire
 			}
@@ -722,13 +719,13 @@ function checkdocannexedir($dir)
 		@chmod($rep,0777 & octdec(C::get('filemask', 'cfg')));
 		writefile($rep. '/index.html', '');
 	}
-	// pseudo-sécurité. faudrait trouver mieux, ptetre ajouter directement le répertoire docannexe dans la distrib avec un .htaccess
+	// pseudo-sÃ©curitÃ©. faudrait trouver mieux, ptetre ajouter directement le rÃ©pertoire docannexe dans la distrib avec un .htaccess
 	$htaccess = defined('SITEROOT') ? SITEROOT . "docannexe/file/.htaccess" : "docannexe/file/.htaccess";
 	if(!file_exists($htaccess)) {
  		file_put_contents($htaccess, "deny from all");
 		@chmod($htaccess, 0640);
 	}
-	// compatibilité 0.7
+	// compatibilitÃ© 0.7
 	$htaccess07 = defined('SITEROOT') ? SITEROOT . "docannexe/fichier/" : "docannexe/fichier/";
 	if(file_exists($htaccess07) && !file_exists($htaccess07.'.htaccess')) {
  		file_put_contents($htaccess07.'.htaccess', "deny from all");
@@ -810,11 +807,11 @@ function setrecord($table,$id,$set,$context=array())
 /**
  * Fonction qui indique si une chaine est en utf-8 ou non
  *
- * Cette fonction est inspirée de Dotclear et de
+ * Cette fonction est inspirÃ©e de Dotclear et de
  * http://w3.org/International/questions/qa-forms-utf-8.html.
  *
- * @param string $string la chaîne à tester
- * @return le résultat de la fonction preg_match c'est-a-dire false si la chaine n'est pas en
+ * @param string $string la chaÃ®ne Ã  tester
+ * @return le rÃ©sultat de la fonction preg_match c'est-a-dire false si la chaine n'est pas en
  * UTF8
  */
 function isUTF8($string)
@@ -833,22 +830,22 @@ function isUTF8($string)
 }
 
 /**
- * Transforme une chaine de caractère UTF8 en minuscules désaccentuées
+ * Transforme une chaine de caractÃ¨re UTF8 en minuscules dÃ©saccentuÃ©es
  *
- * Cette fonction prends en entrée une chaîne en UTF8 et donne en sortie une chaîne
- * o les accents ont été remplacés par leur équivalent désaccentué. De plus les caractères
- * sont mis en minuscules et les espaces en début et fin de chaine sont enlevés.
+ * Cette fonction prends en entrÃ©e une chaÃ®ne en UTF8 et donne en sortie une chaÃ®ne
+ * o les accents ont Ã©tÃ© remplacÃ©s par leur Ã©quivalent dÃ©saccentuÃ©. De plus les caractÃ¨res
+ * sont mis en minuscules et les espaces en dÃ©but et fin de chaine sont enlevÃ©s.
  *
- * Cette fonction est utilisée pour les entrees d'index ainsi que dans le moteur de recherche
- * et pour le calcul des identifiants littéraux.
+ * Cette fonction est utilisÃ©e pour les entrees d'index ainsi que dans le moteur de recherche
+ * et pour le calcul des identifiants littÃ©raux.
  *
- * @param string $text le texte à passer en entrée
- * @return le texte transformé en minuscule
+ * @param string $text le texte Ã  passer en entrÃ©e
+ * @return le texte transformÃ© en minuscule
  */
 function makeSortKey($text)
 {
 	$text = strip_tags($text);
-	//remplacement des caractères accentues en UTF8
+	//remplacement des caractÃ¨res accentues en UTF8
 	$replacement = array(
 				chr(194).chr(165) => 'Y', chr(194).chr(181) => 'u',
 				
@@ -966,8 +963,8 @@ function rightonentity ($action, $context)
 	$context['idparent'] = @$context['idparent'];
 	$context['id'] = @$context['id'];
 	$context['status'] = @$context['status'];
-	$context['usergroup'] = @$context['usergroup'];
-	$context['iduser'] = @$context['iduser'];
+	$context['usergroup'] = C::get('usergroup', 'lodeluser');
+	$context['iduser'] = C::get('iduser', 'lodeluser');
 	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
@@ -1074,11 +1071,11 @@ function mystripslashes (&$var)
 }
 
 /**
- * Récupération des champs génériques dc.* associés aux entités
+ * RÃ©cupÃ©ration des champs gÃ©nÃ©riques dc.* associÃ©s aux entitÃ©s
  *
- * @param integer $id identifiant numéique de l'entité dont on veut récupérer un champ dc
- * @param string $dcfield le nom du champ à récupérer (sans le dc.devant). Ex : .'description' pour 'dc.description'
- * @return le contenu du champ passé dans le paramètre $dcfield
+ * @param integer $id identifiant numÃ©ique de l'entitÃ© dont on veut rÃ©cupÃ©rer un champ dc
+ * @param string $dcfield le nom du champ Ã  rÃ©cupÃ©rer (sans le dc.devant). Ex : .'description' pour 'dc.description'
+ * @return le contenu du champ passÃ© dans le paramÃ¨tre $dcfield
  */
 function get_dc_fields($id, $dcfield)
 {
@@ -1116,7 +1113,7 @@ function get_dc_fields($id, $dcfield)
 else return false;
 }
 
-// Tente de recupérer la liste des locales du système dans un tableau
+// Tente de recupÃ©rer la liste des locales du systÃ¨me dans un tableau
 function list_system_locales()
 {
 	if(exec('locale -a', $arr)) {
@@ -1127,10 +1124,10 @@ function list_system_locales()
 }
 
 /**
- * Récupère les champs génériques définis pour une entité *
- * Stocke les champs génériques définis pour une entité dans un sous tableau de $context : generic
+ * RÃ©cupÃ¨re les champs gÃ©nÃ©riques dÃ©finis pour une entitÃ© *
+ * Stocke les champs gÃ©nÃ©riques dÃ©finis pour une entitÃ© dans un sous tableau de $context : generic
  *
- * @param array $context le contexte passé  par référence
+ * @param array $context le contexte passÃ©  par rÃ©fÃ©rence
  */
 function getgenericfields(&$context)
 {
@@ -1148,6 +1145,7 @@ function getgenericfields(&$context)
 		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
+	$values = array();
 	$context['id'] = (int)@$context['id'];
 	//Retrouve les valeurs de $fields
 	$sql = "SELECT ".substr($fields, 0, -1). ' 
@@ -1159,10 +1157,10 @@ function getgenericfields(&$context)
 		$values[$key] = $value;
 	}
 	if(!isset($context['generic'])) $context['generic'] = array();
-	//Contruit le tableau des champs génériques avec leur valeur
+	//Contruit le tableau des champs gÃ©nÃ©riques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
-		$context['generic'][$g_name] = $values[$name];
+		$context['generic'][$g_name] = isset($values[$name]) ? $values[$name] : '';
 	}
 	unset($fields);
 	unset($values);
@@ -1170,7 +1168,7 @@ function getgenericfields(&$context)
 	#print_r($context['generic']);exit;
 
 	// -- Traitement des indexs -- 
-	//Récupère maintenant les valeurs des champs génériques des entrées d'index associés et des personnes associées
+	//RÃ©cupÃ¨re maintenant les valeurs des champs gÃ©nÃ©riques des entrÃ©es d'index associÃ©s et des personnes associÃ©es
 	$sql = "SELECT e.type,e.g_type, e.class 
                FROM {$GLOBALS['tp']}entrytypes as e, 
                {$GLOBALS['tp']}tablefields as t 
@@ -1182,7 +1180,7 @@ function getgenericfields(&$context)
 		$fields[] = $elem['type'];
 		$generic[$elem['type']] = $elem['g_type'];
 	}
-	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+	//Retrouve les valeurs des entrÃ©es en utilisant le g_name de la table entries
 	if(!empty($fields)) {
 		$sql = "SELECT e.g_name, et.type 
                   FROM {$GLOBALS['tp']}entries as e, 
@@ -1203,7 +1201,7 @@ function getgenericfields(&$context)
 	// -- Traitement des personnes --
 	unset($fields);
 	unset($generic);
-	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
+	//RÃ©cupÃ¨re maintenant les valeurs des champs gÃ©nÃ©riques des entrÃ©es d'index associÃ©es et des personnes associÃ©es
 	$sql = "SELECT e.type,e.g_type, e.class 
                FROM {$GLOBALS['tp']}persontypes as e, 
                {$GLOBALS['tp']}tablefields as t 
@@ -1218,7 +1216,7 @@ function getgenericfields(&$context)
             $generic[$elem['type']] = $elem['g_type'];
         }
         if(count($fields) > 0) {
-            //Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+            //Retrouve les valeurs des entrÃ©es en utilisant le g_name de la table entries
             $sql = "SELECT e.g_firstname, e.g_familyname, et.type FROM 
                         {$GLOBALS['tp']}persons as e, 
                         {$GLOBALS['tp']}relations as r, 
@@ -1237,13 +1235,13 @@ function getgenericfields(&$context)
     }
 
 
-	return $context; // pas nécessaire le context est passé par référence
+	return $context; // pas nÃ©cessaire le context est passÃ© par rÃ©fÃ©rence
 }
 
 
 /**
- * Analyse une url et retourne le chemin en local qu'elle contient éventuellement
- * Cf. parse_url : élément 'path' du tableau retourné
+ * Analyse une url et retourne le chemin en local qu'elle contient Ã©ventuellement
+ * Cf. parse_url : Ã©lÃ©ment 'path' du tableau retournÃ©
  *
  * @param string $url 
  * @return le chemin contenu dans l'URL
@@ -1276,9 +1274,9 @@ function rewriteFilename($string) {
  * @param string $to destinataire
  * @param string $body corps du message
  * @param string $subject sujet du mail
- * @param string $fromaddress adresse de l'expéditeur
+ * @param string $fromaddress adresse de l'expÃ©diteur
  * @param string $fromname nom de l'expediteur
- * @param array $docs pièces jointes
+ * @param array $docs piÃ¨ces jointes
  * @param bool $isHTML body html ou texte brut
  * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
@@ -1318,6 +1316,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
+		"\x20\x13" => "-"
 	);
 
 	$body = wordwrap(strtr($body, $replace), 70);
@@ -1333,6 +1332,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	{
 		foreach($m[1] as $img)
 		{
+			if(false !== strpos($img, 'http://', $img)) continue;
 			$r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
 			if(PEAR::isError($r))
 			{
@@ -1409,6 +1409,7 @@ function getMimeType($ext)
 		case 'rtf': return 'application/rtf';
 		case 'tar': return 'application/x-tar';
 		case 'zip': return 'multipart/x-zip';
+		case 'epub': return 'application/x-zip';
 		case 'gzip': return 'multipart/x-gzip';
 		case 'htm':
 		case 'html': return 'text/html';
@@ -1429,6 +1430,6 @@ function getMimeType($ext)
 
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
-// utilisé dans l'installation pour vérifier l'accès aux scripts
+// utilisÃ© dans l'installation pour vÃ©rifier l'accÃ¨s aux scripts
 return 568;
 ?>

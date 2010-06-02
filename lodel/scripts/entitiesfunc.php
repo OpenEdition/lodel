@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier utilitaire pour les entités
+ * Fichier utilitaire pour les entitÃ©s
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,27 +40,27 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
  */
 
 /**
- * Vérifie que le type de $id peut être associé au type du parent $idparent
+ * VÃ©rifie que le type de $id peut Ãªtre associÃ© au type du parent $idparent
  *
  * Check that the type of $id can be in the type of $idparent.
  * if $id=0 (creation of entites), use $idtype
  *
  * @param integer $id l'identifiant
  * @param integer $idparent l'identifant du parent
- * @param integer $idtype le type que l'on souhaite tester (utile si $id=0). Par défaut = 0
- * @return la condition de compatibilité entre les deux types.
+ * @param integer $idtype le type que l'on souhaite tester (utile si $id=0). Par dÃ©faut = 0
+ * @return la condition de compatibilitÃ© entre les deux types.
  */
 function checkTypesCompatibility($id, $idparent, $idtype = 0)
 {
@@ -93,10 +93,10 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 }
 
 /**
- * Teste si l'entité pointée par $idcurrent n'est pas une descendante de $idref
+ * Teste si l'entitÃ© pointÃ©e par $idcurrent n'est pas une descendante de $idref
  *
- * @param integer $idref Identifiant de l'entité de référence
- * @param integer $idcurrent Identifiant de l'entité courante
+ * @param integer $idref Identifiant de l'entitÃ© de rÃ©fÃ©rence
+ * @param integer $idcurrent Identifiant de l'entitÃ© courante
  * @return boolean false si $idcurrent est une descendante de $idref
  */
 function isChild($idref, $idcurrent)
@@ -117,9 +117,9 @@ function isChild($idref, $idcurrent)
 
 
 /**
- * Suppression des entités à -64 dont la dernière modification remonte à + de 12 h. Cette fonction est  appelée dans index.php (côté édition), lorsqu'il n'y a ni $do, ni $lo dans la requete (lorsque le controler n'est pas appelé).
+ * Suppression des entitÃ©s Ã  -64 dont la derniÃ¨re modification remonte Ã  + de 12 h. Cette fonction est  appelÃ©e dans index.php (cÃ´tÃ© Ã©dition), lorsqu'il n'y a ni $do, ni $lo dans la requete (lorsque le controler n'est pas appelÃ©).
  *
- * Cette fonction appelle l'action delete de la logique des entités.
+ * Cette fonction appelle l'action delete de la logique des entitÃ©s.
  *
  * @see class.entities.php
  */

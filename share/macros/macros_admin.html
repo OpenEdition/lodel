@@ -3,12 +3,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno C�nou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno C�nou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno C�nou, Jean Lamy, Mika�l Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno C�nou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno C�nou, Pierre-Alain Mignot, In�s Secondat de Montesquieu, Jean-Fran�ois Rivi�re
-   Copyright (c) 2009, Marin Dacos, Bruno C�nou, Pierre-Alain Mignot, In�s Secondat de Montesquieu, Jean-Fran�ois Rivi�re
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -424,7 +424,7 @@
 
 
 <DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id">
+	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id" ORDER="identifier">
 		<BEFORE>
 			<hr /><ul class="listEntities">
 		</BEFORE>
@@ -685,8 +685,8 @@ cp_[#NAME].writeDiv();
 </DEFMACRO>
 <!--[ Fin Rajout du 25/08/03 ************************* ]-->
 
-<!--[ Macro rajout� le 17/10/03 *********************** ]-->
-<!--[ Macro servant �entrytype.html et                 ]-->
+<!--[ Macro rajoutï¿½ le 17/10/03 *********************** ]-->
+<!--[ Macro servant ï¿½entrytype.html et                 ]-->
 <!--[ persontype.html                                  ]-->
 <DEFMACRO NAME="TYPE_ENTITES">
 	<LOOP NAME="entitytypes">
@@ -697,8 +697,8 @@ cp_[#NAME].writeDiv();
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macros rajout�s le 20/10/03 ********************* ]-->
-<!--[ Macro servant �entrytypes.html, champs.html      ]-->
+<!--[ Macros rajoutï¿½s le 20/10/03 ********************* ]-->
+<!--[ Macro servant ï¿½entrytypes.html, champs.html      ]-->
 <!--[ persontype.html                                  ]-->
 
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_CHAMPS">
@@ -713,7 +713,7 @@ cp_[#NAME].writeDiv();
 	        </IF>
 		<IF COND="[#STATUS] ge 32">
 			<span class="inactif">[@COMMON.DELETE] ([@COMMON.PROTECTED])</span>&nbsp;|
-		<ELSE/> <!--[ non prot��]-->
+		<ELSE/> <!--[ non protï¿½ï¿½]-->
 			<a href="champ.php?id=[#ID]&delete=1">[@COMMON.DELETE]</a>&nbsp;|
 		</IF>
 	</div>
@@ -819,7 +819,7 @@ cp_[#NAME].writeDiv();
 	</tr>
         <tr>
                <td colspan="4">
-	       <div><MACRO NAME="PNG_PLUS"><a href="field.php?class=[#CLASS]&idgroup=[#ID]">Ajouter un champs �ce groupe</a></div>
+	       <div><MACRO NAME="PNG_PLUS"><a href="field.php?class=[#CLASS]&idgroup=[#ID]">Ajouter un champs ï¿½ce groupe</a></div>
                </td>
         </tr>
 </DEFMACRO>
@@ -860,8 +860,8 @@ cp_[#NAME].writeDiv();
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajout� le 04/11/03 *********************** ]-->
-<!--[ Macro servant �users.html                         ]-->
+<!--[ Macro rajoutï¿½ le 04/11/03 *********************** ]-->
+<!--[ Macro servant ï¿½users.html                         ]-->
 <DEFMACRO NAME="AFFICHER_PRIVILEGE">
 	<IF COND="[#USERRIGHTS] EQ 128">
 		[@COMMON.ADMINLODEL]
@@ -885,8 +885,8 @@ cp_[#NAME].writeDiv();
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajout� le 25/11/03 *********************** ]-->
-<!--[ Macro servant �entrees.html                       ]-->
+<!--[ Macro rajoutï¿½ le 25/11/03 *********************** ]-->
+<!--[ Macro servant ï¿½entrees.html                       ]-->
 <DEFMACRO NAME="AUCUNE_ENTREE_DISPONIBLE">
 	<div class="pas_de_publication">
 		[@ADMIN.NO_ENTRY_AVAILABLE]
@@ -894,9 +894,9 @@ cp_[#NAME].writeDiv();
 </DEFMACRO>
 <!--[ ************************************************** ]-->
 
-<!--[ Macro rajout� le 03/12/03 *********************** ]-->
-<!--[ Renomm� et modifi� par Ghislain 24/02/04 ******* ]-->
-<!--[ Macro servant �typedocs.html                      ]-->
+<!--[ Macro rajoutï¿½ le 03/12/03 *********************** ]-->
+<!--[ Renommï¿½ et modifiï¿½ par Ghislain 24/02/04 ******* ]-->
+<!--[ Macro servant ï¿½typedocs.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_DOCUMENT">
         <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typedoc.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
@@ -924,8 +924,8 @@ cp_[#NAME].writeDiv();
 	</LOOP>
 </DEFMACRO>
 
-<!--[ Ajout� par Ghislain 24/02/04 ******* ]-->
-<!--[ Macro servant �typepublis.html                      ]-->
+<!--[ Ajoutï¿½ par Ghislain 24/02/04 ******* ]-->
+<!--[ Macro servant ï¿½typepublis.html                      ]-->
 <DEFMACRO NAME="MODIFIER_SUPPRIMER_TYPE_PUBLICATION">
         <IF COND="([#STATUS] lt 32) or [#LODELUSER.ADMINLODEL]">
             |&nbsp;<a href="typepubli.php?id=[#ID]">[@COMMON.MODIFY]</a>&nbsp;|&nbsp;
@@ -953,7 +953,7 @@ cp_[#NAME].writeDiv();
 	</LOOP>
 </DEFMACRO>
 
-<!--[ Macro servant �typedoc.html et typepubli.html     ]-->
+<!--[ Macro servant ï¿½typedoc.html et typepubli.html     ]-->
 <DEFMACRO NAME="CHOIX_TYPES_PARENTS">
 <br />
 <fieldset>
@@ -972,7 +972,7 @@ cp_[#NAME].writeDiv();
 </fieldset>
 </DEFMACRO>
 <!--[ ************************************************** ]-->
-<!--[ Macro rajout� le 04/12/03 *********************** ]-->
+<!--[ Macro rajoutï¿½ le 04/12/03 *********************** ]-->
 <DEFMACRO NAME="COCHER_DECOCHER">
 	<script type="text/javascript"><!--
 	function setCheckboxes(form, group, check) 	{
@@ -992,12 +992,12 @@ cp_[#NAME].writeDiv();
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<SCRIPT TYPE="text/javascript"><!--
 	
-	/* on pr�charge les image */
-	//img1=new Image(82,18); /* on d�lare les images */
+	/* on prï¿½charge les image */
+	//img1=new Image(82,18); /* on dï¿½lare les images */
 	//img2=new Image(82,18);
-	//img1.src="image1.gif"; /* on les pr�charge */
+	//img1.src="image1.gif"; /* on les prï¿½charge */
 	//img2.src="image2.gif";
-	/* on d�lare la fonction qui affiche les Rollovers */
+	/* on dï¿½lare la fonction qui affiche les Rollovers */
 	function rollover(id,nom_image) {
 	      document.images[id].src="[#SHAREURL]/images/"+nom_image;
 	}

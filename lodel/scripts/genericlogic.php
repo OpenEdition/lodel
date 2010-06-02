@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,38 +40,38 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id:
  */
 
 
 /**
- * Classe des logiques métiers générique.
+ * Classe des logiques mÃ©tiers gÃ©nÃ©rique.
  * 
- * <p>Cette classe définit la logique par défaut pour les objets dynamiques de l'interface :
- * entrées, personnes par exemple</p>
+ * <p>Cette classe dÃ©finit la logique par dÃ©faut pour les objets dynamiques de l'interface :
+ * entrÃ©es, personnes par exemple</p>
  *
  * @package lodel
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see logic.php
  */
 
@@ -80,7 +80,7 @@ class GenericLogic extends Logic
 	/** 
 	 * Constructeur de la classe
 	 *
-	 * Définit le nom de la table type pour l'objet ainsi que le nom du champ identifiant unique.
+	 * DÃ©finit le nom de la table type pour l'objet ainsi que le nom du champ identifiant unique.
 	 *
 	 * @param string $classtype le type d'objet generique, parmis : entities, entries et persons.
 	 */
@@ -103,15 +103,15 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Implémentation pour les objets générique de l'action permettant d'appeler l'affichage d'un objet.
+	 * ImplÃ©mentation pour les objets gÃ©nÃ©rique de l'action permettant d'appeler l'affichage d'un objet.
 	 *
-	 * Cette fonction récupère les données de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
-	 * met ces données dans le context (utilisation de la fonction privée _populateContext())
+	 * Cette fonction rÃ©cupÃ¨re les donnÃ©es de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
+	 * met ces donnÃ©es dans le context (utilisation de la fonction privÃ©e _populateContext())
 	 * 
 	 * view an object Action
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function viewAction(&$context, &$error)
 	{
@@ -164,6 +164,7 @@ class GenericLogic extends Logic
 					call_user_func("code_before_$funcname", $context);
 				}
 				while (!$result->EOF)	{
+					postprocessing($result->fields);
 					$localcontext = array_merge($context, $result->fields);
 					$name = $result->fields['name'];
 					if(isset($context['data'][$name]))
@@ -171,7 +172,6 @@ class GenericLogic extends Logic
 						$localcontext['value'] = ($result->fields['edition'] != "display" && is_string($context['data'][$name])) ?
                                             htmlspecialchars($context['data'][$name]) : $context['data'][$name];
 					} else $localcontext['value'] = '';
-					
 
 					call_user_func("code_do_$funcname", $localcontext);
 					$result->MoveNext();
@@ -216,11 +216,11 @@ class GenericLogic extends Logic
 	/**
 	 * Validated the public fields and the unicity as usual and in addition the typescompatibility
 	 *
-	 * Validation des champs publics et de l'unicité comme dans la fonction de logic.php. Mais vérifie
-	 * la compatibilité des types d'objet en plus.
+	 * Validation des champs publics et de l'unicitÃ© comme dans la fonction de logic.php. Mais vÃ©rifie
+	 * la compatibilitÃ© des types d'objet en plus.
 	 *
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
 	 */
 	public function validateFields(&$context, &$error)
 	{
@@ -432,11 +432,11 @@ class GenericLogic extends Logic
 	 * @access private
 	 */
 	/**
-	 * Déplacement des fichiers associés à l'objet dans le bon répertoire
+	 * DÃ©placement des fichiers associÃ©s Ã  l'objet dans le bon rÃ©pertoire
 	 *
-	 * @param integer $id l'identifiant numérique de l'objet
+	 * @param integer $id l'identifiant numÃ©rique de l'objet
 	 * @param array $files_to_move un tableau contenant les informations de tous les fichiers (nom et type)
-	 * @param object &$vo l'objet virtuel correspondant à l'objet passé par référence
+	 * @param object &$vo l'objet virtuel correspondant Ã  l'objet passÃ© par rÃ©fÃ©rence
 	 */
 	protected function _moveFiles($id, $files_to_move, $vo)
 	{
@@ -463,17 +463,17 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Définition de l'équivalent générique permanent.
+	 * DÃ©finition de l'Ã©quivalent gÃ©nÃ©rique permanent.
 	 * 
-	 * <p> Cette fonction utilise un cache statique (tableau global). Elle définit l'équivalent
-	 * générique suivant la classe et le nom de l'objet.
+	 * <p> Cette fonction utilise un cache statique (tableau global). Elle dÃ©finit l'Ã©quivalent
+	 * gÃ©nÃ©rique suivant la classe et le nom de l'objet.
 	 * </p>
 	 * <p> Info :These functions simulate a static cache by using a global array
 	 * PHP5 would solve the problem</p>
 	 *
 	 * @param string $class le nom de la classe de l'objet.
 	 * @param string $name le nom du champ.
-	 * @param string $value la valeur associée au champ.
+	 * @param string $value la valeur associÃ©e au champ.
 	 */
 	protected function addGenericEquivalent($class, $name, $value)
 	{
@@ -482,7 +482,7 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Retourne un équivalent générique pour une classe et un champ donné
+	 * Retourne un Ã©quivalent gÃ©nÃ©rique pour une classe et un champ donnÃ©
 	 *
 	 * @param string $class le nom de la classe de l'objet.
 	 * @param string $name le nom du champ.
@@ -494,11 +494,11 @@ class GenericLogic extends Logic
 	}
 
 	/**
-	 * Vérifie que la valeur d'un champ est unique (pas d'autre occurrence dans la table)
+	 * VÃ©rifie que la valeur d'un champ est unique (pas d'autre occurrence dans la table)
 	 *
 	 * @param string $class le nom de la classe de l'objet.
 	 * @param string $name le nom du champ.
-	 * @param string $value la valeur associée au champ.
+	 * @param string $value la valeur associÃ©e au champ.
 	 * @return bool true si pas d'autre occurrence, false sinon
 	 */
 	protected function _is_unique($class, $name, $value, $id) {
@@ -515,8 +515,8 @@ class GenericLogic extends Logic
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * GenericLogic can deal with related table by detecting the class of $vo
 	 *
-	 * @param object &$vo L'objet virtuel à remplir.
-	 * @param array &$context Le tableau contenant les données.
+	 * @param object &$vo L'objet virtuel Ã  remplir.
+	 * @param array &$context Le tableau contenant les donnÃ©es.
 	 */
 	protected function _populateObject($vo, &$context)
 	{
@@ -552,18 +552,18 @@ class GenericLogic extends Logic
  *	Fonction de nettoyage des tags XHTML
  *
  * <p>Cette fonction nettoie une chaine de ses balises XHTML. Ce nettoyage tiens compte d'une liste
- * de balises autorisé (attribut allowedtags)</p>
+ * de balises autorisÃ© (attribut allowedtags)</p>
  *
- * @param string $text le texte à nettoyer
- * @param array $allowedtags un tableau contenant la liste des balises autorisées.
- * @param integer $k par défaut à -1. ???
- * @return $text le texte nettoyé
+ * @param string $text le texte Ã  nettoyer
+ * @param array $allowedtags un tableau contenant la liste des balises autorisÃ©es.
+ * @param integer $k par dÃ©faut Ã  -1. ???
+ * @return $text le texte nettoyÃ©
  */
 if(!function_exists('lodel_strip_tags'))
 {
 function lodel_strip_tags($text, $allowedtags, $k = -1)
 {
-	if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
+	if (is_array($text)) { //si text est un array alors applique le nettoyage Ã  chaque partie du tableau
 		array_walk($text, "lodel_strip_tags", $allowedtags);
 		return $text;
 	}

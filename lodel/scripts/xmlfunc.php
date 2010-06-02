@@ -7,12 +7,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -38,12 +38,12 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -82,10 +82,10 @@ function calculateXMLSchema($context)
  *
  * Indent an XML content
  *
- * @param string $contents le contenu à indenter
- * @param boolean $output indique si on affiche ou non le résultat
- * @param string $indenter la chaine utilisé pour l'indentation
- * @return string le XML indenté
+ * @param string $contents le contenu Ã  indenter
+ * @param boolean $output indique si on affiche ou non le rÃ©sultat
+ * @param string $indenter la chaine utilisÃ© pour l'indentation
+ * @return string le XML indentÃ©
  */
 function indentXML($contents, $output = false, $indenter= '  ')
 {
@@ -146,10 +146,10 @@ function indentXML($contents, $output = false, $indenter= '  ')
 }
 
 /**
- * Loop Lodelscript permettant de générer le XML d'une entité
+ * Loop Lodelscript permettant de gÃ©nÃ©rer le XML d'une entitÃ©
  * Decode Balise field
  *
- * @param array &$context le context qui contient toutes les données
+ * @param array &$context le context qui contient toutes les donnÃ©es
  * @param string $funcname le nom de la fonction LOOP
  */
 function loop_xsdtypes(&$context, $funcname)
@@ -174,11 +174,11 @@ function loop_xsdtypes(&$context, $funcname)
 }
 
 /**
- * LOOP lodelscript qui récupère chaque champ d'une entité avec sa valeur
+ * LOOP lodelscript qui rÃ©cupÃ¨re chaque champ d'une entitÃ© avec sa valeur
  *
  * Loop that select each field with its value for an entity
  *
- * @param array &$context le context qui contient toutes les données
+ * @param array &$context le context qui contient toutes les donnÃ©es
  * @param string $funcname le nom de la fonction LOOP
  */
 function loop_fields_values(& $context, $funcname)
@@ -227,9 +227,9 @@ function loop_fields_values(& $context, $funcname)
 
 
 /**
- * LOOP lodelscript qui récupère chaque champ d'une personne ou d'une entrée avec sa valeur
+ * LOOP lodelscript qui rÃ©cupÃ¨re chaque champ d'une personne ou d'une entrÃ©e avec sa valeur
  *
- * @param array &$context le context qui contient toutes les données
+ * @param array &$context le context qui contient toutes les donnÃ©es
  * @param string $funcname le nom de la fonction LOOP
  */
 function loop_entry_or_persons_fields_values(&$context, $funcname)
@@ -252,6 +252,8 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
 	}
+
+	$class = false;
 
 	while (!$result->EOF) {
 		$row = $result->fields;
@@ -289,7 +291,7 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 /**
  * Loop that select each field of a relation between an entity and a person for an entity
  *
- * @param array &$context le context qui contient toutes les données
+ * @param array &$context le context qui contient toutes les donnÃ©es
  * @param string $funcname le nom de la fonction LOOP
  */
 function loop_person_relations_fields(&$context, $funcname)
@@ -304,6 +306,8 @@ function loop_person_relations_fields(&$context, $funcname)
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
 	}
+
+	$class = false;
 
 	while (!$result->EOF) {
 		$row = $result->fields;

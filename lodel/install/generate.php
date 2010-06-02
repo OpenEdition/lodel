@@ -1,14 +1,14 @@
 <?php
 /**
- * Fichier utilitaire pour la génération des fichiers de DAO et de Logic
+ * Fichier utilitaire pour la gÃ©nÃ©ration des fichiers de DAO et de Logic
  *
  *
- * Ce fichier permet de regénérer les fichier du répertoire lodel/scripts/dao et ceux du
- * répertoire lodel/scripts/logic. Les modifications ne sont pas perdus car seul les parties
+ * Ce fichier permet de regÃ©nÃ©rer les fichier du rÃ©pertoire lodel/scripts/dao et ceux du
+ * rÃ©pertoire lodel/scripts/logic. Les modifications ne sont pas perdus car seul les parties
  * entre les blocs "// begin{publicfields} automatic generation  //" et "// end{publicfields}
- * automatic generation  //" sont régénérés (pour les logiques).
+ * automatic generation  //" sont rÃ©gÃ©nÃ©rÃ©s (pour les logiques).
  *
- * Ce script est à lancer en ligne de commande
+ * Ce script est Ã  lancer en ligne de commande
  *
  * PHP versions 4 et 5
  *
@@ -16,12 +16,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -46,11 +46,11 @@
  * @author Ghislain Picard
  * @author Jean Lamy
  * @author Pierre-Alain Mignot
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel/install
@@ -67,13 +67,13 @@ $uniquefields = array();
 
 
 /**
- * Cette méthode est appélée quand le parser XML rencontre le début d'un élément.
+ * Cette mÃ©thode est appÃ©lÃ©e quand le parser XML rencontre le dÃ©but d'un Ã©lÃ©ment.
  *
- * Récupère la liste des champs, leurs propriétés pour tous les éléments table
+ * RÃ©cupÃ¨re la liste des champs, leurs propriÃ©tÃ©s pour tous les Ã©lÃ©ments table
  *
  * @param object $parser le parser XML
- * @param string $name le nom de l'élement qui débute
- * @param array $attrs les attributs de l'élément
+ * @param string $name le nom de l'Ã©lement qui dÃ©bute
+ * @param array $attrs les attributs de l'Ã©lÃ©ment
  */
 function startElement($parser, $name, $attrs)
 {
@@ -118,12 +118,12 @@ function startElement($parser, $name, $attrs)
 }
 
 /**
- * Cette méthode est appélée quand le parser XML rencontre la fin de l'élément.
+ * Cette mÃ©thode est appÃ©lÃ©e quand le parser XML rencontre la fin de l'Ã©lÃ©ment.
  *
- * lorsque on détecte la fin d'un élément table alors on génère la DAO et la logic associée
+ * lorsque on dÃ©tecte la fin d'un Ã©lÃ©ment table alors on gÃ©nÃ¨re la DAO et la logic associÃ©e
  *
  * @param object $parser le parser XML
- * @param string $name le nom de l'élement qui débute
+ * @param string $name le nom de l'Ã©lement qui dÃ©bute
  */
 function endElement($parser, $name)
 {
@@ -169,7 +169,7 @@ foreach($files as $file) {
  * Construction des fichiers de DAO.
  *
  * Pour chaque table du fichier XML init-site.xml, un fichier contenant la classe VO et la
- * classe DAO de la table est créé.
+ * classe DAO de la table est crÃ©Ã©.
  */
 function buildDAO() 
 {
@@ -186,12 +186,12 @@ function buildDAO()
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see dao.php
  */
 class '.$table.'VO 
@@ -207,7 +207,7 @@ class '.$table.'VO
 }
 
 /**
- * Classe d\'abstraction de la base de données de la table '.$table.'
+ * Classe d\'abstraction de la base de donnÃ©es de la table '.$table.'
  *
  * Fille de la classe DAO
  *
@@ -217,12 +217,12 @@ class '.$table.'VO
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see dao.php
  */
 class '. $table. 'DAO extends DAO 
@@ -230,7 +230,7 @@ class '. $table. 'DAO extends DAO
 	/**
 	 * Constructeur
 	 *
-	 * <p>Appelle le constructeur de la classe mère DAO en lui passant le nom de la classe.
+	 * <p>Appelle le constructeur de la classe mÃ¨re DAO en lui passant le nom de la classe.
 	 * Renseigne aussi le tableau rights des droits.
 	 * </p>
 	 */
@@ -265,8 +265,8 @@ class '. $table. 'DAO extends DAO
 /**
  * Construction des logics des classes
  *
- * Pour chaque table du fichier XML init-site.xml, les fichiers de logic sont modifiés
- * pour mettre à jour les fonctions _publicfields et _uniquefields
+ * Pour chaque table du fichier XML init-site.xml, les fichiers de logic sont modifiÃ©s
+ * pour mettre Ã  jour les fonctions _publicfields et _uniquefields
  */
 function buildLogic()
 {
@@ -333,10 +333,10 @@ function getnotice($table)
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  *
  * Home page: http://www.lodel.org
  *
@@ -363,18 +363,18 @@ function getnotice($table)
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  * @package lodel/dao
  */
 
 //
-// Fichier généré automatiquement le '.date('d-m-Y').'.
+// Fichier gÃ©nÃ©rÃ© automatiquement le '.date('d-m-Y').'.
 //
 ';
 }

@@ -30,14 +30,14 @@
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
@@ -51,14 +51,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class UsersLogic extends Logic 
@@ -72,16 +72,16 @@ class UsersLogic extends Logic
 	}
 
 	/**
-	*  Indique si un objet est protégé en suppression
+	*  Indique si un objet est protÃ©gÃ© en suppression
 	*
-	* Cette méthode indique si un objet, identifié par son identifiant numérique et
-	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	* Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	* pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	* booleen false.
 	*
 	* @param integer $id identifiant de l'objet
 	* @param integer $status status de l'objet
-	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	* @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
@@ -102,17 +102,17 @@ class UsersLogic extends Logic
 	 *
 	 * Cette action permet de supprimer soit :
 	 * - toutes les sessions d'un utilisateur, do=deletesession&lo=users&id=xx
-	 * - une session particulière : do=deletesession&lo=users&session=xx
+	 * - une session particuliÃ¨re : do=deletesession&lo=users&session=xx
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les erreur éventuelles par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les erreur Ã©ventuelles par rÃ©fÃ©rence
 	 */
 	public function deletesessionAction(&$context, &$error)
 	{
 		global $db;
 		$id = (int)@$context['id'];
 		$session     = (int)C::get('session', 'lodeluser');
-		usemaindb(); // les sessions sont stockés dans la base principale
+		usemaindb(); // les sessions sont stockÃ©s dans la base principale
 		$ids = array();
 		$where = defined('backoffice-lodeladmin') ? ' AND userrights=128' : ' AND userrights<128';
 		if ($id) { //suppression de toutes les sessions
@@ -141,12 +141,12 @@ class UsersLogic extends Logic
 	}
 
 	/**
-	 * Permet de régler la langue ou le mode traduction d'un utilisateur
+	 * Permet de rÃ©gler la langue ou le mode traduction d'un utilisateur
 	 *
 	 * Pour changer la langue d'un utilisateur : lo=users&do=set&lang=fr
 	 * Pour changer le mode traduction : lo=users&do=set&translationmode=off
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les erreur éventuelles par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les erreur Ã©ventuelles par rÃ©fÃ©rence
 	 */
 	public function setAction(&$context, &$error)
 	{
@@ -213,7 +213,7 @@ class UsersLogic extends Logic
 			foreach($list as $lang) {
 				$arr[$lang->lang]=$lang->title;
 			}
-			if (!$arr) $arr['fr']=utf8_encode("Français");
+			if (!$arr) $arr['fr']="FranÃ§ais";
 			renderOptions($arr,isset($context['sitelang']) ? $context['sitelang'] : '');
 		}
 	}
@@ -252,11 +252,11 @@ class UsersLogic extends Logic
 	}
 
 	/**
-	* Préparation de l'action Edit
+	* PrÃ©paration de l'action Edit
 	*
 	* @access private
-	* @param object $dao la DAO utilisée
-	* @param array &$context le context passé par référence
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le context passÃ© par rÃ©fÃ©rence
 	*/
 	protected function _prepareEdit($dao,&$context) 
 	{
@@ -282,11 +282,11 @@ class UsersLogic extends Logic
 		}
 	}
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
@@ -396,7 +396,7 @@ class UsersLogic extends Logic
 	// end{uniquefields} automatic generation  //
 
 	/**
-	 * Bloque un compte utilisateur tant que celui-ci n'a pas modifié son mot de passe
+	 * Bloque un compte utilisateur tant que celui-ci n'a pas modifiÃ© son mot de passe
 	 */
 
 	public function suspendAction(&$context, &$error)
@@ -404,7 +404,7 @@ class UsersLogic extends Logic
  		global $db;
 		$id = (int)@$context['id'];
 		$site = C::get('site', 'cfg');
-		//on vérifie qu'on est bien administrateur
+		//on vÃ©rifie qu'on est bien administrateur
 		if(C::get('admin', 'lodeluser')) {
 			$prefixe = ($site != '' && $site != "tous les sites") ? "#_TP_" : "#_MTP_";
 	
@@ -424,7 +424,7 @@ class UsersLogic extends Logic
 	}
 
 	/**
-	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
+	 * Envoi un mail au nouvel utilisateur crÃ©Ã© avec son login/mdp et diverses informations
 	 */
 	protected function _sendPrivateInformation(&$context) 
 	{

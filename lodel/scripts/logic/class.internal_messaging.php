@@ -29,29 +29,29 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
 /**
- * Classe de logique permettant de gérer la messagerie interne
+ * Classe de logique permettant de gÃ©rer la messagerie interne
  * 
  * @package lodel/logic
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  */
 class Internal_MessagingLogic extends Logic 
@@ -168,17 +168,17 @@ class Internal_MessagingLogic extends Logic
 	 * Suppression d'un message
 	 *
 	 * Liste des Status
-	 * -32 : supprimé destinataire, dossier 'envoyés' de l'envoyeur
-	 * -16 : corbeille destinataire, lu, supprimé du dossier 'envoyés' de l'envoyeur
-	 * -8 : corbeille destinaire, lu, dossier 'envoyés' de l'envoyeur 
-	 * -2 : corbeille destinaire, non lu, supprimé du dossier 'envoyés' de l'envoyeur
-	 * -1 : corbeille destinaire, non lu, dossier 'envoyés' de l'envoyeur
-	 * 0 : boite de réception destinataire, lu, dossier 'envoyés' de l'envoyeur
-	 * 1 : boite de réception destinataire, non lu, dossier 'envoyés' de l'envoyeur
-	 * 16 : boite de réception destinataire, non lu, supprimé du dossier 'envoyés' de l'envoyeur
-	 * 32 : boite de réception destinataire, lu, supprimé du dossier 'envoyés' de l'envoyeur
-	 * @param array &$context le context passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * -32 : supprimÃ© destinataire, dossier 'envoyÃ©s' de l'envoyeur
+	 * -16 : corbeille destinataire, lu, supprimÃ© du dossier 'envoyÃ©s' de l'envoyeur
+	 * -8 : corbeille destinaire, lu, dossier 'envoyÃ©s' de l'envoyeur 
+	 * -2 : corbeille destinaire, non lu, supprimÃ© du dossier 'envoyÃ©s' de l'envoyeur
+	 * -1 : corbeille destinaire, non lu, dossier 'envoyÃ©s' de l'envoyeur
+	 * 0 : boite de rÃ©ception destinataire, lu, dossier 'envoyÃ©s' de l'envoyeur
+	 * 1 : boite de rÃ©ception destinataire, non lu, dossier 'envoyÃ©s' de l'envoyeur
+	 * 16 : boite de rÃ©ception destinataire, non lu, supprimÃ© du dossier 'envoyÃ©s' de l'envoyeur
+	 * 32 : boite de rÃ©ception destinataire, lu, supprimÃ© du dossier 'envoyÃ©s' de l'envoyeur
+	 * @param array &$context le context passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function deleteAction(&$context, &$error)
 	{
@@ -425,7 +425,7 @@ class Internal_MessagingLogic extends Logic
 			$context['data'] = $datas;
 			$context['data']['sender'] = $sender['username']. ( ($sender['firstname'] || $sender['lastname']) ? " ({$sender['firstname']} {$sender['lastname']})" : '');
 			$context['data']['recipient'] = $recipient['username']. ( ($recipient['firstname'] || $recipient['lastname']) ? " ({$recipient['firstname']} {$recipient['lastname']})" : '');
-			// nouveau message, on update son status à 0 == lu
+			// nouveau message, on update son status Ã  0 == lu
 			if(1 === (int)$datas['status'] && $this->_iduser == $datas['recipient']) {
 				$db->execute(lq("UPDATE #_MTP_internal_messaging SET status = 0 WHERE id = '{$id}' AND recipient = '{$this->_iduser}'")) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -454,7 +454,7 @@ class Internal_MessagingLogic extends Logic
 		foreach($context['recipients'] as $users) {
 			$arr = explode(':', $users);
 			foreach($arr as $user) {
-				// on évite les doublons (ex: tous les admins + admin sélectionné)
+				// on Ã©vite les doublons (ex: tous les admins + admin sÃ©lectionnÃ©)
 				if($user != '' && !in_array($user, $recipients))
 					$recipients[] = strtr($user, array('allsite'=>'', 'alllodelmain'=>'lodelmain'));
 			}

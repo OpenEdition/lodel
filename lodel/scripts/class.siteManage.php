@@ -1,6 +1,6 @@
 <?php
 /**
- * Classe siteManage - Gère un site
+ * Classe siteManage - GÃ¨re un site
  *
  * PHP version 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$id:
  * @package lodeladmin
@@ -59,13 +59,13 @@ class siteManage {
 	private $version;
 
 	/**
-	 * Répertoire de la version lodel utilisée
+	 * RÃ©pertoire de la version lodel utilisÃ©e
 	 * @var string
 	 */	
 	private $versiondir;
 
 	/**
-	 * Variable contenant les différentes versions de lodel installées
+	 * Variable contenant les diffÃ©rentes versions de lodel installÃ©es
 	 * @var string
 	 */		
 	private $versions;
@@ -77,31 +77,31 @@ class siteManage {
 	private $id;
 
 	/**
-	 * Critere de sélection du site requete SQL ("id=$id")
+	 * Critere de sÃ©lection du site requete SQL ("id=$id")
 	 * @var string
 	 */
 	private $critere;
 
 	/**
-	 * Regex permettant de trouver s'il existe plusieurs versions de lodel installées
+	 * Regex permettant de trouver s'il existe plusieurs versions de lodel installÃ©es
 	 * @var string
 	 */	
 	private $lodelhomere;
 
 	/**
-	 * Réinstallation ?
+	 * RÃ©installation ?
 	 * @var string
 	 */
 	private $reinstall;
 
 	/**
-	 * Base de donnée unique ?
+	 * Base de donnÃ©e unique ?
 	 * @var bool
 	 */
 	private $singledatabase;
 
 	/**
-	 * Nom de la base de données principale
+	 * Nom de la base de donnÃ©es principale
 	 * @var string
 	 */
 	private $database;
@@ -119,7 +119,7 @@ class siteManage {
 	public $context;
 
 	/**
-	 * Téléchargement du fichier siteconfig.php ?
+	 * TÃ©lÃ©chargement du fichier siteconfig.php ?
 	 * @var int
 	 */
 	private $downloadsiteconfig;
@@ -131,7 +131,7 @@ class siteManage {
 	 * Instancie un objet de la classe
 	 *
 	 * @param int $id identifiant du site
-	 * @param array $context le contexte passé par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
 	 */
 	public function __construct()
 	{
@@ -144,9 +144,9 @@ class siteManage {
 	/**
 	 * Accesseur
 	 *
-	 * Cette fonction renvoit la variable $_v passée en paramètre
+	 * Cette fonction renvoit la variable $_v passÃ©e en paramÃ¨tre
 	 *
-	 * @param var $_v variable à renvoyer
+	 * @param var $_v variable Ã  renvoyer
 	 */
     	public function get( $_v )
 	{
@@ -156,10 +156,10 @@ class siteManage {
 	/**
 	 * Accesseur
 	 *
-	 * Cette fonction alloue la valeur $_a à la variable $_v
+	 * Cette fonction alloue la valeur $_a Ã  la variable $_v
 	 *
-	 * @param var $_v variable à modifier
-	 * @param var $_a valeur à allouer
+	 * @param var $_v variable Ã  modifier
+	 * @param var $_a valeur Ã  allouer
 	 */
     	public function set( $_v, $_a )
 	{
@@ -167,9 +167,9 @@ class siteManage {
     	}
 
 	/**
-	 * Restoration d'un site supprimé
+	 * Restoration d'un site supprimÃ©
 	 *
-	 * Cette fonction restaure un site préalablement supprimé
+	 * Cette fonction restaure un site prÃ©alablement supprimÃ©
 	 */
 	public function restore()
 	{
@@ -201,11 +201,11 @@ class siteManage {
 	}
 
 	/**
-	 * Réinstallation d'un site
+	 * RÃ©installation d'un site
 	 *
-	 * Cette fonction lance la procédure de réinstallation d'un site
+	 * Cette fonction lance la procÃ©dure de rÃ©installation d'un site
 	 *
-	 * @param var $dir répertoire à traiter
+	 * @param var $dir rÃ©pertoire Ã  traiter
 	 */	
 	function reinstall()
 	{
@@ -244,7 +244,7 @@ class siteManage {
 	/**
 	 * Edition d'un site
 	 *
-	 * Cette fonction permet d'éditer les informations d'un site
+	 * Cette fonction permet d'Ã©diter les informations d'un site
 	 */	
 	function manageSite()
 	{
@@ -279,15 +279,15 @@ class siteManage {
                         WHERE status>-32 AND name!='". magic_addslashes($name). "'"));
                     
 				if ($numsite >= 1) {
-					trigger_error("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de données : il faut utiliser plusieurs bases de données.", E_USER_ERROR);
+					trigger_error("ERROR<br />\nIl n'est pas possible actuellement d'avoir plusieurs sites sur une unique base de donnÃ©es : il faut utiliser plusieurs bases de donnÃ©es.", E_USER_ERROR);
 				}
 			}
             	
             		$status = C::get('status');
                 
-			// édition d'un site : lit les informations options, status, etc.
-			if (!$id) { // création d'un site
-				// vérifie que le nom (base de données + répertoire du site) n'est pas déjà utilisé
+			// Ã©dition d'un site : lit les informations options, status, etc.
+			if (!$id) { // crÃ©ation d'un site
+				// vÃ©rifie que le nom (base de donnÃ©es + rÃ©pertoire du site) n'est pas dÃ©jÃ  utilisÃ©
 				$result = $db->GetOne(lq("
                     SELECT id
                         FROM #_MTP_sites
@@ -309,7 +309,7 @@ class siteManage {
 			}
             
 			if (!C::get('url')) {
-				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
+				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
 			}
 			
 			if (C::get('reinstall')) {
@@ -344,8 +344,8 @@ class siteManage {
 	 * Cette fonction installe lodel
 	 *
 	 * @param var $root chemin de la racine du serveur web
-	 * @param var $homesite chemin du répertoire du site
-	 * @param var $homelodel chemin du répertoire de lodel
+	 * @param var $homesite chemin du rÃ©pertoire du site
+	 * @param var $homelodel chemin du rÃ©pertoire de lodel
 	 */	
 	function install_file($root, $homesite, $homelodel)
 	{
@@ -389,9 +389,7 @@ class siteManage {
 				}
 				$toroot = preg_replace(array("/^\.\//", "/([^\/]+)\//", "/[^\/]+$/"),
 						array('', '../', ''), "$dirdest/$arg1");
-				if (!file_exists($dest1) || md5_file("$toroot$dirsource/$arg1") != md5_file($dest1)) {
-					$this->slink("$toroot$dirsource/$arg1", $dest1);
-				}
+				$this->slink("$toroot$dirsource/$arg1", $dest1);
 			} elseif ($cmd == 'cp' || ($cmd == 'ln' && (!$usesymlink || $usesymlink == 'non'))) {
 				if ($dirdest == '.' && $extensionscripts == 'html' && $arg1 != 'lodelconfig.php') {
 					$dest1 = preg_replace("/\.php$/", '.html', $dest1);
@@ -414,11 +412,11 @@ class siteManage {
 	}
 
 	/**
-	 * Protection du répertoire par htaccess
+	 * Protection du rÃ©pertoire par htaccess
 	 *
-	 * Cette fonction crée un htaccess contenant 'deny from all' dans le répertoire '$dir'
+	 * Cette fonction crÃ©e un htaccess contenant 'deny from all' dans le rÃ©pertoire '$dir'
 	 *
-	 * @param var $dir répertoire dans lequel sera créé le htaccess
+	 * @param var $dir rÃ©pertoire dans lequel sera crÃ©Ã© le htaccess
 	 */	
 	function htaccess ($dir)
 	{
@@ -431,20 +429,15 @@ class siteManage {
 	}
 
 	/**
-	 * Création des liens symboliques
+	 * CrÃ©ation des liens symboliques
 	 *
-	 * Cette fonction crée ou modifie les liens symboliques
+	 * Cette fonction crÃ©e ou modifie les liens symboliques
 	 *
 	 * @param var $src source du lien
 	 * @param var $dest destination du lien
 	 */	
 	function slink($src, $dest)
 	{
-		if (file_exists($dest) && md5_file($dest)==md5_file($src)) {
-			return;
-		}
-	
-		// le lien n'existe pas ou on n'y accede pas.
 		@unlink($dest); // detruit le lien s'il existe
 		if (!(@symlink($src,$dest))) {
 			@chmod(basename($dest), 0777 & octdec(C::get('filemask', 'cfg')));
@@ -492,12 +485,12 @@ class siteManage {
 	}
 
 	/**
-	 * Copie des répertoires
+	 * Copie des rÃ©pertoires
 	 *
-	 * Cette fonction copie les répertoires de lodel
+	 * Cette fonction copie les rÃ©pertoires de lodel
 	 *
-	 * @param var $src source du répertoire
-	 * @param var $dest destination du répertoire
+	 * @param var $src source du rÃ©pertoire
+	 * @param var $dest destination du rÃ©pertoire
 	 */	
 	function mycopy($src,$dest) 
 	{
@@ -523,11 +516,11 @@ class siteManage {
 	}
 	
 	/**
-	 * Charset de la base de données
+	 * Charset de la base de donnÃ©es
 	 *
-	 * Cette fonction retourne le charset utilisé par la base de données '$database'
+	 * Cette fonction retourne le charset utilisÃ© par la base de donnÃ©es '$database'
 	 *
-	 * @param var $database nom de la base de donnée à traiter
+	 * @param var $database nom de la base de donnÃ©e Ã  traiter
 	 */		
 	function find_mysql_db_charset($database) {
 		$db_collation = mysql_find_db_variable($database, 'collation_database');
@@ -540,9 +533,9 @@ class siteManage {
 	}
 
 	/**
-	 * Création de la base de données
+	 * CrÃ©ation de la base de donnÃ©es
 	 *
-	 * Cette fonction crée la base de données si celle-ci n'existe pas déjà
+	 * Cette fonction crÃ©e la base de donnÃ©es si celle-ci n'existe pas dÃ©jÃ 
 	 *
 	 */	
 	function createDB()
@@ -599,12 +592,12 @@ class siteManage {
 	}
 
 	/**
-	 * Gestion des erreurs de création des tables
+	 * Gestion des erreurs de crÃ©ation des tables
 	 *
-	 * Cette fonction gère les erreurs retournées lors de la création des tables
+	 * Cette fonction gÃ¨re les erreurs retournÃ©es lors de la crÃ©ation des tables
 	 *
 	 * @param var &$context contexte du site
-	 * @param var $funcname nom de la fonction à appeller (nom = code_do_$funcname)
+	 * @param var $funcname nom de la fonction Ã  appeller (nom = code_do_$funcname)
 	 */	
 	function loop_errors_createtables(&$context, $funcname)
 	{
@@ -618,9 +611,9 @@ class siteManage {
 	}
 
 	/**
-	 * Création des tables
+	 * CrÃ©ation des tables
 	 *
-	 * Cette fonction crée les tables lors de l'installation
+	 * Cette fonction crÃ©e les tables lors de l'installation
 	 *
 	 */	
 	function createTables()
@@ -634,7 +627,7 @@ class siteManage {
 
         	$dbname = C::get('dbname');
 
-		$db->SelectDB($dbname) //selectionne la base de donnée du site
+		$db->SelectDB($dbname) //selectionne la base de donnÃ©e du site
             		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR); 
             
 		if (!file_exists(LODELROOT. $this->versiondir."/install/init-site.sql")) {
@@ -674,9 +667,9 @@ class siteManage {
 	}	
 
 	/**
-	 * Procédure de création des répertoires
+	 * ProcÃ©dure de crÃ©ation des rÃ©pertoires
 	 *
-	 * Cette fonction gère la création des répertoires de lodel
+	 * Cette fonction gÃ¨re la crÃ©ation des rÃ©pertoires de lodel
 	 *
 	 */
 	function createDir()
@@ -726,7 +719,7 @@ class siteManage {
 	/**
 	 * MAJ du fichier de configuration du site
 	 *
-	 * Cette fonction met à jour le fichier siteconfig.php
+	 * Cette fonction met Ã  jour le fichier siteconfig.php
 	 *
 	 * @param var $siteconfig nom du fichier
 	 * @param var $var nom des sites
@@ -773,7 +766,7 @@ class siteManage {
 	/**
 	 * Gestion des fichiers
 	 *
-	 * Cette fonction gère l'installation des fichiers de lodel
+	 * Cette fonction gÃ¨re l'installation des fichiers de lodel
 	 *
 	 */
 	function manageFiles()
@@ -896,7 +889,7 @@ class siteManage {
 	/**
 	 * Maintenance des sites
 	 *
-	 * Cette fonction gère la mise en maintenance des sites
+	 * Cette fonction gÃ¨re la mise en maintenance des sites
 	 *
 	 * @param int type application de la maintenance : 1 = tous en ligne, 2 = tous en maintenance
 	 * @author Pierre-Alain Mignot

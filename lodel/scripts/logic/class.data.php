@@ -31,46 +31,46 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 /**
- * Classe de logique permettant de gérer les backup et import de données et de ME
+ * Classe de logique permettant de gÃ©rer les backup et import de donnÃ©es et de ME
  * 
  * @package lodel/logic
  * @author Jean Lamy
  * @author Sophie Malafosse
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajoutée depuis la version 0.8
+ * @since Classe ajoutÃ©e depuis la version 0.8
  * @see backupfunc.php, pma/sql-modified.php
  */
 class DataLogic
 {
 
 	/**
-	 * Prefix du fichier (pour l'import de ME et l'import de données)
+	 * Prefix du fichier (pour l'import de ME et l'import de donnÃ©es)
 	 * @var string
 	 */
 	private $filePrefix;
 
 	/**
-	 * Expression utilisée pour filtrer les fichiers pour un import
+	 * Expression utilisÃ©e pour filtrer les fichiers pour un import
 	 * @var string
 	 */
 	private $fileRegexp;
@@ -89,7 +89,7 @@ class DataLogic
 	private $_tables; 
 
 	/**
-	 * Tables enregistrées lors du parsage du fichier XML
+	 * Tables enregistrÃ©es lors du parsage du fichier XML
 	 * @var array
 	 */
 	private $_recordedTables;
@@ -107,49 +107,49 @@ class DataLogic
 	private $_sqlStruct; 
 
 	/**
-	 * Liste des tables différentes entre SQL/XML
+	 * Liste des tables diffÃ©rentes entre SQL/XML
 	 * @var array
 	 */
 	private $_changedTables; 
 	
 	/**
-	 * Liste des champs différents entre chaque table SQL/XML
+	 * Liste des champs diffÃ©rents entre chaque table SQL/XML
 	 * @var array
 	 */
 	private $_changedFields;
 
 	/**
-	 * Donnés récupérées dans le XML
+	 * DonnÃ©s rÃ©cupÃ©rÃ©es dans le XML
 	 * @var array
 	 */
  	private $_xmlDatas;
 
 	/**
-	 * Tables à créer (présentes dans le XML et non dans la base)
+	 * Tables Ã  crÃ©er (prÃ©sentes dans le XML et non dans la base)
 	 * @var array
 	 */
 	private $_tableToCreate;
 
 	/**
-	 * Tableau des requêtes à effectuer
+	 * Tableau des requÃªtes Ã  effectuer
 	 * @var array
 	 */	
 	private $_sql;
 
 	/**
-	 * Tableau des champs absent du XML mais présent dans la base
+	 * Tableau des champs absent du XML mais prÃ©sent dans la base
 	 * @var array
 	 */	
 	private $_fieldsToKeep;
 
 	/**
-	 * Tableau des types (entité ou entrée) n'ayant pas trouvé leur équivalent dans le XML
+	 * Tableau des types (entitÃ© ou entrÃ©e) n'ayant pas trouvÃ© leur Ã©quivalent dans le XML
 	 * @var array
 	 */
 	private $_changedTypes;
 
 	/**
-	 * Tableau utilisé pour comparer le contenu de certaines tables
+	 * Tableau utilisÃ© pour comparer le contenu de certaines tables
 	 * @var array
 	 */
 	private $_changedContent;
@@ -160,7 +160,7 @@ class DataLogic
 	private $_classes;
 	
 	/**
-	 * Tableau des types changés ayant une classe différente
+	 * Tableau des types changÃ©s ayant une classe diffÃ©rente
 	 */
 	private $_typesClass;
 	/* FIN IMPORT ME XML */
@@ -168,7 +168,7 @@ class DataLogic
 	/**
 	 * Constructeur
 	 *
-	 * Interdit l'accès aux utilisateurs qui ne sont pas ADMIN
+	 * Interdit l'accÃ¨s aux utilisateurs qui ne sont pas ADMIN
 	 */
 	public function __construct()
 	{
@@ -187,12 +187,12 @@ class DataLogic
 	}
 
 	/**
-	 * Importation des données
+	 * Importation des donnÃ©es
 	 *
-	 * Cette fonction importe les données issus d'un backup de lodel : le dump SQL, les fichiers associés (si ils ont été sauvegardés).
+	 * Cette fonction importe les donnÃ©es issus d'un backup de lodel : le dump SQL, les fichiers associÃ©s (si ils ont Ã©tÃ© sauvegardÃ©s).
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreur, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreur, passÃ©es par rÃ©fÃ©rence
 	 */
 	public function importAction(&$context, &$error)
 	{
@@ -202,7 +202,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
-		// les répertoires d'import
+		// les rÃ©pertoires d'import
 		$context['importdirs'] = array('CACHE');
 		if ($context['importdir']) {
   		    $context['importdirs'][] = $context['importdir'];
@@ -210,13 +210,13 @@ class DataLogic
 
 		$file = $this->_extractImport($context);
 
-		if ($file) { // Si on a bien spécifié un fichier
+		if ($file) { // Si on a bien spÃ©cifiÃ© un fichier
 			do { // control block
 
-				set_time_limit(0); //pas d'effet si safe_mode on ; on met le temps à unlimited
+				set_time_limit(0); //pas d'effet si safe_mode on ; on met le temps Ã  unlimited
 				//nom du fichier SQL
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
-				//noms des répertoires acceptés
+				//noms des rÃ©pertoires acceptÃ©s
 				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier'/*compat 0.7*/);
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
 					$err = $error['error_extract'] = 'extract';
@@ -246,12 +246,12 @@ class DataLogic
 	}
 
 	/**
-	 * Sauvegarde des données
+	 * Sauvegarde des donnÃ©es
 	 *
-	 * Fait un dump de la base de données du site et si indiqué sauve aussi les fichiers annexes et source.
+	 * Fait un dump de la base de donnÃ©es du site et si indiquÃ© sauve aussi les fichiers annexes et source.
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
 	 */
 	public function backupAction(&$context, &$error)
 	{
@@ -259,7 +259,7 @@ class DataLogic
 		$zipcmd = C::get('zipcmd', 'cfg');
 		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
-		if (isset($context['backup'])) { // si on a demandé le backup
+		if (isset($context['backup'])) { // si on a demandÃ© le backup
 			set_time_limit(0); 
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
@@ -285,7 +285,7 @@ class DataLogic
 			// zip le site et ajoute la base
 			$archivetmp      = tempnam($tmpdir, 'lodeldump_'). '.zip';
 			$archivefilename = "site-$site-". date("dmy"). '.zip';
-			// fichiers à exclure de l'archive
+			// fichiers Ã  exclure de l'archive
 			$GLOBALS['excludes'] = $excludes = array('lodel/sources/.htaccess',
 						'docannexe/fichier/.htaccess',
 						'docannexe/file/.htaccess',
@@ -293,10 +293,10 @@ class DataLogic
 						'docannexe/index.html',
 						'docannexe/image/tmpdir-\*',
 						'docannexe/tmp\*');
-			// répertoires à inclure
+			// rÃ©pertoires Ã  inclure
 			$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
 
-			// si sauvegarde des répertoires demandée (en + de la base)
+			// si sauvegarde des rÃ©pertoires demandÃ©e (en + de la base)
 			if (empty($context['sqlonly'])) { // undefined or equal to 0
 					$bad_dirs = array();
 					$good_dirs = array();
@@ -311,7 +311,7 @@ class DataLogic
 					// initialise $error pour affichage dans le template backup.html
 					if (!empty($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
 					
-					// conversion en chaîne pour ligne de commande
+					// conversion en chaÃ®ne pour ligne de commande
 					$dirs = implode(' ', $good_dirs);
 				}
 			else    { $dirs = ''; }
@@ -353,14 +353,14 @@ class DataLogic
 					}
 					// end of function to exclude files
 
-					// ajout de la racine du site aux chemins des répertoires
+					// ajout de la racine du site aux chemins des rÃ©pertoires
 					foreach($good_dirs as $i=>$good_dir)
 					{
 						$good_dirs[$i] = SITEROOT. $good_dir;
 					}
 					// ajout du fichier sql issu du dump de la base du site
 					array_push($good_dirs, $tmpdir. '/'. $outfile);
-					// création de l'archive
+					// crÃ©ation de l'archive
 					$archive->create($good_dirs,
 							PCLZIP_OPT_REMOVE_PATH,SITEROOT,
 							PCLZIP_CB_PRE_ADD, 'preadd');
@@ -376,7 +376,7 @@ class DataLogic
 			}
 			@unlink($tmpdir. '/'. $outfile); // delete the sql file
 			
-			if($error) { // Pour avoir accès aux erreurs dans les templates
+			if($error) { // Pour avoir accÃ¨s aux erreurs dans les templates
 				$context['error'] = $error;
             		}
 
@@ -397,14 +397,14 @@ class DataLogic
 	}
 
 	/**
-	 * Backup global des données. Seulement autorisé pour un admin lodel
+	 * Backup global des donnÃ©es. Seulement autorisÃ© pour un admin lodel
 	 *
-	 * Cela crée un backup de la base principale mais aussi de tous les sites
+	 * Cela crÃ©e un backup de la base principale mais aussi de tous les sites
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 * @return le nom du template utilisé pour cette action : backup
-	 * @todo Trouver une alternative à la commande système tar
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
+	 * @return le nom du template utilisÃ© pour cette action : backup
+	 * @todo Trouver une alternative Ã  la commande systÃ¨me tar
 	 */
 	public function globalbackupAction(&$context, &$error)
 	{
@@ -447,9 +447,9 @@ class DataLogic
 				$this->_dump($name, $outfile, $errors, $fh);
 				if (empty($context['sqlonly'])) { 
 					chdir(LODELROOT);
-					if ($sitepath == '/') { $root = ''; } // site à la racine
+					if ($sitepath == '/') { $root = ''; } // site Ã  la racine
 					else { $root = $name . '/'; }
-					// liste des répertoires du site à archiver
+					// liste des rÃ©pertoires du site Ã  archiver
 					$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
 					$bad_dirs = array();
 					//verifie que les repertoires sont accessibles en lecture
@@ -483,19 +483,19 @@ class DataLogic
 	}
 
 	/**
-	 * Importation du modèle éditorial
+	 * Importation du modÃ¨le Ã©ditorial
 	 *
-	 * Importe les données contenu dans un fichier ZIP de sauvegarde du ME
+	 * Importe les donnÃ©es contenu dans un fichier ZIP de sauvegarde du ME
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 * @return le nom du template utilisé pour cette action : importmodel
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
+	 * @return le nom du template utilisÃ© pour cette action : importmodel
 	 */
 	public function importmodelAction(&$context, &$error)
 	{
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
-		//Vérifie que l'on peut bien faire cet import
-		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
+		//VÃ©rifie que l'on peut bien faire cet import
+		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import dÃ©fini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
@@ -537,7 +537,7 @@ class DataLogic
 			clearcache();
 			
 			if (!isset($err)) {
-				if (!empty($context['frominstall'])) { // si on vient de l'install redirige vers la page d'édition
+				if (!empty($context['frominstall'])) { // si on vient de l'install redirige vers la page d'Ã©dition
 					header ('location: ../edition/index.php');
 					exit;
 				} else {
@@ -558,15 +558,15 @@ class DataLogic
 
 
 	/**
-	 * Sauvegarde du modèle éditorial
+	 * Sauvegarde du modÃ¨le Ã©ditorial
 	 *
-	 * Sauve les tables du ME dans un dump SQL (table lodel + table créées). Si demandé inclut
-	 * aussi les templates, les css, les images et les scripts javascript. Le fichier créé est
+	 * Sauve les tables du ME dans un dump SQL (table lodel + table crÃ©Ã©es). Si demandÃ© inclut
+	 * aussi les templates, les css, les images et les scripts javascript. Le fichier crÃ©Ã© est
 	 * de la forme <em>model-site-date.zip</em>.
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 * @return le nom du template utilisé pour cette action : backupmodel
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
+	 * @return le nom du template utilisÃ© pour cette action : backupmodel
 	 */
 	public function backupmodelAction(&$context, &$error)
 	{
@@ -619,7 +619,7 @@ class DataLogic
 				'#_TP_entrytypes',
 				'#_TP_entitytypes_entitytypes',
 				'#_TP_characterstyles',
-				'#_TP_internalstyles'); //liste des tables de lodel à sauver.
+				'#_TP_internalstyles'); //liste des tables de lodel Ã  sauver.
 			foreach ($tables as $table) {
 				fputs($fh, 'DELETE FROM '. $table. ";\n");
 			}
@@ -639,7 +639,7 @@ class DataLogic
 			fputs($fh, "DELETE FROM #_TP_options;\n");
 			mysql_dump($GLOBALS['currentdb'],array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
 		
-			// Récupère la liste des tables de classe à sauver.
+			// RÃ©cupÃ¨re la liste des tables de classe Ã  sauver.
 			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 			$tables = array();
 			foreach ($vos as $vo) {
@@ -662,7 +662,7 @@ class DataLogic
 			$dirs = array();
 			$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			foreach($dirstest as $dir) {
-				if ($context[$dir]) {
+				if (isset($context[$dir])) {
 					$dirs[] = $dir;
 				}
 			}
@@ -682,11 +682,11 @@ class DataLogic
 	}
 
 	/**
-	 * Dump SQL d'un site donné
+	 * Dump SQL d'un site donnÃ©
 	 * @access private
 	 * @param string $site le nom du site
-	 * @param string $outfile le fichier dans lequel écrire le dump SQL
-	 * @param resource $fh le descripteur de fichier (par défaut 0)
+	 * @param string $outfile le fichier dans lequel Ã©crire le dump SQL
+	 * @param resource $fh le descripteur de fichier (par dÃ©faut 0)
 	 * @param array $error tableau des erreurs
 	 */
 	private function _dump($site, $outfile, &$error, $fh = 0)
@@ -717,7 +717,7 @@ class DataLogic
 			if ($vo->classtype == 'persons')
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
-		// dump structure + données
+		// dump structure + donnÃ©es
 		mysql_dump($dbname, $tables, $outfile, $fh);
 		// dump structure seulement
 		$tables_nodatadump = $GLOBALS['lodelsitetables_nodatadump'];
@@ -727,13 +727,13 @@ class DataLogic
 	}
 
 	/**
-	 * Execute un dump (fichier SQL) pointé par $url
+	 * Execute un dump (fichier SQL) pointÃ© par $url
 	 *
-	 * @todo vérifier que cette fonction ne prends pas trop de place en mémoire.
+	 * @todo vÃ©rifier que cette fonction ne prends pas trop de place en mÃ©moire.
 	 * @access private
 	 * @param string $url le fichier SQL
-	 * @param boolean $ignoreerrors. false par défaut
-	 * @return true si le dump a bien été executé	 */
+	 * @param boolean $ignoreerrors. false par dÃ©faut
+	 * @return true si le dump a bien Ã©tÃ© executÃ©	 */
 	private function _execute_dump($url, $ignoreerrors = false) 
 	{
 		global $db;
@@ -758,9 +758,9 @@ class DataLogic
 	}
 
 	/**
-	 * Vérifie les fichiers CACHE et .htaccess et recrée les .htaccess.
+	 * VÃ©rifie les fichiers CACHE et .htaccess et recrÃ©e les .htaccess.
 	 *
-	 * @param array $context le contexte passé par référence.
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence.
 	 */
 	private function _checkFiles(&$context)
 	{
@@ -785,12 +785,12 @@ class DataLogic
 	}
 
 	/**
-	 * Crée un fichier ZIP du ME contenant le fichier SQL/XML et éventuellement les répertoires
+	 * CrÃ©e un fichier ZIP du ME contenant le fichier SQL/XML et Ã©ventuellement les rÃ©pertoires
 	 * images, css, js et tpl et lodel/icons
 	 *
 	 * @access private
 	 * @param string $sqlfile le fichier dump SQL/XML
-	 * @param array $dirs la liste des répertoires à inclure.
+	 * @param array $dirs la liste des rÃ©pertoires Ã  inclure.
 	 * @return le nom du fichier ZIP
 	 */
 	private function _backupME($sqlfile, $dirs = array())
@@ -800,7 +800,7 @@ class DataLogic
 		$tmpdir = tmpdir();
 		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
 	
-		// Cherche si les répertoires à zipper contiennent bien des fichiers
+		// Cherche si les rÃ©pertoires Ã  zipper contiennent bien des fichiers
 		$zipdirs = array ();
 		foreach ($dirs as $dir)	{
 			if (!file_exists(SITEROOT. $dir))
@@ -816,6 +816,7 @@ class DataLogic
 	
 		if ($zipcmd && $zipcmd != 'pclzip')	{ //commande ZIP
 			if ($zipdirs)	{
+				$files = '';
 				foreach ($zipdirs as $dir) {
 					foreach ($acceptedexts as $ext)	{
 						$files .= " $dir/*.$ext";
@@ -823,7 +824,7 @@ class DataLogic
 				}
 				if (!chdir(SITEROOT))
 					trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
-				$prefixdir = $tmpdir[0] == '/' ? '' : 'lodel/admin/';
+				$prefixdir = $archivetmp[0] == '/' ? '' : 'lodel/admin/';
 				system($zipcmd." -q $prefixdir$archivetmp $files");
 				if (!chdir("lodel/admin"))
 					trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
@@ -845,6 +846,7 @@ class DataLogic
 					#echo $p_header['stored_filename'],"<br>";
 					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
 				}
+				$files = array();
 				// end of function to exclude files
 				foreach ($zipdirs as $dir) {
 					$files[] = SITEROOT.$dir;
@@ -866,7 +868,7 @@ class DataLogic
 	/**
 	 * Est-ce que l'on peut importer un ME ?
 	 *
-	 * Vérifie si le site est vide, pour permettre l'import d'un ME
+	 * VÃ©rifie si le site est vide, pour permettre l'import d'un ME
 	 *
 	 * @access private
 	 * @return un booleen false si impossible, le nom de la table sinon
@@ -893,16 +895,16 @@ class DataLogic
 	 * Extraction du fichier ZIP d'import du ME
 	 *
 	 * 
-	 * @param string $footprint le prefix qui doit être contenu dans le nom du fichier
-	 * @param array $context le contexte passé par référence
-	 * @param string $ext l'extension du fichier, par défaut .zip
+	 * @param string $footprint le prefix qui doit Ãªtre contenu dans le nom du fichier
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param string $ext l'extension du fichier, par dÃ©faut .zip
 	 * @return le nom du fichier d'import
 	 */
 	private function _extractImport(&$context)
 	{
 		$archive = @$_FILES['archive']['tmp_name'];
 		$context['error_upload'] = @$_FILES['archive']['error'];
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
+		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a Ã©tÃ© uploadÃ©
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
 				$context['error_regexp'] = 1;
@@ -929,7 +931,7 @@ class DataLogic
 
 
 	/**
-	 * Réinitialisation de la table des objets
+	 * RÃ©initialisation de la table des objets
 	 */
 	private function _reinitobjetstable()
 	{
@@ -993,8 +995,8 @@ class DataLogic
 	/**
 	 * Backup du ME sous format XML
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
 	 */
 	public function backupxmlmodelAction(&$context, &$error) 
 	{
@@ -1017,14 +1019,14 @@ class DataLogic
 			$context['error'] = $error;
 			return 'backupmodel';
 		}
-		$xml = $this->_generateXML($context);
+		$xml = $this->generateXML($context);
 
 		$tmpfile = tmpdir(). '/model.xml';
 		file_put_contents($tmpfile, $xml);
 		$dirs = array();
 		$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 		foreach($dirstest as $dir) {
-			if ($context[$dir]) {
+			if (!empty($context[$dir])) {
 				$dirs[] = $dir;
 			}
 		}
@@ -1041,18 +1043,18 @@ class DataLogic
 	}
 
 	/**
-	 * Met à jour le ME en fonction d'un fichier XML
+	 * Met Ã  jour le ME en fonction d'un fichier XML
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
-	 * @return string $tpl nom du template à afficher
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
+	 * @return string $tpl nom du template Ã  afficher
 	 */
 	public function importxmlmodelAction(&$context, &$error) 
 	{
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$err = '';
-		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
+		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import dÃ©fini dans la conf
 		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
@@ -1067,7 +1069,7 @@ class DataLogic
 		
 		if ($file && $context['delete']) {// extra check. Need more ?
 			if (dirname($file) == 'CACHE') {
-				unlink($file);
+				@unlink($file);
 			}
 		} elseif ($file) {
 			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
@@ -1081,7 +1083,7 @@ class DataLogic
 		}
 		
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
-			&& ($meObj = getFromCache('require_caching/ME.obj', false))) { // on a déjà parsé le XML
+			&& ($meObj = getFromCache('require_caching/ME.obj', false))) { // on a dÃ©jÃ  parsÃ© le XML
 			$class = __CLASS__;
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
 				$context['error'] = $error = 'Content in file "CACHE/require_caching/ME.obj" is not an object. Aborted.';
@@ -1092,17 +1094,17 @@ class DataLogic
 			$this->_recordedTables = $meObj->_recordedTables;
 			$this->_changedContent = $meObj->_changedContent;
 			$this->_classes = $meObj->_classes;
-			// besoin de parser la base de nouveau pour prendre en compte les éventuelles modifications
+			// besoin de parser la base de nouveau pour prendre en compte les Ã©ventuelles modifications
 			$this->_getEMTables();
 			$this->_parseSQL();
 			$this->_fieldsToKeep = $meObj->_fieldsToKeep;
 			$this->_changedTables = $meObj->_changedTables;
 			$meObj = null;
 		} elseif(isset($xmlfile)) {
-			// besoin des fonctions de bruno pour conversion entités
+			// besoin des fonctions de bruno pour conversion entitÃ©s
 			function_exists('HTML2XML') || include 'textfunc.php';
 			$this->_changedTables['added'] = $this->_changedTables['dropped'] = array();
-			// on récupère les tables du ME
+			// on rÃ©cupÃ¨re les tables du ME
 			$this->_getEMTables();
 			// parse le XML
 			$this->_parseXML($xmlfile, $error);
@@ -1127,6 +1129,7 @@ class DataLogic
 			}
 			if(!empty($this->_changedFields)) {
 				writeToCache('require_caching/ME.obj', $this, false);
+				unset($this->_changedFields[lq('#_TP_tablefields')]);
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
 			}
@@ -1208,6 +1211,7 @@ class DataLogic
 					$types = lq('#_TP_types');
 					$entrytypes = lq('#_TP_entrytypes');
 					$persontypes = lq('#_TP_persontypes');
+					$this->_updateTypes(true, $error);
 					$context['modifiednewtypes'][$types] = $db->getArray("SELECT id, type FROM `{$types}` ORDER BY id");
 					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}` ORDER BY id");
 					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}` ORDER BY id");
@@ -1218,6 +1222,10 @@ class DataLogic
 					$context['error'] = $error;
 					return 'importxmlmodel';
 				}
+				// suppression ancien types
+				$this->_sql[] = lq("DELETE FROM `#_TP_entitytypes` WHERE identitytype NOT IN (SELECT id FROM `#_TP_types`) AND identitytype != '0';\n");
+				$this->_sql[] = lq("DELETE FROM `#_TP_entitytypes` WHERE identitytype2 NOT IN (SELECT id FROM `#_TP_types`) AND identitytype2 != '0';\n");
+				$this->_executeSQL();
 			}
 		}
 
@@ -1231,7 +1239,7 @@ class DataLogic
 		}		
 		return 'importxmlmodel';
 	}
-
+	
 	private function _updateTypeClass($datas, $error)
 	{
 		global $db;
@@ -1275,7 +1283,7 @@ class DataLogic
 	}
 
 	/**
-	 * Gère la mise à jour du contenu de certaines tables
+	 * GÃ¨re la mise Ã  jour du contenu de certaines tables
 	 */
 	private function _manageContent(&$content) {
 		foreach($content as $table=>$fields) {
@@ -1289,13 +1297,12 @@ class DataLogic
 				$ids[] = $tbl[0];
 			}
 			foreach($fields['oldcontent'] as $key=>$value) {
-				if(isset($content[$table]['newcontent'][$value])) { // correspondance
-					if($content[$table]['newcontent'][$value] == $value) continue;
+				if(false !== ($kk = array_search($value, $content[$table]['newcontent']))) { // correspondance
 					foreach($this->_xmlDatas[$table] as $k=>&$tble) {
 						if('fields' === (string)$k || !isset($this->_changedContent['newcontent'][$table])) continue;
 						foreach($this->_changedContent['newcontent'][$table] as $ffield) {
-							if(isset($ffield[$content[$table]['newcontent'][$value]]) && (int)$tble[0] === (int)$ffield[$content[$table]['newcontent'][$value]]) {
-								if(in_array($ffield[0], $ids)) { // id déjà présent
+							if((int)$tble[0] === (int)$ffield[0]) {
+								if(in_array($ffield[0], $ids)) { // id dÃ©jÃ  prÃ©sent
 									$oldId = $ffield[0];
 									do { $maxId++; } while(in_array($maxId, $ids));
 									$ffield[0] = $ids[] = $maxId;
@@ -1319,7 +1326,7 @@ class DataLogic
 						}
 					}
 				} else { 
-					if(in_array($this->_changedContent['oldcontent'][$table][$key][0], $ids)) { // id déjà présent
+					if(in_array($this->_changedContent['oldcontent'][$table][$key][0], $ids)) { // id dÃ©jÃ  prÃ©sent
 						$oldId = $this->_changedContent['oldcontent'][$table][$key][0];
 						do { $maxId++; } while(in_array($maxId, $ids));
 						$this->_changedContent['oldcontent'][$table][$key][0] = $ids[] = $maxId;
@@ -1361,7 +1368,7 @@ class DataLogic
 	}
 
 	/**
-	 * On va comparer le contenu des tables qui nous intéresse
+	 * On va comparer le contenu des tables qui nous intÃ©resse
 	 */
 	private function _checkContents() {
 		global $db;
@@ -1396,8 +1403,8 @@ class DataLogic
 	}
 
 	/**
-	 * On supprime les éventuelles anciennes tables de ME déjà mis à jour précédemment
-	 * et ce afin d'éviter les conflits entre les données
+	 * On supprime les Ã©ventuelles anciennes tables de ME dÃ©jÃ  mis Ã  jour prÃ©cÃ©demment
+	 * et ce afin d'Ã©viter les conflits entre les donnÃ©es
 	 */
 	private function _cleanDatabase() {
 		global $db;
@@ -1411,7 +1418,7 @@ class DataLogic
 	}
 	
 	/**
-	 * Récupération des tables du ME
+	 * RÃ©cupÃ©ration des tables du ME
 	 *
 	 * Cette fonction stock dans $this->_tables les noms des tables du ME (statiques ou dynamiques)
 	 * et dans $this->_existingTables les noms de toutes les tables de la base
@@ -1436,22 +1443,22 @@ class DataLogic
 	}
 
 	/**
-	 * Parse le fichier XML à l'import du ME
+	 * Parse le fichier XML Ã  l'import du ME
 	 *
-	 * Stock la structure dans $this->_xmlStruct et les éventuelles données dans $this->_xmlDatas
+	 * Stock la structure dans $this->_xmlStruct et les Ã©ventuelles donnÃ©es dans $this->_xmlDatas
 	 *
 	 * @param string $file lien vers le fichier XML
-	 * @param string $error erreur passée en référence
+	 * @param string $error erreur passÃ©e en rÃ©fÃ©rence
 	 */
 	private function _parseXML($file, &$error) {
 		global $db;
-		// besoin de la dtd dans le meme répertoire pour valider
+		// besoin de la dtd dans le meme rÃ©pertoire pour valider
 		$dtd = @copy(SITEROOT . '../share-'.C::get('version', 'cfg').'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir. Aborted.';
 			return;
 		}
-		// on récupère le ME
+		// on rÃ©cupÃ¨re le ME
 		$reader = new XMLReader();
 		$validator = @$reader->open($file);
 		if(FALSE === $validator) {
@@ -1459,7 +1466,7 @@ class DataLogic
 			return;
 		}
 		$reader->setParserProperty(XMLReader::VALIDATE, TRUE);
-		// on lit le doc jusqu'à la fin et on valide
+		// on lit le doc jusqu'Ã  la fin et on valide
 		while (@$reader->read());
 		if(!$reader->isValid()) {
 			$error = 'XML document is not valid.';
@@ -1471,13 +1478,13 @@ class DataLogic
 			$error = 'Unable to read XML file after validation.';
 			return;
 		}
-		// on récupère les noms des tables sur la base
+		// on rÃ©cupÃ¨re les noms des tables sur la base
 		if(!($tablefields = getFromCache('tablefields')))
         	{
                 	include 'tablefields.php';
 		}
 
-		// on récupère la structure de la base XML ainsi que les données
+		// on rÃ©cupÃ¨re la structure de la base XML ainsi que les donnÃ©es
 		$this->_xmlStruct = $this->_xmlDatas = $this->_recordedTables = array();
 		while ($reader->read()) {
 			if(XMLReader::ELEMENT == $reader->nodeType) {
@@ -1498,7 +1505,7 @@ class DataLogic
 					break;
 		
 					case 'structure':
-					// début structure de la table
+					// dÃ©but structure de la table
 					$j=0;
 					break;
 					
@@ -1528,7 +1535,7 @@ class DataLogic
 					break;
 					
 					case 'datas':
-					// début contenu de la table
+					// dÃ©but contenu de la table
 					$this->_xmlDatas[$table] = array();
 					$this->_xmlDatas[$table]['fields'] = array();
 					$i=-1;
@@ -1571,16 +1578,16 @@ class DataLogic
 	}
 
 	/**
-	 * Récupère la structure des tables du ME
+	 * RÃ©cupÃ¨re la structure des tables du ME
 	 *
 	 * Stock la structure dans $this->_sqlStruct
-	 * @param array $tables on peut spécifier quelles tables en particulier parser
+	 * @param array $tables on peut spÃ©cifier quelles tables en particulier parser
 	 */
 	private function _parseSQL() {
 		global $db;
 		// on analyse chaque tables du ME de la base SQL
 		foreach($this->_tables as $table=>$content) {
-			// on récupère la structure SQL de la base actuelle
+			// on rÃ©cupÃ¨re la structure SQL de la base actuelle
 			$result = $db->getRow("SHOW CREATE TABLE `{$table}`");
 			preg_match("/^CREATE TABLE `{$table}`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $result['Create Table'], $matches);
 			$fields = explode("\n", $matches[1]);
@@ -1592,7 +1599,7 @@ class DataLogic
 					$field = substr($field, 0, strlen($field)-1);
 				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
 					$this->_sqlStruct[$table][] = array($m[1]=>$m[2]);
-				} else { // clé
+				} else { // clÃ©
 					$field = explode('KEY', $field);
 					$field[0] = trim($field[0]);
 					$field[1] = trim($field[1]);	
@@ -1607,7 +1614,7 @@ class DataLogic
 			// charset, engine, auto_inc..
 			$this->_sqlStruct[$table]['tableOptions'] = $matches[2];
 			if(!$this->_tables[$table] && 0 !== strpos($table, 'entities_') && (!in_array($table, $this->_recordedTables) || (isset($this->_classes) && !in_array($table, $this->_classes)))) {
-				// table du ME qu'on a changé de nom ou supprimée
+				// table du ME qu'on a changÃ© de nom ou supprimÃ©e
 				$this->_changedTables['dropped'][] = $table;
 				continue;
 			}
@@ -1702,10 +1709,10 @@ class DataLogic
 	}
 
 	/**
-	 * Execute une série de requêtes SQL
+	 * Execute une sÃ©rie de requÃªtes SQL
 	 *
-	 * @param bool $differed doit-on effectuer les requêtes différées ($this->_sql['differed']) ou les requêtes en cours ($this->_sql) ?
-	 * @return false si aucune erreur ou la requête provoquant l'erreur et l'erreur retournée par le SGBD
+	 * @param bool $differed doit-on effectuer les requÃªtes diffÃ©rÃ©es ($this->_sql['differed']) ou les requÃªtes en cours ($this->_sql) ?
+	 * @return false si aucune erreur ou la requÃªte provoquant l'erreur et l'erreur retournÃ©e par le SGBD
 	 */
 	private function _executeSQL($differed=false) {
 		global $db;
@@ -1735,17 +1742,17 @@ class DataLogic
 	}
 
 	/**
-	 * Met à jour la base de données SQL
+	 * Met Ã  jour la base de donnÃ©es SQL
 	 *
-	 * Modifie ou crée les tables et insère les éventuelles données
+	 * Modifie ou crÃ©e les tables et insÃ¨re les Ã©ventuelles donnÃ©es
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
 	 */
 	private function _manageTables(&$context, &$error) {
 		global $db;
 		$classes = lq('#_TP_classes');
-		if(!empty($context['data']['dropped']) && is_array($context['data']['dropped']))
+		if(!empty($context['data']['dropped']) && is_array($context['data']['dropped']) && empty($context['data']['added']) || !is_array($context['data']['added']))
 		{
 			$flipped = !empty($context['data']['added']) && is_array($context['data']['added']) ? array_flip($context['data']['added']) : array();
 			foreach($context['data']['dropped'] as $table=>$equivalent)
@@ -1763,7 +1770,8 @@ class DataLogic
 		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
-				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") 
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				switch($classType) {
 					case 'entities': $typeTable = lq('#_TP_types'); break;
 					case 'entries': $typeTable = lq('#_TP_entrytypes'); break;
@@ -1774,6 +1782,7 @@ class DataLogic
 				unset($this->_tables[$flipped[$equivalent]]);
 				$this->_sql[] = "UPDATE `{$tablefield}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
 				$this->_sql[] = "UPDATE `{$typeTable}` SET class = '{$table}' WHERE class = '{$flipped[$equivalent]}'";
+				$this->_sql[] = "DELETE FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'";
 				if(isset($this->_fieldsToKeep[$flipped[$equivalent]])) {
 					$this->_fieldsToKeep[$table] = $this->_fieldsToKeep[$flipped[$equivalent]];
 					unset($this->_fieldsToKeep[$flipped[$equivalent]]);
@@ -1797,7 +1806,7 @@ class DataLogic
 						$field = substr($field, 0, strlen($field)-1);
 					if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
 						$this->_sqlStruct[$table][] = array($m[1]=>$m[2]);
-					} else { // clé
+					} else { // clÃ©
 						$field = explode('KEY', $field);
 						$field[0] = trim($field[0]);
 						$field[1] = trim($field[1]);	
@@ -1869,12 +1878,12 @@ class DataLogic
 	}
 
 	/**
-	 * Met à jour la base de données SQL
+	 * Met Ã  jour la base de donnÃ©es SQL
 	 *
-	 * Termine la mise à jour de la base (ids des objects, clés, options des tables et éventuelles données)
+	 * Termine la mise Ã  jour de la base (ids des objects, clÃ©s, options des tables et Ã©ventuelles donnÃ©es)
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
 	 */
 	private function _updateDatabase(&$context, &$error) {
 		global $db;
@@ -1883,9 +1892,9 @@ class DataLogic
 		$entitiesTable = lq('#_TP_entities');
 		$typesTable = lq('#_TP_types');
 		foreach($this->_xmlStruct as $table=>$content) {
-			// données à insérer
+			// donnÃ©es Ã  insÃ©rer
 			if(isset($this->_xmlDatas[$table][0])) {
-				// copie au cas où
+				// copie au cas oÃ¹
 				if(!isset($this->_existingTables[$table.'__oldME']))
 					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
 				$this->_sql[] = "DELETE FROM `{$table}`;\n";
@@ -1907,10 +1916,10 @@ class DataLogic
 				$this->_xmlDatas[$table]['fields'] = $f;
 				unset($f);
 			}
-			// clés
+			// clÃ©s
 			if((isset($this->_xmlStruct[$table]['keys']) && isset($this->_sqlStruct[$table]['keys']) && is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) 
 			&& (array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys']))) {
-				// on efface toutes les clés présentes dans la table
+				// on efface toutes les clÃ©s prÃ©sentes dans la table
 				if(is_array($this->_sqlStruct[$table]['keys'])) {
 					foreach($this->_sqlStruct[$table]['keys'] as $k=>$v) {
 						$key = explode('_', $k);
@@ -1924,7 +1933,7 @@ class DataLogic
 						$this->_sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
 					}
 				}
-				// on ajoute les clés
+				// on ajoute les clÃ©s
 				foreach($this->_xmlStruct[$table]['keys'] as $k=>$v) {
 					$key = explode('_', $k);
 					$key = $key[0];
@@ -1942,17 +1951,17 @@ class DataLogic
 		// on execute les requetes en cours
 		$error = $this->_executeSQL();
 		if($error) return false;
-		// requetes différées
+		// requetes diffÃ©rÃ©es
 		$error = $this->_executeSQL(true);
 		if($error) return false;
 	}
 
 	/**
-	 * Met à jour la base de données SQL
+	 * Met Ã  jour la base de donnÃ©es SQL
 	 *
-	 * Ajuste les idtypes après import XML du ME
-	 * @param $datas tableau contenant les données à traiter ou bool
-	 * @param $error erreur passée en référence
+	 * Ajuste les idtypes aprÃ¨s import XML du ME
+	 * @param $datas tableau contenant les donnÃ©es Ã  traiter ou bool
+	 * @param $error erreur passÃ©e en rÃ©fÃ©rence
 	 */
 	private function _updateTypes($datas, &$error='') {
 		global $db;
@@ -1983,7 +1992,7 @@ class DataLogic
 					$idtype=0;
 					$ids = array();
 					if((int)$val === (int)$after[$k]) continue;
-					if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recréer
+					if(empty($after[$k])) { // ancien type sans correspondances avec nouveau ME il faut le recrÃ©er
 						$id = uniqueid($objectType);
 						if($parentTable == $entitiesTable) {
 							$toUpdate[] = $val;
@@ -2197,11 +2206,6 @@ class DataLogic
 						}
 					}
 				}
-				// suppression ancien types
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype != '0';\n";
-				$this->_sql[] = "DELETE FROM `{$entitytypeTable}` WHERE identitytype2 NOT IN (SELECT id FROM `{$typesTable}`) AND identitytype2 != '0';\n";
-				$error = $this->_executeSQL();
-				if($error) return false;
 				// suppression des doublons
 				$result = $db->execute("SELECT identitytype, identitytype2, count(*) as nb FROM `{$entitytypeTable}` GROUP BY identitytype, identitytype2 HAVING nb > 1");
 				if ($result) {
@@ -2227,12 +2231,12 @@ class DataLogic
 	}
 
 	/**
-	 * Met à jour la base de données SQL
+	 * Met Ã  jour la base de donnÃ©es SQL
 	 *
-	 * Modifie ou crée les champs des tables
+	 * Modifie ou crÃ©e les champs des tables
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les éventuelles erreurs, passées par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les Ã©ventuelles erreurs, passÃ©es par rÃ©fÃ©rence
 	 */
 	private function _manageFields(&$context, &$error) {
 		if(empty($context['data']) || !is_array($context['data'])) return;
@@ -2281,24 +2285,24 @@ class DataLogic
 	}
 
 	/**
-	 * Génération du ME XML
+	 * GÃ©nÃ©ration du ME XML
 	 *
-	 * @param array $context le contexte passé par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
 	 */
-	private function _generateXML(&$context) {
+	public function generateXML(&$context) {
 		global $db;
 		
-		// besoin des fonctions de bruno pour conversion entités
+		// besoin des fonctions de bruno pour conversion entitÃ©s
 		defined('INC_TEXTFUNC') || include 'textfunc.php';
 
-		// on récupère les tables du ME
+		// on rÃ©cupÃ¨re les tables du ME
 		$this->_getEMTables();
-		// on crée notre document XML avec sa DTD pour pouvoir valider par la suite
+		// on crÃ©e notre document XML avec sa DTD pour pouvoir valider par la suite
 		$impl = new DomImplementation();
 		$dtd = $impl->createDocumentType("lodelEM", "", "lodelEM.dtd");
 		$document = $impl->createDocument("", "", $dtd);
 		$document->encoding = $GLOBALS['db_charset'];
-		// début création XML
+		// dÃ©but crÃ©ation XML
 		$schemaNode = $document->createElement("lodelEM");
 		$document->appendChild($schemaNode);
 		$model = $document->createElement("model");
@@ -2346,11 +2350,11 @@ class DataLogic
 				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
 					$fieldNode->setAttribute('name', $m[1]);
 					$fieldNode->nodeValue = $m[2];
-				} else { // clé
+				} else { // clÃ©
 					$field = explode('KEY', $field);
 					$field[0] = trim($field[0]);
 					$field[1] = trim($field[1]);
-					// on peut avoir plusieurs clé : on concatène $kk
+					// on peut avoir plusieurs clÃ© : on concatÃ¨ne $kk
 					if($field[0]) {
 						$fieldNode->setAttribute('name', $field[0].'_'.$kk);
 						$fieldNode->nodeValue = $field[1];
@@ -2394,7 +2398,7 @@ class DataLogic
 }// end of DataLogic class
 
 
-//Définition de la LOOP sur les fichiers d'import détectés
+//DÃ©finition de la LOOP sur les fichiers d'import dÃ©tectÃ©s
 function loop_files(&$context, $funcname)
 {
 	#global $importdirs,$fileregexp;
@@ -2415,7 +2419,7 @@ function loop_files(&$context, $funcname)
 	}
 }
 
-// Définition de la loop pour les fichier du ME
+// DÃ©finition de la loop pour les fichier du ME
 function loop_files_model(&$context, $funcname)
 {
 	global $fileregexp;

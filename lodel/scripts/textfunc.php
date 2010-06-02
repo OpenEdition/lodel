@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -60,7 +60,7 @@ if (is_readable(C::get('home', 'cfg').'textfunc_local.php'))
 
 function pluriel($texte)
 {
-	return isset($texte{1}) ? "s" : "";
+	return intval($texte) > 1 ? "s" : "";
 }
 
 function lettrine($texte)
@@ -137,13 +137,13 @@ function cut_without_tags($text, $length, $dots=false)
 	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
 	}
-	$last_space_position = mb_strrpos($text2, " ", $encoding);
+// 	$last_space_position = mb_strrpos($text2, " ", $encoding);
 	
-	if (!($last_space_position === false)) {
-		// supprime le dernier espace et tout ce qu'il y a derrière
+// 	if (!($last_space_position === false)) {
+		// supprime le dernier espace et tout ce qu'il y a derriÃ¨re
 		//$text2 = substr($text2, 0, $last_space_position);
 		$text2 = rtrim($text2);
-	}
+// 	}
 	
 	return (($GLOBALS['textfunc_hasbeencut'] && $dots) ? $text2.' (...)' : $text2);
 }
@@ -363,7 +363,7 @@ function vignette($text, $width)
 		return $text;
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	function_exists('resize_image') || include("images.php");
-	if (!resize_image($width, $text, $vignettefile, "+"))
+	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 	return $vignettefile;
 }
@@ -427,7 +427,7 @@ function removeimages($text)
 }
 
 /**
-* Fonction qui enleve les tags spécifiés
+* Fonction qui enleve les tags spÃ©cifiÃ©s
 */
 
 function removetags($text, $tags)
@@ -458,7 +458,7 @@ function isadate($text)
 }
 
 /**
- * Fonction qui remplace les guillemets d'un texte par leur name d'entité (&quot;)
+ * Fonction qui remplace les guillemets d'un texte par leur name d'entitÃ© (&quot;)
  */
 function replacequotationmark($text)
 {
@@ -477,8 +477,8 @@ function replace($str, $search, $replace){
  * implemente preg_replace
  */
  
-function reg_replace($str, $search, $replace){
-   return preg_replace($search, $replace, $str);
+function reg_replace($str, $search, $replace, $limit = -1, &$cpt = null){
+   return preg_replace($search, $replace, $str, $limit, $cpt);
 }
 
 
@@ -502,12 +502,12 @@ function eq($str, $texte)
 }
 
 /**
- * Fonction permettant de récupérer les notes du texte
+ * Fonction permettant de rÃ©cupÃ©rer les notes du texte
  *
  * @author Mickael Sellapin
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à parser
- * @param var $type type des notes présentes dans le texte
+ * @param string $texte le texte Ã  parser
+ * @param var $type type des notes prÃ©sentes dans le texte
  */
 
 function notes($texte, $type)
@@ -518,10 +518,10 @@ function notes($texte, $type)
 	$notere = '<a\b[^>]+class="(foot|end)note(definition|symbol)[^>]*>';
 	if(is_int($type)) {
 		switch($type) {
-			case 1: // seulement les astérisques
+			case 1: // seulement les astÃ©risques
 				$notes = preg_grep('/'.$notere.'\[?\*+\]?<\/a>/i', $results[0]);
 				break;
-			case 2: // astérisques et lettres
+			case 2: // astÃ©risques et lettres
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[a-zA-Z]+\]?)<\/a>/i', $results[0]);
 				break;
 			case 3: // seulement les lettres
@@ -536,7 +536,7 @@ function notes($texte, $type)
 			case 6: // seulement les nombres
 				$notes = preg_grep('/'.$notere.'\[?[0-9]+\]?<\/a>/i', $results[0]);
 				break;
-			case 7: // nombres et astérisques
+			case 7: // nombres et astÃ©risques
 				$notes = preg_grep('/'.$notere.'(\[?\*+\]?)|(\[?[0-9]+\]?)<\/a>/i', $results[0]);
 				break;
 			default:
@@ -677,7 +677,7 @@ function today_with_hour()
 }
 
 /**
- * Retourne le texte si la date est dépassée, sinon retourne une chaine vide.
+ * Retourne le texte si la date est dÃ©passÃ©e, sinon retourne une chaine vide.
  */
 
 function hideifearlier($text, $date)
@@ -812,7 +812,7 @@ function defaultvalue($var1, $var2)
 
 
 /**
- * Fonction utilisée ci dessous pour la numérotation des paragraphes
+ * Fonction utilisÃ©e ci dessous pour la numÃ©rotation des paragraphes
  */
 
 function replacement($arg0, $arg1, $arg2, $arg3)
@@ -830,14 +830,14 @@ function replacement($arg0, $arg1, $arg2, $arg3)
  * Filtre de numerotation des paragraphes
  * 
  * Ajoute un <span class="paranumber"> contenant une ancre avec le numero du paragraphe
- * aux paragraphes ayant le style texte par défaut.
+ * aux paragraphes ayant le style texte par dÃ©faut.
  *
- * Les paramètres sont modifiables dans le template et écrasent les paramètres par défaut.
+ * Les paramÃ¨tres sont modifiables dans le template et Ã©crasent les paramÃ¨tres par dÃ©faut.
  *
  * @author Mickael Sellapin
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à numéroter passé par référence
- * @param string $styles chaine contenant les styles par défaut ou s'applique la numerotation (les styles sont separes par des ";")
+ * @param string $texte le texte Ã  numÃ©roter passÃ© par rÃ©fÃ©rence
+ * @param string $styles chaine contenant les styles par dÃ©faut ou s'applique la numerotation (les styles sont separes par des ";")
  */
 function paranumber($texte, $styles='texte')
 {
@@ -852,15 +852,13 @@ function paranumber($texte, $styles='texte')
 	for($i=1; $i < $length_tab_classes; $i++) {
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
-	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
-	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*<\/\\1>/Us", "", $texte);
+	// on veut pas de numÃ©rotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
+	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*?<\/\\1>/s", "", $texte);
 	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/ei';
-
-	// on récupère les paragraphes à numéroter
+	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/s';
+	// on rÃ©cupÃ¨re les paragraphes Ã  numÃ©roter
 	preg_match_all($regexp, $tmpTexte, $m);
-
-	// on effectue la numérotation et on remplace dans le texte
+	// on effectue la numÃ©rotation et on remplace dans le texte
 	foreach($m[0] as $k=>$paragraphe) {
 		$tmpTexte2 = explode($paragraphe, $texte, 2);
 		$texte = $tmpTexte2[0].str_replace($paragraphe, replacement($m[1][$k], $m[3][$k], $m[4][$k], $m[5][$k]), $paragraphe).$tmpTexte2[1];
@@ -869,8 +867,8 @@ function paranumber($texte, $styles='texte')
 }
 
 
-/** renvoie le type mime d'un fichier par le système (a+ windows)
-* @author Bruno Cénou
+/** renvoie le type mime d'un fichier par le systÃ¨me (a+ windows)
+* @author Bruno CÃ©nou
 * @param  string $filename le nom du fichier
 * @param bool $return 
 */
@@ -884,7 +882,7 @@ function getFileMime($filename, $return=false){
 
 
 /** renvoie le type seul d'un fichier 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param  string $filename le nom du fichier
 */
 
@@ -895,7 +893,7 @@ function getFileType($filename){
 
 
 /** Transforme une date MySql en timestamp UNIX 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $date 
 */
 
@@ -905,7 +903,7 @@ function mysql2TS($date){
 }
 
 /** Transforme une date MySql en timestamp UNIX 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -914,7 +912,7 @@ function time2Date($time){
 }
 
 /** Transforme un timestamp MySql en date MySql 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $date 
 */
 
@@ -924,7 +922,7 @@ function date2Time($date){
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -933,7 +931,7 @@ function LSgmstrftime($time){
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
-* @author Bruno Cénou
+* @author Bruno CÃ©nou
 * @param string $time 
 */
 
@@ -941,8 +939,8 @@ function formatIdentifier($str) {
 	return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($str)));
 }
 
-/** Nettoyage des caractères windows illegaux + nettoyage pour flux XML
-* @author Bruno Cénou
+/** Nettoyage des caractÃ¨res windows illegaux + nettoyage pour flux XML
+* @author Bruno CÃ©nou
 * @param string $str 
 */
 
@@ -980,6 +978,7 @@ function cleanBadChars($str){
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
+		"\x20\x13" => "-"
 	);
 	$str = HTML2XML($str);
 	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
@@ -987,276 +986,536 @@ function cleanBadChars($str){
 	return $str;
 }
 
-/** convertit entités html en entités xml 
-* @author Bruno Cénou
+/** convertit entitÃ©s html en entitÃ©s xml 
+* @author Bruno CÃ©nou
 * @param string $str 
 * @param bool $reverse xml->html
 */
 
-function HTML2XML($str, $reverse=false){
-	$replace = array(
-		"&quot;" => "&#34;",
-		"&amp;" => "&#38;",
-		"&apos;" => "&#39;",
-		"&lt;" => "&#60;",
-		"&gt;" => "&#62;",
-		"&nbsp;" => "&#160;",
-		"&iexcl;" => "&#161;",
-		"&cent;" => "&#162;",
-		"&pound;" => "&#163;",
-		"&curren;" => "&#164;",
-		"&yen;" => "&#165;",
-		"&brvbar;" => "&#166;",
-		"&sect;" => "&#167;",
-		"&uml;" => "&#168;",
-		"&copy;" => "&#169;",
-		"&ordf;" => "&#170;",
-		"&laquo;" => "&#171;",
-		"&not;" => "&#172;",
-		"&shy;" => "&#173;",
-		"&reg;" => "&#174;",
-		"&macr;" => "&#175;",
-		"&deg;" => "&#176;",
-		"&plusmn;" => "&#177;",
-		"&sup2;" => "&#178;",
-		"&sup3;" => "&#179;",
-		"&acute;" => "&#180;",
-		"&micro;" => "&#181;",
-		"&para;" => "&#182;",
-		"&middot;" => "&#183;",
-		"&cedil;" => "&#184;",
-		"&sup1;" => "&#185;",
-		"&ordm;" => "&#186;",
-		"&raquo;" => "&#187;",
-		"&frac14;" => "&#188;",
-		"&frac12;" => "&#189;",
-		"&frac34;" => "&#190;",
-		"&iquest;" => "&#191;",
-		"&Agrave;" => "&#192;",
-		"&Aacute;" => "&#193;",
-		"&Acirc;" => "&#194;",
-		"&Atilde;" => "&#195;",
-		"&Auml;" => "&#196;",
-		"&Aring;" => "&#197;",
-		"&AElig;" => "&#198;",
-		"&Ccedil;" => "&#199;",
-		"&Egrave;" => "&#200;",
-		"&Eacute;" => "&#201;",
-		"&Ecirc;" => "&#202;",
-		"&Euml;" => "&#203;",
-		"&Igrave;" => "&#204;",
-		"&Iacute;" => "&#205;",
-		"&Icirc;" => "&#206;",
-		"&Iuml;" => "&#207;",
-		"&ETH;" => "&#208;",
-		"&Ntilde;" => "&#209;",
-		"&Ograve;" => "&#210;",
-		"&Oacute;" => "&#211;",
-		"&Ocirc;" => "&#212;",
-		"&Otilde;" => "&#213;",
-		"&Ouml;" => "&#214;",
-		"&times;" => "&#215;",
-		"&Oslash;" => "&#216;",
-		"&Ugrave;" => "&#217;",
-		"&Uacute;" => "&#218;",
-		"&Ucirc;" => "&#219;",
-		"&Uuml;" => "&#220;",
-		"&Yacute;" => "&#221;",
-		"&THORN;" => "&#222;",
-		"&szlig;" => "&#223;",
-		"&agrave;" => "&#224;",
-		"&aacute;" => "&#225;",
-		"&acirc;" => "&#226;",
-		"&atilde;" => "&#227;",
-		"&auml;" => "&#228;",
-		"&aring;" => "&#229;",
-		"&aelig;" => "&#230;",
-		"&ccedil;" => "&#231;",
-		"&egrave;" => "&#232;",
-		"&eacute;" => "&#233;",
-		"&ecirc;" => "&#234;",
-		"&euml;" => "&#235;",
-		"&igrave;" => "&#236;",
-		"&iacute;" => "&#237;",
-		"&icirc;" => "&#238;",
-		"&iuml;" => "&#239;",
-		"&eth;" => "&#240;",
-		"&ntilde;" => "&#241;",
-		"&ograve;" => "&#242;",
-		"&oacute;" => "&#243;",
-		"&ocirc;" => "&#244;",
-		"&otilde;" => "&#245;",
-		"&ouml;" => "&#246;",
-		"&divide;" => "&#247;",
-		"&oslash;" => "&#248;",
-		"&ugrave;" => "&#249;",
-		"&uacute;" => "&#250;",
-		"&ucirc;" => "&#251;",
-		"&uuml;" => "&#252;",
-		"&yacute;" => "&#253;",
-		"&thorn;" => "&#254;",
-		"&yuml;" => "&#255;",
-		"&OElig;" => "&#338;",
-		"&oelig;" => "&#339;",
-		"&Scaron;" => "&#352;",
-		"&scaron;" => "&#353;",
-		"&Yuml;" => "&#376;",
-		"&fnof;" => "&#402;",
-		"&circ;" => "&#710;",
-		"&tilde;" => "&#732;",
-		"&Alpha;" => "&#913;",
-		"&Beta;" => "&#914;",
-		"&Gamma;" => "&#915;",
-		"&Delta;" => "&#916;",
-		"&Epsilon;" => "&#917;",
-		"&Zeta;" => "&#918;",
-		"&Eta;" => "&#919;",
-		"&Theta;" => "&#920;",
-		"&Iota;" => "&#921;",
-		"&Kappa;" => "&#922;",
-		"&Lambda;" => "&#923;",
-		"&Mu;" => "&#924;",
-		"&Nu;" => "&#925;",
-		"&Xi;" => "&#926;",
-		"&Omicron;" => "&#927;",
-		"&Pi;" => "&#928;",
-		"&Rho;" => "&#929;",
-		"&Sigma;" => "&#931;",
-		"&Tau;" => "&#932;",
-		"&Upsilon;" => "&#933;",
-		"&Phi;" => "&#934;",
-		"&Chi;" => "&#935;",
-		"&Psi;" => "&#936;",
-		"&Omega;" => "&#937;",
-		"&alpha;" => "&#945;",
-		"&beta;" => "&#946;",
-		"&gamma;" => "&#947;",
-		"&delta;" => "&#948;",
-		"&epsilon;" => "&#949;",
-		"&zeta;" => "&#950;",
-		"&eta;" => "&#951;",
-		"&theta;" => "&#952;",
-		"&iota;" => "&#953;",
-		"&kappa;" => "&#954;",
-		"&lambda;" => "&#955;",
-		"&mu;" => "&#956;",
-		"&nu;" => "&#957;",
-		"&xi;" => "&#958;",
-		"&omicron;" => "&#959;",
-		"&pi;" => "&#960;",
-		"&rho;" => "&#961;",
-		"&sigmaf;" => "&#962;",
-		"&sigma;" => "&#963;",
-		"&tau;" => "&#964;",
-		"&upsilon;" => "&#965;",
-		"&phi;" => "&#966;",
-		"&chi;" => "&#967;",
-		"&psi;" => "&#968;",
-		"&omega;" => "&#969;",
-		"&thetasym;" => "&#977;",
-		"&upsih;" => "&#978;",
-		"&piv;" => "&#982;",
-		"&ensp;" => "&#8194;",
-		"&emsp;" => "&#8195;",
-		"&thinsp;" => "&#8201;",
-		"&zwnj;" => "&#8204;",
-		"&zwj;" => "&#8205;",
-		"&lrm;" => "&#8206;",
-		"&rlm;" => "&#8207;",
-		"&ndash;" => "&#8211;",
-		"&mdash;" => "&#8212;",
-		"&lsquo;" => "&#8216;",
-		"&rsquo;" => "&#8217;",
-		"&sbquo;" => "&#8218;",
-		"&ldquo;" => "&#8220;",
-		"&rdquo;" => "&#8221;",
-		"&bdquo;" => "&#8222;",
-		"&dagger;" => "&#8224;",
-		"&Dagger;" => "&#8225;",
-		"&bull;" => "&#8226;",
-		"&hellip;" => "&#8230;",
-		"&permil;" => "&#8240;",
-		"&prime;" => "&#8242;",
-		"&Prime;" => "&#8243;",
-		"&lsaquo;" => "&#8249;",
-		"&rsaquo;" => "&#8250;",
-		"&oline;" => "&#8254;",
-		"&frasl;" => "&#8260;",
-		"&euro;" => "&#8364;",
-		"&image;" => "&#8465;",
-		"&weierp;" => "&#8472;",
-		"&real;" => "&#8476;",
-		"&trade;" => "&#8482;",
-		"&alefsym;" => "&#8501;",
-		"&larr;" => "&#8592;",
-		"&uarr;" => "&#8593;",
-		"&rarr;" => "&#8594;",
-		"&darr;" => "&#8595;",
-		"&harr;" => "&#8596;",
-		"&crarr;" => "&#8629;",
-		"&lArr;" => "&#8656;",
-		"&uArr;" => "&#8657;",
-		"&rArr;" => "&#8658;",
-		"&dArr;" => "&#8659;",
-		"&hArr;" => "&#8660;",
-		"&forall;" => "&#8704;",
-		"&part;" => "&#8706;",
-		"&exist;" => "&#8707;",
-		"&empty;" => "&#8709;",
-		"&nabla;" => "&#8711;",
-		"&isin;" => "&#8712;",
-		"&notin;" => "&#8713;",
-		"&ni;" => "&#8715;",
-		"&prod;" => "&#8719;",
-		"&sum;" => "&#8721;",
-		"&minus;" => "&#8722;",
-		"&lowast;" => "&#8727;",
-		"&radic;" => "&#8730;",
-		"&prop;" => "&#8733;",
-		"&infin;" => "&#8734;",
-		"&ang;" => "&#8736;",
-		"&and;" => "&#8743;",
-		"&or;" => "&#8744;",
-		"&cap;" => "&#8745;",
-		"&cup;" => "&#8746;",
-		"&int;" => "&#8747;",
-		"&there4;" => "&#8756;",
-		"&sim;" => "&#8764;",
-		"&cong;" => "&#8773;",
-		"&asymp;" => "&#8776;",
-		"&ne;" => "&#8800;",
-		"&equiv;" => "&#8801;",
-		"&le;" => "&#8804;",
-		"&ge;" => "&#8805;",
-		"&sub;" => "&#8834;",
-		"&sup;" => "&#8835;",
-		"&nsub;" => "&#8836;",
-		"&sube;" => "&#8838;",
-		"&supe;" => "&#8839;",
-		"&oplus;" => "&#8853;",
-		"&otimes;" => "&#8855;",
-		"&perp;" => "&#8869;",
-		"&sdot;" => "&#8901;",
-		"&lceil;" => "&#8968;",
-		"&rceil;" => "&#8969;",
-		"&lfloor;" => "&#8970;",
-		"&rfloor;" => "&#8971;",
-		"&lang;" => "&#9001;",
-		"&rang;" => "&#9002;",
-		"&loz;" => "&#9674;",
-		"&spades;" => "&#9824;",
-		"&clubs;" => "&#9827;",
-		"&hearts;" => "&#9829;",
-		"&diams;" => "&#9830;"
+function HTML2XML($str, $reverse=false)
+{
+	if($reverse)
+	{
+		$replace = array (
+			'#34' => '&quot;',
+			'#38' => '&amp;',
+			'#39' => '&apos;',
+			'#60' => '&lt;',
+			'#62' => '&gt;',
+			'#160' => '&nbsp;',
+			'#161' => '&iexcl;',
+			'#162' => '&cent;',
+			'#163' => '&pound;',
+			'#164' => '&curren;',
+			'#165' => '&yen;',
+			'#166' => '&brvbar;',
+			'#167' => '&sect;',
+			'#168' => '&uml;',
+			'#169' => '&copy;',
+			'#170' => '&ordf;',
+			'#171' => '&laquo;',
+			'#172' => '&not;',
+			'#173' => '&shy;',
+			'#174' => '&reg;',
+			'#175' => '&macr;',
+			'#176' => '&deg;',
+			'#177' => '&plusmn;',
+			'#178' => '&sup2;',
+			'#179' => '&sup3;',
+			'#180' => '&acute;',
+			'#181' => '&micro;',
+			'#182' => '&para;',
+			'#183' => '&middot;',
+			'#184' => '&cedil;',
+			'#185' => '&sup1;',
+			'#186' => '&ordm;',
+			'#187' => '&raquo;',
+			'#188' => '&frac14;',
+			'#189' => '&frac12;',
+			'#190' => '&frac34;',
+			'#191' => '&iquest;',
+			'#192' => '&Agrave;',
+			'#193' => '&Aacute;',
+			'#194' => '&Acirc;',
+			'#195' => '&Atilde;',
+			'#196' => '&Auml;',
+			'#197' => '&Aring;',
+			'#198' => '&AElig;',
+			'#199' => '&Ccedil;',
+			'#200' => '&Egrave;',
+			'#201' => '&Eacute;',
+			'#202' => '&Ecirc;',
+			'#203' => '&Euml;',
+			'#204' => '&Igrave;',
+			'#205' => '&Iacute;',
+			'#206' => '&Icirc;',
+			'#207' => '&Iuml;',
+			'#208' => '&ETH;',
+			'#209' => '&Ntilde;',
+			'#210' => '&Ograve;',
+			'#211' => '&Oacute;',
+			'#212' => '&Ocirc;',
+			'#213' => '&Otilde;',
+			'#214' => '&Ouml;',
+			'#215' => '&times;',
+			'#216' => '&Oslash;',
+			'#217' => '&Ugrave;',
+			'#218' => '&Uacute;',
+			'#219' => '&Ucirc;',
+			'#220' => '&Uuml;',
+			'#221' => '&Yacute;',
+			'#222' => '&THORN;',
+			'#223' => '&szlig;',
+			'#224' => '&agrave;',
+			'#225' => '&aacute;',
+			'#226' => '&acirc;',
+			'#227' => '&atilde;',
+			'#228' => '&auml;',
+			'#229' => '&aring;',
+			'#230' => '&aelig;',
+			'#231' => '&ccedil;',
+			'#232' => '&egrave;',
+			'#233' => '&eacute;',
+			'#234' => '&ecirc;',
+			'#235' => '&euml;',
+			'#236' => '&igrave;',
+			'#237' => '&iacute;',
+			'#238' => '&icirc;',
+			'#239' => '&iuml;',
+			'#240' => '&eth;',
+			'#241' => '&ntilde;',
+			'#242' => '&ograve;',
+			'#243' => '&oacute;',
+			'#244' => '&ocirc;',
+			'#245' => '&otilde;',
+			'#246' => '&ouml;',
+			'#247' => '&divide;',
+			'#248' => '&oslash;',
+			'#249' => '&ugrave;',
+			'#250' => '&uacute;',
+			'#251' => '&ucirc;',
+			'#252' => '&uuml;',
+			'#253' => '&yacute;',
+			'#254' => '&thorn;',
+			'#255' => '&yuml;',
+			'#338' => '&OElig;',
+			'#339' => '&oelig;',
+			'#352' => '&Scaron;',
+			'#353' => '&scaron;',
+			'#376' => '&Yuml;',
+			'#402' => '&fnof;',
+			'#710' => '&circ;',
+			'#732' => '&tilde;',
+			'#913' => '&Alpha;',
+			'#914' => '&Beta;',
+			'#915' => '&Gamma;',
+			'#916' => '&Delta;',
+			'#917' => '&Epsilon;',
+			'#918' => '&Zeta;',
+			'#919' => '&Eta;',
+			'#920' => '&Theta;',
+			'#921' => '&Iota;',
+			'#922' => '&Kappa;',
+			'#923' => '&Lambda;',
+			'#924' => '&Mu;',
+			'#925' => '&Nu;',
+			'#926' => '&Xi;',
+			'#927' => '&Omicron;',
+			'#928' => '&Pi;',
+			'#929' => '&Rho;',
+			'#931' => '&Sigma;',
+			'#932' => '&Tau;',
+			'#933' => '&Upsilon;',
+			'#934' => '&Phi;',
+			'#935' => '&Chi;',
+			'#936' => '&Psi;',
+			'#937' => '&Omega;',
+			'#945' => '&alpha;',
+			'#946' => '&beta;',
+			'#947' => '&gamma;',
+			'#948' => '&delta;',
+			'#949' => '&epsilon;',
+			'#950' => '&zeta;',
+			'#951' => '&eta;',
+			'#952' => '&theta;',
+			'#953' => '&iota;',
+			'#954' => '&kappa;',
+			'#955' => '&lambda;',
+			'#956' => '&mu;',
+			'#957' => '&nu;',
+			'#958' => '&xi;',
+			'#959' => '&omicron;',
+			'#960' => '&pi;',
+			'#961' => '&rho;',
+			'#962' => '&sigmaf;',
+			'#963' => '&sigma;',
+			'#964' => '&tau;',
+			'#965' => '&upsilon;',
+			'#966' => '&phi;',
+			'#967' => '&chi;',
+			'#968' => '&psi;',
+			'#969' => '&omega;',
+			'#977' => '&thetasym;',
+			'#978' => '&upsih;',
+			'#982' => '&piv;',
+			'#8194' => '&ensp;',
+			'#8195' => '&emsp;',
+			'#8201' => '&thinsp;',
+			'#8204' => '&zwnj;',
+			'#8205' => '&zwj;',
+			'#8206' => '&lrm;',
+			'#8207' => '&rlm;',
+			'#8211' => '&ndash;',
+			'#8212' => '&mdash;',
+			'#8216' => '&lsquo;',
+			'#8217' => '&rsquo;',
+			'#8218' => '&sbquo;',
+			'#8220' => '&ldquo;',
+			'#8221' => '&rdquo;',
+			'#8222' => '&bdquo;',
+			'#8224' => '&dagger;',
+			'#8225' => '&Dagger;',
+			'#8226' => '&bull;',
+			'#8230' => '&hellip;',
+			'#8240' => '&permil;',
+			'#8242' => '&prime;',
+			'#8243' => '&Prime;',
+			'#8249' => '&lsaquo;',
+			'#8250' => '&rsaquo;',
+			'#8254' => '&oline;',
+			'#8260' => '&frasl;',
+			'#8364' => '&euro;',
+			'#8465' => '&image;',
+			'#8472' => '&weierp;',
+			'#8476' => '&real;',
+			'#8482' => '&trade;',
+			'#8501' => '&alefsym;',
+			'#8592' => '&larr;',
+			'#8593' => '&uarr;',
+			'#8594' => '&rarr;',
+			'#8595' => '&darr;',
+			'#8596' => '&harr;',
+			'#8629' => '&crarr;',
+			'#8656' => '&lArr;',
+			'#8657' => '&uArr;',
+			'#8658' => '&rArr;',
+			'#8659' => '&dArr;',
+			'#8660' => '&hArr;',
+			'#8704' => '&forall;',
+			'#8706' => '&part;',
+			'#8707' => '&exist;',
+			'#8709' => '&empty;',
+			'#8711' => '&nabla;',
+			'#8712' => '&isin;',
+			'#8713' => '&notin;',
+			'#8715' => '&ni;',
+			'#8719' => '&prod;',
+			'#8721' => '&sum;',
+			'#8722' => '&minus;',
+			'#8727' => '&lowast;',
+			'#8730' => '&radic;',
+			'#8733' => '&prop;',
+			'#8734' => '&infin;',
+			'#8736' => '&ang;',
+			'#8743' => '&and;',
+			'#8744' => '&or;',
+			'#8745' => '&cap;',
+			'#8746' => '&cup;',
+			'#8747' => '&int;',
+			'#8756' => '&there4;',
+			'#8764' => '&sim;',
+			'#8773' => '&cong;',
+			'#8776' => '&asymp;',
+			'#8800' => '&ne;',
+			'#8801' => '&equiv;',
+			'#8804' => '&le;',
+			'#8805' => '&ge;',
+			'#8834' => '&sub;',
+			'#8835' => '&sup;',
+			'#8836' => '&nsub;',
+			'#8838' => '&sube;',
+			'#8839' => '&supe;',
+			'#8853' => '&oplus;',
+			'#8855' => '&otimes;',
+			'#8869' => '&perp;',
+			'#8901' => '&sdot;',
+			'#8968' => '&lceil;',
+			'#8969' => '&rceil;',
+			'#8970' => '&lfloor;',
+			'#8971' => '&rfloor;',
+			'#9001' => '&lang;',
+			'#9002' => '&rang;',
+			'#9674' => '&loz;',
+			'#9824' => '&spades;',
+			'#9827' => '&clubs;',
+			'#9829' => '&hearts;',
+			'#9830' => '&diams;',
 		);
-
-	$str = $reverse ? strtr($str, array_flip($replace)) : strtr($str, $replace);
-	return $str;
+	}
+	else
+	{
+		$replace = array(
+			"quot" => "&#34;",
+			"amp" => "&#38;",
+			"apos" => "&#39;",
+			"lt" => "&#60;",
+			"gt" => "&#62;",
+			"nbsp" => "&#160;",
+			"iexcl" => "&#161;",
+			"cent" => "&#162;",
+			"pound" => "&#163;",
+			"curren" => "&#164;",
+			"yen" => "&#165;",
+			"brvbar" => "&#166;",
+			"sect" => "&#167;",
+			"uml" => "&#168;",
+			"copy" => "&#169;",
+			"ordf" => "&#170;",
+			"laquo" => "&#171;",
+			"not" => "&#172;",
+			"shy" => "&#173;",
+			"reg" => "&#174;",
+			"macr" => "&#175;",
+			"deg" => "&#176;",
+			"plusmn" => "&#177;",
+			"sup2" => "&#178;",
+			"sup3" => "&#179;",
+			"acute" => "&#180;",
+			"micro" => "&#181;",
+			"para" => "&#182;",
+			"middot" => "&#183;",
+			"cedil" => "&#184;",
+			"sup1" => "&#185;",
+			"ordm" => "&#186;",
+			"raquo" => "&#187;",
+			"frac14" => "&#188;",
+			"frac12" => "&#189;",
+			"frac34" => "&#190;",
+			"iquest" => "&#191;",
+			"Agrave" => "&#192;",
+			"Aacute" => "&#193;",
+			"Acirc" => "&#194;",
+			"Atilde" => "&#195;",
+			"Auml" => "&#196;",
+			"Aring" => "&#197;",
+			"AElig" => "&#198;",
+			"Ccedil" => "&#199;",
+			"Egrave" => "&#200;",
+			"Eacute" => "&#201;",
+			"Ecirc" => "&#202;",
+			"Euml" => "&#203;",
+			"Igrave" => "&#204;",
+			"Iacute" => "&#205;",
+			"Icirc" => "&#206;",
+			"Iuml" => "&#207;",
+			"ETH" => "&#208;",
+			"Ntilde" => "&#209;",
+			"Ograve" => "&#210;",
+			"Oacute" => "&#211;",
+			"Ocirc" => "&#212;",
+			"Otilde" => "&#213;",
+			"Ouml" => "&#214;",
+			"times" => "&#215;",
+			"Oslash" => "&#216;",
+			"Ugrave" => "&#217;",
+			"Uacute" => "&#218;",
+			"Ucirc" => "&#219;",
+			"Uuml" => "&#220;",
+			"Yacute" => "&#221;",
+			"THORN" => "&#222;",
+			"szlig" => "&#223;",
+			"agrave" => "&#224;",
+			"aacute" => "&#225;",
+			"acirc" => "&#226;",
+			"atilde" => "&#227;",
+			"auml" => "&#228;",
+			"aring" => "&#229;",
+			"aelig" => "&#230;",
+			"ccedil" => "&#231;",
+			"egrave" => "&#232;",
+			"eacute" => "&#233;",
+			"ecirc" => "&#234;",
+			"euml" => "&#235;",
+			"igrave" => "&#236;",
+			"iacute" => "&#237;",
+			"icirc" => "&#238;",
+			"iuml" => "&#239;",
+			"eth" => "&#240;",
+			"ntilde" => "&#241;",
+			"ograve" => "&#242;",
+			"oacute" => "&#243;",
+			"ocirc" => "&#244;",
+			"otilde" => "&#245;",
+			"ouml" => "&#246;",
+			"divide" => "&#247;",
+			"oslash" => "&#248;",
+			"ugrave" => "&#249;",
+			"uacute" => "&#250;",
+			"ucirc" => "&#251;",
+			"uuml" => "&#252;",
+			"yacute" => "&#253;",
+			"thorn" => "&#254;",
+			"yuml" => "&#255;",
+			"OElig" => "&#338;",
+			"oelig" => "&#339;",
+			"Scaron" => "&#352;",
+			"scaron" => "&#353;",
+			"Yuml" => "&#376;",
+			"fnof" => "&#402;",
+			"circ" => "&#710;",
+			"tilde" => "&#732;",
+			"Alpha" => "&#913;",
+			"Beta" => "&#914;",
+			"Gamma" => "&#915;",
+			"Delta" => "&#916;",
+			"Epsilon" => "&#917;",
+			"Zeta" => "&#918;",
+			"Eta" => "&#919;",
+			"Theta" => "&#920;",
+			"Iota" => "&#921;",
+			"Kappa" => "&#922;",
+			"Lambda" => "&#923;",
+			"Mu" => "&#924;",
+			"Nu" => "&#925;",
+			"Xi" => "&#926;",
+			"Omicron" => "&#927;",
+			"Pi" => "&#928;",
+			"Rho" => "&#929;",
+			"Sigma" => "&#931;",
+			"Tau" => "&#932;",
+			"Upsilon" => "&#933;",
+			"Phi" => "&#934;",
+			"Chi" => "&#935;",
+			"Psi" => "&#936;",
+			"Omega" => "&#937;",
+			"alpha" => "&#945;",
+			"beta" => "&#946;",
+			"gamma" => "&#947;",
+			"delta" => "&#948;",
+			"epsilon" => "&#949;",
+			"zeta" => "&#950;",
+			"eta" => "&#951;",
+			"theta" => "&#952;",
+			"iota" => "&#953;",
+			"kappa" => "&#954;",
+			"lambda" => "&#955;",
+			"mu" => "&#956;",
+			"nu" => "&#957;",
+			"xi" => "&#958;",
+			"omicron" => "&#959;",
+			"pi" => "&#960;",
+			"rho" => "&#961;",
+			"sigmaf" => "&#962;",
+			"sigma" => "&#963;",
+			"tau" => "&#964;",
+			"upsilon" => "&#965;",
+			"phi" => "&#966;",
+			"chi" => "&#967;",
+			"psi" => "&#968;",
+			"omega" => "&#969;",
+			"thetasym" => "&#977;",
+			"upsih" => "&#978;",
+			"piv" => "&#982;",
+			"ensp" => "&#8194;",
+			"emsp" => "&#8195;",
+			"thinsp" => "&#8201;",
+			"zwnj" => "&#8204;",
+			"zwj" => "&#8205;",
+			"lrm" => "&#8206;",
+			"rlm" => "&#8207;",
+			"ndash" => "&#8211;",
+			"mdash" => "&#8212;",
+			"lsquo" => "&#8216;",
+			"rsquo" => "&#8217;",
+			"sbquo" => "&#8218;",
+			"ldquo" => "&#8220;",
+			"rdquo" => "&#8221;",
+			"bdquo" => "&#8222;",
+			"dagger" => "&#8224;",
+			"Dagger" => "&#8225;",
+			"bull" => "&#8226;",
+			"hellip" => "&#8230;",
+			"permil" => "&#8240;",
+			"prime" => "&#8242;",
+			"Prime" => "&#8243;",
+			"lsaquo" => "&#8249;",
+			"rsaquo" => "&#8250;",
+			"oline" => "&#8254;",
+			"frasl" => "&#8260;",
+			"euro" => "&#8364;",
+			"image" => "&#8465;",
+			"weierp" => "&#8472;",
+			"real" => "&#8476;",
+			"trade" => "&#8482;",
+			"alefsym" => "&#8501;",
+			"larr" => "&#8592;",
+			"uarr" => "&#8593;",
+			"rarr" => "&#8594;",
+			"darr" => "&#8595;",
+			"harr" => "&#8596;",
+			"crarr" => "&#8629;",
+			"lArr" => "&#8656;",
+			"uArr" => "&#8657;",
+			"rArr" => "&#8658;",
+			"dArr" => "&#8659;",
+			"hArr" => "&#8660;",
+			"forall" => "&#8704;",
+			"part" => "&#8706;",
+			"exist" => "&#8707;",
+			"empty" => "&#8709;",
+			"nabla" => "&#8711;",
+			"isin" => "&#8712;",
+			"notin" => "&#8713;",
+			"ni" => "&#8715;",
+			"prod" => "&#8719;",
+			"sum" => "&#8721;",
+			"minus" => "&#8722;",
+			"lowast" => "&#8727;",
+			"radic" => "&#8730;",
+			"prop" => "&#8733;",
+			"infin" => "&#8734;",
+			"ang" => "&#8736;",
+			"and" => "&#8743;",
+			"or" => "&#8744;",
+			"cap" => "&#8745;",
+			"cup" => "&#8746;",
+			"int" => "&#8747;",
+			"there4" => "&#8756;",
+			"sim" => "&#8764;",
+			"cong" => "&#8773;",
+			"asymp" => "&#8776;",
+			"ne" => "&#8800;",
+			"equiv" => "&#8801;",
+			"le" => "&#8804;",
+			"ge" => "&#8805;",
+			"sub" => "&#8834;",
+			"sup" => "&#8835;",
+			"nsub" => "&#8836;",
+			"sube" => "&#8838;",
+			"supe" => "&#8839;",
+			"oplus" => "&#8853;",
+			"otimes" => "&#8855;",
+			"perp" => "&#8869;",
+			"sdot" => "&#8901;",
+			"lceil" => "&#8968;",
+			"rceil" => "&#8969;",
+			"lfloor" => "&#8970;",
+			"rfloor" => "&#8971;",
+			"lang" => "&#9001;",
+			"rang" => "&#9002;",
+			"loz" => "&#9674;",
+			"spades" => "&#9824;",
+			"clubs" => "&#9827;",
+			"hearts" => "&#9829;",
+			"diams" => "&#9830;"
+		);
+	}
+	return preg_replace("/&(\w+);/e", 'isset($replace[\'\\1\']) ? $replace[\'\\1\'] : "\\0"', $str);
 }
 
 
-/** récupère l'ID du parent d'une entité en fonction de son type
-* @author Bruno Cénou
+/** rÃ©cupÃ¨re l'ID du parent d'une entitÃ© en fonction de son type
+* @author Bruno CÃ©nou
 * @param int $id 
 * @param string $type 
 */
@@ -1288,9 +1547,9 @@ function getParentByType($id,$type, $return=false){
  * Crypte les emails pour qu'ils ne soient pas reconnaissable par les robots spam
  * 
  * @author Pierre-Alain Mignot
- * @param string $texte le texte à modifier
- * @param bool $codeInclude inclut directement le JS dans la page. défaut à false (fichier JS séparé)
- * @return $texte le texte avec les emails cryptés
+ * @param string $texte le texte Ã  modifier
+ * @param bool $codeInclude inclut directement le JS dans la page. dÃ©faut Ã  false (fichier JS sÃ©parÃ©)
+ * @return $texte le texte avec les emails cryptÃ©s
  */
 function cryptEmails($texte, $codeInclude = FALSE)
 {
@@ -1305,7 +1564,7 @@ function cryptEmails($texte, $codeInclude = FALSE)
 		$texte = $javascript . $texte;
 	}
 
-	// on récupère tous les liens mail contenus dans le texte
+	// on rÃ©cupÃ¨re tous les liens mail contenus dans le texte
 	if(preg_match_all("`<a href=\"mailto:([^\"]*)\">([^>]*)</a>`", $texte, $matches))
 	{
 		foreach($matches[0] as $k=>$mail) {
@@ -1316,15 +1575,15 @@ function cryptEmails($texte, $codeInclude = FALSE)
 			// email dans le contenu du lien ?
 			if(array(0=>$matches[2][$k]) != ($content = explode("@", $matches[2][$k]))) { 
 				/* 
-				on met des span cachés dans le contenu du lien pour éviter que les robots puissent récupèrer le mail
-				résultat dans le code source de la page avec test@domaine.com : 
+				on met des span cachÃ©s dans le contenu du lien pour Ã©viter que les robots puissent rÃ©cupÃ¨rer le mail
+				rÃ©sultat dans le code source de la page avec test@domaine.com : 
 				test<span style="display: none;">ANTIBOT</span>@<span style="display: none;">ANTIBOT</span>domaine<span style="display: none;">ANTIBOT</span>.com
 				*/
 				$domainContent = substr($content[1], 0, strrpos($content[1], '.'));
 				$newContent = $content[0]."<span style=\"display: none;\">ANTIBOT</span>@<span style=\"display: none;\">ANTIBOT</span>". $domainContent ."<span style=\"display: none;\">ANTIBOT</span>.". $extension;
 			}
 	
-			// création du lien crypté : la balise href ne contient qu'un dièze et l'appel à la fonction JS
+			// crÃ©ation du lien cryptÃ© : la balise href ne contient rien, le onclick dÃ©clenche l'appel Ã  la fonction JS
 			$newLink = "<a href=\"javascript:;\" onclick=\"javascript:recomposeMail(this, '".$extension."', '".$name[0]."', '".$domain."');\">";
 			$newLink .= empty($newContent) ? $matches[2][$k] : $newContent;
 			$newLink .= "</a>";
@@ -1340,8 +1599,8 @@ function cryptEmails($texte, $codeInclude = FALSE)
  * Nettoie les mises en forme locales sur les appels de notes
  * 
  * @author Pierre-Alain Mignot
- * @param string $text le texte à modifier
- * @return $text le texte filtré
+ * @param string $text le texte Ã  modifier
+ * @return $text le texte filtrÃ©
  */
 function cleanCallNotes($text)
 {
@@ -1352,10 +1611,10 @@ function cleanCallNotes($text)
  * Coloration syntaxique de code
  * 
  * @author Pierre-Alain Mignot
- * @param string $text le code à colorer
- * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. défaut xml
- * @param bool $lineNumbers numérotation des lignes. défaut à true
- * @return $text le texte coloré
+ * @param string $text le code Ã  colorer
+ * @param string $language langage pour lequel appliquer la coloration. Valeurs possibles : xml et html4strict. dÃ©faut xml
+ * @param bool $lineNumbers numÃ©rotation des lignes. dÃ©faut Ã  true
+ * @return $text le texte colorÃ©
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
@@ -1368,11 +1627,12 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
 }
 
 /**
- * implémentation de la fonction explode
+ * implÃ©mentation de la fonction explode
  * utile pour les tableaux
  *
- * @param string $text le texte à découper
- * @param string $delimiter le délimiteur
+ * @author Pierre-Alain Mignot
+ * @param string $text le texte Ã  dÃ©couper
+ * @param string $delimiter le dÃ©limiteur
  * @return array
  */
 function lexplode($text, $delimiter) 
@@ -1381,11 +1641,12 @@ function lexplode($text, $delimiter)
 }
 
 /**
- * fonction permettant de faire des opérations mathématiques simples
+ * fonction permettant de faire des opÃ©rations mathÃ©matiques simples
  *
- * @param string $text
+ * @author Pierre-Alain Mignot
+ * @param mixed $text
  * @param string $operator (+,-,*,/)
- * @param int $var
+ * @param mixed $var
  */
 function lmath($text, $operator, $var) 
 {
@@ -1401,7 +1662,10 @@ function lmath($text, $operator, $var)
 }
 
 /**
- * implémente empty()
+ * implÃ©mente empty()
+ *
+ * @author Pierre-Alain Mignot
+ * @param mixed $var la variable Ã  tester
  */
 function lempty($var)
 {
@@ -1409,12 +1673,30 @@ function lempty($var)
 }
 
 /**
- * implémente isset()
+ * implÃ©mente isset()
+ *
+ * cette fonction est utilisÃ©e en interne par le parser
+ * pour initialiser une variable si vide, et Ã©viter les E_NOTICE
+ * ! Ã  ne pas modifier !
+ *
+ * @author Pierre-Alain Mignot
+ * @param mixed $var la variable Ã  tester
  */
-function lisset($var)
+function &lisset(&$var = null)
 {
-    return isset($var);
+    return $var;
 }
 
+/**
+ * implÃ©mente in_array()
+ *
+ * @author Pierre-Alain Mignot
+ * @param array $arr la variable sur laquelle tester
+ * @param mixed $search la valeur Ã  rechercher
+ */
+function lin_array($arr, $search)
+{
+	return in_array($search, (array)$arr);
+}
 define('INC_TEXTFUNC', 1);
 ?>

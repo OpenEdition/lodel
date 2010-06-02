@@ -5,10 +5,10 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- *  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ *  Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
  *
  *  Home page: http://www.lodel.org
  *
@@ -59,12 +59,12 @@ $cfg['urlroot']="/";
 $cfg['home']="";
 
 
-# URL contenant les fichiers communs partagés
+# URL contenant les fichiers communs partagÃ©s
 # par exemple $shareurl="http://lodel.revues.org/share";
 # la version sera ajoutee sur le dernier repertoire, donc la chaine ne doit pas se terminer par /
 $cfg['shareurl']=$cfg['urlroot']."share";
 
-# Repertoire contenant les fichiers communs partagés
+# Repertoire contenant les fichiers communs partagÃ©s
 # par exemple $sharedir="/var/www/lodel/share";
 # ->a supprimer de ce fichier quand tous les lodel seront passe en versionning
 $cfg['sharedir']="{$cfg['pathroot']}/share";
@@ -91,7 +91,7 @@ $cfg['dbusername']="";
 $cfg['dbpasswd']="";
 # Hote de la BD
 $cfg['dbhost']="";
-# temps de cache des résultats SQL
+# temps de cache des rÃ©sultats SQL
 $cfg['sqlCacheTime'] = 3600*24;
 $GLOBALS['sqlCacheTime']=$cfg['sqlCacheTime'];
 # driver mysql
@@ -137,7 +137,7 @@ $cfg['tmpoutdir']="";
 $cfg['proxyhost']="";
 $cfg['proxyport']="8080";
 
- #tableau des types de fichiers acceptés à l'upload
+ #tableau des types de fichiers acceptÃ©s Ã  l'upload
 $cfg['authorizedFiles'] = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg', '.xml');
 
 # lock les tables.
@@ -158,22 +158,23 @@ $cfg['installlang']="fr";
 ############################################
 
 # config du cache #
-# @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
+#Â @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
 $cfg['cacheOptions'] = array(
 	'cacheDir' => './CACHE/',
 	'lifeTime' => 3600,
-// pour débug : décommenter ici
-// 	'pearErrorMode' => CACHE_LITE_ERROR_DIE,
-	'pearErrorMode' => CACHE_LITE_ERROR_RETURN,
+// pour dÃ©bug : dÃ©commenter ici
+// 	'pearErrorMode' => 8,
+	'pearErrorMode' => 1,
 	'fileNameProtection'=>true,
 	'readControl'=>true,
 	'readControlType'=>'crc32',
 	'writeControl'=>true,
-	'hashedDirectoryLevel'=>2
+	'hashedDirectoryLevel'=>2,
+	'fileLocking'=>true
 	);
 ##################
 $GLOBALS['cacheOptions'] = $cfg['cacheOptions'];
-$cfg['debugMode']=false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
+$cfg['debugMode']=false; // mettre Ã  true pour afficher les erreurs gÃ©nÃ©rÃ©es pendant le calcul d'une page
 $cfg['locale']="fr_FR.UTF8";
 setlocale (LC_ALL,$cfg['locale']);
 

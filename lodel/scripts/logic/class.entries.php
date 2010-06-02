@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entrées et des personnes
+ * Logique des entrÃ©es et des personnes
  *
  * PHP version 5
  *
@@ -32,34 +32,34 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
 /**
- * Classe de logique des entrées
+ * Classe de logique des entrÃ©es
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class EntriesLogic extends GenericLogic
@@ -78,11 +78,63 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Affichage d'un objet (index ET persons)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function viewAction (&$context, &$error) 
 	{
+		if(!function_exists('loop_entities_select'))
+		{
+			function loop_entities_select($context, $funcname)
+			{
+				global $db;
+				$varname = @$context['varname'];
+				if (!$varname) {
+					if (function_exists("code_alter_$funcname")) {
+						call_user_func("code_alter_$funcname",$context);
+					}
+					return;
+				}
+				$values = null;
+				if(isset($context['entities'][$varname]))
+				{
+					$values = $context['entities'][$varname];
+				}
+				elseif(is_numeric($nb = substr($varname, -1)))
+				{
+					$varname = substr($varname, 0, -1);
+					if(isset($context['entities'][$varname][$nb])) $values = $context['entities'][$varname][$nb];
+				}
+				$ids = array();
+				if($values)
+				{
+					if(!is_array($values))
+					{
+						$ids = preg_split("/,/", $values, -1, PREG_SPLIT_NO_EMPTY);
+					}
+					else $ids = $values;
+	
+					if($ids)
+					{
+						$result = $db->execute(lq("
+						SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition 
+							FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) 
+							WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) 
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						while (!$result->EOF) {
+							$localcontext = array_merge($context, $result->fields);
+							call_user_func("code_do_$funcname", $localcontext);
+							$result->MoveNext();
+						}
+					}
+				}
+				if (function_exists("code_after_$funcname")) {
+					$localcontext = $context;
+					$localcontext['all'] = join(',', $ids);
+					call_user_func("code_after_$funcname",$localcontext);
+				}
+			}
+		}
 		if (empty($context['id'])) $context['status']=32; //why ? dont't know !
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
@@ -90,10 +142,10 @@ class EntriesLogic extends GenericLogic
 
 
 	/**
-	 * Publication d'une entrée (index ET persons)
+	 * Publication d'une entrÃ©e (index ET persons)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function publishAction(&$context, &$error)
 	{
@@ -118,16 +170,16 @@ class EntriesLogic extends GenericLogic
 
 
 	/**
-	*  Indique si un objet est protégé en suppression (index ET persons)
+	*  Indique si un objet est protÃ©gÃ© en suppression (index ET persons)
 	*
-	* Cette méthode indique si un objet, identifié par son identifiant numérique et
-	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	* Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	* pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	* booleen false.
 	*
 	* @param integer $id identifiant de l'objet
 	* @param integer $status status de l'objet
-	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	* @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	*/
 	public function isdeletelocked ($id, $status = 0)
 	{
@@ -146,10 +198,10 @@ class EntriesLogic extends GenericLogic
 	}
 
 	/**
-	 * Appel la liste des objet de cette logic : ici les entrées (index ET persons)
+	 * Appel la liste des objet de cette logic : ici les entrÃ©es (index ET persons)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function listAction (&$context, &$error)
 	{
@@ -166,10 +218,10 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant (index seulement)
 	 *
-	 * Ajout d'une nouvelle entrée
+	 * Ajout d'une nouvelle entrÃ©e
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
@@ -197,6 +249,9 @@ class EntriesLogic extends GenericLogic
 		if (!$g_index_key) {
 			trigger_error("ERROR: The generic field 'index key' is required. Please edit your editorial model.", E_USER_ERROR);
 		}
+		
+		$vo = null;
+
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
 		if (isset ($context['g_name'])) {
@@ -233,7 +288,7 @@ class EntriesLogic extends GenericLogic
 				$dao->instantiateObject ($vo);
 				$vo->id=$id;
 			} else {
-				if (!$votype->newbyimportallowed && $context['lo']!="entries") { return "_error"; }
+				if (!$votype->newbyimportallowed && (!isset($context['lo']) || $context['lo']!="entries")) { return "_error"; }
 				$new=true;
 				$vo=$dao->createObject();
 				$vo->status=$status ? $status : -1;
@@ -269,8 +324,8 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Changement du rang d'un objet (index seulement)
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
@@ -280,9 +335,9 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Construction des balises select HTML pour cet objet (index seulement)
 	 *
-	 * @param array &$context le contexte, tableau passé par référence
+	 * @param array &$context le contexte, tableau passÃ© par rÃ©fÃ©rence
 	 * @param string $var le nom de la variable du select
-	 * @param string $edittype le type d'édition
+	 * @param string $edittype le type d'Ã©dition
 	 */
 	public function makeSelect (&$context, $var) 
 	{
@@ -314,7 +369,7 @@ class EntriesLogic extends GenericLogic
 					if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
 					do {
 						$i++;
-						$d=$rank[$id]=$rank[$idparent]+($i*1.0)/$l;
+						$d=$rank[$id]=(isset($rank[$idparent]) ? $rank[$idparent]+($i*1.0)/$l : ($i*1.0)/$l);
 					} while(isset($arr["p$d"]));
 					$arr["p$d"]=array($id,$fullname);
 					$parent[$id]=$fullname;
@@ -334,13 +389,13 @@ class EntriesLogic extends GenericLogic
 	} //end of function
 
 	/**
-	 * Appelé avant l'action delete (index ET persons)
+	 * AppelÃ© avant l'action delete (index ET persons)
 	 *
-	 * Cette méthode est appelée avant l'action delete pour effectuer des vérifications
-	 * préliminaires à une suppression.
+	 * Cette mÃ©thode est appelÃ©e avant l'action delete pour effectuer des vÃ©rifications
+	 * prÃ©liminaires Ã  une suppression.
 	 *
-	 * @param object $dao la DAO utilisée
-	 * @param array &$context le contexte passé par référénce
+	 * @param object $dao la DAO utilisÃ©e
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rÃ©nce
 	 * @access private
 	 */
 	protected function _prepareDelete($dao, &$context) {

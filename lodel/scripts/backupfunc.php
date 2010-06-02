@@ -6,10 +6,10 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
  *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ *  Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  *  Home page: http://www.lodel.org
  *
@@ -149,10 +149,10 @@ function mysql_dump($db, $tables, $output, $fh = 0, $create = true, $drop = true
 }
 
 /**
- * Parse un dump MySQL et execute les requêtes.
+ * Parse un dump MySQL et execute les requÃªtes.
  *
  * @param string $url le fichier SQL
- * @param boolean $ignoreerrors. false par défaut
+ * @param boolean $ignoreerrors. false par dÃ©faut
  */
 function parse_mysql_dump($url, $ignoreerrors = false) 
 {
@@ -176,9 +176,9 @@ function parse_mysql_dump($url, $ignoreerrors = false)
 
 
 /**
- * Enlève le préfixe actuel et ajoute le préfixe par défaut dans une table MySQL
+ * EnlÃ¨ve le prÃ©fixe actuel et ajoute le prÃ©fixe par dÃ©faut dans une table MySQL
  *
- * Cette fonction est utilisée dans les fonctions PMA
+ * Cette fonction est utilisÃ©e dans les fonctions PMA
  *
  * @param string $table le nom de la table
  */
@@ -256,12 +256,12 @@ function PMA_convert_display_charset($text)
 }
 
 /**
- * Importation d'un ME ou de données depuis son archive ZIP
+ * Importation d'un ME ou de donnÃ©es depuis son archive ZIP
  *
  * @param string $archive le chemin vers le fichier ZIP
- * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
- * @param array $acceptedexts la liste des types de fichiers acceptés
- * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
+ * @param array $accepteddirs la liste des rÃ©pertoires acceptÃ©s dans l'archive ZIP
+ * @param array $acceptedexts la liste des types de fichiers acceptÃ©s
+ * @param string $sqlfile le nom du fichier SQL Ã  traiter. Vide par dÃ©faut
  * @param bool $xml si on utilise l'import XML
  */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '', $xml=false)
@@ -307,6 +307,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 		// use PCLZIP library
 		class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
+		$archivename = $archive;
 		//require_once "pclzip.lib.php";
 		$archive = new PclZip($archive);
 
@@ -345,7 +346,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 		#echo "ici $res";
 		error_reporting($err);
 		if (!$res)
-			trigger_error("ERROR: unable to extract $archive.<br />".$archive->error_string, E_USER_ERROR);
+			trigger_error("ERROR: unable to extract $archivename.<br />".$archive->error_string, E_USER_ERROR);
 		unset($archive);
 		if (filesize($sqlfile) <= 0)
 			return false;

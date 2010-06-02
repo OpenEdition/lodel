@@ -1,6 +1,6 @@
 <?php
 /**
- * Fichier utilitaire pour gérer la validation des champs
+ * Fichier utilitaire pour gÃ©rer la validation des champs
  *
  * PHP versions 4 et 5
  *
@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -41,12 +41,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -56,18 +56,18 @@
 /**
  * Validation des champs
  *
- * <p>Validation des caractères autorisés dans les champs suivant leur type
+ * <p>Validation des caractÃ¨res autorisÃ©s dans les champs suivant leur type
  * leur nom, et le texte contenu. Par exemple si on a un champ de type email, il faut
- * vérifier que l'adresse mail est bien formée. Idem pour un champ de type url. Cela appliqué 
- * à tous les types de champs gérés par Lodel (cf. fichier fieldfunc.php)</p>
+ * vÃ©rifier que l'adresse mail est bien formÃ©e. Idem pour un champ de type url. Cela appliquÃ© 
+ * Ã  tous les types de champs gÃ©rÃ©s par Lodel (cf. fichier fieldfunc.php)</p>
  *
- * @param string $&text le texte à valider. Passé par référence.
- * @param string $type le type du champ à valider.
- * @param string $default la valeur par défaut à valider (si le texte est vide). Est vide par défaut
+ * @param string $&text le texte Ã  valider. PassÃ© par rÃ©fÃ©rence.
+ * @param string $type le type du champ Ã  valider.
+ * @param string $default la valeur par dÃ©faut Ã  valider (si le texte est vide). Est vide par dÃ©faut
  * @param string $name le nom du champ
- * @param string $usedata indique si le context utilise le sous tableau data pour stocker les données
- * @param array $context le context utilisé par la fonction appelante
- * @param int $filerank utilisé pour upload multiple de documents dans le meme champ
+ * @param string $usedata indique si le context utilise le sous tableau data pour stocker les donnÃ©es
+ * @param array $context le context utilisÃ© par la fonction appelante
+ * @param int $filerank utilisÃ© pour upload multiple de documents dans le meme champ
  * @return boolean true si le champ est valide. false sinon
  */
 function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $directory="", $context=null, $filerank=null)
@@ -93,18 +93,20 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext') AND mask !=''"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
-					if($fields->fields['mask'] != '') {
-						$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
-						if(!is_array($mask)) continue;
-						$masks[$context['class']][$fields->fields['name']] = array();
-						$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
-						$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
+					$mask = @unserialize(html_entity_decode(stripslashes($fields->fields['mask'])));
+					if(!is_array($mask))
+					{
+						$fields->MoveNext();
+						continue;
 					}
+					$masks[$context['class']][$fields->fields['name']] = array();
+					$masks[$context['class']][$fields->fields['name']]['lodel'] = isset($mask['lodel']) ? $mask['lodel'] : '';
+					$masks[$context['class']][$fields->fields['name']]['user'] = isset($mask['user']) ? $mask['user'] : '';
 					$fields->MoveNext();
 				}
 				unset($mask);
 			}
-			if(isset($masks[$context['class']][$name]['lodel'])) {
+			if(!empty($masks[$context['class']][$name]['lodel'])) {
 				$ret = @preg_match($masks[$context['class']][$name]['lodel'], $text);
 				if(FALSE === $ret) trigger_error('Bad regexp for validating variable '.$name.' of class '.$context['class'].' in validfunc.php. Please edit the mask in the editorial model.', E_USER_ERROR);
 				// doesn't validate mask
@@ -376,9 +378,9 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 					$files[$name]['name']['upload'] = $_FILES['data']['name'][$name]['upload'];
 				}
 			}
-			// on récupère l'extension du fichier   
+			// on rÃ©cupÃ¨re l'extension du fichier   
 			$extension = strtolower(strrchr($files[$name]['name']['upload'],'.'));
-			// on évite la possibilité d'uploader des fichiers non désirés
+			// on Ã©vite la possibilitÃ© d'uploader des fichiers non dÃ©sirÃ©s
 			if(!in_array($extension, C::get('authorizedFiles', 'cfg'))) {
 				return $text['radio'];
 			}
@@ -390,7 +392,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 
 			if (!empty($directory)) {
-				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
+				// Champ de type file ou image qui n'est PAS un doc annexe : copiÃ© dans le rÃ©pertoire $directory
 				$text = save_file($type, $directory, $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err, false);
 			} else {
 				// check if the tmpdir is defined
@@ -410,7 +412,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		case 'serverfile' :
 			// check if the tmpdir is defined
 			if (!empty($directory)) {
-				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
+				// Champ de type file ou image qui n'est PAS un doc annexe : copiÃ© dans le rÃ©pertoire $directory
 				$text = basename($text['localfilename']);
 				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);
 			} else {

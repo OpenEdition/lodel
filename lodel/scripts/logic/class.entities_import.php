@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entités - import
+ * Logique des entitÃ©s - import
  *
  * PHP version 5
  *
@@ -31,39 +31,39 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 /**
- * Classe de logique des entités (gestion de l'import)
+ * Classe de logique des entitÃ©s (gestion de l'import)
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class Entities_ImportLogic extends Entities_EditionLogic 
 {
 	/**
-	 * Tableau des équivalents génériques
+	 * Tableau des Ã©quivalents gÃ©nÃ©riques
 	 *
 	 * @var array
 	 */
@@ -84,9 +84,9 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	}
 
 	/**
-	 * Importation d'une entité
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * Importation d'une entitÃ©
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function importAction (&$context, &$error) 
 	{
@@ -304,7 +304,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			foreach ($data2 as $entry) {
 				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
 			
-				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)	
+				// le 2 Ã¨me argument de trim liste les caractÃ¨res correspondant aux espaces dans le fichier source (utilisÃ© pour supprimer TOUS les espaces avant et aprÃ¨s l'entrÃ©e)	
 				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
  			}
 		}
@@ -336,21 +336,24 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				// ok, we have the prefix
 				// try to guess
 				// ok, on cherche maintenant a separer le name et le firstname
+				$person = trim($person, "\xC2\xA0\x00\x1F\x20");
 				$name=$person;
 				while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
 				if ($name) {
 					$firstname=str_replace ($name, "", $person);
 				} else { // sinon coupe apres le premiere espace
-					if (preg_match ("/^(.*?)\s+([^\s]+)$/i", trim ($person), $result)) {
+					if (preg_match ("/^(.*?)\s+([^\s]+)$/i",$person, $result)) {
 						$firstname=$result[1]; $name=$result[2];
-					} else $name=$person;
+					} else {$name = $person;}
 				}
 				//$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
 				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
 				
-				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)
-				$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname,"\xC2\xA0\x00\x1F\x20");
-				$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
+				// le 2 Ã¨me argument de trim liste les caractÃ¨res correspondant aux espaces dans le fichier source (utilisÃ© pour supprimer TOUS les espaces avant et aprÃ¨s l'entrÃ©e)
+				if(isset($g_name['firstname']) && !empty($firstname))
+					$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname,"\xC2\xA0\x00\x1F\x20");
+				if(isset($g_name['familyname']) && !empty($name))
+					$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
 			} // for each person
 		}
   	}

@@ -31,14 +31,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  */
 
 
@@ -51,14 +51,14 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class Restricted_UsersLogic extends Logic 
@@ -71,16 +71,16 @@ class Restricted_UsersLogic extends Logic
 	}
 
 	/**
-	*  Indique si un objet est protégé en suppression
+	*  Indique si un objet est protÃ©gÃ© en suppression
 	*
-	* Cette méthode indique si un objet, identifié par son identifiant numérique et
-	* éventuellement son status, ne peut pas être supprimé. Dans le cas où un objet ne serait
-	* pas supprimable un message est retourné indiquant la cause. Sinon la méthode renvoit le
+	* Cette mÃ©thode indique si un objet, identifiÃ© par son identifiant numÃ©rique et
+	* Ã©ventuellement son status, ne peut pas Ãªtre supprimÃ©. Dans le cas oÃ¹ un objet ne serait
+	* pas supprimable un message est retournÃ© indiquant la cause. Sinon la mÃ©thode renvoit le
 	* booleen false.
 	*
 	* @param integer $id identifiant de l'objet
 	* @param integer $status status de l'objet
-	* @return false si l'objet n'est pas protégé en suppression, un message sinon
+	* @return false si l'objet n'est pas protÃ©gÃ© en suppression, un message sinon
 	*/
 	public function isdeletelocked($id,$status=0) 
 	{
@@ -97,13 +97,13 @@ class Restricted_UsersLogic extends Logic
 	}
 
 	/**
-	 * Implémenation de l'action d'ajout ou d'édition d'un objet.
+	 * ImplÃ©menation de l'action d'ajout ou d'Ã©dition d'un objet.
 	 *
 	 * add/edit Action
-	 * @param array $context le tableau des données passé par référence.
-	 * @param array $error le tableau des erreurs rencontrées passé par référence.
-	 * @param boolean $clean false si on ne doit pas nettoyer les données (par défaut à false).
-	 * @return string les différentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
+	 * @param array $context le tableau des donnÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param array $error le tableau des erreurs rencontrÃ©es passÃ© par rÃ©fÃ©rence.
+	 * @param boolean $clean false si on ne doit pas nettoyer les donnÃ©es (par dÃ©faut Ã  false).
+	 * @return string les diffÃ©rentes valeurs possibles de retour d'une action (_ok, _back, _error ou xxxx).
 	 */
 	public function editAction(&$context, &$error, $clean=false)
 	{
@@ -117,10 +117,10 @@ class Restricted_UsersLogic extends Logic
 	 *
 	 * Cette action permet de supprimer soit :
 	 * - toutes les sessions d'un utilisateur, do=deletesession&lo=users&id=xx
-	 * - une session particulière : do=deletesession&lo=users&session=xx
+	 * - une session particuliÃ¨re : do=deletesession&lo=users&session=xx
 	 *
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les erreur éventuelles par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les erreur Ã©ventuelles par rÃ©fÃ©rence
 	 */
 	public function deletesessionAction(&$context, &$error)
 	{
@@ -154,12 +154,12 @@ class Restricted_UsersLogic extends Logic
 	}
 
 	/**
-	 * Permet de régler la langue ou le mode traduction d'un utilisateur
+	 * Permet de rÃ©gler la langue ou le mode traduction d'un utilisateur
 	 *
 	 * Pour changer la langue d'un utilisateur : lo=users&do=set&lang=fr
 	 * Pour changer le mode traduction : lo=users&do=set&translationmode=off
-	 * @param array $context le contexte passé par référence
-	 * @param array $error les erreur éventuelles par référence
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array $error les erreur Ã©ventuelles par rÃ©fÃ©rence
 	 */
 	public function setAction(&$context, &$error)
 	{
@@ -208,7 +208,7 @@ class Restricted_UsersLogic extends Logic
 			foreach($list as $lang) {
 				$arr[$lang->lang]=$lang->title;
 			}
-			if (!$arr) $arr['fr']=utf8_encode("Français");
+			if (!$arr) $arr['fr']="FranÃ§ais";
 			renderOptions($arr,$context['sitelang']);
 		}
 	}
@@ -248,11 +248,11 @@ class Restricted_UsersLogic extends Logic
 	}
 
 	/**
-	* Préparation de l'action Edit
+	* PrÃ©paration de l'action Edit
 	*
 	* @access private
-	* @param object $dao la DAO utilisée
-	* @param array &$context le context passé par référence
+	* @param object $dao la DAO utilisÃ©e
+	* @param array &$context le context passÃ© par rÃ©fÃ©rence
 	*/
 	protected function _prepareEdit($dao,&$context) 
 	{
@@ -280,11 +280,11 @@ class Restricted_UsersLogic extends Logic
 	*/
 	}
 	/**
-	* Sauve des données dans des tables liées éventuellement
+	* Sauve des donnÃ©es dans des tables liÃ©es Ã©ventuellement
 	*
-	* Appelé par editAction pour effectuer des opérations supplémentaires de sauvegarde.
+	* AppelÃ© par editAction pour effectuer des opÃ©rations supplÃ©mentaires de sauvegarde.
 	*
-	* @param object $vo l'objet qui a été créé
+	* @param object $vo l'objet qui a Ã©tÃ© crÃ©Ã©
 	* @param array $context le contexte
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
@@ -366,7 +366,7 @@ class Restricted_UsersLogic extends Logic
 	// end{uniquefields} automatic generation  //
 
 	/**
-	 * Envoi un mail au nouvel utilisateur créé avec son login/mdp et diverses informations
+	 * Envoi un mail au nouvel utilisateur crÃ©Ã© avec son login/mdp et diverses informations
 	 */
 	protected function _sendPrivateInformation(&$context) 
 	{
@@ -388,7 +388,7 @@ class Restricted_UsersLogic extends Logic
 		$body = ob_get_clean();
 		View::$nocache = $nocache;
 		unset($context['tmppasswd']);
-		return send_mail($context['email'], $body, utf8_encode("Votre compte abonné sur le site "). $context['sitetitle'] ." ({$context['siteurl']})", $email, '');
+		return send_mail($context['email'], $body, "Votre compte abonnÃ© sur le site ". $context['sitetitle'] ." ({$context['siteurl']})", $email, '');
 	}
 } // class 
 ?>

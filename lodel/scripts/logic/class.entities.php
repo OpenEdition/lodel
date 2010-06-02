@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des entités
+ * Logique des entitÃ©s
  *
  * PHP version 5
  *
@@ -30,35 +30,35 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Fichier ajouté depuis la version 0.8
+ * @since Fichier ajoutÃ© depuis la version 0.8
  * @version CVS:$Id$
  */
 
 
 
 /**
- * Classe de logique des entités
+ * Classe de logique des entitÃ©s
  * 
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @since Classe ajouté depuis la version 0.8
+ * @since Classe ajoutÃ© depuis la version 0.8
  * @see logic.php
  */
 class EntitiesLogic extends Logic
@@ -81,8 +81,8 @@ class EntitiesLogic extends Logic
 	/**
 	 * Affichage d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function viewAction(&$context, &$error)
 	{
@@ -93,8 +93,8 @@ class EntitiesLogic extends Logic
 	/**
 	 * Changement du rang d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
@@ -109,11 +109,11 @@ class EntitiesLogic extends Logic
 	/**
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant
 	 *
-	 * Cette méthode est abstraite ici. On utilise die() pour simuler le fonctionnement
-	 * d'une méthode abstraite.
+	 * Cette mÃ©thode est abstraite ici. On utilise die() pour simuler le fonctionnement
+	 * d'une mÃ©thode abstraite.
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function editAction(&$context,&$error, $clean = false)
 	{
@@ -122,10 +122,10 @@ class EntitiesLogic extends Logic
 
 
 	/**
-	 * Opérations de masse : suppression massive, publication ou dépublication massive
+	 * OpÃ©rations de masse : suppression massive, publication ou dÃ©publication massive
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function massAction(&$context,&$error)
 	{
@@ -154,8 +154,8 @@ class EntitiesLogic extends Logic
 	/**
 	 * Suppression d'un objet
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 	public function deleteAction(&$context, &$error)
 	{
@@ -205,14 +205,14 @@ class EntitiesLogic extends Logic
 	}
 
 	/**
-	 * Publication ou dépublication d'une entité
+	 * Publication ou dÃ©publication d'une entitÃ©
 	 *
-	 * Change le status de l'entité à 1 (publication) ou -1 (dépublication).
-	 * Fonction récursive
-	 * Ne modifie pas les entités dont le status est inférieur ou égal à -8
+	 * Change le status de l'entitÃ© Ã  1 (publication) ou -1 (dÃ©publication).
+	 * Fonction rÃ©cursive
+	 * Ne modifie pas les entitÃ©s dont le status est infÃ©rieur ou Ã©gal Ã  -8
 	 *
-	 * @param array &$context le contexte passé par référence
-	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 * @param array &$context le contexte passÃ© par rÃ©fÃ©rence
+	 * @param array &$error le tableau des erreurs Ã©ventuelles passÃ© par rÃ©fÃ©rence
 	 */
 
 	public function publishAction (&$context, &$error) 
@@ -251,13 +251,13 @@ class EntitiesLogic extends Logic
 		if ($status > 0) {
 			$criteria.= " AND status < '$status'";
 		}
-		//mise à jour des entités
+		//mise Ã  jour des entitÃ©s
 		$db->execute(lq("UPDATE #_TP_entities SET status=$status WHERE ". $criteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		// check if the entities have an history field defined
 		$this->_processSpecialFields('history', $context, $status);
 
-		//mise à jour des personnes et entrées liées à ces entités
+		//mise Ã  jour des personnes et entrÃ©es liÃ©es Ã  ces entitÃ©s
 		$this->_publishSoftRelation($ids, $status);
 		update();
 		return '_back';
@@ -267,11 +267,11 @@ class EntitiesLogic extends Logic
 	
 
 	/**
-	 * Suppressions des relations entre une entité et des persons et des entries
+	 * Suppressions des relations entre une entitÃ© et des persons et des entries
 	 *
-	 * Dans la table relations, le champ nature = G ou E (G = gens, E=entrées)
+	 * Dans la table relations, le champ nature = G ou E (G = gens, E=entrÃ©es)
 	 * @access private
-	 * @param array $ids les identifiants numériques des entités
+	 * @param array $ids les identifiants numÃ©riques des entitÃ©s
 	 */
 	protected function _deleteSoftRelation($ids) 
 	{
@@ -323,17 +323,17 @@ class EntitiesLogic extends Logic
 	}
 
 	/**
-	 * Mise à jour du status des objets liées (liaisons 'soft', c'est à dire des personnes 
-	 * ou des entrées d'index.
+	 * Mise Ã  jour du status des objets liÃ©es (liaisons 'soft', c'est Ã  dire des personnes 
+	 * ou des entrÃ©es d'index.
 	 *
-	 * Lors d'une publication c'est simple, le status des entrées ou personnes liées à l'entité
-	 * est mis à +32 ou +1 suivant si l'entrée ou la personne est permanente.
+	 * Lors d'une publication c'est simple, le status des entrÃ©es ou personnes liÃ©es Ã  l'entitÃ©
+	 * est mis Ã  +32 ou +1 suivant si l'entrÃ©e ou la personne est permanente.
 	 *
-	 * Lors d'une dépublication, c'est plus compliqué, il ne faut pas toucher aux entrées qui ont
-	 * publiées par d'autres entités. Ensuite de la même manière le status est mis à -32 ou -1
+	 * Lors d'une dÃ©publication, c'est plus compliquÃ©, il ne faut pas toucher aux entrÃ©es qui ont
+	 * publiÃ©es par d'autres entitÃ©s. Ensuite de la mÃªme maniÃ¨re le status est mis Ã  -32 ou -1
 	 *
 	 * @param array les identifiants
-	 * @param integer le status de l'entité concernée ou des entités concernées
+	 * @param integer le status de l'entitÃ© concernÃ©e ou des entitÃ©s concernÃ©es
 	 * @access private
 	 */
 	public function _publishSoftRelation($ids, $status)
@@ -357,14 +357,14 @@ class EntitiesLogic extends Logic
 
 			//------- PUBLISH ---------
 			if ($status > 0) {
-				// simple : on doit mettre le status à positif : +32 ou +1 si l'entree ou la personne
+				// simple : on doit mettre le status Ã  positif : +32 ou +1 si l'entree ou la personne
 				// est permanente ou non
 				
 				$db->execute(lq("UPDATE #_TP_$table SET status=abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			//------- UNPUBLISH ---------
 			} else { // status < 0
-				// plus difficile. On vérifie si les entries ou persons sont attachés à des entités publiées.
+				// plus difficile. On vÃ©rifie si les entries ou persons sont attachÃ©s Ã  des entitÃ©s publiÃ©es.
 				$result =  $db->execute(lq("SELECT id1,id2 FROM #_TP_relations INNER JOIN #_TP_entities ON id1=id WHERE #_TP_entities.status>0 AND id2 IN (". $idlist. ") AND nature='".$nature."' GROUP BY id2")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				while (!$result->EOF) {
 					unset($ids[$nature][$result->fields['id2']]); // remove the id from the list to unpublish
@@ -372,7 +372,7 @@ class EntitiesLogic extends Logic
 				}
 				if (!empty($ids[$nature])) {
 					$idlist = join(',', array_keys($ids[$nature]));
-					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités :
+					// dÃ©publie les entrÃ©es ou personnes qui n'ont pas Ã©tÃ© publiÃ©s par d'autres entitÃ©s :
 					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			} // status < 0
@@ -380,20 +380,20 @@ class EntitiesLogic extends Logic
 	}
 
 	/**
-	 * Récupère une entité et tous ses fils
+	 * RÃ©cupÃ¨re une entitÃ© et tous ses fils
 	 *
-	 * Récupère une entité et tous ses fils pour une opération donnée et par accès.
-	 * On obtiens une liste d'identifiant, d'entité protégés et les classes auxquelles elles
+	 * RÃ©cupÃ¨re une entitÃ© et tous ses fils pour une opÃ©ration donnÃ©e et par accÃ¨s.
+	 * On obtiens une liste d'identifiant, d'entitÃ© protÃ©gÃ©s et les classes auxquelles elles
 	 * appartiennent.
 	 *
-	 * @param integer $id Identifiant de l'entité
-	 * @param string $access l'accès
-	 * @param string $criteria les critères de sélections
-	 * @param array &$ids les identifiants des fils et de l'entité, tableau passé par référence
-	 * @param array &$classes les classes des differentes entités de $ids, tableau passé par
-	 * référence
-	 * @param array &$softprotectedids les entités protégés de $ids, tableau passé par référence
-	 * @param array &$lockedids les entités verrouillées de $ids, tableau passé par référence
+	 * @param integer $id Identifiant de l'entitÃ©
+	 * @param string $access l'accÃ¨s
+	 * @param string $criteria les critÃ¨res de sÃ©lections
+	 * @param array &$ids les identifiants des fils et de l'entitÃ©, tableau passÃ© par rÃ©fÃ©rence
+	 * @param array &$classes les classes des differentes entitÃ©s de $ids, tableau passÃ© par
+	 * rÃ©fÃ©rence
+	 * @param array &$softprotectedids les entitÃ©s protÃ©gÃ©s de $ids, tableau passÃ© par rÃ©fÃ©rence
+	 * @param array &$lockedids les entitÃ©s verrouillÃ©es de $ids, tableau passÃ© par rÃ©fÃ©rence
 	 */
 	protected function _getEntityHierarchy($id, $access, $criteria, &$ids, &$classes, &$softprotectedids, &$lockedids)
 	{

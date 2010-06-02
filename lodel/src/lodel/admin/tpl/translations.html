@@ -1,15 +1,15 @@
-<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8"/>
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -42,36 +42,42 @@
 		</li>
 	</ul>
 </ul>
-<div class="ligne_ajouter_serie">
-	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>
-	<br/>
-	<MACRO NAME="PNG_PLUS">
-	<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a>
-</div>
-<br /><br />
 
-<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+<div id="warner_error" class="hidden">
+	<img src="[#SHAREURL]/images/alerte_rouge.png" title="[@INSTALL.ERROR]" alt="[@INSTALL.ERROR]"/>&nbsp;
+	<span id="warner_error_container" class="error"></span>
+</div>
+<div id="warner_success" class="hidden fullshadow">
+	<img src="[#SHAREURL]/images/alerte_vert.png" title="[@ADMIN.SUCCESS]" alt="[@ADMIN.SUCCESS]"/>&nbsp;
+	<span id="warner_success_container"></span>
+</div>
+<div id="warner" class="warner fullshadow"><img src="[#SHAREURL]/images/patienter.png" title="[@COMMON.PLEASE_WAIT_WHILE_LOADING]" alt="[@COMMON.PLEASE_WAIT_WHILE_LOADING]"/>&nbsp;[@COMMON.PLEASE_WAIT_WHILE_LOADING]</div>
+
+<table class="translations">
+	<CAPTION><h1>[@ADMIN.LIST_TRANSLATIONS_LANG]</h1></CAPTION>
+	<tr style="border:none;"><td colspan="4" style="text-align:right;border:none;"><a href="index.php?do=view&amp;lo=translations">[@LODELADMIN.ADD_A_TRANSLATION]</a>&nbsp;-&nbsp;<a href="index.php?do=import&amp;lo=translations">[@LODELADMIN.IMPORT_A_TRANSLATION]</a></td></tr>
 	<tr>
-		<td class="texte_noir_gras">[@COMMON.LANG]</td>
-		<td class="texte_noir_gras">[@LODELADMIN.CODE]</td>
-		<td>&nbsp;</td>
-		<td class="texte_noir_gras">[@LODELADMIN.TRANSLATE_GROUPS]</td>
+		<th>[@COMMON.LANG]</th>
+		<th>[@LODELADMIN.CODE]</th>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
+<!--[		<th>[@LODELADMIN.TRANSLATE_GROUPS]</th>]-->
 	</tr>
 	<LOOP NAME="translations" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
 		<DO>
-			<IF COND="[#COUNT]%2">
-				<tr class="ligne_admin1">
+			<IF COND="[#COUNT] % 2">
+				<tr class="line1">
 			<ELSE/>
-				<tr class="ligne_admin2">
+				<tr class="line2">
 			</IF>
 			<td>[#TITLE]</td>
 			<td>[#LANG]</td>
+			<td><MACRO NAME="EXPORTER_IMPORTER_TRANSLATION"></td>
 			<td style="color: #CC9933;" align="left">
-				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
+				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">&nbsp;
 				<FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]">
-				<MACRO NAME="EXPORTER_IMPORTER_TRANSLATION">
 			</td>
+<!--[
 			<td>
 			<LET VAR="currentlang">[#LANG]</LET>
 			<LOOP NAME="textgroups1" TABLE="texts" WHERE="[#TEXTGROUPS|textgroupswhere]" GROUPBY="textgroup" ORDER="textgroup">
@@ -80,49 +86,169 @@
 				</a>&nbsp;
 			</LOOP>
 		  </td>
+]-->
 		</tr>
 		</DO>
 	</LOOP>
 </table>
 
-<hr/>
-<h1>[@LODELADMIN.SYNTHETIC_VIEW_TRANSLATIONS]</h1>
+<LET ARRAY="statuses[]">-1</LET>
+<LET ARRAY="statuses[]">1</LET>
+<LET ARRAY="statuses[]">2</LET>
+
 <LOOP NAME="textgroups">
-	<h2>Groupe [(#TEXTGROUP|strtoupper)]</h2>
-	<table class="table_normale" border="0" cellspacing="0" cellpadding="5">
+	<table class="translations" border="0" cellspacing="0" cellpadding="5">
+		<CAPTION><h1>Groupe [(#TEXTGROUP|strtoupper)]</h1></CAPTION>
 		<tr>
-			<td class="texte_noir_gras">[@COMMON.NAME]</td>
-				<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="lang">
-					<td class="texte_noir_gras">[#LANG]</td>
-					<td>&nbsp;</td>
-				</LOOP>
-					
+			<th>[@COMMON.NAME]</th>
+			<LOOP NAME="translations2" TABLE="translations" WHERE="textgroups='[#TEXTGROUPS]'" ORDER="rank">
+				<th>
+					<a href="index.php?do=list&amp;lo=texts&amp;textgroup=[#TEXTGROUP]&amp;lang=[#LANG]">[#TITLE]</a>
+				</th>
+			</LOOP>
 		</tr>
+		<LET VAR="i" GLOBAL="1">0</LET>
 		<LOOP NAME="alltexts">
 		<DO>
-			<MACRO NAME="TR_LIST">
-			<td >
+			<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+			<tr class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
+			<td>
 				[(#NAME|strtoupper|cuttext(30))]
 			</td>
 			<LOOP NAME="lang_and_text">
 				<td>
-					<a style="background-color: [(#STATUS|lodeltextcolor)]" href="index.php?do=view&amp;lo=texts&amp;id=[#ID]">E</a>
-				</td>
-				<td align="right">
-						<a href="index.php?do=delete&amp;lo=texts&amp;id=[#ID]">[@COMMON.DELETE](*)</a>
+					<a href="javascript:;" title="[@COMMON.MODIFY]" id="contents_[#ID]" onclick="tr.display([#ID]);" style="color:[#STATUS|lodeltextcolor];"><IF COND="[#CONTENTS]">[#CONTENTS]<ELSE/>@[#NAME|strtolower]</IF></a>
+					<form id="form_[#ID]" class="hidden" action="index.php?do=edit&amp;lo=texts&amp;id=[#ID]" method="POST" enctype="application/x-www-form-urlencoded">
+						<textarea id="text_[#ID]" name="contents" rows="5" cols="50">[#CONTENTS]</textarea><br/>
+						<select name="status" class="select[#STATUS|lodeltextcolor]" onchange="selectchanged(this);">
+						<LOOP NAME="foreach" ARRAY="[#STATUSES]">
+							<option value="[#VALUE]" class="select[#VALUE|lodeltextcolor]"<IF COND="[#STATUS] EQ [#VALUE]"> selected="selected"</IF>>&nbsp;&nbsp;</option>
+						</LOOP>
+						</select>
+						<input type="hidden" name="lang" value="[#LANG]"/>
+						<input type="hidden" name="id" value="[#ID]"/>
+						<input type="hidden" name="lo" value="texts"/>
+						<input type="hidden" name="do" value="edit"/>
+						<input type="hidden" name="name" value="[#NAME|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
+						<input type="hidden" name="textgroup" value="[#TEXTGROUP|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
+						<input type="hidden" name="protected" value="<IF COND="abs([#STATUS]) ge 32">1<ELSE/>0</IF>"/>
+						<input type="button" class="button" value="[@COMMON.MODIFY]" onclick="tr.validateTranslation([#ID]);"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.CANCEL]" onclick="tr.display([#ID]);"/>&nbsp;
+						<input type="button" class="button" value="[@COMMON.DELETE]" onclick="window.location='index.php?lo=texts&amp;do=delete&amp;id=[#ID]';"/>
+					</form>
 				</td>
 			</LOOP>
-		
+			</tr>
 		</DO>
 		</LOOP>
-		</table>
+	</table>
 </LOOP>
 <br /><br />
-<span class="texte_info">
-	(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT]<br />
-	[@LODELADMIN.HOWTO_LITTLETEXTS].
-</span>
+<span class="texte_info">(*) [@LODELADMIN.BEFORE_DELETE_LITTLETEXT_DELETE_ELEMENT]<br />[@LODELADMIN.HOWTO_LITTLETEXTS].</span>
 <br /><br />
 <input class="form" type="button" value="[@COMMON.OK]"  onClick="javascript:window.location='index.php'">
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+<?php mkeditlodeltextJS(); ?>
+<script type="text/javascript">
 
+var Translations = {};
+Translations = function() {
+	this.init();
+};
+Translations.prototype = {
+	errorDelay:null,
+	mouseX:0,
+	mouseY:0,
+	init:function() {
+
+	},
+	display:function(id) {
+		var c = $('contents_'+id);
+		var f = $('form_'+id);
+		if(c && f) {
+			if(c.hasClass('hidden')) {
+				f.addClass('hidden');
+				c.removeClass('hidden');
+			} else {
+				c.addClass('hidden');
+				f.removeClass('hidden');
+			}
+		}
+	},
+	validateTranslation:function(id) {
+		if(!$('text_'+id).get('value').trim()) { return; }
+		var r = new Request.HTML({
+			url:'index.php?do=edit&lo=texts&id='+id,
+			onFailure:function(xhr) {
+				$clear(this.errorDelay);
+				var nbLoad = $('warner').get('loading').toInt();
+				if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+				if(0 === nbLoad) {
+					$('warner').setStyle('display', 'none');
+				}
+				$('warner_error_container').set('html', xhr.responseText.stripTags());
+				var screen = window.getSize();
+				var scroll = window.getScroll();
+				var margin = $('warner_error').measure(function(){return {x:this.getSize().x / 2, y:this.getSize().y / 2};});
+				var left = this.mouseX - margin.x;
+				var top = this.mouseY + margin.y - scroll.y;
+				if(left < 0) { left = 0; }
+				if(top > screen.y) { top = screen.y - margin.y; }
+				$('warner_error').setStyles({'top':top, 'left':left});
+				if($('warner_error').hasClass('hidden')) {
+					$('warner_error').removeClass('hidden');
+				}
+				this.errorDelay = $('warner_error').addClass.delay(5000, $('warner_error'), 'hidden');
+			}.bind(this),
+			onRequest:function() {
+				var screen = window.getSize();
+				var scroll = window.getScroll();
+				var margin = $('warner').measure(function(){return {x:this.getSize().x / 2, y:this.getSize().y / 2};});
+				var left = this.mouseX - margin.x;
+				var top = this.mouseY + margin.y - scroll.y;
+				if(left < 0) { left = 0; }
+				if(top > screen.y) { top = screen.y - margin.y; }
+				$('warner').setStyles({'top':top, 'left':left, 'display':'block'});
+				var nbLoad = $('warner').get('loading');
+				if(!nbLoad) { nbLoad = 1; }
+				else { ++nbLoad; }
+				$('warner').set('loading', nbLoad);
+			}.bind(this),
+			onComplete:function(responseTree, responseElements, responseHTML, responseJavaScript) {
+				if('auth' == responseHTML) {
+					window.location = "login.php?error_timeout=1&url_retour=" + encodeURIComponent(location.pathname + location.search);
+					return false;
+				}
+				var nbLoad = $('warner').get('loading').toInt();
+				if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+				if(0 === nbLoad) {
+					$('warner').setStyle('display', 'none');
+				}
+			},
+			onSuccess:function() {
+				$('warner_success_container').set('text', '[@ADMIN.SUCCESS]');
+				var left = this.mouseX - 30 - ($('warner').measure(function(){return (this.getSize().x / 2);}));
+				if(left < 0) { left = 0; }
+				$('warner_success').setStyles({'top':this.mouseY + 20, 'left':left});
+				if($('warner_success').hasClass('hidden')) {
+					$('warner_success').removeClass('hidden');
+				}
+				this.successDelay = $('warner_success').addClass.delay(3000, $('warner_success'), 'hidden');
+				$('contents_'+id).set('text', $('text_'+id).get('value'));
+				this.display(id);
+			}.bind(this)
+		});
+		r.post($('form_'+id));
+	}
+}
+
+var tr = new Translations();
+
+document.addEvent('mousemove', function(e) {
+	this.mouseX = e.page.x;
+	this.mouseY = e.page.y;
+}.bind(tr));
+
+</script>
 <MACRO NAME="CLOSE_HTML">

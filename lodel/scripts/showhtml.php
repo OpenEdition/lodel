@@ -6,12 +6,12 @@
  *
  *  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  *  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- *  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ *  Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ *  Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ *  Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  *  Home page: http://www.lodel.org
  *
@@ -82,7 +82,7 @@ function show_html($chaine)
 	// ce tableau sert au comptage des balises ouvrante/fermante
 	$suivi = array ();
 	// ce tableau contient les balises ouvrante/fermante
-	$tags = array ('html', 'head', 'script', 'noscript', 'div', 'center', 'table', 'td', 'tr', 'select', 'map', 'iframe', 'body', 'title', 'font', 'form', 'left', 'abbrev', 'acronym', 'textarea', 'author', 'blockquote', 'code', 'dl', 'dd', 'dt', 'option', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'noframes', 'note', 'ul', 'ol', 'pre', 'tt', 'layer');
+	$tags = array ('html', 'head', 'script', 'noscript', 'div', 'center', 'table', 'td', 'tr', 'select', 'map', 'iframe', 'body', 'title', 'font', 'form', 'left', 'abbrev', 'acronym', 'textarea', 'author', 'blockquote', 'code', 'dl', 'dd', 'dt', 'option', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'noframes', 'note', 'ul', 'ol', 'pre', 'tt', 'layer', 'span', 'strong');
 	// ce tableau contient les balises qui seront laisses dans le corps du texte
 	$tagsi = array ('a', 'b', 'address', 'i', 'u', 'blink', 'applet', 'embed', 'sub', 'sup');
 	// toutes les autres balises sont ramenees en debut de ligne.

@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -40,12 +40,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodel
@@ -62,7 +62,7 @@
  * - jj-mm-aaaa
  *
  * @param string $s la date 'humaine'
- * @return string la date transformée en format mySQL
+ * @return string la date transformÃ©e en format mySQL
  */
 function mysqldate($s, $type)
 {
@@ -88,8 +88,8 @@ function mysqldate($s, $type)
 		}
 	}
 	if (!isset($delimiter)) {
-		if (strlen($s) == 4 && is_numeric($s)) { // une année seulement
-			return $s . '-00-00';
+		if (strlen($s) == 4 && is_numeric($s)) { // une annÃ©e seulement
+			return $s . '-01-01';
 		} elseif(strlen($s) > 0) {
 			return "bad date";
 		} else { 
@@ -151,21 +151,21 @@ function mysqldate($s, $type)
 
 
 /**
- * Retourne le chiffre du mois par rapport à son nom
+ * Retourne le chiffre du mois par rapport Ã  son nom
  *
  * @param string le nom du mois
- * @return integer le numéro du mois
+ * @return integer le numÃ©ro du mois
  */
 function mois($m)
 {
-	$m = strtolower(utf8_decode($m));
+	$m = strtolower($m);
 
-	switch (substr($m, 0, 3))	{
+	switch (mb_substr($m, 0, 3, 'UTF-8'))	{
 		case "jan" :
 			return 1;
 		case "fev" :
 		case "fv" :
-		case "fév" :
+		case "fÃ©v" :
 		case "feb":
 			return 2;
 		case "mar" :
@@ -183,7 +183,7 @@ function mois($m)
 		case "aug":
 		case "aou" :
 		case "ao" :
-		case "aoû" :
+		case "aoÃ»" :
 			return 8;
 		case "sep" :
 			return 9;
@@ -193,7 +193,7 @@ function mois($m)
 			return 11;
 		case "dec" :
 			return 12;
-		case "déc" :
+		case "dÃ©c" :
 			return 12;
 		case "dc" :
 			return 12;
@@ -211,9 +211,9 @@ function mois($m)
  * Transforme une date avec heure dans le format 'datetime' de MySQL
  *
  * @param string $s la date
- * @param string $type le type de format dans lequel transformer la date donnée. Par défaut
+ * @param string $type le type de format dans lequel transformer la date donnÃ©e. Par dÃ©faut
  * 'datetime'
- * @return string la date transformée
+ * @return string la date transformÃ©e
  */
 function mysqldatetime($s, $type = 'datetime')
 {
@@ -221,7 +221,6 @@ function mysqldatetime($s, $type = 'datetime')
 	if (!$s) {
 		return '';
 	}
-
 	if(('date' == $type && '0000-00-00' == $s) || ('datetime' == $type && '0000-00-00 00:00:00' == $s)) return $s;
 
 	if ($s == 'aujourd\'hui' || $s == 'today' || $s == 'maintenant' || $s == 'now') {
@@ -261,7 +260,7 @@ function mysqldatetime($s, $type = 'datetime')
 			if(count($datetime)>2)
 			{
 				$date = mysqldate($datetime[0].' '.$datetime[1].' '.$datetime[2], 'date');
-				$time = mysqldate($datetime[3], 'time');
+				$time = isset($datetime[3]) ? mysqldate($datetime[3], 'time') : '';
 			}
 			else
 			{

@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
  * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  *
  * Home page: http://www.lodel.org
  *
@@ -41,12 +41,12 @@
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+ * @copyright 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @version CVS:$Id:
  * @package lodeladmin
@@ -61,7 +61,7 @@ class Install {
 	private $versionsuffix;
 
 	/**
-	 * Version à installer
+	 * Version Ã  installer
 	 * @var string
 	 */	
 	private $versioninstall;
@@ -79,7 +79,7 @@ class Install {
 	private $plateform;
 
 	/**
-	 * Répertoire de la plateforme
+	 * RÃ©pertoire de la plateforme
 	 * @var string
 	 */
 	private $plateformdir;
@@ -91,7 +91,7 @@ class Install {
 	private $lodelconfigplatform;
 
 	/**
-	 * Tableau des répertoires à protéger avec un htaccess
+	 * Tableau des rÃ©pertoires Ã  protÃ©ger avec un htaccess
 	 * @var string
 	 */
 	private $protecteddir;
@@ -121,6 +121,7 @@ class Install {
 	 * Instancie un objet de la classe
 	 *
 	 * @param string $lodelconfig chemin vers fichier lodelconfig temporaire
+	 * @param array $context le contexte passÃ© par rÃ©fÃ©rence
 	 */
 	public function __construct($lodelconfig, $have_chmod, $plateformdir)
 	{
@@ -132,9 +133,9 @@ class Install {
 	/**
 	 * Accesseur
 	 *
-	 * Cette fonction renvoit la variable $var passée en paramètre
+	 * Cette fonction renvoit la variable $var passÃ©e en paramÃ¨tre
 	 *
-	 * @param var $var variable à renvoyer
+	 * @param var $var variable Ã  renvoyer
 	 */
 	public function get($var)
 	{
@@ -144,10 +145,10 @@ class Install {
 	/**
 	 * Accesseur
 	 *
-	 * Cette fonction alloue la valeur $valeur à la variable $var
+	 * Cette fonction alloue la valeur $valeur Ã  la variable $var
 	 *
-	 * @param var $var variable à modifier
-	 * @param var $valeur valeur à allouer
+	 * @param var $var variable Ã  modifier
+	 * @param var $valeur valeur Ã  allouer
 	 */
 	public function set($var, $valeur)
 	{
@@ -156,22 +157,23 @@ class Install {
 
 
 	/**
-	 * Test connexion à la base de données
+	 * Test connexion Ã  la base de donnÃ©es
 	 *
-	 * Cette fonction tente de se connecter à la base de données, met le charset par defaut et identifie l'utilisateur
+	 * Cette fonction tente de se connecter Ã  la base de donnÃ©es, met le charset par defaut et identifie l'utilisateur
 	 * comme administrateur si jamais il existe un enregistrement dans la table username
 	 */
 	public function testInstallDB()
 	{
+		@include($this->lodelconfig);
 		require "../lodel".$this->versionsuffix."/scripts/auth.php";
-		if (@mysql_connect(C::get('dbhost', 'cfg'), C::get('dbusername', 'cfg'),C::get('dbpasswd', 'cfg'))) {
-			@mysql_select_db(C::get('database'));
+		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
+			@mysql_select_db(C::get('database','cfg'));
 			$this->set_mysql_charset();
 		
 			// test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
 		
-			$result=@mysql_query("SELECT username FROM `".C::get('tableprefix', 'cfg')."users` LIMIT 0,1");
-			if ($result && mysql_num_rows($result)>0)
+			$result=@mysql_query("SELECT username FROM `".C::get('tableprefix','cfg')."users` LIMIT 0,1");
+			if ($result && @mysql_num_rows($result)>0)
 				authenticate(LEVEL_ADMINLODEL);
 		} else {
 			// well, no access to the DB but a lodelconfig ?
@@ -198,7 +200,7 @@ class Install {
 			if (!@copy($this->lodelconfigplatform,$this->lodelconfig)) { trigger_error("probl&egrave;me de droits... &eacute;trange on a d&eacute;j&agrave; v&eacute;rifi&eacute;", E_USER_ERROR); }
 			if (file_exists(LODELROOT."lodelloader.php")) {
 				// the installer has been use, let's chmod safely
-				$chmod=fileperms(__FILE__);
+				$chmod=fileperms(LODELROOT."lodel-".$this->versioninstall);
 			} else {
 				$chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
 			}
@@ -254,9 +256,9 @@ class Install {
 	}
 
 	/**
-	 * Mise à jour configuration base de données
+	 * Mise Ã  jour configuration base de donnÃ©es
 	 *
-	 * Cette fonction met à jour les informations de connexion au serveur de base de données dans le fichier de configuration
+	 * Cette fonction met Ã  jour les informations de connexion au serveur de base de donnÃ©es dans le fichier de configuration
 	 *
 	 * @param string $newdbusername identifiant
 	 * @param string $newdbpasswd mot de passe
@@ -268,16 +270,16 @@ class Install {
 	}
 
 	/**
-	 * Installation base de données
+	 * Installation base de donnÃ©es
 	 *
-	 * Cette fonction s'occupe de l'installation de la base de données
+	 * Cette fonction s'occupe de l'installation de la base de donnÃ©es
 	 *
-	 * @param string $erasetables on efface les tables d'une base de données existante ?
-	 * @param string $singledatabase est-on en mode base de données unique ?
-	 * @param string $newdatabase nom de la base de données
+	 * @param string $erasetables on efface les tables d'une base de donnÃ©es existante ?
+	 * @param string $singledatabase est-on en mode base de donnÃ©es unique ?
+	 * @param string $newdatabase nom de la base de donnÃ©es
 	 * @param string $newsingledatabase
 	 * @param string $newtableprefix prefixe des tables pour installation multi site
-	 * @param string $createdatabase on crée la base de données ou pas ?
+	 * @param string $createdatabase on crÃ©e la base de donnÃ©es ou pas ?
 	 * @param string $existingdatabase on utilise une base existante ?
 	 */
 	public function manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase)
@@ -290,7 +292,6 @@ class Install {
 			/*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
 			if ($version_mysql_num[0].$version_mysql_num[1] > 40)
 					{ mysql_query('SET NAMES UTF8'); }*/
-
 			@mysql_select_db($cfg['database']); // selectionne la database
 
 			$this->set_mysql_charset();
@@ -303,7 +304,7 @@ class Install {
 				// Let's destroyed everything in the database with the prefix !
 				if (!$cfg['tableprefix']) {
 					// we can't destroy... too dangerous. Should find another solution.
-					trigger_error("Sans tableprefix les tables ne peuvent pas etre efface en toute securite. Veuillez effacer vous-même les tables de Lodel. Merci.", E_USER_ERROR);
+					trigger_error("Sans tableprefix les tables ne peuvent pas etre efface en toute securite. Veuillez effacer vous-mÃªme les tables de Lodel. Merci.", E_USER_ERROR);
 				} else {
 					// get all table names.
 					$result=@mysql_list_tables($cfg['database']);
@@ -316,7 +317,7 @@ class Install {
 					}
 				}
 			} else {
-				trigger_error(utf8_encode("<p>L'effacement des tables avec plusieurs bases de données n'est pas implementé. Veuillez effacer les bases de données vous même. Merci.</p>"), E_USER_ERROR);
+				trigger_error("<p>L'effacement des tables avec plusieurs bases de donnÃ©es n'est pas implementÃ©. Veuillez effacer les bases de donnÃ©es vous mÃªme. Merci.</p>", E_USER_ERROR);
 			}
 			// erase the main tables below.
 		} else { // normal case
@@ -340,6 +341,15 @@ class Install {
 				@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
 				$this->set_mysql_charset();
 				$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+/*
+				$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
+				if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
+					mysql_query('SET NAMES UTF8');
+					$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
+				} else { 
+					$db_charset = '';
+				}
+*/
 				if (!@mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
 					return false;
 				}
@@ -355,15 +365,15 @@ class Install {
 	}
 
 	/**
-	 * Création administrateur
+	 * CrÃ©ation administrateur
 	 *
-	 * Cette fonction permet de créer le premier utilisateur (administrateur)
+	 * Cette fonction permet de crÃ©er le premier utilisateur (administrateur)
 	 *
 	 * @param string $adminusername login
 	 * @param string $adminpasswd mot de passe premier input du formulaire
 	 * @param string $adminpasswd2 mot de passe deuxieme input du formulaire
-	 * @param string $lang langue par défaut pour l'utilisateur créé
-	 * @param string $site site lié à l'utilisation en cours de création
+	 * @param string $lang langue par dÃ©faut pour l'utilisateur crÃ©Ã©
+	 * @param string $site site liÃ© Ã  l'utilisation en cours de crÃ©ation
 	 */
 	public function manageAdmin($adminusername, &$adminpasswd, &$adminpasswd2, $lang, $site, $adminemail)
 	{
@@ -388,8 +398,9 @@ class Install {
 		$adminusername=addslashes($adminusername);
 		$pass=md5($adminpasswd.$adminusername);
 		$adminpasswd2 = null;
+		$adminemail = addslashes($adminemail);
 		if (!preg_match("/^\w{2}(-\w{2})?/",$lang)) trigger_error("ERROR: invalid lang", E_USER_ERROR);
-		
+		$lang = addslashes($lang);
 		if (!@mysql_query("REPLACE INTO ".$cfg['tableprefix']."users (username,passwd,email,userrights,lang) VALUES ('$adminusername','$pass','$adminemail',128,'$lang')")) {
 			unset($pass);
 			return "error_create";
@@ -402,10 +413,10 @@ class Install {
 	/**
 	 * Installation htaccess
 	 *
-	 * Cette fonction installe les .htaccess dans les répertoires contenus dans la variable privée protecteddir
+	 * Cette fonction installe les .htaccess dans les rÃ©pertoires contenus dans la variable privÃ©e protecteddir
 	 *
 	 * @param string $verify 
-	 * @param string $write Lodel installe lui même les htaccess ?
+	 * @param string $write Lodel installe lui mÃªme les htaccess ?
 	 * @param string $nohtaccess pas de htaccess ?
 	 */
 	public function set_htaccess($verify, $write, $nohtaccess)
@@ -432,20 +443,20 @@ class Install {
 	}
 
 	/**
-	 * Mise à jour des informations du site
+	 * Mise Ã  jour des informations du site
 	 *
-	 * Cette fonction met à jour le fichier de configuration du site en cours d'installation
+	 * Cette fonction met Ã  jour le fichier de configuration du site en cours d'installation
 	 *
-	 * @param string $newurlroot url vers répertoire racine de lodel
+	 * @param string $newurlroot url vers rÃ©pertoire racine de lodel
 	 * @param string $permission permissions
 	 * @param string $pclzip utilisation de pclzip ?
-	 * @param string $newimportdir chemin vers répertoire 'import'
-	 * @param string $newextensionscripts extension du script à afficher (.php ou .html ?)
+	 * @param string $newimportdir chemin vers rÃ©pertoire 'import'
+	 * @param string $newextensionscripts extension du script Ã  afficher (.php ou .html ?)
 	 * @param string $newusesymlink utilisation des liens symboliques ?
-	 * @param string $newcontactbug adresse mail à contacter en cas de bug
-	 * @param string $newunzipcmd commande unzip spécifiée par l'utilisateur
-	 * @param string $newzipcmd commande zip spécifiée par l'utilisateur
-	 * @param string $newuri type d'url affichée
+	 * @param string $newcontactbug adresse mail Ã  contacter en cas de bug
+	 * @param string $newunzipcmd commande unzip spÃ©cifiÃ©e par l'utilisateur
+	 * @param string $newzipcmd commande zip spÃ©cifiÃ©e par l'utilisateur
+	 * @param string $newuri type d'url affichÃ©e
 	 */
 	public function maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri)
 	{
@@ -469,9 +480,9 @@ class Install {
 	}
 
 	/**
-	 * Téléchargement de lodelconfig.php
+	 * TÃ©lÃ©chargement de lodelconfig.php
 	 *
-	 * Cette fonction lance le téléchargement du fichier de configuration du site
+	 * Cette fonction lance le tÃ©lÃ©chargement du fichier de configuration du site
 	 *
 	 * @param string $log_version version navigateur
 	 */
@@ -507,7 +518,7 @@ class Install {
 	/**
 	 * Test installation en cours
 	 *
-	 * Cette fonction teste si une installation a déjà été commencée
+	 * Cette fonction teste si une installation a dÃ©jÃ  Ã©tÃ© commencÃ©e
 	 *
 	 */
 	public function startInstall()
@@ -516,12 +527,12 @@ class Install {
 	}
 
 	/**
-	 * Test droits répertoire donné
+	 * Test droits rÃ©pertoire donnÃ©
 	 *
-	 * Cette fonction teste les droits (lecture/écriture) du répertoire dir
+	 * Cette fonction teste les droits (lecture/Ã©criture) du rÃ©pertoire dir
 	 *
-	 * @param string $dir répertoire à tester
-	 * @param int $mode droits à tester
+	 * @param string $dir rÃ©pertoire Ã  tester
+	 * @param int $mode droits Ã  tester
 	 * @param bool $cheminAbsolu chemin absolu ?
 	 */
 	private function testdirmode($dir, $mode, $cheminAbsolu=false)
@@ -533,9 +544,9 @@ class Install {
 	}
 
 	/**
-	 * Test droits répertoires
+	 * Test droits rÃ©pertoires
 	 *
-	 * Cette fonction teste les droits (lecture/écriture) des répertoires lodel
+	 * Cette fonction teste les droits (lecture/Ã©criture) des rÃ©pertoires lodel
 	 *
 	 */
 	public function testRights()
@@ -560,9 +571,9 @@ class Install {
 		}
 	
 		foreach ($dirs as $dir => $mode) {
-			if (!$this->testdirmode($dir,$mode)) { // vérifie les droits sur le répertoire
+			if (!$this->testdirmode($dir,$mode)) { // vÃ©rifie les droits sur le rÃ©pertoire
 				if (!@file_exists(LODELROOT.$dir)){
-					$missing_dirs[] = $dir; // le répertoire n'existe pas
+					$missing_dirs[] = $dir; // le rÃ©pertoire n'existe pas
 				} else {
 					if ($mode == 7) 
 						$not_writable_dirs[] = $dir;
@@ -591,7 +602,7 @@ class Install {
 	/**
 	 * Installation plateforme
 	 *
-	 * Cette fonction vérifie qu'il existe un fichier de configuration. Si absent, on demande à installer la plateforme
+	 * Cette fonction vÃ©rifie qu'il existe un fichier de configuration. Si absent, on demande Ã  installer la plateforme
 	 *
 	 */
 	public function checkConfig()
@@ -606,7 +617,7 @@ class Install {
 	/**
 	 * Test inclusion du fichier func.php
 	 *
-	 * Cette fonction vérifie qu'il est possible d'accéder au fichier de fonctions func.php
+	 * Cette fonction vÃ©rifie qu'il est possible d'accÃ©der au fichier de fonctions func.php
 	 *
 	 */
 	public function checkFunc()
@@ -617,9 +628,9 @@ class Install {
 	}
 
 	/**
-	 * Test accessibilité base de données
+	 * Test accessibilitÃ© base de donnÃ©es
 	 *
-	 * Cette fonction teste l'identifiant, mot de passe et url du serveur de base de données. Si ceux-ci sont absent on les demande
+	 * Cette fonction teste l'identifiant, mot de passe et url du serveur de base de donnÃ©es. Si ceux-ci sont absent on les demande
 	 *
 	 */
 	public function checkDB()
@@ -631,13 +642,14 @@ class Install {
 		} elseif (!@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd'])) { // tente une connexion
 			$GLOBALS['erreur_connect']=1;
 			$this->include_tpl("install-mysql.html");
+//			return "error_cnx";
 		}
 	}
 
 	/**
-	 * Liste des base de données
+	 * Liste des base de donnÃ©es
 	 *
-	 * Cette fonction retourne la liste des base de données existante sur le serveur
+	 * Cette fonction retourne la liste des base de donnÃ©es existante sur le serveur
 	 *
 	 */
 	public function seekDB()
@@ -649,10 +661,10 @@ class Install {
 	/**
 	 * Installation tables
 	 *
-	 * Cette fonction installe les tables utilisées par Lodel
+	 * Cette fonction installe les tables utilisÃ©es par Lodel
 	 *
 	 * @param string $erasetables on efface les tables si celles-ci sont existantes ?
-	 * @param string $tache tâche a accomplir
+	 * @param string $tache tÃ¢che a accomplir
 	 */
 	public function installDB($erasetables, $tache)
 	{
@@ -680,7 +692,7 @@ class Install {
 				// mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
 				if (@mysql_query($sitesexistsrequest)) {
 					if (!@mysql_query("DROP TABLE IF EXISTS ".$cfg['tableprefix']."sites")) { // ok, on n'arrive vraiment a rien faire
-						$erreur_createtables.="<br /><br />La commande DROP TABLE IF EXISTS ".$cfg['tableprefix']."sites n'a pas pu être executée. On ne peut vraiment rien faire !";
+						$erreur_createtables.="<br /><br />La commande DROP TABLE IF EXISTS ".$cfg['tableprefix']."sites n'a pas pu Ãªtre executÃ©e. On ne peut vraiment rien faire !";
 					}
 				}
 				preg_match("`<font COLOR=red>(.*?)</font>`is", $erreur_createtables, $res);
@@ -702,9 +714,9 @@ class Install {
 	}
 
 	/**
-	 * Vérification présence administrateur
+	 * VÃ©rification prÃ©sence administrateur
 	 *
-	 * Cette fonction vérifie qu'un administrateur a été créé
+	 * Cette fonction vÃ©rifie qu'un administrateur a Ã©tÃ© crÃ©Ã©
 	 *
 	 */
 	public function verifyAdmin()
@@ -718,9 +730,9 @@ class Install {
 	}
 
 	/**
-	 * Vérification présence htaccess
+	 * VÃ©rification prÃ©sence htaccess
 	 *
-	 * Cette fonction vérifie la présence des htaccess
+	 * Cette fonction vÃ©rifie la prÃ©sence des htaccess
 	 *
 	 */
 	public function checkHtaccess()
@@ -736,11 +748,11 @@ class Install {
 	}
 
 	/**
-	 * Test répertoire d'import
+	 * Test rÃ©pertoire d'import
 	 *
-	 * Cette fonction vérifie que le serveur a la possibilité de lire dans le répertoire import
+	 * Cette fonction vÃ©rifie que le serveur a la possibilitÃ© de lire dans le rÃ©pertoire import
 	 *
-	 * @param string $importdir chemin absolu vers le répertoire d'import
+	 * @param string $importdir chemin absolu vers le rÃ©pertoire d'import
 	 * @param string $chooseoptions
 	 */
 	public function askOptions($importdir, $chooseoptions)
@@ -756,9 +768,9 @@ class Install {
 	}
 
 	/**
-	 * Vérification lodelconfig
+	 * VÃ©rification lodelconfig
 	 *
-	 * Cette fonction vérifie que le lodelconfig créé et celui placé dans le site sont identiques
+	 * Cette fonction vÃ©rifie que le lodelconfig crÃ©Ã© et celui placÃ© dans le site sont identiques
 	 *
 	 */
 	public function verifyLodelConfig()
@@ -811,17 +823,17 @@ class Install {
 	}
 
 	/**
-	 * Mise à jour configuration
+	 * Mise Ã  jour configuration
 	 *
-	 * Cette fonction met à jour le fichier de configuration lodelconfig en appellant la fonction maj_lodelconfig_var
+	 * Cette fonction met Ã  jour le fichier de configuration lodelconfig en appellant la fonction maj_lodelconfig_var
 	 *
-	 * @param array $var variable à modifier
+	 * @param array $var variable Ã  modifier
 	 * @param string $val nouvelle valeur de la variable
 	 */	
 	private function maj_lodelconfig($var,$val=-1)
 	{
 		// lit le fichier
-		$text=$oldtext=@file_get_contents($this->lodelconfig);
+		$text=$oldtext=file_get_contents($this->lodelconfig);
 		//  if (!$text) trigger_error("ERROR: $lodelconfig can't be read. Internal error, please report this bug", E_USER_ERROR);
 		
 		if (is_array($var)) {
@@ -843,11 +855,11 @@ class Install {
 	}
 
 	/**
-	 * Mise à jour configuration
+	 * Mise Ã  jour configuration
 	 *
-	 * Cette fonction met à jour le fichier de configuration lodelconfig
+	 * Cette fonction met Ã  jour le fichier de configuration lodelconfig
 	 *
-	 * @param var $var variable à modifier
+	 * @param var $var variable Ã  modifier
 	 * @param string $val nouvelle valeur de la variable
 	 * @param string $text contenu du fichier lodelconfig
 	 */	
@@ -868,17 +880,17 @@ class Install {
 	/**
 	 * Installation tables 
 	 *
-	 * Cette fonction execute les requêtes SQL contenues dans le fichier filename sur la base database
+	 * Cette fonction execute les requÃªtes SQL contenues dans le fichier filename sur la base database
 	 *
-	 * @param string $filename fichier contenant la/les requêtes SQL
+	 * @param string $filename fichier contenant la/les requÃªtes SQL
 	 * @param bool $droptables on efface les tables existantes ?
-	 * @param string $database nom de la base de données sur laquelle travailler
+	 * @param string $database nom de la base de donnÃ©es sur laquelle travailler
 	 */		
 	private function mysql_query_file($filename,$droptables=false, $db)
 	{
 		@include($this->lodelconfig);
-		
-		// commenté par P.A. le 09/10/08, UTF8 uniquement à partir de Lodel > 0.8.7
+//		$table_charset = $this->find_mysql_db_charset($db);
+		// commentÃ© par P.A. le 09/10/08, UTF8 uniquement Ã  partir de Lodel > 0.8.7
 // 		if (strpos($filename, 'init-translations.sql') && strpos($table_charset, 'utf8')) {
 // 			$filename = str_replace('init-translations.sql', 'init-translations_utf8.sql', $filename);
 // 		}
@@ -895,7 +907,7 @@ class Install {
 				for (; $i<$len; $i++) {
 					if ($sqlfile{$i}=="\n") break;
 					$sqlfile{$i}=" ";
-				}
+				}      
 			} elseif ($c=="'") {
 				$i++;
 				for (; $i<$len; $i++) {
@@ -927,9 +939,9 @@ class Install {
 	/**
 	 * Filemask
 	 *
-	 * Cette fonction permet de trouver le bon filemask à utiliser
+	 * Cette fonction permet de trouver le bon filemask Ã  utiliser
 	 *
-	 * @param string $testfile fichier contenant la/les requêtes SQL
+	 * @param string $testfile fichier contenant la/les requÃªtes SQL
 	 */	
 	private function guessfilemask($testfile) {
 		//
@@ -967,7 +979,7 @@ class Install {
 	 *
 	 * Cette fonction inclue dans la page le template $file
 	 *
-	 * @param string $file fichier template à inclure
+	 * @param string $file fichier template Ã  inclure
 	 */	
 	public function include_tpl($file)
 	{
@@ -1002,7 +1014,7 @@ class Install {
 	 *
 	 * Cette fonction inclue dans la page le template $file
 	 *
-	 * @param string $file fichier template à inclure
+	 * @param string $file fichier template Ã  inclure
 	 */	
 	public function problem_include($filename)
 	{
@@ -1010,7 +1022,7 @@ class Install {
 		<html>
 		<body>
 		Unable to access the file  <strong><?php echo $filename; ?></strong><br />
-		Please check your directory tpl and the file <?php echo $filename; ?> exist and are accessible by the web-server. Please report the bug if everything is alright.<br>
+		Please check your directory  tpl and the file <?php echo $filename; ?> exist and are accessible by the web-serveur. Please report the bug if everything is alright.<br>
 		<br />
 		</body>
 		</html>
@@ -1021,9 +1033,9 @@ class Install {
 	/**
 	 * Impression message d'erreur
 	 *
-	 * Cette fonction affiche un message d'erreur lorsqu'un problème survient
+	 * Cette fonction affiche un message d'erreur lorsqu'un problÃ¨me survient
 	 *
-	 * @param string $msg message à afficher
+	 * @param string $msg message Ã  afficher
 	 */	
 	public function problem($msg)
 	{
@@ -1039,13 +1051,13 @@ class Install {
 		
 		$messages=array(
 				"version"=>sprintf($langcache[$this->installlang]['install.php_installation_or_configuration_error'],phpversion()),
-		//'La version de php sur votre serveur ne permet pas un fonctionnement correct de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Versions recommandées : 5.X',
+		//'La version de php sur votre serveur ne permet pas un fonctionnement correct de Lodel.<br />Version de php sur votre serveur: '.phpversion().'<br />Versions recommandÃ©es : 5.X',
 		
 				"reading_lodelconfig"=>$langcache[$this->installlang]['install.reading_lodelconfig'].'<form method="post" action="install.php"><input type="hidden" name="tache" value="lodelconfig"><input type="submit" value="continuer"></form>',
-				//'Le fichier lodelconfig.php n\'a pas pu être lu. Veuillez verifier que le serveur web à les droits de lecteur sur ce fichier.,
+				//'Le fichier lodelconfig.php n\'a pas pu Ãªtre lu. Veuillez verifier que le serveur web Ã  les droits de lecteur sur ce fichier.,
 		
 		"lodelconfig_but_no_database"=>$langcache[$this->installlang]['install.lodelconfig_but_no_database'],
-				//=>'Un fichier de configuration lodelconfig.php a été trouvé dans le répertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder à une base de donnée valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
+				//=>'Un fichier de configuration lodelconfig.php a Ã©tÃ© trouvÃ© dans le rÃ©pertoire principale de Lodel mais ce fichier ne permet pas actuellement d\'acceder Ã  une base de donnÃ©e valide. Si vous souhaitez poursuivre l\'installation, veuillez effacer manuellement. Ensuite, veuillez cliquer sur le bouton "Recharger" de votre navigateur.</form>'
 		);
 		
 		?>
@@ -1071,9 +1083,9 @@ class Install {
 	}
 
 	/**
-	 * Affichage des problèmes de droits
+	 * Affichage des problÃ¨mes de droits
 	 *
-	 * Cette fonction affiche un message d'erreur lorsqu'un problème de droits (lecture/écriture) survient sur un répertoire
+	 * Cette fonction affiche un message d'erreur lorsqu'un problÃ¨me de droits (lecture/Ã©criture) survient sur un rÃ©pertoire
 	 *
 	 */		
 	private function probleme_droits($missing_dirs, $not_writable_dirs, $not_readable_dirs)
@@ -1136,18 +1148,20 @@ class Install {
 	 */	
 	private function set_mysql_charset() 
 	{
-		@mysql_query('SET NAMES UTF8');
-// 		$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
-// 		$version_mysql_num = $version_mysql[0] . $version_mysql[1];
-// 	
-// 		if ($version_mysql_num > 40) {
-// 			$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
-// 			if ($db_charset = mysql_fetch_row($result)) {
-// 				mysql_query('SET NAMES '. $db_charset[1]);
-// 			} else {
-// 				mysql_query('SET NAMES UTF8'); 
-// 			}
-// 		}
+		return @mysql_query('SET NAMES utf8');
+/*
+		$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
+		$version_mysql_num = $version_mysql[0] . $version_mysql[1];
+	
+		if ($version_mysql_num > 40) {
+			$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
+			if ($db_charset = mysql_fetch_row($result)) {
+				mysql_query('SET NAMES '. $db_charset[1]);
+			} else {
+				mysql_query('SET NAMES UTF8'); 
+			}
+		}
+*/
 	}
 	
 	/**
@@ -1155,9 +1169,9 @@ class Install {
 	 *
 	 * Cette fonction retourne le charset de la base database
 	 *
-	 * @param string $database nom de la base de données
+	 * @param string $database nom de la base de donnÃ©es
 	 */	
-	private function find_mysql_db_charset($database, &$charset = null, &$collation = null)
+	private function find_mysql_db_charset($database, &$charset = null, &$collation = null) 
 	{
 		@mysql_select_db($database);
 		$result = @mysql_query("SHOW VARIABLES LIKE '%_database'");
@@ -1177,9 +1191,9 @@ class Install {
 	/**
 	 * Affichage choix langue
 	 *
-	 * Cette fonction affiche une liste déroulante permettant de choisir sa langue par défaut
+	 * Cette fonction affiche une liste dÃ©roulante permettant de choisir sa langue par dÃ©faut
 	 *
-	 * @param string $tpr préfixe des tables
+	 * @param string $tpr prÃ©fixe des tables
 	 */	
 	public function makeSelectLang()
 	{

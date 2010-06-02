@@ -1,15 +1,15 @@
-<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1" REFRESH="1"/>
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8" REFRESH="1"/>
 <!--[
 
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno CÃ©nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno CÃ©nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno CÃ©nou, Jean Lamy, MikaÃ«l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno CÃ©nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
+   Copyright (c) 2009, Marin Dacos, Bruno CÃ©nou, Pierre-Alain Mignot, InÃ¨s Secondat de Montesquieu, Jean-FranÃ§ois RiviÃ¨re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -135,11 +135,11 @@
 			<IF COND="[#DIRECTORY] NE 'sent'">
 			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
 				<LET VAR="userdb">
-				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>
 			</IF>
 			<td class="im_from_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>">
-			<LOOP NAME="getUserName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+			<LOOP NAME="getUserName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2.0]'">
 				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
 				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
 				[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF>
@@ -153,9 +153,9 @@
 				<LOOP NAME="foreach" ARRAY="[#USERS]">
 				<IF COND="[#VALUE] LIKE /(\w+)\-(\d+)/">
 					<LET VAR="userdb">
-					<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+					<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 					</LET>
-					<LOOP NAME="getUsersName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+					<LOOP NAME="getUsersName" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2.0]'">
 						<LET VAR="tos" GLOBAL="1"><IF COND="[%TOS|strlen] GT 0">[%TOS], </IF>[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF></LET>
 					</LOOP>
 				</IF>
@@ -184,8 +184,8 @@
 				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
 				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
 				<IF COND="[#INCOM_DATE] LIKE /(\d{4})\-(\d{2})\-(\d{2})/">
-					<IF COND="today() EQ [#MATCHES.0]">
-					<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0],'')]</LET>
+					<IF COND="today() EQ [#MATCHES.0.0]">
+					<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0.0],'')]</LET>
 					[#INCOM_DATE]
 					<ELSE/>
 					<IF COND="'fr' EQ [#LODELUSER.LANG]">[#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
@@ -282,10 +282,10 @@
 			<td class="im_from_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
 			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
 				<LET VAR="userdb">
-				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>
 			</IF>
-			<LOOP NAME="getUserNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+			<LOOP NAME="getUserNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2.0]'">
 				&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
 				<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
 				[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF>
@@ -299,10 +299,10 @@
 			<LOOP NAME="foreach" ARRAY="[#USERS]">
 			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
 				<LET VAR="userdb">
-				<IF COND="'lodelmain' EQ [#MATCHES.1]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1]; ?></IF>
+				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>
 			
-				<LOOP NAME="getUsersNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2]'">
+				<LOOP NAME="getUsersNameWithSort" DATABASE="[#USERDB|trim]" TABLE="users" SELECT="username, firstname, lastname" WHERE="id='[#MATCHES.2.0]'">
 					<LET VAR="tos" GLOBAL="1"><IF COND="[%TOS|strlen] GT 0">[%TOS], </IF>[#USERNAME] <IF COND="[#FIRSTNAME] OR [#LASTNAME]">([#FIRSTNAME] [#LASTNAME])</IF></LET>
 				</LOOP>
 			</IF>
@@ -331,8 +331,8 @@
 			&nbsp;<a href="index.php?do=list&amp;lo=internal_messaging&amp;id=[#ID]&amp;directory=[#DIRECTORY]">
 			<IF COND="(-1 EQ [#STATUS] OR 1 EQ [#STATUS] OR -2 EQ [#STATUS] OR 16 EQ [#STATUS]) AND [#DIRECTORY] NE 'sent'"><IF COND="[#COND] EQ 1"><span style="color:red;"></IF><strong></IF>
 			<IF COND="[#INCOM_DATE] LIKE /(\d{4})\-(\d{2})\-(\d{2})/">
-				<IF COND="today() EQ [#MATCHES.0]">
-				<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0],'')]</LET>
+				<IF COND="today() EQ [#MATCHES.0.0]">
+				<LET VAR="incom_date">[#INCOM_DATE|replace([#MATCHES.0.0],'')]</LET>
 				[#INCOM_DATE]
 				<ELSE/>
 				<IF COND="'fr' EQ [#LODELUSER.LANG]">[#INCOM_DATE|reg_replace('/(\d{4})\-(\d{2})\-(\d{2})/', '\\3-\\2-\\1')]
