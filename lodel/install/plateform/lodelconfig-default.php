@@ -37,7 +37,7 @@ Installation par defaut sans pre-configuration.
 comment */
 
 # version de Lodel
-$cfg['version']="0.9";
+$cfg['version']="1.0";
 # revision SVN de la release
 $cfg['revision']="443X";
 

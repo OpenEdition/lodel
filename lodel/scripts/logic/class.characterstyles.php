@@ -84,7 +84,8 @@ class CharacterstylesLogic extends Logic
 	protected function _publicfields() 
 	{
 		return array(	'style' => array('type', '+'),
-				'conversion' => array('text', ''));
+				'conversion' => array('text', ''),
+				'otx' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -96,7 +97,7 @@ class CharacterstylesLogic extends Logic
 	 */
 	protected function _uniqueFields() 
 	{ 
-		return array(array('style'));
+		return array(array('style'), array('otx'));
 	}
 	// end{uniquefields} automatic generation  //
 	/**#@-*/

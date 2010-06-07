@@ -87,6 +87,7 @@ class internalstylesVO
 	public $rank;
 	public $status;
 	public $upd;
+	public $otx;
 	/**#@-*/
 }
 

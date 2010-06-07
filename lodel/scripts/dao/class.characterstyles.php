@@ -85,6 +85,7 @@ class characterstylesVO
 	public $rank;
 	public $status;
 	public $upd;
+	public $otx;
 	/**#@-*/
 }
 

@@ -42,8 +42,6 @@
  * @version CVS:$Id$
  */
 
-
-
 /**
  * Classe de logique des entités (gestion avancée)
  * 
@@ -114,9 +112,6 @@ class Entities_AdvancedLogic extends Logic
 		// look for the source
 		$context['sourcefile'] = file_exists(SITEROOT."lodel/sources/entite-".$id.".source");
 
-		// look for a multi-doc source ?
-		$context['multidocsourcefile'] = file_exists(SITEROOT. "lodel/sources/entite-multidoc". $vo->idparent. ".source");
-
 		return '_ok';
 	}
 
@@ -153,7 +148,7 @@ class Entities_AdvancedLogic extends Logic
 	/**
 	 * Préparation du déplacement  d'une entité.
 	 *
-	 * Cette méthode est appelée avant l'action move. Elle prépare le déplacement en vérifiant
+	 * Cette méthode est appellée avant l'action move. Elle prépare le déplacement en vérifiant
 	 * certaines conditions à celui-ci.
 	 *
 	 * @param array &$context le contexte passé par référence
@@ -302,20 +297,32 @@ class Entities_AdvancedLogic extends Logic
 		$context['type'] = @$context['type'];
 		$multidoc = false;
 		switch($context['type']) {
-		case 'xml':
-			trigger_error('a implementer', E_USER_ERROR);
-			$filename = "r2r-$id.xml";
-			$originalname = $filename;
-			$dir = '../txt';
-			break;
-		case 'multidocsource' :
-			$multidoc = true;
-		case 'source' :
-			$filename = $multidoc ? "entite-multidoc-$id.source" : "entite-$id.source";
+		case 'tei':
+			$filename = "entite-tei-$id.xml";
 			$dir = "../sources";
 			// get the official name 
 			$vo  = $this->_getMainTableDAO()->getById($id,"creationmethod,creationinfo");
-			if ($vo->creationmethod!=($multidoc ? "servoo;multidoc" : "servoo")) {
+			if ($vo->creationmethod != "servoo" && $vo->creationmethod != "otx") {
+				trigger_error("ERROR: error creationmethod is not compatible with download", E_USER_ERROR);
+			}
+			$originalname = pathinfo($vo->creationinfo ? basename($vo->creationinfo) : basename($filename), PATHINFO_FILENAME).'.xml';
+			break;
+		case 'odt':
+			$filename = "entite-odt-$id.source";
+			$dir = "../sources";
+			// get the official name 
+			$vo  = $this->_getMainTableDAO()->getById($id,"creationmethod,creationinfo");
+			if ($vo->creationmethod != "servoo" && $vo->creationmethod != "otx") {
+				trigger_error("ERROR: error creationmethod is not compatible with download", E_USER_ERROR);
+			}
+			$originalname = pathinfo($vo->creationinfo ? basename($vo->creationinfo) : basename($filename), PATHINFO_FILENAME).'.odt';
+			break;
+		case 'source' :
+			$filename = "entite-$id.source";
+			$dir = "../sources";
+			// get the official name 
+			$vo  = $this->_getMainTableDAO()->getById($id,"creationmethod,creationinfo");
+			if ($vo->creationmethod != "servoo" && $vo->creationmethod != "otx") {
 				trigger_error("ERROR: error creationmethod is not compatible with download", E_USER_ERROR);
 			}
 			$originalname = $vo->creationinfo ? basename($vo->creationinfo) : basename($filename);

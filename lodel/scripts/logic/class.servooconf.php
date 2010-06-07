@@ -98,23 +98,38 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 		$ret=parent::editAction($context,$error);
 
 		if ($ret=="_error") return $ret;
-		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
-		if(!class_exists('ServOO', false)) include("servoofunc.php");
-		$client=new ServOO();
-		if ($client->error_message) {
-			if (!empty($context['url'])) $error['url']='+';
-			if (!empty($context['username'])) $error['username']='+';
-			if (!empty($context['passwd'])) $error['passwd']='+';
-		}
 
-		$servoover=$client->version();
+		$client = new OTXClient();
+		$error = array();
+		$user = C::get('id', 'lodeluser').';'.C::get('name', 'lodeluser').';'.C::get('rights', 'lodeluser');
+		$site = C::get('site', 'cfg');
+		$i = 0;
+		$request = array('mode' => 'hello', 'request' => '', 'attachment' => '', 'schema' => '');
+		do
+		{
+			$options = $client->selectServer($i);
+			if(!$options) break;
+			$options['lodel_user'] = $user;
+			$options['lodel_site'] = $site;
+			$client->instantiate($options);
+			if($client->error)
+				$error[] = $client->status;
+			else
+			{
+				$client->request($request);
+				if(!$client->error)
+					break;
+				$error[] = $client->status;
+			}
+			++$i;
+		} while (1);
 
-		if (preg_match("/^ERROR:/i",$servoover) || $client->error_message) {
-			$error['servoo']=$client->error_message;
-			error_reporting($err);
+		if(count($error) === $i)
+		{
+			$error['servoo']=join('<br/>', $error);
 			return "_error";
 		}
-		error_reporting($err);
+
 		return $ret=="_ok" ? "edit_options" : $ret;
 	}
 

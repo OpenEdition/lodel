@@ -93,30 +93,90 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		global $db;
 		$this->context=&$context;
 		$this->error =& $error;
-		$idtask = @$context['idtask'];
+		if(empty($context['idtask']))
+			View::getView()->back();
+
+		$idtask = $context['idtask'];
 		function_exists('gettask') || include ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
-		$context['id'] = @$task['identity'];
-		class_exists('XMLImportParser', false) || include "xmlimport.php";
-		$parser=new XMLImportParser();
-		$parser->init (@$context['class']);
-		$parser->parse (file_get_contents (@$task['fichier']), $this);
-		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
-		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
-			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
-		} else {
-			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
-		}
+		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
+		// restore the entity
+		$contents = @unserialize(base64_decode(file_get_contents($task['fichier'])));
+		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
+		$context['idtype'] = $task['idtype'];
+		$context['idparent'] = $task['idparent'];
+		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
+		$context['persons'] = !empty($contents['contents']['persons']) ? $contents['contents']['persons'] : array();
+		$context['entities'] = !empty($contents['contents']['entities']) ? $contents['contents']['entities'] : array();
+		unset($contents['contents']['entities'], $contents['contents']['persons'], $contents['contents']['entries']);
+		$context['data'] = $contents['contents'];
+		$context['creationmethod'] = "otx";
+		$context['creationinfo'] = $task['sourceoriginale'];
+		$source = $task['source'];
+		$odt = $task['odt'];
+		$tei = $task['tei'];
+		unset($task, $contents);
+		$ret = $this->editAction($context, $error, 'FORCE');
+		$this->id = $context['id'];
+		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
 		@unlink ($sourcefile);
-		copy (@$task['source'], $sourcefile);
+		copy ($source, $sourcefile);
 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
-		if ($idtask) { // close the task
-			DAO::getDAO('tasks')->deleteObject ($idtask);
+		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
+		@unlink ($sourcefileodt);
+		copy ($odt, $sourcefileodt);
+		@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
+		@unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
+		copy($tei, SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
+		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));
+// 		class_exists('XMLImportParser', false) || include "xmlimport.php";
+// 		$parser=new XMLImportParser();
+// 		$parser->init (@$context['class']);
+// 		$parser->parse (file_get_contents (@$task['fichier']), $this);
+// 		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
+// 		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
+// 			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
+// 		} else {
+// 			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+// 		}
+// 		@unlink ($sourcefile);
+// 		copy (@$task['source'], $sourcefile);
+// 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
+
+		// close the task
+		DAO::getDAO('tasks')->deleteObject ($idtask);
+		
+		if(!function_exists('removefilesfromimport'))
+		{
+			function removefilesfromimport($rep)
+			{
+				if(!file_exists($rep)) return;
+				$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+				while (($file = readdir($fd)) !== false) {
+					if('.' === $file{0}) continue;
+					$file = $rep. "/". $file;
+					if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+						removefilesfromimport($file);
+						// puis on supprime le répertoire
+						@rmdir($file);
+					} else {@unlink($file);}
+				}
+				closedir($fd);
+				@rmdir($rep);
+			}
 		}
-		if ($this->ret!='_error' && isset($context['finish'])) {
-			return $this->ret;
-		} elseif ($this->ret!='_error') {
+		// remove files from import
+		$rep = dirname($source);
+		// first, contents of unzipped source
+		removefilesfromimport($rep);
+		$rep = array_filter(explode('/', $rep));
+		// then images
+		removefilesfromimport(SITEROOT.'/docannexe/image/'.end($rep));
+
+		if ($ret != '_error' && isset($context['finish'])) {
+			return $ret;
+		} elseif ($ret != '_error') {
 			return "_location: index.php?do=view&id=".$this->id;
 		} else { //ret=error
 			return "_location: index.php?do=view&id=".$this->id."&check=oui";
@@ -158,9 +218,9 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$this->_checkdir ($dir);
 					}
 					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
-					@copy ($imgfile, SITEROOT.$newimgfile);
+					$ok = @copy ($imgfile, SITEROOT.$newimgfile);
 					@unlink ($imgfile);
-					if ($newimgfile) { // ok, the image has been correctly copied
+					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
 						@chmod (SITEROOT.$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
 						++$count;
@@ -304,7 +364,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			foreach ($data2 as $entry) {
 				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
 			
-				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)	
+				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)
 				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
  			}
 		}

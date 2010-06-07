@@ -733,20 +733,29 @@ function checkdocannexedir($dir)
 	}
 }
 
-
-function tmpdir()
+function tmpdir($name = '')
 {
-    $tmpdir = '';
-    if(defined("TMPDIR") && '' !== (string)TMPDIR)
-        $tmpdir = TMPDIR;
-    elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
-        $tmpdir = 'CACHE/tmp';
+        $tmpdir = '';
+        if(defined("TMPDIR") && '' !== (string)TMPDIR)
+                $tmpdir = TMPDIR;
+        elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
+                $tmpdir = 'CACHE/tmp';
 
-    if (!file_exists($tmpdir)) { 
-		mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
-		chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg'))); 
-	}
-	return $tmpdir;
+        if (!file_exists($tmpdir)) {
+                mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
+                chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
+        }
+
+        if(!empty($name))
+        {
+                $tmpdir .= '/'.$name;
+                if (!file_exists($tmpdir)) {
+                        mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
+                        chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
+                }
+        }
+
+        return $tmpdir.'/';
 }
 
 function myhtmlentities($text)

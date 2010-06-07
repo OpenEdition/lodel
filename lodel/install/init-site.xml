@@ -341,12 +341,11 @@
 			description="champ generique equivalent"
 			label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
 			edittype="select" />
-		<column name="g_name_tei"
-			type="VARCHAR"
-			size="255"
-			description="champ generique equivalent TEI"
+		<column name="otx"
+			type="TINYTEXT"
+			default=""
 			label="[@ADMIN.TEI_EQUIVALENT]"
-			edittype="select" />
+			required="true" />
 	</vgroup>
 	<vgroup name="grcreation"
 		label="[@ADMIN.FIELDSET_CREATION]">
@@ -1217,6 +1216,11 @@
         		required="true" />	
 		<column name="upd"
         		type="TIMESTAMP" />
+		<column name="otx"
+			type="TINYTEXT"
+			default=""
+			label="[@ADMIN.TEI_EQUIVALENT]"
+			required="true" />
 	</vgroup>
 	<index name="index_style">
 		<index-column name="style" />
@@ -1260,6 +1264,11 @@
         label="[@ADMIN.PROTECTED_CHARACTERE_STYLE]"
         edittype="boolean" 
 	editcondition="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]" />
+<column name="otx"
+	type="TINYTEXT"
+	default=""
+	label="[@ADMIN.TEI_EQUIVALENT]"
+	required="true" />
 <column name="upd"
         type="TIMESTAMP" />
 <index name="index_style">
@@ -1340,6 +1349,11 @@
 			description="type generique equivalent"
 			label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
         		edittype="select"/>
+		<column name="otx"
+			type="TINYTEXT"
+			default=""
+			label="[@ADMIN.TEI_EQUIVALENT]"
+			required="true" />
 	</vgroup>
 	<vgroup name="grcreation"
 		label="[@ADMIN.ENTRIES_IMPORT]">
@@ -1487,6 +1501,11 @@
         		description="type generique equivalent"
         		label="[@ADMIN.DUBLIN_CORE_EQUIVALENT]"
         		edittype="select"/>
+		<column name="otx"
+			type="TINYTEXT"
+			default=""
+			label="[@ADMIN.TEI_EQUIVALENT]"
+			required="true" />
 	</vgroup>
 	<vgroup name="grcreation"
 		label="[@ADMIN.ENTRIES_IMPORT]">

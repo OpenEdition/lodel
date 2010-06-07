@@ -42,7 +42,6 @@
  * @version CVS:$Id$
  */
 
-
 /**
  * Classe de logique des types de personnes
  * 
@@ -161,7 +160,7 @@ class PersonTypesLogic extends Logic
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
 	{
-		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type) {
+		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type)
 			// name has changed
 			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='persons'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
@@ -173,7 +172,7 @@ class PersonTypesLogic extends Logic
 	* préliminaires à une suppression.
 	*
 	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
+	* @param array &$context le contexte passé par référence
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{     
@@ -206,7 +205,8 @@ class PersonTypesLogic extends Logic
 									'g_type' => array('select', ''),
 									'style' => array('style', ''),
 									'tpl' => array('tplfile', ''),
-									'tplindex' => array('tplfile', ''));
+									'tplindex' => array('tplfile', ''),
+									'otx' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -218,7 +218,7 @@ class PersonTypesLogic extends Logic
 	 */
 	protected function _uniqueFields() 
 	{ 
-		return array(array('type'), );
+		return array(array('type'), array('otx', 'class'));
 	}
 	// end{uniquefields} automatic generation  //
 

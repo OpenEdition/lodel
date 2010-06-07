@@ -71,6 +71,17 @@ class InternalstylesLogic extends Logic {
 		parent::__construct("internalstyles");
 	}
 
+	public function editAction(&$context, &$error, $clean = false)
+	{
+		$context['style'] = @$context['style'];
+		if(DAO::getDAO('tablefields')->find('name='.$GLOBALS['db']->quote($context['style'])))
+		{
+			$error['style'] = '1';
+			return '_error';
+		}
+
+		return parent::editAction($context, $error);
+	}
 
 	public function makeSelect(&$context,$var)
 	{
@@ -114,7 +125,8 @@ class InternalstylesLogic extends Logic {
 		return array('style' => array('style', '+'),
 									'conversion' => array('text', ''),
 									'surrounding' => array('select', '+'),
-									'greedy' => array('boolean', ''));
+									'greedy' => array('boolean', ''),
+									'otx' => array('text', ''));
 	}
 	// end{publicfields} automatic generation  //
 
@@ -126,7 +138,7 @@ class InternalstylesLogic extends Logic {
 	 */
 	protected function _uniqueFields() 
 	{ 
-		return array(array('style'), );
+		return array(array('style'), array('otx'));
 	}
 	// end{uniquefields} automatic generation  //
 

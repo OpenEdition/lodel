@@ -114,7 +114,7 @@ function removefilesincache()
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
 		while (($file = readdir($fd)) !== false) {
-			if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching'))
+			if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching') || ('import_' === substr($file, 0, 7)))
 				continue;
 			$file = $rep. "/". $file;
 			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement

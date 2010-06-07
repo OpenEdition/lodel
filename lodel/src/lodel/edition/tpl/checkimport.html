@@ -37,21 +37,195 @@
 	<li>[@EDITION.TITLE_CHECK_STYLING]</li>
 </ul>
 
-<IF COND="[#MULTIDOC]">
-<div class="avert">[@EDITION.WARNING_MULTIDOC_IMPORT]</div>
-</IF>
 <br />&nbsp;<br />
 <MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
+
+<div id="menu">
+<a href="javascript:;" onclick="switchMenu('chkbalisage');">checkbalisage</a>
+&nbsp;-&nbsp;
+<a href="javascript:;" onclick="switchMenu('otx_report');">otx report</a>
+&nbsp;-&nbsp;
+<a href="javascript:;" onclick="switchMenu('lodel_report');">lodel report</a>
+</div>
+
+<div id="chkbalisage">
+
+<IF COND="[#ERROR]">
+<FUNC NAME="PRINT_ERROR_LISTING"/>
+</IF>
 
 <table id="checkbalisage">
 	<tr>
 		<th>[@EDITION.STYLES]</th>
 		<th>[@EDITION.CONTENTS]</th>
 	</tr>
-[#TABLECONTENTS]
+<LET VAR="currentclass" GLOBAL="1"></LET>
+<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
+	<SWITCH TEST="[#TYPE]">
+		<DO CASE="entries">
+			<LOOP NAME="getIdEntrytype" SELECT="id,title,class" TABLE="entrytypes" WHERE="type='[#NAME]'">
+				<IF COND="[#ENTRIES.#ID]">
+					<IF COND="![%CURRENTCLASS]">
+						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+					<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
+						<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
+						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+					</IF>
+					<tr>
+						<th class="sideInfo">[#TITLE]</th>
+						<td>
+							[#ENTRIES.#ID]
+						</td>
+					</tr>
+					<IF COND="[%CURRENTCLASS] NE [#CLASS]">
+						<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
+					</IF>
+				</IF>
+			</LOOP>
+		</DO>
+
+		<DO CASE="persons">
+			<LOOP NAME="getIdPersontype" SELECT="id,title,class" TABLE="persontypes" WHERE="type='[#NAME]'">
+				<IF COND="[#PERSONS.#ID]">
+					<IF COND="![%CURRENTCLASS]">
+						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+					<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
+						<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
+						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+					</IF>
+					<LOOP NAME="foreach" ARRAY="[#PERSONS.#ID]">
+						<tr>
+							<th class="sideInfo">[#TITLE]</th>
+							<td>
+								<ul>
+								<LOOP NAME="foreach" ARRAY="[#VALUE.DATA]">
+									<IF COND="![%FIELDS.#KEY]">
+										<LOOP NAME="getFieldTitle" TABLE="tablefields" SELECT="title" WHERE="name='[#KEY]' AND (class='entities_[#CLASS]' OR class='[#CLASS]')">
+											<LET ARRAY="fields.#KEY" GLOBAL="1">[#TITLE]</LET>
+										</LOOP>
+									</IF>
+									<li>[%FIELDS.#KEY] : [#VALUE]</li>
+								</LOOP>
+								</ul>
+							</td>
+						</tr>
+					</LOOP>
+					<IF COND="[%CURRENTCLASS] NE [#CLASS]">
+						<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
+					</IF>
+				</IF>
+			</LOOP>
+		</DO>
+
+		<DO CASE="default">
+			<IF COND="[#CONTENTS.#NAME]">
+				<IF COND="![%CURRENTCLASS]">
+					<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+				<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
+					<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
+					<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
+				</IF>
+				<tr>
+					<IF COND="[#TYPE] EQ 'mltext' OR [#CONTENTS.#NAME|is_array]">
+						<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
+							<tr>
+								<th class="sideInfo">[#TITLE] [#KEY]</th>
+								<td>[#VALUE]</td>
+							</tr>
+						</LOOP>
+					<ELSE/>
+						<th class="sideInfo" id="[#NAME]">[#TITLE]</th>
+						<td>
+						<IF COND="[#TYPE] EQ 'date'">
+							[#CONTENTS.#NAME|humandate]
+						<ELSE/>
+							<IF COND="[#OTX] EQ 'text:standard'">[#CONTENTS.#NAME|paranumber([#NAME])]<ELSE/>[#CONTENTS.#NAME]</IF>
+						</IF>
+						</td>
+					</IF>
+				</tr>	
+				<IF COND="[%CURRENTCLASS] NE [#CLASS]">
+					<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
+				</IF>
+			</IF>
+		</DO>
+	</SWITCH>
+</LOOP>
+<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
 </table>
+</div>
 
+<div id="otx_report" style="display:none;">
+<h2>métas document</h2>
+<LOOP NAME="foreach" ARRAY="[#OTX_REPORT.1]">
+	<BEFORE><ul></BEFORE>
+	<DO><li>[#KEY] : 
+		<IF COND="[#VALUE|is_array]">
+			<LOOP NAME="foreach" ARRAY="[#VALUE]">
+				<BEFORE><ul></BEFORE>
+				<DO><li>[#KEY] : [#VALUE]</li></DO>
+				<AFTER></ul></AFTER>
+			</LOOP>
+		<ELSE/>
+		[#VALUE]
+		</IF>
+	</li></DO>
+	<AFTER></ul></AFTER>
+</LOOP>
+
+<h2>métas otx</h2>
+<LOOP NAME="foreach" ARRAY="[#OTX_REPORT.2]">
+	<BEFORE><ul></BEFORE>
+	<DO><li>[#KEY] : 
+		<IF COND="[#VALUE|is_array]">
+			<LOOP NAME="foreach" ARRAY="[#VALUE]">
+				<BEFORE><ul></BEFORE>
+				<DO><li>[#KEY] : [#VALUE]</li></DO>
+				<AFTER></ul></AFTER>
+			</LOOP>
+		<ELSE/>
+		[#VALUE]
+		</IF>
+	</li></DO>
+	<AFTER></ul></AFTER>
+</LOOP>
+</div>
+
+<div id="lodel_report" style="display:none;">
+<LOOP NAME="foreach" ARRAY="[#PARSERREPORT]">
+	<BEFORE><ul></BEFORE>
+	<DO><li>[#VALUE]</li></DO>
+	<AFTER></ul></AFTER>
+</LOOP>
+</div>
 <br />&nbsp;<br />
+<script type="text/javascript">
+var switchMenu = function(id) {
+	switch(id)
+	{
+		case 'chkbalisage':
+			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
+			var display_others = display == 'block' ? 'none' : 'block';
+			document.getElementById(id).style.display = display;
+			document.getElementById('otx_report').style.display = display_others;
+			document.getElementById('lodel_report').style.display = display_others;
+			break;
+		case 'otx_report':
+			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
+			var display_others = display == 'block' ? 'none' : 'block';
+			document.getElementById(id).style.display = display;
+			document.getElementById('chkbalisage').style.display = display_others;
+			document.getElementById('lodel_report').style.display = display_others;
+			break;
+		case 'lodel_report':
+			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
+			var display_others = display == 'block' ? 'none' : 'block';
+			document.getElementById(id).style.display = display;
+			document.getElementById('otx_report').style.display = display_others;
+			document.getElementById('chkbalisage').style.display = display_others;
+			break;
+	}
+}
+</script>
 <MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
-
 <MACRO NAME="CLOSE_HTML">

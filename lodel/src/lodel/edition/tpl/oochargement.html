@@ -33,19 +33,18 @@
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
-<MACRO NAME="CURRENT_PATH">
-<ul id="actionsOnEntitiesPath">
-<li>[@EDITION.IMPORT_A_FILE]</li>
-<IF COND="![#IDENTITY]">
-	<li>
-		<ul class="actions">
-		<li class="isolated"><a href="index.php?do=view&amp;idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.IMPORT_IN_FORM]</a></li>
-		</ul>
-	</li>
-</IF>
-</ul>
+<div id="pageContext">
+	<IF COND="![#MULTIPLE]">
+		<strong>[@EDITION.IMPORT_SIMPLE]</strong>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="oochargement.php?idparent=[#IDPARENT]&amp;<IF COND="![#IDENTITY]">idtype=[#IDTYPE]<ELSE/>identity=[#IDENTITY]</IF>&amp;multiple=1">[@EDITION.IMPORT_MULTIPLE]</a>
+	<ELSE/>
+		<a href="oochargement.php?idparent=[#IDPARENT]&amp;<IF COND="![#IDENTITY]">idtype=[#IDTYPE]<ELSE/>identity=[#IDENTITY]</IF>">[@EDITION.IMPORT_SIMPLE]</a>&nbsp;&nbsp;|&nbsp;&nbsp;<strong>[@EDITION.IMPORT_MULTIPLE]</strong>
+	</IF>
+	<IF COND="![#IDENTITY]">
+		&nbsp;|&nbsp;<a href="index.php?do=view&amp;idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]">[@EDITION.IMPORT_IN_FORM]</a>
+	</IF>
+</div>
 
-<br />&nbsp;<br />
+<MACRO NAME="CURRENT_PATH">
 
 <IF COND="[#ERROR]">
 	<dl class="error servoo">
@@ -53,6 +52,186 @@
 		<dd>[#ERROR]</dd>
 	</dl>
 </IF>
+
+<div id="form">
+	<form name="formfic" id="formfic" enctype="multipart/form-data" action="[#URL]" method="post">
+		<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
+		<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
+		<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
+		<IF COND="[#IDENTITY]"><input type="hidden" name="identity" value="[#IDENTITY]" /></IF>
+		<IF COND="[#IDTASK]"><input type="hidden" name="idtask" value="[#IDTASK]" /></IF>
+		<IF COND="[#LODELTAGS]"><input type="hidden" name="lodeltags" value="[#LODELTAGS]" /></IF>
+		<IF COND="[#MULTIPLE]"><input type="hidden" name="multiple" value="1"/></IF>
+
+		<input type="hidden" id="uploadType" name="fileorigin" value="upload" />
+		<label for="file1"><IF COND="[#MULTIPLE]">[@EDITION.CHOOSE_AN_ARCHIVE_ON_THE_HARD_DISK]<ELSE/>[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</IF></label>
+		<br /><br/>
+		<input size="30" class="" type="file" name="file1" id="file1"/>
+		&nbsp;
+		<input type="button" id="opts" class="fullrounded_soft oochargement_options" onclick="o.showOptions();"/>&nbsp;<span style="color:#28a6c2;"><strong>[@EDITION.OPTIONS|mb_strtoupper('UTF-8')]</strong></span>&nbsp;&nbsp;[@EDITION.CHOSEN_MODE] : <span id="chosenmode">[@EDITION.STRICT]</span>
+		<br />
+		<label for="localfilename"><a href="#" class="action" onclick="window.open('index.php?lo=filebrowser&amp;do=view','Upload','width=600,top=0,left=0,scrollbars=yes,resizable=yes'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a></label>
+	        <input size="40" type="text" id="localfilename" name="localfile" class="localChoose" />
+		<br/><br/>
+		<IF COND="[#NOSERVOO]">
+			[@EDITION.ERROR_NOSERVOO_CONFIGURED_HOWTO_CONFIGURE]
+			<IF COND="[#LODELUSER.ADMIN]">
+				<a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
+			</IF>
+		<ELSE/>
+			<input class="styled styled_blue" type="button" value="[@COMMON.UPLOAD]" id="validImport" onclick="return o.send();" />&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="styled styled_grey" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
+		</IF>
+
+		<hr class="blue"/>
+
+		<div id="options" class="hidden fullrounded">
+			<input type="radio" name="mode" value="strict" checked="checked" onchange="o.selectMode('strict');"/> <span style="font-weight:bold;color:#35abc5;">[@EDITION.STRICT_MODE]</span>
+			<p>[@EDITION.STRICT_MODE_INFORMATIONS]</p>
+			<p>[@EDITION.STRICT_MODE_WHY]</p>
+			<input type="radio" name="mode" value="extended" onchange="o.selectMode('extended');"/> <span style="font-weight:bold;color:#35abc5;">[@EDITION.EXTENDED_MODE]</span>
+			<p>[@EDITION.EXTENDED_MODE_INFORMATIONS]</p>
+			<p>[@EDITION.EXTENDED_MODE_WHY]</p>
+		</div>
+	</form>
+</div>
+
+<div id="otxresults" class="hidden">
+	<div id="otxstatus">
+		<h1>[@EDITION.DOWNLOAD_STATUS|mb_strtoupper('UTF-8')]</h1>
+		<div id="otxload" class="actif">
+			<img src="[#SHAREURL]/images/loading.png" alt="[@EDITION.LOADING]"/>&nbsp;
+			<span>[@EDITION.LOADING]</span>
+		</div>
+		<IF COND="[#MULTIPLE]">
+			<div id="otxarchive"></div>
+		</IF>
+		<div id="otxconvert" class="inactif">
+			<img src="[#SHAREURL]/images/waiting.png" alt="[@EDITION.WAITING]"/>&nbsp;
+			<span>[@EDITION.CONVERSION]</span>
+		</div>
+		<div id="otxanalyse" class="inactif">
+			<img src="[#SHAREURL]/images/waiting.png" alt="[@EDITION.WAITING]"/>&nbsp;
+			<span>[@EDITION.ANALYSE]</span>
+		</div>
+	</div>
+	<IF COND="[#MULTIPLE]">
+		<div id="otxresult" class="hidden">
+			<h1>[@EDITION.LOADED_FILES|mb_strtoupper('UTF-8')]</h1>
+		</div>
+	</IF>
+	<div id="otxerror" class="hidden fullrounded"><img src="[#SHAREURL]/images/alerte_rouge.png" title="[@INSTALL.ERROR]" alt="[@INSTALL.ERROR]" class="alert"/> </div>
+</div>
+
+<IF COND="[#LODELUSER.ADMINLODEL] AND ![#MULTIPLE]">
+	<div id="otxadmin" class="fullrounded">
+		<h1 class="toprounded">[@COMMON.ADMINISTRATION|mb_strtoupper('UTF-8')]</h1>
+		<div>
+			<input class="styled styled_blue" type="button" name="sortieoopublic" value="[@EDITION.OUTPUT_PUBLIC_TEI]" onclick="o.send('sortieoopublic');"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="styled styled_blue" type="button" name="sortieoo" value="[@EDITION.OUTPUT_LODEL_TEI]" onclick="o.send('sortieoo');"/><br/><br/>
+			<input class="styled styled_blue" type="button" name="sortie" value="[@EDITION.OUTPUT_CONVERSION]" onclick="o.send('sortie');"/>
+		</div>
+	</div>
+</IF>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript">
+var OtxLoad = {};
+OtxLoad = function() {
+	this.init();
+};
+OtxLoad.prototype = {
+	multiple:false,
+	init:function() {
+		<IF COND="[#MULTIPLE]">this.multiple = true;</IF>
+	},
+	showOptions:function() {
+		if($('options').hasClass('hidden')) {
+			$('options').removeClass('hidden');
+			$('opts').removeClass('oochargement_options').addClass('oochargement_options_displayed');
+		} else {
+			$('options').addClass('hidden');
+			$('opts').removeClass('oochargement_options_displayed').addClass('oochargement_options');
+		}
+	},
+	changeStep:function(status, opt) {
+		switch(status) {
+			case 0:
+				$('otxresults').removeClass('hidden');
+				if(this.multiple)
+				{
+					$('otxresult').removeClass('hidden');
+					$('otxarchive').empty();
+				}
+				$('otxload').removeClass('actif').removeClass('done').addClass('inactif');
+				$('otxconvert').removeClass('actif').removeClass('done').addClass('inactif');
+				$('otxanalyse').removeClass('actif').removeClass('done').addClass('inactif');
+				break;
+
+			case 1:
+				if(this.multiple) {
+					$('otxarchive').set('html', opt);
+				}
+				$('otxload').removeClass('inactif').removeClass('actif').addClass('done');
+				$('otxload').getFirst('img').set('src', '[#SHAREURL]/images/done.png').set('alt', '[@EDITION.DONE]');
+				$('otxload').getFirst('span').set('text', this.multiple ? "[@EDITION.ARCHIVE_LOADED]" : "[@EDITION.FILE_LOADED]");
+				$('otxconvert').removeClass('inactif').removeClass('done').addClass('actif').getFirst('img').set('src', '[#SHAREURL]/images/loading.png').set('alt', '[@EDITION.LOADING]');
+				$('otxanalyse').removeClass('actif').removeClass('done').addClass('inactif').getFirst('img').set('src', '[#SHAREURL]/images/waiting.png').set('alt', '[@EDITION.WAITING]');
+				break;
+
+			case 2:
+				$('otxconvert').removeClass('actif').addClass('done');
+				$('otxconvert').getFirst('img').set('src', '[#SHAREURL]/images/done.png').set('alt', '[@EDITION.DONE]');
+				$('otxconvert').getFirst('span').set('text', "[@EDITION.FILE_CONVERTED] "+opt);
+				$('otxanalyse').removeClass('inactif').removeClass('done').addClass('actif').getFirst('img').set('src', '[#SHAREURL]/images/loading.png').set('alt', '[@EDITION.LOADING]');
+				break;
+
+			case 3:
+				$('otxanalyse').removeClass('actif').addClass('done').getFirst('img').set('src', '[#SHAREURL]/images/done.png').set('alt', '[@EDITION.DONE]');
+				if(!this.multiple) {
+					$('otxanalyse').getFirst('span').set('text', "[@EDITION.CHECKIMPORT_REDIRECT]");
+					window.location = 'checkimport.php?idtask='+opt;
+				} else {
+					$('otxresult').adopt(new Element('div', {'html':opt}).getFirst());
+				}
+				break;
+		}
+	},
+	send:function(more) {
+		var dist = $('file1').get('value');
+		var local = $('localfilename').get('value');
+		if(!dist && !local) { return false; }
+		if($('ifcontainer')) { $('ifcontainer').dispose(); }
+		$('otxresults').adopt(new Element('iframe', {'id':'ifcontainer', 'name':'ifcontainer', 'style':'display:none'}));
+		if(more) {
+			$('formfic').adopt(new Element('input', {'type':'hidden', 'value':1, 'name':more}));
+		} else {
+			this.changeStep(0);
+			$('formfic').set('target', 'ifcontainer');
+		}
+		$('formfic').submit();
+		return false;
+	},
+	error:function(msg) {
+		$('otxerror').removeClass('hidden').set('html', $('otxerror').get('html') + msg);
+	},
+	selectMode:function(mode) {
+		if('strict' === mode) {
+			$('chosenmode').set('text', "[@EDITION.STRICT]");
+		} else {
+			$('chosenmode').set('text', "[@EDITION.EXTENDED]");
+		}
+	}
+};
+
+var o = {};
+window.addEvent('domready', function() {
+	o = new OtxLoad();
+});
+
+</script>
+
+<!--[
 
 <div id="uploadMsg" class="displayOff">
 </div>
@@ -113,5 +292,5 @@ function unScript() {
 }
 window.onunload= unScript;
 </script>
-
+]-->
 <MACRO NAME="CLOSE_HTML">

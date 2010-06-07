@@ -43,7 +43,7 @@ if (!((bool) ini_get("register_globals"))) {
 }
 
 /************************************ !! VERSION !! **************************************/
-$version = "0.9";
+$version = "1.0";
 /************************************ !! VERSION !! **************************************/
 
 if(false === strpos($_SERVER['REQUEST_URI'], 'lodeladmin-'.$version))

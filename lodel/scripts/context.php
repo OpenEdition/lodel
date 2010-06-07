@@ -313,7 +313,7 @@ class C
 		// valid the request
 		if (isset(self::$_context['do']))
 		{
-			if(!preg_match("/^(_[a-zA-Z]+_)?[a-zA-Z]+$/", self::$_context['do'])) 
+			if(!preg_match("/^(_[a-zA-Z0-9]+_)?[a-zA-Z0-9]+$/", self::$_context['do'])) 
 				trigger_error("ERROR: invalid action", E_USER_ERROR);
 		}
 

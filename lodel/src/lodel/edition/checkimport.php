@@ -55,28 +55,91 @@ require 'siteconfig.php';
 
 try
 {
-    include 'auth.php';
-    authenticate(LEVEL_REDACTOR);
-    
-    include 'taskfunc.php';
-    include 'xmlimport.php';
-    include 'class.checkImportHandler.php';
-    $idtask = (int)C::get('idtask');
-    $task              = gettask($idtask);
-    $context['reload'] = (bool)C::get('reload');
-    gettypeandclassfromtask($task, $context);
-    
-    $text = file_get_contents($task['fichier']);
-    
-    $handler = new XMLImportHandler();
-    $parser  = new XMLImportParser();
-    $parser->init($context['class']);
-    $parser->parse($text, $handler);
-    
-    $context['tablecontents'] = $handler->contents();
-    $context['multidoc']      = isset($handler->multidoc) ? $handler->multidoc : false;
-    
-    View::getView()->render('checkimport');
+	include 'auth.php';
+	authenticate(LEVEL_REDACTOR);
+	
+	include 'taskfunc.php';
+	include 'xmlimport.php';
+	include 'class.checkImportHandler.php';
+	$idtask = (int)C::get('idtask');
+	$task              = gettask($idtask);
+	$context['reload'] = (bool)C::get('reload');
+	gettypeandclassfromtask($task, $context);
+
+	$context = array_merge($context, unserialize(base64_decode(file_get_contents($task['fichier']))));
+	$context['idtype'] = $task['idtype'];
+	if(!empty($context['contents']['entries']))
+		$context['entries'] = $context['contents']['entries'];
+	if(!empty($context['contents']['persons']))
+		$context['persons'] = $context['contents']['persons'];
+	if(!empty($context['contents']['entities']))
+		$context['relations'] = $context['contents']['entities'];
+	if(!empty($context['contents']['errors']))
+		$context['error'] = $context['contents']['errors'];
+
+	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities'], $context['contents']['errors']);
+	
+	$node = null;
+	if(!empty($context['otxreport']))
+	{
+		$reader = new XMLReader(); // parse OTX logs
+		$reader->XML($context['otxreport'], 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+		$tree = array();
+		$isMetas = 0;
+		$nbItem = 0;
+		while($reader->read())
+		{
+			if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
+			('document-meta' !== $reader->localName && !$isMetas)) continue;
+			
+			++$isMetas;
+			
+			if(XMLReader::ELEMENT === $reader->nodeType)
+			{
+				if('document-meta' === $reader->localName)
+				{
+					$context['otx_report'][++$nbItem] = array();
+					continue;
+				}
+				$tree[] = $reader->localName;
+				$node =& $context['otx_report'][$nbItem];
+				foreach($tree as $t)
+				{
+					isset($node[$t]) || $node[$t] = array();
+					$node =& $node[$t];
+				}
+				
+				if($reader->isEmptyElement)
+				{
+					array_pop($tree);
+					$node = array();
+					if($reader->hasAttributes)
+					{
+						$reader->moveToFirstAttribute();
+						do
+						{
+							$node[$reader->localName] = $reader->value;
+						} while($reader->moveToNextAttribute());
+					}
+				}
+				else $node = '';
+			}
+			elseif(XMLReader::END_ELEMENT === $reader->nodeType)
+			{
+				if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
+				('document-meta' !== $reader->localName && !$isMetas)) continue;
+				array_pop($tree);
+				if('document-meta' === $reader->localName) --$isMetas;
+			}
+			elseif(XMLReader::TEXT === $reader->nodeType)
+			{
+				$node .= $reader->value;
+			}
+		}
+		$reader->close();
+	}
+
+	View::getView()->render('checkimport');
 }
 catch(LodelException $e)
 {

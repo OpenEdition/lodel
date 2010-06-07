@@ -102,6 +102,7 @@ class tablefieldsVO
 	public $status;
 	public $rank;
 	public $upd;
+	public $otx;
 	/**#@-*/
 }
 

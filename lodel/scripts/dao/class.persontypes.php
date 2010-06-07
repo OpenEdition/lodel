@@ -93,6 +93,7 @@ class persontypesVO
 	public $rank;
 	public $status;
 	public $upd;
+	public $otx;
 	/**#@-*/
 }
 

@@ -51,7 +51,7 @@
 define('backoffice-lodeladmin', true);
 
 if (!file_exists("lodelconfig.php")) {
-	header('location: lodeladmin-0.9/install.php');
+	header('location: lodeladmin-1.0/install.php');
 	exit;
 }
 

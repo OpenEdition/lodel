@@ -305,7 +305,7 @@ class TableFieldsLogic extends Logic
 	* préliminaires à une suppression.
 	*
 	* @param object $dao la DAO utilisée
-	* @param array &$context le contexte passé par référénce
+	* @param array &$context le contexte passé par référence
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{
@@ -403,7 +403,7 @@ class TableFieldsLogic extends Logic
 									'idgroup' => array('select', '+'),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
-									'g_name_tei' => array('select', ''),
+									'otx' => array('text', ''),
 									'style' => array('mlstyle', ''),
 									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
@@ -426,7 +426,7 @@ class TableFieldsLogic extends Logic
 	 */
 	protected function _uniqueFields() 
 	{ 
-		return array(array('name', 'class'), );
+		return array(array('name', 'class'), array('otx', 'class'));
 	}
 	// end{uniquefields} automatic generation  //
 

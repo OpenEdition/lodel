@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	mask 		TEXT NOT NULL DEFAULT '',	# masque à appliquer sur le champs pour validation
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
+	otx tinytext NOT NULL,
 	upd		TIMESTAMP,
 
 	PRIMARY KEY (id),
@@ -297,7 +298,7 @@ CREATE TABLE IF NOT EXISTS #_TP_internalstyles (
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
-
+	otx tinytext NOT NULL,
 	PRIMARY KEY (id)
 ) _CHARSET_;
 
@@ -310,7 +311,7 @@ CREATE TABLE IF NOT EXISTS #_TP_characterstyles (
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	status		TINYINT DEFAULT '1' NOT NULL,
 	upd		TIMESTAMP,
-
+	otx tinytext NOT NULL,
 	PRIMARY KEY (id)
 ) _CHARSET_;
 
@@ -333,7 +334,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,	# rank sert pour l'interface.
 	status		TINYINT DEFAULT '1' NOT NULL,
 
-
+	otx tinytext NOT NULL,
 	upd		TIMESTAMP,
 	PRIMARY KEY (id),
 	KEY index_type (type),
@@ -362,7 +363,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	newbyimportallowed	TINYINT DEFAULT '0' NOT NULL,
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	sort			VARCHAR(64) NOT NULL DEFAULT 'rank' NOT NULL, # 
-
+	otx tinytext NOT NULL,
 	upd		TIMESTAMP,
 	lang		VARCHAR(10) NOT NULL DEFAULT 'fr',
 

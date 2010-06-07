@@ -63,7 +63,8 @@
 	</LOOP>
 	<IF COND="[#ERROR.SERVOO]">
 		<div class="error">
-		[@ERROR.ERROR_CONTACTING_SERVOO] [#ERROR.SERVOO]
+		[@ERROR.ERROR_CONTACTING_SERVOO]
+			<pre>[#ERROR.SERVOO|htmlentities(ENT_COMPAT, 'UTF-8')|nl2br]</pre>
 		</div>
 	</IF>
 	</fieldset>

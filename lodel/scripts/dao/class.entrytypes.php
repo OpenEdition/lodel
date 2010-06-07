@@ -98,6 +98,7 @@ class entrytypesVO
 	public $rank;
 	public $status;
 	public $upd;
+	public $otx;
 	/**#@-*/
 }
 
