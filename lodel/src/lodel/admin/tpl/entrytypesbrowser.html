@@ -1,0 +1,104 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="iso-8859-1"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+<USE MACROFILE="macros.html">
+<USE MACROFILE="macros_interface.html">
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@EDITION.EXTERNALENTRYTYPESBROWSER]</title>
+<script type="text/javascript" src="[#SHAREURL]/js/interface.js"></script>
+<MACRO NAME="HEADER_HEAD_CLOSE">
+
+<body id="browser">
+<div class="close">
+<a href="#" onclick="window.close()" class="action">[@EDITION.CLOSE_THE_WINDOW]</a>
+</div>
+
+<form  method="post">
+<fieldset>
+	<legend>[@EDITION.BROWSE_AND_CHOOSE_ONE_OR_MANY_ENTRYTYPES]</legend>
+	<LOOP NAME="foreach" ARRAY="[#EXTERNALENTRYTYPES]">
+		<BEFORE><ul class="listentities" style="list-style-type:none;"></BEFORE>
+		<DO>
+			<LET VAR="i" GLOBAL="1">[%I|lmath('+',1)]</LET>
+			<li>
+			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[%I]').style.display == 'none') { document.getElementById('childContainer[%I]').style.display='inline';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[%I]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />&nbsp;
+			[#KEY]
+			<div style="display:none" id="childContainer[%I]">
+				<LOOP NAME="foreach" ARRAY="[#VALUE]">
+					<BEFORE><ul></BEFORE>
+					<DO>
+					<li>
+						<input type="checkbox" name="entrytypes" id="[#KEY]:[#VALUE|htmlspecialchars]" value="[#KEY]:[#VALUE|htmlspecialchars]" <IF COND="[#CURRENTEXTERNALENTRYTYPES|lin_array([#KEY])]">checked="checked"</IF>/> [#VALUE]
+					</li>
+					<AFTER></ul></AFTER>
+				</LOOP>	
+			</div>
+			</li>
+		</DO>
+		<AFTER></ul></AFTER>
+		<ALTERNATIVE>[@ADMIN.NOEXTERNALENTRYTYPES_FOUND]</ALTERNATIVE>
+	</LOOP>
+	<input type="button" class="button" value="[@COMMON.SELECT]" onclick="javascript:sendValues();" />
+</fieldset>
+<div class="close">
+<a href="#" onclick="window.close()" class="action">[@EDITION.CLOSE_THE_WINDOW]</a>
+</div>
+<script type="text/javascript">
+var sendValues = function() {
+	var obj=window.opener.document.getElementById('externalentrytypes');
+	var objselect=window.opener.document.getElementById('externalentrytypes_select');
+	var pattern=/^(.*):(.*)$/;
+	var chkbox = document.getElementsByName('entrytypes');
+	var s='';
+	var i=0;
+	var j = 0;
+	var v = '';
+	obj.value='';
+	while(objselect.options.length)
+	{
+		objselect.removeChild(objselect.options[objselect.options.length -1]);
+	}
+	
+	for(i=0; i<chkbox.length; i++){
+		if(chkbox[i].checked) {
+			var result = chkbox[i].value.match(pattern);
+			if(result[2].length > 50) {
+				result[2] = result[2].substr(0,50) + ' ... ';
+			}
+			var opt = window.opener.document.createElement('option');
+			opt.innerHTML = result[1].split('.')[0] + ' - ' + result[2];
+			opt.setAttribute('value', result[1]);
+			objselect.appendChild(opt);
+			obj.value += result[1]+',';
+		}
+	}
+	window.close();
+}
+</script>
+</form>
+</body>
+</html>
