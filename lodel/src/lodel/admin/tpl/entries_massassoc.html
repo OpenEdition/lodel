@@ -679,7 +679,7 @@
 			<AFTER></ul></AFTER>
 		</LOOP>
 	</LOOP>
-	<LOOP NAME="getExtEntryTypes" TABLE="tablefields,entities,types,entrytypes" SELECT="DISTINCT(name)" WHERE="entities.id=[#ID] AND tablefields.class=types.class AND name NOT IN (SELECT DISTINCT(type) FROM entrytypes) AND tablefields.type='entries'" ORDER="tablefields.rank">
+	<LOOP NAME="getExtEntryTypes" TABLE="tablefields,entities,types,entrytypes" SELECT="DISTINCT(name)" WHERE="entities.id=[#ID] AND tablefields.class=types.class AND name NOT IN (SELECT DISTINCT(type) FROM #_TP_entrytypes) AND tablefields.type='entries'" ORDER="tablefields.rank">
 		<LET ARRAY="s">[#NAME|lexplode('.')]</LET>
 		<LET VAR="db_ext"><?php echo DATABASE.'_'.$context['s'][0];?></LET>
 		<LOOP NAME="getExtRelatedEntryTypes" DATABASE="`[#DB_EXT]`" TABLE="entrytypes" SELECT="id AS idtype, title" WHERE="id=[#S.1]" ORDER="rank">
