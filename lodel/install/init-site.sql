@@ -575,7 +575,7 @@ CREATE TABLE IF NOT EXISTS #_TP_relations_ext (
   KEY index_id2 (id2),
   KEY index_nature (nature),
   KEY index_site (site)
-) _CHARSET_
+) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_history (
   id int(10) unsigned NOT NULL auto_increment,
@@ -583,4 +583,4 @@ CREATE TABLE IF NOT EXISTS #_TP_history (
   context text,
   upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (id)
-) _CHARSET_
+) _CHARSET_;
