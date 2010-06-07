@@ -205,12 +205,23 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function listAction (&$context, &$error)
 	{
+		global $db;
 		$daotype = DAO::getDAO ($this->daoname);
 		$context['idtype'] = @$context['idtype'];
+
+		if(C::get('site_ext', 'cfg'))
+		{
+			$context['external'] = true;
+			$context['site_ext'] = C::get('site_ext', 'cfg');
+			$context['db_ext'] = DATABASE.'_'.$context['site_ext'];
+			$db->SelectDB($context['db_ext']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		} else $context['external'] = false;
+
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
-			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
+			trigger_error("ERROR: idtype must me known in EntriesLogic::viewAction", E_USER_ERROR);
 		}
+		usecurrentdb();
 		$this->_populateContext ($votype, $context['type']);
 		return '_ok';
 	}
@@ -233,7 +244,7 @@ class EntriesLogic extends GenericLogic
 		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
 		$daotype = DAO::getDAO ("entrytypes");
-		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat");
+		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort");
 		$class = $context['class']=$votype->class;
 		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
@@ -251,7 +262,6 @@ class EntriesLogic extends GenericLogic
 		}
 		
 		$vo = null;
-
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
 		if (isset ($context['g_name'])) {
@@ -316,11 +326,37 @@ class EntriesLogic extends GenericLogic
 		$this->_moveFiles($id,$this->files_to_move,$gvo);
 		$gdao->save($gvo,$new);  // save the related table
 
+		$context['degree'] = 0;
+		$this->saveRelations($vo, $context);
+		
 		update();
 		return "_back";
 	}
-
-
+	
+	/**
+	 * Used in editAction to do extra operation after the object has been saved
+	 * Here we save relations between entries where sort type is defined as rank
+	 *
+	 * @param object $vo l'objet qui a été créé
+	 * @param array $context le contexte
+	 */
+	public function saveRelations($vo, &$context)
+	{
+		$votype = DAO::getDAO ("entrytypes")->getById ($vo->idtype, "sort");
+		
+		if('rank' == $votype->sort && $vo->idparent)
+		{
+			$daorel = DAO::getDAO('relations');
+			$vorel = $daorel->createObject();
+			$vorel->id1 = $vo->idparent;
+			$vorel->id2 = $context['id'];
+			$vorel->nature = 'P';
+			$vorel->degree = ++$context['degree'];
+			$daorel->save($vorel);
+			$this->saveRelations(DAO::getDAO('entries')->getById($vo->idparent), $context);
+		}
+	}
+	
 	/**
 	 * Changement du rang d'un objet (index seulement)
 	 *
@@ -329,7 +365,409 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
-		return parent::changeRankAction($context, $error, 'idparent', '');
+		return parent::changeRankAction($context, $error, 'idparent,idtype', '');
+	}
+
+	/**
+	 * Association massive d'entrées/entité
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	public function massassocAction(&$context, &$error)
+	{
+		if(!empty($context['getentitieslist']))
+		{ // AJAX list entities
+			$this->listAction($context, $error);
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 2);
+			return '_ajax';
+		}
+
+		if(!empty($context['getentrieslist']))
+		{ // AJAX list entries
+			$this->listAction($context, $error);
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 1);
+			return '_ajax';
+		}
+
+		if(!empty($context['getrelatedentitieslist']))
+		{ // AJAX list related entities
+			$this->listAction($context, $error);
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 3);
+			return '_ajax';
+		}
+
+		if(!empty($context['getrelatedentrieslist']))
+		{ // AJAX list related entries
+			$this->listAction($context, $error);
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 4);
+			return '_ajax';
+		}
+
+		if(!empty($context['navigate']))
+		{
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 7);
+			return '_ajax';
+		}
+
+		if(!empty($context['propose']))
+		{
+			if(empty($context['query']))
+				trigger_error('ERROR: missing entry name', E_USER_ERROR);
+
+			function_exists('search') || require 'searchfunc.php';
+
+			$context['responses'] = array();
+
+			$searchEngine = C::get('solr', 'cfg');
+			if(empty($searchEngine))
+			{
+				if(!C::get('searchEngine', 'cfg'))
+					trigger_error('ERROR: no search engine has been defined', E_USER_ERROR);
+
+				$response = search($context, '', '');
+				if(!empty($response))
+				{
+					$context['nbresults'] = count($response);
+					$context['responses'] = $response;
+				}
+				unset($response);
+			}
+			else
+			{
+				if(empty($searchEngine['instance']) || empty($searchEngine['idField']))
+					trigger_error('ERROR: missing configuration for Solr engine', E_USER_ERROR);
+
+				$context['fields'] = (array) $searchEngine['idField'];
+				if(!empty($searchEngine['searchField']))
+				{
+					if(is_array($searchEngine['searchField']))
+					{
+						$context['f'] = array();
+						foreach($searchEngine['searchField'] as $field)
+							$context['f'][] = $field;
+					}
+					else
+						$context['f'] = $searchEngine['searchField'];
+				}
+
+				$response = solrSearch($context, $searchEngine);
+				if(!empty($response))
+				{
+					if(!empty($response['response']['docs']))
+					{
+						foreach($response['response']['docs'] as $k => $doc)
+						{
+							$resp = (array) $doc;
+							if('id' !== $searchEngine['idField'])
+								$resp['id'] = $resp[$searchEngine['idField']];
+							$context['responses'][] = $resp;
+						}
+					}
+					$context['nbresults'] = $response['response']['numFound'];
+					unset($response);
+				}
+			}
+
+			$context['ids'] = array();
+			foreach($context['responses'] as $response)
+				$context['ids'][] = $response['id'];
+
+			unset($context['responses']);
+
+			echo View::getView()->getIncTpl($context, 'entries_massassoc', '', 'tpl/', 6);
+			return '_ajax';
+		}
+
+		if(empty($context['edit']))
+		{ // not editing
+			$this->listAction($context, $error);
+			return 'entries_massassoc';
+		}
+
+		global $db;
+
+		if(!empty($context['dissociate']))
+		{
+			if(empty($context['id']))
+				trigger_error('ERROR: missing id', E_USER_ERROR);
+
+			$vo = DAO::getDAO('history')->find('id='.(int)$context['id']);
+			if(!$vo)
+				trigger_error('ERROR: invalid id', E_USER_ERROR);
+
+			$c = unserialize($vo->context);
+			foreach($c['identries'] as $identry)
+			{
+				$identry = explode('_', $identry);
+				if(false === strpos($identry[0], '.'))
+				{
+					$db->Execute(lq("DELETE FROM #_TP_relations WHERE nature='E' AND id2=".(int)$identry[1]." AND id1 ".sql_in_array($c['identities']))) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				}
+				else
+				{
+					$identry[0] = explode('.', $identry[0]);
+					$db->Execute(lq("DELETE FROM `".DATABASE.'_'.$identry[0][0]."`.#_TP_relations_ext WHERE nature='EE' AND id2=".(int)$identry[0][1]." AND id1 ".sql_in_array($c['identities'])." AND site=".$db->quote(C::get('site', 'cfg')))) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+					$db->Execute(lq("DELETE FROM #_TP_relations_ext WHERE nature='E' AND id2=".(int)$identry[0][1]." AND id1 ".sql_in_array($c['identities'])." AND site=".$db->quote($identry[0][0]))) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				}
+			}
+
+			DAO::getDAO('history')->delete($vo);
+
+			update();
+			return '_ajax';
+		}
+
+		if((empty($context['identities']) && empty($context['entitiesset'])) || (empty($context['identries']) && empty($context['entriesset'])))
+			trigger_error('ERROR: missing ids', E_USER_ERROR);
+
+		if(!empty($context['identries']) && is_array($context['identries']))
+			$context['identries'] = array_unique($context['identries']);
+		if(!empty($context['identities']) && is_array($context['identities']))
+			$context['identities'] = array_unique($context['identities']);
+
+		if(!empty($context['associate']))
+		{ // need to log this action
+			$context['idsentities'] = $context['idsentries'] = array();
+			$associate = true;
+			$context['toassociate'] = true;
+			unset($context['associate']);
+		}
+
+		if(!empty($context['entitiesset']) && is_array($context['identries']))
+		{ // full reset
+			foreach($context['identries'] as $e)
+			{
+				$e = explode('_', $e);
+				if(false !== strpos($e[1], '.'))
+				{
+					$site = explode('.', $e[1]);
+					$db->Execute(lq("DELETE FROM #_TP_relations_ext WHERE nature='E' AND id2=".(int) $e[0])) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+					$db->Execute(lq("DELETE FROM `".DATABASE.'_'.$site[0]."`.#_TP_relations_ext WHERE site=".$db->quote(C::get('site', 'cfg'))." AND nature='EE' AND id2=".(int) $e[0])) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				}
+				else
+				{
+					$db->Execute(lq("DELETE FROM #_TP_relations WHERE nature='E' AND id2=".(int) $e[0])) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				}
+			}
+			if(empty($context['identities']))
+			{
+				update();
+				return '_ajax';
+			}
+			unset($context['entriesset']);
+		}
+		elseif(!empty($context['entriesset']) && is_array($context['identities']))
+		{ // full reset
+			$extEntryTypes = $db->getArray(lq("SELECT name FROM #_TP_tablefields WHERE type='entries' AND name NOT IN (SELECT type FROM #_TP_entrytypes)"));
+			if(!empty($extEntryTypes))
+			{
+				foreach($extEntryTypes as $k => $v)
+				{
+					$v = explode('.', $v['name']);
+					$extEntryTypes[$k] = current($v);
+				}
+			}
+
+			foreach($context['identities'] as $id)
+			{
+				$id = (int) $id;
+				$db->Execute(lq("DELETE FROM #_TP_relations WHERE nature='E' AND id1=".$id)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);;
+				$db->Execute(lq("DELETE FROM #_TP_relations_ext WHERE nature='E' AND id1=".$id)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);;
+				foreach($extEntryTypes as $site)
+				{
+					$db->Execute(lq("DELETE FROM `".DATABASE.'_'.$site."`.#_TP_relations_ext WHERE site=".$db->quote(C::get('site', 'cfg'))." AND nature='EE' AND id1=".$id))
+						 or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				}
+			}
+			if(empty($context['identries']))
+			{
+				update();
+				return '_ajax';
+			}
+			unset($context['entriesset']);
+		}
+
+		if(!empty($context['identries']) && is_array($context['identries']))
+		{
+			$localcontext = $context;
+			$entries = $context['identries'];
+			foreach($entries as $entry)
+			{
+				$entry = explode('_', $entry);
+				$localcontext['identries'] = current($entry);
+				$localcontext['idtype'] = end($entry);
+				$this->massAssocAction($localcontext, $error);
+				if(!empty($context['toassociate']))
+				{
+					$context['idsentities'] += $localcontext['idsentities'];
+					$context['idsentries'] += $localcontext['idsentries'];
+				}
+			}
+		}
+		else
+		{
+			if(empty($context['idtype']))
+				trigger_error('ERROR: missing idtype', E_USER_ERROR);
+
+			$identry = $context['identries'];
+			$daoEntries = DAO::getDAO('entries');
+			$daoEntrytypes = DAO::getDAO('entrytypes');
+				
+			$idtype = $context['idtype'];
+			if(false !== strpos($idtype, '.'))
+			{ // site.idtype
+				$typeName = $idtype;
+				$idtype = explode('.', $idtype);
+				$site_ext = current($idtype); // grab the site
+				$idtype = (int) end($idtype); // grab the idtype
+				$db->SelectDB(DATABASE.'_'.$site_ext) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+				$reltable = lq('#_TP_relations_ext');
+				$where = ' AND externalallowed=1';
+			}
+			else
+			{
+				$site_ext = false;
+				$reltable = lq('#_TP_relations');
+				$where = '';
+			}
+
+			$type = $daoEntrytypes->find('id='.$idtype.$where, 'type'); // check entrytype is allowed to be shared
+			if(!$type) trigger_error('ERROR: invalid idtype '.$idtype.$where, E_USER_ERROR);
+			if(!isset($typeName)) $typeName = $type->type;
+
+			$entry = $daoEntries->find('id='.$identry, 'id'); // check entry exists
+			if(!$entry) trigger_error('ERROR: invalid entry', E_USER_ERROR);
+
+			if(!empty($context['toassociate']))
+				$context['idsentries'][] = $context['idtype'].'_'.$identry;
+
+			usecurrentdb();
+
+			foreach($context['identities'] as $id)
+			{
+				$id = (int) $id;
+
+				$authorized = $db->GetOne(lq('
+				SELECT COUNT(tf.id)
+					FROM #_TP_entities e
+					JOIN #_TP_types t ON (e.idtype=t.id)
+					JOIN #_TP_tablefields tf ON (t.class=tf.class)
+					WHERE e.id='.$id.' AND tf.type="entries" AND tf.name="'.$typeName.'"'));
+
+				if($authorized > 0)
+				{
+					$exists = $db->getOne(lq('SELECT idrelation FROM '.$reltable.' WHERE id1='.$id.' AND nature="E" AND id2='.$identry));
+
+					if(!$exists)
+					{
+						$degree = (int)$db->GetOne(lq('
+					SELECT MAX(degree)
+						FROM '.$reltable.'
+						WHERE id1='.$id.' AND nature="E"'));
+
+						$query = '
+					REPLACE INTO '.$reltable.' ';
+						if($site_ext)
+						{
+							$query .= "(id1,id2,nature,degree,site) VALUES ({$id}, {$identry}, 'E', ".++$degree.", ".$db->quote($site_ext).")";
+							$query2 = "REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$id}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")";
+							$db->Execute(lq($query2)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+						}
+						else
+						{
+							$query .= "(id1,id2,nature,degree) VALUES ({$id}, {$identry}, 'E', ".++$degree.")";
+						}
+
+						$db->Execute($query) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+						$db->Execute(lq("UPDATE #_TP_entities set upd=NOW() WHERE id=".$id)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+						if(!empty($context['toassociate']))
+							$context['idsentities'][] = $id;
+					}
+				}
+
+				$childs = $db->Execute(lq('
+				SELECT DISTINCT(id2)
+					FROM #_TP_relations r
+					JOIN #_TP_entities e ON (e.id=r.id2)
+					JOIN #_TP_types t ON (e.idtype=t.id)
+					JOIN #_TP_tablefields tf ON (t.class=tf.class)
+					WHERE r.nature="P" AND r.id1='.$id.' AND tf.type="entries" AND tf.name="'.$typeName.'"'))
+						or trigger_error('SQLERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+
+				while(!$childs->EOF)
+				{
+					$childId = $childs->fields['id2'];
+
+					$authorized = $db->GetOne(lq('
+				SELECT COUNT(tf.id)
+					FROM #_TP_entities e
+					JOIN #_TP_types t ON (e.idtype=t.id)
+					JOIN #_TP_tablefields tf ON (t.class=tf.class)
+					WHERE e.id='.$childId.' AND tf.type="entries" AND tf.name="'.$typeName.'"'));
+
+					if(!$authorized)
+					{
+						$childs->MoveNext();
+						continue;
+					}
+
+					$exists = $db->getOne(lq('SELECT idrelation FROM '.$reltable.' WHERE id1='.$childId.' AND nature="E" AND id2='.$identry));
+
+					if($exists)
+					{
+						$childs->MoveNext();
+						continue;
+					}
+
+				$degree = (int)$db->GetOne('
+			SELECT MAX(degree)
+				FROM '.$reltable.'
+				WHERE id1='.$childId.' AND nature="E"');
+
+					$query = '
+				REPLACE INTO '.$reltable.' ';
+					if($site_ext)
+					{
+						$query .= "(id1,id2,nature,degree,site) VALUES ({$childId}, {$identry}, 'E', ".++$degree.", '{$site_ext}')";
+						$query2 = "REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$childId}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")";
+						$db->Execute(lq($query2)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+					}
+					else
+					{
+						$query .= "(id1,id2,nature,degree) VALUES ({$childId}, {$identry}, 'E', ".++$degree.")";
+					}
+
+					$db->Execute($query) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+					$db->Execute(lq("UPDATE #_TP_entities set upd=NOW() WHERE id=".$childId)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+					if(!empty($context['toassociate']))
+						$context['idsentities'][] = $childId;
+
+					$childs->MoveNext();
+				}
+				$childs->Close();
+			}
+		}
+
+		update();
+
+		if(isset($associate))
+		{
+			$context['idsentities'] = array_unique($context['idsentities']);
+			$context['idsentries'] = array_unique($context['idsentries']);
+
+			if(!empty($context['idsentries']) && !empty($context['idsentities']))
+			{
+				$db->Execute(lq('INSERT INTO #_TP_history SET nature="A", context='.$db->quote(serialize(array('identities' => $context['idsentities'], 'identries' => $context['idsentries'])))))
+					or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+
+				$id = (int)$db->Insert_ID();
+				$localcontext = array_merge($context, $db->GetRow(lq("SELECT * FROM #_TP_history WHERE id=".$id)));
+				echo View::getView()->getIncTpl($localcontext, 'entries_massassoc', '', 'tpl/', 5);
+			}
+		}
+
+		return '_ajax';
 	}
 
 	/**
@@ -363,7 +801,7 @@ class EntriesLogic extends GenericLogic
 				$i=0;
 				while (!$result->EOF) {
 					$id=$result->fields['id'];
-					$ids[]=$id;	 
+					$ids[]=$id;
 					$fullname=$result->fields['g_name'];
 					$idparent=$result->fields['idparent'];
 					if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;
@@ -445,6 +883,28 @@ class EntriesLogic extends GenericLogic
 		if ($this->idrelation) {
 			$dao=DAO::getDAO ('relations');
 			$dao->delete ('idrelation '. sql_in_array ($this->idrelation));
+		}
+
+		is_array($id) || $id = (array)$id;
+		
+		foreach($id as $i)
+		{
+			$ids = $db->execute(lq('SELECT * FROM #_TP_relations_ext WHERE id1='.$i.' AND nature="EE"'))
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(!$ids) return;
+
+			while(!$ids->EOF)
+			{
+				$db->SelectDB(DATABASE.'_'.$ids->fields['site']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id2='.$i.' AND nature="E" AND site='.$db->quote(C::get('site', 'cfg'))))
+					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	
+				$ids->MoveNext();
+			}
+	
+			usecurrentdb();
+			$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id1='.$i.' AND nature="EE"'))
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 } // class 

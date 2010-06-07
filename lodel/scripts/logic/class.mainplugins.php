@@ -113,7 +113,7 @@ class MainPluginsLogic extends Logic
 				if(!class_exists($name[0], false) || get_parent_class($name[0]) !== 'Plugins' || !method_exists($name[0], $name[1]))
 				{
 					if($return) return false;
-					trigger_error('ERROR: no way to find the plugin', E_USER_ERROR);
+					trigger_error('ERROR: no way to find the plugin "'.$name[0].'"', E_USER_ERROR);
 				}
 				return Plugins::get($name[0])->$name[1]($context, $error);
 			}
@@ -123,18 +123,18 @@ class MainPluginsLogic extends Logic
 			if(!class_exists($name[0], false))
 			{
 				include_once $path.$name[0].'/'.$name[0].'.php';
-
-				if(get_parent_class($name[0]) !== 'Plugins')
-				{
-					if($return) return false;
-					trigger_error('ERROR: the plugin '.$name[0].' does not extends class "plugins"', E_USER_ERROR);
-				}
 			}
 
+			if(get_parent_class($name[0]) !== 'Plugins')
+			{
+				if($return) return false;
+				trigger_error('ERROR: the plugin '.$name[0].' does not extends class "plugins"', E_USER_ERROR);
+			}
+			
 			if(!method_exists($name[0], $name[1]))
 			{
 				if($return) return false;
-				trigger_error('ERROR: the function '.$name[1].' does not exist', E_USER_ERROR);
+				trigger_error('ERROR: the method '.$name[1].' does not exist', E_USER_ERROR);
 			}
 			return Plugins::get($name[0])->$name[1]($context, $error);
 		}

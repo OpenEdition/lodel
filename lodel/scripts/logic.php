@@ -406,6 +406,35 @@ class Logic
 		}
 
 		return;
+		
+		$newrank = $dir>0 ? 1 : $count;
+		for ($i = 0 ; $i < $count ; $i++) {
+			if ($vos[$i]->id == $id) {
+				// exchange with the next if it exists
+				if (!isset($vos[$i+1])) {
+					break;
+				}
+				$rank -= $dir;
+			}
+			elseif(!isset($rankedvos[$rank]))
+				$rankedvos[$rank] = $vo;
+			elseif(!isset($rankedvos[$rank+$dir]))
+				$rankedvos[$rank+$dir] = $vo;
+			else $rankedvos[$rank+2*$dir] = $vo;
+
+			++$rank;
+		}
+
+		if(count($rankedvos) !== count($vos))
+			trigger_error('ERROR: Logic::_changeRank error, please report this bug to lodel@lodel.org', E_USER_ERROR);
+
+		foreach($rankedvos as $k=>$vo)
+		{
+			$vo->rank = $k;
+			$dao->save($vo);
+		}
+
+		return;
 
 // 		$desc = $dir>0 ? "" : "DESC";
 // 
@@ -485,7 +514,7 @@ class Logic
 				}
 				else
 				{
-					$context['mask'] = addslashes(serialize(array()));
+					$context['mask'] = '';
 				}
 			}
 		}

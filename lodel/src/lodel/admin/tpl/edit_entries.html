@@ -100,5 +100,19 @@
 
 
 <FUNC NAME="LISTE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />
+<hr />
+
+<IF COND="[#TYPE.EXTERNALALLOWED]">
+[@ADMIN.LIST_SITE_SHARED_ENTRY]
+<LOOP NAME="getNumberBySite" TABLE="relations_ext, entries" WHERE="entries.idtype='[#TYPE.ID]' AND relations_ext.id1=entries.id AND nature='EE' AND entries.id=[#ID]" SELECT="COUNT(relations_ext.idrelation) AS nb, relations_ext.site" GROUPBY="relations_ext.site">
+	<BEFORE><ul></BEFORE>
+	<DO>
+		<li>
+			[#SITE] ([#NB])
+		</li>
+	</DO>
+	<AFTER></ul></AFTER>
+</LOOP>
+</IF>
 
 <MACRO NAME="CLOSE_HTML">

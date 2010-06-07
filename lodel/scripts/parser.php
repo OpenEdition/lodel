@@ -1462,8 +1462,9 @@ PHP;
 
 		if(!($attrs['ID'] = (int)$attrs['ID']))
 			$this->_errmsg("Incorrect ID for block number ".(count($this->blocks)+1));
+
 		if(in_array($attrs['ID'], $this->blocks))
-			$this->_errmsg("Duplicate ID for block number ".(count($this->blocks)+1));
+			$this->_errmsg("Duplicate ID for block with ID=".($attrs['ID']));
         	$this->blocks[] = $attrs['ID'];
 		$this->_clearposition();
         
@@ -1531,8 +1532,8 @@ PHP;
 		// ouch !
 		if(false !== stripos($attrs['COND'], ' like '))
 		{
-			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/.*\/)/i", 
-					                    "/'([\w'\[\]\$\\\]*?)' like (\/.*\/)/i"), 
+			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\.\|\$\\\]*?\]) like (\/.*\/)/i", 
+					                    "/'([\w'\[\]\.\$\\\]*?)' like (\/.*\/)/i"), 
 			                    array('preg_match_all("\\2is", \\1, $context[\'matches\'])',
 				                'preg_match_all("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
 
@@ -1566,8 +1567,8 @@ PHP;
 				// RE ouch !
 				if(false !== stripos($attrs['COND'], ' like '))
 				{
-					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
-							                    "/'([\w'\[\]\$\\\]*?)' like (\/[^\/]*\/)/i"), 
+					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\.\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
+							                    "/'([\w'\[\]\.\$\\\]*?)' like (\/[^\/]*\/)/i"), 
 					                    array('preg_match_all("\\2i", \\1, $context[\'matches\'])',
 						                        'preg_match_all("\\2i", "\\1", $context[\'matches\'])'), $attrs['COND']);
 				}

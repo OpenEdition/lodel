@@ -48,12 +48,14 @@
 		</label><br class="nobr"><input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]"><LOOP NAME="fielderror" FIELD="title"><a id="title"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC></span></LOOP><br /><label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE] : 
 		</label><br class="nobr"><FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC><label for="lang">[@COMMON.LANG]<span class="optional">(*)</span> : 
 		</label><br class="nobr"><select name="lang" id="lang"><?php 
-						makeselectlangs($context['lang']);
+						makeselectlangs($context['sitelang']);
 					?></select><LOOP NAME="fielderror" FIELD="lang"><a id="lang"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC></span></LOOP><br />
 </fieldset><fieldset>
 <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>
 <IF COND="[#LODELUSER.RIGHTS] ge [#LO|rights('protect')]"><label for="protected">[@ADMIN.PROTECTED_TYPE] : 
 		</label><br class="nobr"><IF COND="abs([#STATUS]) ge 32"><input type="checkbox" name="protected" id="protected" checked><ELSE/><input type="checkbox" name="protected" id="protected"></IF><LOOP NAME="fielderror" FIELD="protected"><a id="protected"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_TYPE]"></FUNC></span></LOOP><br /></IF>
+<label for="externalallowed">[@ADMIN.EXTERNAL_INDEX] : 
+		</label><br class="nobr"><IF COND="[#EXTERNALALLOWED]"><input type="checkbox" name="externalallowed" id="externalallowed" checked><ELSE/><input type="checkbox" name="externalallowed" id="externalallowed"></IF><LOOP NAME="fielderror" FIELD="externalallowed"><a id="externalallowed"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EXTERNAL_INDEX]"></FUNC></span></LOOP><br />
 </fieldset><fieldset>
 <legend>[@ADMIN.DISPLAY_IN_INTERFACE]</legend>
 <label for="icon">[@ADMIN.TYPE_ICON] : 

@@ -209,7 +209,7 @@ class C
 			{
 				foreach($_GET as $k=>$v)
 				{
-					if('clearcache' !== $k && !('id' === $k && (int)$v === 0))
+					if('clearcache' !== $k && 'recalcultpl' !== $k && 'clearhtmlcache' !== $k && !('id' === $k && (int)$v === 0))
 					{
 						if(is_array($v))
 						{
@@ -267,7 +267,7 @@ class C
 				}
 				if('id' == $var || 'idtype' == $var)
 				{
-					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					if(preg_match('/^([a-z0-9\-]+)\.(\d+)$/', self::$_context[$var], $m))
 					{
 						self::$_context[$var] = (int)$m[2];
 						self::$_cfg['site_ext'] = (string)$m[1];
@@ -299,7 +299,7 @@ class C
 				}
 				if('id' == $var || 'idtype' == $var)
 				{
-					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					if(preg_match('/^([a-z0-9\-]+)\.(\d+)$/', self::$_context[$var], $m))
 					{
 						self::$_context[$var] = (int)$m[2];
 						self::$_context['site_ext'] = (string)$m[1];
@@ -407,7 +407,6 @@ class C
             		$trigObj->Close();
             		writeToCache('triggers', self::$_triggers);
 		}
-
 		// bootstrap for all activated plugins
 		foreach(self::$_triggers as $name=>$values)
 		{

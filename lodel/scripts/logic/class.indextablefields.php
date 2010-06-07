@@ -82,14 +82,35 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 		*/
 	public function makeSelect(&$context,$var)
 	{
+		global $db;
 		switch($var) {
 		case "name" :
-			$dao=DAO::getDAO((isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes");
+			$type = (isset($context['type']) && $context['type']=='entries') ? "entrytypes" : "persontypes";
+			$dao=DAO::getDAO($type);
 			$vos=$dao->findMany("status>0","rank,title","type,title");
 			$arr = array();
 			foreach($vos as $vo) {
 				$arr[$vo->type]=$vo->title;
 			}
+
+			$ext = $db->getArray(lq('SELECT site, id2 FROM #_TP_relations_ext WHERE nature="ET" ORDER BY site'));
+			if($ext)
+			{
+				foreach($ext as $entrytype)
+				{
+					if($db->database != DATABASE.'_'.$entrytype['site'])
+					{
+						$db->SelectDB(DATABASE.'_'.$entrytype['site']);
+					}
+					$type = $db->GetRow(lq('SELECT title FROM #_TP_entrytypes WHERE id='.$entrytype['id2']));
+					if($type)
+					{
+						$arr[$entrytype['site'].'.'.$entrytype['id2']] = $entrytype['site'].' - '.$type['title'];
+					}
+				}
+				usecurrentdb();
+			}
+
 			renderOptions($arr,isset($context['name']) ? $context['name'] : '');
 			break;
 		case "edition" :
