@@ -232,14 +232,7 @@
 		<a href="logout.php" id="logout" title="[@COMMON.LOGOUT]">[@COMMON.LOGOUT]</a>
 	</IF>
 	</li>
-	<li>
-	<select id="cache" onchange="window.location=this.options[this.selectedIndex].value;">
-		<option selected="selected">-- [@COMMON.CACHE_MANAGE] --</option>
-		<option value="[#RECALCULTPLURL]">[@COMMON.RECALCULTPL]</option>
-		<option value="[#CLEARHTMLCACHEURL]">[@COMMON.CLEARHTMLCACHE]</option>
-		<option value="[#CLEARCACHEURL]">[@COMMON.CLEARCACHE]</option>
-	</select>
-	</li><!--[<li>
+	<li>		
 	<IF COND="[#LODELUSER.ADMIN]">
 		<a href="[#CLEARCACHEURL]" id="clearcache" title="[@COMMON.CLEARCACHE]">
 	<ELSE/>
@@ -247,14 +240,6 @@
 	</IF>
 		[@COMMON.CLEARCACHE]</a>
 	</li>
-	<li>
-	<IF COND="[#LODELUSER.ADMIN]">
-		<a href="[#RECALCULTPLURL]" id="recalcultpl" title="[@COMMON.RECALCULTPL]">
-	<ELSE/>
-		<a id="clearcache" class="inactif" title="[@COMMON.RECALCULTPL]">
-	</IF>
-		[@COMMON.RECALCULTPL]</a>
-	</li>]-->
 	</ul>
 
 	<ul id="deskContext">
