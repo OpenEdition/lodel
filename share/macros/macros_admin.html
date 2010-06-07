@@ -84,7 +84,7 @@
 	<input class="button" type="button" value="[@COMMON.DELETE]" onclick="javascript:window.location='index.php?do=delete&amp;lo=[#LO]&amp;id=[#ID]<IF COND="[#DIRECTORY|isset]" />&amp;directory=[#DIRECTORY]</IF>'" />
 </DEFMACRO>
 
-<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype, listall">
+<DEFFUNC NAME="ALPHABETSPECIFIC" REQUIRED="table, field" OPTIONAL="idtype, listall, external">
 	<LET VAR="field">[#FIELD]</LET>
 	<LET VAR="table">[#TABLE]</LET>
 	<LOOP NAME="alphabetSpec">
@@ -171,21 +171,21 @@
 	</IF>
 </DEFFUNC>
 
-<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall">
+<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall, external">
+	<IF COND="[#EXTERNAL]"><LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET>
+	<ELSE/><LET VAR="table">#_TP_entries</LET>
+	</IF>
 	<IF COND="[#SORT] EQ 'sortkey'">
 		<IF COND="[#LISTALL]">	
 		<LET VAR="field">[#SORT]</LET>
+		<LET VAR="curtable">[#TABLE]</LET>
 		<LET VAR="table">entries</LET>
 		<LOOP NAME="alphabetSpec">
 			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
-			<LOOP NAME="series_sortkey_listall" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]">
+			<LOOP NAME="series_sortkey_listall" TABLE="[#CURTABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]">
 				<BEFORE>
-					<IF COND="[#FOLDER]">
-						<li class="unfoldedentities"><ul class="listEntities">
-					<ELSE />
-						<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
-						<ul class="listEntities">
-					</IF>
+					<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
+					<ul class="listEntities">
 				</BEFORE>
 				<DO>
 					<IF COND="[#COUNT] % 2">
@@ -199,37 +199,30 @@
 					</div>
 					<div class="document">
 						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
-						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
+						</IF>
 					</div>
 					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 					</li>
 				</DO>
 				<AFTER>
-					<IF COND="[#FOLDER]">
-						</ul></li>
-					<ELSE />
-						</ul>
-					</IF>
+					</ul>
 				</AFTER>
 				<ALTERNATIVE>
-					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+					<MACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 				</ALTERNATIVE>
 			</LOOP>
 		</LOOP>
 		<ELSE />
-		<LET VAR="idpar"><IF COND="[#FOLDER]"> AND idparent='[#ID]' <ELSE /></IF></LET>
 		<LET VAR="lettresql"><IF COND="[#LETTER]">[#LETTER|replace("'", "\'")]<ELSE />A</IF></LET>
-		<LOOP NAME="series_sortkey" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' [#IDPAR] AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
+		<LOOP NAME="series_sortkey" TABLE="[#TABLE]" WHERE="idtype='[#TYPE.ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
 			<BEFORE>
-				<IF COND="[#FOLDER]">
-					<li class="unfoldedentities"><ul class="listEntities">
-				<ELSE />
-					<h2 id="[#LETTRESQL|stripslashes]">
-						<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
-					</h2>
-					<ul class="listEntities">
-				</IF>
+				<h2 id="[#LETTRESQL|stripslashes]">
+					<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
+				</h2>
+				<ul class="listEntities">
 				<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 			</BEFORE>
 			<DO>
@@ -244,33 +237,27 @@
 				</div>
 				<div class="document">
 					<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
-					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+					<IF COND="[#TYPE.EXTERNALALLOWED]">
+					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
+					</IF>
 				</div>
 				<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-				<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 				</li>
 			</DO>
 			<AFTER>
-				<IF COND="[#FOLDER]">
-					</ul></li>
-				<ELSE />
-					</ul>
-				</IF>
+				</ul>
 				<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 			</AFTER>
 			<ALTERNATIVE>
-				<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+				<MACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 			</ALTERNATIVE>
 		</LOOP>
 		</IF>
 	<ELSEIF COND="[#SORT] EQ 'id'" />
-			<LOOP NAME="series_id" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id" SPLIT="30">
+			<LOOP NAME="series_id" TABLE="[#TABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id" SPLIT="30">
 				<BEFORE>
-					<IF COND="[#FOLDER]">
-						<li class="unfoldedentities"><ul class="listEntities">
-					<ELSE />
-						<ul class="listEntities">
-					</IF>
+					<ul class="listEntities">
 					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</BEFORE>
 				<DO>
@@ -285,27 +272,25 @@
 					</div>
 					<div class="document">
 						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
-						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
+						</IF>
 					</div>
 					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 					</li>
 				
 				</DO>
 				<AFTER>
-					<IF COND="[#FOLDER]">
-						</ul></li>
-					<ELSE />
-						</ul>
-					</IF>
+					</ul>
 					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</AFTER>
 				<ALTERNATIVE>
-					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+					<MACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 				</ALTERNATIVE>
 			</LOOP>
 	<ELSEIF COND="[#SORT] EQ 'rank'" />
-			<LOOP NAME="series_rank" TABLE="entries"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
+			<LOOP NAME="series_rank" TABLE="[#TABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
 				<BEFORE>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
@@ -326,7 +311,10 @@
 					</div>
 					<div class="document">
 						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
-						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" />)</span>
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
+						</IF>
 					</div>
 					<div class="action"><FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
 					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
@@ -342,7 +330,7 @@
 					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</AFTER>
 				<ALTERNATIVE>
-					<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
+					<MACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 				</ALTERNATIVE>
 			</LOOP>
 	</IF>
@@ -367,32 +355,38 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONAL="[#TITLE]">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONAL="[#TITLE], external">
+
+<IF COND="[#EXTERNAL]">
+	<LET VAR="id">[#SITE_EXT].[#ID]</LET>
+</IF>
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
-		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
+		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>&nbsp;
 	</IF>
-	<span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.EDIT]</a></span>
-
-	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
-		<MACRO NAME="CHANGE_ENTRIES_STATUS">
+	<IF COND="![#EXTERNAL]">
+		<span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.EDIT]</a></span>&nbsp;
 	</IF>
-
-	<IF COND="[#STATUS] ge 32">
-	  <span class="item inactif">[@COMMON.PROTECTED]</span>
-       <ELSE/>
-	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="item inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span>
-	  <ELSE/>
-	  <span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>
-	  </IF>
+	<IF COND="([#LO] EQ 'entries' AND ![#EXTERNAL]) OR [#LO] EQ 'persons'">
+		<MACRO NAME="CHANGE_ENTRIES_STATUS">&nbsp;
+	</IF>
+	<IF COND="![#EXTERNAL]">
+		<IF COND="[#STATUS] ge 32">
+			<span class="item inactif">[@COMMON.PROTECTED]</span>&nbsp;
+		<ELSE/>
+			<IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
+				<span class="item inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span>&nbsp;
+			<ELSE/>
+				<span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>&nbsp;
+			</IF>
+		</IF>
 	</IF>
 	<IF COND="[#LO] NE 'entries' AND [#LO] NE 'persons'">
-		<span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>
+		<span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>&nbsp;
 	</IF>
-<ELSE/>
-	 <span class="item inactif">[@COMMON.EDIT]</span>
+<ELSEIF COND="![#EXTERNAL]">
+	 <span class="item inactif">[@COMMON.EDIT]</span>&nbsp;
 </IF>
 	
 </DEFFUNC>
@@ -418,10 +412,18 @@
 </DEFMACRO>
 
 
-<DEFFUNC NAME="NOMBRE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+<DEFFUNC NAME="NOMBRE_ENTITES_LIEES" REQUIRED="id, nature" OPTIONNAL="external,dbext, site_ext">
+	<?php usecurrentdb(); ?>
+	<IF COND="![#EXTERNAL]">
+		<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+	<ELSE/>
+		<LOOP NAME="entitiesNumberExt" TABLE="relations_ext" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND site='[#SITE_EXT]'" SELECT="COUNT(*) AS nb">[#NB] [@ADMIN.IN_SHARED_INDEXES]</LOOP>
+	</IF>
 </DEFFUNC>
 
+<DEFFUNC NAME="NOMBRE_ENTITES_LIEES_EXT" REQUIRED="id">
+	<LOOP NAME="entitiesNumberLocalExt" TABLE="relations_ext" WHERE="id1 = '[#ID]' AND nature = 'EE'" SELECT="COUNT(*) AS nb">[#NB] [@ADMIN.IN_SHARED_INDEXES]</LOOP>
+</DEFFUNC>
 
 <DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
 	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id" ORDER="identifier">

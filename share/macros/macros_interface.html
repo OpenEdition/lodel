@@ -625,72 +625,83 @@ cp_[#VARNAME].writeDiv();
 --------------------------------------------------------------- ]-->
 
 <DEFFUNC NAME="EDIT_ENTRIES">
-  <div id="entries_[#VARNAME]" class="entrieseditionarea" >
-        <LOOP NAME="entrytypes" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+<div id="entries_[#VARNAME]" class="entrieseditionarea" >
+	
+	<IF COND="[#VARNAME] LIKE /(\w+)\.(\d+)/">
+		<LET VAR="database_dist"><?php echo '`'.DATABASE.'_';?>[#MATCHES.1.0]`</LET>
+		<LET VAR="where">entrytypes.id=[#MATCHES.2.0]</LET>
+		<LET VAR="external">1</LET>
+	<ELSE/>
+		<LET VAR="database_dist">`<?php echo $GLOBALS['currentdb']; ?>`</LET>
+		<LET VAR="where">entrytypes.type='[#VARNAME]'</LET>
+		<LET VAR="external">0</LET>
+	</IF>
+      
+        <LOOP DATABASE="[#DATABASE_DIST]" NAME="entrytypes" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND [#WHERE] AND classes.classtype='entries'">
         <LET VAR="idtype">[#ID]</LET>
-
+	<LET VAR="fieldname"><IF COND="[#EXTERNAL]">externalentries[[#MATCHES.1.0].[#IDTYPE]]<ELSE/>entries[[#IDTYPE]]</IF></LET>
 	<!--[ -----------[ SELECT ]---------- ]-->
 	
 	<IF COND="[#EDITION] EQ 'select'">
-	<select id="entries[[#IDTYPE]]" name="entries[[#IDTYPE]]">
-		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
-		</LOOP>
-	</select>
+		<select id="[#FIELDNAME]" name="[#FIELDNAME]">
+			<LOOP NAME="entries_in_entities">
+			<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
+			</LOOP>
+		</select>
 	<ELSE/>
 	<!--[ -----------[ MULTIPLE SELECT ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'multipleselect'">
-	<FUNC NAME="JS_MULTIPLESELECT">
-	<table>
-	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
-	<select onchange="multipleSelectUpdate('entries[[#IDTYPE]]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
-		<LOOP NAME="entries_in_entities">
-		<option  value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
-		</LOOP>
-	</select>
-	<script type="text/javascript">
-	<!-- 
-		multipleSelectUpdate('entries[[#IDTYPE]]','pool_member_[#VARNAME]');
-	-->
-	</script>
-	</td></tr>	
-	</table>
+		<FUNC NAME="JS_MULTIPLESELECT">
+		<table>
+		<tr><td>
+		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />	
+		<select onchange="multipleSelectUpdate('[#FIELDNAME]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
+			<LOOP NAME="entries_in_entities">
+			<option  value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
+			</LOOP>
+		</select>
+		<script type="text/javascript">
+		<!-- 
+			multipleSelectUpdate('[#FIELDNAME]','pool_member_[#VARNAME]');
+		-->
+		</script>
+		</td></tr>	
+		</table>
 	<ELSE/>
 	<!--[ -----------[ POOL ]---------- ]-->
 	<IF COND="[#EDITION] EQ 'pool'">
-	<table>
-	<tr><td>[@COMMON.AVAILABLE_ENTRIES]</td><td></td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
-	<tr><td>
-	<input type="hidden" value="" name="entries[[#IDTYPE]]" id="entries[[#IDTYPE]]" />	
-	<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
-		<LOOP NAME="entries_in_entities">
-		<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
-		</LOOP>
-	</select>
-	</td><td>
-		<input type="button" class="button" value="-&gt;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]')" /><br/>
-		<input type="button" class="button" value="&lt;-" onclick="removemember('pool_member_[#VARNAME]','entries[[#IDTYPE]]')" />&nbsp;
-	<td>	
-	<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
-	</select>
-	</td>
-	<IF COND="[#NEWBYIMPORTALLOWED]">
-	<tr>
-	<td>&nbsp;</td><td>&nbsp;</td>
-	<td>
-	<input class="button" type="button" value="[@COMMON.ADD]" onclick="addnewmember('pool_member_[#VARNAME]', 'entries[[#IDTYPE]]', '[@EDITION.ENTER_LIST_OF_WORDS]')"/>&nbsp;&nbsp;&nbsp;
-	<input class="button" type="button" value="[@COMMON.MODIFY]" onclick="modifymember('pool_member_[#VARNAME]', 'entries[[#ID]]')"/>
-	</td>
-	</tr>
-	</IF>
-	</tr>
-	</table>
-	<script type="text/javascript"><!-- 
-addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', 'entries[[#IDTYPE]]'); 
---></script>
-
-
+		<table>
+		<tr><td>[@COMMON.AVAILABLE_ENTRIES]</td><td></td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
+		<tr><td>
+		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />	
+		<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
+			<LOOP NAME="entries_in_entities">
+			<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
+			</LOOP>
+		</select>
+		</td><td>
+			<input type="button" class="button" value="-&gt;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]')" /><br/>
+			<input type="button" class="button" value="&lt;-" onclick="removemember('pool_member_[#VARNAME]','[#FIELDNAME]')" />&nbsp;
+		<td>	
+		<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
+		</select>
+		</td>
+		<IF COND="[#NEWBYIMPORTALLOWED]">
+		<tr>
+		<td>&nbsp;</td><td>&nbsp;</td>
+		<td>
+		<IF COND="![#EXTERNAL]">
+		<input class="button" type="button" value="[@COMMON.ADD]" onclick="addnewmember('pool_member_[#VARNAME]', '[#FIELDNAME]', '[@EDITION.ENTER_LIST_OF_WORDS]')"/>&nbsp;&nbsp;&nbsp;
+		<input class="button" type="button" value="[@COMMON.MODIFY]" onclick="modifymember('pool_member_[#VARNAME]', '[#FIELDNAME]')"/>
+		</IF>
+		</td>
+		</tr>
+		</IF>
+		</tr>
+		</table>
+		<script type="text/javascript"><!-- 
+	addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]'); 
+	--></script>
 
 	</IF>
 	</IF>
