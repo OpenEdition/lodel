@@ -3,12 +3,12 @@
 #
 #  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 #  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-#  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-#  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-#  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+#  Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
+#  Copyright (c) 2008, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
+#  Copyright (c) 2009, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
 #
 #  Home page: http://www.lodel.org
 #
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
 	weight		TINYINT NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur le champs
-	mask 		TEXT NOT NULL DEFAULT '',	# masque à appliquer sur le champs pour validation
+	mask 		TEXT NOT NULL DEFAULT '',	# masque ï¿½ appliquer sur le champs pour validation
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	upd		TIMESTAMP,
@@ -365,6 +365,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 
 	upd		TIMESTAMP,
 	lang		VARCHAR(10) NOT NULL DEFAULT 'fr',
+	externalallowed tinyint(4) NOT NULL default '0',
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
@@ -546,17 +547,40 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   status tinyint(4) NOT NULL default '1',
   expiration date default NULL,
   upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `username` (`username`),
-  KEY `index_username` (`username`)
+  PRIMARY KEY  (id),
+  UNIQUE KEY username (username),
+  KEY index_username (username)
 ) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_plugins (
-  `id` int(10) unsigned NOT NULL default '0',
-  `name` varchar(64) character set utf8 collate utf8_bin NOT NULL,
-  `upd` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `status` tinyint(4) NOT NULL default '0',
-  `config` longtext NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `name` (`name`)
+  id int(10) unsigned NOT NULL default '0',
+  name varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  status tinyint(4) NOT NULL default '0',
+  config longtext NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY name (name)
 ) _CHARSET_;
+
+CREATE TABLE IF NOT EXISTS #_TP_relations_ext (
+  idrelation int(10) unsigned NOT NULL auto_increment,
+  id1 int(10) unsigned NOT NULL default '0',
+  id2 int(10) unsigned NOT NULL default '0',
+  nature varchar(32) NOT NULL default 'E',
+  degree tinyint(4) default NULL,
+  site varchar(64) NOT NULL,
+  PRIMARY KEY  (idrelation),
+  UNIQUE KEY id1 (id1,id2,degree,nature),
+  KEY index_id1 (id1),
+  KEY index_id2 (id2),
+  KEY index_nature (nature),
+  KEY index_site (site)
+) _CHARSET_
+
+CREATE TABLE IF NOT EXISTS #_TP_history (
+  id int(10) unsigned NOT NULL auto_increment,
+  nature varchar(32) NOT NULL,
+  context text,
+  upd timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (id)
+) _CHARSET_
