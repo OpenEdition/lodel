@@ -107,6 +107,15 @@
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.SURROUNDING_STYLE]"></FUNC>
     </span>
   </LOOP>
+  <label for="otx">[@ADMIN.TEI_EQUIVALENT] :
+		</label>
+  <br class="nobr">
+  <input type="text" size="30" name="otx" id="otx" class="text" value="[#OTX]">
+  <LOOP NAME="fielderror" FIELD="otx">
+    <a id="otx"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.TEI_EQUIVALENT]"></FUNC>
+    </span>
+  </LOOP>
   <br />
   <label for="greedy">[@ADMIN.GREEDY] : 
 		</label>

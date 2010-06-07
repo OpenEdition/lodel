@@ -160,7 +160,7 @@ class PersonTypesLogic extends Logic
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
 	{
-		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type)
+		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type) {
 			// name has changed
 			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='persons'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}

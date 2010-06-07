@@ -68,13 +68,14 @@
 			<th class="status">[@COMMON.NAME]</th>
 			<th class="status">[@COMMON.TYPE]</th>
 			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@ADMIN.TEI_EQUIVALENT]</th>
 			<th class="status">[@COMMON.ACTIONS]</th>
 		</tr>
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 	</table>
 
 	<IF COND="[#CLASSTYPE]=='persons'">
-	<!--[ Affichage des champs de la table liée à l'index de personnes : entities_nom_Index_de_personnes ]-->
+	<!--[ Affichage des champs de la table li�e � l'index de personnes : entities_nom_Index_de_personnes ]-->
 		<ul id="actionsOnEntitiesPath">
 			<li><span class="intit">[@ADMIN.DEFINITION_DATAFIELDS_RELATION_BETWEEN_ENTITIES_AND_PERSONS]</span></li>
 			<li>
@@ -96,6 +97,7 @@
 			<th class="status">[@COMMON.NAME]</th>
 			<th class="status">[@COMMON.TYPE]</th>
 			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@ADMIN.TEI_EQUIVALENT]</th>
 			<th class="status">[@COMMON.ACTIONS]</th>
 		</tr>
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='entities_[#CLASS]'">
@@ -145,6 +147,7 @@
 			<th class="status">[@COMMON.NAME]</th>
 			<th class="status">[@COMMON.TYPE]</th>
 			<th class="status">[@COMMON.STYLE]</th>
+			<th class="status">[@ADMIN.TEI_EQUIVALENT]</th>
 			<th class="status">[@COMMON.ACTIONS]</th>
 		</tr>
 
