@@ -1,0 +1,1083 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+
+
+<USE MACROFILE="macros.html"/>
+<USE MACROFILE="macros_admin.html"/>
+<USE MACROFILE="macros_interface.html"/>
+<MACRO NAME="HEADER_HEAD_OPEN"/>
+<title>[@EDITION.ENTRIES_MASSASSOC]</title>
+<MACRO NAME="HEADER_HEAD_CLOSE"/>
+<MACRO NAME="HEADER_LOGO"/>
+
+<div id="pageContext">
+	<IF COND="![#ADVANCED]">
+		<strong>[@ADMIN.EASY_MODE]</strong>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="index.php?do=massassoc&amp;lo=entries&amp;idtype=[#IDTYPE]&amp;advanced=1">[@ADMIN.ADVANCED_MODE]</a>
+	<ELSE/>
+		<a href="index.php?do=massassoc&amp;lo=entries&amp;idtype=[#IDTYPE]">[@ADMIN.EASY_MODE]</a>&nbsp;&nbsp;|&nbsp;&nbsp;<strong>[@ADMIN.ADVANCED_MODE]</strong>
+	</IF>
+</div>
+
+<div id="warner_error" class="hidden">
+	<img src="[#SHAREURL]/images/alerte_rouge.png" title="[@INSTALL.ERROR]" alt="[@INSTALL.ERROR]"/>&nbsp;
+	<span id="warner_error_container" class="error"></span>
+</div>
+<div id="warner_success" class="hidden fullshadow">
+	<img src="[#SHAREURL]/images/alerte_vert.png" title="[@ADMIN.SUCCESS]" alt="[@ADMIN.SUCCESS]"/>&nbsp;
+	<span id="warner_success_container"></span>
+</div>
+<div id="warner" class="warner fullshadow"><img src="[#SHAREURL]/images/patienter.png" title="[@COMMON.PLEASE_WAIT_WHILE_LOADING]" alt="[@COMMON.PLEASE_WAIT_WHILE_LOADING]"/>&nbsp;[@COMMON.PLEASE_WAIT_WHILE_LOADING]</div>
+
+<div id="headerContainer">
+	<ul id="headerMenu">
+		<li id="selectassoc" class="left selected topleftrounded" onclick="objEntries.toggleTab('assoc');">[@ADMIN.SELECTION|mb_strtoupper('UTF-8')]</li>
+		<li id="selectpanier" class="left topleftrounded" onclick="objEntries.toggleTab('panier');">[@ADMIN.BASKET|mb_strtoupper('UTF-8')]</li>
+		<li id="selecthistory" class="left topleftrounded" onclick="objEntries.toggleTab('history');">[@COMMON.HISTORY|mb_strtoupper('UTF-8')]</li>
+	</ul>
+</div>
+
+<div id="container" class="toprightrounded">
+	<div id="assoc">
+		<div class="fullshadow left">
+			<ul class="container" id="entriesContainer">
+				<li class="header">[@ADMIN.ENTRIES]</li>
+				<li>
+					<select id="selectEntries" onchange="if(this.options[this.selectedIndex].value) {objEntries.getEntriesList('A', this.options[this.selectedIndex].value);document.getElementById('selectSharedEntries').selectedIndex = 0;}">
+						<option value="">[@ADMIN.INTERNAL_INDEX]</option>
+						<LOOP NAME="getTypes" TABLE="entrytypes" SELECT="id,title" ORDER="title">
+							<option value="[#ID]"<IF COND="[#IDTYPE] EQ [#ID]"> selected="selected"</IF>>[#TITLE]</option>
+						</LOOP>
+					</select>
+					<br/>
+					<select id="selectSharedEntries" onchange="if(this.options[this.selectedIndex].value) {objEntries.getEntriesList('A', this.options[this.selectedIndex].value);document.getElementById('selectEntries').selectedIndex = 0;}">
+						<option value="">[@ADMIN.SHARED_INDEX]</option>
+						<LOOP SELECT="site as s, id2" NAME="getExtRelations" TABLE="relations_ext" WHERE="nature='ET'">
+							<LET VAR="curidtype">[#S].[#ID2]</LET>
+							<LET VAR="curdb"><?php echo DATABASE.'_'.$context['s']; ?></LET>
+							<LOOP NAME="getExtEntrytypesTitle" SELECT="title" DATABASE="`[#CURDB]`" TABLE="entrytypes" ORDER="title" WHERE="id=[#ID2]">
+								<option value="[#CURIDTYPE]">[#TITLE]</option>
+							</LOOP>
+						</LOOP>
+					</select>
+				</li>
+				<USE TEMPLATEFILE="entries_massassoc" BLOCKID="1"/>
+			</ul>
+		</div>
+		<div class="fullshadow right">
+			<ul class="container" id="entitiesContainer">
+				<li class="header">[@ADMIN.ENTITIES]</li>
+				<BLOCK ID="2" CHARSET="utf-8">
+					<LET VAR="curid" GLOBAL="1">[#ID]</LET>
+					<li class="filariane">
+						<a href="javascript:;" onclick="objEntries.getEntitiesList(0);">[@EDITION.BASE]</a>
+						<IF COND="[#ID]">
+							<LOOP NAME="getParents" TABLE="entities,relations" SELECT="g_title, id" WHERE="entities.id=id1 AND id2=[#ID]">
+								&nbsp;&gt;&nbsp;<a href="javascript:;" onclick="objEntries.getEntitiesList([#ID]);">[#G_TITLE|textebrut|nbsp|cuttext(50, true)]</a>
+							</LOOP>
+							<LOOP NAME="getEntityMetadatas" TABLE="entities" SELECT="id,g_title" WHERE="id=[#ID]">
+								&nbsp;&gt;&nbsp;[#G_TITLE|textebrut|nbsp|cuttext(50, true)]
+							</LOOP>
+						</IF>
+					</li>
+					<LET VAR="level" GLOBAL="1">0</LET>
+					<LOOP NAME="getEntitiesSummary" TABLE="entities, types" SELECT="entities.id, g_title, entities.status, type, display" WHERE="idparent=[#ID] AND entities.idtype=types.id" ORDER="entities.rank">
+						<BEFORE>
+							<IF COND="[#FOLDER]">
+								<LET VAR="m" GLOBAL="1">[%LEVEL|lmath('*', 3)]</LET>
+							</IF>
+						</BEFORE>
+						<li id="entity_[#ID]"<IF COND="[#FOLDER]">class="line1" style="margin-left:0;padding-left:[%M]em;"</IF>>
+							<IF COND="[#ADVANCED]">
+								<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntity(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTRIES]" title="[@ADMIN.DISPLAY_RELATED_ENTRIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>
+							</IF>
+							<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]"/>
+							<div class="entitiesLeft">
+								<LOOP NAME="getRelations" TABLE="relations" SELECT="COUNT(id1) AS nb" WHERE="id1=[#ID] AND nature='P'">
+									<IF COND="[#NB]">
+										<a href="javascript:;" onclick="objEntries.getEntitiesList([#ID]);"><strong>[#G_TITLE|textebrut|nbsp]</strong></a>
+									<ELSE/>
+										<strong>[#G_TITLE|textebrut|nbsp]</strong>
+									</IF>
+									<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+										<BEFORE><div class="auteurs"></BEFORE>
+										<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+										, [#G_FIRSTNAME] [#G_FAMILYNAME]
+										<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+										<AFTER></div></AFTER>
+									</LOOP>
+								</LOOP>
+							</div>
+							<div class="entitiesRight">[#TYPE]<img style="margin-left:2em;" src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD_TO_BASKET]" title="[@ADMIN.ADD_TO_BASKET]" class="action" onclick="objEntries.addEntityToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#ID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/></div>
+						</li>
+						<IF COND="[#ADVANCED]">
+							<li id="entityEntries_[#ID]" class="hidden entityEntries"></li>
+						</IF>
+						<IF COND="[#DISPLAY] eq 'unfolded'">
+							<LET VAR="oldfolder">[#FOLDER]</LET>
+							<LET VAR="folder">true</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+', 1)]</LET>
+							<LOOP NAME="getEntitiesSummary"></LOOP>
+							<LET VAR="folder">[#OLDFOLDER]</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('-', 1)]</LET>
+						</IF>
+					</LOOP>
+				</BLOCK>
+			</ul>
+		</div>
+	</div>
+
+	<div id="panier">
+		<div class="centered">
+			<img src="[#SHAREURL]/images/filet_haut_gauche.png" alt="-" class="action nocursor"/>&nbsp;&nbsp;
+			<input type="button" class="assoc assoc_blue" value="[@ADMIN.ASSOCIATE|mb_strtoupper('UTF-8')]" onclick="objEntries.associate();"/>&nbsp;&nbsp;
+			<img src="[#SHAREURL]/images/filet_haut_droite.png" alt="-" class="action nocursor"/>
+		</div>
+
+		<div class="fullshadow left">
+			<ul class="container" id="panierEntries">
+				<li class="header">[@ADMIN.ENTRIES]</li>
+				<li><input type="button" class="assoc assoc_red right" value="[@ADMIN.CLEAR_ALL]" onclick="objEntries.clear('panierEntries');"/></li>
+			</ul>
+		</div>
+
+		<div class="fullshadow right">
+			<ul class="container" id="panierEntities">
+				<li class="header">[@ADMIN.ENTITIES]</li>
+				<li><input type="button" class="assoc assoc_red right" value="[@ADMIN.CLEAR_ALL]" onclick="objEntries.clear('panierEntities');"/></li>
+			</ul>
+		</div>
+
+		<div class="spacer">&nbsp;</div>
+
+		<div class="centered">
+			<img src="[#SHAREURL]/images/filet_bas_gauche.png" alt="-" class="action nocursor"/>&nbsp;&nbsp;
+			<input type="button" class="assoc assoc_blue" value="[@ADMIN.ASSOCIATE|mb_strtoupper('UTF-8')]" onclick="objEntries.associate();"/>&nbsp;&nbsp;
+			<img src="[#SHAREURL]/images/filet_bas_droite.png" alt="-" class="action nocursor"/>
+		</div>
+	</div>
+
+	<div id="history">
+		<table id="historyContainer" class="history fullshadow">
+			<BLOCK ID="7" CHARSET="utf-8">
+			<LOOP NAME="getHistory" TABLE="history" ORDER="upd DESC" SPLIT="30">
+				<ALTERNATIVE>
+					<tr>
+						<th class="empty">&nbsp;</th>
+						<th class="entries">[@ADMIN.ENTRIES]</th>
+						<th>[@ADMIN.ENTITIES]</th>
+					</tr>
+				</ALTERNATIVE>
+				<BEFORE>
+					<IF COND="[#NBRESULTS] GT 2">
+						<LOOP NAME="page_scale">
+							<BEFORE>
+								<tr><td colspan="3">
+								<ul id="navResults">
+								<IF COND="[#PREVIOUSURL]">
+									<li>
+									<a href="javascript:;" onclick="objEntries.navigateHistory('prev', '[#OFFSETNAME]');" title="[@COMMON.PREVIOUS_PAGE]">&nbsp;&lt;&lt;&nbsp;</a>
+									</li>
+								</IF>
+							</BEFORE>
+							<DO>
+								<IF COND="[#NEXTURL]">
+									<IF COND="[#HOLE] EQ 1">
+										<li>&nbsp;...&nbsp;</li>
+									</IF>
+									<IF COND="[#URLPAGE] NE ''">
+										<li><a class="linkpage" href="javascript:;" onclick="objEntries.navigateHistory([#PAGENUMBER], '[#OFFSETNAME]');" title="[#PAGENUMBER]">
+									<ELSE/>
+										<li><span class="currentpage">
+									</IF>
+									
+									[#PAGENUMBER]
+									<IF COND="[#URLPAGE] NE ''">
+										</a></li>
+									<ELSE/>
+										</span></li>
+									</IF>
+								</IF>
+							</DO>
+							
+							<AFTER>
+								<IF COND="[#NEXTURL]">
+								<li>
+									<a class="linkpage" href="javascript:;" onclick="objEntries.navigateHistory('next', '[#OFFSETNAME]');" title="[@COMMON.NEXT_PAGE]">&nbsp;&gt;&gt;&nbsp;</a>
+								</li>
+								</IF>
+							</ul>
+							</td></tr>
+							</AFTER>
+						</LOOP>
+					</IF>
+					<tr>
+						<th class="empty">&nbsp;</th>
+						<th class="entries">[@ADMIN.ENTRIES]</th>
+						<th>[@ADMIN.ENTITIES]</th>
+					</tr>
+				</BEFORE>
+				<USE TEMPLATEFILE="entries_massassoc" BLOCKID="5"/>
+			</LOOP>
+			</BLOCK>
+		</table>
+	</div>
+</div>
+
+<BLOCK ID="6" CHARSET="utf-8" DISPLAY="0">
+	<IF COND="![#IDS]">
+		<li class="filariane">
+   			[@ADMIN.NO_ENTITY_FOUND]
+			<div class="entitiesRight">
+				<a href="javascript:;" onclick="objEntries.getEntitiesList(0);">[@ADMIN.BACK_TO_ENTITIES_LIST]</a>
+			</div>
+		</li>
+	<ELSE/>
+		<li class="filariane">
+			[@ADMIN.LIST_FOUND_ENTITIES] ([#NBRESULTS])
+			<div class="entitiesRight">
+				<a href="javascript:;" onclick="objEntries.getEntitiesList(0);">[@ADMIN.BACK_TO_ENTITIES_LIST]</a>
+			</div>
+		</li>
+		<LOOP NAME="getEntitiesSummary" TABLE="entities, types" SELECT="entities.id, g_title, entities.status, type, display" WHERE="entities.id IN ([#IDS|join(',')]) AND entities.idtype=types.id" ORDER="entities.rank">
+			<li id="entity_[#ID]">
+				<IF COND="[#ADVANCED]">
+					<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntity(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>
+				</IF>
+				<FUNC NAME="STATUS_ICON" STATUS="[#STATUS]"/>
+				<div class="entitiesLeft">
+					<LOOP NAME="getRelations" TABLE="relations" SELECT="COUNT(id1) AS nb" WHERE="id1=[#ID] AND nature='P'">
+						<IF COND="[#NB]">
+							<a href="javascript:;" onclick="objEntries.getEntitiesList([#ID]);"><strong>[#G_TITLE|textebrut|nbsp]</strong></a>
+						<ELSE/>
+							<strong>[#G_TITLE|textebrut|nbsp]</strong>
+						</IF>
+						<LOOP NAME="auteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+							<BEFORE><div class="auteurs"></BEFORE>
+							<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+							, [#G_FIRSTNAME] [#G_FAMILYNAME]
+							<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+							<AFTER></div></AFTER>
+						</LOOP>
+					</LOOP>
+				</div>
+				<div class="entitiesRight">[#TYPE]&nbsp;&nbsp;<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD_TO_BASKET]" title="[@ADMIN.ADD_TO_BASKET]" class="action" onclick="objEntries.addEntityToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#ID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/></div>
+			</li>
+			<IF COND="[#ADVANCED]">
+				<li id="entityEntries_[#ID]" class="hidden entityEntries"></li>
+			</IF>
+		</LOOP>
+	</IF>
+</BLOCK>
+
+<BLOCK ID="5" CHARSET="utf-8" DISPLAY="0">
+	<LET ARRAY="context">[#CONTEXT|unserialize]</LET>
+	<tr id="history_[#ID]">
+		<td class="entries">
+			<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleHistory(this, [#ID]);" alt="[@ADMIN.DISPLAY_FULL_ASSOCIATION]" title="[@ADMIN.DISPLAY_FULL_ASSOCIATION]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>
+			&nbsp;&nbsp;[#UPD|humandate]
+		</td>
+		<td class="entries">
+			<LOOP NAME="foreach" ARRAY="[#CONTEXT.IDENTRIES]">
+				<LET ARRAY="entrytype">[#VALUE|lexplode('_')]</LET>
+				<IF COND="[#ENTRYTYPE.0] LIKE /([a-z0-9\-]+)\.\d+/">
+					<LET VAR="dbext"><?php echo DATABASE.'_'.$context['matches'][1][0];?></LET>
+					<LOOP NAME="getExtEntryName" DATABASE="`[#DBEXT]`" TABLE="entries" SELECT="g_name" WHERE="id=[#ENTRYTYPE.1]">
+						<LET ARRAY="entrieslist[]" GLOBAL="1">[#G_NAME]</LET>
+					</LOOP>
+				<ELSE/>
+					<LOOP NAME="getEntryName" TABLE="entries" SELECT="g_name" WHERE="id=[#ENTRYTYPE.1]">
+						<LET ARRAY="entrieslist[]" GLOBAL="1">[#G_NAME]</LET>
+					</LOOP>
+				</IF>
+			</LOOP>
+			<IF COND="[%ENTRIESLIST]">
+				[%ENTRIESLIST|join(', ')|cuttext(60, true)]
+				<LET VAR="entrieslist" GLOBAL="1"></LET>
+			</IF>
+		</td>
+		<td class="entities">[#CONTEXT.IDENTITIES|count] [@ADMIN.ASSOCIATED_ITEMS]</td>
+	</tr>
+	<tr id="historyAction_[#ID]" class="hidden historyAction">
+		<td colspan="3">
+			<div class="centered">
+				<img src="[#SHAREURL]/images/filet_haut_gauche.png" alt="-" class="action nocursor"/>&nbsp;&nbsp;
+				<input type="button" class="assoc assoc_red" value="[@ADMIN.DISSOCIATE|mb_strtoupper('UTF-8')]" onclick="objEntries.dissociate([#ID]);"/>&nbsp;&nbsp;
+				<img src="[#SHAREURL]/images/filet_haut_droite.png" alt="-" class="action nocursor"/>
+			</div>
+		</td>
+	</tr>
+	<tr id="historyContainer_[#ID]" class="hidden historyContainer">
+		<td>&nbsp;</td>
+		<td>
+			<LET VAR="curentrytype" GLOBAL="1"></LET>
+			<LOOP NAME="foreach" ARRAY="[#CONTEXT.IDENTRIES]">
+				<LET ARRAY="entrytype">[#VALUE|lexplode('_')]</LET>
+				<IF COND="[#ENTRYTYPE.0] LIKE /([a-z0-9\-]+)\.(\d+)/">
+					<LET VAR="extdb"><?php echo DATABASE.'_'.$context['matches'][1][0];?></LET>
+					<IF COND="[%CURENTRYTYPE] NE [#ENTRYTYPE.0]">
+						<IF COND="[%CURENTRYTYPE]"></ul></IF>
+						<LET VAR="curentrytype" GLOBAL="1">[#ENTRYTYPE.0]</LET>
+						<LOOP NAME="getExtEntryTypeTitle" DATABASE="`[#EXTDB]`" TABLE="entrytypes" SELECT="title" WHERE="id='[#MATCHES.2.0]'">
+							<ul class="relatedEntries"><li class="white">[#TITLE]</li>
+						</LOOP>
+					</IF>
+					<LOOP NAME="getExtEntryTitle" DATABASE="`[#EXTDB]`" TABLE="entries" SELECT="g_name" WHERE="id='[#ENTRYTYPE.1]'">
+						<li>[#G_NAME]</li>
+					</LOOP>
+				<ELSE/>
+					<IF COND="[%CURENTRYTYPE] NE [#ENTRYTYPE.0]">
+						<IF COND="[%CURENTRYTYPE]"></ul></IF>
+						<LET VAR="curentrytype" GLOBAL="1">[#ENTRYTYPE.0]</LET>
+						<LOOP NAME="getEntryTypeTitle" TABLE="entrytypes" SELECT="title" WHERE="id='[#ENTRYTYPE.0]'">
+							<ul class="relatedEntries"><li class="white">[#TITLE]</li>
+						</LOOP>
+					</IF>
+					<LOOP NAME="getEntryTitle" TABLE="entries" SELECT="g_name" WHERE="id=[#ENTRYTYPE.1]">
+						<li>[#G_NAME]</li>
+					</LOOP>
+				</IF>
+			</LOOP>
+			<IF COND="[%CURENTRYTYPE]"></ul></IF>
+		</td>
+		<td>
+			<LOOP NAME="foreach" ARRAY="[#CONTEXT.IDENTITIES]">
+				<div class="relatedEntities">
+					<LOOP NAME="getEntitiesTitle" TABLE="entities" SELECT="g_title" WHERE="id=[#VALUE]">
+						<span class="white">[#G_TITLE]</span>
+						<LOOP NAME="getEntitiesAuteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#VALUE]'" ORDER="degree">
+							<BEFORE><div class="auteurs"></BEFORE>
+							<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+							, [#G_FIRSTNAME] [#G_FAMILYNAME]
+							<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+							<AFTER></div></AFTER>
+						</LOOP>
+					</LOOP>
+					<hr class="entity"/>
+				</div>
+			</LOOP>
+		</td>
+	</tr>
+</BLOCK>
+
+<BLOCK ID="1" DISPLAY="0" CHARSET="utf-8">
+	<li>[@ADMIN.SELECTED_INDEX] : <strong id="currentTypeTitle"><IF COND="[#EXTERNAL]">[#SITE_EXT] - </IF>[#TYPE.TITLE]</strong></li>
+	<LET VAR="i" GLOBAL="1">0</LET>
+	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
+		<IF COND="![#LETTER]"><LET VAR="letter">A</LET></IF>
+		<LET VAR="lettresql">[#LETTER|replace("'", "\'")]</LET>
+		<li>
+			<LET VAR="table">entries</LET>
+			<LET VAR="field">[#TYPE.SORT]</LET>
+			<LOOP NAME="alphabetSpec">
+				<span class="letter">
+				<IF COND="[#NBRESULTS] GT 0">
+					<a href="javascript:;" onclick="objEntries.getEntriesList('[#LETTRE]');">[#LETTRE]</a> 
+				<ELSE />
+					[#LETTRE] 
+				</IF>
+				</span>
+			</LOOP>
+			<br/><br/>
+			<div class="centered">
+				<input type="button" class="assoc assoc_grey" value="[@ADMIN.LIST_ALL_ENTRIES]" onclick="objEntries.getEntriesList('all');"/>
+			</div>
+		</li>
+		<LET VAR="where"><IF COND="'all' NE [#LETTER]"> AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'<ELSE/></IF></LET>
+		<IF COND="![#EXTERNAL]">
+			<LOOP NAME="getEntries" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] [#WHERE]" ORDER="sortkey">
+				<DO>
+					<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}" style="margin-right:1.5em;"/>
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);" onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#ID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+				</DO>
+			</LOOP>
+		<ELSE/>
+			<LOOP NAME="getExtEntries" DATABASE="`[#DB_EXT]`" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] [#WHERE]" ORDER="sortkey">
+				<DO>
+					<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					<LET VAR="fullid">[#SITE_EXT].[#ID]</LET>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}" style="margin-right:1.5em;"/>
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);" onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#FULLID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+				</DO>
+			</LOOP>
+		</IF>
+		
+	<ELSEIF COND="[#TYPE.SORT] EQ 'id'">
+		<IF COND="![#EXTERNAL]">
+			<LOOP NAME="getEntriesById" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]" ORDER="id">
+				<DO>
+					<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>&nbsp;
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);" onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#ID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+				</DO>
+			</LOOP>
+		<ELSE/>
+			<LOOP NAME="getExtEntriesById" DATABASE="`[#DB_EXT]`" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]" ORDER="id">
+				<DO>
+					<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					<LET VAR="fullid">[#SITE_EXT].[#ID]</LET>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>">
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>&nbsp;
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);" onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#FULLID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+				</DO>
+			</LOOP>
+		</IF>
+	<ELSEIF COND="[#TYPE.SORT] EQ 'rank'">
+		<LET VAR="level" GLOBAL="1">0</LET>
+		<IF COND="![#EXTERNAL]">
+			<LOOP NAME="getEntriesByRank" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]" ORDER="idparent,rank">
+				<BEFORE>
+					<IF COND="[#FOLDER]">
+						<LET VAR="m" GLOBAL="1">[%LEVEL|lmath('*', 3)]</LET>
+					</IF>
+				</BEFORE>
+				<DO>
+					<IF COND="![#FOLDER]">
+						<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					</IF>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>"<IF COND="[#FOLDER]"> style="padding-left:[%M]em;"</IF>>
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>&nbsp;
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);" onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#FULLID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+					<LOOP NAME="hasChild" TABLE="entries" SELECT="COUNT(id) AS nb" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]">
+						<IF COND="[#NB]">
+							<LET VAR="oldfolder">[#FOLDER]</LET>
+							<LET VAR="folder">true</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+', 1)]</LET>
+							<LOOP NAME="getEntriesByRank"></LOOP>
+							<LET VAR="folder">[#OLDFOLDER]</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('-', 1)]</LET>
+						</IF>
+					</LOOP>
+				</DO>
+			</LOOP>
+		<ELSE/>
+			<LOOP NAME="getExtEntriesByRank" DATABASE="`[#DB_EXT]`" TABLE="entries" SELECT="id,g_name" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]" ORDER="idparent,rank">
+				<DO>
+					<IF COND="![#FOLDER]">
+						<LET VAR="i" GLOBAL="1">[%I|lmath('+', 1)]</LET>
+					</IF>
+					<LET VAR="fullid">[#SITE_EXT].[#ID]</LET>
+					<li id="entry_[#ID]" class="line<IF COND="[%I] % 2">1<ELSE/>2</IF>"<IF COND="[#FOLDER]"> style="padding-left:[%M]em;"</IF>>
+						<IF COND="[#ADVANCED]">
+							<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntry(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>&nbsp;
+						</IF>
+						<div class="entriesLeft">[#G_NAME]</div>
+						<div class="entriesRight">
+							<img src="[#SHAREURL]/images/plus.png" alt="[@ADMIN.ADD]" title="[@ADMIN.ADD]" class="action" onclick="objEntries.addEntryToPanier([#ID]);" onmouseover="this.src='[#SHAREURL]/images/croix_bleue_active.png';" onmouseout="this.src='[#SHAREURL]/images/plus.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/ampoule.png" alt="[@ADMIN.SUGGEST]" title="[@ADMIN.SUGGEST]" class="action" onclick="objEntries.propose([#ID]);"  onmouseover="this.src='[#SHAREURL]/images/ampoule_active.png';" onmouseout="this.src='[#SHAREURL]/images/ampoule.png';"/>&nbsp;
+							<img src="[#SHAREURL]/images/oeil.png" alt="[@COMMON.VIEW]" class="action" onclick="window.open('../../[#FULLID|makeurlwithid]');" title="[@COMMON.VIEW]" onmouseover="this.src='[#SHAREURL]/images/oeil_actif.png';" onmouseout="this.src='[#SHAREURL]/images/oeil.png';"/>
+						</div>
+					</li>
+					<IF COND="[#ADVANCED]">
+						<li id="entryEntities_[#ID]" class="hidden entryEntities"></li>
+					</IF>
+					<LOOP NAME="hasChildExt" DATABASE="`[#DB_EXT]`" TABLE="entries" SELECT="COUNT(id) AS nb" WHERE="idtype=[#IDTYPE] AND idparent=[#ID]">
+						<IF COND="[#NB]">
+							<LET VAR="oldfolder">[#FOLDER]</LET>
+							<LET VAR="folder">true</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('+', 1)]</LET>
+							<LOOP NAME="getExtEntriesByRank"></LOOP>
+							<LET VAR="folder">[#OLDFOLDER]</LET>
+							<LET VAR="level" GLOBAL="1">[%LEVEL|lmath('-', 1)]</LET>
+						</IF>
+					</LOOP>
+				</DO>
+			</LOOP>
+		</IF>
+	</IF>
+</BLOCK>
+
+<BLOCK ID="3" CHARSET="utf-8" DISPLAY="0">
+	<IF COND="![#EXTERNAL]">
+		<LOOP NAME="getRelatedEntities" TABLE="entities,relations" SELECT="id,g_title" WHERE="id=id1 AND id2=[#ID] AND nature='E'">
+			<BEFORE><ul class="relatedEntities"></BEFORE>
+			<DO>
+				<li>
+					<LOOP NAME="getIdType" TABLE="entries" SELECT="idtype" WHERE="id=[%ID]">
+						<LET VAR="curidtype" GLOBAL="1">[#IDTYPE]</LET>
+					</LOOP>
+					<div class="entitiesLeft">
+						<span class="white">[#G_TITLE]</span>
+						<LOOP NAME="getAuteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+							<BEFORE><div class="auteurs"></BEFORE>
+							<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+							, [#G_FIRSTNAME] [#G_FAMILYNAME]
+							<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+							<AFTER></div></AFTER>
+						</LOOP>
+					</div>
+					<div class="entitiesRight">
+						<input type="checkbox" name="entryEntitiesCheck[[#ID]]" id="entryEntitiesCheck_[%ID]_[#ID]_[%CURIDTYPE]" checked="checked"/>
+					</div>
+				</li>
+			</DO>
+			<AFTER>
+					<li>
+						<div class="centered">
+							<input type="button" class="assoc assoc_blue" value="[@COMMON.VALIDATE|mb_strtoupper('UTF-8')]" onclick="objEntries.validateEntities([%ID]);"/>
+						</div>
+					</li>
+				</ul>
+			</AFTER>
+		</LOOP>
+	<ELSE/>
+		<LOOP NAME="getExtRelatedEntities" TABLE="entities,relations_ext" SELECT="id,g_title,site" WHERE="id=id1 AND id2=[#ID] AND nature='E'">
+			<BEFORE><ul class="relatedEntities"></BEFORE>
+			<DO>
+				<li>
+					<LET VAR="extdb"><?php echo DATABASE.'_'.$context['site'];?></LET>
+					<LOOP NAME="getExtIdType" DATABASE="`[#EXTDB]`" TABLE="entries" SELECT="idtype" WHERE="id=[%ID]">
+						<LET VAR="curidtype" GLOBAL="1">[#SITE].[#IDTYPE]</LET>
+					</LOOP>
+					<div class="entitiesLeft">
+						<span class="white">[#G_TITLE]</span>
+						<LOOP NAME="getExtAuteurs" TABLE="persons" WHERE="g_type='dc.creator'"  WHERE="identity='[#ID]'" ORDER="degree">
+							<BEFORE><div class="auteurs"></BEFORE>
+							<DOFIRST>[#G_FIRSTNAME] [#G_FAMILYNAME]</DOFIRST>
+							, [#G_FIRSTNAME] [#G_FAMILYNAME]
+							<DOLAST> et [#G_FIRSTNAME] [#G_FAMILYNAME]</DOLAST>
+							<AFTER></div></AFTER>
+						</LOOP>
+					</div>
+					<div class="entitiesRight">
+						<input type="checkbox" name="entryEntitiesCheck[[#ID]]" id="entryEntitiesCheck_[%ID]_[#ID]_[%CURIDTYPE]" checked="checked"/>
+					</div>
+				</li>
+			</DO>
+			<AFTER>
+					<li>
+						<div class="centered">
+							<input type="button" class="assoc assoc_blue" value="[@COMMON.VALIDATE|mb_strtoupper('UTF-8')]" onclick="objEntries.validateEntities([%ID]);"/>
+						</div>
+					</li>
+				</ul>
+			</AFTER>
+		</LOOP>
+	</IF>
+
+	<IF COND="![%CURIDTYPE]">
+		<div class="noEntity">[@ADMIN.NO_ENTITY_FOUND]</div>
+	</IF>
+</BLOCK>
+
+<BLOCK ID="4" CHARSET="utf-8" DISPLAY="0">
+	<LET VAR="noentries" GLOBAL="1">1</LET>
+	<LOOP NAME="getRelatedEntryTypes" TABLE="entrytypes" SELECT="id AS idtype, title" ORDER="rank">
+		<LOOP NAME="getRelatedEntries" TABLE="entries,relations" SELECT="id,g_name" WHERE="id1=[#ID] AND id2=id AND nature='E' AND idtype=[#IDTYPE]" ORDER="degree">
+			<DOFIRST>
+				<LET VAR="noentries" GLOBAL="1">0</LET>
+				<ul class="relatedEntries">
+					<li>
+						<div class="entriesLeft">
+							[#TITLE]
+						</div>
+						<div class="spacer"></div>
+						<div class="entriesLeft">
+							<span class="white">[#G_NAME]</span>
+							<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#IDTYPE]" checked="checked" class="right"/>
+						</div>
+						<div class="spacer"></div>
+						<IF COND="[#COUNT] EQ [#NBLIGNES]"></li></IF>
+			</DOFIRST>
+			<DO>
+				<div class="entriesLeft">
+					<span class="white">[#G_NAME]</span>
+					<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#IDTYPE]" checked="checked" class="right"/>
+				</div>
+				<div class="spacer"></div>
+			</DO>
+			<DOLAST>
+					<div class="entriesLeft">
+						<span class="white">[#G_NAME]</span>
+						<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#IDTYPE]" checked="checked" class="right"/>
+					</div>
+					<div class="spacer"></div>
+				</li>
+			</DOLAST>
+			<AFTER></ul></AFTER>
+		</LOOP>
+	</LOOP>
+	<LOOP NAME="getExtEntryTypes" TABLE="tablefields,entities,types,entrytypes" SELECT="DISTINCT(name)" WHERE="entities.id=[#ID] AND tablefields.class=types.class AND name NOT IN (SELECT DISTINCT(type) FROM entrytypes) AND tablefields.type='entries'" ORDER="tablefields.rank">
+		<LET ARRAY="s">[#NAME|lexplode('.')]</LET>
+		<LET VAR="db_ext"><?php echo DATABASE.'_'.$context['s'][0];?></LET>
+		<LOOP NAME="getExtRelatedEntryTypes" DATABASE="`[#DB_EXT]`" TABLE="entrytypes" SELECT="id AS idtype, title" WHERE="id=[#S.1]" ORDER="rank">
+			<LET VAR="table_ext">`[#DB_EXT]`.#_TP_entries</LET>
+			<LOOP NAME="getExtRelatedEntries" TABLE="[#TABLE_EXT],relations_ext" SELECT="id,g_name" WHERE="id1=[%ID] AND id2=id AND nature='E' AND idtype=[#IDTYPE]" ORDER="degree">
+				<DOFIRST>
+					<LET VAR="noentries" GLOBAL="1">0</LET>
+					<ul class="relatedEntries">
+						<li>
+							<div class="entriesLeft">
+								[#S.0] - [#TITLE]
+							</div>
+							<div class="spacer"></div>
+							<div class="entriesLeft">
+								<span class="white">[#G_NAME]</span>
+								<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#S.0].[#IDTYPE]" checked="checked" class="right"/>
+							</div>
+							<div class="spacer"></div>
+							<IF COND="[#COUNT] EQ [#NBLIGNES]"></li></IF>
+				</DOFIRST>
+				<DO>
+					<div class="entriesLeft">
+						<span class="white">[#G_NAME]</span>
+						<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#S.0].[#IDTYPE]" checked="checked" class="right"/>
+					</div>
+					<div class="spacer"></div>
+				</DO>
+				<DOLAST>
+						<div class="entriesLeft">
+							<span class="white">[#G_NAME]</span>
+							<input type="checkbox" name="entityEntriesCheck[[#ID]]" id="entityEntriesCheck_[%ID]_[#ID]_[#S.0].[#IDTYPE]" checked="checked" class="right"/>
+						</div>
+						<div class="spacer"></div>
+					</li>
+				</DOLAST>
+				<AFTER></ul></AFTER>
+			</LOOP>
+		</LOOP>
+	</LOOP>
+	<IF COND="![%NOENTRIES]">
+		<div class="centered spacer">
+			<input type="button" class="assoc assoc_blue" value="[@COMMON.VALIDATE|mb_strtoupper('UTF-8')]" onclick="objEntries.validateEntries([#ID]);"/>
+		</div>
+	<ELSE/>
+		<div class="noEntry">[@ADMIN.NO_ENTRY]</div>
+	</IF>
+</BLOCK>
+
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+<script type="text/javascript">
+var Entries = {};
+Entries = function() {
+	this.init();
+};
+Entries.prototype = {
+	init:function() {
+		this.letter = 'A';
+		this.idtype = '<IF COND="[#EXTERNAL]">[#SITE_EXT].[#IDTYPE]<ELSE/>[#IDTYPE]</IF>';
+		this.advanced = <IF COND="[#ADVANCED]">1<ELSE/>0</IF>;
+		this.errorDelay = null;
+		this.successDelay = null;
+		this.historyOffset = 0;
+	},
+	xhrError:function(xhr) {
+		if($chk(this.errorDelay)) {
+			$clear(this.errorDelay);
+		}
+		var nbLoad = $('warner').get('loading').toInt();
+		if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+		if(0 === nbLoad) {
+			$('warner').setStyle('display', 'none');
+		}
+		$('warner_error_container').set('html', xhr.responseText.stripTags());
+		if($('warner_error').hasClass('hidden')) {
+			$('warner_error').removeClass('hidden');
+		}
+		this.errorDelay = $('warner_error').addClass.delay(5000, $('warner_error'), 'hidden');
+	},
+	xhrRequest:function() {
+		var screen = window.getSize();
+		var scroll = window.getScroll();
+		var margin = $('warner').measure(function(){return {x:this.getSize().x / 2, y:this.getSize().y / 2};});
+		var left = this.mouseX - margin.x;
+		var top = this.mouseY + margin.y - scroll.y;
+		if(left < 0) { left = 0; }
+		if(top > screen.y) { top = screen.y - margin.y; }
+		$('warner').setStyles({'top':top, 'left':left, 'display':'block'});
+		var nbLoad = $('warner').get('loading');
+		if(!nbLoad) { nbLoad = 1; }
+		else { ++nbLoad; }
+		$('warner').set('loading', nbLoad);
+	},
+	xhrComplete:function(responseTree, responseElements, responseHTML, responseJavaScript) {
+		if('auth' == responseHTML) {
+			window.location = "login.php?error_timeout=1&url_retour=" + encodeURIComponent(location.pathname + location.search);
+			return false;
+		}
+		var nbLoad = $('warner').get('loading').toInt();
+		if(nbLoad > 0) { $('warner').set('loading', --nbLoad) }
+		if(0 === nbLoad) {
+			$('warner').setStyle('display', 'none');
+		}
+	},
+	navigateHistory:function(id, offsetname) {
+		if('prev' == id) {
+			--this.historyOffset;
+		} else {
+			if('next' == id) {
+				++this.historyOffset;
+			} else {
+				this.historyOffset = id - 1;
+			}
+		}
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			if(responseHTML) {
+				$('historyContainer').empty().adopt(new Element('table', {'html':responseHTML}).getChildren());
+			}
+		}.bindWithEvent(this));
+		request.get('?do=massassoc&idtype='+this.idtype+'&lo=entries&navigate=1&'+offsetname+'='+(this.historyOffset * 2));
+	},
+	logSuccess:function(msg) {
+		$clear(this.successDelay);
+		$('warner_success_container').set('text', msg);
+		var left = this.mouseX - 30 - ($('warner').measure(function(){return (this.getSize().x / 2);}));
+		if(left < 0) { left = 0; }
+		$('warner_success').setStyles({'top':this.mouseY + 20, 'left':left});
+		if($('warner_success').hasClass('hidden')) {
+			$('warner_success').removeClass('hidden');
+		}
+		this.successDelay = $('warner_success').addClass.delay(3000, $('warner_success'), 'hidden');
+	},
+	clear:function(id) {
+		if(!$(id)) { return; }
+		$(id).getChildren().each(function(item, k) {
+			if(k > 1) {
+				item.dispose();
+			}
+		});
+	},
+	toggleTab:function(tabname) {
+		$('selectassoc').removeClass('selected');
+		$('selectpanier').removeClass('selected');
+		$('selecthistory').removeClass('selected');
+		$('history').setStyle('display', 'none');
+		$('panier').setStyle('display', 'none');
+		$('assoc').setStyle('display', 'none');
+		$('select' + tabname).addClass('selected');
+		$(tabname).setStyle('display', 'block');
+	},
+	propose:function(id) {
+		if(!$('entry_'+id)) { return; }
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			var childs = $('entitiesContainer').getChildren();
+			for(var i=1;childs[i];i++) {
+				childs[i].dispose();
+			}
+			$('entitiesContainer').adopt(new Element('ul', {'html': responseHTML}).getChildren());
+		}.bindWithEvent(this));
+		request.get({'advanced':this.advanced, 'do':'massassoc','idtype':this.idtype, 'lo':'entries', 'propose':1, 'query':$('entry_'+id).get('text').trim()});
+	},
+	getEntriesList: function(lettre, idtype) {
+		if(this.letter == lettre && idtype && idtype == this.idtype) { return; }
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			this.letter = lettre;
+			if(idtype) {
+				this.idtype = idtype;
+			}
+			var childs = $('entriesContainer').getChildren();
+			for(var i=2;childs[i];i++) {
+				childs[i].dispose();
+			}
+			$('entriesContainer').adopt(new Element('ul', {'html': responseHTML}).getChildren());
+		}.bindWithEvent(this));
+		request.get({'advanced':this.advanced, 'do':'massassoc','letter':lettre, 'idtype':idtype ? idtype : this.idtype, 'lo':'entries', 'getentrieslist':1});
+	},
+	getEntitiesList: function(id) {
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			var childs = $('entitiesContainer').getChildren();
+			for(var i=1;childs[i];i++) {
+				childs[i].dispose();
+			}
+			$('entitiesContainer').adopt(new Element('ul', {'html': responseHTML}).getChildren());
+			
+		}.bindWithEvent(this));
+		request.get({'advanced':this.advanced, 'do':'massassoc','id':id, 'idtype':this.idtype, 'lo':'entries', 'getentitieslist':1});
+	},
+ 	addEntryToPanier: function(id) {
+		if($('panierEntry_'+id+'_'+this.idtype.replace('.', '_'))) { return; } // déjà dans le panier
+
+		var c = new Element('div', {'html': $('entry_'+id).get('html')});
+		c.getChildren('img.action').each(function(item) { item.dispose(); });
+
+		c.getChildren('div.entriesRight')[0].empty().set('html', $('currentTypeTitle').get('text')).adopt(new Element('img', {'src':'[#SHAREURL]/images/croix.png', 'class':'action', 'id':'entrycheck_'+id, 'onmouseover':"this.src = '[#SHAREURL]/images/croix_actif.png';", 'onmouseout':"this.src = '[#SHAREURL]/images/croix.png';", 'onclick':"objEntries.removeEntryFromPanier("+id+");", 'style':'margin-left:2em'}));
+
+		$('panierEntries').adopt(new Element('li', {'id':'panierEntry_'+id+'_'+this.idtype.replace('.', '_'), 'html':c.get('html')}));
+		$('entrycheck_'+id).set('checked', true);
+		this.logSuccess("[@ADMIN.ITEM_ADDED]");
+	},
+	removeEntryFromPanier:function(id) {
+		$$('li[id^=panierEntry_'+id+']')[0].dispose();
+	},
+	removeEntityFromPanier:function(id) {
+		$('panierEntity_'+id).dispose();
+	},
+ 	addEntityToPanier: function(id) {
+		if($('panierEntity_'+id)) { return; } // déjà dans le panier
+
+		var c = new Element('div', {'html': $('entity_'+id).get('html')});
+		c.getChildren('img.statusIcon').each(function(item) { item.dispose(); });
+		c.getChildren('img.action').each(function(item) { item.dispose(); });
+		var cc = c.getChildren('div.entitiesLeft').getFirst();
+		if(cc.get('tag') == 'a') {
+			var n = new Element('div', {'html': cc.get('html')});
+			c.getChildren('div.entitiesLeft')[0].empty().adopt(n.getChildren());
+		}
+
+		var cc = c.getChildren('div.entitiesRight');
+		cc.getChildren('img.action').each(function(item) { item.dispose(); });
+		cc.adopt(new Element('img', {'src':'[#SHAREURL]/images/croix.png', 'class':'action', 'id':'entitycheck_'+id, 'onmouseover':"this.src = '[#SHAREURL]/images/croix_actif.png';", 'onmouseout':"this.src = '[#SHAREURL]/images/croix.png';", 'onclick':"objEntries.removeEntityFromPanier("+id+");", 'style':'margin-left:2em'}));
+		$('panierEntities').adopt(new Element('li', {'id':'panierEntity_'+id, 'html':c.get('html')}));
+		$('entitycheck_'+id).set('checked', true);
+		this.logSuccess("[@ADMIN.ITEM_ADDED]");
+	},
+	associate:function() {
+		var entitiesIds = [];
+		var entriesIds = [];
+		$$('li[id^=panierEntry_]').each(function(item) {
+			var id = item.get('id').split('_');
+			entriesIds.push(id.length > 3 ? id[1]+'_'+id[2]+'.'+id[3] : id[1]+'_'+id[2]);
+		});
+		$$('li[id^=panierEntity_]').each(function(item) {
+			entitiesIds.push(item.get('id').split('_')[1]);
+		});
+
+		if(!entitiesIds.length || !entriesIds.length) { return; }
+
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			if(responseHTML) {
+				$('historyContainer').adopt(new Element('table', {'html':responseHTML}).getChildren());
+				this.logSuccess("[@ADMIN.ELEMENTS_ASSOCIATED]");
+			} else {
+				this.logSuccess("[@ADMIN.NO_ELEMENT_ASSOCIATED]");
+			}
+		}.bindWithEvent(this));
+		request.post({'advanced':this.advanced, 'do':'massassoc', 'idtype':this.idtype, 'lo':'entries', 'edit':1, 'identities':entitiesIds, 'identries':entriesIds, 'associate':1});
+	},
+	dissociate:function(id) {
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			$('history_'+id).dispose();
+			$('historyContainer_'+id).dispose();
+			$('historyAction_'+id).dispose();
+			this.logSuccess("[@ADMIN.ELEMENTS_DISSOCIATED]");
+		}.bindWithEvent(this));
+		request.post({'advanced':this.advanced, 'do':'massassoc','id':id, 'idtype':this.idtype, 'lo':'entries', 'dissociate':1, 'edit':1});
+	},
+	toggleEntry:function(obj, id) {
+		if("undefined" == typeof obj.status) {
+			var request = new Request.HTML({
+				'url':'./index.php',
+				onFailure:this.xhrError.bind(this),
+				onRequest:this.xhrRequest.bind(this),
+				onComplete:this.xhrComplete
+			});
+			request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+				$('entryEntities_'+id).set('html', responseHTML).toggle();
+				obj.status = 1;
+				obj.src = '[#SHAREURL]/images/fleche_bleue.png';
+			}.bindWithEvent(this));
+			request.post({'advanced':this.advanced, 'do':'massassoc', 'idtype':this.idtype, 'lo':'entries', 'edit':1, 'id':id, 'getrelatedentitieslist':1});
+		} else {
+			$('entryEntities_'+id).toggle();
+			obj.status = !obj.status;
+			if(obj.status) {
+				obj.src = '[#SHAREURL]/images/fleche_bleue.png';
+			} else {
+				obj.src = '[#SHAREURL]/images/fleche_grise.png';
+			}
+		}
+	},
+	toggleEntity:function(obj, id) {
+		if("undefined" == typeof obj.status) {
+			var request = new Request.HTML({
+				'url':'./index.php',
+				onFailure:this.xhrError.bind(this),
+				onRequest:this.xhrRequest.bind(this),
+				onComplete:this.xhrComplete
+			});
+			request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+				$('entityEntries_'+id).set('html', responseHTML).toggle();
+				obj.status = 1;
+				obj.src = '[#SHAREURL]/images/fleche_bleue.png';
+			}.bindWithEvent(this));
+			request.get({'advanced':this.advanced, 'do':'massassoc', 'idtype':this.idtype, 'lo':'entries', 'edit':1, 'id':id, 'getrelatedentrieslist':1});
+		} else {
+			$('entityEntries_'+id).toggle();
+			obj.status = !obj.status;
+			if(obj.status) {
+				obj.src = '[#SHAREURL]/images/fleche_bleue.png';
+			} else {
+				obj.src = '[#SHAREURL]/images/fleche_grise.png';
+			}
+		}
+	},
+	validateEntities:function(id) {
+		var ids = [];
+		$$('input[id^=entryEntitiesCheck_'+id+']').each(function(item) {
+			if(item.get('checked')) { ids.push(item.get('id').split('_')[2]); }
+			else { item.getParents('li')[0].dispose(); }
+		});
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+   			this.logSuccess("[@ADMIN.SUCCESS]");
+		}.bindWithEvent(this));
+		request.post({'advanced':this.advanced, 'do':'massassoc', 'idtype':this.idtype, 'lo':'entries', 'edit':1, 'identities':ids, 'identries':[id+'_'+this.idtype], 'entitiesset':1});
+	},
+	validateEntries:function(id) {
+		var ids = [];
+		$$('input[id^=entityEntriesCheck_'+id+']').each(function(item) {
+			if(item.get('checked')) {
+				var id = item.get('id').split('_');
+				ids.push(id[2]+'_'+id[3]);
+			} else {
+				item.getParents('li')[0].dispose();
+			}
+		});
+
+		var request = new Request.HTML({
+			'url':'./index.php',
+			onFailure:this.xhrError.bind(this),
+			onRequest:this.xhrRequest.bind(this),
+			onComplete:this.xhrComplete
+		});
+		request.addEvent('success', function(responseTree, responseElements, responseHTML, responseJavaScript) {
+			this.logSuccess("[@ADMIN.SUCCESS]");
+		}.bindWithEvent(this));
+		request.post({'advanced':this.advanced, 'do':'massassoc', 'idtype':this.idtype, 'lo':'entries', 'edit':1, 'identities':[id], 'identries':ids, 'entriesset':1});
+	},
+	toggleHistory:function(obj, id) {
+		if($('historyAction_'+id).hasClass('hidden')) {
+			$('historyAction_'+id).removeClass('hidden');
+			$('historyContainer_'+id).removeClass('hidden');
+			obj.src = '[#SHAREURL]/images/fleche_bleue.png';
+		} else {
+			$('historyAction_'+id).addClass('hidden');
+			$('historyContainer_'+id).addClass('hidden');
+			obj.src = '[#SHAREURL]/images/fleche_grise.png';
+		}
+	},
+};
+
+var objEntries = new Entries();
+
+document.addEvent('mousemove', function(e) {
+	this.mouseX = e.page.x;
+	this.mouseY = e.page.y;
+}.bind(objEntries));
+</script>
+
+<MACRO NAME="CLOSE_HTML">
