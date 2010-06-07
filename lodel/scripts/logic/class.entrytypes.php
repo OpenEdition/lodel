@@ -163,7 +163,7 @@ class EntryTypesLogic extends Logic
 		$GLOBALS['nodesk'] = true;
 
 		usemaindb();
-		$sites = DAO::getDAO('sites')->findMany('status > 0 and name in ("testexport", "lettre-cdf", "lecons-cdf", "annuaire-cdf", "conferences-cdf")', 'name', 'name, title');
+		$sites = DAO::getDAO('sites')->findMany('status > 0', 'name', 'name, title');
 		usecurrentdb();
 		if(!$sites) return 'entrytypesbrowser';
 		
