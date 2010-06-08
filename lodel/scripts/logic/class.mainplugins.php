@@ -367,7 +367,10 @@ class MainPluginsLogic extends Logic
 	
 					if(empty($errors))
 					{
-						isset($dao) || $dao = $this->_getMainTableDao();
+						isset($dao) || $dao = DAO::getDAO('mainplugins');
+						global $db;
+						$database = $db->database;
+						$db->SelectDB(DATABASE);
 						$vo = $dao->find('name='.$db->quote($pName));
 						if(!$vo)
 						{
@@ -384,7 +387,7 @@ class MainPluginsLogic extends Logic
 							}
 							$vo->id = $dao->save($vo, true);
 						}
-
+						$db->SelectDB($database);
 						$context['plugins'][$pName] = $plugin;
 						$context['plugins'][$pName]['status'] = $vo->status;
 						$context['plugins'][$pName]['id'] = $vo->id;
