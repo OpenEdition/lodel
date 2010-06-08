@@ -52,6 +52,7 @@
 
 
 define('backoffice', true);
+define('backoffice-edition', true);
 require 'siteconfig.php';
 
 try
