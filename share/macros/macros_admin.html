@@ -355,32 +355,38 @@
       Modify and delete button
 --------------------------------------------------------------- ]-->
 
-<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONAL="[#TITLE]">
+<DEFFUNC NAME="MODIFY_DELETE_BUTTON" REQUIRED="LO" OPTIONAL="[#TITLE], external">
+
+<IF COND="[#EXTERNAL]">
+	<LET VAR="id">[#SITE_EXT].[#ID]</LET>
+</IF>
 
 <IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
-		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>
+		<span class="item"><a href="<MACRO NAME="SITE_ROOT">/[(#ID|makeurlwithid)]"><strong>[@COMMON.VIEW]</strong></a></span>&nbsp;
 	</IF>
-	<span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.EDIT]</a></span>
-
-	<IF COND="[#LO] EQ 'entries' OR [#LO] EQ 'persons'">
-		<MACRO NAME="CHANGE_ENTRIES_STATUS">
+	<IF COND="![#EXTERNAL]">
+		<span class="item"><a href="index.php?do=view&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.EDIT]</a></span>&nbsp;
 	</IF>
-
-	<IF COND="[#STATUS] ge 32">
-	  <span class="item inactif">[@COMMON.PROTECTED]</span>
-       <ELSE/>
-	  <IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
-	  <span class="item inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span>
-	  <ELSE/>
-	  <span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>
-	  </IF>
+	<IF COND="([#LO] EQ 'entries' AND ![#EXTERNAL]) OR [#LO] EQ 'persons'">
+		<MACRO NAME="CHANGE_ENTRIES_STATUS">&nbsp;
+	</IF>
+	<IF COND="![#EXTERNAL]">
+		<IF COND="[#STATUS] ge 32">
+			<span class="item inactif">[@COMMON.PROTECTED]</span>&nbsp;
+		<ELSE/>
+			<IF COND="[#LO|isdeletelocked([#ID],[#STATUS])]">
+				<span class="item inactif">[#LO|isdeletelocked([#ID],[#STATUS])]</span>&nbsp;
+			<ELSE/>
+				<span class="item"><a href="index.php?do=delete&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm('[@COMMON.CONFIRM_DELETE|sprintf([#TITLE])]');">[@COMMON.DELETE]</a></span>&nbsp;
+			</IF>
+		</IF>
 	</IF>
 	<IF COND="[#LO] NE 'entries' AND [#LO] NE 'persons'">
-		<span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>
+		<span class="item"><a href="index.php?do=copy&amp;id=[#ID]&amp;lo=[#LO]">[@COMMON.COPY]</a></span>&nbsp;
 	</IF>
-<ELSE/>
-	 <span class="item inactif">[@COMMON.EDIT]</span>
+<ELSEIF COND="![#EXTERNAL]">
+	 <span class="item inactif">[@COMMON.EDIT]</span>&nbsp;
 </IF>
 	
 </DEFFUNC>
@@ -406,8 +412,17 @@
 </DEFMACRO>
 
 
-<DEFFUNC NAME="NOMBRE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+<DEFFUNC NAME="NOMBRE_ENTITES_LIEES" REQUIRED="id, nature" OPTIONNAL="external,dbext, site_ext">
+	<?php usecurrentdb(); ?>
+	<IF COND="![#EXTERNAL]">
+		<LOOP NAME="entitiesNumber" TABLE="relations" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]'" SELECT="COUNT(*) AS nb">[#NB]</LOOP>
+	<ELSE/>
+		<LOOP NAME="entitiesNumberExt" TABLE="relations_ext" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND site='[#SITE_EXT]'" SELECT="COUNT(*) AS nb">[#NB] [@ADMIN.IN_SHARED_INDEXES]</LOOP>
+	</IF>
+</DEFFUNC>
+
+<DEFFUNC NAME="NOMBRE_ENTITES_LIEES_EXT" REQUIRED="id">
+	<LOOP NAME="entitiesNumberLocalExt" TABLE="relations_ext" WHERE="id1 = '[#ID]' AND nature = 'EE'" SELECT="COUNT(*) AS nb">[#NB] [@ADMIN.IN_SHARED_INDEXES]</LOOP>
 </DEFFUNC>
 
 
