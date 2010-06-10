@@ -472,7 +472,7 @@ pw.setHelperId('helper');
 <!--[ end{form} Automatic generated. Don't edit ]-->		    
 	<fieldset>
 		<legend>[@ADMIN.SESSIONS]</legend>
-		<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
+		<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]' AND userrights=[#USERRIGHTS]"> 
 			<DO>
 			<div class="texte_info">[@ADMIN.EXPIRE] [#EXPIRE2|formatedtime('%d/%m/%y %H:%M')] <a href="index.php?do=deletesession&amp;lo=users&amp;session=[#ID]"><IF COND="[#EXPIRE2] lt time()">[[@COMMON.DELETE]]<ELSE/>[[@ADMIN.DELOGG]]</IF></a></div><br />
 			</DO>
