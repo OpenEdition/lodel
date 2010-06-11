@@ -48,7 +48,7 @@
 		</label><br class="nobr"><input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]"><LOOP NAME="fielderror" FIELD="title"><a id="title"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC></span></LOOP><br /><label for="altertitle">[@ADMIN.MULTILINGUAL_TITLE] : 
 		</label><br class="nobr"><FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC><label for="lang">[@COMMON.LANG]<span class="optional">(*)</span> : 
 		</label><br class="nobr"><select name="lang" id="lang"><?php 
-						makeselectlangs($context['sitelang']);
+						makeselectlangs(@$context['lang']);
 					?></select><LOOP NAME="fielderror" FIELD="lang"><a id="lang"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@COMMON.LANG]"></FUNC></span></LOOP><br />
 </fieldset><fieldset>
 <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>
