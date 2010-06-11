@@ -37,195 +37,235 @@
 	<li>[@EDITION.TITLE_CHECK_STYLING]</li>
 </ul>
 
-<br />&nbsp;<br />
-<MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
-
-<div id="menu">
-<a href="javascript:;" onclick="switchMenu('chkbalisage');">checkbalisage</a>
-&nbsp;-&nbsp;
-<a href="javascript:;" onclick="switchMenu('otx_report');">otx report</a>
-&nbsp;-&nbsp;
-<a href="javascript:;" onclick="switchMenu('lodel_report');">lodel report</a>
+<div id="headerContainer">
+	<ul id="headerMenu">
+		<li class="left selected topleftrounded" id="select_results" onclick="chk.toggleTab('results', this);">[@EDITION.RESULTS|mb_strtoupper('utf-8')]</li>
+		<li class="left topleftrounded" id="select_informations" onclick="chk.toggleTab('informations', this);">[@COMMON.INFORMATIONS|mb_strtoupper('utf-8')]</li>
+	</ul>
+	<div class="actions_top right">
+		<input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui';"/>&nbsp;<input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'"/>
+	</div>
 </div>
 
-<div id="chkbalisage">
-
-<IF COND="[#ERROR]">
-<FUNC NAME="PRINT_ERROR_LISTING"/>
-</IF>
-
-<table id="checkbalisage">
-	<tr>
-		<th>[@EDITION.STYLES]</th>
-		<th>[@EDITION.CONTENTS]</th>
-	</tr>
-<LET VAR="currentclass" GLOBAL="1"></LET>
-<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
-	<SWITCH TEST="[#TYPE]">
-		<DO CASE="entries">
-			<LOOP NAME="getIdEntrytype" SELECT="id,title,class" TABLE="entrytypes" WHERE="type='[#NAME]'">
-				<IF COND="[#ENTRIES.#ID]">
-					<IF COND="![%CURRENTCLASS]">
-						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-					<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
-						<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
-						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-					</IF>
-					<tr>
-						<th class="sideInfo">[#TITLE]</th>
-						<td>
-							[#ENTRIES.#ID]
-						</td>
-					</tr>
-					<IF COND="[%CURRENTCLASS] NE [#CLASS]">
-						<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
-					</IF>
+<div id="checkimport" class="toprightrounded">
+	<div id="results">
+		<div id="status">
+			<IF COND="[#PARSERREPORT]">
+				<img src="[#SHAREURL]/images/alerte_rouge.png" alt="[@INSTALL.WARNING]"/> <span class="error">[@INSTALL.WARNING|mb_strtoupper('utf-8')]</span>
+				<LOOP NAME="foreach" ARRAY="[#PARSERREPORT]">
+					<BEFORE><ul></BEFORE>
+					<DO><li>[#VALUE]</li></DO>
+					<AFTER></ul></AFTER>
+				</LOOP>
+			<ELSE/>
+				<img src="[#SHAREURL]/images/alerte_vert.png" alt="[@EDITION.IMPORT_SUCCESSFULL]"/> <span class="success">[@EDITION.IMPORT_SUCCESSFULL|mb_strtoupper('utf-8')]</span>
+				<p class="otxcitation">Aucune erreur, bravo !! Et merci J-B pour les macros !</p>
+			</IF>
+		</div>
+		<LET VAR="paranumber" GLOBAL="1">0</LET>
+		<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx,t.idgroup,tg.title AS tgtitle" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
+			<IF COND="![%CURIDGROUP]">
+				<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+				<table class="chkbalisage">
+				<IF COND="[#TYPE] NE 'persons'">
+					<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
 				</IF>
-			</LOOP>
-		</DO>
+				<LET VAR="firstclass" GLOBAL="1">first</LET>
+			<ELSEIF COND="[%CURIDGROUP] NE [#IDGROUP]">
+				</table>
+				<table class="chkbalisage">
+				<IF COND="[#TYPE] NE 'persons'">
+					<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+				</IF>
+				<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+				<LET VAR="firstclass" GLOBAL="1">first</LET>
+			</IF>
 
-		<DO CASE="persons">
-			<LOOP NAME="getIdPersontype" SELECT="id,title,class" TABLE="persontypes" WHERE="type='[#NAME]'">
-				<IF COND="[#PERSONS.#ID]">
-					<IF COND="![%CURRENTCLASS]">
-						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-					<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
-						<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
-						<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-					</IF>
-					<LOOP NAME="foreach" ARRAY="[#PERSONS.#ID]">
-						<tr>
-							<th class="sideInfo">[#TITLE]</th>
-							<td>
-								<ul>
+			<SWITCH TEST="[#TYPE]">
+				<DO CASE="entries">
+					<LOOP NAME="getIdEntrytype" SELECT="id,title,class" TABLE="entrytypes" WHERE="type='[#NAME]'">
+						<IF COND="[#ENTRIES.#ID]">
+							<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
+								<td class="title">[#TITLE]</td>
+								<td class="contents">
+									<div class="overflowed">[#ENTRIES.#ID]</div>
+								</td>
+								<td class="noborder">&nbsp;</td>
+							</tr>
+						</IF>
+					</LOOP>
+				</DO>
+
+				<DO CASE="persons">
+					<LOOP NAME="getIdPersontype" SELECT="id,title,class" TABLE="persontypes" WHERE="type='[#NAME]'">
+						<IF COND="[#PERSONS.#ID]">
+							<IF COND="![%CURRENTTITLE] OR [%CURRENTTITLE] NE [#TITLE]">
+								<tr class="noborder"><td class="blocktitle">[#TITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+								<LET VAR="currenttitle" GLOBAL="1">[#TITLE]</LET>
+							</IF>
+							<LOOP NAME="foreach" ARRAY="[#PERSONS.#ID]">
 								<LOOP NAME="foreach" ARRAY="[#VALUE.DATA]">
 									<IF COND="![%FIELDS.#KEY]">
 										<LOOP NAME="getFieldTitle" TABLE="tablefields" SELECT="title" WHERE="name='[#KEY]' AND (class='entities_[#CLASS]' OR class='[#CLASS]')">
 											<LET ARRAY="fields.#KEY" GLOBAL="1">[#TITLE]</LET>
 										</LOOP>
 									</IF>
-									<li>[%FIELDS.#KEY] : [#VALUE]</li>
+									<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>><td class="title">[%FIELDS.#KEY]</td><td class="contents"><div class="overflowed">[#VALUE]</div></td><td class="noborder">&nbsp;</td></tr>
 								</LOOP>
-								</ul>
-							</td>
-						</tr>
-					</LOOP>
-					<IF COND="[%CURRENTCLASS] NE [#CLASS]">
-						<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
-					</IF>
-				</IF>
-			</LOOP>
-		</DO>
-
-		<DO CASE="default">
-			<IF COND="[#CONTENTS.#NAME]">
-				<IF COND="![%CURRENTCLASS]">
-					<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-				<ELSEIF COND="[%CURRENTCLASS] NE [#CLASS]">
-					<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
-					<tr><td class="openclass entities" colspan="2">[#CLASS] &darr;</td></tr>
-				</IF>
-				<tr>
-					<IF COND="[#TYPE] EQ 'mltext' OR [#CONTENTS.#NAME|is_array]">
-						<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
-							<tr>
-								<th class="sideInfo">[#TITLE] [#KEY]</th>
-								<td>[#VALUE]</td>
-							</tr>
-						</LOOP>
-					<ELSE/>
-						<th class="sideInfo" id="[#NAME]">[#TITLE]</th>
-						<td>
-						<IF COND="[#TYPE] EQ 'date'">
-							[#CONTENTS.#NAME|humandate]
-						<ELSE/>
-							<IF COND="[#OTX] EQ 'text:standard'">[#CONTENTS.#NAME|paranumber([#NAME])]<ELSE/>[#CONTENTS.#NAME]</IF>
+							</LOOP>
 						</IF>
-						</td>
+					</LOOP>
+				</DO>
+
+				<DO CASE="default">
+					<IF COND="[#CONTENTS.#NAME]">
+						<IF COND="[#TYPE] EQ 'mltext'">
+							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
+								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
+									<td class="title">[#TITLE]</td>
+									<td class="contents"><div class="overflowed">[#VALUE.TEXT]</div></td>
+									<td class="informations">
+										<ul>
+										<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
+											<li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+										</LOOP>
+										</ul>
+									</td>
+								</tr>
+							</LOOP>
+						<ELSE/>
+							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
+								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
+									<td class="title<IF COND="[#VALUE.ERROR]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
+									<td class="contents">
+										<div class="overflowed">
+											<IF COND="[#TYPE] EQ 'date'">
+												[#VALUE.TEXT|humandate]
+											<ELSE/>
+												<IF COND="[#OTX] EQ 'text:standard' AND [#VALUE.CLASS] EQ [#NAME] AND false SEQ [#VALUE.TEXT|strpos('<table')] AND false SEQ [#VALUE.TEXT|strpos('<img')]">
+													<LET VAR="paranumber" GLOBAL="1">[%PARANUMBER|lmath('+', 1)]</LET>
+													<span class="paranumber">[%PARANUMBER]</span>
+												</IF>
+												[#VALUE.TEXT]
+											</IF>
+										</div>
+									</td>
+									<td class="informations">
+										<ul>
+										<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
+											<IF COND="[#VALUE|is_array]">
+												<li>
+												<LOOP NAME="foreach" ARRAY="[#VALUE]">
+													<IF COND="[#KEY] EQ 'imagewidth'">
+														<p>
+															<span style="color:#aaaaaa;">[@EDITION.IMAGE_ORIGINAL_WIDTH]</span><br/>
+															[#VALUE] px
+														</p>
+													<ELSEIF COND="[#KEY] EQ 'imageheight'">
+														<p>
+															<span style="color:#aaaaaa;">[@EDITION.IMAGE_ORIGINAL_HEIGHT]</span><br/>
+															[#VALUE] px
+														</p>
+													<ELSEIF COND="[#KEY] EQ 'imagemime'">
+														<p>
+															<span style="color:#aaaaaa;">[@EDITION.MIME_TYPE]</span><br/>
+															[#VALUE]
+														</p>
+													<ELSEIF COND="[#KEY] EQ 'imagesize'">
+														<p>
+															<span style="color:#aaaaaa;">[@EDITION.FILESIZE]</span><br/>
+															[#VALUE|niceFileSize]
+														</p>
+													<ELSE/>
+														[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]<br/>
+													</IF>
+												</LOOP>
+												</li>
+											<ELSE/>
+												<li>[#VALUE|replace(array(';', ':', '-'), array('&#8203;;&#8203;', '&#8203;:&#8203;', '&#8203;-&#8203;'))]</li>
+											</IF>
+										</LOOP>
+										</ul>
+									</td>
+								</tr>
+							</LOOP>
+						</IF>
 					</IF>
-				</tr>	
-				<IF COND="[%CURRENTCLASS] NE [#CLASS]">
-					<LET VAR="currentclass" GLOBAL="1">[#CLASS]</LET>
-				</IF>
-			</IF>
-		</DO>
-	</SWITCH>
-</LOOP>
-<tr><td class="openclass entities" colspan="2">[%CURRENTCLASS] &uarr;</td></tr>
-</table>
+				</DO>
+			</SWITCH>
+			<AFTER></table></AFTER>
+		</LOOP>
+	</div>
+
+	<div id="informations" class="hidden">
+		<ul id="otxstats">
+			<li class="title">[@EDITION.STATISTICS_INFORMATIONS]</li>
+			<li>
+				<LOOP NAME="foreach" ARRAY="[#STATISTICS.DOCSTATS]">
+					<p>[#KEY|getlodeltextcontents('edition')] : [#VALUE]</p>
+				</LOOP>
+			</li>
+			<li class="title">[@EDITION.USED_LANGUAGES]</li>
+			<li>[#STATISTICS.LANG|array_unique|join(', ')]</li>
+			<li class="title">[@COMMON.IMAGES] <span style="color:grey">([#STATISTICS.IMAGES|count])</span></li>
+			<li>
+				<LOOP NAME="foreach" ARRAY="[#STATISTICS.IMAGES]">
+					<p>[#KEY|basename] : [#VALUE.IMAGEWIDTH]x[#VALUE.IMAGEHEIGHT]px, [#VALUE.IMAGEMIME], [#VALUE.IMAGESIZE|niceFileSize]</p>
+				</LOOP>
+			</li>
+			<li class="title">[@EDITION.DOCUMENT_PLAN]</li>
+			<li>
+				plan
+			</li>
+		</ul>
+	</div>
 </div>
 
-<div id="otx_report" style="display:none;">
-<h2>métas document</h2>
-<LOOP NAME="foreach" ARRAY="[#OTX_REPORT.1]">
-	<BEFORE><ul></BEFORE>
-	<DO><li>[#KEY] : 
-		<IF COND="[#VALUE|is_array]">
-			<LOOP NAME="foreach" ARRAY="[#VALUE]">
-				<BEFORE><ul></BEFORE>
-				<DO><li>[#KEY] : [#VALUE]</li></DO>
-				<AFTER></ul></AFTER>
-			</LOOP>
-		<ELSE/>
-		[#VALUE]
-		</IF>
-	</li></DO>
-	<AFTER></ul></AFTER>
-</LOOP>
-
-<h2>métas otx</h2>
-<LOOP NAME="foreach" ARRAY="[#OTX_REPORT.2]">
-	<BEFORE><ul></BEFORE>
-	<DO><li>[#KEY] : 
-		<IF COND="[#VALUE|is_array]">
-			<LOOP NAME="foreach" ARRAY="[#VALUE]">
-				<BEFORE><ul></BEFORE>
-				<DO><li>[#KEY] : [#VALUE]</li></DO>
-				<AFTER></ul></AFTER>
-			</LOOP>
-		<ELSE/>
-		[#VALUE]
-		</IF>
-	</li></DO>
-	<AFTER></ul></AFTER>
-</LOOP>
+<div class="actions_bottom right">
+	<input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui';"/>&nbsp;<input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'"/>
 </div>
 
-<div id="lodel_report" style="display:none;">
-<LOOP NAME="foreach" ARRAY="[#PARSERREPORT]">
-	<BEFORE><ul></BEFORE>
-	<DO><li>[#VALUE]</li></DO>
-	<AFTER></ul></AFTER>
-</LOOP>
-</div>
-<br />&nbsp;<br />
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
+<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
 <script type="text/javascript">
-var switchMenu = function(id) {
-	switch(id)
-	{
-		case 'chkbalisage':
-			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
-			var display_others = display == 'block' ? 'none' : 'block';
-			document.getElementById(id).style.display = display;
-			document.getElementById('otx_report').style.display = display_others;
-			document.getElementById('lodel_report').style.display = display_others;
-			break;
-		case 'otx_report':
-			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
-			var display_others = display == 'block' ? 'none' : 'block';
-			document.getElementById(id).style.display = display;
-			document.getElementById('chkbalisage').style.display = display_others;
-			document.getElementById('lodel_report').style.display = display_others;
-			break;
-		case 'lodel_report':
-			var display = (!document.getElementById(id).style.display || document.getElementById(id).style.display == 'block') ? 'none' : 'block';
-			var display_others = display == 'block' ? 'none' : 'block';
-			document.getElementById(id).style.display = display;
-			document.getElementById('otx_report').style.display = display_others;
-			document.getElementById('chkbalisage').style.display = display_others;
-			break;
+var checkBalisage = {};
+checkBalisage = function() {
+	this.init();
+};
+
+checkBalisage.prototype = {
+	
+	init:function() {
+		$$('table.chkbalisage').each(function(item) {
+			if(item.getFirst().getChildren('tr').length < 2) {
+				item.addClass('hidden');
+			}
+		});
+		this.resizeOverflowed();
+	},
+	toggleTab:function(id) {
+		$('results').addClass('hidden');
+		$('select_results').removeClass('selected');
+		$('informations').addClass('hidden');
+		$('select_informations').removeClass('selected');
+		$(id).removeClass('hidden');
+		$('select_'+id).addClass('selected');
+	},
+	resizeOverflowed:function() {
+		var maxWidth = window.getSize().x / 2;
+		$$('div.overflowed').each(function(item) {
+			item.setStyle('width', maxWidth);
+		});
 	}
-}
+};
+
+var chk = {};
+window.addEvent('domready', function() {
+	chk = new checkBalisage();
+	window.addEvent('resize', function() {
+		this.resizeOverflowed();
+	}.bind(chk));
+});
 </script>
-<MACRO NAME="NAVBAR_FOR_CHECKIMPORT">
+
 <MACRO NAME="CLOSE_HTML">

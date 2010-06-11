@@ -63,13 +63,13 @@ class OTXClient extends SoapClient
 						/*$headerfault // headerfault */ );
 
 			// get the token for this session
-			$sessionToken = $this->webservooToken();
+			$sessionToken = $this->otxToken();
 
 			// add the header for auth
 			$header = new SoapVar(array('login'=>$opts['servoo.username'], 'password'=>md5($passwd.$sessionToken->sessionToken), 'lodel_user'=>$opts['lodel_user'], 'lodel_site'=>$opts['lodel_site']), SOAP_ENC_OBJECT);
 			unset($options, $passwd, $sessionToken); // cleaning memory
 
-			$this->__setSoapHeaders(array(new SoapHeader('urn:webservoo', 'webservooAuth', $header)));
+			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', $header)));
 			unset($header, $webservooHeader); // cleaning memory
 			$this->_instanciated = true;
 		}
@@ -84,7 +84,7 @@ class OTXClient extends SoapClient
 		try {
 			$this->_checkRequest($request);
 			// make the request and get tei result
-			$req = $this->webservooRequest(array('request'=>$request['request'], 'mode'=>$request['mode'], 'attachment'=>$request['attachment'], 'schema'=>$request['schema']));
+			$req = $this->otxRequest(array('request'=>$request['request'], 'mode'=>$request['mode'], 'attachment'=>$request['attachment'], 'schema'=>$request['schema']));
 			if(empty($req))
 				throw new SoapFault("WebServOO client FaultError", 'ERROR: empty return from OTX');
 			foreach($req as $k=>$v)

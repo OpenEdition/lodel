@@ -141,24 +141,6 @@ class TEIParser extends XMLReader
 	private $_nbNotes = 0;
 
 	/**
-	 * @var int nombre incrémental des tableaux
-	 * @access private
-	 */
-	private $_nbTables = 0;
-
-	/**
-	 * @var int nombre incrémental des paragraphes
-	 * @access private
-	 */
-	private $_nbParas = 0;
-
-	/**
-	 * @var array langues utilisées dans le document
-	 * @access private
-	 */
-	private $_languages = array();
-
-	/**
 	 * @var string nom de la classe courante
 	 * @access private
 	 */
@@ -171,16 +153,16 @@ class TEIParser extends XMLReader
 	private $_images = array();
 
 	/**
-	 * @var array tableau des infos des images
-	 * @access private
-	 */
-	private $_imagesInfos = array();
-
-	/**
 	 * @var string titre du document si trouvé
 	 * @access private
 	 */
 	private $_docTitle = '';
+
+	/**
+	 * @var int nombre incrémental des erreurs de styles, utilisé pour les ancres dans le checkbalisage
+	 * @access private
+	 */
+	private $_stylesError = 0;
 	
 	/**
 	 * Constructeur
@@ -363,13 +345,11 @@ class TEIParser extends XMLReader
 						$file = basename($image['filename']);
 						$this->_images[$file] = $tmpdir.$file;
 						rename($image['filename'], $this->_images[$file]);
-						$this->_imagesInfos[$this->_images[$file]] = getImageSize($this->_images[$file]);
-						$this->_imagesInfos[$this->_images[$file]]['size'] = filesize($this->_images[$file]);
 					}
 				}
 				else
 				{
-					$this->_log('No files were extracted from the archive');
+					trigger_error('No files were extracted from the archive', E_USER_ERROR);
 				}
 				unset($images, $archive);
 			}
@@ -402,15 +382,13 @@ class TEIParser extends XMLReader
 						{
 							$this->_images[$image] = $tmpdir.$image;
 							rename($fullimage, $this->_images[$image]);
-							$this->_imagesInfos[$this->_images[$image]] = getImageSize($this->_images[$image]);
-							$this->_imagesInfos[$this->_images[$image]]['size'] = filesize($this->_images[$image]);
 						}
 					}
 					unset($images);
 				}
 				else
 				{
-					$this->_log('No files were extracted from the archive');
+					trigger_error('No files were extracted from the archive', E_USER_ERROR);
 				}
 			}
 		}
@@ -461,6 +439,18 @@ class TEIParser extends XMLReader
 		if(count($this->_tags)) $this->_log('The number of opening/closing tag does not match : '.print_r($this->_tags,1));
 
 		return $this->_contents;
+	}
+
+	/**
+	 * Cherche si le style $style est connu
+	 *
+	 * @access private
+	 * @param string $rend le style à chercher
+	 * @return bool true si le style est reconnu
+	 */
+	public function getStyle($style)
+	{
+		return (bool) $this->_getStyle($style);
 	}
 
 	/**
@@ -636,15 +626,16 @@ class TEIParser extends XMLReader
 			$this->_log('No field declared as firstname/lastname for authors, please edit your editorial model');
 			return;
 		}
-		
+
 		// manages persons
 		// we construct the var for lodel and strip tags from firstname/lastname
-		foreach($persons as $personType=>$persons)
+		foreach($persons as $personType => $ps)
 		{
-			foreach($persons as $k=>$person)
+			foreach($ps as $k => $person)
 			{
 				if(!empty($person['g_name']))
 				{
+					array_walk_recursive($person['data'], array($this, '_clean'));
 					$person['g_name'] = strip_tags($person['g_name']);
 					if($lastname && $firstname)
 					{
@@ -693,19 +684,19 @@ class TEIParser extends XMLReader
 		
 		if(isset($this->_internalstyles[$rend]))
 		{
-			return $full ? $this->_internalstyles[$rend] : $this->_internalstyles[$rend]->name;
+			return $full ? $this->_internalstyles[$rend] : $this->_internalstyles[$rend]->style;
 		}
 		elseif(isset($this->_characterstyles[$rend]))
 		{
-			return $full ? $this->_characterstyles[$rend] : $this->_characterstyles[$rend]->name;
+			return $full ? $this->_characterstyles[$rend] : $this->_characterstyles[$rend]->style;
 		}
 		elseif(isset($this->_entrytypes[$rend]))
 		{
-			return $full ? $this->_entrytypes[$rend] : $this->_entrytypes[$rend]->name;
+			return $full ? $this->_entrytypes[$rend] : $this->_entrytypes[$rend]->type;
 		}
 		elseif(isset($this->_persontypes[$rend]))
 		{
-			return $full ? $this->_persontypes[$rend] : $this->_persontypes[$rend]->name;
+			return $full ? $this->_persontypes[$rend] : $this->_persontypes[$rend]->type;
 		}
 		elseif(isset($this->_tablefields[$rend]))
 		{
@@ -713,7 +704,7 @@ class TEIParser extends XMLReader
 		}
 		else
 		{
-			$this->_log('Unknown style '.$rend);
+			$this->_log('Unknown style <a href="#unknown_'.$rend.'_'.++$this->_stylesError.'">['.$rend.']</a>');
 			return false;
 		}
 	}
@@ -818,7 +809,7 @@ class TEIParser extends XMLReader
 		$name = strtolower($name);
 
 		if('footnotesymbol' !== $name && 'endnotesymbol' !== $name)
-			$this->_log("Can't find the local style from the rendition \"#".$name."\"");
+			$this->_log("Can't find the local style for the rendition \"#".$name."\"");
 
 		return '';
 	}
@@ -841,6 +832,7 @@ class TEIParser extends XMLReader
 				$attrs = $this->_parseAttributes();
 
 				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
+				if(isset($attrs['rend']) && 'internetlink' === $attrs['rend']) unset($attrs['rend']);
 
 				if(('hi' === $this->localName && !isset($attrs['rend'])) || ('table' === $this->localName && 'frame' === $attrs['rend']) || ('p' !== $this->localName && 'hi' !== $this->localName && 'table' !== $this->localName))
 				{
@@ -848,12 +840,10 @@ class TEIParser extends XMLReader
 				}
 				else
 				{
-					if('p' === $this->localName) ++$this->nbParas;
-
-					if('p' === $this->localName && !isset($attrs['rend']) && isset($attrs['rendition']))
-					{
-						$attrs['rend'] = $attrs['rendition'];
-					}
+// 					if('p' === $this->localName && !isset($attrs['rend']) && isset($attrs['rendition']))
+// 					{
+// 						$attrs['rend'] = $attrs['rendition'];
+// 					}
 					
 					$style = false;
 
@@ -862,7 +852,7 @@ class TEIParser extends XMLReader
 
 					if(!$style && isset($attrs['rend']) && 'heading' !== substr($attrs['rend'], 0, 7))
 					{
-						$this->_log('Unknown style for tag "'.$this->localName.'"'.(isset($attrs['rend']) ? ':rend['.$attrs['rend'].']' : ''));
+// 						$this->_log('Unknown style for tag "'.$this->localName.'"'.(isset($attrs['rend']) ? ':rend['.$attrs['rend'].']' : ''));
 						$attrs['rendition'] = $attrs['rend'];
 						unset($attrs['rend']);
 					}
@@ -884,64 +874,62 @@ class TEIParser extends XMLReader
 							break;
 
 						case 'tablefieldsVO':
-							if('entities' !== $style->type)
-							{
-								$this->_currentClass[] = $style->name;
-								if(false === strpos($style->class, 'entities_'))
-								{
-									if($style->type === 'mltext')
-									{
-										if(!isset($attrs['lang']))
-										{
-											if(isset($attrs['rend']))
-											{
-												$lang = explode('-', $attrs['rend']);
-												if(count($lang) > 2)
-												{
-													$attrs['rend'] = $lang[1];
-												}
-												$attrs['lang'] = end($lang);
-												unset($lang);
-											}
-											else
-											{
-												$this->_log('We have a multilangual field and no language available');
-												$attrs['lang'] = 'unknown';
-											}
-										}
+							if('entities' === $style->type) break;
 
-										if(isset($this->_contents[end($this->_currentClass)]) && !is_array($this->_contents[end($this->_currentClass)]))
-										{
-											trigger_error('ERROR: it seems that there are already datas for multilingual style '.end($this->_currentClass).' and no lang has been predefined', E_USER_ERROR);
-										}
-										isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = array();
-										isset($this->_contents[end($this->_currentClass)][$attrs['lang']]) || $this->_contents[end($this->_currentClass)][$attrs['lang']] = '';
-										$this->_currentNode =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
-										$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
-										in_array($attrs['lang'], $this->_languages) || $this->_languages[] = $attrs['lang'];
-									}
-									else
+							$this->_currentClass[] = $style->name;
+							if(false === strpos($style->class, 'entities_'))
+							{
+								if($style->type === 'mltext')
+								{
+									if(!isset($attrs['lang']))
 									{
-										if(false !== strpos($attrs['rend'], '-'))
+										if(isset($attrs['rend']))
 										{
-											$rend = explode('-', $attrs['rend']);
-											if('frame' === end($rend)) array_pop($rend);
-											else array_shift($rend);
-											$attrs['rend'] = join('-', $rend);
+											$lang = explode('-', $attrs['rend']);
+											if(count($lang) > 2)
+											{
+												$attrs['rend'] = $lang[1];
+											}
+											$attrs['lang'] = end($lang);
+											unset($lang);
 										}
-										isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = '';
-										$this->_currentNode =& $this->_contents[end($this->_currentClass)];
-										$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)];
+										else
+										{
+											$this->_log('We have a multilangual field and no language available');
+											$attrs['lang'] = 'unknown';
+										}
 									}
+
+									if(isset($this->_contents[end($this->_currentClass)]) && !is_array($this->_contents[end($this->_currentClass)]))
+									{
+										trigger_error('ERROR: it seems that there are already datas for multilingual style '.end($this->_currentClass).' and no lang has been predefined', E_USER_ERROR);
+									}
+									isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = array();
+									isset($this->_contents[end($this->_currentClass)][$attrs['lang']]) || $this->_contents[end($this->_currentClass)][$attrs['lang']] = '';
+									$this->_currentNode =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
+									$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
 								}
 								else
 								{
-									$this->_currentNode =& $lastAuthor[$style->name];
-									$this->_previousNodes[] =& $lastAuthor[$style->name];
+									if(false !== strpos($attrs['rend'], '-'))
+									{
+										$rend = explode('-', $attrs['rend']);
+										if('frame' === end($rend)) array_pop($rend);
+										else array_shift($rend);
+										$attrs['rend'] = join('-', $rend);
+									}
+									isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = '';
+									$this->_currentNode =& $this->_contents[end($this->_currentClass)];
+									$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)];
 								}
-
-								$this->_currentNode .= $this->_getTagEquiv($this->localName, $attrs);
 							}
+							else
+							{
+								$this->_currentNode =& $lastAuthor[$style->name];
+								$this->_previousNodes[] =& $lastAuthor[$style->name];
+							}
+
+							$this->_currentNode .= $this->_getTagEquiv($this->localName, $attrs);
 							break;
 
 						default:
@@ -1107,7 +1095,6 @@ class TEIParser extends XMLReader
 	 */
 	private function _parseTable(array $attrs)
 	{
-		++$this->_nbTables;
 		$tags = array();
 		$this->_currentNode .= '<table id="'.$attrs['id'].'"';
 		!isset($attrs['lang']) || $this->_currentNode .= ' xml:lang="'.$attrs['lang'].'" lang="'.$attrs['lang'].'"';
@@ -1184,20 +1171,17 @@ class TEIParser extends XMLReader
 	{
 		while($this->read() && 'figure' !== $this->localName)
 		{
-			if(parent::ELEMENT === $this->nodeType)
+			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
 			{
-				if('graphic' === $this->localName)
+				$attrs = $this->_parseAttributes();
+				$id = basename($attrs['url']);
+				$nb = explode('-', $id);
+				// get images
+				if(isset($this->_images[$id]))
 				{
-					$attrs = $this->_parseAttributes();
-					$id = basename($attrs['url']);
-					$nb = explode('-', $id);
-					// get images
-					if(isset($this->_images[$id]))
-					{
-						$attrs['url'] = $this->_images[$id];
-					}
-					$this->_currentNode .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
+					$attrs['url'] = $this->_images[$id];
 				}
+				$this->_currentNode .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
 			}
 		}
 	}
@@ -1448,6 +1432,11 @@ class TEIParser extends XMLReader
 		{
 			unset($attrs['rend']);
 			return $this->_addLocalStyle($attrs, true);
+		}
+		elseif('hi' === $name)
+		{
+			$this->_tags[] = 'span';
+			return '<span>';
 		}
 		elseif('list' === $name)
 		{

@@ -253,6 +253,10 @@ h2.formHead{
 	color: red;
 }
 
+.success{
+	color: green;
+}
+
 /* les styles du desk sont dans desk.html afin de ne pas interférer avec les styles du site */
 
 /* Container general au dessous du desk */
@@ -1800,7 +1804,7 @@ div#warner
 	font-size:80%;
 }
 
-div#warner_success img, div#warner_error img, div#warner img
+div#warner_success img, div#warner_error img, div#warner img, div#status img
 {
 	vertical-align:middle;
 }
@@ -2029,7 +2033,7 @@ input.styled_green
 	-khtml-box-shadow:-1px 1px 0px #59c63b;
 }
 
-input.styled_grey:hover
+input.styled_grey:hover, input.styled_green:hover
 {
 	background-color:white;
 }
@@ -2288,4 +2292,157 @@ div.otxfile
 	border-bottom:1px solid #cdeec4;
 	overflow:hidden;
 	padding:1em 0 1em 0;
+}
+
+div#checkimport
+{
+	margin:0 2em 2em 2em;
+	padding:2em;
+	border:1px solid #c3c3c3;
+}
+
+div#checkimport a
+{
+	color:#0096b7;
+}
+
+div.actions_top
+{
+	margin-right:3em;
+}
+
+div.actions_bottom
+{
+	margin:0 3em 2em 0;
+}
+
+.mestyles
+{
+	color:#39961e;
+	background-color:#f0f7e2;
+}
+
+.localstyles
+{
+	color:#ee870f;
+	background-color:#f0f7e2;
+}
+
+table.chkbalisage
+{
+	color:#626262;
+	width:100%;
+	margin-bottom:3em;
+	border-bottom:3px solid #bae3ec;
+}
+
+table.chkbalisage tr
+{
+	border-bottom:1px dashed #bbbdb7;
+}
+
+table.chkbalisage tr tr
+{
+	border:none;
+}
+
+table.chkbalisage tr.noborder
+{
+	border:0;
+}
+
+table.chkbalisage td.title
+{
+	color:#804760;
+	border-right:3px solid #ebebeb;
+	width:15%;
+}
+
+table.chkbalisage td.title.error
+{
+	color:red;
+	border-right:3px solid red;
+}
+
+table.chkbalisage td.blocktitle
+{
+	border-top:3px solid #bae3ec;
+	border-right:3px solid #bae3ec;
+	background-color:#f6f6f6;
+	font-weight:bold;
+	text-align:center;
+	height:2em;
+	width:15%;
+}
+
+table.chkbalisage tr.first
+{
+	border-top:1px dashed #5ec5ed;
+}
+
+table.chkbalisage tr.last
+{
+	border-bottom:3px solid #bae3ec;
+}
+
+table.chkbalisage td.contents
+{
+	padding:.5em 2em .5em 3.5em;
+	width:70%;
+	text-align:justify;
+}
+
+table.chkbalisage td.informations
+{
+	border-left:3px solid #ebebeb;
+	width:15%;
+}
+
+span.paranumber
+{
+	position:absolute;
+	margin-top:1em;
+	margin-left:-3em;
+	background-color:#eaeaea;
+	color:#8a8a8a;
+	font-weight:bold;
+	padding:0 .3em 0 .3em;
+}
+
+div#status
+{
+	margin-bottom:3em;
+}
+
+p.otxcitation
+{
+	font-size:130%;
+	font-style:italic;
+	color:#8a8c8e;
+}
+
+ul#otxstats
+{
+	list-style-type:none;
+	width:75%;
+}
+
+ul#otxstats li
+{
+	margin:1em 0 1em 0;
+	padding:.5em 0 .5em 0;
+}
+
+ul#otxstats li.title
+{
+	border-top:1px solid #5ec5ed;
+	border-bottom:1px solid #5ec5ed;
+	color:#5ec5ed;
+	font-weight:bold;
+}
+
+div.overflowed
+{
+	width:100%;
+	overflow:auto;
 }

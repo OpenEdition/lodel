@@ -139,6 +139,136 @@ try
 		$reader->close();
 	}
 
+	if(!empty($context['otx_report'][1]['document-statistic']))
+	{
+		$statistics['docstats'] = $context['otx_report'][1]['document-statistic'];
+	}
+	unset($context['otx_report']);
+
+	$table = array();
+
+	$parser = new TEIParser($context['idtype']);
+	$i = 0;
+
+	foreach($context['contents'] as $k => $block)
+	{
+		$table[$k] = array();
+		if(is_array($block))
+		{
+			foreach($block as $b)
+			{
+				$reader->XML('<lodelblock>'.$b.'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+				$reader->read() && $reader->read(); // jump to first element
+				do
+				{
+					$table[$k][] = array('text' => $reader->readOuterXML());
+				}
+				while($reader->next() && $reader->localName !== 'lodelblock');
+				$reader->close();
+			}
+		}
+		else
+		{
+			$reader->XML('<lodelblock>'.$block.'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+			$reader->read() && $reader->read(); // jump to first element
+			do
+			{
+				$table[$k][] = array('text' => $reader->readOuterXML());
+			}
+			while($reader->next() && $reader->localName !== 'lodelblock');
+			$reader->close();
+		}
+
+		foreach($table[$k] as $key => $container)
+		{
+			$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+			$table[$k][$key]['text'] = '';
+			while($reader->read())
+			{
+				if(XMLReader::ELEMENT === $reader->nodeType)
+				{
+					if('lodelblock' === $reader->localName) continue;
+
+					$attrs = array();
+					if($reader->hasAttributes)
+					{
+						$reader->moveToFirstAttribute();
+						do
+						{
+							$attrs[$reader->localName] = $reader->value;
+						} while($reader->moveToNextAttribute());
+
+						$reader->moveToElement();
+					}
+
+					if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
+					{
+						if('span' !== $reader->localName)
+							$table[$k][$key]['class'] = $attrs['class'];
+						else
+						{
+							$table[$k][$key]['style'][] = '<span class="mestyles">'.$attrs['class'].'</span>';
+							$attrs['title'] = 'LOCALCLASS:'.$attrs['class'].';';
+							$attrs['class'] .= ' mestyles';
+						}
+
+						if(!$parser->getStyle($attrs['class']))
+						{
+							$attrs['id'] = 'unknown_'.$attrs['class'].'_'. ++$i;
+							$table[$k][$key]['error'] = true;
+						}
+					}
+
+					if(isset($attrs['style']))
+					{
+						$table[$k][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
+						if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
+						else $attrs['class'] = 'localstyles';
+						if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'];
+						else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'];
+					}
+
+					if(isset($attrs['lang']))
+					{
+						$table[$k][$key]['style'][] = 'lang:'.$attrs['lang'];
+						if(isset($attrs['title'])) $attrs['title'] .= 'LANG:'.$attrs['lang'];
+						else $attrs['title'] = 'LANG:'.$attrs['lang'];
+						$statistics['lang'][] = $attrs['lang'];
+					}
+
+					if('img' === $reader->localName)
+					{
+						list($w, $h, $t) = getimagesize($attrs['src']);
+						$statistics['images'][$attrs['src']] = $table[$k][$key]['style'][] = array('imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => filesize($attrs['src']));
+					}
+
+					$table[$k][$key]['text'] .= '<'.$reader->localName;
+					if(!empty($attrs))
+					{
+						foreach($attrs as $name => $value)
+							$table[$k][$key]['text'] .= ' '.$name.'="'.$value.'"';
+					}
+					$table[$k][$key]['text'] .= '>';
+				}
+				elseif(XMLReader::END_ELEMENT === $reader->nodeType)
+				{
+					if('lodelblock' === $reader->localName) continue;
+
+					$table[$k][$key]['text'] .= '</'.$reader->localName.'>';
+				}
+				elseif(XMLReader::TEXT === $reader->nodeType || XMLReader::WHITESPACE === $reader->nodeType || XMLReader::SIGNIFICANT_WHITESPACE === $reader->nodeType)
+				{
+					$table[$k][$key]['text'] .= $reader->value;
+				}
+			}
+			$reader->close();
+		}
+	}
+
+	$context['contents'] = $table;
+	$context['statistics'] = $statistics;
+	unset($table, $statistics);
+
 	View::getView()->render('checkimport');
 }
 catch(LodelException $e)

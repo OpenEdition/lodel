@@ -163,9 +163,9 @@ OtxLoad.prototype = {
 					$('otxresult').removeClass('hidden');
 					$('otxarchive').empty();
 				}
-				$('otxload').removeClass('actif').removeClass('done').addClass('inactif');
-				$('otxconvert').removeClass('actif').removeClass('done').addClass('inactif');
-				$('otxanalyse').removeClass('actif').removeClass('done').addClass('inactif');
+				$('otxload').removeClass('inactif').removeClass('done').addClass('actif').getChildren('span')[0].set('text', '[@EDITION.LOADING]');
+				$('otxconvert').removeClass('actif').removeClass('done').addClass('inactif').getChildren('span')[0].set('text', '[@EDITION.CONVERSION]');
+				$('otxanalyse').removeClass('actif').removeClass('done').addClass('inactif').getChildren('span')[0].set('text', '[@EDITION.ANALYSE]');
 				break;
 
 			case 1:
@@ -198,6 +198,12 @@ OtxLoad.prototype = {
 		}
 	},
 	send:function(more) {
+		$('otxerror').addClass('hidden');
+		$('otxerror').getChildren().each(function(item, k) {
+			if(k > 0) {
+				item.dispose();
+			}
+		});
 		var dist = $('file1').get('value');
 		var local = $('localfilename').get('value');
 		if(!dist && !local) { return false; }
@@ -231,66 +237,4 @@ window.addEvent('domready', function() {
 
 </script>
 
-<!--[
-
-<div id="uploadMsg" class="displayOff">
-</div>
-<form name="formfic" enctype="multipart/form-data" action="[#URL]" method="post" onsubmit="showProcessMsg('uploadMsg', '[@COMMON.WAIT_FILE_IS_UPLOADING]')">
-	<fieldset>
-	
-	<legend>[@EDITION.SELECT_FILE_TO_UPLOAD]</legend>
-	<div class="oneItem">
-	<input type="hidden" name="MAX_FILE_SIZE" value="10000000" />
-	<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
-	<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
-	<IF COND="[#IDENTITY]"><input type="hidden" name="identity" value="[#IDENTITY]" /></IF>
-        <IF COND="[#IDTASK]"><input type="hidden" name="idtask" value="[#IDTASK]" /></IF>
-	<IF COND="[#LODELTAGS]"><input type="hidden" name="lodeltags" value="[#LODELTAGS]" /></IF>	
-
-		<p class="avert">[@EDITION.ADVICE_UPLOADING]</p>
-	<div class="fileUpload">
-		<input type="hidden" id="uploadType" name="fileorigin" value="upload" />
-		<label for="file1">[@EDITION.CHOOSE_A_FILE_ON_THE_HARD_DISK]</label><br class="nobr" />
-		<input size="40" type="file" name="file1" id="file1" /><br />
-		<label for="localfilename"><a href="#" class="action" onclick="window.open('index.php?lo=filebrowser&amp;do=view','Upload','width=600,top=0,left=0,scrollbars=yes,resizable=yes'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a></label>
-	        <input size="40" type="text" id="localfilename" name="localfile" class="localChoose" />
-	           
-	</div>
-		
-	</div>
-<p class="avert">[@EDITION.CONVERSION_TOOLS] : <a href="http://www.servoo.net/" title="Document converter for Web applications" onclick="window.open(this.href); return false;"><strong>ServOO</strong></a></p>
-	</fieldset>
-	
-	<fieldset>
-		<legend>[@COMMON.VALIDATION]</legend>
-		  <IF COND="[#NOSERVOO]">
-		    [@EDITION.ERROR_NOSERVOO_CONFIGURED_HOWTO_CONFIGURE]
-		    <IF COND="[#LODELUSER.ADMIN]">
-		    <a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
-		    </IF>
-		  <ELSE/>
-				<input class="button" type="submit" value="[@COMMON.UPLOAD]" id="validImport" onclick="this.value='[@COMMON.PLEASE_WAIT]';" />&nbsp;&nbsp;&nbsp;&nbsp;
-				<input class="button" type="button" value="[@COMMON.CANCEL]" onClick="javascript:window.location='index.php?id=[#IDPARENT]';" />
-		  </IF>
-	</fieldset>
-
-	<IF COND="[#LODELUSER.ADMINLODEL]"> 
-		<fieldset>
-			<legend>[@EDITION.BUTTONS_ADMIN_LODEL]</legend>
-<!--					<input class="form" type="submit" name="sortiexmloo" value="Sortie XML Brute de OpenOffice (fichier content.xml du SXW)" /><br /> -->
-			<input class="button" type="submit" name="sortieoo" value="[@EDITION.OUTPUT_OO_PLUS_PROCESSING]" />&nbsp;&nbsp;&nbsp;&nbsp;
-			<input class="button" type="submit" name="sortie" value="[@EDITION.OUTPUT_UPLOAD]" />
-		</fieldset>
-	</IF>     
-	<input type="hidden" name="reload" value="[#RELOAD]"/>
-	
-</form>
-<script type="text/javascript">
-function unScript() {
-	document.getElementById('uploadMsg').class= 'displayOff';
-	document.getElementById('validImport').value = '[@COMMON.UPLOAD]'
-}
-window.onunload= unScript;
-</script>
-]-->
 <MACRO NAME="CLOSE_HTML">
