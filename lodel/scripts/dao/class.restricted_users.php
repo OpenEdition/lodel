@@ -86,6 +86,7 @@ class restricted_usersVO
 	var $status;
 	var $rank;
 	var $upd;
+	var $ip;
 	/**#@-*/
 }
 

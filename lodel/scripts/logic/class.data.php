@@ -123,7 +123,7 @@ class DataLogic
 				//nom du fichier SQL
 				$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 				//noms des répertoires acceptés
-				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image');
+				$accepteddirs = array('lodel/txt', 'lodel/rtf', 'lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier');
 		
 				require_once 'backupfunc.php';
 				if (!importFromZip($file, $accepteddirs, array(), $sqlfile)) {
@@ -231,7 +231,7 @@ class DataLogic
 					if (!chdir(SITEROOT)) {
 						die ("ERROR: can't chdir in SITEROOT");
 					}
-					$prefixdir    = $tmpdir[0] == "/" ? '' : 'lodel/admin/';
+					$prefixdir    = $archivetmp[0] == "/" ? '' : 'lodel/admin/';
 					$excludefiles = $excludes ? " -x ". join(" -x ", $excludes) : "";
 					system($zipcmd. " -q $prefixdir$archivetmp -r $dirs $excludefiles");
 					if (!chdir("lodel/admin")) {

@@ -438,6 +438,8 @@ pw.setHelperId('helper');
 		</label><br class="nobr"><input type="text" size="30" name="firstname" id="firstname" class="text" value="[#FIRSTNAME]"><LOOP NAME="fielderror" FIELD="firstname"><a id="firstname"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.FIRSTNAME]"></FUNC></span></LOOP><br /><label for="email">[@ADMIN.EMAIL] : 
 		</label><br class="nobr"><input type="text" size="30" name="email" id="email" class="text" value="[#EMAIL]"><LOOP NAME="fielderror" FIELD="email"><a id="email"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.EMAIL]"></FUNC></span></LOOP><br /><label for="expiration">[@ADMIN.RESTRICTEDUSER_EXPIRATIONDATE]<span class="optional">(*)</span> : 
 		</label><br class="nobr"><input type="text" size="30" name="expiration" id="expiration" class="text" value="[#EXPIRATION|humandate]"><LOOP NAME="fielderror" FIELD="expiration"><a id="expiration"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RESTRICTEDUSER_EXPIRATIONDATE]"></FUNC></span></LOOP><br />
+		<label for="ip">[@ADMIN.RESTRICTED_USERS_IP] : 
+		</label><br class="nobr"><input type="text" size="30" name="ip" id="ip" class="text" value="[#IP]"><LOOP NAME="fielderror" FIELD="ip"><a id="ip"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.RESTRICTED_USERS_IP]"></FUNC></span></LOOP><br />
 </fieldset><fieldset>
 <legend>[@ADMIN.USER_LODEL_INFORMATIONS]</legend>
 <label for="lang">[@ADMIN.USER_LANG] : 
