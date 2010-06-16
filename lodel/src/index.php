@@ -97,6 +97,7 @@ if($_GET['file']) {
 		if(!$datepubli) {
 			$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
 			download($file[$row['name']]);
+			return;
 		} else {
 			$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$id}'");
 			$datepubli = $datepubli['datepubli'];
