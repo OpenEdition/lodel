@@ -113,20 +113,26 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$context['data'] = $contents['contents'];
 		$context['creationmethod'] = "otx";
 		$context['creationinfo'] = $task['sourceoriginale'];
-		$source = $task['source'];
-		$odt = $task['odt'];
+		$source = isset($task['source']) ? $task['source'] : null;
+		$odt = isset($task['odt']) ? $task['odt'] : null;
 		$tei = $task['tei'];
 		unset($task, $contents);
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
 		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
 		@unlink ($sourcefile);
-		copy ($source, $sourcefile);
-		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
+		if(isset($source))
+		{
+			copy ($source, $sourcefile);
+			@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
+		}
 		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
 		@unlink ($sourcefileodt);
-		copy ($odt, $sourcefileodt);
-		@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
+		if(isset($odt))
+		{
+			copy ($odt, $sourcefileodt);
+			@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
+		}
 		@unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		copy($tei, SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));

@@ -221,12 +221,22 @@ try
 		}
 		elseif($ext === 'xml')
 		{
-			$parser = new TEIParser($context['idtype']);
+			printJavascript('window.parent.o.changeStep(2);');
 			$contents = array();
+			$teiContents = file_get_contents($source);
 
-			$contents['contents'] = $parser->parse(file_get_contents($source), '', $tmpdir[0], $sourceoriginale);
+			try
+			{
+				$parser = new TEIParser($context['idtype']);
+				$contents['contents'] = $parser->parse($teiContents, '', $tmpdir[0], $sourceoriginale);
+			}
+			catch(Exception $e)
+			{
+				printErrors($parser->getLogs(), false);
+				printErrors((array) $e->getMessage());
+			}
+
 			$contents['parserreport'] = $parser->getLogs();
-			$contents['otxreport'] = $client->report;
 
 			if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
 			{
@@ -242,12 +252,18 @@ try
 				printErrors($context['error']);
 			}
 
+			$tei = $source. '.tei';
+			if(!writefile($tei, $teiContents))
+			{
+				$context['error'][] = 'unable to write tei file for document <em>'.$sourceoriginale.'</em>';
+				if(empty($context['multiple']))
+					printErrors($context['error']);
+			}
+
 			unset($contents);
 			$row = array();
 			$row['fichier']         = $fileconverted;
-			$row['odt']		= $odtconverted;
 			$row['tei']		= $tei;
-			$row['source']          = $source;
 			$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
 			// build the import
 			$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
@@ -385,12 +401,27 @@ RDF;
 						printErrors($context['error']);
 				}
 
-				$parser = new TEIParser($context['idtype']);
 				$contents = array();
 
-				$contents['contents'] = $parser->parse($client->lodelxml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
+				try
+				{
+					$parser = new TEIParser($context['idtype']);
+					$contents['contents'] = $parser->parse($client->lodelxml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
+				}
+				catch(Exception $e)
+				{
+					printErrors($parser->getLogs(), false);
+					printErrors((array) $e->getMessage(), empty($context['multiple']));
+					if(!empty($context['multiple'])) continue;
+				}
+
 				$contents['parserreport'] = $parser->getLogs();
 				$contents['otxreport'] = $client->report;
+				if(false === $contents['contents'])
+				{
+					printErrors($contents['parserreport'], empty($context['multiple']));
+					if(!empty($context['multiple'])) continue;
+				}
 
 				if(empty($context['multiple'])) unset($client);
 

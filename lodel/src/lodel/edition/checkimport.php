@@ -80,9 +80,11 @@ try
 	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities'], $context['contents']['errors']);
 	
 	$node = null;
+	$reader = new XMLReader();
+
 	if(!empty($context['otxreport']))
 	{
-		$reader = new XMLReader(); // parse OTX logs
+		// parse OTX logs
 		$reader->XML($context['otxreport'], 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
 		$tree = array();
 		$isMetas = 0;
@@ -214,7 +216,7 @@ try
 
 						if(!$parser->getStyle($attrs['class']))
 						{
-							$attrs['id'] = 'unknown_'.$attrs['class'].'_'. ++$i;
+							$attrs['id'] = 'unknown_'.$attrs['class'];
 							$table[$k][$key]['error'] = true;
 						}
 					}
@@ -276,4 +278,3 @@ catch(LodelException $e)
 	echo $e->getContent();
 	exit();
 }
-?>

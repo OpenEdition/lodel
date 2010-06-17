@@ -163,6 +163,9 @@ OtxLoad.prototype = {
 					$('otxresult').removeClass('hidden');
 					$('otxarchive').empty();
 				}
+				$('otxload').getFirst('img').set('src', '[#SHAREURL]/images/loading.png').set('alt', '[@EDITION.LOADING]');
+				$('otxconvert').getFirst('img').set('src', '[#SHAREURL]/images/waiting.png').set('alt', '[@EDITION.WAITING]');
+				$('otxanalyse').getFirst('img').set('src', '[#SHAREURL]/images/waiting.png').set('alt', '[@EDITION.WAITING]');
 				$('otxload').removeClass('inactif').removeClass('done').addClass('actif').getChildren('span')[0].set('text', '[@EDITION.LOADING]');
 				$('otxconvert').removeClass('actif').removeClass('done').addClass('inactif').getChildren('span')[0].set('text', '[@EDITION.CONVERSION]');
 				$('otxanalyse').removeClass('actif').removeClass('done').addClass('inactif').getChildren('span')[0].set('text', '[@EDITION.ANALYSE]');
@@ -182,7 +185,9 @@ OtxLoad.prototype = {
 			case 2:
 				$('otxconvert').removeClass('actif').addClass('done');
 				$('otxconvert').getFirst('img').set('src', '[#SHAREURL]/images/done.png').set('alt', '[@EDITION.DONE]');
-				$('otxconvert').getFirst('span').set('text', "[@EDITION.FILE_CONVERTED] "+opt);
+				if(opt) {
+					$('otxconvert').getFirst('span').set('text', "[@EDITION.FILE_CONVERTED] "+opt);
+				}
 				$('otxanalyse').removeClass('inactif').removeClass('done').addClass('actif').getFirst('img').set('src', '[#SHAREURL]/images/loading.png').set('alt', '[@EDITION.LOADING]');
 				break;
 
