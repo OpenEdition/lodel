@@ -59,26 +59,33 @@
 				</LOOP>
 			<ELSE/>
 				<img src="[#SHAREURL]/images/alerte_vert.png" alt="[@EDITION.IMPORT_SUCCESSFULL]"/> <span class="success">[@EDITION.IMPORT_SUCCESSFULL|mb_strtoupper('utf-8')]</span>
-				<p class="otxcitation">Aucune erreur, bravo !! Et merci J-B pour les macros !</p>
+				<p class="otxcitation">Bravo !</p>
 			</IF>
 		</div>
 		<LET VAR="paranumber" GLOBAL="1">0</LET>
 		<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx,t.idgroup,tg.title AS tgtitle" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
-			<IF COND="![%CURIDGROUP]">
-				<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
-				<table class="chkbalisage">
-				<IF COND="[#TYPE] NE 'persons'">
-					<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+			<IF COND="[#TYPE] NE 'persons'">
+				<IF COND="![%CURIDGROUP]">
+					<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+					<table class="chkbalisage">
+						<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+					<LET VAR="firstclass" GLOBAL="1">first</LET>
+				<ELSEIF COND="[%CURIDGROUP] NE [#IDGROUP]">
+					</table>
+					<table class="chkbalisage">
+						<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+					<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+					<LET VAR="firstclass" GLOBAL="1">first</LET>
 				</IF>
-				<LET VAR="firstclass" GLOBAL="1">first</LET>
-			<ELSEIF COND="[%CURIDGROUP] NE [#IDGROUP]">
-				</table>
-				<table class="chkbalisage">
-				<IF COND="[#TYPE] NE 'persons'">
-					<tr class="noborder"><td class="blocktitle">[#TGTITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+			<ELSE/>
+				<IF COND="![%CURIDGROUP]">
+					<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+					<LET VAR="firstclass" GLOBAL="1">first</LET>
+				<ELSEIF COND="[%CURIDGROUP] NE [#IDGROUP]">
+					</table>
+					<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
+					<LET VAR="firstclass" GLOBAL="1">first</LET>
 				</IF>
-				<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
-				<LET VAR="firstclass" GLOBAL="1">first</LET>
 			</IF>
 
 			<SWITCH TEST="[#TYPE]">
@@ -99,11 +106,13 @@
 				<DO CASE="persons">
 					<LOOP NAME="getIdPersontype" SELECT="id,title,class" TABLE="persontypes" WHERE="type='[#NAME]'">
 						<IF COND="[#PERSONS.#ID]">
-							<IF COND="![%CURRENTTITLE] OR [%CURRENTTITLE] NE [#TITLE]">
-								<tr class="noborder"><td class="blocktitle">[#TITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
-								<LET VAR="currenttitle" GLOBAL="1">[#TITLE]</LET>
-							</IF>
 							<LOOP NAME="foreach" ARRAY="[#PERSONS.#ID]">
+								<LET VAR="firstclass" GLOBAL="1">first</LET>
+								<table class="chkbalisage">
+								<IF COND="![%CURRENTTITLE] OR [%CURRENTTITLE] NE [#TITLE]">
+									<tr class="noborder"><td class="blocktitle">[#TITLE]</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+									<LET VAR="currenttitle" GLOBAL="1">[#TITLE]</LET>
+								</IF>
 								<LOOP NAME="foreach" ARRAY="[#VALUE.DATA]">
 									<IF COND="![%FIELDS.#KEY]">
 										<LOOP NAME="getFieldTitle" TABLE="tablefields" SELECT="title" WHERE="name='[#KEY]' AND (class='entities_[#CLASS]' OR class='[#CLASS]')">
@@ -112,6 +121,7 @@
 									</IF>
 									<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>><td class="title">[%FIELDS.#KEY]</td><td class="contents"><div class="overflowed">[#VALUE]</div></td><td class="noborder">&nbsp;</td></tr>
 								</LOOP>
+								</table>
 							</LOOP>
 						</IF>
 					</LOOP>
@@ -122,7 +132,7 @@
 						<IF COND="[#TYPE] EQ 'mltext'">
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title">[#TITLE]</td>
+									<td class="title<IF COND="[#VALUE.ERROR]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]</td>
 									<td class="contents"><div class="overflowed">[#VALUE.TEXT]</div></td>
 									<td class="informations">
 										<ul>
