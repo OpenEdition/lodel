@@ -270,7 +270,7 @@ class C
 					if(preg_match('/^([a-z0-9\-]+)\.(\d+)$/', self::$_context[$var], $m))
 					{
 						self::$_context[$var] = (int)$m[2];
-						self::$_cfg['site_ext'] = (string)$m[1];
+						self::$_cfg['site_ext'] = self::$_context['site_ext'] = (string)$m[1];
 						continue;
 					}
 				}
