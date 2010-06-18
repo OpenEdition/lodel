@@ -270,7 +270,7 @@ class Controller
 			// appel d'un docannexe
 			$this->_getAnnexe($context);
 		}
-		elseif (!C::get('id', 'lodeluser') && isset($context['login'])) 
+		elseif (!C::get('id', 'lodeluser') && isset($context['login']) && isset($context['passwd'])) 
 		{ // restricted area, only if we are not already logged in
 			$this->_auth($context);
 		} 
@@ -289,17 +289,22 @@ class Controller
 						$type = $db->getOne(lq('SELECT * FROM #_TP_tablefields where name='.$db->quote(C::get('site_ext', 'cfg').'.'.$context['id'])));
 						if(!$type)
 						{
-							header("HTTP/1.0 404 Not Found");
-                                                        header("Status: 404 Not Found");
-                                                        header("Connection: Close");
-                                                        if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-                                                                include C::get('home', 'cfg')."../../missing.html";
-                                                        } else {
-                                                                header('Location: not-found.html');
-                                                        }
-                                                        exit;
+							$type = $db->getOne(lq('SELECT * FROM `'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.#_TP_entries WHERE id='.$context['id']));
+							if(!$type)
+							{
+								header("HTTP/1.0 404 Not Found");
+	                                                        header("Status: 404 Not Found");
+        	                                                header("Connection: Close");
+                	                                        if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
+                        	                                        include C::get('home', 'cfg')."../../missing.html";
+                                	                        } else {
+                                        	                        header('Location: not-found.html');
+                                                	        }
+                                                        	exit;
+							}
+							$class = 'entries';
 						}
-						$class = 'entrytypes';
+						else $class = 'entrytypes';
 					}
 					else
 					{
@@ -707,6 +712,11 @@ class Controller
 
 		// get the index
 		$critere = C::get('visitor', 'lodeluser') ? 'AND status>-64' : 'AND status>0';
+		if(C::get('site_ext', 'cfg'))
+		{
+			$table = '`'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.'.$table;
+			$typetable = '`'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.'.$typetable;
+		}
 		$row = $db->getRow(lq("SELECT * FROM ". $table. " WHERE id='". $id. "' ". $critere));
 		if ($row === false) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -741,9 +751,12 @@ class Controller
 		}
 		$base            = $row['tpl'];
 		$context['type'] = $row;
+
+		$class = C::get('site_ext', 'cfg') ? '`'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.#_TP_'.$row['class'] : '#_TP_'.$row['class'];
 	
 		// get the associated table
-		$row = $db->getRow(lq("SELECT * FROM #_TP_".$row['class']." WHERE ".$longid."='".$id."'"));
+		$row = $db->getRow(lq("SELECT * FROM #_TP_".$class." WHERE ".$longid."='".$id."'"));
+		
 		if ($row === false) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
