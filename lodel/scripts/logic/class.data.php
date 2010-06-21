@@ -1768,7 +1768,7 @@ class DataLogic
 		}
 		if(empty($context['data']['added']) || !is_array($context['data']['added'])) return;
 		$tablefield = lq('#_TP_tablefields');
-		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
+		$flipped = !empty($context['data']['dropped']) && is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
 				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") 
