@@ -79,7 +79,7 @@ class Parser
 	protected $currentline;
 	protected $ind;
 	public $refresh = "";
-    	protected $sqlrefresh;
+	protected $sqlrefresh;
 	protected $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
 	protected $id = "";
@@ -154,8 +154,8 @@ class Parser
 		$this->blockid = (int)$blockId;
 		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = $this->macros_txt = $this->charset = $this->ind = $this->countarr = null;
-        	$this->refresh = $this->looplevel = 0;
-		$this->loops = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
+		$this->refresh = $this->looplevel = 0;
+		$this->loops = $this->funcs = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
 		$this->isLoop = (bool)$loop;
 		$this->sqlrefresh = $GLOBALS['sqlCacheTime'];
 		// read the file
@@ -166,7 +166,7 @@ class Parser
 
 		$this->_split_file($contents, '', $this->blockid, $loop); // split the contents into commands
 
-        	unset($contents);
+		unset($contents);
 
 		$this->_originalCachedVars = $this->_cachedVars;
 
@@ -1426,7 +1426,7 @@ PHP;
 			$this->arr[$this->ind] .= '<?php '.$macrofunc.'($context,array('.$args.')); ?>';
 
 			if (!isset($this->funcs[$macrofunc])) 
-            		{
+			{
 				$this->funcs[$macrofunc] = true;
 				// build the function 
 				$tmpArr = $this->arr;
