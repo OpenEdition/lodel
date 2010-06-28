@@ -305,7 +305,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
 			
 				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)	
-				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
+				if(!empty($obj->external))
+				{
+					$this->_localcontext['externalentries'][$obj->external.'.'.$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
+				}
+				else
+				{
+					$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
+				}
  			}
 		}
 	}

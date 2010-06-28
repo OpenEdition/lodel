@@ -277,7 +277,6 @@ class XMLImportParser
 		while ($classstack) {
 			$handler->closeClass(array_shift($classstack), $this->nbdoc > 1);
 		}
-	
 	} // end of function parser
 
 	/**
@@ -426,8 +425,15 @@ class XMLImportParser
 			if ($tf->type == 'entries' || $tf->type == 'persons') {
 				// yes, it's an index. Get the object
 				$dao = DAO::getDAO($tf->type == 'entries' ? 'entrytypes' : 'persontypes');
-				$tf = $dao->find("type='".$tf->name."'");
+				if($tf->type == 'entries' && preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $tf->name, $res))
+				{
+					$GLOBALS['db']->SelectDB(DATABASE.'_'.$res[1]);
+					$tf = $dao->find("id=".$res[2]);
+					$tf->external = $res[1];
+				}
+				else $tf = $dao->find("type='".$tf->name."'");
 				$this->_init_class($tf->class, "class='".$tf->class."' OR class='entities_".$tf->class. "'");
+				usecurrentdb();
 			}
 			// analyse the styles of the tablefields
 			foreach (preg_split("/[,;]/", $tf->style) as $style) {

@@ -757,7 +757,7 @@ class Entities_EditionLogic extends GenericLogic
 			{
 				if(empty($context['externalentries'][$entrytype])) continue;
 				$i = 0;
-				if(!preg_match('/(\w+)\.(\d+)/', $entrytype, $m)) continue;
+				if(!preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $entrytype, $m)) continue;
 
 				if($db->database != DATABASE.'_'.$m[1])
 					$db->SelectDB(DATABASE.'_'.$m[1]);
@@ -772,7 +772,7 @@ class Entities_EditionLogic extends GenericLogic
 				$degree = $degree ? $degree+1 : 0;
 				foreach($entries as $entry)
 				{
-					$entry = trim($entry);
+					$entry = is_array($entry) ? trim($entry['g_name']) : trim($entry);
 					if(!$entry) continue;
 					$extentry = $daoe->find('BINARY(g_name)=BINARY('.$db->quote($entry).')', 'id');
 					if(!$extentry) continue;
