@@ -61,14 +61,19 @@ function printJavascript($msg)
 	flush();
 }
 
-function printErrors($errors, $exit = true)
+function printErrors($errors, $exit = true, $isFrame = true)
 {
-	echo '<script type="text/javascript">';
-	
-	foreach($errors as $error)
-		echo 'window.parent.o.error("<p class=\"error\">'.addcslashes($error, '"').'</p>");';
+	if(!is_array($errors))
+		$errors = (array) $errors;
 
-	echo '</script>';
+	if($isFrame)
+		echo '<script type="text/javascript">';
+
+	foreach($errors as $error)
+		echo $isFrame ? 'window.parent.o.error("<p class=\"error\">Error: '.addcslashes($error, '"').'</p>");' : "<p class=\"error\">Error: ".addcslashes($error, '"')."</p>";
+
+	if($isFrame)
+		echo '</script>';
 	flush();
 
 	if($exit) die;
@@ -99,44 +104,63 @@ try
 	$task = $context['idtask'];
 	$fileorigin = C::get('fileorigin');
 	$localfile = C::get('localfile');
+	$isFrame = ! (C::get('sortieoo') || C::get('sortieoopublic') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
 
-	if ($fileorigin == 'upload' && isset($_FILES['file1']) && $_FILES['file1']['tmp_name'] && $_FILES['file1']['tmp_name'] != 'none') {
-		$file1 = $_FILES['file1']['tmp_name'];
-		if (!is_uploaded_file($file1)) {
-			trigger_error("Le fichier n'est pas un fichier chargé", E_USER_ERROR);
-		}
-		$sourceoriginale = $_FILES['file1']['name'];
+	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
+		$file = $_FILES['file1'];
+		if($file['error'] > 0)
+	        {
+	            switch($file['error'])
+	            {
+	                case UPLOAD_ERR_NO_FILE: printErrors('Missing file', true, $isFrame); break;
+	                case UPLOAD_ERR_INI_SIZE: printErrors('Filesize is more than limit configuration : '.ini_get('upload_max_filesize'), true, $isFrame); break;
+	                case UPLOAD_ERR_FORM_SIZE: printErrors('Filesize is more than form limit configuration : 25Mo', true, $isFrame); break;
+	                case UPLOAD_ERR_PARTIAL: printErrors('Error while transfering, try again', true, $isFrame); break;
+			case UPLOAD_ERR_NO_TMP_DIR: printErrors('No temporary directory found', true, $isFrame); break;
+			case UPLOAD_ERR_CANT_WRITE: printErrors("Can't write file", true, $isFrame); break;
+			case UPLOAD_ERR_EXTENSION: printErrors('A PHP extension stopped file upload', true, $isFrame); break;
+	                default: printErrors('An error occured, try again', true, $isFrame); break;
+	            }
+	        }
+
+		if(empty($file['tmp_name']) || $file['tmp_name'] == 'none' || !is_uploaded_file($file['tmp_name']))
+			printErrors("Le fichier n'est pas un fichier chargé", true, $isFrame);
+
+		$sourceoriginale = $file['name'];
 		$tmpdir = tmpdir(uniqid('import_', true)); // use here and later.
-		$source = $tmpdir. "/". basename($file1). '-source';
-		move_uploaded_file($file1, $source); // move first because some provider does not allow operation in the upload dir
-	} elseif ($fileorigin == 'serverfile' && $localfile) {
+		$source = $tmpdir. "/". basename($file['tmp_name']). '-source';
+		// move first because some provider does not allow operation in the upload dir
+		if(!move_uploaded_file($file['tmp_name'], $source))
+			printErrors("Impossible de déplacer le fichier chargé", true, $isFrame);
+	}
+	elseif($fileorigin == 'serverfile' && $localfile)
+	{
 		$sourceoriginale = basename($localfile);
 		$file1           = SITEROOT. 'upload/'. $sourceoriginale;
 		$tmpdir          = tmpdir(uniqid('import_', true)); // use here and later.
 		$source          = $tmpdir. "/". basename($file1). '-source';
-		copy($file1, $source);
-	} else {
+		if(!copy($file1, $source))
+			printErrors("Impossible de déplacer le fichier", true, $isFrame);
+	}
+	else
+	{
 		$file1           = '';
 		$sourceoriginale = '';
 		$source          = '';
 	}
 
-	if($source)
+	if(!empty($source))
 	{
-		if((!C::get('sortieoo') && !C::get('sortieoopublic') && !C::get('sortie')) || !C::get('adminlodel', 'lodeluser'))
-		{
-			printJavascript("window.parent.o.changeStep(1);");
-		}
+		if($isFrame) printJavascript("window.parent.o.changeStep(1);");
 
 		set_time_limit(0);
-		$context['error'] = array();
 		$sources = $context['urls'] = array();
 		$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
 		if($ext === 'zip')
 		{ // multiple
 			if(empty($context['multiple']))
 			{
-				$context['error'][] = 'Please use multiple import page for importing documents from .zip file';
+				printErrors('Please use multiple import page for importing documents from .zip file', true, $isFrame);
 			}
 			else
 			{
@@ -164,7 +188,7 @@ try
 					}
 					else
 					{
-						$context['error'][] = 'No files were extracted from the archive';
+						printErrors('No files were extracted from the archive', true, $isFrame);
 					}
 				} else {
 					function LodelOtxPostExtractCallBack($p_event, &$p_header)
@@ -221,7 +245,8 @@ try
 		}
 		elseif($ext === 'xml')
 		{
-			printJavascript('window.parent.o.changeStep(2);');
+			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
+
 			$contents = array();
 			$teiContents = file_get_contents($source);
 
@@ -233,7 +258,7 @@ try
 			catch(Exception $e)
 			{
 				printErrors($parser->getLogs(), false);
-				printErrors((array) $e->getMessage());
+				printErrors($e->getMessage(), true, $isFrame);
 			}
 
 			$contents['parserreport'] = $parser->getLogs();
@@ -248,16 +273,13 @@ try
 			$fileconverted = $source. '.converted';
 			if (!writefile($fileconverted, base64_encode(serialize($contents))))
 			{
-				$context['error'][] = 'unable to write converted file for document <em>'.$sourceoriginale.'</em>';
-				printErrors($context['error']);
+				printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
 			}
 
 			$tei = $source. '.tei';
 			if(!writefile($tei, $teiContents))
 			{
-				$context['error'][] = 'unable to write tei file for document <em>'.$sourceoriginale.'</em>';
-				if(empty($context['multiple']))
-					printErrors($context['error']);
+				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
 			}
 
 			unset($contents);
@@ -277,20 +299,17 @@ try
 		}
 		elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
 		{
-			$context['error'][] = 'invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .docx, .sxw, .odt, .rtf';
+			printErrors('invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .docx, .sxw, .odt, .rtf', true, $isFrame);
 		}
 		elseif(!empty($context['multiple']))
 		{
-			$context['error'][] = 'You can not import single file while using massive import mode';
+			printErrors('You can not import single file while using massive import mode', true, $isFrame);
 		}
 		else
 		{
 			$sources = array($sourceoriginale => $source);
 			$tmpdir = array($tmpdir);
 		}
-
-		if(!empty($context['error']))
-			printErrors($context['error']);
 
 		$user = C::get('id', 'lodeluser').';'.C::get('name', 'lodeluser').';'.C::get('rights', 'lodeluser');
 		$site = C::get('site', 'cfg');
@@ -299,7 +318,7 @@ try
 		$url = $db->GetOne(lq('SELECT url FROM #_MTP_sites WHERE name='.$db->quote($site)));
 		
 		$client = new OTXClient();
-		$error = array();
+		$errors = array();
 		$i = 0;
 		do
 		{
@@ -310,18 +329,15 @@ try
 
 			$client->instantiate($options);
 			if($client->error)
-				$context['error'][] = 'Connection failed for document <em>'.$sourceoriginale.'</em>: '.$client->status;
+				$errors[] = 'Connection failed for document <em>'.$sourceoriginale.'</em>: '.$client->status;
 			else break;
 		} while (1);
 
 		if($client->error)
 		{
-			if(!C::get('sortieoo') && !C::get('sortieoopublic') && !C::get('sortie'))
-				printErrors($context['error']);
-
-			$context['error'] = join('<br/>', $context['error']);
+			$context['error'] = join('<br/>', $errors);
 			$context['url'] = 'oochargement.php?'.$_SERVER['QUERY_STRING'];
-			View::getView()->render('oochargement', !(bool)$file1);
+			View::getView()->render('oochargement', false);
 			die;
 		}
 
@@ -386,19 +402,15 @@ RDF;
 				}
 				
 				$odtconverted = $source.'-odt.converted';
-				if (!writefile($odtconverted, $client->odt)) 
+				if(!writefile($odtconverted, $client->odt))
 				{
-					$context['error'][] = 'unable to write .odt converted file for document <em>'.$sourceoriginale.'</em>';
-					if(empty($context['multiple']))
-						printErrors($context['error']);
+					printErrors('unable to write .odt converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 				}
 
 				$tei = $source. '.tei';
 				if(!writefile($tei, $client->xml))
 				{
-					$context['error'][] = 'unable to write tei file for document <em>'.$sourceoriginale.'</em>';
-					if(empty($context['multiple']))
-						printErrors($context['error']);
+					printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 				}
 
 				$contents = array();
@@ -410,8 +422,8 @@ RDF;
 				}
 				catch(Exception $e)
 				{
-					printErrors($parser->getLogs(), false);
-					printErrors((array) $e->getMessage(), empty($context['multiple']));
+					printErrors($parser->getLogs(), false, $isFrame);
+					printErrors($e->getMessage(), empty($context['multiple']), $isFrame);
 					if(!empty($context['multiple'])) continue;
 				}
 
@@ -419,7 +431,7 @@ RDF;
 				$contents['otxreport'] = $client->report;
 				if(false === $contents['contents'])
 				{
-					printErrors($contents['parserreport'], empty($context['multiple']));
+					printErrors($contents['parserreport'], empty($context['multiple']), $isFrame);
 					if(!empty($context['multiple'])) continue;
 				}
 
@@ -435,9 +447,7 @@ RDF;
 				$fileconverted = $source. '.converted';
 				if (!writefile($fileconverted, base64_encode(serialize($contents))))
 				{
-					$context['error'][] = 'unable to write converted file for document <em>'.$sourceoriginale.'</em>';
-					if(empty($context['multiple']))
-						printErrors($context['error']);
+					printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 				}
 
 				unset($contents);
@@ -460,22 +470,14 @@ RDF;
 				}
 				else
 				{
-					if(!empty($context['error']))
-						printErrors($context['error'], false);
-					else
-					{
-						$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
+					$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
 
-						printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
-					}
-					$context['error'] = array();
+					printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
 				}
 			}
 			else
 			{
-				$context['error'][] = "Conversion failed for document <em>".$sourceoriginale.'</em> :<br/>'.htmlentities($client->status, ENT_COMPAT, 'UTF-8');
-				if(empty($context['multiple']))
-					printErrors($context['error']);
+				printErrors("Conversion failed for document <em>".$sourceoriginale.'</em> :<br/>'.htmlentities($client->status, ENT_COMPAT, 'UTF-8'), empty($context['multiple']), $isFrame);
 			}
 		}
 

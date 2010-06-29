@@ -1,28 +1,132 @@
 <?php
-ini_set('soap.wsdl_cache_enabled', false);
-ini_set('soap.wsdl_cache_enabled', '0');
-ini_set('soap.wsdl_cache_ttl', '60');
+/**
+ * Fichier de la classe permettant de communiquer avec OTX via le protole SOAP
+ * PHP version 5
+ *
+ * LODEL - Logiciel d'Edition ELectronique.
+ *
+ * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+ * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ *
+ * Home page: http://www.lodel.org
+ *
+ * E-Mail: lodel@lodel.org
+ *
+ * All Rights Reserved
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @package lodel
+ * @since Fichier ajouté depuis la version 1.0
+ */
 
+if(C::get('debugMode', 'cfg'))
+{ // pas de cache WSDL si en mode débug
+	ini_set('soap.wsdl_cache_enabled', false);
+	ini_set('soap.wsdl_cache_enabled', '0');
+	ini_set('soap.wsdl_cache_ttl', '60');
+}
+
+/**
+ * Classe permettant de communiquer avec OTX
+ *
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @since Classe ajoutée depuis la version 1.0
+ */
 class OTXClient extends SoapClient
 {
-	private $_authorizedParams;
-	private $_neededRequest;
-	public $contents;
-	public $status;
-	public $error;
+	/**
+	 * @var array liste des paramètres autorisés à l'envoi à OTX
+	 * @access private
+	 */
+	private $_authorizedParams = array(
+					'servoo.username' => true,
+					'servoo.passwd' => true,
+					'servoo.url' => true,
+					'servoo.proxyhost' => false,
+					'servoo.proxyport' => false,
+					'lodel_user' => true,
+					'lodel_site' => true);
+
+	/**
+	 * @var array liste des paramètres obligatoires pour l'envoi à OTX
+	 * @access private
+	 */
+	private $_neededRequest = array('request'=>true, 'attachment'=>true, 'mode'=>true, 'schema'=>true);
+
+	/**
+	 * @var string status retourné par OTX
+	 * @access public
+	 */
+	public $status = '';
+
+	/**
+	 * @var boolean si une erreur intervient
+	 * @access public
+	 */
+	public $error = false;
+
+	/**
+	 * @var boolean a-t-on déjà initié une connexion + authentification à OTX ?
+	 * @access private
+	 */
 	private $_instanciated = false;
 
+	/**
+	 * Constructeur
+	 *
+	 * @access public
+	 */
 	public function __construct() 
 	{
-		$this->status = null;
-		$this->error = 0;
-		$this->_authorizedParams = array('servoo.username'=>true,'servoo.passwd'=>true,'servoo.url'=>true, 'servoo.proxyhost'=>false, 'servoo.proxyport'=>false, 'lodel_user'=>true,'lodel_site'=>true, );
-		$this->_neededRequest = array('request'=>true, 'attachment'=>true, 'mode'=>true, 'schema'=>true);
 	}
 
+	/**
+	 * Initialisation de la connexion à OTX
+	 * Cette méthode test si OTX est joignable, puis essaye de s'identifier
+	 *
+	 * @access public
+	 * @param array &$opts tableau des options SOAP
+	 */
 	public function instantiate(&$opts)
 	{
-		$this->error = 0;
+		$this->error = false;
 		$options = array();
 		$options['trace'] = TRUE;
 		$options['soap_version'] = SOAP_1_2;
@@ -79,14 +183,24 @@ class OTXClient extends SoapClient
 		}
 	}
 
+	/**
+	 * Envoi d'une requête à OTX
+	 *
+	 * @access public
+	 * @param array &$request la requête à envoyer
+	 */
 	public function request(&$request)
 	{
 		try {
+			if(!$this->_instanciated)
+				throw new SoapFault("WebServOO client FaultError", 'ERROR: client has not been instanciated');
+
 			$this->_checkRequest($request);
 			// make the request and get tei result
 			$req = $this->otxRequest(array('request'=>$request['request'], 'mode'=>$request['mode'], 'attachment'=>$request['attachment'], 'schema'=>$request['schema']));
 			if(empty($req))
 				throw new SoapFault("WebServOO client FaultError", 'ERROR: empty return from OTX');
+
 			foreach($req as $k=>$v)
 				$this->$k = $v;
 		}
@@ -96,6 +210,13 @@ class OTXClient extends SoapClient
 		}
 	}
 
+	/**
+	 * Sélection d'un OTX
+	 *
+	 * @access public
+	 * @param int $i le numéro de l'OTX à contacter
+	 * @return mixed un tableau avec les données de connexion ou false en cas d'échec
+	 */
 	public function selectServer($i=2) 
 	{
 		if(0 === $i) $i = '';
@@ -126,6 +247,12 @@ class OTXClient extends SoapClient
 		}
 	}
 
+	/**
+	 * Vérification des options avant envoi à OTX
+	 *
+	 * @access private
+	 * @param array &$opts tableau des options validées
+	 */
 	private function _checkParams(&$opts)
 	{
 		$r = array();
@@ -136,7 +263,7 @@ class OTXClient extends SoapClient
 				if($v) 
 				{
 					throw new SoapFault("WebServOO FaultError", //faultcode
-                                   	'Missing parameter '.$k, //faultstring
+					'Missing parameter '.$k, //faultstring
 					'', // faultactor, TODO ?
 					"Soap authentification",  // detail
 					"UTF-8" // faultname
@@ -149,6 +276,12 @@ class OTXClient extends SoapClient
 		$opts = $r;
 	}
 
+	/**
+	 * Vérification de la requête avant envoi à OTX
+	 *
+	 * @access private
+	 * @param array &$request la requête à valider
+	 */
 	private function _checkRequest(&$request)
 	{
 		$r = array();
@@ -169,5 +302,3 @@ class OTXClient extends SoapClient
 		$request = $r;
 	}
 }
-
-?>
