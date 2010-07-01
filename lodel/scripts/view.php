@@ -457,8 +457,8 @@ class View
 		}
 	
 		$tplFile = $base_rep. $tpl. '.html';
-		$blockId = (int)$blockId;
-		$idcontext = (int)@$context['id'];
+		$blockId = (int) $blockId;
+		$idcontext = (int) (isset($context['id']) ? $context['id'] : 0);
         	$recalcul = true;
 
 		if(!self::$nocache)
@@ -1177,4 +1177,3 @@ function _indent_xhtml ($uncleanhtml, $indent = "  ")
 			return '';
 		}
 }
-?>

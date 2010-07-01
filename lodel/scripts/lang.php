@@ -380,4 +380,3 @@ function makeSelectLang()
 		echo "<option value=\"$l\"$selected>$lang</option>\n";
 	}
 }
-?>

@@ -151,8 +151,9 @@ class Logic
 	public function viewAction(&$context, &$error)
 	{
 		if ($error) return; // nothing to do if it is an error.
-		$id = @$context['id'];
-		if (!$id) return "_ok"; // just add a new Object
+		if (empty($context['id'])) return "_ok"; // just add a new Object
+
+		$id = $context['id'];
 		$vo  = $this->_getMainTableDAO()->getById($id);
 		if (!$vo) //erreur critique
 			trigger_error("ERROR: can't find object $id in the table ". $this->maintable, E_USER_ERROR);
@@ -220,12 +221,11 @@ class Logic
 		
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = @$context['id'];
 		$this->_prepareEdit($dao, $context);
 		// create or edit
-		if ($id) {
+		if (!empty($context['id'])) {
 			$dao->instantiateObject($vo);
-			$vo->id = $id;
+			$vo->id = $context['id'];
 		} else {
 			$create = true;
 			$vo = $dao->createObject();
@@ -261,18 +261,20 @@ class Logic
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in Logic::changeRankAction', E_USER_ERROR);
+
 		$criterias = array();
-		$id = @$context['id'];
-		if ($groupfields) {
+		$id = $context['id'];
+		if (!empty($groupfields)) {
 			$vo  = $this->_getMainTableDAO()->getById($id, $groupfields);
 			foreach (explode(",", $groupfields) as $field) {
 				$criterias[] = $field. "='". $vo->$field. "'";
 			}
 		}
 		if ($status) $criterias[] = $status;
-		$context['dir'] = @$context['dir'];
 		$criteria = join(" AND ", $criterias);
-		$this->_changeRank($id, $context['dir'], $criteria);
+		$this->_changeRank($id, isset($context['dir']) ? $context['dir'] : '', $criteria);
 
 		update();
 		return '_back';
@@ -291,7 +293,10 @@ class Logic
 	public function deleteAction(&$context, &$error)
 	{
 		global $db;
-		$id = @$context['id'];
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in Logic::deleteAction', E_USER_ERROR);
+
+		$id = $context['id'];
 
 		if ($this->isdeletelocked($id)) {
 			trigger_error("This object is locked for deletion. Please report the bug", E_USER_ERROR);
@@ -317,7 +322,8 @@ class Logic
 	 */
 	public function rights($access) 
 	{
-		return @$this->_getMainTableDAO()->rights[$access];
+		$dao = $this->_getMainTableDAO();
+		return isset($dao->rights[$access]) ? $dao->rights[$access] : '';
 	}
 
 	/**
@@ -549,9 +555,10 @@ class Logic
 	 */
 	protected function _makeMask(&$context, &$error)
 	{
-		$context['mask']['user'] = @$context['mask']['user'];
-		if(!$context['mask']['user']) return;
-		defined('PONCTUATION') || include 'utf8_file.php';
+		if(empty($context['mask']['user'])) return;
+
+		defined('PONCTUATION') || include 'utf8.php';
+
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {
 			// disable eval options for more security
@@ -753,10 +760,7 @@ class Logic
 			//Added by Jean - Be carefull using it
 			//if value is a string and we want to view it (or edit it in a form, 
 			//open a form is a view action) then we htmlize it
-			if (is_string($v) && $view) {
-				$v = htmlspecialchars($v);
-			}
-			$context[$k] = $v;
+			$context[$k] = is_string($v) && $view ? htmlspecialchars($v) : $v;
 		}
 	}
 
@@ -796,9 +800,18 @@ class Logic
 	protected function _processSpecialFields($type, &$context, $status = 0) 
 	{
 		global $db;
-		$context['id'] = (int)@$context['id'];
+
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in Logic::_processSpecialFields', E_USER_ERROR);
+
 		$vo = DAO::getDAO('entities')->getById($context['id'], 'id, idtype');
+		if(!$vo)
+			trigger_error('ERROR: invalid id', E_USER_ERROR);
+
 		$votype = DAO::getDAO ("types")->getById ($vo->idtype, 'class');
+		if(!$votype)
+			trigger_error('ERROR: invalid idtype', E_USER_ERROR);
+
 		$class = $votype->class;
 		unset($vo,$votype);
 
@@ -826,8 +839,8 @@ class Logic
 	 */
 	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
 	{
-		$context['id'] = @$context['id'];
-		if(!$context['id']) return;
+		if(empty($context['id'])) return;
+
             	$dao = DAO::getDAO('users');
 		if(C::get('lodeladmin', 'lodeluser')) {
 			usemaindb();
@@ -942,4 +955,3 @@ if(!function_exists('isdeletelocked'))
 		return $cache[$table][$id];
 	}
 }
-?>

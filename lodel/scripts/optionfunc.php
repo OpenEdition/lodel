@@ -120,10 +120,16 @@ function cacheOptionsInFile($optionsfile=null)
 			$id = $result->fields['id'];
 			$name = $result->fields['name'];
 			$idgroup = $result->fields['idgroup'];
+			if(!isset($arr[$idgroup])) continue;
+
 			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
 			if('username' != $result->fields['type'] && 'passwd' !== $result->fields['type'])
-				@$options_cache_return[$arr[$idgroup]][$name] = $value;
-			@$optname = $arr[$idgroup].".".$name;
+			{
+				if(!isset($options_cache_return[$arr[$idgroup]]))
+					$options_cache_return[$arr[$idgroup]] = array();
+				$options_cache_return[$arr[$idgroup]][$name] = $value;
+			}
+			$optname = $arr[$idgroup].".".$name;
 			$txt .= "'".$optname."'=>'".addslashes($value)."',\n";
 			$options_cache[$optname] = addslashes($value);
 			$result->MoveNext();
@@ -146,9 +152,15 @@ function cacheOptionsInFile($optionsfile=null)
 			$id = $result->fields['id'];
 			$name = $result->fields['name'];
 			$idgroup = $result->fields['idgroup'];
+			if(!isset($arr[$idgroup])) continue;
+
 			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
 			if('username' != $result->fields['type'] && 'passwd' !== $result->fields['type'])
-				@$options_cache_return[$arr[$idgroup]][$name] = $value;
+			{
+				if(!isset($options_cache_return[$arr[$idgroup]]))
+					$options_cache_return[$arr[$idgroup]] = array();
+				$options_cache_return[$arr[$idgroup]][$name] = $value;
+			}
 			$result->MoveNext();
 		}
 		$result->Close();
@@ -157,4 +169,3 @@ function cacheOptionsInFile($optionsfile=null)
 		return $options_cache_return;
 	}
 }
-?>

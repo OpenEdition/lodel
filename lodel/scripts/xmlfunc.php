@@ -185,10 +185,14 @@ function loop_fields_values(& $context, $funcname)
 {
 	global $error;
 	global $db;
-	$id = (int)@$context['id'];
-	$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$id' AND status>0 ORDER BY rank")) 
-		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	$haveresult = $result->NumRows() > 0;
+	$haveresult = false;
+	if(!empty($context['id']))
+	{
+		$id = (int) $context['id'];
+		$result = $db->execute(lq("SELECT name,type FROM #_TP_tablefields WHERE idgroup='$id' AND status>0 ORDER BY rank")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$haveresult = $result->NumRows() > 0;
+	}
 	if ($haveresult && function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
 	}
@@ -202,9 +206,7 @@ function loop_fields_values(& $context, $funcname)
 		$fields[] = $row;
 		$result->moveNext();
 	}
-	$context['class'] = @$context['class'];
-	$context['identity'] = @$context['identity'];
-	if (count($fieldvalued) > 0) {
+	if (count($fieldvalued) > 0 && !empty($context['class']) && !empty($context['identity'])) {
 		$sql = lq("SELECT ". implode(',', $fieldvalued). " FROM #_TP_". $context['class']. " WHERE identity='". $context['identity']. "'");
 		$rowsvalued = $db->getRow($sql);
 	}
@@ -213,7 +215,7 @@ function loop_fields_values(& $context, $funcname)
 		$localcontext = array ();
 		$localcontext['name'] = $row['name'];
 		$localcontext['type'] = $row['type'];
-		$localcontext['identity'] = $context['identity'];
+		$localcontext['identity'] = isset($context['identity']) ? $context['identity'] : null;
 		if (isset($rowsvalued[$row['name']])) {
 			$localcontext['value'] = $rowsvalued[$row['name']];
 		}
@@ -237,14 +239,20 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 	global $error;
 	global $db;
 
-	$context['nature'] = @$context['nature'];
-	if ($context['nature'] == 'G') {
-		$table = '#_TP_persontypes';
-		$id = 'idperson';
-	} elseif ($context['nature'] == 'E') {
-		$table = '#_TP_entrytypes';
-		$id = 'identry';
+	if(!empty($context['nature']))
+	{
+		if ($context['nature'] == 'G') {
+			$table = '#_TP_persontypes';
+			$id = 'idperson';
+		} elseif ($context['nature'] == 'E') {
+			$table = '#_TP_entrytypes';
+			$id = 'identry';
+		}
 	}
+
+	if(empty($table) || empty($context['name']))
+		trigger_error('ERROR: missing parameters', E_USER_ERROR);
+
 	$sql = "SELECT t.name, t.class, t.type,t.cond FROM #_TP_tablefields as t, $table as et";
 	$sql .= " WHERE et.type='". $context['name']. "' AND et.class=t.class";
 	$result = $db->execute(lq($sql));
@@ -265,15 +273,14 @@ function loop_entry_or_persons_fields_values(&$context, $funcname)
 	}
 	
 	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);
-	$context['id2'] = @$context['id2'];
 	//$fieldnames = array_keys($fields);
-	if (is_array($fieldnames) && count($fieldnames) > 0) {
+	if (!empty($context['id2']) && is_array($fieldnames) && count($fieldnames) > 0) {
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $class. " WHERE $id='". $context['id2']."'");
 		$values = $db->getRow($sql);
 		foreach ($fields as $key => $row) {
 			$localcontext = array();
 			$localcontext['name'] = $row['name'];
-			if ($values[$row['name']]) {
+			if (!empty($values[$row['name']])) {
 				$localcontext['value'] = $values[$row['name']];
 			}
 			else {
@@ -298,7 +305,8 @@ function loop_person_relations_fields(&$context, $funcname)
 {
 	global $error;
 	global $db;
-	$context['class'] = @$context['class'];
+	if(empty($context['class'])) return;
+
 	$sql = "SELECT t.name, t.class, t.type,t.cond FROM #_TP_tablefields as t";
 	$sql .= " WHERE t.class='entities_". $context['class']."'";
 	$result = $db->execute(lq($sql));
@@ -318,16 +326,15 @@ function loop_person_relations_fields(&$context, $funcname)
 		$result->moveNext();
 	}
 
-	if (is_array($fields)&& count($fields) > 0) $fieldnames = array_keys($fields);	
+	if (is_array($fields) && count($fields) > 0) $fieldnames = array_keys($fields);	
 	//$fieldnames = array_keys($fields);
-	if (is_array($fieldnames) && count($fieldnames) > 0) {
-		$context['idrelation'] = @$context['idrelation'];
+	if (isset($fieldnames) && is_array($fieldnames) && count($fieldnames) > 0 && !empty($context['idrelation'])) {
 		$sql = lq("SELECT ". implode(',', $fieldnames). " FROM #_TP_". $row['class']. " WHERE idrelation='". $context['idrelation']. "'");
 		$values = $db->getRow($sql);
 		foreach ($fields as $key => $row) {
 			$localcontext = array ();
 			$localcontext['name'] = $row['name'];
-			if ($values[$row['name']]) {
+			if (!empty($values[$row['name']])) {
 				$localcontext['value'] = $values[$row['name']];
 			}
 			call_user_func("code_do_$funcname", $localcontext);
@@ -354,4 +361,3 @@ function namespace($text)
 	// then put namespace on each attribute
 	return $text;
 }
-?>

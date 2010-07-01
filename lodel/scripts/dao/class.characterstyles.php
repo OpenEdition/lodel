@@ -124,5 +124,3 @@ class characterstylesDAO extends DAO
 	}
 
 }
-
-?>

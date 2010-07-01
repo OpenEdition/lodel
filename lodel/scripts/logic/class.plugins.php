@@ -175,8 +175,4 @@ class PluginsLogic extends MainPluginsLogic
 		return array(array('name'), );
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-
-?>

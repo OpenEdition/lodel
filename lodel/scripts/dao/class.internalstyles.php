@@ -126,5 +126,3 @@ class internalstylesDAO extends DAO
 	}
 
 }
-
-?>

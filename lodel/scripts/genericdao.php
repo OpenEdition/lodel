@@ -112,4 +112,3 @@ class genericDAO extends DAO
 		return '';
 	}
 }
-?>

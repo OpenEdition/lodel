@@ -117,7 +117,5 @@ class pluginsDAO extends DAO
 		parent::__construct("plugins", true);
 		$this->rights = array('write'=>LEVEL_ADMINLODEL, 'protect'=>LEVEL_ADMINLODEL, 'read'=>LEVEL_ADMINLODEL);
 	}
-
  // end{definitions} automatic generation  //
 }
-?>

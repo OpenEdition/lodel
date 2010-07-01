@@ -42,10 +42,9 @@
 
 class entitytypes_entitytypesVO 
 {
-	var $identitytype;
-	var $identitytype2;
-	var $cond;
-
+	public $identitytype;
+	public $identitytype2;
+	public $cond;
 }
 
 /**
@@ -54,13 +53,9 @@ class entitytypes_entitytypesVO
 
 class entitytypes_entitytypesDAO extends DAO 
 {
-
 	function entitytypes_entitytypesDAO() 
-{
-			$this->DAO("entitytypes_entitytypes", false);
-			$this->rights = array();
+	{
+		parent::__construct("entitytypes_entitytypes", false);
+		$this->rights = array();
 	}
-
 }
-
-?>

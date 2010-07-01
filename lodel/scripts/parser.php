@@ -1775,7 +1775,7 @@ PHP;
 
 		$this->parse_main();
 		if (!isset($this->arr[$this->ind]) || $this->arr[$this->ind] != "/ESCAPE")
-			$this->_errmsg("&lt;/ESCAPE&gt; expected, ".@$this->arr[$this->ind]." found", $this->ind);
+			$this->_errmsg("&lt;/ESCAPE&gt; expected, ".(isset($this->arr[$this->ind]) ? $this->arr[$this->ind] : '')." found", $this->ind);
 
 		for ($i = $escapeind; $i < $this->ind; $i += 3)	{
 			if (trim($this->arr[$i +2]))
@@ -2077,4 +2077,3 @@ function quote_code($text)
 {
 	return addcslashes($text, "'");
 }
-?>

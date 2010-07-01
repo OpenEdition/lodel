@@ -199,4 +199,3 @@ class LodelException extends Exception
 set_error_handler(array('LodelException', 'error_handler')); // errors
 set_exception_handler(array('LodelException', 'exception_handler')); // exceptions not catched
 error_reporting(C::get('debugMode', 'cfg') ? -1 : (E_CORE_ERROR | E_COMPILE_ERROR | E_ERROR | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED));
-?>

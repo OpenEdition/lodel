@@ -42,4 +42,3 @@ function_exists('search') || require 'searchfunc.php';
 recordurl();
 View::getView()->renderCached("search");
 return;
-?>

@@ -159,19 +159,21 @@ class TableFieldsLogic extends Logic
 			break;
 		case 'idgroup':
 			$arr = array();
-			$context['idgroup'] = (int)@$context['idgroup'];
-			// get the groups having of the same class as idgroup
-			$result = $GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.class WHERE tfg2.id='".$context['idgroup']."'")) or trigger_error($GLOBALS['db']->errormsg(), E_USER_ERROR);
-			while(!$result->EOF) {
-				$arr[$result->fields['id']]=$result->fields['title'];
-				$result->MoveNext();
+			if(!empty($context['idgroup']))
+			{
+				// get the groups having of the same class as idgroup
+				$result = $GLOBALS['db']->execute(lq("SELECT #_TP_tablefieldgroups.id,#_TP_tablefieldgroups.title FROM #_tablefieldgroupsandclassesjoin_ INNER JOIN #_TP_tablefieldgroups as tfg2 ON tfg2.class=#_TP_classes.class WHERE tfg2.id='".$context['idgroup']."'")) or trigger_error($GLOBALS['db']->errormsg(), E_USER_ERROR);
+				while(!$result->EOF) {
+					$arr[$result->fields['id']]=$result->fields['title'];
+					$result->MoveNext();
+				}
+				renderOptions($arr, $context['idgroup']);
 			}
-			renderOptions($arr, $context['idgroup']);
+			else renderOptions($arr, '');
 			break;
 		case 'g_name':
 			function_exists('reservedByLodel') || include 'fieldfunc.php';
-			$context['classtype'] = @$context['classtype'];
-			if (!$context['classtype']) $this->_getClass($context);
+			if (empty($context['classtype'])) $this->_getClass($context);
 			switch ($context['classtype']) {
 			case 'entities':
 				$g_namefields = $GLOBALS['g_entities_fields'];/*array('DC.Title', 'DC.Description',
@@ -193,10 +195,12 @@ class TableFieldsLogic extends Logic
 			default:
 				trigger_error("class type ?",E_USER_ERROR);
 			}
-			$context['class'] = @$context['class'];
-			$tablefields = $this->_getMainTableDAO()->findMany("class='".$context['class']."'","","g_name,title");     
-			foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
-	
+
+			if(!empty($context['class']))
+			{
+				$tablefields = $this->_getMainTableDAO()->findMany("class='".$context['class']."'","","g_name,title");     
+				foreach($tablefields as $tablefield) { $arr[$tablefield->g_name]=$tablefield->title; }
+			}
 			$arr2 = array(''=>'--');
 			foreach($g_namefields as $g_name) {
 				$lg_name=strtolower($g_name);
@@ -236,9 +240,9 @@ class TableFieldsLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
-		$id = @$context['id'];
 		// gather information for the following
-		if ($id) {
+		if (!empty($context['id'])) {
+			$id = $context['id'];
 			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo) trigger_error("ERROR: internal error in TableFields::_prepareEdit", E_USER_ERROR);
 		}
@@ -309,7 +313,9 @@ class TableFieldsLogic extends Logic
 	*/
 	protected function _prepareDelete($dao,&$context)
 	{
-		$id = @$context['id'];
+		if(empty($context['id']))
+			trigger_error("ERROR: missing id in TableFields::deleteAction", E_USER_ERROR);
+		$id = $context['id'];
 		// gather information for the following
 		$this->vo=$dao->getById($id);
 		if (!$this->vo) trigger_error("ERROR: internal error in TableFields::deleteAction", E_USER_ERROR);
@@ -347,16 +353,17 @@ class TableFieldsLogic extends Logic
 	protected function _getClass(&$context)
 	{
 		global $db;
-		$context['idgroup'] = (int)@$context['idgroup'];
-		$context['class'] = @$context['class'];
-		if ($context['idgroup']) {
+		if (!empty($context['idgroup'])) {
 			$row = $db->getRow(lq("SELECT #_TP_classes.class,classtype FROM #_tablefieldgroupsandclassesjoin_ WHERE #_TP_tablefieldgroups.id='". $context['idgroup']. "'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			if ($context['class'] && $context['class'] != $row['class']) {
+			if (!empty($context['class']) && $context['class'] != $row['class']) {
 				trigger_error("ERROR: idgroup and class are incompatible in TableFieldsLogic::editAction", E_USER_ERROR);
 			}
 			$context['class']     = $row['class'];
 			$context['classtype'] = $row['classtype'];
 		} else {
+			if(empty($context['class']))
+				trigger_error('ERROR: internal error in TablefieldsLogic::_getClass', E_USER_ERROR);
+
 			$classtype = '';
 			if (substr($context['class'],0,9) == 'entities_') {
 				$class = substr($context['class'],9);
@@ -364,7 +371,7 @@ class TableFieldsLogic extends Logic
 			} else {
 				$class = $context['class'];
 			}
-			$classtype.= $db->getOne(lq("SELECT classtype FROM #_TP_classes WHERE class='". $class. "'"));
+			$classtype .= $db->getOne(lq("SELECT classtype FROM #_TP_classes WHERE class='". $class. "'"));
 			$context['classtype'] = $classtype;
 		}
 	}
@@ -382,8 +389,8 @@ class TableFieldsLogic extends Logic
 	function _populateObject($vo, &$context)
 	{
 		parent::_populateObject($vo,$context);
-		$context['class'] = @$context['class'];
-		$vo->class = $context['class']; // it is safe, we now that !
+		if(!empty($context['class']))
+			$vo->class = $context['class']; // it is safe, we now that !
 		$vo->allowedtags = (isset($context['allowedtags']) && is_array($context['allowedtags'])) ? join(';', $context['allowedtags']) : '';
 	}
 
@@ -454,4 +461,3 @@ if(!function_exists('loop_allowedtags_documentation'))
 		}
 	}
 }
-?>

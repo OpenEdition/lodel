@@ -110,12 +110,13 @@ class UsersLogic extends Logic
 	public function deletesessionAction(&$context, &$error)
 	{
 		global $db;
-		$id = (int)@$context['id'];
+		
 		$session     = (int)C::get('session', 'lodeluser');
 		usemaindb(); // les sessions sont stockés dans la base principale
 		$ids = array();
 		$where = defined('backoffice-lodeladmin') ? ' AND userrights=128' : ' AND userrights<128';
-		if ($id) { //suppression de toutes les sessions
+		if (!empty($context['id'])) { //suppression de toutes les sessions
+			$id = (int)@$context['id'];
 			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."' {$where}")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$ids[] = $result->fields['id'];
@@ -127,7 +128,7 @@ class UsersLogic extends Logic
 			trigger_error('ERROR: unknown operation', E_USER_ERROR);
 		}
 		
-		if ($ids) {
+		if (!empty($ids)) {
 			$idstr = join(',', $ids);
 			// remove the session
 			$db->execute(lq("DELETE FROM #_MTP_session WHERE id IN ($idstr)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -260,10 +261,8 @@ class UsersLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context) 
 	{
-		$context['passwd'] = @$context['passwd'];
-		$context['username'] = @$context['username'];
 		// encode the password
-		if ($context['passwd']) {
+		if (!empty($context['passwd']) && !empty($context['username'])) {
 			$context['tmppasswd'] = $context['passwd']; // backup it in memory just a few, for emailing
 			$context['passwd']=md5($context['passwd'].$context['username']);
 		}
@@ -298,12 +297,15 @@ class UsersLogic extends Logic
 			// change the usergroups     
 			// first delete the group
 			$this->_deleteRelatedTables($vo->id);
-			$id = (int)@$context['id'];
-			// now add the usergroups
-			foreach ($context['usergroups'] as $usergroup) {
-				$usergroup=(int)$usergroup;
-				$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) 
-					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			if(!empty($context['id']))
+			{
+				$id = (int) $context['id'];
+				// now add the usergroups
+				foreach ($context['usergroups'] as $usergroup) {
+					$usergroup = (int) $usergroup;
+					$db->execute(lq("INSERT INTO #_TP_users_usergroups (idgroup, iduser) VALUES  ('$usergroup','$id')")) 
+						or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
 			}
 		}
 	}
@@ -322,9 +324,8 @@ class UsersLogic extends Logic
 		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
-		$context['userrights'] = @$context['userrights'];
 		// check the user has the right equal or higher to the new user
-		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
+		if (!isset($context['userrights']) || C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		// Check the user is not duplicated in the main table...
 //		if (!usemaindb()) return true; // use the main db, return if it is the same as the current one.
@@ -334,9 +335,7 @@ class UsersLogic extends Logic
 //		usecurrentdb();
 
 		// check the passwd is given for new user.
-		$context['id'] = @$context['id'];
-		$context['passwd'] = @$context['passwd'];
-		if (!$context['id'] && !trim($context['passwd'])) {
+		if (empty($context['id']) && (empty($context['passwd']) || !trim($context['passwd']))) {
 			$error['passwd']=1;
 			return false;
 		}
@@ -402,7 +401,10 @@ class UsersLogic extends Logic
 	public function suspendAction(&$context, &$error)
 	{
  		global $db;
-		$id = (int)@$context['id'];
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in UsersLogic::suspendAction', E_USER_ERROR);
+
+		$id = (int) $context['id'];
 		$site = C::get('site', 'cfg');
 		//on vérifie qu'on est bien administrateur
 		if(C::get('admin', 'lodeluser')) {
@@ -461,6 +463,4 @@ class UsersLogic extends Logic
 		if(isset($sitelang)) $context['sitelang'] = $sitelang;
 		return send_mail($context['email'], $body, getlodeltextcontents("Your Lodel account", 'admin', $context['lang']).(!$context['islodeladmin'] ? ' '.getlodeltextcontents("on the website", 'admin', $context['lang'])." '{$context['sitetitle']}' ({$context['siteurl']})" : ''), $email, '');
 	}
-
 } // class 
-?>

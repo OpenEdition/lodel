@@ -279,4 +279,3 @@ function show_html($chaine)
 	// on retourne le tout pour affichage
 	return $out."</body></html>\n";
 }
-?>

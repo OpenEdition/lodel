@@ -140,16 +140,18 @@ class GenericLogic extends Logic
 						}
 					}   elseif ($context['classtype'] == "entries") {
 						$criteria = "class='".$class."'";
+					}   elseif(empty($context['id'])) {
+						return;
 					}   else {
-						$context['id'] = @$context['id'];
-						$criteria = "idgroup='". $context['id']."'";
+						$criteria = "idgroup='". (int) $context['id']."'";
 						$context['idgroup'] = $context['id'];
 					}
+				}   elseif(empty($context['id'])) {
+					return;
 				}
 				else
 				{
-					$context['id'] = @$context['id'];
-					$criteria = "idgroup='". $context['id']."'";
+					$criteria = "idgroup='". (int) $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
 
@@ -181,7 +183,8 @@ class GenericLogic extends Logic
 				}
 			} //function }}}
 		}
-		$id = @$context['id'];
+
+		$id = empty($context['id']) ? null : $context['id'];
 		if ($id && !$error) {
 			$vo = $this->_getMainTableDAO()->getById($id);
 			if (!$vo) {
@@ -189,11 +192,13 @@ class GenericLogic extends Logic
 			}
 			$this->_populateContext($vo, $context);
 		}
-		$context['idtype'] = @$context['idtype'];
+		if(empty($context['idtype']))
+			trigger_error("ERROR: idtype must be known in GenericLogic::viewAction", E_USER_ERROR);
+
 		$daotype = DAO::getDAO($this->_typetable);
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
-			trigger_error("ERROR: idtype must me known in GenericLogic::viewAction", E_USER_ERROR);
+			trigger_error("ERROR: idtype must be known in GenericLogic::viewAction", E_USER_ERROR);
 		}
 		
         	$this->_populateContext($votype, $context['type']);
@@ -245,34 +250,16 @@ class GenericLogic extends Logic
 		$this->files_to_move = array ();
 		$this->_publicfields = array ();
 		isset($GLOBALS['lodelfieldtypes']) || include "fieldfunc.php";
-		$context['id'] = @$context['id'];
-		$context['do'] = @$context['do'];
+		$context['id'] = isset($context['id']) ? $context['id'] : null;
+		$context['do'] = isset($context['do']) ? $context['do'] : null;
 		foreach ($fields as $field) {
 			if ($field->g_name) {
 				$this->addGenericEquivalent($class, $field->g_name, $field->name); // save the generic field
 			}
 			$type = $field->type;
 			$name = $field->name;
-			$context['data'][$name] = @$context['data'][$name];
-			// check if the field is required or not, and rise an error if any problem.
-			$value = &$context['data'][$name];
 
-			if (!is_array($value)) {
-				$value = trim($value);
-			}
-			if ($value) {
-  				if(is_array($value))
- 				{
-					$keys = array_keys($value);
-					$j = count($value);
- 					for($i=0;$i<$j;$i++) {
- 						$value[$keys[$i]] = lodel_strip_tags($value[$keys[$i]], $field->allowedtags);
- 					}
- 				}
- 				else {
-					$value = lodel_strip_tags($value, $field->allowedtags);
-				}
-			}
+			$value = -1;
 
 			// is empty ?
 			$empty = $type != "boolean" && (// boolean are always true or false
@@ -280,11 +267,11 @@ class GenericLogic extends Logic
 							$context['data'][$name] === "" || (is_array($context['data'][$name]) && empty($context['data'][$name]))); // or empty
 
             		if ($context['do'] == "edit" && ($field->edition == "importable" || 
-					$field->edition == "none" || $field->edition == "display")) {
-
+					$field->edition == "none" || $field->edition == "display"))
+			{
 				// in edition interface and field is not editable in the interface
 				if ($field->cond != "+") { // the field is not required.
-					unset ($value);
+					unset ($context['data'][$name]);
 					continue;
 				} else {
 					$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
@@ -299,18 +286,43 @@ class GenericLogic extends Logic
 			}
 
 			if ($type != "persons" && $type != "entries" && $type != "entities") {
-				
 				$this->_publicfields[$field->class][$name] = true; // this field is public
 			}
+
 			if ($field->edition == "none") {
 				unset ($value);
-			}			
-			if ($empty) {
-				$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
 			}
+
 			if ($field->cond == "+" && $empty) {
 				$error[$name] = "+"; // required
 				continue;
+			}
+
+			if ($empty) {
+				$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
+			}
+			elseif(-1 === $value)
+			{
+				$context['data'][$name] = isset($context['data'][$name]) ? $context['data'][$name] : '';
+				// check if the field is required or not, and rise an error if any problem.
+				$value = &$context['data'][$name];
+
+				if (!is_array($value)) {
+					$value = trim($value);
+				}
+				if ($value) {
+					if(is_array($value))
+					{
+						$keys = array_keys($value);
+						$j = count($value);
+						for($i=0;$i<$j;$i++) {
+							$value[$keys[$i]] = lodel_strip_tags($value[$keys[$i]], $field->allowedtags);
+						}
+					}
+					else {
+						$value = lodel_strip_tags($value, $field->allowedtags);
+					}
+				}
 			}
 
 			// champ unique
@@ -358,16 +370,16 @@ class GenericLogic extends Logic
 					$idtype = $vo->id;
 					if($isExternal)
 					{
-						$context['externalentries'][$field->name] = @$context['externalentries'][$field->name];
+						$context['externalentries'][$field->name] = isset($context['externalentries'][$field->name]) ? $context['externalentries'][$field->name] : null;
 						$localcontext = &$context['externalentries'][$field->name];
 					}
 					else
 					{
-						$context[$type][$idtype] = @$context[$type][$idtype];
+						$context[$type][$idtype] = isset($context[$type][$idtype]) ? $context[$type][$idtype] : null;
 						$localcontext = &$context[$type][$idtype];
 					}
 					if (!$localcontext) {
-							break;
+						break;
 					}
 					if ($type == "entries" && !is_array($localcontext))	{
 						$keys = explode(",", $localcontext);
@@ -398,15 +410,14 @@ class GenericLogic extends Logic
 					}
 					break;
 				case 'entities' :
-					$context['entities'][$name] = @$context['entities'][$name];
-					$value = &$context['entities'][$name];
-					if (!$value) {
+					if (empty($context['entities'][$name])) {
 						// commented by pierre-alain
 						// if unset, aliases will not be remove if there were present in database
 						// see bug [#5796]
 						//unset ($context['entities'][$name]);
 						break;
 					}
+					$value = &$context['entities'][$name];
 					$ids = array ();
 					if(!is_array($value))
 					{
@@ -494,7 +505,10 @@ class GenericLogic extends Logic
 	protected function addGenericEquivalent($class, $name, $value)
 	{
 		global $genericlogic_g_name;
-		@$genericlogic_g_name[$class][$name] = $value;
+		if(!isset($genericlogic_g_name[$class]))
+			$genericlogic_g_name[$class] = array();
+
+		$genericlogic_g_name[$class][$name] = $value;
 	}
 
 	/**
@@ -506,7 +520,7 @@ class GenericLogic extends Logic
 	protected function getGenericEquivalent($class, $name)
 	{
 		global $genericlogic_g_name;
-		return @$genericlogic_g_name[$class][$name];
+		return isset($genericlogic_g_name[$class][$name]) ? $genericlogic_g_name[$class][$name] : '';
 	}
 
 	/**
@@ -517,13 +531,13 @@ class GenericLogic extends Logic
 	 * @param string $value la valeur associée au champ.
 	 * @return bool true si pas d'autre occurrence, false sinon
 	 */
-	protected function _is_unique($class, $name, $value, $id) {
+	protected function _is_unique($class, $name, $value, $id)
+	{
 		global $db;
  		$id = (int)$id;
 		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
-		if ($result == 0) {
-			return true; } else {
-			return false; }
+
+		return $result == 0 ? true : false;
 	}
 
 
@@ -577,97 +591,94 @@ class GenericLogic extends Logic
  */
 if(!function_exists('lodel_strip_tags'))
 {
-function lodel_strip_tags($text, $allowedtags, $k = -1)
-{
-	if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
-		array_walk($text, "lodel_strip_tags", $allowedtags);
-		return $text;
-	}
-	if ((is_numeric($allowedtags) && !is_numeric($k)) || (!is_numeric($allowedtags) && !is_numeric($k))) {
-		$allowedtags = $k;
-		$k = -1;
-	} // for call via array_walk
+	function lodel_strip_tags($text, $allowedtags, $k = -1)
+	{
+		if (is_array($text)) { //si text est un array alors applique le nettoyage à chaque partie du tableau
+			array_walk($text, "lodel_strip_tags", $allowedtags);
+			return $text;
+		}
+		if ((is_numeric($allowedtags) && !is_numeric($k)) || (!is_numeric($allowedtags) && !is_numeric($k))) {
+			$allowedtags = $k;
+			$k = -1;
+		} // for call via array_walk
 
-	isset($GLOBALS['xhtmlgroups']) || include "balises.php";
-	static $accepted; // cache the accepted balise;
-	global $multiplelevel, $xhtmlgroups;
+		isset($GLOBALS['xhtmlgroups']) || include "balises.php";
+		static $accepted; // cache the accepted balise;
+		global $multiplelevel, $xhtmlgroups;
 
-	// simple case.
-	if (!$allowedtags) {
-		return strip_tags($text);
-	}
+		// simple case.
+		if (!$allowedtags) {
+			return strip_tags($text);
+		}
 
-	if (!isset($accepted[$allowedtags]))	{ // not cached ?
-		$accepted[$allowedtags] = array ();
+		if (!isset($accepted[$allowedtags]))	{ // not cached ?
+			$accepted[$allowedtags] = array ();
 
-		// split the groupe of balises
-		$groups = preg_split("/\s*;\s*/", $allowedtags);
-		array_push($groups, ""); // balises speciales
-		// feed the accepted string with accepted tags.
-		foreach ($groups as $group) {
-            $group = trim($group);
-            if(!$group || !isset($xhtmlgroups[$group])) continue;
-			// xhtml groups
-            foreach ($xhtmlgroups[$group] as $k => $v) {
-                if (is_numeric($k))	{
-                    $accepted[$allowedtags][$v] = true; // accept the tag with any attributs
-                }	else {
-                    // accept the tag with attributs matching unless it is already fully accepted
-                    if (!isset($accepted[$allowedtags][$k])) {
-                        $accepted[$allowedtags][$k][] = $v; // add a regexp
-                    }
-                }
-            }
-		} // foreach group
-	} // not cached.
-
-	$acceptedtags = $accepted[$allowedtags];
-
-	// the simpliest case.
-	if (!$accepted) {
-		return strip_tags($text);
-	}
-
-	$arr = preg_split("/(<\/?)(\w+:?\w*)\b([^>]*>)/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-	$stack = array ();
-	$count = count($arr);
-	for ($i = 1; $i < $count; $i += 4) {
-		if ($arr[$i] == "</")	{ // closing tag
-			if (!array_pop($stack)) {
-				$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
+			// split the groupe of balises
+			$groups = preg_split("/\s*;\s*/", $allowedtags);
+			array_push($groups, ""); // balises speciales
+			// feed the accepted string with accepted tags.
+			foreach ($groups as $group) {
+		$group = trim($group);
+		if(!$group || !isset($xhtmlgroups[$group])) continue;
+				// xhtml groups
+		foreach ($xhtmlgroups[$group] as $k => $v) {
+			if (is_numeric($k))	{
+			$accepted[$allowedtags][$v] = true; // accept the tag with any attributs
+			}	else {
+			// accept the tag with attributs matching unless it is already fully accepted
+			if (!isset($accepted[$allowedtags][$k])) {
+				$accepted[$allowedtags][$k][] = $v; // add a regexp
 			}
-		}	else { // opening tag
-			$tag = $arr[$i +1];
-			$keep = false;
-			if (isset ($acceptedtags[$tag]))	{
-				// simple case.
-				if ($acceptedtags[$tag] === true)	{ // simple
-					$keep = true;									
-				}	else	{ // must valid the regexp
-					foreach ($acceptedtags[$tag] as $re)	{
-						#echo $re," ",$arr[$i+2]," ",preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2]),"<br/>";
-						if (preg_match("/(^|\s)$re(\s|>|$)/", $arr[$i +2]))	{
-							$keep = true;
-							break;
-						}
-					}
-				}
-				#	echo "keep:$keep<br/>";
-			}
-			#echo ":",$arr[$i],$arr[$i+1],$arr[$i+2]," ",htmlentities(substr($arr[$i+2],-2)),"<br/>";
-			if (substr($arr[$i +2], -2) != "/>") {// not an opening closing.
-				array_push($stack, $keep); // whether to keep the closing tag or not.
-			}
-			if (!$keep)	{
-				$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
 			}
 		}
+			} // foreach group
+		} // not cached.
+
+		$acceptedtags = $accepted[$allowedtags];
+
+		// the simpliest case.
+		if (!$accepted) {
+			return strip_tags($text);
+		}
+
+		$arr = preg_split("/(<\/?)(\w+:?\w*)\b([^>]*>)/", $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+		$stack = array ();
+		$count = count($arr);
+		for ($i = 1; $i < $count; $i += 4) {
+			if ($arr[$i] == "</")	{ // closing tag
+				if (!array_pop($stack)) {
+					$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
+				}
+			}	else { // opening tag
+				$tag = $arr[$i +1];
+				$keep = false;
+				if (isset ($acceptedtags[$tag]))	{
+					// simple case.
+					if ($acceptedtags[$tag] === true)	{ // simple
+						$keep = true;									
+					}	else	{ // must valid the regexp
+						foreach ($acceptedtags[$tag] as $re)	{
+							#echo $re," ",$arr[$i+2]," ",preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2]),"<br/>";
+							if (preg_match("/(^|\s)$re(\s|>|$)/", $arr[$i +2]))	{
+								$keep = true;
+								break;
+							}
+						}
+					}
+					#	echo "keep:$keep<br/>";
+				}
+				#echo ":",$arr[$i],$arr[$i+1],$arr[$i+2]," ",htmlentities(substr($arr[$i+2],-2)),"<br/>";
+				if (substr($arr[$i +2], -2) != "/>") {// not an opening closing.
+					array_push($stack, $keep); // whether to keep the closing tag or not.
+				}
+				if (!$keep)	{
+					$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
+				}
+			}
+		}
+		// now, we know the accepted tags
+		return join("", $arr);
 	}
-	// now, we know the accepted tags
-	return join("", $arr);
 }
-}
-/*-----------------------------------*/
-/* loops                             */
-?>

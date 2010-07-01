@@ -165,4 +165,3 @@ function makeSelectEdition($value)
 		"ENDOPTGROUP-4"=> "");
 	renderOptions($arr, $value);
 }
-?>

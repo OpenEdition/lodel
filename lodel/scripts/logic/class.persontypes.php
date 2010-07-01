@@ -62,7 +62,6 @@
  */
 class PersonTypesLogic extends Logic
 {
-
 	/**
 	 * Constructeur
 	 */
@@ -141,9 +140,9 @@ class PersonTypesLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
-		$id = @$context['id'];
 		// gather information for the following
-		if ($id) {
+		if (!empty($context['id'])) {
+			$id = $context['id'];
 			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo) trigger_error("ERROR: internal error in PersonTypesLogic::_prepareEdit", E_USER_ERROR);
 		}
@@ -175,8 +174,10 @@ class PersonTypesLogic extends Logic
 	* @param array &$context le contexte passé par référence
 	*/
 	protected function _prepareDelete($dao,&$context)
-	{     
-		$id = @$context['id'];
+	{
+		if(empty($context['id']))
+			trigger_error("ERROR: missing id in PersonTypesLogic::_prepareDelete", E_USER_ERROR);
+		$id = $context['id'];
 		// gather information for the following
 		$this->vo=$dao->getById($id);
 		if (!$this->vo) trigger_error("ERROR: internal error in PersonTypesLogic::_prepareDelete", E_USER_ERROR);
@@ -221,10 +222,7 @@ class PersonTypesLogic extends Logic
 		return array(array('type'), array('otx', 'class'));
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-
 
 /*-----------------------------------*/
 /* loops                             */
@@ -233,7 +231,7 @@ if(!function_exists('loop_entitytypes'))
 	function loop_entitytypes($context,$funcname)
 	{
 		function_exists('loop_typetable') || include "typetypefunc.php";
-		loop_typetable ("entitytype","persontype",$context,$funcname,$_POST['edit'] ? $context['entitytype'] : -1);
+		$context['entitytype'] = isset($context['entitytype']) ? $context['entitytype'] : null;
+		loop_typetable ("entitytype", "persontype", $context, $funcname, !empty($_POST['edit']) ? $context['entitytype'] : -1);
 	}
 }
-?>

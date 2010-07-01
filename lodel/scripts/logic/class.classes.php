@@ -177,7 +177,7 @@ class ClassesLogic extends Logic
 		}
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
-		$id = @$context['id'];
+		$id = isset($context['id']) ? $context['id'] : null;
 		$this->_prepareEdit($dao, $context);
 		// create or edit
 		if ($id) {
@@ -281,8 +281,10 @@ class ClassesLogic extends Logic
 	 */
 	protected function _prepareDelete ($dao, &$context) 
 	{
+		if(empty($context['id']))
+			trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		// gather information for the following
-		$this->vo = $dao->getById (@$context['id']);
+		$this->vo = $dao->getById ($context['id']);
 		if (!$this->vo) {
 			trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		}
@@ -353,4 +355,3 @@ class ClassesLogic extends Logic
 	// end{uniquefields} automatic generation  //
 
 } // class 
-?>

@@ -467,4 +467,3 @@ class Entities_ImportLogic extends Entities_EditionLogic
    // begin{uniquefields} automatic generation  //
    // end{uniquefields} automatic generation  //
 } // class 
-?>

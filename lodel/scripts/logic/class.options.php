@@ -91,10 +91,8 @@ class OptionsLogic extends Logic {
 	 */
 	public function editAction(&$context, &$error, $clean = false)
 	{ 
-		$context['title'] = @$context['title'];
-		$context['name'] = @$context['name'];
-		if (!$context['title']) {
-			$context['title'] = $context['name'];
+		if (empty($context['title'])) {
+			$context['title'] = !empty($context['name']) ? $context['name'] : '';
 		}
 		$ret = parent::editAction($context,$error);
 		if (!$error) {
@@ -207,8 +205,6 @@ class OptionsLogic extends Logic {
 		return array(array('name', 'idgroup'), );
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
 
 
@@ -222,4 +218,3 @@ if(!function_exists('humanfieldtype'))
 		return (isset($GLOBALS['fieldtypes'][$text]) ? $GLOBALS['fieldtypes'][$text] : '');
 	}
 }
-?>

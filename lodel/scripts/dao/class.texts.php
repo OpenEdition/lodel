@@ -122,7 +122,4 @@ class textsDAO extends DAO
 		parent::__construct("texts", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

@@ -166,4 +166,3 @@ abstract class Plugins
 	 */
 	abstract public function disableAction(&$context, &$error);
 }
-?>

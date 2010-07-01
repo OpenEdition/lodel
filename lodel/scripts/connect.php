@@ -232,5 +232,3 @@ function mysql_find_db_variable ($database_name, $var = 'character_set_database'
 }
 
 define('INC_CONNECT', true);
-
-?>

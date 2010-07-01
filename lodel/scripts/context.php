@@ -718,4 +718,3 @@ function __autoload($class)
 
 	return class_exists($class, false);
 }
-?>

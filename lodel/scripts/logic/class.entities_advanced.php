@@ -62,7 +62,6 @@
  */
 class Entities_AdvancedLogic extends Logic
 {
-
 	/**
 	 * Tableau des équivalents génériques
 	 *
@@ -78,7 +77,6 @@ class Entities_AdvancedLogic extends Logic
 		parent::__construct("entities");
 	}
 
-
 	/**
 	 * Affichage d'un objet
 	 *
@@ -92,10 +90,12 @@ class Entities_AdvancedLogic extends Logic
 		}
 		recordurl();
 
-		$id = @$context['id'];
-		if (!$id) {
-			trigger_error("ERROR: give the id ", E_USER_ERROR);
+		if (empty($context['id'])) {
+			trigger_error("ERROR: invalid id in Entities_AdvancedLogic::viewAction", E_USER_ERROR);
 		}
+
+		$id = $context['id'];
+
 		if (!rightonentity('advanced', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
@@ -107,7 +107,11 @@ class Entities_AdvancedLogic extends Logic
 		$this->_populateContext($vo, $context);
 
 		$votype  = DAO::getDAO('types')->getById($vo->idtype);
-		$this->_populateContext($votype, @$context['type']);
+
+		if(empty($context['type']) || !is_array($context['type']))
+			$context['type'] = array();
+
+		$this->_populateContext($votype, $context['type']);
 
 		// look for the source
 		$context['sourcefile'] = file_exists(SITEROOT."lodel/sources/entite-".$id.".source");
@@ -127,10 +131,17 @@ class Entities_AdvancedLogic extends Logic
 	public function changeStatusAction(&$context, &$error)
 	{
 		global $db;
-		$status = @$context['status'];
+		if (!isset($context['status'])) {
+			trigger_error("ERROR: invalid status in EntitiesLogic::publishAction", E_USER_ERROR);
+		}
+
+		$status = $context['status'];
 		$this->_isAuthorizedStatus($status);
 		$dao = $this->_getMainTableDAO();
-		$id = @$context['id'];
+		if(empty($context['id']))
+			trigger_error("ERROR: missing id", E_USER_ERROR);
+
+		$id = $context['id'];
 		$vo  = $dao->find("id='".$id. "' AND status*$status>0 AND status<16", 'status,id');
 		if (!$vo) {
 			trigger_error("ERROR: interface error in Entities_AdvancedLogic::changeStatusAction ", E_USER_ERROR);
@@ -173,9 +184,9 @@ class Entities_AdvancedLogic extends Logic
 		{
 			static $cache,$idtypes;
 			global $db;
-			$context['iddocument'] = @$context['iddocument'];
-			$context['idtype'] = @$context['idtype'];
-			$context['id'] = @$context['id'];
+			$context['iddocument'] = isset($context['iddocument']) ? $context['iddocument'] : null;
+			$context['idtype'] = isset($context['idtype']) ? $context['idtype'] : null;
+			$context['id'] = isset($context['id']) ? $context['id'] : null;
 			//test1 : si le type de l'entité courante peut contenir ce type d'entité
 			if (!isset($cache[$context['idtype']])) {
 				//mise en cache du type du document
@@ -221,8 +232,11 @@ class Entities_AdvancedLogic extends Logic
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
-		$id = @$context['id']; // which entities
-		$idparent = @$context['idparent']; // where to move it
+		if(!isset($context['id']) || !isset($context['idparent']))
+			trigger_error('ERROR: missing id or idparent', E_USER_ERROR);
+
+		$id = $context['id']; // which entities
+		$idparent = $context['idparent']; // where to move it
 
 		function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent)) {
@@ -293,8 +307,11 @@ class Entities_AdvancedLogic extends Logic
 	 */
 	public function downloadAction(&$context, &$error)
 	{
-		$id = @$context['id'];
-		$context['type'] = @$context['type'];
+		if(!isset($context['id']) || !isset($context['type']))
+			trigger_error('ERROR: missing id or type', E_USER_ERROR);
+
+		$id = $context['id'];
+		$context['type'] = $context['type'];
 		$multidoc = false;
 		switch($context['type']) {
 		case 'tei':
@@ -350,7 +367,4 @@ class Entities_AdvancedLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>

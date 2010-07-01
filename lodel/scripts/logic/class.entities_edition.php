@@ -98,13 +98,14 @@ class Entities_EditionLogic extends GenericLogic
 		{
 			function loop_persons_in_entities($context, $funcname)
 			{
-				$varname = @$context['varname'];
-				if (!$varname) return;
-	
-				$idtype = @$context['idtype'];
-				if (!$idtype) {
+				if (empty($context['varname'])) return;
+
+				$varname = $context['varname'];
+
+				if (empty($context['idtype'])) {
 					trigger_error("ERROR: internal error in Entities_EditionLogic::loop_persons_in_entities", E_USER_ERROR);
 				}
+				$idtype = $context['idtype'];
 				if (!is_numeric($idtype)) {
 					return;
 				}
@@ -139,15 +140,16 @@ class Entities_EditionLogic extends GenericLogic
 		{
 			function loop_entries_in_entities($context, $funcname) 
 			{
-				$varname = @$context['varname'];
-				if (!$varname) {
+				if (empty($context['varname'])) {
 					return;
 				}
-	
-				$idtype = @$context['idtype'];
-				if (!is_numeric($idtype)) {
+				$varname = $context['varname'];
+
+				
+				if (empty($context['idtype']) || !is_numeric($context['idtype'])) {
 					return;
 				}
+				$idtype = $context['idtype'];
 				$votype = DAO::getDAO("entrytypes")->getById($idtype, "id,sort,flat");
 				if (!$votype) {
 					trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
@@ -166,7 +168,7 @@ class Entities_EditionLogic extends GenericLogic
 			function loop_entries_in_entities_rec ($context, $funcname, &$votype, &$checkarr) 
 			{
 				global $db;
-				$context['id'] = @$context['id'];
+				if(!isset($context['id'])) return;
 				// get the entries
 				$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				
@@ -188,13 +190,14 @@ class Entities_EditionLogic extends GenericLogic
 			function loop_entities_select($context, $funcname)
 			{
 				global $db;
-				$varname = @$context['varname'];
-				if (!$varname) {
+				
+				if (empty($context['varname'])) {
 					if (function_exists("code_alter_$funcname")) {
 						call_user_func("code_alter_$funcname",$context);
 					}
 					return;
 				}
+				$varname = $context['varname'];
 				$values = null;
 				if(isset($context['entities'][$varname]))
 				{
@@ -277,22 +280,26 @@ class Entities_EditionLogic extends GenericLogic
 		if (isset($context['cancel'])) {
 			return '_back';
 		}
-		$id = @$context['id'];
-		if ($id) {
+		$id = isset($context['id']) ? $context['id'] : null;
+		if (!empty($id)) {
 			$select = array();
 			if(empty($context['idparent'])) $select[] = 'idparent';
 			if(empty($context['idtype'])) $select[] = 'idtype';
 			if(empty($context['status'])) $select[] = 'status';
-			if($select) {
+			if(!empty($select)) {
 				$vo  = $this->_getMainTableDAO()->getById($id, join(',', $select));
 				if(!$vo) trigger_error('ERROR: can not find entity '.$id, E_USER_ERROR);
 				foreach($select as $v)
 					$context[$v] = $vo->$v;
 			}
 		}
-		$idparent = @$context['idparent'];
-		$idtype   = @$context['idtype'];
-		$status = @$context['status'];
+
+		if(empty($context['idtype']))
+			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
+
+		$idparent = isset($context['idparent']) ? $context['idparent'] : null;
+		$idtype   = $context['idtype'];
+		$status = isset($context['status']) ? $context['status'] : null;
 		$this->_isAuthorizedStatus($status);
 		// iduser
 		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
@@ -308,9 +315,8 @@ class Entities_EditionLogic extends GenericLogic
 			trigger_error("ERROR: idtype is not valid in Entities_EditionLogic::editAction", E_USER_ERROR);
 		}
 		$class = $context['class']=$votype->class;
-		$context['lo'] = @$context['lo'];
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
-		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
+		if (isset($context['lo']) && $context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
 			foreach($fields as $field) {
 				if (empty($context['data'][$field->name]))
@@ -513,11 +519,11 @@ class Entities_EditionLogic extends GenericLogic
          */
         public function ddchangerankAction(&$context, &$error)
         {
-                if(empty($context['ids']))
+                if(empty($context['ids']) || empty($context['id']))
                         trigger_error('ERROR: please specify ids', E_USER_ERROR);
 
-                $idparent = (int)@$context['idparent'];
-                $id = (int)@$context['id'];
+                $idparent = isset($context['idparent']) ? $context['idparent'] : null;
+                $id = (int) $context['id'];
                 $dao = DAO::getDAO('entities');
                 $vo = $dao->find('id='.$id);
                 if(!$vo) trigger_error('ERROR: invalid id', E_USER_ERROR);
@@ -1050,4 +1056,3 @@ class Entities_EditionLogic extends GenericLogic
 	// end{uniquefields} automatic generation  //
 
 } // class
-?>

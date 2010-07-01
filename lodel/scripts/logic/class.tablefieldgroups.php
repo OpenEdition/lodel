@@ -136,7 +136,4 @@ class TablefieldgroupsLogic extends Logic {
 		return array(array('name', 'class'), );
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>

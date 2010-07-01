@@ -117,7 +117,4 @@ class objectsDAO extends DAO
 		parent::__construct("objects", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

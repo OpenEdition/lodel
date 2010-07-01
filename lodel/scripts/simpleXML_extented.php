@@ -1,6 +1,5 @@
 <?php
 
-
 class SimpleXML_extended extends SimpleXMLElement{
 
     public function getAttribute($name){
@@ -46,4 +45,3 @@ class SimpleXML_extended extends SimpleXMLElement{
         return (array)$arrTemp;
     }// end function getAttributesArray
 }
-?>

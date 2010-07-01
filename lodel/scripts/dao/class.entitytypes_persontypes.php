@@ -42,10 +42,9 @@
 
 class entitytypes_persontypesVO 
 {
-	var $identitytype;
-	var $idpersontype;
-	var $cond;
-
+	public $identitytype;
+	public $idpersontype;
+	public $cond;
 }
 
 /**
@@ -54,13 +53,9 @@ class entitytypes_persontypesVO
 
 class entitytypes_persontypesDAO extends DAO 
 {
-
-	function entitytypes_persontypesDAO() 
+	public function __construct()
 	{
-			$this->DAO("entitytypes_persontypes", false);
-			$this->rights=array();
+		parent::__construct("entitytypes_persontypes", false);
+		$this->rights=array();
 	}
-
 }
-
-?>

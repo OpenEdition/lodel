@@ -110,7 +110,9 @@ class UserOptionGroupsLogic extends Logic {
 	{
 		// get the dao for working with the object
 		$dao=DAO::getDAO("options");
-		$context['id'] = (int)@$context['id'];
+		if(empty($context['id'])) return '_back';
+		
+		$context['id'] = (int) $context['id'];
 		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
 		
 		function_exists('validfield') || include 'validfunc.php';
@@ -187,4 +189,3 @@ class UserOptionGroupsLogic extends Logic {
 		*/
 
 } // class 
-?>

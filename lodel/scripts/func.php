@@ -969,27 +969,27 @@ function makeSortKey($text)
 function rightonentity ($action, $context)
 {
 	if (C::get('admin', 'lodeluser')) return true;
-	$context['idparent'] = @$context['idparent'];
-	$context['id'] = @$context['id'];
-	$context['status'] = @$context['status'];
-	$context['usergroup'] = C::get('usergroup', 'lodeluser');
-	$context['iduser'] = C::get('iduser', 'lodeluser');
-	if ($context['id'] && (!$context['usergroup'] || !$context['status'])) {
+	$context['idparent'] = isset($context['idparent']) ? $context['idparent'] : null;
+	$context['id'] = isset($context['id']) ? $context['id'] : null;
+	$context['status'] = isset($context['status']) ? $context['status'] : null;
+	$context['usergroup'] = isset($context['usergroup']) ? $context['usergroup'] : C::get('usergroup', 'lodeluser');
+	$context['iduser'] = isset($context['iduser']) ? $context['iduser'] : C::get('iduser', 'lodeluser');
+	if (!empty($context['id']) && (empty($context['usergroup']) || empty($context['status']))) {
 		// get the group, the status, and the parent
 		$row = $GLOBALS['db']->getRow (lq ("SELECT idparent,status,usergroup, iduser FROM #_TP_entities WHERE id='".$context['id']."'"));
 		if (!$row) trigger_error("ERROR: internal error in rightonentity", E_USER_ERROR);
 		$context = array_merge ($context, $row);
 	}
   	// groupright ?
-	if ($context['usergroup']) {
+	if (!empty($context['usergroup'])) {
   		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
   		if (!$groupright) return false;
 	}
 	
 	// only admin can work at the base.
-	$editorok= C::get('editor', 'lodeluser') && $context['idparent'];
+	$editorok= C::get('editor', 'lodeluser') && !empty($context['idparent']);
 	// redactor are ok, only if they own the document and it is not protected.
-	$redactorok = ($context['iduser']==C::get('id', 'lodeluser') && C::get('redactor', 'lodeluser')) && $context['status']<8 && $context['idparent'];
+	$redactorok = ($context['iduser']==C::get('id', 'lodeluser') && C::get('redactor', 'lodeluser')) && $context['status']<8 && !empty($context['idparent']);
 
 	switch($action) {
 	case 'create' :
@@ -1141,36 +1141,43 @@ function list_system_locales()
 function getgenericfields(&$context)
 {
 	global $db;
+
+	if(empty($context['class']) || empty($context['id'])) return $context;
+
 	#print_r($context);
-	$context['class'] = @$context['class'];
-	$sql = "SELECT name,g_name, defaultvalue 
-               FROM {$GLOBALS['tp']}tablefields 
-               WHERE class='". $context['class']."' AND g_name!=''";
+	$generic = array();
+	$values = array();
+	$fields = '';
+
+	$sql = "SELECT name,g_name, defaultvalue
+			FROM {$GLOBALS['tp']}tablefields
+			WHERE class='". $context['class']."' AND g_name!=''";
 	$row = $db->getArray($sql);
 	#print_r($row);
-	$fields = '';
-	$generic = array();
+
 	foreach ($row as $elem) {
 		$fields .= $elem['name'].',';
 		$generic[$elem['name']] = $elem['g_name'];
 	}
-	$values = array();
-	$context['id'] = (int)@$context['id'];
+
+	$context['id'] = (int) $context['id'];
 	//Retrouve les valeurs de $fields
-	$sql = "SELECT ".substr($fields, 0, -1). ' 
-               FROM '.$GLOBALS['tp'].$context['class']. " 
-               WHERE identity='".$context['id']."'";
+	$sql = "SELECT ".substr($fields, 0, -1). '
+			FROM '.$GLOBALS['tp'].$context['class']. "
+			WHERE identity='".$context['id']."'";
 	#echo "sql=$sql";
 	$row = $db->getRow($sql);
 	foreach ($row as $key => $value) {
 		$values[$key] = $value;
 	}
+
 	if(!isset($context['generic'])) $context['generic'] = array();
 	//Contruit le tableau des champs génériques avec leur valeur
 	foreach($generic as $name => $g_name) {
 		$g_name = str_replace('.','_',$g_name);
 		$context['generic'][$g_name] = isset($values[$name]) ? $values[$name] : '';
 	}
+
 	unset($fields);
 	unset($values);
 	unset($generic);
@@ -1200,8 +1207,8 @@ function getgenericfields(&$context)
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
 		foreach($array as $row) {
-			if($cle = @$generic[$row['type']]) {
-				$cle = str_replace('.','_',$cle);
+			if(!empty($generic[$row['type']])) {
+				$cle = str_replace('.','_',$generic[$row['type']]);
 				$context['generic'][$cle][] = $row['g_name'];
 			}
 		}
@@ -1217,31 +1224,31 @@ function getgenericfields(&$context)
                WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";
 	$row = $db->getArray($sql);
-    if(!empty($row))
-    {
-        $fields = array();
-        foreach ($row as $elem) {
-            $fields[] = $elem['type'];
-            $generic[$elem['type']] = $elem['g_type'];
-        }
-        if(count($fields) > 0) {
-            //Retrouve les valeurs des entrées en utilisant le g_name de la table entries
-            $sql = "SELECT e.g_firstname, e.g_familyname, et.type FROM 
-                        {$GLOBALS['tp']}persons as e, 
-                        {$GLOBALS['tp']}relations as r, 
-                        {$GLOBALS['tp']}persontypes as et 
-                        WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' 
-                        AND et.type IN('".join("','",$fields)."')";
-            #echo "sql=$sql";
-            $array = $db->getArray($sql);
-            foreach($array as $row) {
-                if($cle = $generic[$row['type']]) {
-                    $cle = str_replace('.','_',$cle);
-                    $context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
-                }
-            }
-        }
-    }
+	if(!empty($row))
+	{
+		$fields = array();
+		foreach ($row as $elem) {
+			$fields[] = $elem['type'];
+			$generic[$elem['type']] = $elem['g_type'];
+		}
+		if(count($fields) > 0) {
+			//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
+			$sql = "SELECT e.g_firstname, e.g_familyname, et.type FROM
+					{$GLOBALS['tp']}persons as e,
+					{$GLOBALS['tp']}relations as r,
+					{$GLOBALS['tp']}persontypes as et
+					WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."'
+					AND et.type IN('".join("','",$fields)."')";
+			#echo "sql=$sql";
+			$array = $db->getArray($sql);
+			foreach($array as $row) {
+				if($cle = $generic[$row['type']]) {
+					$cle = str_replace('.','_',$cle);
+					$context['generic'][$cle][] = $row['g_firstname']. ' '. $row['g_familyname'];
+				}
+			}
+		}
+	}
 
 
 	return $context; // pas nécessaire le context est passé par référence
@@ -1441,4 +1448,3 @@ define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
 return 568;
-?>

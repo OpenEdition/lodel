@@ -125,7 +125,4 @@ class translationsDAO extends DAO
 		parent::__construct("translations", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

@@ -60,10 +60,9 @@ function textgroupswhere($textgroups)
 {
 	if (!$textgroups)
 		trigger_error("ERROR: which textgroups ?", E_USER_ERROR);
-	if ($GLOBALS['textgroups'][$textgroups]) {
+	if (!empty($GLOBALS['textgroups'][$textgroups])) {
 		return "textgroup IN ('".join("','", $GLOBALS['textgroups'][$textgroups])."')";
 	} else {
 		trigger_error("ERROR: unkown textgroup", E_USER_ERROR);
 	}
 }
-?>

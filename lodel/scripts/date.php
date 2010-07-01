@@ -323,4 +323,3 @@ function mysqldatetime($s, $type = 'datetime')
 		trigger_error('type inconnu dans mysqldatetime', E_USER_ERROR);
 	}
 }
-?>

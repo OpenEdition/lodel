@@ -800,4 +800,3 @@ function typestable($classtype)
 // 		return "persontypes";
 // 	}
 }
-?>

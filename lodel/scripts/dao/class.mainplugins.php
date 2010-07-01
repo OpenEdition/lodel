@@ -131,4 +131,3 @@ class mainpluginsDAO extends DAO
 
  // end{definitions} automatic generation  //
 }
-?>

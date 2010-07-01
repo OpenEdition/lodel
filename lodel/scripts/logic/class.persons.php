@@ -85,14 +85,18 @@ class PersonsLogic extends EntriesLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		$id=(int)@$context['id'];
-		$idtype=(int)@$context['idtype'];
-		if (!$idtype) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
-		$status=@$context['status'];
+		if (empty($context['idtype'])) trigger_error("ERROR: internal error in PersonsLogic::editAction", E_USER_ERROR);
+
+		$id = (int) (isset($context['id']) ? $context['id'] : null);
+		$idtype = (int) $context['idtype'];
+		$status = isset($context['status']) ? $context['status'] : null;
 #echo "status=$status"; print_r ($context);
 		// get the class 
 		$daotype=DAO::getDAO ("persontypes");
 		$votype=$daotype->getById ($idtype, "class");
+		if(!$votype)
+			trigger_error('ERROR: invalid idtype', E_USER_ERROR);
+
 		$class=$context['class']=$votype->class;
 		#print_r($context);
 		if ($clean!='CLEAN') {
@@ -158,10 +162,9 @@ class PersonsLogic extends EntriesLogic
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo,$new);  // save the related table
 		// save the entities_class table
-		$context['identity'] = @$context['identity'];
-		if ($context['identity']) {
+		if (!empty($context['identity'])) {
 			$dao=DAO::getDAO ("relations");
-			$vo=$dao->find ("id1='".(int)$context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
+			$vo=$dao->find ("id1='".(int) $context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
 				$vo->id1=(int)$context['identity'];
@@ -183,6 +186,4 @@ class PersonsLogic extends EntriesLogic
 		update();
 		return "_back";
 	}
-
 }// class 
-?>

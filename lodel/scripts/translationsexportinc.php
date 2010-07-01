@@ -78,7 +78,3 @@ $filename = "translation-$lang-".date("dmy").".xml";
 download($tmpfile, $filename);
 @ unlink($tmpfile);
 return;
-
-header('location: index.php');
-return;
-?>

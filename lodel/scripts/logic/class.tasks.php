@@ -149,7 +149,4 @@ class TasksLogic extends Logic {
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>

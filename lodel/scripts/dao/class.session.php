@@ -124,7 +124,4 @@ class sessionDAO extends DAO
 		parent::__construct("session", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

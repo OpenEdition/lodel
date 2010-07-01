@@ -73,7 +73,12 @@ class InternalstylesLogic extends Logic {
 
 	public function editAction(&$context, &$error, $clean = false)
 	{
-		$context['style'] = @$context['style'];
+		if(empty($context['style']))
+		{
+			$error['style'] = '+';
+			return '_error';
+		}
+
 		if(DAO::getDAO('tablefields')->find('name='.$GLOBALS['db']->quote($context['style'])))
 		{
 			$error['style'] = '1';
@@ -141,7 +146,4 @@ class InternalstylesLogic extends Logic {
 		return array(array('style'), array('otx'));
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>

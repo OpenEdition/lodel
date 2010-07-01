@@ -105,6 +105,8 @@ function typetype_insert($identitytype, $idtypetable, $typetable)
 function loop_typetable($listtype, $criteretype, $context, $funcname, $checked = -1)
 {
 	global $db;
+	if(empty($context['id'])) return;
+
 	if ($listtype == 'entitytype' || $listtype == 'entitytype2') {
 		$maintable = 'types';
 		$rank = 'class, type';
@@ -114,7 +116,8 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		$relationtable = $listtype;
 		$rank = 'type';
 	}
-	$id = (int)@$context['id'];
+
+	$id = (int) $context['id'];
 	$result = $db->execute(lq("SELECT * FROM #_TP_$maintable LEFT JOIN #_TP_entitytypes_".$relationtable."s ON id$listtype=#_TP_$maintable.id AND id$criteretype='$id' WHERE status>0 ORDER BY $rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	while (!$result->EOF) {
@@ -129,4 +132,3 @@ function loop_typetable($listtype, $criteretype, $context, $funcname, $checked =
 		$result->MoveNext();
 	}
 }
-?>

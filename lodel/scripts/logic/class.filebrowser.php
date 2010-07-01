@@ -185,4 +185,3 @@ if(!function_exists('loop_filelist'))
 		closedir($dh);
 	}
 }
-?>

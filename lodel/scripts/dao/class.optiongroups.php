@@ -126,7 +126,4 @@ class optiongroupsDAO extends DAO
 		parent::__construct("optiongroups", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

@@ -76,11 +76,11 @@ class XMLLogic extends Logic {
 	*/
 	public function generateXMLAction (&$context, &$error) 
 	{
-		$id = (int)@$context['id'];
-		if (!$id)
+		if (empty($context['id']))
 			trigger_error('ERROR : no id given. Id attribute is required to generate XML file', E_USER_ERROR);
 
 		global $db;
+		$id = (int) $context['id'];
 		//check if the given id is OK
 		$row = $db->getOne(lq("SELECT 1 FROM #_TP_objects WHERE id='$id' AND class='entities'"));
 		if (!$row) {//if the object is not an entity do not generate XML
@@ -166,4 +166,3 @@ class XMLLogic extends Logic {
         	exit();
 	}
 }
-?>

@@ -85,4 +85,3 @@ function makeselectlangs_nevernil($lang = "")
 		echo "<option value=\"$l\"$selected>$lang</option>\n";
 	}
 }
-?>

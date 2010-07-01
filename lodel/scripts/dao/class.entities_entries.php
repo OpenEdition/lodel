@@ -41,9 +41,8 @@
 */
 class entities_entriesVO 
 {
-	var $identry;
-	var $identity;
-	
+	public $identry;
+	public $identity;
 }
 
 /**
@@ -52,11 +51,9 @@ class entities_entriesVO
 
 class entities_entriesDAO extends DAO 
 {
-
-	function entities_entriesDAO() 
+	public function __construct()
 	{
-	$this->DAO("entities_entries", false);
-	$this->rights = array();
+		parent::__construct("entities_entries", false);
+		$this->rights = array();
 	}
 }
-?>

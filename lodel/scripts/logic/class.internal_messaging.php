@@ -56,7 +56,6 @@
  */
 class Internal_MessagingLogic extends Logic 
 {
-
 	/**
 	 * ID de l'utilisateur courant
 	 * De la forme $site-$id ou lodelmain-$id (adminlodel)
@@ -82,8 +81,7 @@ class Internal_MessagingLogic extends Logic
 		if('recipients' != $var) return;
 		global $db;
 		$arr = array();
-		$context['idparent'] = @$context['idparent'];
-		if($context['idparent']) {
+		if(!empty($context['idparent'])) {
 			$idparent = (int)$context['idparent'];
 			$sender = $db->getRow(lq("SELECT iduser, subject, body, recipients FROM #_MTP_internal_messaging WHERE id='{$idparent}'"));
 			preg_match("/(\w+)-(\d+)/", $sender['iduser'], $m);
@@ -160,7 +158,7 @@ class Internal_MessagingLogic extends Logic
 				$arr[':'.$all.(!empty($ids) ? ':'.join(':', $ids) : '').':'] = getlodeltextcontents('internal_messaging_all_users_all_sites', 'admin');
 			}
 		}
-		$selected = $context['idparent'] ? array_keys($arr) : '';
+		$selected = !empty($context['idparent']) ? array_keys($arr) : '';
 		renderOptions($arr, $selected);
 	}
 
@@ -238,7 +236,8 @@ class Internal_MessagingLogic extends Logic
 				$this->deleteAction($context, $error);
 			}
 			unset($context['escape']);
-		} elseif($id = (int)@$context['id']) {
+		} elseif(!empty($context['id'])) {
+			$id = (int) $context['id'];
 			$childIds = $db->execute(lq("SELECT id FROM #_MTP_internal_messaging WHERE idparent = '{$id}'"));
 			if($childIds) {
 				$oldEscape = isset($context['escape']) ? $context['escape'] : false;
@@ -390,8 +389,9 @@ class Internal_MessagingLogic extends Logic
 	public function listAction(&$context, &$error)
 	{
 		global $db;
-		$id = (int)@$context['id'];
-		if($id) {
+		
+		if(!empty($context['id'])) {
+			$id = (int) $context['id'];
 			$context['data'] = array();
 			$datas = $db->getRow(lq("SELECT idparent, iduser, recipient, subject, body, cond, status FROM #_MTP_internal_messaging WHERE id='{$id}' AND (recipient = '{$this->_iduser}' OR iduser = '{$this->_iduser}')"));
 			if(!$datas) {
@@ -466,14 +466,13 @@ class Internal_MessagingLogic extends Logic
 		if (C::get('rights', 'lodeluser') < $dao->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to send internal message', E_USER_ERROR);
 		}
-		$context['subject'] = addslashes(@$context['subject']);
-		$context['body'] = addslashes(@$context['body']);
+		$context['subject'] = !empty($context['subject']) ? addslashes($context['subject']) : '';
+		$context['body'] = !empty($context['body']) ? addslashes($context['body']) : '';
 		$requetes = '';
 		$context['recipients'] = array();
 		$context['recipients'] = join(':', $recipients);
-		$context['idparent'] = @$context['idparent'];
 		foreach($recipients as $k=>$recipient) {
-			if($context['idparent']) {
+			if(!empty($context['idparent'])) {
 				$subject = addslashes($db->getOne(lq("SELECT subject FROM #_MTP_internal_messaging WHERE id='{$context['idparent']}' AND recipient = '{$this->_iduser}'")));
 				if($subject)
 					$idparent = $db->getOne(lq("SELECT id FROM #_MTP_internal_messaging WHERE subject='{$subject}' AND recipient='{$recipient}' AND recipient = '{$this->_iduser}'"));
@@ -521,4 +520,3 @@ class Internal_MessagingLogic extends Logic
 	// end{uniquefields} automatic generation  //
 
 }// end of Internal_MessagingLogic class
-?>

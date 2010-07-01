@@ -41,16 +41,15 @@
   */
 
 class entities_personsVO {
-	var $idperson;
-	var $identity;
-	var $idtype;
-	var $rank;
-	var $prefix;
-	var $description;
-	var $function;
-	var $affiliation;
-	var $email;
-
+	public $idperson;
+	public $identity;
+	public $idtype;
+	public $rank;
+	public $prefix;
+	public $description;
+	public $function;
+	public $affiliation;
+	public $email;
 }
 
 /**
@@ -61,10 +60,8 @@ class entities_personsDAO extends DAO
 {
 	function entities_personsDAO() 
 	{
-			$this->DAO("entities_persons", false);
-			$this->rights = array();
+		parent::__construct("entities_persons", false);
+		$this->rights = array();
 	}
 
 }
-
-?>

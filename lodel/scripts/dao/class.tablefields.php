@@ -139,7 +139,4 @@ class tablefieldsDAO extends DAO
 		parent::__construct("tablefields", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

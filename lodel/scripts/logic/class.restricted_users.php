@@ -125,17 +125,18 @@ class Restricted_UsersLogic extends Logic
 	public function deletesessionAction(&$context, &$error)
 	{
 		global $db;
-		$id = (int)@$context['id'];
-		$session = (int)C::get('session', 'lodeluser');
+		
+		$session = (int) C::get('session', 'lodeluser');
 
 		$ids = array();
-		if ($id) { //suppression de toutes les sessions
+		if (!empty($context['id'])) { //suppression de toutes les sessions
+			$id = (int) $context['id'];
 			$result = $db->execute(lq("SELECT id FROM #_MTP_session WHERE iduser='".$id."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while(!$result->EOF) {
 				$ids[] = $result->fields['id'];
 				$result->MoveNext();
 			}
-		} elseif ($session) { //suppression d'une session
+		} elseif (!empty($session)) { //suppression d'une session
 			$ids[] = $session;
 		} else {
 			trigger_error('ERROR: unknown operation', E_USER_ERROR);
@@ -164,9 +165,9 @@ class Restricted_UsersLogic extends Logic
 	public function setAction(&$context, &$error)
 	{
 		global $db;
-		$lang = @$context['lang'];
-		$translationmode = @$context['translationmode'];
-		if ($lang) {
+		
+		if (!empty($context['lang'])) {
+			$lang = $context['lang'];
 			if (!preg_match("/^\w\w(-\w\w)?$/",$lang)) {
 				trigger_error("ERROR: invalid lang", E_USER_ERROR);
 			}
@@ -174,7 +175,8 @@ class Restricted_UsersLogic extends Logic
 			$this->_setcontext('lang', 'setvalue', $lang);
 		}
 
-		if ($translationmode) {
+		if (!empty($context['translationmode'])) {
+			$translationmode = $context['translationmode'];
 			switch($translationmode) {
 			case 'off':
 				$this->_setcontext('translationmode', 'clear');
@@ -256,12 +258,10 @@ class Restricted_UsersLogic extends Logic
 	*/
 	protected function _prepareEdit($dao,&$context) 
 	{
-		$context['passwd'] = @$context['passwd'];
-		$context['username'] = @$context['username'];
 		// encode the password
-		if ($context['passwd']) {
+		if (!empty($context['passwd']) && !empty($context['username'])) {
 			$context['tmppasswd'] = $context['passwd'];
-			$context['passwd']=md5($context['passwd'].$context['username']);
+			$context['passwd'] = md5($context['passwd'].$context['username']);
 		}
 	}
 
@@ -317,15 +317,13 @@ class Restricted_UsersLogic extends Logic
 		global $db;
 
 		if (!parent::validateFields($context,$error)) return false;
-		$context['userrights'] = @$context['userrights'];
 		// check the user has the right equal or higher to the new user
-		if (C::get('rights', 'lodeluser')<$context['userrights']) trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
+		if (empty($context['userrights']) || C::get('rights', 'lodeluser') < $context['userrights'])
+			trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		usecurrentdb();
-		$context['id'] = @$context['id'];
-		$context['passwd'] = @$context['passwd'];
 		// check the passwd is given for new user.
-		if (!$context['id'] && !trim($context['passwd'])) {
+		if (empty($context['id']) && (empty($context['passwd']) || !trim($context['passwd']))) {
 			$error['passwd']=1;
 			return false;
 		}
@@ -391,4 +389,3 @@ class Restricted_UsersLogic extends Logic
 		return send_mail($context['email'], $body, "Votre compte abonné sur le site ". $context['sitetitle'] ." ({$context['siteurl']})", $email, '');
 	}
 } // class 
-?>

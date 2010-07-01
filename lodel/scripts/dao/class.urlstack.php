@@ -118,7 +118,4 @@ class urlstackDAO extends DAO
 		parent::__construct("urlstack", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

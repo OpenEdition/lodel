@@ -99,7 +99,7 @@ class TextsLogic extends Logic
 				$dao->instantiateObject($vo);
 				$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $contents);
 				$vo->id       = $id;
-				$status = (int)@$context['status'][$id];
+				$status = (int) (isset($context['status'][$id]) ? $context['status'][$id] : 0);
 				$this->_isAuthorizedStatus($status);
 				$vo->status   = $status;
 				if (!$vo->status) {
@@ -124,13 +124,17 @@ class TextsLogic extends Logic
 			}
 			$vo = $dao->createObject();
 			$vo->contents = preg_replace("/(\r\n\s*){2,}/", "<br />", $context['contents']);
-			$status = (int)@$context['status'];
+			$status = (int) (isset($context['status']) ? $context['status'] : 0);
 			$this->_isAuthorizedStatus($status);
+
+			if(empty($context['lang']) || empty($context['name']))
+				trigger_error('ERROR: missing lang or name in TextsLogic::editAction', E_USER_ERROR);
+
 			$vo->status   = $status;
-			$vo->lang = @$context['lang'];
-			$vo->name = strtolower(@$context['name']);
-			$vo->textgroup = @$context['textgroup'];
-			$vo->id = @$context['id'];
+			$vo->lang = $context['lang'];
+			$vo->name = strtolower($context['name']);
+			$vo->textgroup = isset($context['textgroup']) ? $context['textgroup'] : '';
+			$vo->id = isset($context['id']) ? $context['id'] : null;
 			if (!$vo->status) {
 				$vo->status=-1;
 			}
@@ -224,6 +228,4 @@ class TextsLogic extends Logic
 
 	protected function _uniqueFields() {  return array();  }
 
-
 } // class
-?>

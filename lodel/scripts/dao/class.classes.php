@@ -127,5 +127,3 @@ class classesDAO extends DAO
 	}
 
 }
-
-?>

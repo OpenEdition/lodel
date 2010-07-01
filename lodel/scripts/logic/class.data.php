@@ -413,7 +413,9 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 		
 		if (isset($context['backup'])) {
-            		$operation = @$context['operation'];
+			if(empty($context['operation']))
+				trigger_error("ERROR: unknonw operation", E_USER_ERROR);
+            		$operation = $context['operation'];
 			set_time_limit(0); // pas d'effet en safe mode
 			// il faut locker la base parce que le dump ne doit pas se faire en meme temps que quelqu'un ecrit un fichier.
 			$dirtotar  = array();
@@ -902,8 +904,9 @@ class DataLogic
 	 */
 	private function _extractImport(&$context)
 	{
-		$archive = @$_FILES['archive']['tmp_name'];
-		$context['error_upload'] = @$_FILES['archive']['error'];
+		$archive = empty($_FILES['archive']['tmp_name']) ? null : $_FILES['archive']['tmp_name'];
+		if($archive)
+			$context['error_upload'] = $_FILES['archive']['error'];
 		$file = '';
 		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
@@ -2535,4 +2538,3 @@ function multidimArrayLocate($array, $text)
 	}
 	return isset($arrayResult) ? $arrayResult : null;
 }
-?>

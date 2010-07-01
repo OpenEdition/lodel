@@ -119,7 +119,4 @@ class historyDAO extends DAO
 		parent::__construct("history", true);
 		$this->rights = array();
 	}
-
 }
-
-?>

@@ -130,7 +130,4 @@ class persontypesDAO extends DAO
 		parent::__construct("persontypes", true);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

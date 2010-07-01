@@ -134,7 +134,4 @@ class typesDAO extends DAO
 		parent::__construct("types", true);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

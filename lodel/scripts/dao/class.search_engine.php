@@ -119,7 +119,4 @@ class search_engineDAO extends DAO
 		parent::__construct("search_engine", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

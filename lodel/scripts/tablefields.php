@@ -91,4 +91,3 @@ if (!($tablefields = getFromCache('tablefields')))
 	}
 	maketablefields($tablefields);
 }
-?>

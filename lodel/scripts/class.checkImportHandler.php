@@ -174,5 +174,3 @@ class XmlImportHandler
 		return '<span style="background-color: #ff8080;" title="'. $style. '">'. $data. '</span>';
 	}
 }// end of Handler class
-
-?>

@@ -42,7 +42,6 @@
  * @version CVS:$Id$
  */
 
-
  
 /**
  * Classe de logique des entités (gestion de l'indexation dans le moteur de recherche)
@@ -90,8 +89,8 @@ class Entities_IndexLogic extends Logic
 	{
 		global $db;
 		//no object identity specified
-		$id = @$context['id'];
-		if (!$id) trigger_error("ERROR: no id given", E_USER_ERROR);
+		if (empty($context['id'])) trigger_error("ERROR: no id given", E_USER_ERROR);
+		$id = $context['id'];
 		//if this entity is already indexed ==> clean
 		$this->deleteIndexAction ($context, $error);
 
@@ -119,7 +118,10 @@ class Entities_IndexLogic extends Logic
 		if (!$row) trigger_error("ERROR: can't find object $id in table ". lq ("#_TP_$class"), E_USER_ERROR);
 		$daoIndex = DAO::getDAO ("search_engine"); 	
 		foreach ( $vos_fields as $vo_field)
-			$this->_indexField ($id,@$row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
+		{
+			if(!empty($row[$vo_field->name]))
+				$this->_indexField ($id, $row[$vo_field->name], $vo_field->name, $vo_field->weight, $daoIndex);
+		}
 		//Index entries relations
 		$this->_indexEntitiesRelations($id,'E',$daoIndex);
 		//Index persons relations
@@ -134,9 +136,11 @@ class Entities_IndexLogic extends Logic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function deleteIndexAction(&$context,&$error) {
-		$id = @$context["id"];
-		if (!$id) trigger_error("ERROR: give the id ", E_USER_ERROR);
+	public function deleteIndexAction(&$context,&$error)
+	{
+		if (empty($context['id'])) trigger_error("ERROR: give the id ", E_USER_ERROR);
+
+		$id = $context["id"];
 		if (DAO::getDAO("search_engine")->deleteObjects ("identity='$id'"))//delete all lines with identity=id and return
 			return '_back';
 		else

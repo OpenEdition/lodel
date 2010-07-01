@@ -191,7 +191,7 @@ function lodelprefix($table)
 
 	$table = substr($table, strlen(C::get('tableprefix', 'cfg')));
 
-	if (@$GLOBALS['currentprefix']) {
+	if (!empty($GLOBALS['currentprefix'])) {
 		return $GLOBALS['currentprefix'].$table;
 	}	else {
 		trigger_error("ERROR: currentprefix is not defined", E_USER_ERROR);
@@ -354,4 +354,3 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 
 	return true;
 }
-?>

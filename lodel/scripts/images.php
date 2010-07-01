@@ -237,4 +237,3 @@ function GDVersion()
 	$gdversion = $gd[0];
 	return $gdversion;
 }
-?>

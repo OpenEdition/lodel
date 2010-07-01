@@ -117,7 +117,4 @@ class users_usergroupsDAO extends DAO
 		parent::__construct("users_usergroups", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

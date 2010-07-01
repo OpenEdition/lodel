@@ -151,4 +151,3 @@ function makefilterfunc()
     ?'.'>')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
 	@chmod($cacheDir."filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
 }
-?>

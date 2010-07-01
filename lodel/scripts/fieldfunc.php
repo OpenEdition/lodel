@@ -224,4 +224,3 @@ function reservedByLodel($name)
 	}
 	return (in_array(strtoupper($name), $reserved_lodel));
 }
-?>

@@ -233,4 +233,3 @@ class XMLDB_Translations extends XMLDB
 		}
 	}
 }
-?>

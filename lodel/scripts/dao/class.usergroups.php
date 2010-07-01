@@ -120,7 +120,4 @@ class usergroupsDAO extends DAO
 		parent::__construct("usergroups", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

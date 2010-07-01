@@ -497,4 +497,3 @@ class XMLImportParser
 		}
 	}
 } // end of class XMLImportParser
-?>

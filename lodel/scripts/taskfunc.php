@@ -121,4 +121,3 @@ function gettypeandclassfromtask($task, & $context)
 		$context['class'] = $votype->class;
 	}
 }
-?>

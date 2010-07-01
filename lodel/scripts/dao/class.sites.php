@@ -125,7 +125,4 @@ class sitesDAO extends DAO
 		parent::__construct("sites", true);
 		$this->rights = array('write'=>LEVEL_ADMINLODEL, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

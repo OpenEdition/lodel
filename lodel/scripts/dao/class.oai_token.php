@@ -122,5 +122,3 @@ class oai_tokenDAO extends DAO
 	}
 
 }
-
-?>

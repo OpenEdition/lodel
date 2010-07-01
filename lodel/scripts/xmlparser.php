@@ -185,5 +185,3 @@ function xml_parse_into_struct_ns_characterHandler($parser, $data)
 	#  echo $data,"<br>\n";flush();
 	$GLOBALS['into_struct_ns_data'] .= translate_xmldata($data);
 }
-
-?>

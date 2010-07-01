@@ -121,7 +121,4 @@ class personsDAO extends DAO
 		parent::__construct("persons", true);
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
-
 }
-
-?>

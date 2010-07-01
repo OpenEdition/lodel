@@ -207,4 +207,3 @@ class IndexTableFieldsLogic extends TableFieldsLogic {
 
 
 } // class 
-?>

@@ -139,4 +139,3 @@ class entitiesDAO extends DAO
 		return $this->cache_rightscriteria[$access];
 	}
 }
-?>

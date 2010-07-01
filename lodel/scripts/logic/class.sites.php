@@ -95,7 +95,8 @@ class SitesLogic extends Logic
 	 */
 	public function lockAction(&$context, &$error)
 	{
-		$context['id'] = @$context['id'];
+		if(empty($context['id']))
+			return '_error';
 		$ret = $this->_lockOrUnlock($context['id'], 'lock');
 		return $ret;
 	}
@@ -110,7 +111,8 @@ class SitesLogic extends Logic
 	 */
 	public function unlockAction(&$context, &$error)
 	{
-		$context['id'] = @$context['id'];
+		if(empty($context['id']))
+			return '_error';
 		$ret = $this->_lockOrUnlock($context['id'],'unlock');
 		return $ret;
 	}
@@ -126,8 +128,8 @@ class SitesLogic extends Logic
 	protected function _lockOrUnlock($id, $action = 'lock')
 	{
 		global $db;
-		$id = (int)$id;
-		if(!$id) {
+		$id = (int) $id;
+		if(empty($id)) {
 			return '_error';
 		}
 		$critere = " id = '$id' AND status > 0";
@@ -185,6 +187,4 @@ class SitesLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-
 } // class 
-?>

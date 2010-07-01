@@ -37,30 +37,23 @@
 
 
 /**
-	* VO of table entitytypes_entrytypes
-	*/
-
+ * VO of table entitytypes_entrytypes
+ */
 class entitytypes_entrytypesVO 
 {
-	var $identitytype;
-	var $identrytype;
-	var $cond;
-
+	public $identitytype;
+	public $identrytype;
+	public $cond;
 }
 
 /**
-	* DAO of table entitytypes_entrytypes
-	*/
-
+ * DAO of table entitytypes_entrytypes
+ */
 class entitytypes_entrytypesDAO extends DAO 
 {
-
-	function entitytypes_entrytypesDAO() 
+	public function __construct()
 	{
-			$this->DAO("entitytypes_entrytypes", false);
-			$this->rights = array();
+		parent::__construct("entitytypes_entrytypes", false);
+		$this->rights = array();
 	}
-
 }
-
-?>

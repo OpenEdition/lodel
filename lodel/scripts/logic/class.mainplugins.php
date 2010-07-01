@@ -496,8 +496,7 @@ class MainPluginsLogic extends Logic
 		$dao = $this->_getMainTableDao();
 
 		$new = false;
-		$context['id'] = (int)@$context['id'];
-		if(!$context['id']) // never enabled
+		if(empty($context['id'])) // never enabled
 		{
 			$new = true;
 			$vo = $dao->createObject();
@@ -785,7 +784,7 @@ class MainPluginsLogic extends Logic
 			}
 		}
 
-		$current['defaultValue'] = @$current['defaultValue'];
+		$current['defaultValue'] = isset($current['defaultValue']) ? $current['defaultValue'] : '';
 
 		// if not defined get the default value
 		$value = isset($current['value']) ? $current['value'] : $current['defaultValue'];
@@ -829,7 +828,4 @@ class MainPluginsLogic extends Logic
 		return array(array('name'), );
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>

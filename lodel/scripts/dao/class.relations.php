@@ -120,7 +120,4 @@ class relationsDAO extends DAO
 		parent::__construct("relations", false);
 		$this->rights = array();
 	}
-
 }
-
-?>

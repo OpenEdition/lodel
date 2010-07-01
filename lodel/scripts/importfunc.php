@@ -70,9 +70,10 @@ function extract_import($footprint, & $context, $ext = 'zip')
 		$GLOBALS['importdirs'][] = $context['importdir'];
 	}
 
-	$archive = @$_FILES['archive']['tmp_name'];
-	$context['error_upload'] = @$_FILES['archive']['error'];
-	if (!$context['error_upload'] && $archive && $archive != "none" && is_uploaded_file($archive)) { // Upload
+	$archive = !empty($_FILES['archive']['tmp_name']) ? $_FILES['archive']['tmp_name'] : null;
+	if($archive) $context['error_upload'] = $_FILES['archive']['error'];
+
+	if (empty($context['error_upload']) && $archive && $archive != "none" && is_uploaded_file($archive)) { // Upload
 		$file = $_FILES['archive']['name'];
 		if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $file)) {
 			$file = $footprint."-import-".date("dmy").".".$ext;
@@ -91,5 +92,3 @@ function extract_import($footprint, & $context, $ext = 'zip')
 	}
 	return $file;
 }
-
-?>

@@ -103,4 +103,3 @@ class CharacterstylesLogic extends Logic
 	/**#@-*/
 
 } // class 
-?>

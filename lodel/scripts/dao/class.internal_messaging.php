@@ -125,7 +125,4 @@ class internal_messagingDAO extends DAO
 		parent::__construct("internal_messaging", true);
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
-
 }
-
-?>

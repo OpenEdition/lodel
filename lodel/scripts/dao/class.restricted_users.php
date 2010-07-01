@@ -128,7 +128,4 @@ class restricted_usersDAO extends DAO
 		parent::__construct("restricted_users", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

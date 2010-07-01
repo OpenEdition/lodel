@@ -386,7 +386,7 @@ function check_expiration()
        SELECT expiration 
             FROM #_TP_restricted_users 
             WHERE id = '".C::get('id', 'lodeluser')."' AND username = '".C::get('name', 'lodeluser')."'"));
-    if(!$status) return false;
+    	if(!$status) return false;
     
 	$status = explode('-', $status);
 
@@ -448,4 +448,3 @@ function updateDeskDisplayInSession()
 	if(!$db->execute(lq("UPDATE #_MTP_session SET context = '{$localcontext}' WHERE id='{$idsession}'"))) return 'error';
 	return 'ok';
 }
-?>

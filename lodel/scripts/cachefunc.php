@@ -216,4 +216,3 @@ function writeToCache($filename, $datas, $siteroot=true)
 	
 	return $ret;
 }
-?>

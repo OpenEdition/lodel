@@ -117,5 +117,3 @@ class oailogsDAO extends DAO
 	}
 
 }
-
-?>

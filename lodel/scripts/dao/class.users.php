@@ -141,7 +141,4 @@ class usersDAO extends DAO
 		parent::__construct("users", false);
 		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
 	}
-
 }
-
-?>

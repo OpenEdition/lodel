@@ -1698,5 +1698,5 @@ function lin_array($arr, $search)
 {
 	return in_array($search, (array)$arr);
 }
+
 define('INC_TEXTFUNC', 1);
-?>

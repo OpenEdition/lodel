@@ -985,4 +985,3 @@ class siteManage {
 		}
 	}
 }
-?>

@@ -446,4 +446,3 @@ setLang();
 include 'lang.php';
 C::set('defaultlang', $GLOBALS['languages']);
 C::set('installlang', C::get('installlang', 'cfg'));
-?>

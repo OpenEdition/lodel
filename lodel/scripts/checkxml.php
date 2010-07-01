@@ -141,4 +141,3 @@ function endElementCHECK($parser, $name)
 {
 	echo "<font color=blue>&lt;/$name&gt;</font>";
 }
-?>

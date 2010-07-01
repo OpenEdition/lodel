@@ -122,7 +122,4 @@ class tasksDAO extends DAO
 		parent::__construct("tasks", false);
 		$this->rights = array('write'=>LEVEL_REDACTOR, 'protect'=>LEVEL_REDACTOR);
 	}
-
 }
-
-?>

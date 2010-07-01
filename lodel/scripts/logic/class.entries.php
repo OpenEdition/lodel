@@ -88,13 +88,14 @@ class EntriesLogic extends GenericLogic
 			function loop_entities_select($context, $funcname)
 			{
 				global $db;
-				$varname = @$context['varname'];
-				if (!$varname) {
+				
+				if (empty($context['varname'])) {
 					if (function_exists("code_alter_$funcname")) {
 						call_user_func("code_alter_$funcname",$context);
 					}
 					return;
 				}
+				$varname = $context['varname'];
 				$values = null;
 				if(isset($context['entities'][$varname]))
 				{
@@ -150,8 +151,11 @@ class EntriesLogic extends GenericLogic
 	public function publishAction(&$context, &$error)
 	{
 		global $db;
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id', E_USER_ERROR);
+
 		$dao = $this->_getMainTableDAO();
-		$id = (int)@$context['id'];
+		$id = (int) $context['id'];
 		$vo  = $dao->find('id=' . $id, 'status,id');
 		if (!$vo) {
 			trigger_error("ERROR: interface error in EntriesLogic::publishAction ", E_USER_ERROR);
@@ -207,7 +211,9 @@ class EntriesLogic extends GenericLogic
 	{
 		global $db;
 		$daotype = DAO::getDAO ($this->daoname);
-		$context['idtype'] = @$context['idtype'];
+
+		if(empty($context['idtype']))
+			trigger_error("ERROR: idtype must be known in EntriesLogic::viewAction", E_USER_ERROR);
 
 		if(C::get('site_ext', 'cfg'))
 		{
@@ -219,9 +225,12 @@ class EntriesLogic extends GenericLogic
 
 		$votype = $daotype->getById($context['idtype']);
 		if (!$votype) {
-			trigger_error("ERROR: idtype must me known in EntriesLogic::viewAction", E_USER_ERROR);
+			trigger_error("ERROR: idtype must be known in EntriesLogic::viewAction", E_USER_ERROR);
 		}
 		usecurrentdb();
+		if(!isset($context['type']) || !is_array($context['type']))
+			$context['type'] = array();
+
 		$this->_populateContext ($votype, $context['type']);
 		return '_ok';
 	}
@@ -236,16 +245,20 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false) 
 	{
-		$id = isset($context['id']) ? $context['id'] : '';
-		$idtype=@$context['idtype'];
-		if (!$idtype) {
-			trigger_error("ERROR: internal error in EntriesLogic::editAction", E_USER_ERROR);
+		if (empty($context['idtype'])) {
+			trigger_error("ERROR: idtype must be known in EntriesLogic::editAction", E_USER_ERROR);
 		}
+
+		$id = isset($context['id']) ? $context['id'] : null;
+		$idtype = $context['idtype'];
 		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
 		$daotype = DAO::getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort");
-		$class = $context['class']=$votype->class;
+		if(!$votype)
+			trigger_error("ERROR: invalid idtype", E_USER_ERROR);
+
+		$class = $context['class'] = $votype->class;
 		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
 				// error.
@@ -278,7 +291,10 @@ class EntriesLogic extends GenericLogic
 				$context['data'][$g_index_key]=$context['g_name'];
 			}
 		}
-		$context['data'][$g_index_key] = @$context['data'][$g_index_key];
+
+		if(empty($context['data'][$g_index_key]))
+			return '_error';
+
 		$index_key = &$context['data'][$g_index_key];
 		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
 		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not exist
@@ -304,15 +320,14 @@ class EntriesLogic extends GenericLogic
 				$vo->status=$status ? $status : -1;
 			}
 		}
-		if (isset($dao->rights['protect'])) $vo->protect=!empty($context['protected']) ? 1 : 0;
+		if (isset($dao->rights['protect'])) $vo->protect = !empty($context['protected']) ? 1 : 0;
 		if ($votype->flat) {
 			$vo->idparent=0; // force the entry to be at root
 		} else {
-			$vo->idparent= isset($context['idparent']) ? $context['idparent'] : 0;
-			$vo->idparent = (int)$vo->idparent;
+			$vo->idparent= (int) (isset($context['idparent']) ? $context['idparent'] : 0);
 		}
 		// populate the entry table
-		if ($idtype) $vo->idtype=$idtype;
+		$vo->idtype=$idtype;
 		$vo->g_name=$index_key;
 		$vo->sortkey=makeSortKey($vo->g_name);
 		$id=$context['id']=$dao->save($vo);
@@ -344,14 +359,14 @@ class EntriesLogic extends GenericLogic
 	{
 		$votype = DAO::getDAO ("entrytypes")->getById ($vo->idtype, "sort");
 		
-		if('rank' == $votype->sort && $vo->idparent)
+		if('rank' == $votype->sort && $vo->idparent && !empty($context['id']))
 		{
 			$daorel = DAO::getDAO('relations');
 			$vorel = $daorel->createObject();
 			$vorel->id1 = $vo->idparent;
 			$vorel->id2 = $context['id'];
 			$vorel->nature = 'P';
-			$vorel->degree = ++$context['degree'];
+			$vorel->degree = isset($context['degree']) ? ++$context['degree'] : 1;
 			$daorel->save($vorel);
 			$this->saveRelations(DAO::getDAO('entries')->getById($vo->idparent), $context);
 		}
@@ -787,9 +802,9 @@ class EntriesLogic extends GenericLogic
 			$parent=array ();
 			$ids=array (0);
 			$l=1;
-			$context['type']['sort'] = @$context['type']['sort'];
-			$context['id'] = @$context['id'];
-			$context['idtype'] = @$context['idtype'];
+			$context['type']['sort'] = isset($context['type']['sort']) ? $context['type']['sort'] : null;
+			$context['id'] = isset($context['id']) ? $context['id'] : null;
+			$context['idtype'] = isset($context['idtype']) ? $context['idtype'] : null;
 			do {
 				$result=$db->execute (lq ("
 				SELECT * 
@@ -908,4 +923,3 @@ class EntriesLogic extends GenericLogic
 		}
 	}
 } // class 
-?>

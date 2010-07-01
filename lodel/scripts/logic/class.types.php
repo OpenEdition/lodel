@@ -79,8 +79,7 @@ class TypesLogic extends Logic {
 	public function viewAction(&$context,&$error)
 	{
 		if ($error) return;
-		$context['id'] = @$context['id'];
-		if (!$context['id']) {
+		if (empty($context['id'])) {
 			// creation
 			$context['creationstatus']=-1;
 			$context['search']=1;
@@ -184,8 +183,7 @@ class TypesLogic extends Logic {
 	protected function _saveRelatedTables($vo,&$context) 
 	{
 		function_exists('typetype_delete') || include("typetypefunc.php");
-		$context['id'] = @$context['id'];
-		if ($context['id']) {
+		if (!empty($context['id'])) {
 			typetype_delete("entitytype","identitytype='".$context['id']."'");
 		}
 		typetype_insert($vo->id,isset($context['entitytype']) ? $context['entitytype'] : null,"entitytype2");
@@ -241,8 +239,6 @@ class TypesLogic extends Logic {
 		return array(array('type', 'class'), );
 	}
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
 
 
@@ -256,4 +252,3 @@ if(!function_exists('loop_entitytypes'))
 		loop_typetable ("entitytype2","entitytype",$context,$funcname,isset($context['entitytype']) ? $context['entitytype'] : null);
 	}
 }
-?>

@@ -99,9 +99,14 @@ class EntitiesLogic extends Logic
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
 		global $db;
-		$id  = @$context['id'];
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in EntitiesLogic::changeRankAction', E_USER_ERROR);
+
+		$id  = $context['id'];
 		$vo  = $this->_getMainTableDAO()->getById($id,"idparent");
-		$this->_changeRank($id,@$context['dir'], "status<64 AND idparent='". $vo->idparent. "'");
+		if(!$vo)
+			trigger_error('ERROR: invalid id', E_USER_ERROR);
+		$this->_changeRank($id, isset($context['dir']) ? $context['dir'] : '', "status<64 AND idparent='". $vo->idparent. "'");
 		update();
 		return '_back';
 	}
@@ -133,7 +138,7 @@ class EntitiesLogic extends Logic
 			return "_back";
 		}
 		$context['id'] = array();
-        	$entities = array_keys(@$context['entity']);
+        	$entities = array_keys($context['entity']);
 		foreach($entities as $id) {
 			$context['id'][] = (int)$id;
 		}
@@ -163,7 +168,11 @@ class EntitiesLogic extends Logic
 		// get the entities to modify and ancillary information
 		if (!rightonentity("delete",$context)) trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		$ids = $classes = $softprotectedids = $lockedids = null;
-		$this->_getEntityHierarchy(@$context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
+
+		if(empty($context['id']))
+			return '_back';
+
+		$this->_getEntityHierarchy($context['id'],"write","",$ids,$classes,$softprotectedids,$lockids);
 		if (!$ids) {
 			return '_back';
 		}
@@ -218,18 +227,25 @@ class EntitiesLogic extends Logic
 	public function publishAction (&$context, &$error) 
 	{
 		global $db;
-		$status = @$context['status'];
-		$this->_isAuthorizedStatus($status);
-		if ($status == 0) {
-			trigger_error("error in publishAction", E_USER_ERROR);
+		
+		if (!isset($context['status']) || $context['status'] == 0) {
+			trigger_error("ERROR: invalid status in EntitiesLogic::publishAction", E_USER_ERROR);
 		}
+
+		$status = $context['status'];
+		$this->_isAuthorizedStatus($status);
+
 		if (!rightonentity ($status > 0 ? 'publish' : 'unpublish', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
 		// get the entities to modify and ancillary information
 		$access = abs ($status) >= 32 ? 'protect' : 'write';
-		$this->_getEntityHierarchy(@$context['id'], $access,"#_TP_entities.status>-8", $ids, $classes, $softprotectedids, $lockedids);
+
+		if(empty($context['id']))
+			return '_back';
+
+		$this->_getEntityHierarchy($context['id'], $access,"#_TP_entities.status>-8", $ids, $classes, $softprotectedids, $lockedids);
 
 		if (!$ids) {
 			return '_back';
@@ -465,8 +481,4 @@ class EntitiesLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-
-?>

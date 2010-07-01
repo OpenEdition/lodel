@@ -82,41 +82,40 @@ class OptiongroupsLogic extends Logic {
 	{
 		global $db;
 
-		$context['id'] = @$context['id'];
 		switch($var) {
 			case 'idparent':
-			$arr=array();
-			$rank=array();
-			$parent=array();
-			$ids=array(0);
-			$l=1;
-			do {
-				$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				$ids=array();
-				$i=1;
-				while(!$result->EOF) {
-					$id=$result->fields['id'];
-					if ($id!=$context['id']) {
-						$ids[]=$id;	 
-						$fullname=$result->fields['title'];
-						$idparent=$result->fields['idparent'];
-						if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
-						$d=$rank[$id]=@$rank[$idparent]+($i*1.0)/$l;
-						//echo $d," ";
-						$arr["p$d"]=array($id,$fullname);
-						$parent[$id]=$fullname;
-						$i++;
+				$arr=array();
+				$rank=array();
+				$parent=array();
+				$ids=array(0);
+				$l=1;
+				do {
+					$result=$db->execute(lq("SELECT * FROM #_TP_optiongroups WHERE idparent ".sql_in_array($ids)." ORDER BY rank")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					$ids=array();
+					$i=1;
+					while(!$result->EOF) {
+						$id=$result->fields['id'];
+						if (!isset($context['id']) || $id!=$context['id']) {
+							$ids[]=$id;	 
+							$fullname=$result->fields['title'];
+							$idparent=$result->fields['idparent'];
+							if ($idparent) $fullname=$parent[$idparent]." / ".$fullname;	   
+							$d=$rank[$id]=@$rank[$idparent]+($i*1.0)/$l;
+							//echo $d," ";
+							$arr["p$d"]=array($id,$fullname);
+							$parent[$id]=$fullname;
+							$i++;
+						}
+						$result->MoveNext();
 					}
-					$result->MoveNext();
+					$l*=100;
+				} while ($ids);
+				ksort($arr);
+				$arr2=array('0' => '--'); // reorganize the array $arr
+				foreach($arr as $row) {
+					$arr2[$row[0]] = $row[1];
 				}
-				$l*=100;
-			} while ($ids);
-			ksort($arr);
-			$arr2=array('0' => '--'); // reorganize the array $arr
-			foreach($arr as $row) {
-				$arr2[$row[0]] = $row[1];
-			}
-			renderOptions($arr2, isset($context[$var]) ? $context[$var] : '');
+				renderOptions($arr2, isset($context[$var]) ? $context[$var] : '');
 			break;
 		}
 	}
@@ -170,25 +169,25 @@ class OptiongroupsLogic extends Logic {
 	*/
 	protected function _prepareEdit($dao,&$context)
 	{
-		// gather information for the following
-		$id = (int)@$context['id'];
-		$idparent = (int)@$context['idparent'];
-		if ($id) //it is an edition
+		if (!empty($context['id'])) //it is an edition
 		{
+			$id = (int) $context['id'];
 			$this->oldvo=$dao->getById($id);
 			if (!$this->oldvo)
 				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
-			if($idparent != $this->oldvo->idparent) //can't change the parent of an optiongroup !
+
+			if(!isset($context['idparent']) || $idparent != $this->oldvo->idparent) //can't change the parent of an optiongroup !
 				trigger_error("ERROR : Changing the parent of a group is forbidden", E_USER_ERROR);
 			
 		}
 		else //it is an add
 		{
 			//if it is an add - the optiongroup inherit the exportpolicy
-			if($idparent)
+			if(!empty($context['idparent']))
 			{
-					$voparent = $dao->getById($idparent,"id,exportpolicy");
-					$context['exportpolicy'] = $voparent->exportpolicy;
+				$idparent = (int) $context['idparent'];
+				$voparent = $dao->getById($idparent,"id,exportpolicy");
+				$context['exportpolicy'] = $voparent->exportpolicy;
 			}
 		}
 	}
@@ -292,7 +291,4 @@ class OptiongroupsLogic extends Logic {
 		return array(array('name'), );
 	}
 	// end{uniquefields} automatic generation  //
-		
-
 } // class 
-?>

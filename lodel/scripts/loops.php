@@ -62,9 +62,12 @@ if (is_readable(C::get('home', 'cfg') . 'loops_local.php'))
 function loop_parentsentities(& $context, $funcname, $critere = "")
 {
 	global $db;
-	$id = (int)@$context['id'];
-	if (!$id)
+	
+	if (empty($context['id']))
 		return;
+
+	$id = (int) $context['id'];
+
 	$result = $db->execute(lq("SELECT * 
                             FROM #_entitiestypesjoin_,#_TP_relations 
                             WHERE #_TP_entities.id=id1 AND id2='".$id."' 
@@ -437,11 +440,11 @@ function loop_page_scale(& $context, $funcname, $arguments)
 function _constructPages(& $context, $funcname, $arguments)
 {
 	//get current offset and construct url
-	$arguments['limit'] = @$context['limitinfo'];
-	if (!$arguments['limit'])
+	if (empty($context['limitinfo']) || empty($context['offsetname']))
 		return;
 
-	$offsetname = @$context['offsetname'];
+	$arguments['limit'] = $context['limitinfo'];
+	$offsetname = $context['offsetname'];
 	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
 	$cleanquery = preg_replace(array("/(^|&)".$offsetname."=\d+/","/(^|&)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
@@ -450,7 +453,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	if ($cleanquery)
 		$currenturl .= $cleanquery."&";
 
-	$context['nbresults'] = @$context['nbresults'];
+	$context['nbresults'] = isset($context['nbresults']) ? $context['nbresults'] : 0;
 	//construct next url
 	if ($context['nbresults'] > ($currentoffset + $arguments['limit']))
 		$context['nexturl'] = $currenturl.$offsetname."=". ($currentoffset + $arguments['limit']);
@@ -616,9 +619,10 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 	// and if no editionparams call alter
 	if (!isset ($context['editionparams']))
 		trigger_error("ERROR: internal error in loop_field_selection_values", E_USER_ERROR);
-	
+
+	if(empty($context['value'])) return;
+
 	$arr = explode(",", $context['editionparams']);
-	$context['value'] = @$context['value'];
 	$choosenvalues = explode(",", $context['value']); //if field contains more than one value (comma separated)
 	foreach ($arr as $value) {
 		$value = trim($value);
@@ -682,11 +686,10 @@ function loop_compatible_types(&$context, $funcname, $arguments)
 	global $db;
 	static $compatible_types;
 	function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
-	if(!$compatible_types) {
+	if(!$compatible_types && !empty($context['type']['class'])) {
 		//selectionne tous les types de la classe
-		$context['type']['class'] = @$context['type']['class'];
-		$context['idparent'] = @$context['idparent'];
-		$context['id'] = @$context['id'];
+		$context['idparent'] = isset($context['idparent']) ? $context['idparent'] : null;
+		$context['id'] = isset($context['id']) ? $context['id'] : null;
 		$sql = lq("SELECT * FROM #_TP_types WHERE class='".$context['type']['class']."'");
 		$compatible_types = array();
 		$types = $db->getArray($sql);
@@ -896,4 +899,3 @@ function loop_externalentrytypes_select($context, $funcname)
 }
 
 define('INC_LOOPS', 1);
-?>

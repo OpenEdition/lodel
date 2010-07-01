@@ -466,4 +466,3 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 
 	return true; // validated
 }
-?>

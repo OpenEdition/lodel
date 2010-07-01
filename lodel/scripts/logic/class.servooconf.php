@@ -169,7 +169,4 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 		function _uniqueFields() {  return array(array("name","idgroup"),);  }
 	// end{uniquefields} automatic generation  //
-
-
 } // class 
-?>
