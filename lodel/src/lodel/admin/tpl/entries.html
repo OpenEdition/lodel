@@ -38,29 +38,52 @@
 <ul class="entitiesPath">
 	<li>
 	<strong>[@ADMIN.ADMINISTRATE_ENTRY_BY]</strong>
-		<LET VAR="current_entry_type">[#TYPE.TITLE]</LET>
-		<LOOP NAME="getTypes" TABLE="entrytypes" ORDER="rank">
-			<!--[
-			<BEFORE><select onchange="select_url(this)" class="barInfo"></BEFORE>
-			<IF COND="[#TITLE] EQ [#CURRENT_ENTRY_TYPE]">
-				<option selected="selected">[#TITLE]</option>
-			<ELSE />
-				<option value="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[#TITLE]</option>
-			</IF>
-			<AFTER></select></AFTER>]-->
-			&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a>&nbsp;&nbsp;|
-			<DOLAST>&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#TITLE] == [#CURRENT_ENTRY_TYPE]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a></DOLAST>
-		</LOOP>
+		<IF COND="![#EXTERNAL]">
+			<LET VAR="current_entry_id">[#TYPE.ID]</LET>
+			<LOOP NAME="getTypes" TABLE="entrytypes" ORDER="rank">
+				<!--[
+				<BEFORE><select onchange="select_url(this)" class="barInfo"></BEFORE>
+				<IF COND="[#TITLE] EQ [#CURRENT_ENTRY_TYPE]">
+					<option selected="selected">[#TITLE]</option>
+				<ELSE />
+					<option value="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]">[#TITLE]</option>
+				</IF>
+				<AFTER></select></AFTER>]-->
+				&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#ID] == [#CURRENT_ENTRY_ID]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a>&nbsp;&nbsp;|
+				<DOLAST>&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#ID]"><IF COND="[#ID] == [#CURRENT_ENTRY_ID]"><strong>[#TITLE]</strong><ELSE />[#TITLE]</IF></a></DOLAST>
+			</LOOP>
+		<ELSE/>
+			<LET VAR="current_entry_id">[#SITE_EXT].[#TYPE.ID]</LET>
+			<LOOP SELECT="site as s, id2" NAME="getExtRelations" TABLE="relations_ext" WHERE="nature='ET'">
+				<LET VAR="curidtype">[#S].[#ID2]</LET>
+				<LET VAR="curdb"><?php echo '`'.DATABASE.'_'.$context['s'].'`'; ?></LET>
+				<LOOP NAME="getExtEntrytypesTitle" SELECT="title" DATABASE="[#CURDB]" TABLE="entrytypes" ORDER="rank" WHERE="id=[#ID2]">
+					<LET ARRAY="t.#CURIDTYPE" GLOBAL="1">[#TITLE]</LET>
+				</LOOP>
+			</LOOP>
+			<LET ARRAY="t">[%T|array_unique]</LET>
+			<LOOP NAME="foreach" ARRAY="[#T]">
+				<IF COND="[#KEY] LIKE /([a-z0-9\-]+)\.\d+/">
+					&nbsp;&nbsp;<a href="[#SITEROOT]lodel/admin/index.php?do=list&amp;lo=entries&amp;idtype=[#KEY]"><IF COND="[#KEY] == [#CURRENT_ENTRY_ID]"><strong>[#MATCHES.1.0] - [#VALUE]</strong><ELSE />[#MATCHES.1.0] - [#VALUE]</IF></a>&nbsp;&nbsp;|
+				</IF>
+			</LOOP>
+		</IF>
 	</li>
 </ul>
 
 <ul id="actionsOnEntitiesPath">
 	<li>
 	<span class="intit">[@COMMON.TYPE] :</span> [#TYPE.TITLE]
-	<LOOP NAME="nbEntries" TABLE="entries" SELECT="count(id) as nbentries" WHERE="idtype='[#TYPE.ID]'">
+	<IF COND="[#EXTERNAL]">
+		<LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET>
+	<ELSE/>
+		<LET VAR="table">#_TP_entries</LET>
+	</IF>
+	<LOOP NAME="nbEntries" TABLE="[#TABLE]" SELECT="count(id) as nbentries" WHERE="idtype='[#TYPE.ID]'">
 		&nbsp;([#NBENTRIES])
 	</LOOP>
 	</li>
+	<IF COND="![#EXTERNAL]">
 	<li>
 		<ul class="actions">
 		<li class="isolated">
@@ -68,23 +91,40 @@
 		</li>
 		</ul>
 	</li>
+	</IF>
 </ul>
 
+<IF COND="[#EXTERNAL]">
+<LOOP NAME="getExternalNumberBySite" DATABASE="`[#DB_EXT]`" TABLE="relations_ext, entries" WHERE="entries.idtype='[#TYPE.ID]' AND relations_ext.id1=entries.id AND nature='EE'" SELECT="COUNT(DISTINCT(relations_ext.site)) AS nb">
+	[@ADMIN.NB_SHARED_INDEXES] : [#NB]
+</LOOP>
+<ELSEIF COND="[#TYPE.EXTERNALALLOWED]">
+[@ADMIN.LIST_SITE_SHARED_INDEXES]
+<LOOP NAME="getNumberBySite" TABLE="relations_ext, entries" WHERE="entries.idtype='[#TYPE.ID]' AND relations_ext.id1=entries.id AND nature='EE'" SELECT="COUNT(relations_ext.idrelation) AS nb, relations_ext.site" GROUPBY="relations_ext.site">
+	<BEFORE><ul></BEFORE>
+	<DO>
+		<li>
+			[#SITE] ([#NB])
+		</li>
+	</DO>
+	<AFTER></ul></AFTER>
+</LOOP>
+</IF>
 <div id="entries">
 	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
 		<IF COND="[#LISTALL]">
-			<a href="index.php?do=list&amp;lo=entries&amp;idtype=[#TYPE.ID]"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span></a>&nbsp;|&nbsp;
+			<a href="index.php?do=list&amp;lo=entries&amp;idtype=<IF COND="[#EXTERNAL]">[#SITE_EXT].</IF>[#TYPE.ID]"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span></a>&nbsp;|&nbsp;
 			<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span>
 		<ELSE />	
 			<span style="color:#9D9D9D;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span>&nbsp;|&nbsp;<a href="[#CURRENTURL]&amp;listall=1"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ALL_ENTRIES]</span></a>
 		</IF>
 		<br /><br />
 		<div id="alphabet">
-			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]">
+			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]">
 		</div>	
 	</IF>
 
-	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|urldecode|strtoupper]" LISTALL="[#LISTALL]">
+	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|urldecode|strtoupper]" LISTALL="[#LISTALL]" EXTERNAL="[#EXTERNAL]">
 </div>
 <!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 

@@ -67,7 +67,7 @@ if(defined('backoffice'))
 		public function preFilter($html, $config, $context) 
 		{
 			if(empty($html) || is_numeric($html)) return $html;
-			$pre_regex = '#(<\?xml\b[^\?]+\?>\s*<!DOCTYPE[^>]+>\s*)?(<TEI([^>]+>.+?)</TEI>)#si';
+			$pre_regex = '#(<\?xml\b[^\?]+\?>\s*<!DOCTYPE[^>]+>\s*)?(<TEI([^>]*>.+?)</TEI>)#si';
 			$ret = preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
 			if(empty($ret) && preg_last_error() === PREG_BACKTRACK_LIMIT_ERROR)
                         {

@@ -220,7 +220,7 @@ function reservedByLodel($name)
 		'OPTIONGROUPS', 'OPTIONS', 'PERSONTYPES', 'RELATIONS', 'SEARCH_ENGINE', 
 		'SESSION', 'SITES', 'TABLEFIELDGROUPS', 'TABLEFIELDS', 'TASKS', 
 		'TRANSLATIONS', 'TYPES', 'TEXTS', 'URLSTACK', 'USERGROUPS', 'USERS', 
-		'USERS_USERGROUPS');
+		'USERS_USERGROUPS', 'HISTORY', 'PLUGINS', 'MAINPLUGINS', 'RELATIONS_EXT');
 	}
 	return (in_array(strtoupper($name), $reserved_lodel));
 }

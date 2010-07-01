@@ -491,6 +491,85 @@ class Entities_EditionLogic extends GenericLogic
 		//return $ret ? $ret : "_location" . SITEROOT. makeurlwithid($idparent);
 	} //end of editAction
 
+        /**
+         * Récupération d'un bloc pour le sitemap en ajax
+         *
+         * @param array &$context le contexte passé par référence
+         * @param array &$error le tableau des erreurs éventuelles passé par référence
+         */
+        public function sitemapAction(&$context, &$error)
+        {
+                $GLOBALS['nodesk'] = true;
+                $context['folder'] = 'yes';
+                echo View::getView()->getIncTpl($context, 'edition', '', '', 1);
+                return '_ajax';
+        }
+
+        /**
+         * Changement du rank/parent d'une entité via le drag'n'drop côté lodel/edition
+         *
+         * @param array &$context le contexte passé par référence
+         * @param array &$error le tableau des erreurs éventuelles passé par référence
+         */
+        public function ddchangerankAction(&$context, &$error)
+        {
+                if(empty($context['ids']))
+                        trigger_error('ERROR: please specify ids', E_USER_ERROR);
+
+                $idparent = (int)@$context['idparent'];
+                $id = (int)@$context['id'];
+                $dao = DAO::getDAO('entities');
+                $vo = $dao->find('id='.$id);
+                if(!$vo) trigger_error('ERROR: invalid id', E_USER_ERROR);
+
+                $idtype = (int)$vo->idtype;
+
+                if((int)$vo->idparent !== $idparent)
+                { // we change of parent
+                        function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
+                        if (!checkTypesCompatibility($id, $idparent, $idtype))
+                                trigger_error('ERROR: invalid parent idtype', E_USER_ERROR);
+			$oldidparent = $vo->idparent;
+                        $vo->idparent = $idparent;
+                }
+
+                $i = 1;
+                foreach($context['ids'] as $curid)
+                {
+                        $curid = explode('_', $curid);
+                        if(count($curid) < 2) continue; // surely 'entity_' ??
+                        $curid = (int)$curid[1];
+                        if($curid === $id) {
+                                $vo->rank = $i;
+                                $dao->save($vo);
+                        } else {
+                                $curvo = $dao->find('id='.$curid);
+                                if(!$curvo) trigger_error('ERROR: invalid id', E_USER_ERROR);
+                                $curvo->rank = $i;
+                                $dao->save($curvo);
+                        }
+
+                        ++$i;
+                }
+
+		if(isset($oldidparent))
+		{
+			global $db;
+			$ids = $db->getArray(lq("SELECT id2 FROM #_TP_relations WHERE id1=".$id." AND nature='P'"));
+			if($ids)
+			{
+				foreach($ids as $curid)
+				{
+					$db->execute(lq("UPDATE #_TP_relations SET id1=".$idparent." WHERE id1=".$oldidparent." AND id2=".$curid['id2']." AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+			}
+			$db->execute(lq("UPDATE #_TP_relations SET id1=".$idparent." WHERE id1=".$oldidparent." AND id2=".$id." AND nature='P'"))  or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		}
+
+                update();
+                return '_ajax';
+        }
+
 	/**
 	 * Construction des balises select HTML pour cet objet
 	 *
@@ -638,6 +717,63 @@ class Entities_EditionLogic extends GenericLogic
 				$criteria = $idrelations ? "AND idrelation NOT IN ('". join("','", $idrelations). "')" : "";
 				$this->_deleteSoftRelation("id1='". $vo->id. "' ". $criteria, $name);
 			} // for each entities fields
+		}
+
+		// external entries
+		$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id1='.$context['id'].' AND nature="E"'))
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		if(!empty($context['externalentries']))
+		{
+			$entrytypes = array_keys($context['externalentries']);
+			$daoet = DAO::getDAO('entrytypes');
+			$daoe = DAO::getDAO('entries');
+			$sql = '';
+			$extsql = array();
+			$cursite = $db->quote(C::get('site', 'cfg'));
+			foreach($entrytypes as $entrytype)
+			{
+				if(empty($context['externalentries'][$entrytype])) continue;
+				$i = 0;
+				if(!preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $entrytype, $m)) continue;
+
+				if($db->database != DATABASE.'_'.$m[1])
+					$db->SelectDB(DATABASE.'_'.$m[1]);
+				$id = (int)$m[2];
+				$ok = $daoet->find('id='.$id); // check the entry idtype
+				if(!$ok) continue;
+				$site = $db->quote($m[1]);
+				if(!is_array($context['externalentries'][$entrytype]))
+					$context['externalentries'][$entrytype] = explode(',', $context['externalentries'][$entrytype]);
+				$entries =& $context['externalentries'][$entrytype];
+				$degree = $db->GetOne(lq("SELECT MAX(degree) FROM `".DATABASE.'_'.$m[1]."`.#_TP_relations_ext WHERE id2={$context['id']} AND nature='EE' AND site={$cursite}"));
+				$degree = $degree ? $degree+1 : 0;
+				foreach($entries as $entry)
+				{
+					$entry = is_array($entry) ? trim($entry['g_name']) : trim($entry);
+					if(!$entry) continue;
+					$extentry = $daoe->find('BINARY(g_name)=BINARY('.$db->quote($entry).')', 'id');
+					if(!$extentry) continue;
+					$sql .= "({$context['id']}, {$extentry->id}, 'E', {$i}, {$site}),";
+					$extsql[] = lq("INSERT INTO `".DATABASE.'_'.$m[1]."`.#_TP_relations_ext (id1,id2,nature,degree,site) 
+						VALUES ({$extentry->id}, {$context['id']}, 'EE', {$degree}, {$cursite})");
+					++$i;
+					++$degree;
+				}
+				$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id2='.$context['id'].' AND nature="EE"'))
+					 or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			}
+
+			usecurrentdb();
+
+			if($sql)
+			{
+				$sql = lq('INSERT INTO #_TP_relations_ext (id1, id2, nature, degree, site) VALUES ').substr($sql, 0, -1);
+				$db->execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				foreach($extsql as $s)
+				{
+					$db->execute($s) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+			}
 		}
 	} //end of function
 
@@ -868,6 +1004,29 @@ class Entities_EditionLogic extends GenericLogic
 					$context['entities'][$k] = join(",", $ids).',';
 			}
 		}
+
+		// external entries
+		$result = $db->execute(lq("SELECT * FROM #_TP_relations_ext WHERE id1='". $vo->id. "' AND nature='E' ORDER BY idrelation DESC")) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+		$dao = DAO::getDAO('entries');
+		$context['externalentries'] = array();
+		while(!$result->EOF) {
+			$site = $result->fields['site'];
+			if($db->database != DATABASE.'_'.$site)
+				$db->SelectDB(DATABASE.'_'.$site);
+
+			$id = $result->fields['id2'];
+			$entry = $dao->find('id='.$id, 'idtype, g_name');
+			if($entry)
+			{
+				if(!isset($context['externalentries'][$site.'.'.$entry->idtype]))
+					$context['externalentries'][$site.'.'.$entry->idtype] = array();
+				$context['externalentries'][$site.'.'.$entry->idtype][$result->fields['degree']] = array('g_name'=>$entry->g_name);
+			}
+			$result->MoveNext();
+		}
+		usecurrentdb();
 	}
 
 	/**

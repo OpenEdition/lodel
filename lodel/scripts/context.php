@@ -267,10 +267,10 @@ class C
 				}
 				if('id' == $var || 'idtype' == $var)
 				{
-					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					if(preg_match('/^([a-z0-9\-]+)\.(\d+)$/', self::$_context[$var], $m))
 					{
 						self::$_context[$var] = (int)$m[2];
-						self::$_cfg['site_ext'] = (string)$m[1];
+						self::$_cfg['site_ext'] = self::$_context['site_ext'] = (string)$m[1];
 						continue;
 					}
 				}
@@ -299,7 +299,7 @@ class C
 				}
 				if('id' == $var || 'idtype' == $var)
 				{
-					if(preg_match('/^(\w+)\.(\d+)$/', self::$_context[$var], $m))
+					if(preg_match('/^([a-z0-9\-]+)\.(\d+)$/', self::$_context[$var], $m))
 					{
 						self::$_context[$var] = (int)$m[2];
 						self::$_context['site_ext'] = (string)$m[1];

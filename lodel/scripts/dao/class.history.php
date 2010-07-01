@@ -1,8 +1,8 @@
 <?php
 /**
- * Fichier utilisé comme base d'un plugin utilisant une classe
+ * Fichier DAO de la table SQL history.
  *
- * PHP version 5
+ * PHP versions 4 et 5
  *
  * LODEL - Logiciel d'Edition ELectronique.
  *
@@ -35,6 +35,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
+ * @author Ghislain Picard
+ * @author Jean Lamy
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
@@ -45,15 +47,22 @@
  * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
- * @version CVS:$Id:
- * @package lodel
  * @since Fichier ajouté depuis la version 0.9
+ * @version CVS:$Id: class.classes.php 4994 2010-04-08 10:06:41Z cenou $
+ * @package lodel/dao
  */
 
+//
+// Fichier généré automatiquement le 22-04-2010.
+//
+
+
 /**
- * Base class for plugins using class as hook
- * Classe servant de base pour les plugins utilisant les hook de type class
+ * Classe d'objet virtuel de la table SQL history
  *
+ * @package lodel/dao
+ * @author Ghislain Picard
+ * @author Jean Lamy
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
  * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
@@ -61,109 +70,56 @@
  * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
  * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
  * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajoutée depuis la version 0.9
+ * @see dao.php
  */
-abstract class Plugins
+class historyVO
+{
+	/**#@+
+	 * @access public
+	 */
+	public $id;
+	public $nature;
+	public $context;
+	public $upd;
+	/**#@-*/
+}
+
+/**
+ * Classe d'abstraction de la base de données de la table history
+ *
+ * Fille de la classe DAO
+ *
+ * @package lodel/dao
+ * @author Ghislain Picard
+ * @author Jean Lamy
+ * @author Pierre-Alain Mignot
+ * @copyright 2001-2002, Ghislain Picard, Marin Dacos
+ * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+ * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+ * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+ * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+ * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+ * @licence http://www.gnu.org/copyleft/gpl.html
+ * @since Classe ajoutée depuis la version 0.9
+ * @see dao.php
+ */
+class historyDAO extends DAO
 {
 	/**
-	 * @var array
-	 */
-	static private $_instances = array();
-	/**
-	 * @var array
-	 */
-	static private $_triggers = array('preview','postview','preedit','postedit','prelogin','postlogin','preauth','postauth');
-	/**
-	 * @var array
-	 */
-	protected $_config = array();
-
-	/**
-	 * Constructor
-	 * Set the config vars
+	 * Constructeur
 	 *
-	 * @param string $classname the class name of the calling plugin
+	 * <p>Appelle le constructeur de la classe mère DAO en lui passant le nom de la classe.
+	 * Renseigne aussi le tableau rights des droits.
+	 * </p>
 	 */
-	protected function __construct($classname)
+	public function __construct()
 	{
-		$this->_config = C::get($classname.'.config', 'triggers');
-		if(false === $this->_config)
-		{
-			defined('INC_CONNECT') || include 'connect.php';
-			global $db;
-			$config = $db->GetOne(lq('SELECT config FROM #_TP_plugins WHERE name='.$db->quote($classname)));
-			if(false === $config)
-				trigger_error('ERROR: can not fetch config values for plugin '.$classname, E_USER_ERROR);
-			$this->_config = unserialize($config);
-		}
-		
-		if(!empty($this->_config))
-		{
-			foreach($this->_config as $var=>$values)
-			{
-				if(!isset($values['value']) && isset($values['defaultValue'])) $this->_config[$var]['value'] = $values['defaultValue'];
-			}
-		}
+		parent::__construct("history", true);
+		$this->rights = array();
 	}
 
-	static public function get($plugin)
-	{
-		if(!isset(self::$_instances[$plugin]))
-		{
-			defined('INC_CONNECT') || include 'connect.php';
-			global $db;
-			if(!defined('backoffice-lodeladmin'))
-				usecurrentdb();
-			$enabled = $db->GetOne(lq('SELECT status FROM #_TP_plugins WHERE name='.$db->quote($plugin)));
-			if(!$enabled) trigger_error('ERROR: sorry the plugin '.$plugin.' is not enabled, please contact your administrator', E_USER_ERROR);
-			self::$_instances[$plugin] = new $plugin($plugin);
-		}
-
-		return self::$_instances[$plugin];
-	}
-
-	static public function getTriggers()
-	{
-		return self::$_triggers;
-	}
-
-	/**
-	 * Returns the config vars
-	 *
-	 * @param string $classname the class name of the calling plugin
-	 */
-	public function getConfig()
-	{
-		return $this->_config;
-	}
-
-	/**
-	 * Compare the user rights against level passed by argument
-	 *
-	 * @param int $level the level to compare the user rights to
-	 */
-	protected function _checkRights($level)
-	{
-		return ((bool)(C::get('rights','lodeluser') >= $level));
-	}
-
-	/**
-	 * Called when enabling a plugin
-	 * This method is abstract, it HAS to be defined in child class
-	 *
-	 * @param array $context the $context, by reference
-	 * @param array $error the error array, by reference
-	 */
-	abstract public function enableAction(&$context, &$error);
-
-	/**
-	 * Called when disabling a plugin
-	 * This method is abstract, it HAS to be defined in child class
-	 *
-	 * @param array $context the $context, by reference
-	 * @param array $error the error array, by reference
-	 */
-	abstract public function disableAction(&$context, &$error);
 }
+
 ?>

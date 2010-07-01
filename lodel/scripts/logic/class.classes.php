@@ -88,6 +88,7 @@ class ClassesLogic extends Logic
 		global $db;
 		$dao = $this->_getMainTableDAO ();
 		$vo  = $dao->getById ($id, 'classtype');
+		if(!$vo) return false;
 		$types = $this->typestable($vo->classtype);
 		switch ($vo->classtype) {
 			case 'entities':
@@ -243,6 +244,27 @@ class ClassesLogic extends Logic
 			}
 			$alter = true;
 		}
+
+		if($vo->classtype == 'entries' && !empty($context['externalentrytypes']))
+		{
+			$entrytypes = array_filter(array_map('trim', explode(',', $context['externalentrytypes'])));
+			if(!empty($entrytypes))
+			{
+				$sql = lq('REPLACE INTO #_TP_relations_ext(id1,id2,nature,degree,site) VALUES ');
+				foreach($entrytypes as $entrytype)
+				{
+					preg_match('/^([\w\-_]+)\.(\d+)$/', $entrytype, $result);
+					$sql .= "({$vo->id}, {$result[2]}, 'ET', 0, '{$result[1]}'),";
+					$db->SelectDB(DATABASE.'_'.$result[1]) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					$db->execute(lq("REPLACE INTO #_TP_relations_ext SET id1={$result[2]}, id2={$vo->id}, nature='EET', degree=0, site=".$db->quote(C::get('site', 'cfg')))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+
+				usecurrentdb();
+				$sql = substr($sql, 0, -1);
+				$db->Execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			}
+		}
+
 		if ($alter) {        // update the CACHE ?
 			clearcache();
 		}

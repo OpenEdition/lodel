@@ -627,7 +627,7 @@ cp_[#VARNAME].writeDiv();
 <DEFFUNC NAME="EDIT_ENTRIES">
 <div id="entries_[#VARNAME]" class="entrieseditionarea" >
 	
-	<IF COND="[#VARNAME] LIKE /(\w+)\.(\d+)/">
+	<IF COND="[#VARNAME] LIKE /([a-z0-9\-]+)\.(\d+)/">
 		<LET VAR="database_dist"><?php echo '`'.DATABASE.'_';?>[#MATCHES.1.0]`</LET>
 		<LET VAR="where">entrytypes.id=[#MATCHES.2.0]</LET>
 		<LET VAR="external">1</LET>

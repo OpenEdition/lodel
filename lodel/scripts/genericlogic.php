@@ -343,18 +343,31 @@ class GenericLogic extends Logic
 				case 'persons' :
 				case 'entries' :
 					// get the type
+					$isExternal = false;
 					if ($type == "persons") {
 						$dao = DAO::getDAO("persontypes");
 					}	else	{
+						$isExternal = preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $field->name, $res);
 						$dao = DAO::getDAO("entrytypes");
+						if($isExternal)
+							$GLOBALS['db']->SelectDB(DATABASE.'_'.$res[1]);
 					}
 					$vo = $dao->find("type='".$name."'", "class,id");
+					usecurrentdb();
 					if(!$vo) break; // strange
 					$idtype = $vo->id;
-					$context[$type][$idtype] = @$context[$type][$idtype];
-					$localcontext = &$context[$type][$idtype];
+					if($isExternal)
+					{
+						$context['externalentries'][$field->name] = @$context['externalentries'][$field->name];
+						$localcontext = &$context['externalentries'][$field->name];
+					}
+					else
+					{
+						$context[$type][$idtype] = @$context[$type][$idtype];
+						$localcontext = &$context[$type][$idtype];
+					}
 					if (!$localcontext) {
-						break;
+							break;
 					}
 					if ($type == "entries" && !is_array($localcontext))	{
 						$keys = explode(",", $localcontext);
@@ -375,9 +388,12 @@ class GenericLogic extends Logic
 						$localcontext[$k]['class'] = $vo->class;
 						$localcontext[$k]['idtype'] = $idtype;
 						$err = array ();
+						if($isExternal)
+							$GLOBALS['db']->SelectDB(DATABASE.'_'.$res[1]);
 						$logic->validateFields($localcontext[$k], $err);
+						usecurrentdb();
 						if ($err) {
-							$error[$type][$idtype][$k] = $err;
+							$error[$type][$isExternal ? $field->name : $idtype][$k] = $err;
 						}
 					}
 					break;

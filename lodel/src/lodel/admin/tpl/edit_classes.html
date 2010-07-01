@@ -82,6 +82,25 @@
 		</label>
   <br class="nobr">
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
+<IF COND="[#CLASSTYPE] EQ 'entries'">
+<select id="externalentrytypes_select" row="3" multiple="multiple">
+	<LOOP NAME="externalentrytypes_select">
+		<DO>
+			<option value="[#ID]">[#TITLE|strip_tags|couper(50)]<IF COND="[#TITLE|hasbeencut]">...</IF></option>
+		</DO>
+		<AFTER>
+			</select>
+			<input type="hidden" name="externalentrytypes" id="externalentrytypes" value="[#ALL]" />
+		</AFTER>
+		<ALTERNATIVE>
+			</select>
+			<input type="hidden" name="externalentrytypes" id="externalentrytypes" value="" />
+		</ALTERNATIVE>
+	</LOOP>
+	<br /><br />
+	<a href="javascript:;" onclick="javascript:window.open('index.php?do=getExternal&amp;lo=entrytypes','','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_EXTERNAL_ENTRYTYPES]</a>
+</IF>
+
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>

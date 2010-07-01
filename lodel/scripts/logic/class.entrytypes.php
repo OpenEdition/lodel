@@ -149,6 +149,54 @@ class EntryTypesLogic extends Logic
 		}
 	}
 
+	/**
+	*  Récupère les types externes
+	*
+	* @param array &$error le tableau contenant les éventuelles erreurs, par référence
+	* @param array &$context le context passé par référence
+	*/
+	public function getExternalAction(&$context, &$error)
+	{
+		global $db;
+
+		$context['externalentrytypes'] = array();
+		$GLOBALS['nodesk'] = true;
+
+		usemaindb();
+		$sites = DAO::getDAO('sites')->findMany('status > 0', 'name', 'name, title');
+		usecurrentdb();
+		if(!$sites) return 'entrytypesbrowser';
+		
+		$dao = DAO::getDAO('entrytypes');
+
+		foreach($sites as $site)
+		{
+			if(!$db->SelectDB(DATABASE.'_'.$site->name)) continue;
+			$entrytypes = $dao->findMany('externalallowed = 1', 'type', 'title, id');
+			if(!$entrytypes) continue;
+
+			$types = array();
+
+			foreach($entrytypes as $entrytype)
+			{
+				$types[$site->name.'.'.$entrytype->id] = $entrytype->title;
+			}
+
+			$context['externalentrytypes'][$site->title] = $types;
+		}
+
+		usecurrentdb();
+
+		$context['currentexternalentrytypes'] = array();
+		$currents = DAO::getDAO('relations_ext')->findMany('nature="ET"', 'site', 'id2,site');
+		foreach($currents as $current)
+		{
+			$context['currentexternalentrytypes'][] = $current->site.'.'.$current->id2;
+		}
+
+		return 'entrytypesbrowser';
+	}
+
 	/*---------------------------------------------------------------*/
 	//! Private or protected from this point
 	/**
@@ -183,9 +231,39 @@ class EntryTypesLogic extends Logic
 	*/
 	protected function _saveRelatedTables($vo,&$context) 
 	{
-		if (isset($this->oldvo) && $vo->type!=$this->oldvo->type) {
-			// name has changed
-			$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		if (isset($this->oldvo)) {
+			if($vo->type!=$this->oldvo->type)
+			{
+				// name has changed
+				$GLOBALS['db']->execute(lq("UPDATE #_TP_tablefields SET name='".$vo->type."' WHERE name='".$this->oldvo->type."' AND type='entries'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			}
+			
+			if($vo->sort == 'rank' && $vo->sort != $this->oldvo->sort)
+			{
+				$vos = DAO::getDAO('entries')->findMany('idtype='.$vo->id, 'id,idparent,idtype');
+				if($vos)
+				{
+					$localcontext = $context;
+					$lo = Logic::getLogic('entries');
+					foreach($vos as $v)
+					{
+						$localcontext['id'] = $v->id;
+						$localcontext['degree'] = 0;
+						$lo->saveRelations($v, $localcontext);
+					}
+				}
+			}
+			elseif($this->oldvo->sort == 'rank')
+			{
+				$vos = DAO::getDAO('entries')->findMany('idtype='.$vo->id, 'id,idparent,idtype');
+				if($vos)
+				{
+					foreach($vos as $v)
+					{
+						$GLOBALS['db']->execute(lq('DELETE FROM #_TP_relations WHERE id2='.$v->id.' AND nature="P"')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					}
+				}
+			}
 		}
 	}
 	/**
@@ -208,7 +286,49 @@ class EntryTypesLogic extends Logic
 
 	protected function _deleteRelatedTables($id)
 	{
+		global $db;
+
 		DAO::getDAO('tablefields')->delete("type='entries' AND name='".$this->vo->type."'");
+
+		$shared = DAO::getDAO('relations_ext')->findMany('id1='.(int)$id);
+		if(!$shared) return;
+
+		foreach($shared as $vo)
+		{
+			if('ET' == $vo->nature)
+			{
+				$db->SelectDB(DATABASE.'_'.$vo->site) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$vos = DAO::getDAO('entries')->findMany('idtype='.$vo->id2, 'id');
+				if($vos)
+				{
+					foreach($vos as $v)
+					{
+						$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE nature="EE" AND id2='.$v->id.' AND site='.$db->quote(C::get('site', 'cfg'))))
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$db->execute(lq('DELETE FROM `'.DATABASE.'_'.C::get('site', 'cfg').'`.#_TP_relations_ext
+									WHERE nature="E" AND id2='.$v->id.' AND site='.$db->quote($v->site)))
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					}
+				}
+				DAO::getDAO('tablefields')->delete("type='entries' AND name='".C::get('site', 'cfg').'.'.$id."'");
+			}
+			elseif('EET' == $vo->nature)
+			{
+				$vos = DAO::getDAO('entries')->findMany('idtype='.$vo->id2, 'id');
+				if($vos)
+				{
+					foreach($vos as $v)
+					{
+						$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE nature="EE" AND id2='.$v->id.' AND site='.$db->quote($v->site)))
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$db->execute(lq('DELETE FROM `'.DATABASE.'_'.$v->site.'`.#_TP_relations_ext
+									WHERE nature="E" AND id2='.$v->id.' AND site='.$db->quote(C::get('site', 'cfg'))))
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					}
+				}
+			}
+		}
+		usecurrentdb();
 	}
 
 
@@ -234,7 +354,8 @@ class EntryTypesLogic extends Logic
 									'style' => array('style', ''),
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''),
-									'sort' => array('select', '+'));
+									'sort' => array('select', '+'),
+									'externalallowed' => array('boolean','+'));
 	}
 	// end{publicfields} automatic generation  //
 

@@ -164,7 +164,7 @@ class LodelException extends Exception
 			case E_COMPILE_WARNING:
 				if(!C::get('debugMode', 'cfg'))
 				{
-					error_log('['.self::$type[$errno].' - '.C::get('site','cfg').'] '.$errstr.' in file '.$errfile.' on line '.$errline, 0);
+					error_log('['.(isset(self::$type[$errno]) ? self::$type[$errno] : 'unknown').' - '.C::get('site','cfg').'] '.$errstr.' in file '.$errfile.' on line '.$errline, 0);
 					break;
 				}
 			case E_USER_ERROR:

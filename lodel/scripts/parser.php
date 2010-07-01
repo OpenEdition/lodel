@@ -155,7 +155,7 @@ class Parser
 		$this->signature = preg_replace("/\W+/", "_", $in);
 		$this->fct_txt = $this->macros_txt = $this->charset = $this->ind = $this->countarr = null;
         	$this->refresh = $this->looplevel = 0;
-		$this->loops = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
+		$this->loops = $this->funcs = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
 		$this->isLoop = (bool)$loop;
 		$this->sqlrefresh = $GLOBALS['sqlCacheTime'];
 		// read the file
@@ -1463,7 +1463,7 @@ PHP;
 		if(!($attrs['ID'] = (int)$attrs['ID']))
 			$this->_errmsg("Incorrect ID for block number ".(count($this->blocks)+1));
 		if(in_array($attrs['ID'], $this->blocks))
-			$this->_errmsg("Duplicate ID for block number ".(count($this->blocks)+1));
+			$this->_errmsg("Duplicate ID for block with ID=".$attrs['ID']);
         	$this->blocks[] = $attrs['ID'];
 		$this->_clearposition();
         
@@ -1531,8 +1531,8 @@ PHP;
 		// ouch !
 		if(false !== stripos($attrs['COND'], ' like '))
 		{
-			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/.*\/)/i", 
-					                    "/'([\w'\[\]\$\\\]*?)' like (\/.*\/)/i"), 
+			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\.\|\$\\\]*?\]) like (\/.*\/)/i", 
+					                    "/'([\w'\[\]\.\$\\\]*?)' like (\/.*\/)/i"), 
 			                    array('preg_match_all("\\2is", \\1, $context[\'matches\'])',
 				                'preg_match_all("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
 
@@ -1566,8 +1566,8 @@ PHP;
 				// RE ouch !
 				if(false !== stripos($attrs['COND'], ' like '))
 				{
-					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
-							                    "/'([\w'\[\]\$\\\]*?)' like (\/[^\/]*\/)/i"), 
+					$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\.\|\$\\\]*?\]) like (\/[^\/]*\/)/i", 
+							                    "/'([\w'\[\]\.\$\\\]*?)' like (\/[^\/]*\/)/i"), 
 					                    array('preg_match_all("\\2i", \\1, $context[\'matches\'])',
 						                        'preg_match_all("\\2i", "\\1", $context[\'matches\'])'), $attrs['COND']);
 				}

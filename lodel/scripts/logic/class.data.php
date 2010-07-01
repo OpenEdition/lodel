@@ -904,6 +904,7 @@ class DataLogic
 	{
 		$archive = @$_FILES['archive']['tmp_name'];
 		$context['error_upload'] = @$_FILES['archive']['error'];
+		$file = '';
 		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
@@ -1767,7 +1768,7 @@ class DataLogic
 		}
 		if(empty($context['data']['added']) || !is_array($context['data']['added'])) return;
 		$tablefield = lq('#_TP_tablefields');
-		$flipped = is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
+		$flipped = !empty($context['data']['dropped']) && is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
 				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") 
@@ -2244,7 +2245,7 @@ class DataLogic
 		foreach($context['data'] as $table=>$fields) {
 			$tablefieldgroup = isset($fields['dropped']['tablefieldgroup']) ? $fields['dropped']['tablefieldgroup'] : array();
 			unset($fields['dropped']['tablefieldgroup']);
-			$flipped = is_array($fields['dropped']) ? array_flip($fields['dropped']) : array();
+			$flipped = !empty($fields['dropped']) && is_array($fields['dropped']) ? array_flip($fields['dropped']) : array();
 			if(!empty($fields['added']) && is_array($fields['added'])) {
 				foreach($fields['added'] as $field=>$equivalent) {
 					$fieldType = multidimArrayLocate($this->_xmlStruct[$table], $field);

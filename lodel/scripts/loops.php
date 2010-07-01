@@ -290,7 +290,7 @@ function loop_next($context, $funcname, $arguments)
 function loop_rss($context, $funcname, $arguments)
 {
 	defined('MAGPIE_CACHE_ON') || define("MAGPIE_CACHE_ON", TRUE);
-	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", "./CACHE");
+	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", './CACHE');
 	defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
 	defined('MAGPIE_OUTPUT_ENCODING') || define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {
@@ -303,6 +303,7 @@ function loop_rss($context, $funcname, $arguments)
 			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
 		$arguments['refresh'] = 0;
 	}
+
 	if(isset($arguments['timeout']) && is_numeric($arguments['timeout']) && $arguments['timeout'] > 0)
 	{
 		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
@@ -320,7 +321,7 @@ function loop_rss($context, $funcname, $arguments)
 			return;
 		}
 	}
-
+	error_reporting($err);
 	$localcontext = $context;
 	foreach (array (# obligatoire
 	"title", "link", "description", # optionel
@@ -390,7 +391,6 @@ function loop_rssitem($context, $funcname, $arguments)
 	}
 	if (function_exists("code_after_$funcname"))
 		call_user_func("code_after_$funcname", $localcontext);
-	error_reporting($err);
 } //end loop rss tiem
 
 /**
@@ -781,19 +781,29 @@ function loop_alphabetSpec($context, $funcname)
 	} else { // class
 		$table = $context['table'].' LEFT JOIN #_TP_entities ON (#_TP_'.$context['table'].'.identity=#_TP_entities.id)';
 	}
+	$external = false;
+	if(!empty($context['external']) && ($s = C::get('site_ext', 'cfg')))
+	{
+		$external = true;
+		$db->SelectDB(DATABASE.'_'.$s);
+	}
+	
 	$status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
+	$sql2 = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
+
 	$whereSelect .= !empty($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
 	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l 
 			FROM #_TP_{$table} 
 			{$whereSelect} 
 			ORDER BY l";
-	
+
 	$lettres = $db->getArray(lq($sql));
 	if(empty($lettres))
 	{
 		if(function_exists('code_alter_'.$funcname))
 			call_user_func('code_alter_'.$funcname, $context);
 
+		usecurrentdb();
 		return;
 	}
 
@@ -802,11 +812,10 @@ function loop_alphabetSpec($context, $funcname)
 			$lettre['l'] = strtoupper(makeSortKey($lettre['l']));
 	}
 	
-	$sql = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$table} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 
 	for ($l = 'A'; $l != 'AA'; $l++) {
 		$context['lettre'] = $l;
-		$context['nbresults'] = $db->getOne($sql."'{$context['lettre']}'");
+		$context['nbresults'] = $db->getOne($sql2."'{$context['lettre']}'");
 		call_user_func("code_do_$funcname", $context);
 	}
 	
@@ -814,7 +823,7 @@ function loop_alphabetSpec($context, $funcname)
 	foreach($lettres as &$lettre) {
 		if($lettre['l'] >= '0' && $lettre['l'] <= '9') {
 			$context['lettre'] = $lettre['l'];
-			$context['nbresults'] = $db->getOne($sql.$context['lettre']);
+			$context['nbresults'] = $db->getOne($sql2.$context['lettre']);
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
@@ -823,10 +832,12 @@ function loop_alphabetSpec($context, $funcname)
 		if($lettre['l'] == '') continue;
 		if(!preg_match("/[A-Z]/", $lettre['l']) && !preg_match("/[0-9]/", $lettre['l'])) {
 			$context['lettre'] = $lettre['l'];
-			$context['nbresults'] = $db->getOne($sql."'".addcslashes($context['lettre'], "'")."'");
+			$context['nbresults'] = $db->getOne($sql2."'".addcslashes($context['lettre'], "'")."'");
 			call_user_func("code_do_$funcname", $context);
 		}
 	}
+
+	usecurrentdb();
 }
 
 function loop_classtypes($context, $funcname)
@@ -838,6 +849,50 @@ function loop_classtypes($context, $funcname)
         $localcontext['title']     = getlodeltextcontents("classtype_$classtype", 'admin');
 	call_user_func("code_do_$funcname", $localcontext);
     }
+}
+
+function loop_externalentrytypes_select($context, $funcname)
+{
+	global $db;
+
+	if(!empty($context['id']))
+	{
+		$entrytypes = $db->getArray(lq('
+		SELECT id2, site 
+			FROM #_TP_relations_ext
+			WHERE nature="ET" AND id1='.(int)$context['id']));
+	}
+
+	if(empty($entrytypes))
+	{
+		if(function_exists("code_alter_$funcname"))
+			call_user_func("code_alter_$funcname", $context);
+		return;
+	}
+
+	if(function_exists("code_before_$funcname"))
+		call_user_func("code_before_$funcname", $context);
+
+	$context['all'] = '';
+
+	foreach($entrytypes as $entrytype)
+	{
+		$localcontext = $context;
+		$localcontext['id'] = $entrytype['site'].'.'.$entrytype['id2'];
+		$db->SelectDB(DATABASE.'_'.$entrytype['site']);
+		$localcontext['title'] = $entrytype['site'] . ' - ';
+		$localcontext['title'] .= $db->getOne(lq('
+	SELECT title
+		FROM #_TP_entrytypes
+		WHERE id='.$entrytype['id2']));
+		
+		usecurrentdb();
+		$context['all'] .= $localcontext['id'].',';
+		call_user_func("code_do_$funcname", $localcontext);
+	}
+	
+	if(function_exists("code_after_$funcname"))
+		call_user_func("code_after_$funcname", $context);
 }
 
 define('INC_LOOPS', 1);

@@ -68,7 +68,7 @@
 			<td>[(#LASTNAME|nbsp)] [(#FIRSTNAME|nbsp)]</td>
 			<td>[(#EMAIL|nbsp)]</td>
 			<td>
-				<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]' AND userrights GT 5" LIMIT="0,1" SELECT="1"> 
+				<LOOP NAME="nbsessions" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]' AND userrights GT 5 AND userrights LT 128" LIMIT="0,1" SELECT="1"> 
 				<DOFIRST>
 				<div class="texte_info">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
