@@ -50,9 +50,9 @@
 				<caption><MACRO NAME="DISPLAY_ALTERTITLE"></caption>
 			<tr>
 				<td class="empty">&nbsp;</td>
-				<th class="status"><img src="[#SHAREURL]/images/published.gif" alt="[@COMMON.PUBLISHED]" title="[@COMMON.PUBLISHED]"/></th>
-				<th class="status"><img src="[#SHAREURL]/images/unpublished.gif" alt="[@COMMON.READY_FOR_PUBLICATION]" title="[@COMMON.READY_FOR_PUBLICATION]" /></th>
 				<th class="status"><img src="[#SHAREURL]/images/draft.gif" alt="[@COMMON.DRAFT]" title="[@COMMON.DRAFT]" /></th>
+				<th class="status"><img src="[#SHAREURL]/images/unpublished.gif" alt="[@COMMON.READY_FOR_PUBLICATION]" title="[@COMMON.READY_FOR_PUBLICATION]" /></th>
+				<th class="status"><img src="[#SHAREURL]/images/published.gif" alt="[@COMMON.PUBLISHED]" title="[@COMMON.PUBLISHED]"/></th>
 				<th class="status"><img src="[#SHAREURL]/images/locked.gif" alt="[@COMMON.PROTECTED]" title="[@COMMON.PROTECTED]" /></th>
 			</tr>
 		</BEFORE>
@@ -60,10 +60,10 @@
 		<LET VAR="curtotal"></LET>
 		<tr>
 			<th class="type"><MACRO NAME="DISPLAY_ALTERTITLE"></th>
-			<LOOP NAME="docpub" TABLE="entities" WHERE="status =1" WHERE="idtype='[#ID]'" ORDER="rank">
+			<LOOP NAME="docbrouillon" TABLE="entities" WHERE="status = -8" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
-				<td>[#NBRESULTS]</td>
-			</BEFORE>
+			
+			<td>[#NBRESULTS]</td></BEFORE>
 			<ALTERNATIVE>
 				<td>0</td>
 			</ALTERNATIVE>
@@ -76,10 +76,10 @@
 				<td>0</td>
 			</ALTERNATIVE>
 			</LOOP>
-			<LOOP NAME="docbrouillon" TABLE="entities" WHERE="status = -8" WHERE="idtype='[#ID]'" ORDER="rank">
+			<LOOP NAME="docpub" TABLE="entities" WHERE="status =1" WHERE="idtype='[#ID]'" ORDER="rank">
 			<BEFORE>
-			
-			<td>[#NBRESULTS]</td></BEFORE>
+				<td>[#NBRESULTS]</td>
+			</BEFORE>
 			<ALTERNATIVE>
 				<td>0</td>
 			</ALTERNATIVE>
