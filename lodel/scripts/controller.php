@@ -510,7 +510,7 @@ class Controller
 	{
 		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
-		$critere = C::get('rights', 'lodeluser') > LEVEL_VISITOR ? '' : 
+		$critere = C::get('rights', 'lodeluser') >= LEVEL_VISITOR ? '' : 
 		" AND {$GLOBALS['tableprefix']}entities.status>0 AND {$GLOBALS['tableprefix']}types.status>0";
 		
 		$row = $db->getRow("
