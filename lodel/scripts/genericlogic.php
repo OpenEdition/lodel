@@ -229,6 +229,7 @@ class GenericLogic extends Logic
 	 */
 	public function validateFields(&$context, &$error)
 	{
+		static $tablefields = array();
 		// get the fields of class
 		function_exists('validfield') || include "validfunc.php";
 		if (!empty($context['class'])) {
@@ -244,7 +245,10 @@ class GenericLogic extends Logic
 		if(true !== $ret) trigger_error('ERROR: invalid class name', E_USER_ERROR);
 
 		$daotablefields = DAO::getDAO("tablefields");
-		$fields = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
+		if(!isset($tablefields[$class]))
+			$tablefields[$class] = $daotablefields->findMany("(class='". $class. "' OR class='entities_". $class. "') AND status>0 ", "", "name,type,class,cond,defaultvalue,allowedtags,edition,g_name");
+
+		$fields = $tablefields[$class];
 
 		// file to move once the document id is know.
 		$this->files_to_move = array ();
@@ -258,6 +262,8 @@ class GenericLogic extends Logic
 			}
 			$type = $field->type;
 			$name = $field->name;
+
+			unset($value); // break the reference
 
 			$value = -1;
 
