@@ -435,7 +435,7 @@ PHP;
 		$varname = (string)$varname;
 		$pipefunction = (string)$pipefunction;
 
-		if(isset($this->_cachedVars[$prefix][$varname])) 
+		if(isset($this->_cachedVars[$prefix][$varname]) && !C::get('translationmode', 'lodeluser'))
 		{
             		$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
 		}

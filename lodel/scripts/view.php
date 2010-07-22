@@ -145,12 +145,6 @@ class View
 	private $_cache;
 
 	/**
-	* indicates if we must regenerate the page
-	* @var bool
-	*/
-	private $_regen;
-
-	/**
 	 * page which will be displayed
 	 * cached for trigger postview
 	 * @var string
@@ -170,7 +164,6 @@ class View
 	 */
 	private function __construct() 
 	{
-		$this->_regen = (bool) (C::get('recalcultpl') && C::get('admin', 'lodeluser'));
 		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
 		$this->_evalCalled = false;
 		$this->_cachedfile = null;
@@ -179,7 +172,7 @@ class View
 		$this->_home = C::get('home', 'cfg');
         	self::$time = time();
 		self::$microtime = microtime(true);
-        	self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg'));
+        	self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
 	}
 
 	/**
@@ -289,7 +282,7 @@ class View
 		$context =& C::getC();
 
 		// we try to reach the cache only if asked and no POST datas
-		if($caching && !self::$nocache && !$this->_regen) 
+		if($caching && !self::$nocache) 
 		{
 			if(!isset($this->_cache))
 			{
@@ -496,21 +489,18 @@ class View
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
 			
-			if(!$this->_regen)
+			$recalcul = false;
+
+			if($contents = $this->_cache->get($template_cache, $group))
 			{
-				$recalcul = false;
-				
-				if($contents = $this->_cache->get($template_cache, $group))
-				{
-					$pos = strpos($contents, "\n");
-					$timestamp = (int)substr($contents, 0, $pos);
-					if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
-					else $contents = substr($contents, $pos+1);
-				}
-				else
-				{
-					$recalcul = true;
-				}
+				$pos = strpos($contents, "\n");
+				$timestamp = (int)substr($contents, 0, $pos);
+				if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
+				else $contents = substr($contents, $pos+1);
+			}
+			else
+			{
+				$recalcul = true;
 			}
 		}
         
@@ -669,8 +659,7 @@ class View
 				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 			}
 			
-			if(!$this->_regen)
-				$contents = $this->_cache->get($template_cache, $group);
+			$contents = $this->_cache->get($template_cache, $group);
 		}
         
 		if($contents && !(C::get('debugMode', 'cfg') && $this->_cache->lastModified() < @filemtime($tpl)) )

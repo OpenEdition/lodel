@@ -594,7 +594,7 @@ class LodelParser extends Parser
 <?php if (C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site")) {
 if(!function_exists('mkeditlodeltextJS')) include("translationfunc.php"); mkeditlodeltextJS(); ?>
 <hr />
-<form method="post" action="index.php">
+<form method="post" action="index.<?php echo !defined('backoffice') ? C::get('extensionscripts', 'cfg') : 'php';?>">
 <input type="hidden" name="edit" value="1" />
 <input type="hidden" name="do" value="edit" />
 <input type="hidden" name="lo" value="texts" />
