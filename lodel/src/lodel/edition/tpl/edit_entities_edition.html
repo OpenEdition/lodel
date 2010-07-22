@@ -174,7 +174,7 @@
 	</LOOP>
 	<!--[ Téléchargement source ]-->
 	<IF COND="[#LODELUSER.REDACTOR] AND ([#CREATIONMETHOD]=='servoo' OR [#CREATIONMETHOD]=='otx') AND [#CREATIONINFO]">
-		<IF COND="[#CREATIONINFO|pathinfo(PATHINFO_EXTENSION)] NE 'xml'">[#CREATIONINFO|pathinfo(PATHINFO_EXTENSION)]
+		<IF COND="[#CREATIONINFO|pathinfo(PATHINFO_EXTENSION)] NE 'xml'">
 			<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=source&amp;id=[#ID]">[@EDITION.GET_SOURCE_FILE]</a></li>
 			<IF COND="[#CREATIONMETHOD] EQ 'otx'">
 				<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=tei&amp;id=[#ID]">[@EDITION.GET_TEI_FILE]</a></li>
