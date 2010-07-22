@@ -189,7 +189,7 @@ class TranslationsLogic extends Logic {
 			{
 				global $alltexts_cache, $distincttexts, $db;
 				$logic = null;
-				if(empty($context['lang']) || empty($context['textgroups']) || empty($context['name'])) return;
+				if(empty($context['textgroups']) || empty($context['name'])) return;
 
 				foreach(array_keys($alltexts_cache) as $lang) {
 					$row = isset($alltexts_cache[$lang][$context['name']]) ? $alltexts_cache[$lang][$context['name']] : null;
