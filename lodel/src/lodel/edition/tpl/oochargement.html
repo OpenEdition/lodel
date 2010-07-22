@@ -124,17 +124,19 @@
 </div>
 
 <IF COND="[#LODELUSER.ADMINLODEL] AND ![#MULTIPLE]">
+	<div class="spacer"></div>
 	<div id="otxadmin" class="fullrounded">
 		<h1 class="toprounded">[@COMMON.ADMINISTRATION|mb_strtoupper('UTF-8')]</h1>
 		<div>
-			<input class="styled styled_blue" type="button" name="sortieoopublic" value="[@EDITION.OUTPUT_PUBLIC_TEI]" onclick="o.send('sortieoopublic');"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-			<input class="styled styled_blue" type="button" name="sortieoo" value="[@EDITION.OUTPUT_LODEL_TEI]" onclick="o.send('sortieoo');"/><br/><br/>
+			<input class="styled styled_blue" type="button" name="sortietei" value="[@EDITION.OUTPUT_TEI]" onclick="o.send('sortietei');"/>&nbsp;
+			<!--[<input class="styled styled_blue" type="button" name="sortieoo" value="[@EDITION.OUTPUT_LODEL_TEI]" onclick="o.send('sortieoo');"/><br/><br/>]-->
 			<input class="styled styled_blue" type="button" name="sortie" value="[@EDITION.OUTPUT_CONVERSION]" onclick="o.send('sortie');"/>
 		</div>
 	</div>
 </IF>
-<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
-<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+
+<MACRO NAME="MOOTOOLS"/>
+
 <script type="text/javascript">
 var OtxLoad = {};
 OtxLoad = function() {
@@ -206,19 +208,24 @@ OtxLoad.prototype = {
 		$('otxerror').addClass('hidden');
 		$('otxerror').getChildren().each(function(item, k) {
 			if(k > 0) {
-				item.dispose();
+				item.destroy();
 			}
 		});
 		var dist = $('file1').get('value');
 		var local = $('localfilename').get('value');
 		if(!dist && !local) { return false; }
-		if($('ifcontainer')) { $('ifcontainer').dispose(); }
-		$('otxresults').adopt(new Element('iframe', {'id':'ifcontainer', 'name':'ifcontainer', 'style':'display:none'}));
+		if($('ifcontainer')) { $('ifcontainer').destroy(); }
+		$('otxerror').adopt(new Element('iframe', {'id':'ifcontainer', 'name':'ifcontainer', 'style':'border:none;width:100%;'}));
 		if(more) {
 			$('formfic').adopt(new Element('input', {'type':'hidden', 'value':1, 'name':more}));
 		} else {
 			this.changeStep(0);
 			$('formfic').set('target', 'ifcontainer');
+			if(!this.multiple) {
+				$('ifcontainer').addEvent('load', function() {
+					$('otxerror').removeClass.delay(1500, $('otxerror'), 'hidden');
+				});
+			}
 		}
 		$('formfic').submit();
 		return false;

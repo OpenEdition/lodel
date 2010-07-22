@@ -91,8 +91,7 @@ try
 	header('content-type: text/html; charset=utf8');
 	foreach(array('idtask', 'lodeltags', 'reload', 'iddocument') as $var)
 	{
-		if(isset($context[$var]))
-		$context[$var] = (int)$context[$var];
+		if(isset($context[$var])) $context[$var] = (int)$context[$var];
 		else $context[$var] = 0;
 	}
 	
@@ -104,7 +103,7 @@ try
 	$task = $context['idtask'];
 	$fileorigin = C::get('fileorigin');
 	$localfile = C::get('localfile');
-	$isFrame = ! (C::get('sortieoo') || C::get('sortieoopublic') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
+	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
 
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
 		$file = $_FILES['file1'];
@@ -126,9 +125,10 @@ try
 		if(empty($file['tmp_name']) || $file['tmp_name'] == 'none' || !is_uploaded_file($file['tmp_name']))
 			printErrors("Le fichier n'est pas un fichier chargé", true, $isFrame);
 
+		$file1 = $file['tmp_name'];
 		$sourceoriginale = $file['name'];
 		$tmpdir = tmpdir(uniqid('import_', true)); // use here and later.
-		$source = $tmpdir. "/". basename($file['tmp_name']). '-source';
+		$source = $tmpdir. "/". basename($file1). '-source';
 		// move first because some provider does not allow operation in the upload dir
 		if(!move_uploaded_file($file['tmp_name'], $source))
 			printErrors("Impossible de déplacer le fichier chargé", true, $isFrame);
@@ -149,121 +149,293 @@ try
 		$source          = '';
 	}
 
-	if(!empty($source))
+	if(empty($source))
 	{
-		if($isFrame) printJavascript("window.parent.o.changeStep(1);");
+		$context['url'] = 'oochargement.php?'.$_SERVER['QUERY_STRING'];
+		View::getView()->render('oochargement', !(bool)$file1);
+		die;
+	}
 
-		set_time_limit(0);
-		$sources = $context['urls'] = array();
-		$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
-		if($ext === 'zip')
-		{ // multiple
-			if(empty($context['multiple']))
-			{
-				printErrors('Please use multiple import page for importing documents from .zip file', true, $isFrame);
-			}
-			else
-			{
-				$oldtmpdir = $tmpdir;
-				$tmpdir = array();
-				$unzipcmd = C::get('unzipcmd', 'cfg');
-				if ($unzipcmd && $unzipcmd != "pclzip") {
-					$line = `$unzipcmd -o -d $tmpdir $source`;
-					$line = explode("\n", $line);
-					if(count($line) > 1 && !empty($line[1]))
-					{
-						unset($line[0]);
-						foreach($line as $file)
-						{
-							$file = trim(substr($file, strpos($file, ':') + 1));
-							$base = basename($file);
-							if(in_array(strtolower(pathinfo($base, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $base{0})
-							{
-								$tmp = tmpdir(uniqid('import_', true));
-								rename($file, $tmp.'/'.$base);
-								$sources[$base] = $tmp.'/'.$base;
-								$tmpdir[] = $tmp;
-							}
-						}
-					}
-					else
-					{
-						printErrors('No files were extracted from the archive', true, $isFrame);
-					}
-				} else {
-					function LodelOtxPostExtractCallBack($p_event, &$p_header)
-					{
-						// ----- look for valid extraction
-						if ($p_header['status'] == 'ok') {
-							rename($p_header['filename'], $p_header['filename'].'-source');
-							return 1;
-						}
-						return 0;
-					}
-					
-					class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
-					$archive = new PclZip($source);
-					$arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
-					
-					if($arr)
-					{
-						foreach($arr as $file)
-						{
-							if(in_array(strtolower(pathinfo($file['stored_filename'], PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $file['stored_filename'])
-							{
-								$tmp = tmpdir(uniqid('import_', true));
-								rename($file['filename'], $tmp.'/'.$file['stored_filename']);
-								$tmpdir[] = $tmp;
-								$sources[$file['stored_filename']] = $tmp.'/'.$file['stored_filename'].'-source';
-							}
-						}
-					}
-				}
+	if($isFrame) printJavascript("window.parent.o.changeStep(1);");
 
-				if(!function_exists('removefilesfromimport'))
-				{
-					function removefilesfromimport($rep)
-					{
-						if(!file_exists($rep)) return;
-						$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
-						while (($file = readdir($fd)) !== false) {
-							if('.' === $file{0}) continue;
-							$file = $rep. "/". $file;
-							if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
-								removefilesfromimport($file);
-								// puis on supprime le répertoire
-								@rmdir($file);
-							} else {@unlink($file);}
-						}
-						closedir($fd);
-						@rmdir($rep);
-					}
-				}
-				removefilesfromimport($oldtmpdir);
-				$context['multiple'] = count($sources);
-			}
-		}
-		elseif($ext === 'xml')
+	set_time_limit(0);
+	$sources = $context['urls'] = array();
+	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
+	if($ext === 'zip')
+	{ // multiple
+		if(empty($context['multiple']))
 		{
-			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
+			printErrors('Please use multiple import page for importing documents from .zip file', true, $isFrame);
+		}
+		else
+		{
+			$oldtmpdir = $tmpdir;
+			$tmpdir = array();
+			$unzipcmd = C::get('unzipcmd', 'cfg');
+			if ($unzipcmd && $unzipcmd != "pclzip") {
+				$line = `$unzipcmd -o -d $tmpdir $source`;
+				$line = explode("\n", $line);
+				if(count($line) > 1 && !empty($line[1]))
+				{
+					unset($line[0]);
+					foreach($line as $file)
+					{
+						$file = trim(substr($file, strpos($file, ':') + 1));
+						$base = basename($file);
+						if(in_array(strtolower(pathinfo($base, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $base{0})
+						{
+							$tmp = tmpdir(uniqid('import_', true));
+							rename($file, $tmp.'/'.$base);
+							$sources[$base] = $tmp.'/'.$base;
+							$tmpdir[] = $tmp;
+						}
+					}
+				}
+				else
+				{
+					printErrors('No files were extracted from the archive', true, $isFrame);
+				}
+			} else {
+				function LodelOtxPostExtractCallBack($p_event, &$p_header)
+				{
+					// ----- look for valid extraction
+					if ($p_header['status'] == 'ok') {
+						rename($p_header['filename'], $p_header['filename'].'-source');
+						return 1;
+					}
+					return 0;
+				}
+
+				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
+				$archive = new PclZip($source);
+				$arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
+
+				if($arr)
+				{
+					foreach($arr as $file)
+					{
+						if(in_array(strtolower(pathinfo($file['stored_filename'], PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $file['stored_filename'])
+						{
+							$tmp = tmpdir(uniqid('import_', true));
+							rename($file['filename'], $tmp.'/'.$file['stored_filename']);
+							$tmpdir[] = $tmp;
+							$sources[$file['stored_filename']] = $tmp.'/'.$file['stored_filename'].'-source';
+						}
+					}
+				}
+			}
+
+			if(!function_exists('removefilesfromimport'))
+			{
+				function removefilesfromimport($rep)
+				{
+					if(!file_exists($rep)) return;
+					$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+					while (($file = readdir($fd)) !== false) {
+						if('.' === $file{0}) continue;
+						$file = $rep. "/". $file;
+						if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+							removefilesfromimport($file);
+							// puis on supprime le répertoire
+							@rmdir($file);
+						} else {@unlink($file);}
+					}
+					closedir($fd);
+					@rmdir($rep);
+				}
+			}
+			removefilesfromimport($oldtmpdir);
+			$context['multiple'] = count($sources);
+		}
+	}
+	elseif($ext === 'xml')
+	{
+		if($isFrame) printJavascript('window.parent.o.changeStep(2);');
+
+		$contents = array();
+		$teiContents = file_get_contents($source);
+
+		try
+		{
+			$parser = new TEIParser($context['idtype']);
+			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir[0], $sourceoriginale);
+		}
+		catch(Exception $e)
+		{
+			printErrors($parser->getLogs(), false);
+			printErrors($e->getMessage(), true, $isFrame);
+		}
+
+		$contents['parserreport'] = $parser->getLogs();
+
+		if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
+		{
+			array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+			echo '<pre>'. print_r($contents, 1) . '</pre>';
+			die();
+		}
+
+		$fileconverted = $source. '.converted';
+		if (!writefile($fileconverted, base64_encode(serialize($contents))))
+		{
+			printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
+		}
+
+		$tei = $source. '.tei';
+		if(!writefile($tei, $teiContents))
+		{
+			printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
+		}
+
+		unset($contents);
+		$row = array();
+		$row['fichier']         = $fileconverted;
+		$row['tei']		= $tei;
+		$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
+		// build the import
+		$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
+		$row['identity']      = $context['identity'];
+		$row['idparent']      = $context['idparent'];
+		$row['idtype']        = $context['idtype'];
+
+		function_exists('maketask') || include 'taskfunc.php';
+		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+		die;
+	}
+	elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
+	{
+		printErrors('invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .docx, .sxw, .odt, .rtf', true, $isFrame);
+	}
+	elseif(!empty($context['multiple']))
+	{
+		printErrors('You can not import single file while using massive import mode', true, $isFrame);
+	}
+	else
+	{
+		$sources = array($sourceoriginale => $source);
+		$tmpdir = array($tmpdir);
+	}
+
+	$user = C::get('id', 'lodeluser').';'.C::get('name', 'lodeluser').';'.C::get('rights', 'lodeluser');
+	$site = C::get('site', 'cfg');
+	defined('INC_CONNECT') || include 'connect.php';
+	global $db;
+	$url = $db->GetOne(lq('SELECT url FROM #_MTP_sites WHERE name='.$db->quote($site)));
+
+	$client = new OTXClient();
+	$errors = array();
+	$i = 0;
+	do
+	{
+		$options = $client->selectServer($i++);
+		if(!$options) break;
+		$options['lodel_user'] = $user;
+		$options['lodel_site'] = $site;
+
+		$client->instantiate($options);
+		if($client->error)
+			$errors[] = 'Connection failed for document <em>'.$sourceoriginale.'</em>: '.$client->status;
+		else break;
+	} while (1);
+
+	if($client->error)
+	{
+		$context['error'] = join('<br/>', $errors);
+		$context['url'] = 'oochargement.php?'.$_SERVER['QUERY_STRING'];
+		View::getView()->render('oochargement', false);
+		die;
+	}
+
+	// get the XML schema of the editorial model
+	$datas['title'] = 'ME';
+	$datas['description'] = 'ME OTX';
+	$datas['author'] = 'Lodel';
+	$datas['modelversion'] = 1;
+	$schema = Logic::getLogic('data')->generateXML($datas);
+	$i = 0;
+	$mode = C::get('mode') ? C::get('mode') : 'strict';
+	$nb = count($sources);
+
+	foreach($sources as $sourceoriginale => $source)
+	{
+		++$i;
+		$nomoriginal = $sourceoriginale;
+		$sourceoriginale = preg_replace('/[^a-zA-Z\-_\.0-9]/', '-', $sourceoriginale, -1, $count);
+
+		if(!empty($context['multiple']))
+		{
+			printJavascript('window.parent.o.changeStep(1, "'.addcslashes(sprintf(getlodeltextcontents('OTX_PROCESSING_CURRENT_FILE', 'edition'), $i, $nb, $sourceoriginale), '"').'");');
+		}
+
+		$request = array('schema' => $schema);
+		$request['attachment'] = file_get_contents($source);
+		$request['mode'] = 'lodel:'.$mode;
+		$request['request'] = <<<RDF
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/">
+<dc:source>{$sourceoriginale}</dc:source>
+<prism:publicationName>{$site}</prism:publicationName>
+<dc:identifier>{$url}</dc:identifier>
+</rdf:RDF>
+RDF;
+
+		$client->request($request);
+
+		if(!$client->error)
+		{
+			if($isFrame)
+			{
+				printJavascript('window.parent.o.changeStep(2, "'.$client->status.'");');
+			}
+
+			if(empty($context['multiple']) && C::get('sortietei') && C::get('adminlodel', 'lodeluser'))
+			{
+				header("Content-Type: application/xml; charset=UTF-8");
+				echo $client->xml;
+				die();
+			}
+
+			if(empty($context['idtype']))
+			{ // reload
+				$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
+			}
+
+			$odtconverted = $source.'-odt.converted';
+			if(!writefile($odtconverted, $client->odt))
+			{
+				printErrors('unable to write .odt converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
+			}
+
+			$tei = $source. '.tei';
+			if(!writefile($tei, $client->xml))
+			{
+				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
+			}
 
 			$contents = array();
-			$teiContents = file_get_contents($source);
 
 			try
 			{
 				$parser = new TEIParser($context['idtype']);
-				$contents['contents'] = $parser->parse($teiContents, '', $tmpdir[0], $sourceoriginale);
+				$contents['contents'] = $parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
 			}
 			catch(Exception $e)
 			{
-				printErrors($parser->getLogs(), false);
-				printErrors($e->getMessage(), true, $isFrame);
+				printErrors($parser->getLogs(), false, $isFrame);
+				printErrors($e->getMessage(), empty($context['multiple']), $isFrame);
+				if(!empty($context['multiple'])) continue;
 			}
 
 			$contents['parserreport'] = $parser->getLogs();
+			$contents['otxreport'] = json_decode($client->report, true);
+			if(false === $contents['contents'])
+			{
+				printErrors($contents['parserreport'], empty($context['multiple']), $isFrame);
+				if(!empty($context['multiple'])) continue;
+			}
 
-			if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
+			if(empty($context['multiple'])) unset($client);
+
+			if(empty($context['multiple']) && C::get('sortie') && C::get('adminlodel', 'lodeluser'))
 			{
 				array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
 				echo '<pre>'. print_r($contents, 1) . '</pre>';
@@ -273,19 +445,15 @@ try
 			$fileconverted = $source. '.converted';
 			if (!writefile($fileconverted, base64_encode(serialize($contents))))
 			{
-				printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
-			}
-
-			$tei = $source. '.tei';
-			if(!writefile($tei, $teiContents))
-			{
-				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
+				printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 			}
 
 			unset($contents);
 			$row = array();
 			$row['fichier']         = $fileconverted;
+			$row['odt']		= $odtconverted;
 			$row['tei']		= $tei;
+			$row['source']          = $source;
 			$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
 			// build the import
 			$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
@@ -294,198 +462,38 @@ try
 			$row['idtype']        = $context['idtype'];
 
 			function_exists('maketask') || include 'taskfunc.php';
-			printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
-			die;
-		}
-		elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
-		{
-			printErrors('invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .docx, .sxw, .odt, .rtf', true, $isFrame);
-		}
-		elseif(!empty($context['multiple']))
-		{
-			printErrors('You can not import single file while using massive import mode', true, $isFrame);
-		}
-		else
-		{
-			$sources = array($sourceoriginale => $source);
-			$tmpdir = array($tmpdir);
-		}
-
-		$user = C::get('id', 'lodeluser').';'.C::get('name', 'lodeluser').';'.C::get('rights', 'lodeluser');
-		$site = C::get('site', 'cfg');
-		defined('INC_CONNECT') || include 'connect.php';
-		global $db;
-		$url = $db->GetOne(lq('SELECT url FROM #_MTP_sites WHERE name='.$db->quote($site)));
-		
-		$client = new OTXClient();
-		$errors = array();
-		$i = 0;
-		do
-		{
-			$options = $client->selectServer($i++);
-			if(!$options) break;
-			$options['lodel_user'] = $user;
-			$options['lodel_site'] = $site;
-
-			$client->instantiate($options);
-			if($client->error)
-				$errors[] = 'Connection failed for document <em>'.$sourceoriginale.'</em>: '.$client->status;
-			else break;
-		} while (1);
-
-		if($client->error)
-		{
-			$context['error'] = join('<br/>', $errors);
-			$context['url'] = 'oochargement.php?'.$_SERVER['QUERY_STRING'];
-			View::getView()->render('oochargement', false);
-			die;
-		}
-
-		// get the XML schema of the editorial model
-		$datas['title'] = 'ME';
-		$datas['description'] = 'ME OTX';
-		$datas['author'] = 'Lodel';
-		$datas['modelversion'] = 1;
-		$schema = Logic::getLogic('data')->generateXML($datas);
-		$i = 0;
-		$mode = C::get('mode') ? C::get('mode') : 'strict';
-		$nb = count($sources);
-
-		foreach($sources as $sourceoriginale => $source)
-		{
-			++$i;
-			$nomoriginal = $sourceoriginale;
-			$sourceoriginale = preg_replace('/[^a-zA-Z\-_\.0-9]/', '-', $sourceoriginale, -1, $count);
-
-			if(!empty($context['multiple']))
+			if(empty($context['multiple']))
 			{
-				printJavascript('window.parent.o.changeStep(1, "'.addcslashes(sprintf(getlodeltextcontents('OTX_PROCESSING_CURRENT_FILE', 'edition'), $i, $nb, $sourceoriginale), '"').'");');
-			}
-
-			$request = array('schema' => $schema);
-			$request['attachment'] = file_get_contents($source);
-			$request['mode'] = 'lodel:'.$mode;
-			$request['request'] = <<<RDF
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/">
-    <dc:source>{$sourceoriginale}</dc:source>
-    <prism:publicationName>{$site}</prism:publicationName>
-    <dc:identifier>{$url}</dc:identifier>
-</rdf:RDF>
-RDF;
-
-			$client->request($request);
-
-			if(!$client->error)
-			{
-				if((!C::get('sortieoo') && !C::get('sortieoopublic') && !C::get('sortie')) || !C::get('adminlodel', 'lodeluser'))
-				{
-					printJavascript('window.parent.o.changeStep(2, "'.$client->status.'");');
-				}
-
-				if(empty($context['multiple']) && C::get('sortieoo') && C::get('adminlodel', 'lodeluser'))
-				{
-					header("Content-Type: application/xml; charset=UTF-8");
-					echo $client->lodelxml;
-					die();
-				}
-
-				if(empty($context['multiple']) && C::get('sortieoopublic') && C::get('adminlodel', 'lodeluser'))
-				{
-					header("Content-Type: application/xml; charset=UTF-8");
-					echo $client->xml;
-					die();
-				}
-
-				if(empty($context['idtype']))
-				{ // reload
-					$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
-				}
-				
-				$odtconverted = $source.'-odt.converted';
-				if(!writefile($odtconverted, $client->odt))
-				{
-					printErrors('unable to write .odt converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
-				}
-
-				$tei = $source. '.tei';
-				if(!writefile($tei, $client->xml))
-				{
-					printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
-				}
-
-				$contents = array();
-
-				try
-				{
-					$parser = new TEIParser($context['idtype']);
-					$contents['contents'] = $parser->parse($client->lodelxml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
-				}
-				catch(Exception $e)
-				{
-					printErrors($parser->getLogs(), false, $isFrame);
-					printErrors($e->getMessage(), empty($context['multiple']), $isFrame);
-					if(!empty($context['multiple'])) continue;
-				}
-
-				$contents['parserreport'] = $parser->getLogs();
-				$contents['otxreport'] = $client->report;
-				if(false === $contents['contents'])
-				{
-					printErrors($contents['parserreport'], empty($context['multiple']), $isFrame);
-					if(!empty($context['multiple'])) continue;
-				}
-
-				if(empty($context['multiple'])) unset($client);
-
-				if(empty($context['multiple']) && C::get('sortie') && C::get('adminlodel', 'lodeluser'))
-				{
-					array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
-					echo '<pre>'. print_r($contents, 1) . '</pre>';
-					die();
-				}
-
-				$fileconverted = $source. '.converted';
-				if (!writefile($fileconverted, base64_encode(serialize($contents))))
-				{
-					printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
-				}
-
-				unset($contents);
-				$row = array();
-				$row['fichier']         = $fileconverted;
-				$row['odt']		= $odtconverted;
-				$row['tei']		= $tei;
-				$row['source']          = $source;
-				$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
-				// build the import
-				$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
-				$row['identity']      = $context['identity'];
-				$row['idparent']      = $context['idparent'];
-				$row['idtype']        = $context['idtype'];
-
-				function_exists('maketask') || include 'taskfunc.php';
-				if(empty($context['multiple']))
-				{
-					printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
-				}
-				else
-				{
-					$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
-
-					printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
-				}
+				printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
 			}
 			else
 			{
-				printErrors("Conversion failed for document <em>".$sourceoriginale.'</em> :<br/>'.htmlentities($client->status, ENT_COMPAT, 'UTF-8'), empty($context['multiple']), $isFrame);
+				$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
+
+				printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
 			}
 		}
+		else
+		{
+			switch($client->error)
+			{
+				case E_USER_ERROR:
+					$type = 'INTERNAL ERROR: ';
+					break;
 
-		exit;
+				case E_ERROR:
+					$type = 'FATAL ERROR: ';
+					break;
+
+				default:
+					$type = 'UNKNOWN ERROR: ';
+					break;
+			}
+			printErrors($type."Conversion failed for document <em>".$sourceoriginale.'</em> :<br/>'.htmlentities($client->status, ENT_COMPAT, 'UTF-8'), empty($context['multiple']), $isFrame);
+		}
 	}
 
-	$context['url'] = 'oochargement.php?'.$_SERVER['QUERY_STRING'];
-	View::getView()->render('oochargement', !(bool)$file1);
+	exit;
 }
 catch(LodelException $e)
 {

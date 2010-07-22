@@ -50,20 +50,24 @@
 <div id="checkimport" class="toprightrounded">
 	<div id="results">
 		<div id="status">
-			<IF COND="[#PARSERREPORT]">
+			<IF COND="[#PARSERREPORT] OR [#ERROR]">
 				<img src="[#SHAREURL]/images/alerte_rouge.png" alt="[@INSTALL.WARNING]"/> <span class="error">[@INSTALL.WARNING|mb_strtoupper('utf-8')]</span>
+				<ul>
 				<LOOP NAME="foreach" ARRAY="[#PARSERREPORT]">
-					<BEFORE><ul></BEFORE>
-					<DO><li>[#VALUE]</li></DO>
-					<AFTER></ul></AFTER>
+					<li>[#VALUE]</li>
 				</LOOP>
+				<LOOP NAME="foreach" ARRAY="[#ERRORS]">
+					<LET VAR="error">[#VALUE]</LET>
+					<li>[#KEY] : <a href="#[#KEY]"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#KEY]" /></a></li>
+				</LOOP>
+				</ul>
 			<ELSE/>
 				<img src="[#SHAREURL]/images/alerte_vert.png" alt="[@EDITION.IMPORT_SUCCESSFULL]"/> <span class="success">[@EDITION.IMPORT_SUCCESSFULL|mb_strtoupper('utf-8')]</span>
 				<p class="otxcitation">Bravo !</p>
 			</IF>
 		</div>
 		<LET VAR="paranumber" GLOBAL="1">0</LET>
-		<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx,t.idgroup,tg.title AS tgtitle" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
+		<LOOP NAME="getFieldByRank" TABLE="tablefields AS t,tablefieldgroups AS tg" SELECT="t.name,t.type,t.title,t.otx,t.idgroup,tg.title AS tgtitle,t.style" WHERE="t.class='[#CLASS]' AND t.idgroup=tg.id" ORDER="tg.rank,t.rank">
 			<IF COND="[#TYPE] NE 'persons'">
 				<IF COND="![%CURIDGROUP]">
 					<LET VAR="curidgroup" GLOBAL="1">[#IDGROUP]</LET>
@@ -132,12 +136,18 @@
 						<IF COND="[#TYPE] EQ 'mltext'">
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title<IF COND="[#VALUE.ERROR]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]</td>
-									<td class="contents"><div class="overflowed">[#VALUE.TEXT]</div></td>
+									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERRORS.#NAME]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE] ([#KEY])</td>
+									<td class="contents"><div class="overflowed">
+										<LOOP NAME="foreach" ARRAY="[#VALUE]">
+											[#VALUE.TEXT]
+										</LOOP>
+									</div></td>
 									<td class="informations">
 										<ul>
-										<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
-											<li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+										<LOOP NAME="foreach" ARRAY="[#VALUE]">
+											<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
+												<li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+											</LOOP>
 										</LOOP>
 										</ul>
 									</td>
@@ -146,13 +156,13 @@
 						<ELSE/>
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title<IF COND="[#VALUE.ERROR]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
+									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERRORS.#NAME]"> error</IF>" id="[#NAME]"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
 									<td class="contents">
 										<div class="overflowed">
 											<IF COND="[#TYPE] EQ 'date'">
 												[#VALUE.TEXT|humandate]
 											<ELSE/>
-												<IF COND="[#OTX] EQ 'text:standard' AND [#VALUE.CLASS] EQ [#NAME] AND false SEQ [#VALUE.TEXT|strpos('<table')] AND false SEQ [#VALUE.TEXT|strpos('<img')]">
+												<IF COND="[#STYLE|strpos('standard')] NE false AND [#VALUE.CLASS] EQ [#NAME] AND false SEQ [#VALUE.TEXT|strpos('<table')] AND false SEQ [#VALUE.TEXT|strpos('<img')] AND false SEQ [#VALUE.TEXT|strpos('<h')]">
 													<LET VAR="paranumber" GLOBAL="1">[%PARANUMBER|lmath('+', 1)]</LET>
 													<span class="paranumber">[%PARANUMBER]</span>
 												</IF>
@@ -166,7 +176,12 @@
 											<IF COND="[#VALUE|is_array]">
 												<li>
 												<LOOP NAME="foreach" ARRAY="[#VALUE]">
-													<IF COND="[#KEY] EQ 'imagewidth'">
+													<IF COND="[#KEY] EQ 'imagename'">
+														<p>
+															<span style="color:#aaaaaa;">[@EDITION.IMAGE_NAME]</span><br/>
+															[#VALUE]
+														</p>
+													<ELSEIF COND="[#KEY] EQ 'imagewidth'">
 														<p>
 															<span style="color:#aaaaaa;">[@EDITION.IMAGE_ORIGINAL_WIDTH]</span><br/>
 															[#VALUE] px
@@ -209,23 +224,30 @@
 
 	<div id="informations" class="hidden">
 		<ul id="otxstats">
+			<IF COND="[#OTXWARNINGS]">
+				<li class="title"><p class="error">[@EDITION.OTX_WARNINGS]</p></li>
+				<LOOP NAME="foreach" ARRAY="[#OTXWARNINGS]">
+					<li>[#VALUE]</li>
+				</LOOP>
+			</IF>
 			<li class="title">[@EDITION.STATISTICS_INFORMATIONS]</li>
 			<li>
 				<LOOP NAME="foreach" ARRAY="[#STATISTICS.DOCSTATS]">
 					<p>[#KEY|getlodeltextcontents('edition')] : [#VALUE]</p>
 				</LOOP>
 			</li>
-			<li class="title">[@EDITION.USED_LANGUAGES]</li>
-			<li>[#STATISTICS.LANG|array_unique|join(', ')]</li>
+			<LET ARRAY="langs"><IF COND="[#STATISTICS.LANG|is_array]">[#STATISTICS.LANG|array_unique]</IF></LET>
+			<li class="title">[@EDITION.USED_LANGUAGES] <span style="color:grey">([#LANGS|count])</span></li>
+			<li>[#LANGS|join(', ')]</li>
 			<li class="title">[@COMMON.IMAGES] <span style="color:grey">([#STATISTICS.IMAGES|count])</span></li>
 			<li>
 				<LOOP NAME="foreach" ARRAY="[#STATISTICS.IMAGES]">
 					<p>[#KEY|basename] : [#VALUE.IMAGEWIDTH]x[#VALUE.IMAGEHEIGHT]px, [#VALUE.IMAGEMIME], [#VALUE.IMAGESIZE|niceFileSize]</p>
 				</LOOP>
 			</li>
-			<li class="title">[@EDITION.DOCUMENT_PLAN]</li>
+			<li class="title">[@EDITION.DOCUMENT_PLAN] <span style="color:grey">([#TITLES|count])</span></li>
 			<li>
-				plan
+				[#TITLES|join('')]
 			</li>
 		</ul>
 	</div>
@@ -235,8 +257,8 @@
 	<input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui';"/>&nbsp;<input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'"/>
 </div>
 
-<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3-core.js"></script>
-<script type="text/javascript" src="[#SHAREURL]/js/mootools-1.2.3.1-more.js"></script>
+<MACRO NAME="MOOTOOLS"/>
+
 <script type="text/javascript">
 var checkBalisage = {};
 checkBalisage = function() {

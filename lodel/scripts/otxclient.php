@@ -178,7 +178,7 @@ class OTXClient extends SoapClient
 			$this->_instanciated = true;
 		}
 		catch (SoapFault $fault) {
-			$this->error = true;
+			$this->error = $fault->faultcode;
 			$this->status = !empty($fault->detail) ? "On ".$fault->detail.': '.$fault->faultstring : $fault->faultstring;
 		}
 	}

@@ -75,201 +75,266 @@ try
 	if(!empty($context['contents']['entities']))
 		$context['relations'] = $context['contents']['entities'];
 	if(!empty($context['contents']['errors']))
-		$context['error'] = $context['contents']['errors'];
+		$context['errors'] = $context['contents']['errors'];
 
 	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities'], $context['contents']['errors']);
 	
-	$node = null;
-	$reader = new XMLReader();
-
-	if(!empty($context['otxreport']))
+	if(!empty($context['otxreport']['meta-soffice']))
 	{
-		// parse OTX logs
-		$reader->XML($context['otxreport'], 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
-		$tree = array();
-		$isMetas = 0;
-		$nbItem = 0;
-		while($reader->read())
-		{
-			if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
-			('document-meta' !== $reader->localName && !$isMetas)) continue;
-			
-			++$isMetas;
-			
-			if(XMLReader::ELEMENT === $reader->nodeType)
-			{
-				if('document-meta' === $reader->localName)
-				{
-					$context['otx_report'][++$nbItem] = array();
-					continue;
-				}
-				$tree[] = $reader->localName;
-				$node =& $context['otx_report'][$nbItem];
-				foreach($tree as $t)
-				{
-					isset($node[$t]) || $node[$t] = array();
-					$node =& $node[$t];
-				}
-				
-				if($reader->isEmptyElement)
-				{
-					array_pop($tree);
-					$node = array();
-					if($reader->hasAttributes)
-					{
-						$reader->moveToFirstAttribute();
-						do
-						{
-							$node[$reader->localName] = $reader->value;
-						} while($reader->moveToNextAttribute());
-					}
-				}
-				else $node = '';
-			}
-			elseif(XMLReader::END_ELEMENT === $reader->nodeType)
-			{
-				if('RDF' === $reader->localName || 'item' === $reader->localName || 'meta' === $reader->localName ||
-				('document-meta' !== $reader->localName && !$isMetas)) continue;
-				array_pop($tree);
-				if('document-meta' === $reader->localName) --$isMetas;
-			}
-			elseif(XMLReader::TEXT === $reader->nodeType)
-			{
-				$node .= $reader->value;
-			}
-		}
-		$reader->close();
+		$statistics['docstats'] = $context['otxreport']['meta-soffice'];
 	}
 
-	if(!empty($context['otx_report'][1]['document-statistic']))
+	if(!empty($context['otxreport']['warning']))
 	{
-		$statistics['docstats'] = $context['otx_report'][1]['document-statistic'];
+		$context['otxwarnings'] = $context['otxreport']['warning'];
 	}
-	unset($context['otx_report']);
 
-	$table = array();
+	unset($context['otxreport']);
+
+	$table = $contents = $context['titles'] = array();
 
 	$parser = new TEIParser($context['idtype']);
 	$i = 0;
 
+	$reader = new XMLReader();
 	foreach($context['contents'] as $k => $block)
 	{
-		$table[$k] = array();
-		if(is_array($block))
+		$contents[$k] = array();
+		$mltext = is_array($block);
+		if($mltext)
 		{
-			foreach($block as $b)
+			foreach($block as $lang => $b)
 			{
-				$reader->XML('<lodelblock>'.$b.'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+				$reader->XML('<lodelblock>'.$b.'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 				$reader->read() && $reader->read(); // jump to first element
 				do
 				{
-					$table[$k][] = array('text' => $reader->readOuterXML());
+					$table[$k][$lang][] = array('text' => $reader->readOuterXML());
 				}
 				while($reader->next() && $reader->localName !== 'lodelblock');
 				$reader->close();
+
+				$contents[$k][$lang] = array();
+
+				foreach($table[$k] as $lang => $content)
+				{
+					foreach($content as $key => $container)
+					{
+						$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+						$contents[$k][$lang][$key]['text'] = '';
+						while($reader->read())
+						{
+							if(XMLReader::ELEMENT === $reader->nodeType)
+							{
+								if('lodelblock' === $reader->localName) continue;
+
+								$attrs = array();
+								if($reader->hasAttributes)
+								{
+									$reader->moveToFirstAttribute();
+									do
+									{
+										$attrs[$reader->localName] = $reader->value;
+									} while($reader->moveToNextAttribute());
+
+									$reader->moveToElement();
+								}
+
+								if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
+								{
+									if(!$parser->getStyle($attrs['class']))
+									{
+										$attrs['id'] = 'unknown_'.$attrs['class'];
+										$contents[$k][$lang][$key]['error'] = true;
+									}
+
+									if('span' !== $reader->localName)
+										$contents[$k][$lang][$key]['class'] = $attrs['class'];
+									else
+									{
+										$contents[$k][$lang][$key]['style'][] = '<span class="mestyles">'.$attrs['class'].'</span>';
+										$attrs['title'] = 'LOCALCLASS:'.$attrs['class'].';';
+										$attrs['class'] .= ' mestyles';
+									}
+								}
+
+								if(isset($attrs['style']))
+								{
+									$contents[$k][$lang][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
+									if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
+									else $attrs['class'] = 'localstyles';
+									if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'].';';
+									else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'].';';
+								}
+
+								if(isset($attrs['lang']))
+								{
+									$contents[$k][$lang][$key]['style'][] = 'lang:'.$attrs['lang'];
+									if(isset($attrs['title'])) $attrs['title'] .= 'LANG:'.$attrs['lang'].';';
+									else $attrs['title'] = 'LANG:'.$attrs['lang'].';';
+									$statistics['lang'][] = $attrs['lang'];
+								}
+
+								if('img' === $reader->localName)
+								{
+									if(0 === strpos($attrs['src'], '../../docannexe/image/'))
+									{
+										list($w, $h, $t) = @getimagesize($attrs['src']);
+										$statistics['images'][$attrs['src']] = $contents[$k][$lang][$key]['style'][] = array('imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => filesize($attrs['src']));
+									}
+									else
+									{
+										list($w, $h, $t) = @getimagesize($attrs['src']);
+										$statistics['images'][$attrs['src']] = $contents[$k][$lang][$key]['style'][] = array('imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => 0);
+									}
+								}
+								elseif(in_array($reader->localName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6')))
+								{
+									$context['titles'][] = $reader->readOuterXML();
+								}
+
+								$contents[$k][$lang][$key]['text'] .= '<'.$reader->localName;
+								if(!empty($attrs))
+								{
+									foreach($attrs as $name => $value)
+										$contents[$k][$lang][$key]['text'] .= ' '.$name.'="'.$value.'"';
+								}
+								$contents[$k][$lang][$key]['text'] .= '>';
+							}
+							elseif(XMLReader::END_ELEMENT === $reader->nodeType)
+							{
+								if('lodelblock' === $reader->localName) continue;
+
+								$contents[$k][$lang][$key]['text'] .= '</'.$reader->localName.'>';
+							}
+							elseif(XMLReader::TEXT === $reader->nodeType || XMLReader::WHITESPACE === $reader->nodeType || XMLReader::SIGNIFICANT_WHITESPACE === $reader->nodeType)
+							{
+								$contents[$k][$lang][$key]['text'] .= htmlentities($reader->value, ENT_COMPAT, 'UTF-8');
+							}
+						}
+						$reader->close();
+					}
+				}
 			}
 		}
 		else
 		{
-			$reader->XML('<lodelblock>'.$block.'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
+			$reader->XML('<lodelblock>'.$block.'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 			$reader->read() && $reader->read(); // jump to first element
+			$i=0;
 			do
 			{
 				$table[$k][] = array('text' => $reader->readOuterXML());
 			}
 			while($reader->next() && $reader->localName !== 'lodelblock');
 			$reader->close();
-		}
 
-		foreach($table[$k] as $key => $container)
-		{
-			$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA);
-			$table[$k][$key]['text'] = '';
-			while($reader->read())
+			$contents[$k] = array();
+
+			foreach($table[$k] as $key => $container)
 			{
-				if(XMLReader::ELEMENT === $reader->nodeType)
+				$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+				$contents[$k][$key]['text'] = '';
+				while($reader->read())
 				{
-					if('lodelblock' === $reader->localName) continue;
-
-					$attrs = array();
-					if($reader->hasAttributes)
+					if(XMLReader::ELEMENT === $reader->nodeType)
 					{
-						$reader->moveToFirstAttribute();
-						do
-						{
-							$attrs[$reader->localName] = $reader->value;
-						} while($reader->moveToNextAttribute());
+						if('lodelblock' === $reader->localName) continue;
 
-						$reader->moveToElement();
-					}
-
-					if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
-					{
-						if('span' !== $reader->localName)
-							$table[$k][$key]['class'] = $attrs['class'];
-						else
+						$attrs = array();
+						if($reader->hasAttributes)
 						{
-							$table[$k][$key]['style'][] = '<span class="mestyles">'.$attrs['class'].'</span>';
-							$attrs['title'] = 'LOCALCLASS:'.$attrs['class'].';';
-							$attrs['class'] .= ' mestyles';
+							$reader->moveToFirstAttribute();
+							do
+							{
+								$attrs[$reader->localName] = $reader->value;
+							} while($reader->moveToNextAttribute());
+
+							$reader->moveToElement();
 						}
 
-						if(!$parser->getStyle($attrs['class']))
+						if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
 						{
-							$attrs['id'] = 'unknown_'.$attrs['class'];
-							$table[$k][$key]['error'] = true;
+							if(!$parser->getStyle($attrs['class']))
+							{
+								$attrs['id'] = 'unknown_'.$attrs['class'];
+								$contents[$k][$key]['error'] = true;
+							}
+
+							if('span' !== $reader->localName)
+								$contents[$k][$key]['class'] = $attrs['class'];
+							else
+							{
+								$contents[$k][$key]['style'][] = '<span class="mestyles">'.$attrs['class'].'</span>';
+								$attrs['title'] = 'LOCALCLASS:'.$attrs['class'].';';
+								$attrs['class'] .= ' mestyles';
+							}
 						}
-					}
 
-					if(isset($attrs['style']))
-					{
-						$table[$k][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
-						if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
-						else $attrs['class'] = 'localstyles';
-						if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'];
-						else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'];
-					}
+						if(isset($attrs['style']))
+						{
+							$contents[$k][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
+							if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
+							else $attrs['class'] = 'localstyles';
+							if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'].';';
+							else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'];
+						}
 
-					if(isset($attrs['lang']))
-					{
-						$table[$k][$key]['style'][] = 'lang:'.$attrs['lang'];
-						if(isset($attrs['title'])) $attrs['title'] .= 'LANG:'.$attrs['lang'];
-						else $attrs['title'] = 'LANG:'.$attrs['lang'];
-						$statistics['lang'][] = $attrs['lang'];
-					}
+						if(isset($attrs['lang']))
+						{
+							$contents[$k][$key]['style'][] = 'lang:'.$attrs['lang'];
+							if(isset($attrs['title'])) $attrs['title'] .= 'LANG:'.$attrs['lang'].';';
+							else $attrs['title'] = 'LANG:'.$attrs['lang'].';';
+							$statistics['lang'][] = $attrs['lang'];
+						}
 
-					if('img' === $reader->localName)
-					{
-						list($w, $h, $t) = getimagesize($attrs['src']);
-						$statistics['images'][$attrs['src']] = $table[$k][$key]['style'][] = array('imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => filesize($attrs['src']));
-					}
+						if('img' === $reader->localName)
+						{
+							if(0 === strpos($attrs['src'], '../../docannexe/image/'))
+							{
+								list($w, $h, $t) = @getimagesize($attrs['src']);
+								$statistics['images'][$attrs['src']] = $contents[$k][$key]['style'][] = array('imagename' => @basename($attrs['src']), 'imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => @filesize($attrs['src']));
+							}
+							else
+							{
+								list($w, $h, $t) = @getimagesize($attrs['src']);
+								$statistics['images'][$attrs['src']] = $contents[$k][$key]['style'][] = array('imagename' => @basename($attrs['src']), 'imagewidth' => $w, 'imageheight' => $h, 'imagemime' => image_type_to_mime_type($t), 'imagesize' => 0);
+							}
+						}
+						elseif(in_array($reader->localName, array('h1', 'h2', 'h3', 'h4', 'h5', 'h6')))
+						{
+							$context['titles'][] = $reader->readOuterXML();
+						}
 
-					$table[$k][$key]['text'] .= '<'.$reader->localName;
-					if(!empty($attrs))
-					{
-						foreach($attrs as $name => $value)
-							$table[$k][$key]['text'] .= ' '.$name.'="'.$value.'"';
+						$contents[$k][$key]['text'] .= '<'.$reader->localName;
+						if(!empty($attrs))
+						{
+							foreach($attrs as $name => $value)
+								$contents[$k][$key]['text'] .= ' '.$name.'="'.$value.'"';
+						}
+						$contents[$k][$key]['text'] .= '>';
 					}
-					$table[$k][$key]['text'] .= '>';
+					elseif(XMLReader::END_ELEMENT === $reader->nodeType)
+					{
+						if('lodelblock' === $reader->localName) continue;
+
+						$contents[$k][$key]['text'] .= '</'.$reader->localName.'>';
+					}
+					elseif(XMLReader::TEXT === $reader->nodeType || XMLReader::WHITESPACE === $reader->nodeType || XMLReader::SIGNIFICANT_WHITESPACE === $reader->nodeType)
+					{
+						$contents[$k][$key]['text'] .=  htmlentities($reader->value, ENT_COMPAT, 'UTF-8');
+					}
 				}
-				elseif(XMLReader::END_ELEMENT === $reader->nodeType)
-				{
-					if('lodelblock' === $reader->localName) continue;
-
-					$table[$k][$key]['text'] .= '</'.$reader->localName.'>';
-				}
-				elseif(XMLReader::TEXT === $reader->nodeType || XMLReader::WHITESPACE === $reader->nodeType || XMLReader::SIGNIFICANT_WHITESPACE === $reader->nodeType)
-				{
-					$table[$k][$key]['text'] .= $reader->value;
-				}
+				$reader->close();
 			}
-			$reader->close();
 		}
 	}
 
-	$context['contents'] = $table;
+	unset($table);
+
+	$context['contents'] = $contents;
 	$context['statistics'] = $statistics;
-	unset($table, $statistics);
+	unset($contents, $statistics);
 
 	View::getView()->render('checkimport');
 }

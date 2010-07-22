@@ -50,7 +50,7 @@
  */
 
 /**
- * Classe convertissant la TEI sortie par OTX en tableau de variables
+ * Classe convertissant la TEI renvoyée par OTX en tableau de variables prêt à être inséré dans Lodel
  * 
  * @package lodel
  * @author Pierre-Alain Mignot
@@ -79,6 +79,12 @@ class TEIParser extends XMLReader
 	 * @access private
 	 */
 	private $_tablefields = array();
+
+	/**
+	 * @var array liste des styles par champs pour le type courant
+	 * @access private
+	 */
+	private $_styles = array();
 
 	/**
 	 * @var array liste des styles internes
@@ -123,25 +129,13 @@ class TEIParser extends XMLReader
 	private $_tags = array();
 
 	/**
-	 * @var string référence vers le noeud courant
-	 * @access private
-	 */
-	private $_currentNode;
-
-	/**
-	 * @var array noeuds précédents, pour récursion
-	 * @access private
-	 */
-	private $_previousNodes = array();
-
-	/**
 	 * @var int nombre incrémental des notes
 	 * @access private
 	 */
 	private $_nbNotes = 0;
 
 	/**
-	 * @var string nom de la classe courante
+	 * @var array pile des classes utilisées
 	 * @access private
 	 */
 	private $_currentClass;
@@ -153,7 +147,7 @@ class TEIParser extends XMLReader
 	private $_images = array();
 
 	/**
-	 * @var string titre du document si trouvé
+	 * @var string titre du document si trouvé (tablefields.g_name == 'dc.title')
 	 * @access private
 	 */
 	private $_docTitle = '';
@@ -162,7 +156,7 @@ class TEIParser extends XMLReader
 	 * Constructeur
 	 *
 	 * Récupère les champs ainsi que les types d'entrées et de personnes, les styles internes et de caractères
-	 * pour le style courant
+	 * pour le type courant
 	 *
 	 * @param int $idtype id du type courant
 	 * @access public
@@ -172,16 +166,18 @@ class TEIParser extends XMLReader
 		function_exists('convertHTMLtoUTF8') || include 'utf8.php';
 		defined('INC_FUNC') || include 'func.php';
 
-		$idtype = (int)$idtype;
+		$idtype = (int) $idtype;
 		if(!$idtype) throw new Exception('ERROR: Invalid idtype');
 		
 		$vo = DAO::getDAO('types')->find('import=1 AND id='.$idtype, 'class');
 		if(!$vo) throw new Exception('ERROR: Invalid idtype');
-		
-		$class =  $GLOBALS['db']->quote($vo->class);
-		$entities_class = $GLOBALS['db']->quote('entities_'.$vo->class);
+
+		$class = $vo->class;
+		unset($vo);
+
 		$personsClassTypes = $entriesClassTypes = array();
-		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$class.' OR class='.$entities_class, 'id', 'name,title,style,type,otx,class,defaultvalue,g_name');
+
+		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$GLOBALS['db']->quote($class), 'id', 'name,title,style,type,otx,class,defaultvalue,g_name');
 		if($fields)
 		{
 			foreach($fields as $field)
@@ -189,23 +185,17 @@ class TEIParser extends XMLReader
 				if($field->type === 'persons')
 				{
 					$classType = DAO::getDAO('persontypes')->find('type='.$GLOBALS['db']->quote($field->name), 'class');
-					if($classType)
+					if($classType && !in_array($classType->class, $personsClassTypes))
 					{
-						$personsClassTypes[] = $GLOBALS['db']->quote($classType->class);
-						$personsFields = DAO::getDAO('tablefields')->findMany('status>0 AND (class='.$GLOBALS['db']->quote($classType->class).' OR class='.$GLOBALS['db']->quote('entities_'.$classType->class).')', 'id', 'name,title,style,type,otx,class');
+						$personsClassTypes[] = $classType->class;
+						$personsFields = DAO::getDAO('tablefields')->findMany('status>0 AND (class='.$GLOBALS['db']->quote($classType->class).' OR class='.$GLOBALS['db']->quote('entities_'.$classType->class).')', 'id', 'name,title,style,type,otx,class,g_name');
 						if($personsFields)
 						{
 							foreach($personsFields as $personField)
 							{
-								isset($this->_tablefields[$personField->name]) || $this->_tablefields[$personField->name] = $personField;
-								$otx = explode(':', $personField->otx);
-								$otx = end($otx);
-								isset($this->_tablefields[$otx]) || $this->_tablefields[$otx] = $personField;
-								$styles = array_map('trim', explode(',', $personField->style));
-								foreach($styles as $style)
-								{
-									isset($this->_tablefields[$style]) || $this->_tablefields[$style] = $personField;
-								}
+								if(!empty($personField->g_name)) $this->_styles[$personField->g_name] = $personField;
+
+								$this->_persontypes[str_replace('entities_', '', $personField->class)]['fields'][] = $personField;
 							}
 						}
 					}
@@ -213,23 +203,26 @@ class TEIParser extends XMLReader
 				elseif($field->type === 'entries')
 				{
 					$classType = DAO::getDAO('entrytypes')->find('type='.$GLOBALS['db']->quote($field->name), 'class');
-					if($classType)
-					{
-						$entriesClassTypes[] = $GLOBALS['db']->quote($classType->class);
-					}
+					if($classType && !in_array($classType->class, $entriesClassTypes))
+						$entriesClassTypes[] = $classType->class;
 				}
-				isset($this->_tablefields[$field->name]) || $this->_tablefields[$field->name] = $field;
-				$otx = explode(':', $field->otx);
-				$otx = end($otx);
-				isset($this->_tablefields[$otx]) || $this->_tablefields[$otx] = $field;
-				$styles = array_map('trim', explode(',', $field->style));
-				foreach($styles as $style)
+				else
 				{
-					isset($this->_tablefields[$style]) || $this->_tablefields[$style] = $field;
+					// extract the name of the converted style
+					if(preg_match("/\[@(?:type|rend)='([^']+)'\]$/", $field->otx, $m))
+						$this->_styles[$m[1]] = $field;
+
+					$this->_styles[$field->name] = $field;
+
+					if(!empty($field->g_name)) $this->_styles[$field->g_name] = $field;
+
+					$styles = array_filter(array_map('trim', explode(',', $field->style)));
+					foreach($styles as $style)
+						$this->_styles[$style] = $field;
 				}
+
+				$this->_tablefields[$field->name] = $field;
 			}
-			$personsClassTypes = array_unique($personsClassTypes);
-			$entriesClassTypes = array_unique($entriesClassTypes);
 		}
 
 		$fields = DAO::getDAO('internalstyles')->findMany('status>0', 'id', 'style,surrounding,conversion,otx');
@@ -237,67 +230,65 @@ class TEIParser extends XMLReader
 		{
 			foreach($fields as $field)
 			{
-				$otx = explode(':', $field->otx);
-				$otx = end($otx);
-				isset($this->_internalstyles[$otx]) || $this->_internalstyles[$otx] = $field;
-				$styles = array_map('trim', explode(',', $field->style));
-				foreach($styles as $style)
-				{
-					isset($this->_internalstyles[$style]) || $this->_internalstyles[$style] = $field;
+				if(0 === strpos($field->otx, '/tei:TEI/'))
+				{ // burk, in a perfect world, it should NOT be a block but an inline style
+				// we set it as standard block
+					$style = explode(',', $field->style); // take the first style
+					$this->_tablefields[$style[0]] = $field;
 				}
+				elseif(preg_match("/\[@rend='([^']+)'\]$/", $field->otx, $m))
+					$this->_internalstyles[$m[1]] = $field;
+				elseif(!empty($field->otx))
+					$this->_internalstyles[$field->otx] = $field;
+
+				$styles = array_filter(array_map('trim', explode(',', $field->style)));
+
+				foreach($styles as $style)
+					$this->_internalstyles[$style] = $field;
 			}
 		}
 
-		$fields = DAO::getDAO('characterstyles')->findMany('status>0', 'id', 'style,conversion');
+		$fields = DAO::getDAO('characterstyles')->findMany('status>0', 'id', 'style,conversion,otx');
 		if($fields)
 		{
 			foreach($fields as $field)
 			{
-				$styles = array_map('trim', explode(',', $field->style));
-				foreach($styles as $style)
-				{
-					isset($this->_characterstyles[$style]) || $this->_characterstyles[$style] = $field;
+				if(0 === strpos($field->otx, '/tei:TEI/'))
+				{ // burk, in a perfect world, it should NOT be a block but an inline style
+				// we set it as standard block
+					$style = explode(',', $field->style); // take the first style
+					$this->_tablefields[$style[0]] = $field;
 				}
+				elseif(preg_match("/\[@rend='([^']+)'\]$/", $field->otx, $m))
+					$this->_characterstyles[$m[1]] = $field;
+				elseif(!empty($field->otx))
+					$this->_characterstyles[$field->otx] = $field;
+
+				$styles = array_filter(array_map('trim', explode(',', $field->style)));
+
+				foreach($styles as $style)
+					$this->_characterstyles[$style] = $field;
 			}
 		}
 
-		$fields = DAO::getDAO('persontypes')->findMany('status>0 AND class IN ('.join(',', $personsClassTypes).')', 'id', 'id,type,title,style,otx');
+		$fields = DAO::getDAO('persontypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $personsClassTypes)).')', 'id', 'id,type,title,style,otx,class');
 		if($fields)
 		{
 			foreach($fields as $field)
-			{
-				isset($this->_persontypes[$field->type]) || $this->_persontypes[$field->type] = $field;
-				$otx = explode(':', $field->otx);
-				$otx = end($otx);
-				isset($this->_persontypes[$otx]) || $this->_persontypes[$otx] = $field;
-				$styles = array_map('trim', explode(',', $field->style));
-				foreach($styles as $style)
-				{
-					isset($this->_persontypes[$style]) || $this->_persontypes[$style] = $field;
-				}
-			}
+				$this->_persontypes[$field->class][$field->type] = $field;
 		}
 
-		$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', $entriesClassTypes).')', 'id', 'id,type,title,style,otx');
+		$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $entriesClassTypes)).')', 'id', 'id,type,title,style,otx,lang');
 		if($fields)
 		{
 			foreach($fields as $field)
-			{
-				isset($this->_entrytypes[$field->type]) || $this->_entrytypes[$field->type] = $field;
-				$otx = explode(':', $field->otx);
-				$otx = end($otx);
-				isset($this->_entrytypes[$otx]) || $this->_entrytypes[$otx] = $field;
-				$styles = array_map('trim', explode(',', $field->style));
-				foreach($styles as $style)
-				{
-					isset($this->_entrytypes[$style]) || $this->_entrytypes[$style] = $field;
-				}
-			}
+				$this->_entrytypes[$field->type] = $field;
 		}
 	}
 
 	/**
 	 * Fonction principale, parse la TEI
+	 * Extrait les images
 	 *
 	 * @param string $xml la TEI
 	 * @param string $odt le fichier sorti par OTX pour récupèrer les images
@@ -318,77 +309,14 @@ class TEIParser extends XMLReader
 
 		if(!empty($odt))
 		{
-			$unzipcmd = C::get('unzipcmd', 'cfg');
-			if('pclzip' == $unzipcmd)
-			{// use PCLZIP library
-				$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-				class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
-				$archive = new PclZip($odt);
-				
-				$images = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_OPT_BY_PREG, "/^Pictures\/img-\d+/");
-				error_reporting($err);
-				unset($archive);
-				if(!empty($images))
-				{
-					$tmpdir = array_filter(explode('/', $tmpdir));
-					$tmpdir = end($tmpdir);
-					$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
-					mkdir($tmpdir);
-					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
-					foreach($images as $image)
-					{
-						$file = basename($image['filename']);
-						$this->_images[$file] = $tmpdir.$file;
-						rename($image['filename'], $this->_images[$file]);
-					}
-				}
-				unset($images, $archive);
-			}
-			else
-			{ // use unzip
-				$line = `$unzipcmd -o -d $tmpdir $odt`;
-				$tmpdir = array_filter(explode('/', $tmpdir));
-				$tmpdir = end($tmpdir);
-				$line = explode("\n", $line);
-				if(count($line) > 1 && !empty($line[1]))
-				{
-					unset($line[0]);
-					$images = array();
-					foreach($line as $file)
-					{
-						$file = trim(substr($file, strpos($file, ':') + 1));
-						if(preg_match("/Pictures\/(img-\d+)/", $file))
-						{
-							$f = basename($file);
-							$images[$f] = $file;
-						}
-					}
-					
-					if(!empty($images))
-					{
-						$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
-						mkdir($tmpdir);
-						chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
-						foreach($images as $image=>$fullimage)
-						{
-							$this->_images[$image] = $tmpdir.$image;
-							rename($fullimage, $this->_images[$image]);
-						}
-					}
-					unset($images);
-				}
-				else
-				{
-					throw new Exception('ERROR: No files were extracted from the archive');
-				}
-			}
+			$this->_extractImages($odt, $tmpdir);
 		}
 		
 		libxml_use_internal_errors(true);
-		
-		$this->_logs = $this->_contents = $this->_tags = $this->_currentClass = $this->_currentNode = array();
+
+		$this->_logs = $this->_contents = $this->_tags = $this->_currentClass = array();
 		$this->_contents['entries'] = $this->_contents['persons'] = $this->_contents['errors'] = array();
-		$simplexml = @simplexml_load_string($xml);
+		$simplexml = simplexml_load_string($xml);
 		if(!$simplexml)
 		{
 			$this->_log(libxml_get_errors());
@@ -397,35 +325,10 @@ class TEIParser extends XMLReader
 
 		$this->_parseRenditions($simplexml->teiHeader->encodingDesc->tagsDecl);
 
-		if(@$this->XML((string) $simplexml->text->asXML(), 'UTF-8', LIBXML_NOBLANKS | LIBXML_COMPACT | LIBXML_NOCDATA))
-		{
-			unset($xml);
-			while($this->read())
-			{
-				if(parent::ELEMENT === $this->nodeType)
-				{
-					$this->_parseElement();
-				}
-				elseif(parent::END_ELEMENT === $this->nodeType && 'text' !== $this->localName && 'TEI' !== $this->localName && 'front' !== $this->localName && 'back' !== $this->localName)
-				{
-					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNCATCHED_CLOSING_TAG', 'edition'), $this->localName));
-				}
-				elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-				{
-					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNCATCHED_TEXT', 'edition'), htmlentities($this->value, ENT_COMPAT, 'UTF-8')));
-				}
-			}
-			$this->close();
-			$this->_log(libxml_get_errors());
+		$this->_parseBlocks($simplexml);
+		unset($simplexml);
 
-			$this->_parseAfter();
-		}
-		else
-		{
-			$this->_log(libxml_get_errors());
-			unset($xml);
-			throw new Exception("ERROR: Can't open XML");
-		}
+		$this->_parseAfter();
 
 		if(count($this->_tags)) throw new Exception('ERROR: The number of opening/closing tag does not match : '.print_r($this->_tags,1));
 
@@ -452,7 +355,7 @@ class TEIParser extends XMLReader
 	 */
 	public function getLogs()
 	{
-		return (array) $this->_logs;
+		return (array) array_unique($this->_logs);
 	}
 
 	/**
@@ -464,6 +367,82 @@ class TEIParser extends XMLReader
 	public function getDocTitle()
 	{
 		return (string) $this->_docTitle;
+	}
+
+	/**
+	 * Extraction des images contenus dans le document source
+	 *
+	 * @access private
+	 * @param string $odt nom du fichier source
+	 * @param string $tmpdir répertoire temporaire d'extraction
+	 */
+	private function _extractImages($odt, $tmpdir)
+	{
+		$unzipcmd = C::get('unzipcmd', 'cfg');
+
+		if('pclzip' == $unzipcmd)
+		{// use PCLZIP library
+			$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
+			class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
+			$archive = new PclZip($odt);
+
+			$images = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_OPT_BY_PREG, "/^Pictures\/img-\d+/");
+			error_reporting($err);
+			unset($archive);
+			if(!empty($images))
+			{
+				$tmpdir = array_filter(explode('/', $tmpdir));
+				$tmpdir = end($tmpdir);
+				$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
+				mkdir($tmpdir);
+				chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+				foreach($images as $image)
+				{
+					$file = basename($image['filename']);
+					$this->_images[$file] = $tmpdir.$file;
+					rename($image['filename'], $this->_images[$file]);
+				}
+			}
+			unset($images, $archive);
+		}
+		else
+		{ // use unzip
+			$line = `$unzipcmd -o -d $tmpdir $odt`;
+			$tmpdir = array_filter(explode('/', $tmpdir));
+			$tmpdir = end($tmpdir);
+			$line = explode("\n", $line);
+			if(count($line) > 1 && !empty($line[1]))
+			{
+				unset($line[0]);
+				$images = array();
+				foreach($line as $file)
+				{
+					$file = trim(substr($file, strpos($file, ':') + 1));
+					if(preg_match("/Pictures\/(img-\d+)/", $file))
+					{
+						$f = basename($file);
+						$images[$f] = $file;
+					}
+				}
+
+				if(!empty($images))
+				{
+					$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
+					mkdir($tmpdir);
+					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+					foreach($images as $image=>$fullimage)
+					{
+						$this->_images[$image] = $tmpdir.$image;
+						rename($fullimage, $this->_images[$image]);
+					}
+				}
+				unset($images);
+			}
+			else
+			{
+				throw new Exception('ERROR: No files were extracted from the archive');
+			}
+		}
 	}
 
 	/**
@@ -488,6 +467,8 @@ class TEIParser extends XMLReader
 	 */
 	private function _clean(&$v)
 	{
+		if(!trim($v)) return;
+
 		$v = preg_replace(array(
 			'/<(?!td)([a-z]+)\b[^>]*><\/\\1>/i', // strip empty tags
 			'/<p[^>]*>\s*(<(table|ul)[^>]*>)/i', // remove paragraph before tables and lists
@@ -500,15 +481,15 @@ class TEIParser extends XMLReader
 	}
 
 	/**
-	 * Pré-valide le contenu en fonction du type du champs
+	 * Pré-valide le contenu en fonction du type du champ
 	 * afin d'indiquer à l'utilisateur les erreurs éventuelles
 	 * avant passage à la page d'édition de l'entité
 	 *
 	 * @access private
-	 * @param mixed $field le champ à valider, string ou array si type == mltext
+	 * @param mixed &$field le champ à valider, string ou array si type == mltext
 	 * @param string $name le nom du champ
 	 */
-	private function _validField($field, $name)
+	private function _validField(&$field, $name)
 	{
 		if('errors' === $name) return;
 
@@ -529,9 +510,7 @@ class TEIParser extends XMLReader
 				if(false === $valid)
 					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_INVALID_FIELD', 'edition'), $name));
 				elseif(is_string($valid))
-				{
 					$this->_contents['errors'][$name][$k] = $valid;
-				}
 			}
 
 			if(mb_strlen(join('', $field), 'UTF-8') > 65535)
@@ -543,42 +522,34 @@ class TEIParser extends XMLReader
 			if(false === $valid)
 				$this->_log(sprintf(getlodeltextcontents('TEIPARSER_INVALID_FIELD', 'edition'), $name));
 			elseif(is_string($valid))
-			{
 				$this->_contents['errors'][$name] = $valid;
-			}
 
 			$isError = false;
 
 			switch($def->type)
 			{
 				case 'text': // 65535
-					if(mb_strlen($field, 'UTF-8') > 65535)
-      						$isError = true;
+					$isError = mb_strlen($field, 'UTF-8') > 65535;
 					break;
 
 				case 'tinytext': // 255
-					if(mb_strlen($field, 'UTF-8') > 255)
-      						$isError = true;
+					$isError = mb_strlen($field, 'UTF-8') > 255;
 					break;
 
 				case 'longtext': // 4294967295
-					if(mb_strlen($field, 'UTF-8') > 4294967295)
-      						$isError = true;
+					$isError = mb_strlen($field, 'UTF-8') > 4294967295;
 					break;
 
 				case 'color': // 10
-					if(mb_strlen($field, 'UTF-8') > 10)
-            					$isError = true;
+					$isError = mb_strlen($field, 'UTF-8') > 10;
 					break;
 
 				case 'int': // 0-4294967295
-					if($field > 4294967295)
-            					$isError = true;
+					$isError = $field > 4294967295;
 					break;
 
 				case 'tinyint': // 0-255
-					if($field > 255)
-            					$isError = true;
+					$isError = $field > 255;
 					break;
 
 				default: break;
@@ -603,6 +574,29 @@ class TEIParser extends XMLReader
 		$persons = $this->_contents['persons'];
 		unset($this->_contents['entries'], $this->_contents['persons']);
 
+		// re-order blocks from their ids
+		// used for inline blocks that are converted to real blocks in the TEI
+		foreach($this->_tablefields as $name => $obj)
+		{
+			if($obj instanceof internalstylesVO || $obj instanceof characterstylesVO || 'entries' === $obj->type || 'persons' === $obj->type) continue;
+
+			if(empty($this->_contents[$name])) continue;
+
+			if('mltext' === $obj->type)
+			{
+				foreach($this->_contents[$name] as $lang => $v)
+				{
+					ksort($this->_contents[$name][$lang]);
+					$this->_contents[$name][$lang] = join('', $this->_contents[$name][$lang]);
+				}
+			}
+			else
+			{
+				ksort($this->_contents[$name]);
+				$this->_contents[$name] = join('', $this->_contents[$name]);
+			}
+		}
+
 		// cleaning XHTML
 		array_walk_recursive($this->_contents, array($this, '_clean'));
 
@@ -610,15 +604,16 @@ class TEIParser extends XMLReader
 		array_walk($this->_contents, array($this, '_validField'));
 
 		// strip tags from entries
-		array_walk_recursive($entries, 'strip_tags');
+		foreach($entries as $k => $v)
+			$entries[$k] = strip_tags(join(',', $v));
 
 		$this->_contents['entries'] = $entries;
 		unset($entries);
 
 		// get the firstname/lastname field name
-		$firstname = $this->_getStyle('author-firstname');
-		$lastname = $this->_getStyle('author-lastname');
-		
+		$firstname = $this->_getStyle('firstname');
+		$lastname = $this->_getStyle('familyname');
+
 		if(!$firstname && !$lastname)
 		{
 			$this->_log(sprintf(getlodeltextcontents('TEIPARSER_NO_FIRSTNAME_LASTNAME', 'edition')));
@@ -635,21 +630,21 @@ class TEIParser extends XMLReader
 				{
 					if(!empty($person['data']))
 						array_walk_recursive($person['data'], array($this, '_clean'));
+
+					foreach($person['data'] as $key => $val)
+						if(!trim($val)) unset($persons[$personType][$k]['data'][$key]);
+
 					$person['g_name'] = strip_tags($person['g_name']);
 					if($lastname && $firstname)
 					{
 						$name = preg_split("/(\s|\xc2\xa0)+/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY);
-						$persons[$personType][$k]['data'][$lastname] = array_pop($name);
-						$persons[$personType][$k]['data'][$firstname] = join(' ', $name);
+						$persons[$personType][$k]['data'][$lastname['class']] = array_pop($name);
+						$persons[$personType][$k]['data'][$firstname['class']] = join(' ', $name);
 					}
 					elseif($lastname)
-					{
-						$persons[$personType][$k]['data'][$lastname] = $person['g_name'];
-					}
+						$persons[$personType][$k]['data'][$lastname['class']] = $person['g_name'];
 					elseif($firstname)
-					{
-						$persons[$personType][$k]['data'][$firstname] = $person['g_name'];
-					}
+						$persons[$personType][$k]['data'][$firstname['class']] = $person['g_name'];
 				}
 				else
 				{
@@ -672,28 +667,39 @@ class TEIParser extends XMLReader
 	 */
 	private function _getStyle($rend, $full = false)
 	{
+		if(false !== strpos($rend, ' '))
+		{
+			$rend = explode(' ', $rend);
+			$styles = array();
+			foreach($rend as $r)
+				$styles = array_merge_recursive($styles, (array) $this->_getStyle($r, $full));
+
+			return $styles;
+		}
+		
+		if(in_array($rend, array('italic', 'sup', 'sub', 'uppercase', 'lowercase', 'bold', 'underline', 'strike', 'small-caps', 'direction(rtl)', 'direction(ltr)')))
+			return array('inline' => array($rend));
+
+		if(isset($this->_internalstyles[$rend]))
+			return array('class' => $full ? $this->_internalstyles[$rend] : $this->_internalstyles[$rend]->style);
+		elseif(isset($this->_characterstyles[$rend]))
+			return array('class' => $full ? $this->_characterstyles[$rend] : $this->_characterstyles[$rend]->style);
+		elseif(isset($this->_entrytypes[$rend]))
+			return array('class' => $full ? $this->_entrytypes[$rend] : $this->_entrytypes[$rend]->type);
+		elseif(isset($this->_persontypes[$rend]))
+			return array('class' => $full ? $this->_persontypes[$rend] : $this->_persontypes[$rend]->type);
+		elseif(isset($this->_styles[$rend]))
+			return array('class' => $full ? $this->_styles[$rend] : $this->_styles[$rend]->name);
+
 		if(false !== strpos($rend, '-'))
 		{
 			$style = explode('-', $rend);
-			if(isset($this->_tablefields[$style[0]]))
-				return $full ? $this->_tablefields[$style[0]] : $this->_tablefields[$style[0]]->name;
+			if(isset($this->_styles[$style[0]]))
+				return array('class' => $full ? $this->_styles[$style[0]] : $this->_styles[$style[0]]->name);
 		}
-		
-		if(isset($this->_internalstyles[$rend]))
-			return $full ? $this->_internalstyles[$rend] : $this->_internalstyles[$rend]->style;
-		elseif(isset($this->_characterstyles[$rend]))
-			return $full ? $this->_characterstyles[$rend] : $this->_characterstyles[$rend]->style;
-		elseif(isset($this->_entrytypes[$rend]))
-			return $full ? $this->_entrytypes[$rend] : $this->_entrytypes[$rend]->type;
-		elseif(isset($this->_persontypes[$rend]))
-			return $full ? $this->_persontypes[$rend] : $this->_persontypes[$rend]->type;
-		elseif(isset($this->_tablefields[$rend]))
-			return $full ? $this->_tablefields[$rend] : $this->_tablefields[$rend]->name;
-		else
-		{
-			$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_STYLE', 'edition'), $rend, $rend));
-			return false;
-		}
+
+		$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_STYLE', 'edition'), $rend, $rend));
+		return false;
 	}
 
 	/**
@@ -720,47 +726,20 @@ class TEIParser extends XMLReader
 	 */
 	private function _parseAttributes()
 	{
+		if(!$this->hasAttributes) return array();
+
 		$attrs = array();
 
-		if($this->hasAttributes)
+		$this->moveToFirstAttribute();
+		do
 		{
-			$this->moveToFirstAttribute();
-			do
-			{
-				$attrs[$this->localName] = 'rendition' === $this->localName ? substr($this->value, 1) : $this->value;
-			} while($this->moveToNextAttribute());
-
-			$this->moveToElement();
+			$attrs[$this->localName] = 'rendition' === $this->localName ? substr($this->value, 1) : $this->value;
 		}
+		while($this->moveToNextAttribute());
+
+		$this->moveToElement();
 
 		return $attrs;
-	}
-
-	/**
-	 * Gère les noeud de haut niveau
-	 *
-	 * @access private
-	 */
-	private function _parseElement()
-	{
-		switch($this->localName)
-		{
-			case 'front':
-			case 'body':
-			case 'back':
-				$this->_parse();
-				break;
-
-			case 'teiHeader':
-				$this->next();
-				break;
-
-			case 'text': break;
-
-			default:
-				$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_TAG', 'edition'), $this->localName));
-				break;
-		}
 	}
 
 	/**
@@ -774,9 +753,7 @@ class TEIParser extends XMLReader
 		if(empty($tagsDecl->rendition)) return;
 
 		foreach($tagsDecl->rendition as $r)
-		{
-			$this->_renditions[(string)$r->attributes('http://www.w3.org/XML/1998/namespace')->id] = (string) $r;
-		}
+			$this->_renditions[(string) $r->attributes('http://www.w3.org/XML/1998/namespace')->id] = (string) $r;
 	}
 
 	/**
@@ -803,30 +780,213 @@ class TEIParser extends XMLReader
 	 * Fermeture d'une balise
 	 *
 	 * @access private
+	 * @return string les balises fermées
 	 */
 	private function _closeTag()
 	{
+		if(empty($this->_tags)) return;
+
 		$tags = array_pop($this->_tags);
+
+		$text = '';
+
 		if(!empty($tags))
 		{
 			if(is_array($tags))
 			{
 				foreach($tags as $tag)
-					$this->_currentNode .= '</'.$tag.'>';
+				{
+					if('hr' !== $tag && 'br' !== $tag)
+						$text .= '</'.$tag.'>';
+				}
 			}
-			else $this->_currentNode .= '</'.$tags.'>';
+			elseif('hr' !== $tags && 'br' !== $tags) $text .= '</'.$tags.'>';
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Parcours de tous les champs définis dans le ME et extraction depuis la TEI
+	 *
+	 * @access private
+	 * @param mixed $simplexml l'instance de simplexml sur laquelle on va travailler
+	 */
+	private function _parseBlocks(SimpleXMLElement $simplexml)
+	{
+		$namespaces = $simplexml->getDocNamespaces();
+		$simplexml->registerXPathNamespace('tei', $namespaces['']);
+
+		foreach($this->_tablefields as $name => $obj)
+		{
+			if($obj instanceof tablefieldsVO && ('entries' === $obj->type || 'persons' === $obj->type))
+			{
+				if('entries' === $obj->type)
+				{
+					if(!isset($this->_entrytypes[$obj->name]))
+					{
+						$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE'), $obj->name));
+						continue;
+					}
+
+					if(empty($this->_entrytypes[$obj->name]->otx)) continue;
+
+					$xpath = $this->_entrytypes[$obj->name]->otx."[@xml:lang='".$this->_entrytypes[$obj->name]->lang."']";
+				}
+				elseif('persons' === $obj->type)
+				{
+					$style = $class = null;
+					foreach($this->_persontypes as $c => $array)
+					{
+						if(isset($array[$obj->name]))
+						{
+							$style = $array[$obj->name];
+							$class = $c;
+							break;
+						}
+					}
+
+					if(!isset($style))
+					{
+						$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_PERSONTYPE'), $obj->name));
+						continue;
+					}
+
+					if(empty($style->otx)) continue;
+
+					$xpath = $style->otx;
+				}
+			}
+			else
+			{
+				if(empty($obj->otx)) continue;
+
+				$xpath = $obj->otx;
+			}
+
+			$block = $simplexml->xpath($xpath);
+// 			if(false === $block)
+// 			{
+// 				$this->_log('Invalid xpath 1 : '.$xpath);
+// 				continue;
+// 			}
+
+			if(empty($block)) continue;
+
+			if($obj instanceof tablefieldsVO && ('entries' === $obj->type || 'persons' === $obj->type))
+			{
+				if($obj->type === 'entries')
+				{
+					$idtype = $this->_entrytypes[$obj->name]->id;
+					$this->_contents['entries'][$idtype] = array();
+
+					$block = array_shift($block);
+					foreach($block->list[0]->item as $k => $v)
+						$this->_contents['entries'][$idtype][] = (string) $v;
+				}
+				elseif($obj->type === 'persons')
+				{
+					$this->_contents['persons'][$style->id] = array();
+
+					foreach($block as $k => $v)
+					{
+						// quite boring to have to re-do this here
+						// but if we don't do this, the xpath will not be valid :/
+						$namespaces = $v->getDocNamespaces();
+						$v->registerXPathNamespace('tei', $namespaces['']);
+
+						$this->_contents['persons'][$style->id][$k] = array('data' => array(), 'g_name' => (string) (isset($v->name) ? $v->name : $v));
+
+						foreach($this->_persontypes[$class]['fields'] as $key => $field)
+						{
+							if(empty($field->otx)) continue;
+
+							$fieldContent = $v->xpath('.'.$field->otx); // concatenate '.' to specify we want in the current element, for relative xpath
+// 							if(false === $fieldContent)
+// 							{
+// 								$this->_log('Invalid xpath 2 : '.$field->otx);
+// 								continue;
+// 							}
+
+							if(empty($fieldContent)) continue;
+
+							foreach($fieldContent as $fC)
+							{
+								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = '';
+								$currentNode =& $this->_contents['persons'][$style->id][$k]['data'][$field->name];
+								$this->_currentClass[] = $field->name;
+
+// 								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = $this->_parse($fC->asXML());
+
+								$reader = new XMLReader();
+								$reader->XML($fC->asXML(), 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+								$reader->read();
+								while($reader->read())
+								{
+									if(parent::ELEMENT === $reader->nodeType)
+									{
+										if('s' === $reader->localName || 'hi' === $reader->localName)
+											$currentNode .= $this->_parse($reader->readOuterXML());
+										$reader->next();
+									}
+									elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType)
+										$currentNode .= $this->_getText($reader->value);
+								}
+								$reader->close();
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if($obj instanceof internalstylesVO || $obj instanceof characterstylesVO)
+				{
+					$style = $this->_getStyle('standard');
+					$obj = $this->_tablefields[$style['class']];
+				}
+
+				if(!isset($this->_contents[$obj->name]))
+					$this->_contents[$obj->name] = array();
+
+				foreach($block as $k => $v)
+				{
+					$xmlAttrs = $v->attributes('http://www.w3.org/XML/1998/namespace');
+					if(isset($xmlAttrs['id']) && 0 === strpos((string) $xmlAttrs['id'], 'otx_'))
+						$id = substr((string) $xmlAttrs['id'], '4'); // remove 'otx_'
+					elseif(!isset($id)) $id = $k;
+
+					$this->_currentClass[] = $name;
+
+					if('mltext' === $obj->type)
+					{
+						$lang = (string) $xmlAttrs['lang'];
+						if(!isset($this->_contents[$obj->name][$lang]))
+							$this->_contents[$obj->name][$lang] = array();
+
+						$currentNode =& $this->_contents[$obj->name][$lang][$id];
+					}
+					else $currentNode =& $this->_contents[$obj->name][$id];
+
+					$currentNode .= $this->_parse($v->asXML());
+				}
+			}
 		}
 	}
 
 	/**
-	 * Parse le contenu
+	 * Parse et converti le contenu en XHTML
 	 *
 	 * @access private
+	 * @param string $xml la chaîne XML à convertir
+	 * @return string le XHTML équivalent à la chaine XML
 	 */
-	private function _parse()
+	private function _parse($xml)
 	{
-		$lastAuthor = null;
-		$currentTag = '';
+		$this->XML($xml, 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+
+		$text = '';
+
 		while($this->read())
 		{
 			if(parent::ELEMENT === $this->nodeType)
@@ -838,320 +998,41 @@ class TEIParser extends XMLReader
 				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
 				if(isset($attrs['rend']) && 'internetlink' === $attrs['rend']) unset($attrs['rend']);
 
-				if(('hi' === $this->localName && !isset($attrs['rend'])) || ('table' === $this->localName && 'frame' === $attrs['rend']) || ('p' !== $this->localName && 'hi' !== $this->localName && 'table' !== $this->localName))
-				{
-					$this->_currentNode .= $this->_getTagEquiv($this->localName, $attrs);
-				}
-				else
-				{
-// 					if('p' === $this->localName && !isset($attrs['rend']) && isset($attrs['rendition']))
-// 					{
-// 						$attrs['rend'] = $attrs['rendition'];
-// 					}
-					
-					$style = false;
-
-					if(isset($attrs['rend']) && 'heading' !== substr($attrs['rend'], 0, 7))
-					{
-						$style = $this->_getStyle($attrs['rend'], true);
-						if(false === $style)
-						{
-// 							$attrs['rendition'] = $attrs['rend'];
-// 							unset($attrs['rend']);
-						}
-					}
-
-					switch(get_class($style))
-					{
-						case 'persontypesVO':
-							!empty($this->_contents['persons'][$style->id]) || isset($this->_contents['persons'][$style->id]) || $this->_contents['persons'][$style->id] = array();
-							$this->_contents['persons'][$style->id][] = array();
-							$this->_currentNode =& $this->_contents['persons'][$style->id][count($this->_contents['persons'][$style->id])-1]['g_name'];
-							$this->_previousNodes[] =& $this->_contents['persons'][$style->id][count($this->_contents['persons'][$style->id])-1]['g_name'];
-							$lastAuthor =& $this->_contents['persons'][$style->id][count($this->_contents['persons'][$style->id])-1]['data'];
-							break;
-
-						case 'entrytypesVO':
-							isset($this->_contents['entries'][$style->id]) || $this->_contents['entries'][$style->id] = '';
-							$this->_currentNode =& $this->_contents['entries'][$style->id];
-							$this->_previousNodes[] =& $this->_contents['entries'][$style->id];
-							break;
-
-						case 'tablefieldsVO':
-							if('entities' === $style->type) break;
-
-							$this->_currentClass[] = $style->name;
-							if(false === strpos($style->class, 'entities_'))
-							{
-								if($style->type === 'mltext')
-								{
-									if(!isset($attrs['lang']))
-									{
-										if(isset($attrs['rend']))
-										{
-											$lang = explode('-', $attrs['rend']);
-											if(count($lang) > 2)
-												$attrs['rend'] = $lang[1];
-											$attrs['lang'] = end($lang);
-											unset($lang);
-										}
-										else
-										{
-											$this->_log(sprintf(getlodeltextcontents('TEIPARSER_MULTILINGUAL_STYLE_WITHOUT_LANG', 'edition'), $style->name));
-											$attrs['lang'] = 'fr';
-										}
-									}
-
-									if(isset($this->_contents[end($this->_currentClass)]) && !is_array($this->_contents[end($this->_currentClass)]))
-									{
-										$this->_contents[end($this->_currentClass)] = array('fr' => $this->_contents[end($this->_currentClass)]);
-										$this->_log(sprintf(getlodeltextcontents('TEIPARSER_MULTILINGUAL_FIELD_EXISTS_WITHOUT_LANG', 'edition'), $style->name));
-									}
-									isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = array();
-									isset($this->_contents[end($this->_currentClass)][$attrs['lang']]) || $this->_contents[end($this->_currentClass)][$attrs['lang']] = '';
-									$this->_currentNode =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
-									$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)][$attrs['lang']];
-								}
-								else
-								{
-									if(false !== strpos($attrs['rend'], '-'))
-									{
-										$rend = explode('-', $attrs['rend']);
-										if('frame' === end($rend)) array_pop($rend);
-										else array_shift($rend);
-										$attrs['rend'] = join('-', $rend);
-									}
-									isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = '';
-									$this->_currentNode =& $this->_contents[end($this->_currentClass)];
-									$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)];
-								}
-							}
-							else
-							{
-								$this->_currentNode =& $lastAuthor[$style->name];
-								$this->_previousNodes[] =& $lastAuthor[$style->name];
-							}
-
-							$this->_currentNode .= $this->_getTagEquiv($this->localName, $attrs);
-							break;
-
-						default:
-							isset($this->_contents[end($this->_currentClass)]) || $this->_contents[end($this->_currentClass)] = '';
-							$this->_currentNode =& $this->_contents[end($this->_currentClass)];
-							$this->_previousNodes[] =& $this->_contents[end($this->_currentClass)];
-							$this->_currentNode .= $this->_getTagEquiv($this->localName, $attrs);
-							break;
-					}
-				}
+				$text .= $this->_getTagEquiv($this->localName, $attrs);
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
 				if('body' === $this->localName || 'front' === $this->localName || 'back' === $this->localName) break;
-				elseif('div' === $this->localName || ($this->getAttribute('rend') && ('footnotesymbol' === strtolower($this->getAttribute('rend')) || 'endnotesymbol' === strtolower($this->getAttribute('rend'))))) continue;
+				elseif('div' === $this->localName) continue;
+
+				$rend = $this->getAttribute('rend');
+
+				if(!empty($rend) && ('footnotesymbol' === strtolower($rend) || 'endnotesymbol' === strtolower($rend))) continue;
 				
-    				$this->_closeTag();
+    				$text .= $this->_closeTag();
 				
-				if('p' === $this->localName || ('hi' === $this->localName && $this->getAttribute('rend') && 'footnotesymbol' !== strtolower($this->getAttribute('rend')) && 'endnotesymbol' !== strtolower($this->getAttribute('rend'))))
+				if(!empty($rend))
 				{
-					array_pop($this->_currentClass);
-					array_pop($this->_previousNodes);
-					end($this->_previousNodes);
-					if(isset($this->_previousNodes[key($this->_previousNodes)]))
-						$this->_currentNode =& $this->_previousNodes[key($this->_previousNodes)];
-					elseif(!empty($this->_currentClass))
-					{
-						$this->_currentNode =& $this->_contents[end($this->_currentClass)];
-					}
+					$rend = $this->_getStyle($rend);
+					if(!empty($rend['class']))
+						array_pop($this->_currentClass);
 				}
 				
 				if(empty($this->_currentClass))
 				{
-					$this->_currentClass[] = $this->_getStyle('standard');
-					$this->_currentNode =& $this->_contents[end($this->_currentClass)];
+					$style = $this->_getStyle('standard');
+					$this->_currentClass[] = $style['class'];
 				}
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
 			{
-				$this->_currentNode .= $this->_getText($this->value);
+				$text .= $this->_getText($this->value);
 			}
 		}
-	}
 
-	/**
-	 * Ajoute des attributs dans le noeud en cours
-	 *
-	 * @access private
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _addAttributes(array $attrs)
-	{
-		if(isset($attrs['rendition']))
-			$this->_currentNode .= ' style="'.$this->_getRendition($attrs['rendition']).'"';
+		$this->close();
 
-		if(isset($attrs['lang']))
-			$this->_currentNode .= ' xml:lang="'.$attrs['lang'].'" lang="'.$attrs['lang'].'"';
-
-		if(isset($attrs['cols']))
-			$this->_currentNode .= ' colspan="'.$attrs['cols'].'"';
-
-		if(isset($attrs['rows']))
-			$this->_currentNode .= ' rowspan="'.$attrs['rows'].'"';
-
-		if(isset($attrs['class']))
-			$this->_currentNode .= ' class="'.$attrs['class'].'"';
-	}
-
-	/**
-	 * Parse une liste
-	 *
-	 * @access private
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _parseList(array $attrs)
-	{
-		$tag = !isset($attrs['type']) || 'unordered' === $attrs['type'] ? 'ul' : 'ol';
-		$this->_tags[] = $tag;
-		$this->_currentNode .= '<'.$tag;
-		$this->_addAttributes($attrs);
-		$this->_addAttributes(array('class' => end($this->_currentClass)));
-
-		while($this->read())
-		{
-			if(parent::ELEMENT === $this->nodeType)
-			{
-				if('list' === $this->localName)
-				{
-					$this->_parseList($attrs);
-				}
-				elseif('item' === $this->localName)
-				{
-					$this->_currentNode .= '<li';
-					$this->_addAttributes($this->_parseAttributes());
-					$this->_currentNode .= '>';
-					$this->_tags[] = 'li';
-				}
-				else
-				{
-					$this->_currentNode .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
-				}
-			}
-			elseif(parent::END_ELEMENT === $this->nodeType)
-			{
-    				$this->_closeTag();
-				
-				if('list' === $this->localName) break;
-			}
-			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-			{
-				$this->_currentNode .= $this->_getText($this->value);
-			}
-		}
-	}
-
-	/**
-	 * Parse une bibliographie
-	 *
-	 * @access private
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _parseBiblio(array $attrs)
-	{
-		while($this->read())
-		{
-			if(parent::ELEMENT === $this->nodeType)
-			{
-				$this->_currentNode .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
-			}
-			elseif(parent::END_ELEMENT === $this->nodeType)
-			{
-				if('listBibl' === $this->localName) break;
-
-    				$this->_closeTag();
-			}
-			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-			{
-				$this->_currentNode .= $this->_getText($this->value);
-			}
-		}
-	}
-
-	/**
-	 * Parse une table
-	 *
-	 * @access private
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _parseTable(array $attrs)
-	{
-		$tags = array();
-		$this->_currentNode .= '<table id="'.$attrs['id'].'"';
-		$this->_addAttributes($attrs);
-		$this->_addAttributes(array('class' => end($this->_currentClass)));
-		$this->_tags[] = 'table';
-		
-		while($this->read())
-		{
-			if(parent::ELEMENT === $this->nodeType)
-			{
-				if('table' === $this->localName)
-				{
-					$this->_parseTable($attrs);
-				}
-				elseif('row' === $this->localName)
-				{
-					$this->_currentNode .= '<tr';
-					$this->_addAttributes($this->_parseAttributes());
-					$this->_currentNode .= '>';
-					$this->_tags[] = 'tr';
-				}
-				elseif('cell' === $this->localName)
-				{
-					$this->_currentNode .= '<td';
-					$this->_addAttributes($this->_parseAttributes());
-					$this->_currentNode .= '>';
-					$this->_tags[] = 'td';
-				}
-				else
-				{
-					$this->_currentNode .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
-				}
-			}
-			elseif(parent::END_ELEMENT === $this->nodeType)
-			{
-    				$this->_closeTag();
-				
-				if('table' === $this->localName) break;
-			}
-			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-			{
-				$this->_currentNode .= $this->_getText($this->value);
-			}
-		}
-	}
-
-	/**
-	 * Parse une figure (== image)
-	 *
-	 * @access private
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _parseFigure($attrs)
-	{
-		while($this->read() && 'figure' !== $this->localName)
-		{
-			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
-			{
-				$attrs = $this->_parseAttributes();
-				$id = basename($attrs['url']);
-				$nb = explode('-', $id);
-				// get images
-				if(isset($this->_images[$id]))
-				{
-					$attrs['url'] = $this->_images[$id];
-				}
-				$this->_currentNode .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
-			}
-		}
+		return $text;
 	}
 
 	/**
@@ -1160,6 +1041,7 @@ class TEIParser extends XMLReader
 	 * @access private
 	 * @param array $attrs les attributs du noeuds
 	 * @param boolean $inline si la méthode est appellée sur un <hi>
+	 * @return string les balises suivants les attributs fournis
 	 */
 	private function _addLocalStyle(array $attrs, $inline = false)
 	{
@@ -1171,7 +1053,9 @@ class TEIParser extends XMLReader
 		if(empty($lang) && empty($rendition) && empty($attrs['rend'])) return;
 
 		$tags = $inline ? array() : array_pop($this->_tags);
+
 		if(!is_array($tags)) $tags = array($tags);
+
 		$ret = '';
 
 		if(!empty($rendition))
@@ -1216,8 +1100,58 @@ class TEIParser extends XMLReader
 				{
 					$style = explode(':', $style);
 					$attrsAdd[] = 'dir="'.$style[1].'"';
+					unset($rendition[$i]);
 				}
 			}
+		}
+
+		if(!empty($attrs['rend']))
+		{
+			$styles = $this->_getStyle($attrs['rend']);
+			if(!empty($styles['inline']))
+			{
+				foreach($styles['inline'] as $style)
+				{
+					if('italic' === $style)
+					{
+						$ret .= '<em>';
+						$tags[] = 'em';
+					}
+					elseif('bold' === $style)
+					{
+						$ret .= '<strong>';
+						$tags[] = 'strong';
+					}
+					elseif('small-caps' === $style)
+						$rendition[] = 'font-variant:small-caps';
+					elseif('underline' === $style)
+						$rendition[] = 'text-decoration:underline';
+					elseif('strike' === $style)
+					{
+						$ret .= '<del>';
+						$tags[] = 'del';
+					}
+					elseif('uppercase' === $style)
+						$rendition[] = 'text-transform:uppercase';
+					elseif('lowercase' === $style)
+						$rendition[] = 'text-transform:lowercase';
+					elseif('sup' === $style)
+					{
+						$ret .= '<sup>';
+						$tags[] = 'sup';
+					}
+					elseif('sub' === $style)
+					{
+						$ret .= '<sub>';
+						$tags[] = 'sub';
+					}
+					elseif('direction(rtl)' === $style)
+						$attrsAdd[] = 'dir="rtl"';
+					elseif('direction(ltr)' === $style)
+						$attrsAdd[] = 'dir="ltr"';
+				}
+			}
+			unset($attrs['rend']);
 		}
 
 		if(!empty($rendition) || !empty($lang) || !empty($attrs['rend']) || !empty($attrsAdd))
@@ -1230,9 +1164,339 @@ class TEIParser extends XMLReader
 				'>';
 		}
 
-		$this->_tags[] = $tags;
+		$this->_tags[] = array_reverse($tags);
 
 		return $ret;
+	}
+
+	/**
+	 * Retourne un équivalent XHTML pour le tag TEI $name
+	 *
+	 * @access private
+	 * @param string $name le nom du tag
+	 * @param array $attrs les attributs du noeud
+	 * @return string la balise équivalement à $name
+	 */
+	private function _getTagEquiv($name, array $attrs)
+	{
+		// empty element, don't need it unless it is a line break, which will be converted to <br/>
+		if($this->isEmptyElement && 'lb' !== $name) return '';
+
+		// head title in bibliography
+		if(('bibl' === $name || 'ab' === $name) && isset($attrs['type']) && $attrs['type'] === 'head')
+			$name = 'head';
+
+		switch($name)
+		{
+			case 'note': // note
+				if(!isset($attrs['place']))
+					break;
+
+			case 'head': // title
+			case 'list': // list
+			case 'table': // table
+			case 'figure': // image
+			case 'listBibl': // bibliography
+				return $this->{'_parse'.$name}($attrs);
+				break;
+
+			case 'hi': // local style
+				return $this->_addLocalStyle($attrs, true);
+				break;
+
+// 			case 'pb': // page break, we don't need it
+// 				return '';
+// 				break;
+
+			case 'lb': // line break
+				return '<br/>';
+				break;
+
+			case 'ref':
+			case 'ptr':
+				if(!isset($attrs['target'])) break;
+
+				$this->_tags[] = 'a';
+				return '<a href="'.$attrs['target'].'">';
+				break;
+
+			default: break;
+		}
+
+
+		$tag = '';
+		$closing = $inline = false;
+		if(isset($attrs['rend']))
+		{
+			$style = $this->_getStyle($attrs['rend'], true);
+			if(!empty($style['class']))
+			{
+				$tag = '<p';
+				$tags = 'p';
+				$style = $style['class'];
+
+				if(($style instanceof entrytypesVO) || ($style instanceof persontypesVO))
+					return;
+
+				if((($style instanceof internalstylesVO) || ($style instanceof characterstylesVO)))
+				{
+					$s = $style->style;
+					if(false !== strpos($s, ','))
+					{
+						$s = explode(',', $s);
+						$s = $s[0];
+					}
+
+					if(!empty($style->conversion) && preg_match('/<([a-z0-9]+)(\s+[^>\/]+)?(\/?)>/', $style->conversion, $m))
+					{
+						$tags = array($tags, $m[1]); // replace the 'p'
+						if('hr' === $m[1] || 'br' === $m[1] || !empty($m[3]))
+						{ // auto-closing
+							$closing = true;
+							array_shift($tags);
+						}
+						$tag = '<'.$m[1].(!empty($m[2]) ? $m[2] : '').($closing ? '' : '><p').' class="'.$s.'"'.(!$closing ? '>' : ''); // and reconstruct the tag
+					}
+					elseif($style instanceof characterstylesVO)
+					{
+						$tags = $tag = '';
+						$inline = true;
+					}
+					else $tag .= ' class="'.$s.'">';
+
+				}
+				else
+				{
+					$tag .= ' class="'.$style->name.'">';
+				}
+			}
+
+			if(empty($style))
+			{
+				$tags = 'p';
+				$tag .= '<p class="'.$attrs['rend'].'">';
+			}
+		}
+		else
+		{
+			$tag .= '<p class="'.end($this->_currentClass).'">';
+			$tags = 'p';
+		}
+
+		if('p' === $name && empty($tags))
+		{
+			$tag .= '<p class="'.end($this->_currentClass).'">';
+			$tags = 'p';
+		}
+
+		if(!empty($tags)) $this->_tags[] = $tags;
+
+		return $tag.($closing ? '/>' : '').$this->_addLocalStyle($attrs, $inline);
+	}
+
+	/**
+	 * Ajoute des attributs dans le noeud en cours
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string les attributs XHTML selon les attributs donnés en entrée
+	 */
+	private function _addAttributes(array $attrs)
+	{
+		$text = '';
+
+		if(isset($attrs['rendition']))
+			$text .= ' style="'.$this->_getRendition($attrs['rendition']).'"';
+
+		if(isset($attrs['lang']))
+			$text .= ' xml:lang="'.$attrs['lang'].'" lang="'.$attrs['lang'].'"';
+
+		if(isset($attrs['cols']))
+			$text .= ' colspan="'.$attrs['cols'].'"';
+
+		if(isset($attrs['rows']))
+			$text .= ' rowspan="'.$attrs['rows'].'"';
+
+		if(isset($attrs['class']))
+			$text .= ' class="'.$attrs['class'].'"';
+
+		return $text;
+	}
+
+	/**
+	 * Parse un niveau de titre
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string le niveau de titre
+	 */
+	private function _parseHead(array $attrs)
+	{
+		if(!isset($attrs['subtype']))
+		{
+			$this->_log(getlodeltextcontents('TEIPARSER_MISSING_ATTRIBUTE_SUBTYPE_IN_HEADING', 'edition'));
+			$level = 0;
+		}
+		else
+			$level = (int) substr($attrs['subtype'], 5);
+
+		if($level <= 0 || $level > 6)
+		{
+			$this->_log(sprintf(getlodeltextcontents('TEIPARSER_BAD_LEVEL_TITLE', 'edition'), $level, $level));
+			$text = '<p class="heading'.$level.'">'.$this->_addLocalStyle($attrs);
+			$this->_tags[] = 'p';
+		}
+		else
+		{
+			$tag = 'h'.$level;
+			$this->_tags[] = $tag;
+			$text = '<'.$tag . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Parse une liste
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string la liste
+	 */
+	private function _parseList(array $attrs)
+	{
+		$tag = !isset($attrs['type']) || 'unordered' === $attrs['type'] ? 'ul' : 'ol';
+		$this->_tags[] = $tag;
+		$text = '<'.$tag . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
+
+		while($this->read())
+		{
+			if(parent::ELEMENT === $this->nodeType)
+			{
+				if('list' === $this->localName)
+					$text .= $this->_parseList($attrs);
+				elseif('item' === $this->localName)
+				{
+					$text .= '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
+					$this->_tags[] = 'li';
+				}
+				else
+					$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+			}
+			elseif(parent::END_ELEMENT === $this->nodeType)
+			{
+    				$text .= $this->_closeTag();
+				
+				if('list' === $this->localName) break;
+			}
+			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
+				$text .= $this->_getText($this->value);
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Parse une bibliographie
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string la bibliographie
+	 */
+	private function _parseListBibl(array $attrs)
+	{
+		$text = '';
+
+		while($this->read())
+		{
+			if(parent::ELEMENT === $this->nodeType)
+				$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+			elseif(parent::END_ELEMENT === $this->nodeType)
+			{
+				if('listBibl' === $this->localName) break;
+
+				$text .= $this->_closeTag();
+			}
+			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
+				$text .= $this->_getText($this->value);
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Parse une table
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string le tableau
+	 */
+	private function _parseTable(array $attrs)
+	{
+		$text = '<table id="'.$attrs['id'].'"' . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) .'>';
+
+		$this->_tags[] = 'table';
+
+		while($this->read())
+		{
+			if(parent::ELEMENT === $this->nodeType)
+			{
+				if('table' === $this->localName)
+					$text .= $this->_parseTable($attrs);
+				elseif('row' === $this->localName)
+				{
+					$text .= '<tr' . $this->_addAttributes($this->_parseAttributes()) . '>';
+					$this->_tags[] = 'tr';
+				}
+				elseif('cell' === $this->localName)
+				{
+					$text .= '<td' . $this->_addAttributes($this->_parseAttributes()) . '>';
+					$this->_tags[] = 'td';
+				}
+				else
+					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
+			}
+			elseif(parent::END_ELEMENT === $this->nodeType)
+			{
+				$text .= $this->_closeTag();
+
+				if('table' === $this->localName) break;
+			}
+			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
+				$text .= $this->_getText($this->value);
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Parse une figure (== image)
+	 *
+	 * @access private
+	 * @param array $attrs les attributs du noeud
+	 * @return string l'image
+	 */
+	private function _parseFigure($attrs)
+	{
+		$text = '';
+
+		while($this->read())
+		{
+			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
+			{
+				$attrs = $this->_parseAttributes();
+				$id = basename($attrs['url']);
+				$nb = explode('-', $id);
+				// get images temporary url
+				if(isset($this->_images[$id]))
+					$attrs['url'] = $this->_images[$id];
+				$text .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
+			}
+			elseif(parent::END_ELEMENT === $this->nodeType && 'figure' === $this->localName)
+				break;
+		}
+
+		return $text;
 	}
 
 	/**
@@ -1240,10 +1504,12 @@ class TEIParser extends XMLReader
 	 *
 	 * @access private
 	 * @param array $attrs les attributs du noeud
+	 * @return string la note
 	 */
 	private function _parseNote(array $attrs)
 	{
 		++$this->_nbNotes;
+
 		if(!isset($attrs['place']))
 		{
 			$this->_log(getlodeltextcontents('TEIPARSER_MISSING_PLACE_ATTRIBUTE_FOR_NOTE', 'edition'));
@@ -1257,185 +1523,34 @@ class TEIParser extends XMLReader
 		}
 
 		$type = $this->_getStyle($attrs['place'].'note');
-		if(false === $type)
-		{
-			return;
-		}
+		$type = $type['class'];
 
-		isset($this->_contents[$type]) || $this->_contents[$type] = '';
+		isset($this->_contents[$type]) || $this->_contents[$type] = array();
 		$first = false;
-		
-		while($this->read() && 'note' !== $this->localName)
+
+		$text =& $this->_contents[$type][];
+
+		while($this->read())
 		{
 			if(parent::ELEMENT === $this->nodeType)
 			{
-				$this->_contents[$type] .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+				$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
 				if(!$first)
-				{
-					$this->_contents[$type] .= '<a class="'.ucfirst($attrs['place']).'noteSymbol" href="#bodyftn'.$this->_nbNotes.'" id="ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a> ';
+				{ // we add the anchor at the beginning
+					$text .= '<a class="'.ucfirst($attrs['place']).'noteSymbol" href="#bodyftn'.$this->_nbNotes.'" id="ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a> ';
 					$first = true;
 				}
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
-				$this->_closeTag();
+				if('note' === $this->localName) break;
+
+				$text .= $this->_closeTag();
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-			{
-				$this->_contents[$type] .= $this->_getText($this->value);
-			}
+				$text .= $this->_getText($this->value);
 		}
-		$this->_contents[$type] .= '</p>';
 		
 		return '<a class="'.$attrs['place'].'notecall" id="bodyftn'.$this->_nbNotes.'" href="#ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a>';
-	}
-
-	/**
-	 * Retourne un équivalent XHTML pour le tag TEI $name
-	 *
-	 * @access private
-	 * @param string $name le nom du tag
-	 * @param array $attrs les attributs du noeud
-	 */
-	private function _getTagEquiv($name, array $attrs)
-	{
-		// empty element, don't need it unless it is a line break, which will be converted to <br/>
-		if($this->isEmptyElement && 'lb' !== $name) return '';
-		
-		if(isset($attrs['rend']) && 'heading' === substr($attrs['rend'], 0, 7))
-		{
-			$level = (int) substr($attrs['rend'], -1);
-			if($level <= 0 || $level > 6)
-			{
-				$this->_log(sprintf(getlodeltextcontents('TEIPARSER_BAD_LEVEL_TITLE', 'edition'), $level));
-				$tag = '<p class="'.$attrs['rend'].'"';
-				$this->_tags[] = 'p';
-			}
-			else
-			{
-				$tag = 'h'.$level;
-				$this->_tags[] = $tag;
-				$tag = '<'.$tag.'>';
-			}
-			unset($attrs['rend']);
-
-			return $tag.$this->_addLocalStyle($attrs);
-		}
-		elseif('p' === $name || ('hi' === $name && isset($attrs['rend'])) || 's' === $name || 'bibl' === $name)
-		{
-			$tag = '<p';
-			$tags = 'p';
-			$closing = $inline = false;
-			if(isset($attrs['rend']) && 'item' !== $attrs['rend']) // escape <li>
-			{
-				$style = $this->_getStyle($attrs['rend'], true);
-				if($style)
-				{
-					if(($style instanceof entrytypesVO) || ($style instanceof persontypesVO)) 
-					{
-						return;
-					}
-					
-					if((($style instanceof internalstylesVO) || ($style instanceof characterstylesVO)))
-					{
-						$s = $style->style;
-						if(false !== strpos($s, ','))
-						{
-							$s = explode(',', $s);
-							$s = $s[0];
-						}
-
-						if(!empty($style->conversion) && preg_match('/<([a-z0-9]+)(\s+[^>\/]+)?\/?>/', $style->conversion, $m))
-						{
-							$tags = array($tags, $m[1]); // replace the 'p'
-							if('hr' === $m[1] || 'br' === $m[1])
-							{ // auto-closing
-								$closing = true;
-							}
-							$tag = '<'.$m[1].(!empty($m[2]) ? $m[2] : '').($closing ? '' : '><p').' class="'.$s.'">'; // and reconstruct the tag
-						}
-						elseif($style instanceof characterstylesVO)
-						{
-							$tags = $tag = '';
-							$inline = true;
-						}
-						else $tag .= ' class="'.$s.'">';
-
-						if(!($style instanceof characterstylesVO))
-							unset($attrs['rend']);
-					}
-					else
-					{
-						unset($attrs['rend']);
-						$tag .= ' class="'.$style->name.'">';
-					}
-				}
-				else
-				{
-					$tag .= ' class="'.$attrs['rend'].'">';
-					unset($attrs['rend']);
-				}
-			}
-			else
-			{
-				$tag .= ' class="'.end($this->_currentClass).'">';
-			}
-
-			if($closing)
-			{
-				return $tag.'/>';
-			}
-			else
-			{
-				if(!empty($tags))
-					$this->_tags[] = $tags;
-				return $tag.$this->_addLocalStyle($attrs, $inline);
-			}
-		}
-		elseif('hi' === $name && isset($attrs['rendition']) || isset($attrs['lang']))
-		{
-			unset($attrs['rend']);
-			return $this->_addLocalStyle($attrs, true);
-		}
-		elseif('hi' === $name)
-		{
-			$this->_tags[] = 'span';
-			return '<span>';
-		}
-		elseif('list' === $name)
-		{
-			return $this->_parseList($attrs);
-		}
-		elseif('table' === $name)
-		{
-			return $this->_parseTable($attrs);
-		}
-		elseif('note' === $name)
-		{
-			return $this->_parseNote($attrs);
-		}
-		elseif('figure' === $name)
-		{
-			return $this->_parseFigure($attrs);
-		}
-		elseif('listBibl' === $name)
-		{
-			return $this->_parseBiblio($attrs);
-		}
-		elseif('pb' === $name)
-		{ // page break, we don't need it
-			return '';
-		}
-		elseif('lb' === $name)
-		{
-			return '<br/>';
-		}
-		elseif(('ref' === $name || 'ptr' === $name) && isset($attrs['target']))
-		{
-			$this->_tags[] = 'a';
-			return '<a href="'.$attrs['target'].'">';
-		}
-
-		$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_TAG', 'edition'), $name));
 	}
 }
