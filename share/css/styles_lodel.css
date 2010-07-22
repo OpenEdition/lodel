@@ -2136,12 +2136,11 @@ div#options
 
 div#otxadmin
 {
-	margin:2em;
+	margin:6em 2em 2em 2em;
 	border:1px solid #9db7c4;
 	background-color:#f1f4f6;
 	width:380px;
 	padding:0;
-	clear:both;
 	font-size:90%;
 	text-align:center;
 }

@@ -44,7 +44,7 @@ body{
 	/*background-image: url("[#SHAREURL]/images/bandeau.jpg");
 	background-repeat: no-repeat;*/
 	background-color: #d4d7cc;
-	height: 124px;
+	height: 167px;
 	font: 11px verdana, sans-serif !important;
 	text-align: left !important;
 	color: #333;
@@ -72,7 +72,7 @@ body{
 
 #lodel-desk ul.group1, #lodel-desk ul.group2{
 	position: absolute;
-	top: 66px;
+	top: 109px;
 }
 
 #lodel-desk ul.group1{
@@ -111,18 +111,18 @@ body{
 	height: 16px;
 	padding: 0 0 0 20px;
 	font-weight: normal;
-	color: #000;
+	color: #37b8e3;
 	margin-right: 1em;
 }
 
 #lodel-desk ul.group2 a#logout:hover, #lodel-desk ul.group2 a#clearcache:hover{
-	color: #666;
+	color: black;
 	border: 0;
 }
 
 #lodel-desk #deskContext{
 	position: absolute;
-	top: 98px;
+	top: 141px;
 	left: 0;
 	background: #e18600;
 	width: 100%;
@@ -181,16 +181,16 @@ body{
 }
 
 #lodel-desk table.infos td, #lodel-desk table.infos th{
-	border: 1px solid #848484;
+	border: 1px solid #2184c3;
 	border-left: 0;
-	background: #c3c3c3;
+	background-color: #009dd1;
 	padding: .7ex .7em;
 	vertical-align: middle;
 	height: 15px;
 }
 
 #lodel-desk table.infos th{
-	border-right: 3px solid #848484;
+	border-right: 3px solid #2184c3;
 	text-align: left;
 }
 
