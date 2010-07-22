@@ -81,6 +81,16 @@
 <label for="newbyimportallowed">[@ADMIN.NEWIMPORTALLOWED] : 
 		</label><br class="nobr"><IF COND="[#NEWBYIMPORTALLOWED]"><input type="checkbox" name="newbyimportallowed" id="newbyimportallowed" checked><ELSE/><input type="checkbox" name="newbyimportallowed" id="newbyimportallowed"></IF><LOOP NAME="fielderror" FIELD="newbyimportallowed"><a id="newbyimportallowed"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.NEWIMPORTALLOWED]"></FUNC></span></LOOP><br /><label for="style">[@ADMIN.STYLE_INDEX_TYPE] : 
 		</label><br class="nobr"><input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]"><LOOP NAME="fielderror" FIELD="style"><a id="style"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.STYLE_INDEX_TYPE]"></FUNC></span></LOOP><br />
+  <label for="style">[@ADMIN.XPATH_OTX] : 
+		</label>
+  <br class="nobr">
+  <input type="text" size="30" name="otx" id="otx" class="text" value="[#OTX]"> <a href="javascript:;" onclick="window.open('./?page=dtd&amp;otx=[#OTX|urlencode]', '','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@ADMIN.REGENERATE]</a>
+  <LOOP NAME="fielderror" FIELD="style">
+    <a id="style"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.XPATH_OTX]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
 </fieldset><fieldset>
 <legend>[@ADMIN.VIEW_IN_SITE]</legend>
 <label for="tpl">[@ADMIN.TEMPLATE_FILENAME_FOR_ENTRY] : 

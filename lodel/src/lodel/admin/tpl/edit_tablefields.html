@@ -51,7 +51,7 @@
 </ul>
 <br />&nbsp;<br />
 
-<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" />
+<form method="post" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" >
 <!--[ begin{form} Beginning of the form.  Automatic generated. Don't edit ]-->
 <input type="hidden" name="do" value="edit">
 <input type="hidden" name="lo" value="tablefields">
@@ -184,6 +184,16 @@
   <LOOP NAME="fielderror" FIELD="style">
     <a id="style"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.IMPORT_STYLE]"></FUNC>
+    </span>
+  </LOOP>
+  <br />
+  <label for="style">[@ADMIN.XPATH_OTX] : 
+		</label>
+  <br class="nobr">
+  <input type="text" size="30" name="otx" id="otx" class="text" value="[#OTX]"> <a href="javascript:;" onclick="window.open('./?page=dtd&amp;otx=[#OTX|urlencode]', '','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@ADMIN.REGENERATE]</a>
+  <LOOP NAME="fielderror" FIELD="style">
+    <a id="style"></a><span class="error">
+      <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.XPATH_OTX]"></FUNC>
     </span>
   </LOOP>
   <br />

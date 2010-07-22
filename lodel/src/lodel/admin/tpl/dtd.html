@@ -1,0 +1,325 @@
+<CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8"/>
+<!--[
+
+   LODEL - Logiciel d'Edition ELectronique.
+   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
+   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Home page: http://www.lodel.org
+   E-Mail: lodel@lodel.org
+                             All Rights Reserved
+      This program is free software; you can redistribute it and/or modify
+      it under the terms of the GNU General Public License as published by
+      the Free Software Foundation; either version 2 of the License, or
+      (at your option) any later version.
+      This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      GNU General Public License for more details.
+      You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
+<USE MACROFILE="macros.html"/>
+<USE MACROFILE="macros_admin.html"/>
+<USE MACROFILE="macros_interface.html"/>
+
+<?php
+include_once 'teifunc.php';
+mkArrayFromDTD($context, parseDTD(C::get('servoourl', 'cfg').'/?dtd')->dtd['elements']);
+mkPredefiniteXpath($context);
+?>
+
+<MACRO NAME="HEADER_HEAD_OPEN">
+<title>[@ADMIN.TITLE_DATAFIELD] : [@ADMIN.XPATH_OTX]</title>
+
+<MACRO NAME="HEADER_HEAD_CLOSE">
+<MACRO NAME="HEADER_LOGO"> 
+
+<ul id="actionsOnEntitiesPath">
+	<li>[@ADMIN.TITLE_DATAFIELD]</li>
+</ul>
+<br />&nbsp;<br />
+<div>
+	<form>
+		<fieldset>
+			<legend>[@ADMIN.GENERATE_XPATH]</legend>
+			<label for="relative">[@ADMIN.ABSOLUTE_XPATH] :</label>
+			<input type="radio" id="absolute" name="mode" onchange="dtd.changeMode();"<IF COND="![#OTX]"> checked="checked"</IF>/>
+			<label for="relative">[@ADMIN.RELATIVE_XPATH] :</label>
+			<input type="radio" id="relative" name="mode" onchange="dtd.changeMode();"/>
+			<label for="relative">[@ADMIN.PREDEFINED_XPATH] :</label>
+			<input type="radio" id="predefinedxpath" name="mode" onchange="dtd.selectPredefinedXpath();"/>
+			<div id="elementsContainer"></div>
+			<br/>
+			<label for="otx">[@ADMIN.XPATH_OTX] :</label>
+			<input type="text" id="xpath" size="70" name="xpath" value="[#OTX]"/>
+			<IF COND="[#OTX]">
+				<br/>
+				[@ADMIN.CURRENT_XPATH] : [#OTX]
+			</IF>
+		</fieldset>
+		<fieldset>
+			<legend>[@COMMON.VALIDATION]</legend>
+			<input class="button" type="button" value="[@COMMON.OK]" onclick="window.opener.document.getElementById('otx').value =  $('xpath').get('value');window.close();"/>
+			<input class="button" type="button" value="[@COMMON.CANCEL]" onclick="window.close();"/>
+			<input class="button" type="reset" value="[@COMMON.RESET]"/>
+		</fieldset>
+	</form>
+</div>
+
+<MACRO NAME="MOOTOOLS"/>
+
+<script type="text/javascript">
+var dtdHelper = {};
+dtdHelper = function() {
+	this.init();
+};
+
+dtdHelper.prototype = {
+	elements:[],
+	xpaths:[],
+	init:function() {
+		this.elements = JSON.decode('[#ELEMENTS|json_encode|addcslashes("'")]');
+		this.xpaths = JSON.decode('[#XPATHS|json_encode|addcslashes("'")]');
+		<IF COND="![#OTX]">
+			this.mkSelect('TEI', 1);
+		</IF>
+	},
+	removeSelects:function(level) {
+		if(level === 1) {
+			$$('div[id^=container_]').each(function(item) {
+				item.destroy();
+			});
+		} else {
+			var i = -1;
+			while($('container_' + (level + ++i))) {
+				$('container_' + (level + i)).destroy();
+			}
+		}
+	},
+	mkSelect:function(name, level) {
+		this.removeSelects(level);
+
+		name = name.toString();
+
+		if(!this.elements[name]) {
+			this.setXpath();
+			return;
+		}
+
+		var div = new Element('div', {id:'container_' + level});
+
+		if(this.elements[name].attributes && level > 1) {
+
+			var argsSelect = new Element('select',
+				{
+					id:'selectargs_' + (level - 1),
+					name:'selectnoargs_' + (level - 1),
+					multiple:'multiple'
+				}
+			);
+
+			var argsNoSelect = new Element('select',
+				{
+					id:'selectnoargs_' + (level - 1),
+					name:'selectnoargs_' + (level - 1),
+					multiple:'multiple'
+				}
+			);
+
+			$each(this.elements[name].attributes, function(item, key) {
+				var opt = new Element('option', {value:key, text:key});
+				opt.addEvent('click', function(e) {
+					if(e.target.get('selected')) {
+						if(confirm('[@ADMIN.ADD_VALUE_TO_ATTRIBUTE|addslashes]')) {
+							e.target.store('argvalue', prompt('[@ADMIN.FILL_VALUES_SEPARATED_BY_COMMAS|addslashes]'));
+						} else {
+							e.target.eliminate('argvalue');
+						}
+					}
+					this.setXpath();
+				}.bindWithEvent(this));
+				argsSelect.adopt(opt);
+			}.bind(this));
+
+			$each(this.elements[name].attributes, function(item, key) {
+				var opt = new Element('option', {value:key, text:key});
+				opt.addEvent('click', function(e) {
+					if(e.target.get('selected')) {
+						if(confirm('[@ADMIN.ADD_VALUE_TO_ATTRIBUTE|addslashes]')) {
+							e.target.store('argvalue', prompt('[@ADMIN.FILL_VALUES_SEPARATED_BY_COMMAS|addslashes]'));
+						} else {
+							e.target.eliminate('argvalue');
+						}
+					}
+					this.setXpath();
+				}.bindWithEvent(this));
+				argsNoSelect.adopt(opt);
+			}.bind(this));
+
+			$('container_' + (level - 1)).adopt(new Element('br')).adopt(new Element('label', {for:'selectargs_' + (level - 1),text:' [@ADMIN.ATTRIBUTE_TO_SELECT|addslashes|sprintf("'+name+'")] : '})).adopt(argsSelect).adopt(new Element('br')).adopt(new Element('label', {for:'selectnoargs_' + (level - 1),text:' [@ADMIN.ATTRIBUTE_TO_NOT_SELECT|addslashes|sprintf("'+name+'")] : '})).adopt(argsNoSelect);
+		}
+
+		if(this.elements[name].children) {
+			var select = new Element('select',
+				{
+					id:'select_'+ level,
+					name:'select_'+ level
+				}
+			);
+
+			select.addEvent('change', function(e, level) {
+				this.mkSelect(e.target.getSelected().get('value'), level + 1);
+			}.bindWithEvent(this, level)).adopt(new Element('option', {'value': '--', 'text':'--'}));
+
+			$each(this.elements[name].children, function(item) {
+				this.adopt(
+					new Element('option', {
+						value:item,
+						text:item
+						})
+				);
+			}.bind(select));
+
+			div.adopt(new Element('label', {for:'select_' + level, 'text':'[@ADMIN.SELECT_ELEMENT|addslashes] : '})).adopt(select);
+		}
+
+		$('elementsContainer').adopt(div);
+
+		this.setXpath();
+	},
+	setXpath:function() {
+		var xpath = $('relative').get('checked') ? '/' : '/tei:TEI';
+		var i = 0;
+		while($('select_' + ++i))
+		{
+			var v = $('select_' + i).getSelected().get('value').toString();
+			if('--' != v) {
+				if(-1 === v.indexOf('::') && 'node()' !== v && 'text()' !== v) {
+					xpath += '/tei:';
+				} else {
+					xpath += '/';
+				}
+
+				xpath += v;
+
+				if($('selectargs_' + i)) {
+
+					var xpathWanted = [], xpathNotWanted = [];
+
+					$('selectargs_' + i).getSelected().each(function(item) {
+						
+						var v = item.retrieve('argvalue');
+						if(v != null) {
+							v.split(',').each(function(item) {
+								xpathWanted.push('@'+this.get('value')+"='"+item+"'");
+							}.bind(item));
+						} else {
+							xpathWanted.push('@' + item.get('value'))
+						}
+						
+					});
+
+					$('selectnoargs_' + i).getSelected().each(function(item) {
+						var v = item.retrieve('argvalue');
+						if(v != null) {
+							v.split(',').each(function(item) {
+								xpathNotWanted.push('@'+this.get('value')+"='"+item+"'");
+							}.bind(item));
+						} else {
+							xpathNotWanted.push('@' + item.get('value'))
+						}
+					});
+
+					if(xpathWanted.length) {
+						xpath += '[' + xpathWanted.join(' OR ') + ']';
+					}
+
+					if(xpathNotWanted.length) {
+						xpath += '[not(' + xpathNotWanted.join(') AND not(') + ')]';
+					}
+				}
+			}
+		}
+
+		$('xpath').set('value', xpath);
+	},
+	changeMode: function() {
+		$('predefinedxpath').set('checked', '');
+		if($('relative').get('checked')) {
+			this.mkRelativeSelect();
+		} else {
+			this.mkSelect('TEI', 1);
+		}
+	},
+	selectPredefinedXpath: function() {
+		this.removeSelects(1);
+
+		if(!$('predefinedxpath').get('checked')) {
+			return this.mkSelect('TEI', 1);
+		} else {
+			$('relative').set('checked', '');
+		}
+
+		var select = new Element('select', {
+			id:'select_1',
+			name:'select_1'
+		});
+
+		$each(this.xpaths, function(item, key) {
+			this.adopt(new Element('option', {'value':item,'text':key}));
+		}.bind(select));
+
+		select.addEvent('change', function() {
+			var value = this.getSelected().get('value');
+			if('--' != value) {
+				$('xpath').set('value', this.getSelected().get('value'));
+			} else {
+				$('xpath').set('value', '');
+			}
+		});
+
+		var div = new Element('div', {id:'container_1'});
+		div.adopt(new Element('label', {for:'select_1', text:'[@ADMIN.SELECT_XPATH|addslashes] : '})).adopt(select);
+		$('elementsContainer').adopt(div);
+		$('xpath').set('value', '');
+	},
+	mkRelativeSelect:function() {
+		this.removeSelects(1);
+
+		var div = new Element('div', {id:'container_1'});
+
+		div.adopt(new Element('label', {for:'select_1', text:'[@ADMIN.SELECT_ELEMENT|addslashes] : '}));
+
+		var select = new Element('select', {
+			id:'select_1',
+			name:'select_1'
+		});
+
+		select.addEvent('change', function(e) {
+			this.mkSelect(e.target.getSelected().get('value'), 2);
+		}.bindWithEvent(this)).adopt(new Element('option', {'value': '--', 'text':'--'}));
+
+		$each(this.elements, function(item, key) {
+			this.adopt(new Element('option', {value:key, text:key}));
+		}.bind(select));
+
+		div.adopt(select);
+
+		$('elementsContainer').adopt(div);
+		$('xpath').set('value', '');
+	}
+};
+
+var dtd = {};
+window.addEvent('domready', function() {
+	dtd = new dtdHelper();
+});
+
+</script>
+<MACRO NAME="CLOSE_HTML"/>
