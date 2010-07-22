@@ -87,35 +87,44 @@ try
 	{
 		if ($do === 'edit' || $do === 'view') 
 		{
-			// check for the right to change this document
-			if (!($idtype = C::get('idtype'))) {
-				trigger_error('ERROR: idtype must be given', E_USER_ERROR);
-			}
-			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
-			$vo = DAO::getDAO('types')->find("id='{$idtype}' and public>0 and status>0");
-			if (!$vo) {
-				trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
-			}
-			unset($vo);
-			if(!C::get('editor', 'lodeluser'))
+			$lo = C::get('lo');
+			if(!$lo || $lo != 'texts')
 			{
-				$lodeluser['temporary'] = true;
-				$lodeluser['rights']  = LEVEL_REDACTOR; // grant temporary
-				$lodeluser['visitor'] = 1;
-				$lodeluser['groups'] = 1;
-				$lodeluser['editor']  = 0;
-				$lodeluser['redactor'] = 1;
-				$lodeluser['admin']	= 0;
-				$lodeluser['adminlodel'] = 0;
-				$GLOBALS['nodesk'] = true;
-				C::setUser($lodeluser);
-				unset($lodeluser);
-				$_REQUEST['clearcache'] = false;
-				C::set('nocache', false);
+				// check for the right to change this document
+				if (!($idtype = C::get('idtype'))) {
+					trigger_error('ERROR: idtype must be given', E_USER_ERROR);
+				}
+				defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
+				$vo = DAO::getDAO('types')->find("id='{$idtype}' and public>0 and status>0");
+				if (!$vo) {
+					trigger_error("ERROR: you are not allowed to add this kind of document", E_USER_ERROR);
+				}
+				unset($vo);
+				if(!C::get('editor', 'lodeluser'))
+				{
+					$lodeluser['temporary'] = true;
+					$lodeluser['rights']  = LEVEL_REDACTOR; // grant temporary
+					$lodeluser['visitor'] = 1;
+					$lodeluser['groups'] = 1;
+					$lodeluser['editor']  = 0;
+					$lodeluser['redactor'] = 1;
+					$lodeluser['admin']	= 0;
+					$lodeluser['adminlodel'] = 0;
+					$GLOBALS['nodesk'] = true;
+					C::setUser($lodeluser);
+					unset($lodeluser);
+					$_REQUEST['clearcache'] = false;
+					C::set('nocache', false);
+				}
+				$accepted_logic = array('entities_edition');
+            			C::set('lo', 'entities_edition');
+				$called_logic = 'entities_edition';
 			}
-			$accepted_logic = array('entities_edition');
-            		C::set('lo', 'entities_edition');
-			$called_logic = 'entities_edition';
+			elseif($lo == 'texts')
+			{
+				$accepted_logic = array($lo);
+				$called_logic = $lo;
+			}
 		} elseif('_' === $do{0}) {
 			$accepted_logic = array('plugins');
 			C::set('lo', 'plugins');
