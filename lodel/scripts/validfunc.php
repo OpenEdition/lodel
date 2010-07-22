@@ -90,6 +90,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$text = $default;
 		} elseif($name && isset($context['class'])) {
 			if(!isset($masks[$context['class']])) {
+				$masks[$context['class']] = array();
 				$fields = $db->execute(lq("select name, mask from #_TP_tablefields where class='{$context['class']}' AND type in ('text', 'longtext', 'tinytext') AND mask !=''"));
 				if(!$fields) return true;
 				while(!$fields->EOF) {
