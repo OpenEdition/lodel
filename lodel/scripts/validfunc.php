@@ -82,6 +82,18 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		$text = strip_tags($text);
 	}
 	switch ($type) { //pour chaque type de champ
+	case 'xpath':
+		if(!$text) {
+			$text = $default;
+		} else {
+			$dom = new DomDocument('1.0', 'UTF-8');
+			$dom->loadXML('<root></root>');
+			$xpath = new DomXPath($dom);
+			$xpath->registerNamespace('tei', "http://www.tei-c.org/ns/1.0/");
+			$test = @$xpath->query($text);
+			if(false === $test) return $type;
+		}
+		break;
 	case 'history' :
 	case 'text' :
 	case 'tinytext' :

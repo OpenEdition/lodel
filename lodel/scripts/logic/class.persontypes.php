@@ -207,7 +207,7 @@ class PersonTypesLogic extends Logic
 									'style' => array('style', ''),
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''),
-									'otx' => array('text', ''));
+									'otx' => array('xpath', ''));
 	}
 	// end{publicfields} automatic generation  //
 

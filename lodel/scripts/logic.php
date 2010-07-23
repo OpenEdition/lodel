@@ -528,11 +528,11 @@ class Logic
 			return false;
 		}
 
-		$conditions=array();
 		$ufields = $this->_uniqueFields();
 		foreach ($ufields as $fields) { // all the unique set of fields
+			$conditions=array();
 			foreach ($fields as $field) { // set of fields which has to be unique.
-				$conditions[] = $field. "='". $context[$field]. "'";
+				$conditions[] = $field. "=". $db->quote($context[$field]);
 			}
 			// check
 			$ret = $db->getOne("SELECT 1 FROM ". lq("#_TP_". $this->maintable). " WHERE status>-64 AND id!='". $context['id']. "' AND ". join(" AND ", $conditions));

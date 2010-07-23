@@ -131,7 +131,7 @@ class InternalstylesLogic extends Logic {
 									'conversion' => array('text', ''),
 									'surrounding' => array('select', '+'),
 									'greedy' => array('boolean', ''),
-									'otx' => array('text', ''));
+									'otx' => array('xpath', ''));
 	}
 	// end{publicfields} automatic generation  //
 

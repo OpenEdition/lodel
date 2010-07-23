@@ -357,7 +357,8 @@ class EntryTypesLogic extends Logic
 									'tpl' => array('tplfile', ''),
 									'tplindex' => array('tplfile', ''),
 									'sort' => array('select', '+'),
-									'externalallowed' => array('boolean','+'));
+									'externalallowed' => array('boolean','+'),
+									'otx' => array('xpath', ''));
 	}
 	// end{publicfields} automatic generation  //
 

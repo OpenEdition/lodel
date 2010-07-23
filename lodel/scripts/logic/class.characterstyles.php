@@ -85,7 +85,7 @@ class CharacterstylesLogic extends Logic
 	{
 		return array(	'style' => array('type', '+'),
 				'conversion' => array('text', ''),
-				'otx' => array('text', ''));
+				'otx' => array('xpath', ''));
 	}
 	// end{publicfields} automatic generation  //
 

@@ -410,7 +410,7 @@ class TableFieldsLogic extends Logic
 									'idgroup' => array('select', '+'),
 									'type' => array('select', '+'),
 									'g_name' => array('select', ''),
-									'otx' => array('text', ''),
+									'otx' => array('xpath', ''),
 									'style' => array('mlstyle', ''),
 									'cond' => array('select', '+'),
 									'defaultvalue' => array('text', ''),
