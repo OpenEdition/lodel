@@ -51,8 +51,8 @@
 * @package lodel
 */
 
-if(!file_exists('CACHE/filterfunc.php')) makefilterfunc();
-@include 'CACHE/filterfunc.php';
+if(!file_exists('CACHE/filterfunc')) makefilterfunc();
+@include 'CACHE/filterfunc';
 
 /**
 * Filtre les champs qu'il faut filtrer et converti les filtres en fonction
@@ -63,7 +63,7 @@ function makefilterfunc()
 	global $db;
     	defined('INC_CONNECT') || include 'connect.php';
 	// cherche les champs a filtrer	
-	$result = $db->CacheExecute($GLOBALS['sqlCacheTime'], "
+	$result = $db->Execute("
 	SELECT class,name,filtering 
 		FROM {$GLOBALS['tp']}tablefields 
 		WHERE status > 0 AND filtering!=''") 
@@ -104,7 +104,7 @@ function makefilterfunc()
     	$result->Close();
 
 	// build the function with filtering
-    	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
+    	if(FALSE === @file_put_contents("CACHE/filterfunc", '<'.'?php
     function filtered_mysql_fetch_assoc($context, $result) {
         $row = $result->FetchRow();
         if (!$row) return array();
@@ -147,7 +147,6 @@ function makefilterfunc()
                 $context[$k] = $v;
             }
         }
-    }
-    ?'.'>')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
+    }')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
 	@chmod($cacheDir."filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
 }
