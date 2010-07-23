@@ -91,9 +91,6 @@ $cfg['dbusername']="";
 $cfg['dbpasswd']="";
 # Hote de la BD
 $cfg['dbhost']="";
-# temps de cache des résultats SQL
-$cfg['sqlCacheTime'] = 3600*24;
-$GLOBALS['sqlCacheTime']=$cfg['sqlCacheTime'];
 # driver mysql
 $cfg['dbDriver'] = 'mysql';
 

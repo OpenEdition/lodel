@@ -79,8 +79,6 @@ class Parser
 	protected $currentline;
 	protected $ind;
 	public $refresh = "";
-    	protected $sqlrefresh;
-	protected $isphp = false; // the parser produce a code which produce either html, either php. In the latter, a sequence must be written at the beginning to inform the cache system.
 
 	protected $id = "";
 	protected $tpl; // actual name of tpl
@@ -88,6 +86,7 @@ class Parser
 	protected $isLoop; // is the parser called for a loop with refresh
 	protected $conditions;
 	protected $joinedconditions;
+	protected $_translationMode;
 
 	protected function _errmsg($msg, $ind = 0)
 	{
@@ -131,6 +130,7 @@ class Parser
 
 		$cachedVars = getFromCache('parser_vars');
 		$this->_cachedVars = $cachedVars ? $cachedVars : array();
+		$this->_translationMode = C::get('translationmode', 'lodeluser');
 	}
 
 	public function parse($in, $blockId=0, $cache_rep='', $loop=null)
@@ -157,7 +157,6 @@ class Parser
         	$this->refresh = $this->looplevel = 0;
 		$this->loops = $this->funcs = $this->macrocode = $this->macrofunc = $this->translationform = $this->translationtags = $this->blocks = array();
 		$this->isLoop = (bool)$loop;
-		$this->sqlrefresh = $GLOBALS['sqlCacheTime'];
 		// read the file
         	$contents = @file_get_contents($in);
        		if(false === $contents) $this->_errmsg("Unable to read file $in"); 
@@ -435,7 +434,7 @@ PHP;
 		$varname = (string)$varname;
 		$pipefunction = (string)$pipefunction;
 
-		if(isset($this->_cachedVars[$prefix][$varname]) && !C::get('translationmode', 'lodeluser'))
+		if(isset($this->_cachedVars[$prefix][$varname]) && !$this->_translationMode)
 		{
             		$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
 		}
@@ -918,9 +917,10 @@ PHP;
 		$this->parse_loop_extra($tables, $tablesinselect, $extrainselect, $selectparts);
 		//
 
-		foreach ($selectparts as $k => $v) {
-			$selectparts[$k] = $this->prefixTablesInSQL($v);
-		}
+// 		foreach ($selectparts as $k => $v) {
+// 			$selectparts[$k] = $this->prefixTablesInSQL($v);
+// 		}
+		$selectparts = array_map(array($this, 'prefixTablesInSQL'), $selectparts);
 		$extrainselect = $this->prefixTablesInSQL($extrainselect);
 
 		if (!isset($this->loops[$name]['type']))
@@ -1203,20 +1203,10 @@ PHP;
 PHP;
 		}
         	
-		if($this->sqlrefresh > 0)
-		{
-			$this->fct_txt.=
-<<<PHP
-		\$result = \$db->CacheExecute({$this->sqlrefresh}, \$queryCount) or mymysql_error(\$queryCount,'{$name}',__LINE__,__FILE__);
-PHP;
-		}
-		else
-		{
 			$this->fct_txt.=
 <<<PHP
 		\$result = \$db->Execute(\$queryCount) or mymysql_error(\$queryCount,'{$name}',__LINE__,__FILE__);
 PHP;
-		}
 
 		if($selectparts['groupby']) {
 			$this->fct_txt .= 
@@ -1237,21 +1227,10 @@ PHP;
 		\$result->Close();
 PHP;
 
-		if($this->sqlrefresh > 0)
-		{
-			$this->fct_txt .= 
-<<<PHP
-		\$result = \$db->CacheExecute({$this->sqlrefresh}, lq(\$query)) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
-PHP;
-		}
-		else
-		{
 			$this->fct_txt .= 
 <<<PHP
 		\$result = \$db->Execute(lq(\$query)) or mymysql_error(\$query,'{$name}',__LINE__,__FILE__);
 PHP;
-		}
-
 		if(isset($processlimit))
 		{
 			$this->fct_txt .=
@@ -1770,7 +1749,6 @@ PHP;
 	{
 		$escapeind = $this->ind;
 		$this->_clearposition();
-		$this->isphp = true;
 		$this->ind += 3;
 
 		$this->parse_main();
@@ -1808,7 +1786,7 @@ PHP;
 
 		if (is_numeric($refresh) && ($this->refresh == 0 || $refresh < $this->refresh))
 		{
-			$this->refresh = $this->sqlrefresh = (int)$refresh;
+			$this->refresh = (int)$refresh;
 		} 
 		elseif (!is_numeric($refresh))
 		{
@@ -1829,13 +1807,15 @@ PHP;
 			}
 			if(($this->refresh == 0 || $refreshtime < $this->refresh))
 			{
-				$this->sqlrefresh = $this->refresh = (int)($now - $refreshtime);
+				$this->refresh = (int)($now - $refreshtime);
 			}
 		}
 	}
 
 	protected function prefixTablesInSQL($sql) 
 	{
+		if(!isset($sql{0})) return ''; // empty string
+
 		$inquote = false;
 		$str = '';
 		$str2 = '';
@@ -2028,26 +2008,26 @@ PHP;
 		while(isset($arr[$i]))
 		{
 // 			$nbQuotes = substr_count($arr[$i], '"');
-// 			if(0 === $nbQuotes) 
+// 			if(0 === $nbQuotes)
 // 			{
 // 				$nbQuotes = substr_count($arr[$i], "'");
-// 				if(0 === $nbQuotes) 
+// 				if(0 === $nbQuotes)
 // 				{
 // 					$this->parse_variable($arr[$i+1]); // parse the content
 // 					$i += 3;
 // 					continue;
 // 				}
 // 			}
-// 		
-// 			if($nbQuotes % 2) 
+//
+// 			if($nbQuotes % 2)
 // 			{
 // 				$pos = strpos($arr[$i+1], '>');
 // 				$arr[$i] .= '>'.substr($arr[$i+1], 0, $pos);
 // 				$arr[$i+1] = substr_replace($arr[$i+1], '', 0, $pos+1);
 // 			}
-		
+
 			$this->parse_variable($arr[$i]); // parse the content
-		
+
 			$i += 3;
 		}
 		

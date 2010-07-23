@@ -152,6 +152,7 @@ class C
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
         	defined('SITEROOT') || define('SITEROOT', '');
        		function_exists('checkCacheDir') || include 'cachefunc.php';
+		spl_autoload_register(array('self', '__autoload'));
 	}
 
 	/**
@@ -166,6 +167,8 @@ class C
 	 * Class instantiation (singleton mode)
 	 * 
 	 * @param array $cfg the config vars passed by reference
+	 * @access public
+	 * @static
 	 */
 	static public function setCfg(array &$cfg=array())
 	{
@@ -179,8 +182,50 @@ class C
 	}
 
 	/**
+	 * Autoload of internal classes
+	 *
+	 * @param string $class the class name
+	 * @access public
+	 * @static
+	 */
+	static public function __autoload($class)
+	{
+		if(class_exists($class, false)) return true;
+		
+		$c = strtolower($class);
+
+		if('logic' !== $c && 'genericlogic' !== $c && FALSE !== strpos($c,'logic')) // logic
+		{
+			$file = self::$_cfg['home'].'logic'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -5).'.php';
+		}
+		elseif('genericdao' !== $c && 'dao' !== $c && FALSE !== strpos($c, 'dao')) // dao
+		{
+			$file = self::$_cfg['home'].'dao'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -3).'.php';
+		}
+		elseif('vo' == substr($c, -2)) // VO (=dao)
+		{
+			$file = self::$_cfg['home'].'dao'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -2).'.php';
+		}
+		else
+		{
+			$count = 0;
+			$file = self::$_cfg['home'].str_replace('_', DIRECTORY_SEPARATOR, $class, $count).'.php';
+			if(!$count) $file = strtolower($file);
+		}
+
+		$file = realpath($file);
+		if(!$file) return false;
+
+		include $file;
+
+		return class_exists($class, false);
+	}
+
+	/**
 	 * This function set self::$_backupC as current context
 	 * It is used by the controller if called by a script
+	 * @access public
+	 * @static
 	 */
 	static public function reset()
 	{
@@ -194,6 +239,8 @@ class C
 	 *
 	 * @param array $request the request (can be null if inside call, see auth.php)
 	 * @param boolean $controller is it a script call or an inside call ? (by default, inside call)
+	 * @access public
+	 * @static
 	 */
 	static public function setRequest(array &$request=array(), $controller = false)
 	{
@@ -311,11 +358,8 @@ class C
 		}
 
 		// valid the request
-		if (isset(self::$_context['do']))
-		{
-			if(!preg_match("/^(_[a-zA-Z0-9]+_)?[a-zA-Z0-9]+$/", self::$_context['do'])) 
-				trigger_error("ERROR: invalid action", E_USER_ERROR);
-		}
+		if (isset(self::$_context['do']) && !preg_match("/^(_[a-zA-Z0-9]+_)?[a-zA-Z0-9]+$/", self::$_context['do']))
+			trigger_error("ERROR: invalid action", E_USER_ERROR);
 
 		foreach (array('class', 'classtype', 'type', 'textgroups') as $var) 
 		{
@@ -340,14 +384,14 @@ class C
 
 		if(!$controller)
 		{ // if not called by the controller, let's init template needed vars
-			self::$_context['version'] = self::get('version', 'cfg');
-			self::$_context['shareurl'] = self::get('shareurl', 'cfg');
-			self::$_context['extensionscripts'] = self::get('extensionscripts', 'cfg');
+			self::$_context['version'] = self::$_cfg['version'];
+			self::$_context['shareurl'] = self::$_cfg['shareurl'];
+			self::$_context['extensionscripts'] =self::$_cfg['extensionscripts'];
 			self::$_context['currenturl'] = 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
-			self::$_context['site'] = self::get('site', 'cfg');
-			self::$_context['sharedir'] = self::get('sharedir', 'cfg');
-			self::$_context['tp'] = self::$_context['tableprefix'] = self::get('tableprefix', 'cfg');
+			self::$_context['site'] = self::$_cfg['site'];
+			self::$_context['sharedir'] = self::$_cfg['sharedir'];
+			self::$_context['tp'] = self::$_context['tableprefix'] = self::$_cfg['tableprefix'];
 			self::$_context['base_rep'] = array();
 			self::$_context['charset'] = 'utf-8';
 			// get all the triggers in self::$_triggers
@@ -360,6 +404,8 @@ class C
 	/**
 	 * Get all the triggers and set self::$_triggers
 	 * Will try to reach the cache
+	 * @access private
+	 * @static
 	 */
 	static private function _getTriggers()
 	{
@@ -427,6 +473,8 @@ class C
 	 * Call all plugins that have the trigger $name
 	 *
 	 * @param string $name the trigger name
+	 * @access public
+	 * @static
 	 */
 	static public function trigger($name)
 	{
@@ -459,6 +507,8 @@ class C
 	 *
 	 * @param string $v the name of the var to get
 	 * @param string $arr the array to search into
+	 * @access public
+	 * @static
 	 */
 	static public function get($v=null, $arr=null)
 	{
@@ -467,7 +517,9 @@ class C
 			if(!isset(self::${"_{$arr}"})) return false;
 			if(!isset($v))	return self::${"_{$arr}"};
 
-			if(false === strpos($v, '.')) return isset(self::${"_{$arr}"}[$v]) ? self::${"_{$arr}"}[$v] : false;
+			if(isset(self::${"_{$arr}"}[$v])) return self::${"_{$arr}"}[$v];
+
+			if(false === strpos($v, '.')) return false;
 
 			$vars = explode('.', $v);
 			$return = self::${"_{$arr}"};
@@ -481,7 +533,9 @@ class C
 		}
 		elseif(isset($v))
 		{
-			if(false === strpos($v, '.')) return isset(self::$_context[$v]) ? self::$_context[$v] : false;
+			if(isset(self::$_context[$v])) return self::$_context[$v];
+
+			if(false === strpos($v, '.')) return false;
 
 			$vars = explode('.', $v);
 			$return = self::$_context;
@@ -500,6 +554,8 @@ class C
 	/**
 	 * Gets the context.
 	 * Warning : the returned array is a reference to self::$_context
+	 * @access public
+	 * @static
 	 */
 	static public function &getC()
 	{
@@ -512,6 +568,8 @@ class C
 	 *
 	 * @param array $datas the datas to merge the context with
 	 * @param bool $clean do we have to clean the inputs ?
+	 * @access public
+	 * @static
 	 */
 	static public function mergeC(array &$datas, $clean=false)
 	{
@@ -525,6 +583,8 @@ class C
 	 *
 	 * @param string $n the name of the var to set
 	 * @param mixed $v the value
+	 * @access public
+	 * @static
 	 */
 	static public function set($n, $v)
 	{
@@ -553,6 +613,8 @@ class C
 	 *
 	 * @param array $v the values
 	 * @param string $n the array to set
+	 * @access public
+	 * @static
 	 */
 	static public function setUser($v=null, $n=null)
 	{
@@ -610,6 +672,8 @@ class C
 	 * Public function to clean input datas
 	 *
 	 * @param mixed $data the value to sanitize (can be either a string or an array)
+	 * @access public
+	 * @static
 	 */
 	static public function clean(&$data)
 	{
@@ -630,11 +694,13 @@ class C
 	 * Uses HTMLPurifier
 	 *
 	 * @param mixed $data the value to sanitize (has to be string)
+	 * @access private
+	 * @static
 	 */	
 	static private function _sanitize(&$data)
 	{
-		if(!is_string($data)) return true; // useless on boolean, integer, objects or other types..
-        
+		if(empty($data) || !is_string($data) || is_numeric($data)) return true; // useless on boolean, integer, objects or other types..
+
 		if(!isset(self::$filter))
 		{
 			checkCacheDir('htmlpurifier');
@@ -679,42 +745,4 @@ class C
 		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
 		return true;
 	}
-}
-
-/**
- * Autoload of internal classes
- *
- * @param string $class the class name
- */
-function __autoload($class)
-{
-	if(class_exists($class, false)) return true;
-	
-	$c = strtolower($class);
-
-	if('logic' !== $c && 'genericlogic' !== $c && FALSE !== strpos($c,'logic')) // logic
-	{
-		$file = C::get('home', 'cfg').'logic'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -5).'.php';
-	}
-	elseif('genericdao' !== $c && 'dao' !== $c && FALSE !== strpos($c, 'dao')) // dao
-	{
-		$file = C::get('home', 'cfg').'dao'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -3).'.php';
-	}
-	elseif('vo' == substr($c, -2)) // VO (=dao)
-	{
-		$file = C::get('home', 'cfg').'dao'.DIRECTORY_SEPARATOR.'class.'.substr($c, 0, -2).'.php';
-	}
-	else
-	{
-		$count = 0;
-		$file = C::get('home', 'cfg').str_replace('_', DIRECTORY_SEPARATOR, $class, $count).'.php';
-		if(!$count) $file = strtolower($file);
-	}
-
-	$file = realpath($file);
-	if(!$file) return false;
-
-	include $file;
-
-	return class_exists($class, false);
 }

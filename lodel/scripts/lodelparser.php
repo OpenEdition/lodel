@@ -158,7 +158,7 @@ class LodelParser extends Parser
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
-			$obj = $db->CacheExecute($GLOBALS['sqlCacheTime'], "SELECT class,classtype FROM {$GLOBALS['tp']}classes WHERE status>0")
+			$obj = $db->Execute("SELECT class,classtype FROM {$GLOBALS['tp']}classes WHERE status>0")
 				or trigger_error('SQL Error:<br/>'.$db->ErrorMsg(), E_USER_ERROR);
 			while(!$obj->EOF) 
 			{
@@ -536,15 +536,13 @@ class LodelParser extends Parser
 		{ // cherche si le texte existe
             		$prefix = ($group != "site") ? $this->mprefix : $this->prefix;
 			if(!isset($this->nbLangs[$prefix]))
-				$this->nbLangs[$prefix] = $db->CacheGetOne($GLOBALS['sqlCacheTime']*365,"SELECT count(distinct(lang)) FROM {$prefix}translations");
+				$this->nbLangs[$prefix] = $db->GetOne("SELECT count(distinct(lang)) FROM {$prefix}translations");
                 
-            		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
-			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, 
+			$textexists = $db->Execute(
 				"SELECT COUNT(id) AS nb 
 					FROM {$prefix}texts 
 					WHERE name=? AND textgroup=? 
 					LIMIT 1", array($name, $group));
-            		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
             
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -671,7 +669,17 @@ PHP;
 	#}
 	protected function prefixTableName($table)
 	{
-		if('"' === $table{0}) return $table;
+		$prefixedtable = $this->prefix.$table;
+		$mprefixedtable = $this->mprefix.$table;
+
+		if('"' === $table{0})
+			return $table;
+		if(isset($this->tablefields[$prefixedtable]))
+			return $prefixedtable;
+		elseif(isset($this->tablefields[$mprefixedtable]))
+			return $mprefixedtable;
+		elseif('alias' === substr($table, 0, 5))
+			return $table;
 
 		$dbname = $alias = "";
 		if (FALSE !== stripos($table, ' as ') && preg_match("/\b((?:\w+\.)?\w+)(\s+as\s+\w+)\b/i", $table, $result))	{
@@ -685,9 +693,6 @@ PHP;
 				$dbname = $this->database.".";
 			}
 		}
-
-		$prefixedtable = $this->prefix.$table;
-		$mprefixedtable = $this->mprefix.$table;
 		
         	if (isset($this->tablefields[$prefixedtable]) && ($dbname == "" || $dbname == $GLOBALS['currentdb'].".")) {
 			return $prefixedtable.$alias;

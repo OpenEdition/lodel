@@ -63,7 +63,6 @@ defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 include "adodb/adodb.inc.php";
 error_reporting($err);
-// include 'adodb_hack.php';
 
 // connect to the database server
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
@@ -74,10 +73,6 @@ $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::ge
 defined("SINGLESITE") || define("SINGLESITE", !$single); // synonyme currently but may change in the future
 unset($single);
 
-function_exists('checkCacheDir') || include 'cachefunc.php';
-checkCacheDir('adodb_tpl'); // sql cache for templates
-checkCacheDir('adodb_il8n'); // sql cache from translations
-$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 $info_mysql = $GLOBALS['db']->ServerInfo();
@@ -97,7 +92,7 @@ if ($GLOBALS['version_mysql'] > 40) {
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'] = C::get('tableprefix', 'cfg');
 
-C::set('siteinfos', $GLOBALS['db']->CacheGetRow($GLOBALS['sqlCacheTime'], lq('SELECT * FROM #_MTP_sites WHERE name='.$GLOBALS['db']->quote(C::get('site', 'cfg')))));
+C::set('siteinfos', $GLOBALS['db']->GetRow(lq('SELECT * FROM #_MTP_sites WHERE name='.$GLOBALS['db']->quote(C::get('site', 'cfg')))));
 
 /**
  * Déclenche une erreur lors d'une erreur concernant la base de données

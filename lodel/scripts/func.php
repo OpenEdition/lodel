@@ -332,16 +332,15 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	$logic=false;
 	$query = "SELECT id,contents,status 
 			FROM {$prefix}texts 
-			WHERE name=? AND textgroup=? AND (lang=? OR lang='') {$critere} 
+			WHERE name=".$db->quote($name)." AND textgroup=".$db->quote($group)." AND (lang=".$db->quote($lang)." OR lang='') {$critere}
 			ORDER BY lang DESC";
 	$text=false;
 	$create = false;
-    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
 	do {
-		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime'], $query, array((string)$name, (string)$group, (string)$lang));
+		$arr = $db->Execute($query);
 		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-		$text = $arr->FetchRow();
+		$text = $arr->fields;
 		if(!$text) 
         	{
 			if($create || !C::get('admin', 'lodeluser'))
@@ -352,12 +351,10 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			// create the textfield
             		if(!$logic) $logic=Logic::getLogic("texts");
 			$logic->createTexts($name,$group);
-			$db->CacheFlush($query, array((string)$name, (string)$group, (string)$lang));
 			$create = true;
 		}
         	$arr->Close();
 	} while(!$text);
-    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
 	
 	$id=$text['id'];
 	$contents=$text['contents'];
