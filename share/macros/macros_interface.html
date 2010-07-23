@@ -112,6 +112,7 @@
 <IF COND="[#ERROR] eq 'lang'">[@COMMON.INVALID_LANGUAGE_CODE]</IF>
 <IF COND="[#ERROR] eq 'numeric'">[@COMMON.ERROR_FIELD_MUST_BE_NUMERIC|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR|strpos('mask:')] SEQ 0">[#ERROR|substr(5)]</IF>
+<IF COND="[#ERROR] eq 'xpath'">[@COMMON.ERROR_INVALID_XPATH|sprintf([#TITLE])]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 
@@ -288,7 +289,7 @@
 	</IF>
 <ELSE/>
 <!--[ --------------- TEXT, LONGTEXT -------------- ]-->
-<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext'">
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'xpath'">
 	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
