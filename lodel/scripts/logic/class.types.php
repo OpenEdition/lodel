@@ -140,7 +140,7 @@ class TypesLogic extends Logic {
 		case "import" :
 			$arr = array();
 			$arr[] = getlodeltextcontents('form','common');
-			$arr[] = getlodeltextcontents('import_from_servoo','common');
+			$arr[] = getlodeltextcontents('import_from_otx','common');
 			renderOptions($arr,isset($context['import']) ? $context['import'] : '');
 			break;
 		case "display" :

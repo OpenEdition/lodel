@@ -183,7 +183,7 @@ ln tpl/optiongroups.html
 ln tpl/edit_options.html
 ln tpl/edit_optiongroups.html
 ln tpl/edit_useroptiongroups.html
-ln tpl/edit_servooconf.html
+ln tpl/edit_otxconf.html
 
 ln tpl/edit_restricted_users.html
 ln tpl/restricted_users.html

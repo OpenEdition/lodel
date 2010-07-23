@@ -30,7 +30,7 @@
 
 <?php
 include_once 'teifunc.php';
-mkArrayFromDTD($context, parseDTD(C::get('servoourl', 'cfg').'/?dtd')->dtd['elements']);
+mkArrayFromDTD($context, parseDTD(C::get('otxurl', 'cfg').'/?dtd')->dtd['elements']);
 mkPredefiniteXpath($context);
 ?>
 

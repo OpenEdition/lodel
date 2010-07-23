@@ -29,7 +29,7 @@
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@EDITION.SERVOO_IMPORT]</title>
+<title>[@EDITION.OTX_IMPORT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
@@ -73,10 +73,10 @@
 		<label for="localfilename"><a href="#" class="action" onclick="window.open('index.php?lo=filebrowser&amp;do=view','Upload','width=600,top=0,left=0,scrollbars=yes,resizable=yes'); return false;">[@EDITION.CHOOSE_A_FILE_ON_THE_SERVER]</a></label>
 	        <input size="40" type="text" id="localfilename" name="localfile" class="localChoose" />
 		<br/><br/>
-		<IF COND="[#NOSERVOO]">
-			[@EDITION.ERROR_NOSERVOO_CONFIGURED_HOWTO_CONFIGURE]
+		<IF COND="[#NOOTX]">
+			[@EDITION.ERROR_NOOTX_CONFIGURED_HOWTO_CONFIGURE]
 			<IF COND="[#LODELUSER.ADMIN]">
-				<a href="../admin/index.php?do=view&amp;lo=servooconf">[@EDITION.CONFIGURE]</a>
+				<a href="../admin/index.php?do=view&amp;lo=otxconf">[@EDITION.CONFIGURE]</a>
 			</IF>
 		<ELSE/>
 			<input class="styled styled_blue" type="button" value="[@COMMON.UPLOAD]" id="validImport" onclick="return o.send();" />&nbsp;&nbsp;&nbsp;&nbsp;

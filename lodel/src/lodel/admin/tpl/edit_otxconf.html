@@ -30,13 +30,13 @@
 <USE MACROFILE="macros_admin.html">
 <USE MACROFILE="macros_interface.html">
 <MACRO NAME="HEADER_HEAD_OPEN">
-<title>[@ADMIN.TITLE_SERVOO_CONFIGURATION]</title>
+<title>[@ADMIN.TITLE_OTX_CONFIGURATION]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
 <MACRO NAME="HEADER_LOGO"> 
 
 
 <ul id="actionsOnEntitiesPath">
-	<li>[@ADMIN.TITLE_SERVOO_CONFIGURATION]</li>
+	<li>[@ADMIN.TITLE_OTX_CONFIGURATION]</li>
 </ul>
 
 <br />&nbsp;<br />
@@ -45,11 +45,11 @@
 
 <form method="POST" action="<?php echo basename($_SERVER['PHP_SELF']); ?>" autocomplete="off">
 <input type="hidden" name="do" value="edit">
-<input type="hidden" name="lo" value="servooconf">
+<input type="hidden" name="lo" value="otxconf">
 <input type="hidden" name="id" value="[#ID]" />
 	<fieldset>
-  	<legend>[@ADMIN.TITLE_SERVOO_CONFIGURATION]</legend>
-	<p class="avert">[@ADMIN.HOWTO_CONFIGURE_SERVOO_AND_HOWTO_GET_AN_ACCOUNT]</p>
+  	<legend>[@ADMIN.TITLE_OTX_CONFIGURATION]</legend>
+	<p class="avert">[@ADMIN.HOWTO_CONFIGURE_OTX_AND_HOWTO_GET_AN_ACCOUNT]</p>
 	<LOOP NAME="useroptions">
 
 		<DO>
@@ -61,10 +61,10 @@
 		<br />
 		</DO>
 	</LOOP>
-	<IF COND="[#ERROR.SERVOO]">
+	<IF COND="[#ERROR.OTX]">
 		<div class="error">
-		[@ERROR.ERROR_CONTACTING_SERVOO]
-			<pre>[#ERROR.SERVOO|htmlentities(ENT_COMPAT, 'UTF-8')|nl2br]</pre>
+		[@ERROR.ERROR_CONTACTING_OTX]
+			<pre>[#ERROR.OTX|htmlentities(ENT_COMPAT, 'UTF-8')|nl2br]</pre>
 		</div>
 	</IF>
 	</fieldset>
@@ -72,7 +72,7 @@
 
 <fieldset>
 <legend>[@COMMON.VALIDATION]</legend>
-<p class="avert">[@ADMIN.CLICK_MODIFY_TO_TRY_TO_CONTACT_THE_SERVOO]</p>
+<p class="avert">[@ADMIN.CLICK_MODIFY_TO_TRY_TO_CONTACT_THE_OTX]</p>
 	<MACRO NAME="SUBMIT_CANCEL_BUTTON">
 </fieldset>
 </form>

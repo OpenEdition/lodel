@@ -1,6 +1,6 @@
 <?php
 /**
- * Chargement d'un document OpenOffice (via ServOO)
+ * Chargement d'un document OpenOffice (via OTX)
  *
  * PHP versions 4 et 5
  *

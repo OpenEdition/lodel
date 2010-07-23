@@ -73,7 +73,7 @@ try
                     'translations', 'texts',
                     'usergroups', 'users', 'restricted_users',
                     'types', 'classes',
-                    'options', 'optiongroups', 'useroptiongroups', 'servooconf',
+                    'options', 'optiongroups', 'useroptiongroups', 'otxconf',
                     'internalstyles', 'characterstyles', 'entities_index',
                     'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
 

@@ -76,11 +76,11 @@ class OTXClient extends SoapClient
 	 * @access private
 	 */
 	private $_authorizedParams = array(
-					'servoo.username' => true,
-					'servoo.passwd' => true,
-					'servoo.url' => true,
-					'servoo.proxyhost' => false,
-					'servoo.proxyport' => false,
+					'otx.username' => true,
+					'otx.passwd' => true,
+					'otx.url' => true,
+					'otx.proxyhost' => false,
+					'otx.proxyport' => false,
 					'lodel_user' => true,
 					'lodel_site' => true);
 
@@ -133,33 +133,27 @@ class OTXClient extends SoapClient
 		$options['exceptions'] = TRUE;
 		$options['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | 5;
 		$options['encoding'] = SOAP_LITERAL;
-
-		$options['login'] = "otx";
-		$options['password'] = "5e41921ba44c61090abef994fff2cc0d";
+		$options['authentication'] = SOAP_AUTHENTICATION_BASIC;
 
 		try {
 			$this->_checkParams($opts);
 
-			$options['location'] = $opts['servoo.url'];
-
-			// hash the password
-			$passwd = md5($opts['servoo.username'].$opts['servoo.passwd']);
-			
-			if(isset($opts['servoo.proxyhost']))
+			$options['location'] = $opts['otx.url'];
+			$options['login'] = $opts['otx.username'];
+			$options['password'] = $opts['otx.passwd'];
+			if(isset($opts['otx.proxyhost']))
 			{
-				$options['proxy_host'] = $opts['servoo.proxyhost'];
-				$options['proxy_port'] = (int)$opts['servoo.proxyport'];
-				$options['proxy_login'] = $opts['servoo.username'];
-				$options['proxy_password'] = $opts['servoo.passwd'];
+				$options['proxy_host'] = $opts['otx.proxyhost'];
+				$options['proxy_port'] = (int)$opts['otx.proxyport'];
+				$options['proxy_login'] = $opts['otx.username'];
+				$options['proxy_password'] = $opts['otx.passwd'];
 			}
 
-			$opts['servoo.passwd'] = null; // cleaning memory
-
-			$wsdl = $opts['servoo.url'].'?wsdl';
+			$wsdl = $opts['otx.url'].'?wsdl';
 			$h = get_headers($wsdl, 1);
 			if($h[0] === 'HTTP/1.1 200 OK' && $h['Content-Type'] === 'application/xml; charset=UTF-8' && $h['Content-Length'] > 0)
 				parent::__construct($wsdl, $options);
-			else throw new SoapFault("WebServOO FaultError", //faultcode
+			else throw new SoapFault("Webotx FaultError", //faultcode
 						'Invalid url '.$wsdl.' return headers '.print_r($h, 1), //faultstring
 						'', // faultactor, TODO ?
 						"Soap Creation",  // detail
@@ -167,14 +161,21 @@ class OTXClient extends SoapClient
 						/*$headerfault // headerfault */ );
 
 			// get the token for this session
-			$sessionToken = $this->otxToken();
+			$sessionToken = $this->otxToken()->sessionToken;
 
 			// add the header for auth
-			$header = new SoapVar(array('login'=>$opts['servoo.username'], 'password'=>md5($passwd.$sessionToken->sessionToken), 'lodel_user'=>$opts['lodel_user'], 'lodel_site'=>$opts['lodel_site']), SOAP_ENC_OBJECT);
+			$header = new SoapVar(array(
+				'login' => $opts['otx.username'],
+				'password' => md5($opts['otx.passwd'].$sessionToken),
+				'lodel_user' => $opts['lodel_user'],
+				'lodel_site' => $opts['lodel_site']), SOAP_ENC_OBJECT);
+
 			unset($options, $passwd, $sessionToken); // cleaning memory
 
 			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', $header)));
-			unset($header, $webservooHeader); // cleaning memory
+
+			unset($header); // cleaning memory
+
 			$this->_instanciated = true;
 		}
 		catch (SoapFault $fault) {
@@ -193,13 +194,13 @@ class OTXClient extends SoapClient
 	{
 		try {
 			if(!$this->_instanciated)
-				throw new SoapFault("WebServOO client FaultError", 'ERROR: client has not been instanciated');
+				throw new SoapFault("Webotx client FaultError", 'ERROR: client has not been instanciated');
 
 			$this->_checkRequest($request);
 			// make the request and get tei result
 			$req = $this->otxRequest(array('request'=>$request['request'], 'mode'=>$request['mode'], 'attachment'=>$request['attachment'], 'schema'=>$request['schema']));
 			if(empty($req))
-				throw new SoapFault("WebServOO client FaultError", 'ERROR: empty return from OTX');
+				throw new SoapFault("Webotx client FaultError", 'ERROR: empty return from OTX');
 
 			foreach($req as $k=>$v)
 				$this->$k = $v;
@@ -221,26 +222,26 @@ class OTXClient extends SoapClient
 	{
 		if(0 === $i) $i = '';
 		$options = array();
-		$options=getoption(array("servoo$i.url","servoo$i.username","servoo$i.passwd",
-				"servoo$i.proxyhost","servoo$i.proxyport"),"");
+		$options=getoption(array("otx$i.url","otx$i.username","otx$i.passwd",
+				"otx$i.proxyhost","otx$i.proxyport"),"");
 
-		if ((!$options || empty($options['servoo.url'])) && C::get('servoourl'.$i, 'cfg')) { // get form the lodelconfig file
-			$options['servoo.url']=C::get('servoourl'.$i, 'cfg');
-			$options['servoo.username']=C::get('servoousername'.$i, 'cfg');
-			$options['servoo.passwd']=C::get('servoopasswd'.$i, 'cfg');
+		if ((!$options || empty($options['otx.url'])) && C::get('otxurl'.$i, 'cfg')) { // get form the lodelconfig file
+			$options['otx.url']=C::get('otxurl'.$i, 'cfg');
+			$options['otx.username']=C::get('otxusername'.$i, 'cfg');
+			$options['otx.passwd']=C::get('otxpasswd'.$i, 'cfg');
 		}
 
 		// proxy
-		if (empty($options['servoo.proxyhost']) && C::get('proxyhost'.$i, 'cfg')) $options['servoo.proxyhost']=C::get('proxyhost'.$i, 'cfg');
-		if (!empty($options['servoo.proxyhost'])) {
-			if (empty($options['servoo.proxyport'])) 
+		if (empty($options['otx.proxyhost']) && C::get('proxyhost'.$i, 'cfg')) $options['otx.proxyhost']=C::get('proxyhost'.$i, 'cfg');
+		if (!empty($options['otx.proxyhost'])) {
+			if (empty($options['otx.proxyport']))
 			{
 				if(C::get('proxyport'.$i, 'cfg'))
-					$options['servoo.proxyport']=C::get('proxyport'.$i, 'cfg');
-				else $options['servoo.proxyport']="8080";
+					$options['otx.proxyport']=C::get('proxyport'.$i, 'cfg');
+				else $options['otx.proxyport']="8080";
 			}
 		}
-		if(!empty($options['servoo.url']) && !empty($options['servoo.username']) && !empty($options['servoo.passwd'])) {
+		if(!empty($options['otx.url']) && !empty($options['otx.username']) && !empty($options['otx.passwd'])) {
 			return $options;
 		} else {
 			return FALSE;
@@ -262,7 +263,7 @@ class OTXClient extends SoapClient
 			{
 				if($v) 
 				{
-					throw new SoapFault("WebServOO FaultError", //faultcode
+					throw new SoapFault("Webotx FaultError", //faultcode
 					'Missing parameter '.$k, //faultstring
 					'', // faultactor, TODO ?
 					"Soap authentification",  // detail
@@ -289,7 +290,7 @@ class OTXClient extends SoapClient
 		{
 			if(!isset($request[$k])) 
 			{
-				throw new SoapFault("WebServOO FaultError", //faultcode
+				throw new SoapFault("Webotx FaultError", //faultcode
 				'Missing parameter '.$k, //faultstring
 				'', // faultactor, TODO ?
 				"Soap request",  // detail

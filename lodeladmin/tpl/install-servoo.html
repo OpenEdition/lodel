@@ -1,5 +1,5 @@
 <?php
-$current = "servoo";
+$current = "OTX";
 include("tpl/install-openhtml.html");
 ?>
 <!--[
@@ -38,44 +38,44 @@ include("tpl/install-openhtml.html");
 <!--[ ce fichier n'est pas un template ]-->
 
 <form method="post" action="install.php">
-<input type="hidden" name="tache" value="servoo">
+<input type="hidden" name="tache" value="OTX">
 
 <h2>[@INSTALL.CONVERT_TEXT_PROCESSOR_FILES]</h2>
 
 <?php if ($message) { ?>
-[@INSTALL.QUERY_TO_SERVOO_SUCCESSFUL|sprintf($servoohost)] :<br/>
+[@INSTALL.QUERY_TO_OTX_SUCCESSFUL|sprintf($OTXhost)] :<br/>
 <table cellpadding="10" border="1" ><tr><td><?php echo htmlentities($message); ?></td></td></table>
 <input type="submit" name="skip" value="Poursuivre">
 <br/>
 <hr style="width: 100%; height: 2px;">
 <br/>
-[@INSTALL.RECONFIGURE_SERVOO] :
+[@INSTALL.RECONFIGURE_OTX] :
 <?php } else { ?>
 
-<p align="justify">[@INSTALL.SERVOO_SERVER_BASED_ON_OOO_AND_W2L_GRANT_CONVERSION_RTF_DOC_SXW_TO_XHTML].</p>
-<p align="justify">[@INSTALL.TO_CREATE_ACCOUNT_ON_PUBLIC_SERVOO_CHECK_LIST_ON] <a href="http://www.lodel.org" target="_new">http://www.lodel.org</a>. 
-[@INSTALL.BEFORE_ACCOUNT_CREATION_CONFIGURATION_OF_SERVOO_IS_OPTION].</p>
-<p align="justify">[@INSTALL.CONFIGURATION_OF_SERVOO_IS_AN_OPTION_AND_MAY_BE_DELAYED]. <input type="submit" name="noservoo" value="[@INSTALL.DONT_CONFIGURE_SERVOO]"></p>
+<p align="justify">[@INSTALL.OTX_SERVER_BASED_ON_OOO_AND_W2L_GRANT_CONVERSION_RTF_DOC_SXW_TO_XHTML].</p>
+<p align="justify">[@INSTALL.TO_CREATE_ACCOUNT_ON_PUBLIC_OTX_CHECK_LIST_ON] <a href="http://www.lodel.org" target="_new">http://www.lodel.org</a>. 
+[@INSTALL.BEFORE_ACCOUNT_CREATION_CONFIGURATION_OF_OTX_IS_OPTION].</p>
+<p align="justify">[@INSTALL.CONFIGURATION_OF_OTX_IS_AN_OPTION_AND_MAY_BE_DELAYED]. <input type="submit" name="noOTX" value="[@INSTALL.DONT_CONFIGURE_OTX]"></p>
 
 <?php } ?>
 
-<?php  if ($erreur_connect) { ?> <p><b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.UNABLE_TO_CONNECT_TO_SERVER_CHECK_DATAS_ERROR_IS|sprintf($servoohost)]:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
+<?php  if ($erreur_connect) { ?> <p><b>[@INSTALL.ERROR]</b>: <span style="color: red">[@INSTALL.UNABLE_TO_CONNECT_TO_SERVER_CHECK_DATAS_ERROR_IS|sprintf($OTXhost)]:</span></p><p><span style="color: red"><?php  echo $erreur_connect; ?> </span></p><p></p><?php } ?>
 
 
 <hr style="width: 100%; height: 2px;">
-<label for="newservoourl">[@INSTALL.SERVOO_URL] :</label>
-<input type="text" size="60" name="newservoourl" id="newservoourl" value="<?php  echo $servoourl; ?>" />
-<label for="newservoousername">[@INSTALL.SERVOO_USERNAME] :</label>
-<input type="text" size="60" name="newservoousername" id="newservoousername" value="<?php  echo $servoousername; ?>" />
-<label for="newservoopasswd">[@INSTALL.SERVOO_PASSWORD] :</label>
-<input type="password" size="60" name="newservoopasswd" id="newservoopasswd" /><br />&nbsp;<br />
+<label for="newOTXurl">[@INSTALL.OTX_URL] :</label>
+<input type="text" size="60" name="newOTXurl" id="newOTXurl" value="<?php  echo $OTXurl; ?>" />
+<label for="newOTXusername">[@INSTALL.OTX_USERNAME] :</label>
+<input type="text" size="60" name="newOTXusername" id="newOTXusername" value="<?php  echo $OTXusername; ?>" />
+<label for="newOTXpasswd">[@INSTALL.OTX_PASSWORD] :</label>
+<input type="password" size="60" name="newOTXpasswd" id="newOTXpasswd" /><br />&nbsp;<br />
 <input type="submit" value="[@INSTALL.CONTINUE]" />
 </form>
 
 <?php if ($installoption==2) { // OPTION 2 ?>
 
 <p align="justify">
-[@INSTALL.HOWTO_INSTALL_SERVOO_ON_PRIVATE_SERVER]
+[@INSTALL.HOWTO_INSTALL_OTX_ON_PRIVATE_SERVER]
 </p>
 
 <?php } // fin OPTION 2 ?>

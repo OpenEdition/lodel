@@ -39,7 +39,7 @@
 	<li>
 	<strong>[@ADMIN.EDIT_OPTIONS] : </strong> 
 		<LET VAR="current_entry_type">[#TITLE]</LET>
-		<LOOP NAME="getGroups" TABLE="optiongroups" ORDER="rank" WHERE="logic != 'servooconf'">
+		<LOOP NAME="getGroups" TABLE="optiongroups" ORDER="rank" WHERE="logic != 'otxconf'">
 			<BEFORE><select onchange="select_url(this)" class="barInfo"></BEFORE>
 			<IF COND="[#TITLE] EQ [#CURRENT_ENTRY_TYPE]">
 				<option selected="selected">[#TITLE]</option>

@@ -1,6 +1,6 @@
 <?php
 /**	
- * Logique des options du servOO
+ * Logique des options du OTX
  *
  * PHP versions 5
  *
@@ -39,11 +39,11 @@
  * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
  * @licence http://www.gnu.org/copyleft/gpl.html
  * @since Fichier ajouté depuis la version 0.8
- * @version CVS:$Id$
+ * @version CVS:$Id: class.OTXconf.php 5080 2010-07-01 13:31:35Z cenou $
  */
 
 /**
- * Classe de logique de la configuration de ServOO
+ * Classe de logique de la configuration de OTX
  * 
  * @package lodel/logic
  * @author Ghislain Picard
@@ -61,7 +61,7 @@
  * @see logic.php
  */
 
-class ServOOConfLogic extends UserOptionGroupsLogic {
+class OTXConfLogic extends UserOptionGroupsLogic {
 
 	/** Constructor
 	*/
@@ -126,7 +126,7 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 
 		if(count($error) === $i)
 		{
-			$error['servoo']=join('<br/>', $error);
+			$error['OTX']=join('<br/>', $error);
 			return "_error";
 		}
 
@@ -141,12 +141,12 @@ class ServOOConfLogic extends UserOptionGroupsLogic {
 		*/
 	function _getGroup(&$context)
 	{
-		$vo=DAO::getDAO("optiongroups")->find("name='servoo'");
+		$vo=DAO::getDAO("optiongroups")->find("name='OTX'");
 		$context['id']=$vo->id;
 
 #    if (!$context['id']) {
 #      // little hack... should be in the model anyway
-#      $db->execute(lq("INSERT INTO #_TP_optiongroups (name,title,logic,status,exportpolicy) VALUES ('servoo','Servoo','servooconf',1,1)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+#      $db->execute(lq("INSERT INTO #_TP_optiongroups (name,title,logic,status,exportpolicy) VALUES ('OTX','OTX','OTXconf',1,1)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 #      $context['id']=$db->Insert_ID();
 #
 #      $db->execute(lq("INSERT INTO #_TP_options (name,title,type,userrights,idgroup,status,rank) VALUES ('url','url','url',40,".$context['id'].",32,1),('username','username','tinytext',40,".$context['id'].",32,2),(3,1,'passwd','password','passwd',40,".$context['id'].",32,3)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

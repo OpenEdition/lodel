@@ -123,14 +123,14 @@ $cfg['extensionscripts']="";      # extension .php ou .html pour les scripts acc
 define("URI","id");        # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
 
-# configuration du ServOO
-$cfg['servoourl']="";
-$cfg['servoousername']="";
-$cfg['servoopasswd']="";
-# repertoire temporaire d'extraction ServOO
+# configuration d'OTX
+$cfg['otxurl']="";
+$cfg['otxusername']="";
+$cfg['otxpasswd']="";
+# repertoire temporaire d'extraction d'OTX
 $cfg['tmpoutdir']="";
 
-# configuration du proxy pour atteindre le ServOO
+# configuration du proxy pour atteindre OTX
 $cfg['proxyhost']="";
 $cfg['proxyport']="8080";
 
