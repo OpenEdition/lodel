@@ -164,17 +164,13 @@ class OTXClient extends SoapClient
 			$sessionToken = $this->otxToken()->sessionToken;
 
 			// add the header for auth
-			$header = new SoapVar(array(
+			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', new SoapVar(array(
 				'login' => $opts['otx.username'],
 				'password' => md5($opts['otx.passwd'].$sessionToken),
 				'lodel_user' => $opts['lodel_user'],
-				'lodel_site' => $opts['lodel_site']), SOAP_ENC_OBJECT);
+				'lodel_site' => $opts['lodel_site']), SOAP_ENC_OBJECT))));
 
-			unset($options, $passwd, $sessionToken); // cleaning memory
-
-			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', $header)));
-
-			unset($header); // cleaning memory
+			unset($options, $opts, $passwd, $sessionToken); // cleaning memory
 
 			$this->_instanciated = true;
 		}
