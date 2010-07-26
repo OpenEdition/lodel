@@ -65,7 +65,8 @@ try
 {
     include 'auth.php';
     authenticate();
-
+    include_once 'func.php';
+    include_once 'view.php';
     define('TOKENVALID', 24); // tokens lifetime in hours
     define('MAXIDS', 10); // max delivered identifiers
     define('MAXRECORDS', 10); // max delivered records
