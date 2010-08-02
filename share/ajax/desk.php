@@ -45,16 +45,19 @@
  * @version CVS:$Id:
  * @package lodel
  */
-
-if(!isset($_POST['site']) || !preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
+if(!isset($_POST['site']) || ('principal' !== $_POST['site'] && (!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
 	in_array($_POST['site'], array('lodel-0.9', 'share-0.9', 'lodeladmin-0.9', 'lodel', 'share', 'lodeladmin')) || 
-	!is_dir('../../'.$_POST['site'])) {
+	!is_dir('../../'.$_POST['site'])))) {
 	// tentative ?
 	echo 'error';
 	exit();
 }
 // chdir pour faciliter les include
-chdir('../../'.$_POST['site']);
+chdir('../../'.('principal' == $_POST['site'] ? '' : $_POST['site']).'/lodel/edition');
+if(!file_exists('siteconfig.php')) {
+	echo 'error';
+	exit();
+}
 if(!file_exists('siteconfig.php')) {
 	echo 'error';
 	exit();
