@@ -113,7 +113,7 @@ class OTXClient extends SoapClient
 	 *
 	 * @access public
 	 */
-	public function __construct() 
+	public function __construct()
 	{
 	}
 
@@ -214,7 +214,7 @@ class OTXClient extends SoapClient
 	 * @param int $i le numéro de l'OTX à contacter
 	 * @return mixed un tableau avec les données de connexion ou false en cas d'échec
 	 */
-	public function selectServer($i=2) 
+	public function selectServer($i=2)
 	{
 		if(0 === $i) $i = '';
 		$options = array();
@@ -255,9 +255,9 @@ class OTXClient extends SoapClient
 		$r = array();
 		foreach($this->_authorizedParams as $k=>$v)
 		{
-			if(!isset($opts[$k])) 
+			if(!isset($opts[$k]))
 			{
-				if($v) 
+				if($v)
 				{
 					throw new SoapFault("Webotx FaultError", //faultcode
 					'Missing parameter '.$k, //faultstring
@@ -284,7 +284,7 @@ class OTXClient extends SoapClient
 		$r = array();
 		foreach($this->_neededRequest as $k=>$v)
 		{
-			if(!isset($request[$k])) 
+			if(!isset($request[$k]))
 			{
 				throw new SoapFault("Webotx FaultError", //faultcode
 				'Missing parameter '.$k, //faultstring

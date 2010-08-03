@@ -31,7 +31,7 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.TITLE_CHECK_STYLING]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 
 <ul id="actionsOnEntitiesPath">
 	<li>[@EDITION.TITLE_CHECK_STYLING]</li>
@@ -56,7 +56,7 @@
 				<LOOP NAME="foreach" ARRAY="[#PARSERREPORT]">
 					<li>[#VALUE]</li>
 				</LOOP>
-				<LOOP NAME="foreach" ARRAY="[#ERRORS]">
+				<LOOP NAME="foreach" ARRAY="[#ERROR]">
 					<LET VAR="error">[#VALUE]</LET>
 					<li>[#KEY] : <a href="#[#KEY]"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[#KEY]" /></a></li>
 				</LOOP>
@@ -136,7 +136,7 @@
 						<IF COND="[#TYPE] EQ 'mltext'">
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERRORS.#NAME]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE] ([#KEY])</td>
+									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERROR.#NAME]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE] ([#KEY])</td>
 									<td class="contents"><div class="overflowed">
 										<LOOP NAME="foreach" ARRAY="[#VALUE]">
 											[#VALUE.TEXT]
@@ -156,7 +156,7 @@
 						<ELSE/>
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERRORS.#NAME]"> error</IF>" id="[#NAME]"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
+									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERROR.#NAME]"> error</IF>" id="[#NAME]"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
 									<td class="contents">
 										<div class="overflowed">
 											<IF COND="[#TYPE] EQ 'date'">
@@ -266,7 +266,7 @@ checkBalisage = function() {
 };
 
 checkBalisage.prototype = {
-	
+
 	init:function() {
 		$$('table.chkbalisage').each(function(item) {
 			if(item.getFirst().getChildren('tr').length < 2) {

@@ -52,11 +52,12 @@
  */
 
 define('backoffice', true);
+define('backoffice-edition', true);
 require 'siteconfig.php';
 
 function printJavascript($msg)
 {
-	echo str_repeat(" ", 256);
+	echo str_repeat(" ", 256); // for IE
 	echo '<script type="text/javascript">'.$msg.'</script>';
 	flush();
 }
@@ -86,7 +87,7 @@ try
 	// require 'func.php';
 	include 'utf8.php'; // conversion des caracteres
 	defined('INC_FUNC') || include 'func.php';
-	
+
 	$context =& C::getC();
 	header('content-type: text/html; charset=utf8');
 	foreach(array('idtask', 'lodeltags', 'reload', 'iddocument') as $var)
@@ -94,7 +95,7 @@ try
 		if(isset($context[$var])) $context[$var] = (int)$context[$var];
 		else $context[$var] = 0;
 	}
-	
+
 	if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
 		header("location: index.php?id=". $context['idparent']);
 		return;

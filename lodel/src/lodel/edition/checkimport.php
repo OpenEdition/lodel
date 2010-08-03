@@ -51,13 +51,14 @@
  */
 
 define('backoffice', true);
+define('backoffice-edition', true);
 require 'siteconfig.php';
 
 try
 {
 	include 'auth.php';
 	authenticate(LEVEL_REDACTOR);
-	
+
 	include 'taskfunc.php';
 	include 'xmlimport.php';
 	include 'class.checkImportHandler.php';
@@ -73,12 +74,12 @@ try
 	if(!empty($context['contents']['persons']))
 		$context['persons'] = $context['contents']['persons'];
 	if(!empty($context['contents']['entities']))
-		$context['relations'] = $context['contents']['entities'];
-	if(!empty($context['contents']['errors']))
-		$context['errors'] = $context['contents']['errors'];
+		$context['entities'] = $context['contents']['entities'];
+	if(!empty($context['contents']['error']))
+		$context['error'] = $context['contents']['error'];
 
 	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities'], $context['contents']['errors']);
-	
+
 	if(!empty($context['otxreport']['meta-soffice']))
 	{
 		$statistics['docstats'] = $context['otxreport']['meta-soffice'];
@@ -253,7 +254,7 @@ try
 							$reader->moveToElement();
 						}
 
-						if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
+						if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol' && $attrs['class'] !== 'EndnoteSymbol')
 						{
 							if(!$parser->getStyle($attrs['class']))
 							{

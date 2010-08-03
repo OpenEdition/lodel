@@ -51,7 +51,7 @@
 
 /**
  * Classe convertissant la TEI renvoyée par OTX en tableau de variables prêt à être inséré dans Lodel
- * 
+ *
  * @package lodel
  * @author Pierre-Alain Mignot
  * @copyright 2001-2002, Ghislain Picard, Marin Dacos
@@ -168,7 +168,7 @@ class TEIParser extends XMLReader
 
 		$idtype = (int) $idtype;
 		if(!$idtype) throw new Exception('ERROR: Invalid idtype');
-		
+
 		$vo = DAO::getDAO('types')->find('import=1 AND id='.$idtype, 'class');
 		if(!$vo) throw new Exception('ERROR: Invalid idtype');
 
@@ -209,8 +209,12 @@ class TEIParser extends XMLReader
 				else
 				{
 					// extract the name of the converted style
-					if(preg_match("/\[@(?:type|rend)='([^']+)'\]$/", $field->otx, $m))
-						$this->_styles[$m[1]] = $field;
+					if(preg_match("/\[(@(type|rend)='([^']+)')]$/", $field->otx, $m))
+                                        {
+						$this->_styles[$m[3]] = $field;
+                                                // get associated blocks
+                                                $field->otx = array($field->otx, "//tei:*[starts-with(@type, '".$m[3]."-')]", "//tei:*[starts-with(@rend, '".$m[3]."-')]");
+                                        }
 
 					$this->_styles[$field->name] = $field;
 
@@ -311,11 +315,11 @@ class TEIParser extends XMLReader
 		{
 			$this->_extractImages($odt, $tmpdir);
 		}
-		
+
 		libxml_use_internal_errors(true);
 
 		$this->_logs = $this->_contents = $this->_tags = $this->_currentClass = array();
-		$this->_contents['entries'] = $this->_contents['persons'] = $this->_contents['errors'] = array();
+		$this->_contents['entries'] = $this->_contents['persons'] = $this->_contents['error'] = array();
 		$simplexml = simplexml_load_string($xml);
 		if(!$simplexml)
 		{
@@ -491,7 +495,7 @@ class TEIParser extends XMLReader
 	 */
 	private function _validField(&$field, $name)
 	{
-		if('errors' === $name) return;
+		if('error' === $name) return;
 
 		if(!isset($this->_tablefields[$name]))
 		{
@@ -510,7 +514,7 @@ class TEIParser extends XMLReader
 				if(false === $valid)
 					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_INVALID_FIELD', 'edition'), $name));
 				elseif(is_string($valid))
-					$this->_contents['errors'][$name][$k] = $valid;
+					$this->_contents['error'][$name][$k] = $valid;
 			}
 
 			if(mb_strlen(join('', $field), 'UTF-8') > 65535)
@@ -522,7 +526,7 @@ class TEIParser extends XMLReader
 			if(false === $valid)
 				$this->_log(sprintf(getlodeltextcontents('TEIPARSER_INVALID_FIELD', 'edition'), $name));
 			elseif(is_string($valid))
-				$this->_contents['errors'][$name] = $valid;
+				$this->_contents['error'][$name] = $valid;
 
 			$isError = false;
 
@@ -676,7 +680,7 @@ class TEIParser extends XMLReader
 
 			return $styles;
 		}
-		
+
 		if(in_array($rend, array('italic', 'sup', 'sub', 'uppercase', 'lowercase', 'bold', 'underline', 'strike', 'small-caps', 'direction(rtl)', 'direction(ltr)')))
 			return array('inline' => array($rend));
 
@@ -693,9 +697,20 @@ class TEIParser extends XMLReader
 
 		if(false !== strpos($rend, '-'))
 		{
-			$style = explode('-', $rend);
-			if(isset($this->_styles[$style[0]]))
-				return array('class' => $full ? $this->_styles[$style[0]] : $this->_styles[$style[0]]->name);
+			$style = array_reverse(explode('-', $rend));
+                        foreach($style as $k => $v)
+                        {
+                            if(isset($this->_internalstyles[$v]))
+                                    return array('class' => $full ? $this->_internalstyles[$v] : $this->_internalstyles[$v]->style);
+                            elseif(isset($this->_characterstyles[$v]))
+                                    return array('class' => $full ? $this->_characterstyles[$v] : $this->_characterstyles[$v]->style);
+                            elseif(isset($this->_entrytypes[$v]))
+                                    return array('class' => $full ? $this->_entrytypes[$v] : $this->_entrytypes[$v]->type);
+                            elseif(isset($this->_persontypes[$v]))
+                                    return array('class' => $full ? $this->_persontypes[$v] : $this->_persontypes[$v]->type);
+                            elseif(isset($this->_styles[$v]))
+                                    return array('class' => $full ? $this->_styles[$v] : $this->_styles[$v]->name);
+                        }
 		}
 
 		$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_STYLE', 'edition'), $rend, $rend));
@@ -831,7 +846,7 @@ class TEIParser extends XMLReader
 
 					if(empty($this->_entrytypes[$obj->name]->otx)) continue;
 
-					$xpath = $this->_entrytypes[$obj->name]->otx."[@xml:lang='".$this->_entrytypes[$obj->name]->lang."']";
+					$xpath = array($this->_entrytypes[$obj->name]->otx."[not(@xml:lang)]",  $this->_entrytypes[$obj->name]->otx."[@xml:lang='".$this->_entrytypes[$obj->name]->lang."']");
 				}
 				elseif('persons' === $obj->type)
 				{
@@ -864,7 +879,22 @@ class TEIParser extends XMLReader
 				$xpath = $obj->otx;
 			}
 
-			$block = $simplexml->xpath($xpath);
+                        $block = array();
+
+                        if(is_array($xpath))
+                        {
+                            foreach($xpath as $x)
+                            {
+                                $b = $simplexml->xpath($x);
+                                if(!empty($b))
+                                {
+                                    foreach($b as $v)
+                                        array_push($block, $v);
+                                }
+                            }
+                        }
+                        else
+                            $block = $simplexml->xpath($xpath);
 // 			if(false === $block)
 // 			{
 // 				$this->_log('Invalid xpath 1 : '.$xpath);
@@ -881,8 +911,15 @@ class TEIParser extends XMLReader
 					$this->_contents['entries'][$idtype] = array();
 
 					$block = array_shift($block);
-					foreach($block->list[0]->item as $k => $v)
-						$this->_contents['entries'][$idtype][] = (string) $v;
+                                        if(isset($block->list[0]))
+                                        {
+					    foreach($block->list[0]->item as $k => $v)
+					    $this->_contents['entries'][$idtype][] = (string) $v;
+					}
+					else
+					{
+						$this->_contents['entries'][$idtype][] = $this->_parse($block->asXML());
+					}
 				}
 				elseif($obj->type === 'persons')
 				{
@@ -992,7 +1029,7 @@ class TEIParser extends XMLReader
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('div' === $this->localName) continue; // container, not used
-				
+
 				$attrs = $this->_parseAttributes();
 
 				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
@@ -1008,16 +1045,16 @@ class TEIParser extends XMLReader
 				$rend = $this->getAttribute('rend');
 
 				if(!empty($rend) && ('footnotesymbol' === strtolower($rend) || 'endnotesymbol' === strtolower($rend))) continue;
-				
+
     				$text .= $this->_closeTag();
-				
+
 				if(!empty($rend))
 				{
 					$rend = $this->_getStyle($rend);
 					if(!empty($rend['class']))
 						array_pop($this->_currentClass);
 				}
-				
+
 				if(empty($this->_currentClass))
 				{
 					$style = $this->_getStyle('standard');
@@ -1160,7 +1197,7 @@ class TEIParser extends XMLReader
 			$ret .= '<span'.(!empty($attrs['rend']) ? ' class="'.$attrs['rend'].'"' : '').
 					(!empty($lang) ? ' xml:lang="'.$lang.'" lang="'.$lang.'"' : '') .
 					(!empty($rendition) ? ' style="'.join(';', $rendition).'"' : '').
-					(!empty($attrsAdd) ? join(' ', $attrsAdd) : '').
+					(!empty($attrsAdd) ? ' '.join(' ', $attrsAdd) : '').
 				'>';
 		}
 
@@ -1386,7 +1423,7 @@ class TEIParser extends XMLReader
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
     				$text .= $this->_closeTag();
-				
+
 				if('list' === $this->localName) break;
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
@@ -1515,7 +1552,7 @@ class TEIParser extends XMLReader
 			$this->_log(getlodeltextcontents('TEIPARSER_MISSING_PLACE_ATTRIBUTE_FOR_NOTE', 'edition'));
 			$attrs['place'] = 'foot';
 		}
-		
+
 		if(!isset($attrs['n']))
 		{
 			$this->_log(sprintf(getlodeltextcontents('TEIPARSER_MISSING_NOTE_NUMBER', 'edition'), $this->_nbNotes));
@@ -1550,7 +1587,7 @@ class TEIParser extends XMLReader
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
 				$text .= $this->_getText($this->value);
 		}
-		
+
 		return '<a class="'.$attrs['place'].'notecall" id="bodyftn'.$this->_nbNotes.'" href="#ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a>';
 	}
 }
