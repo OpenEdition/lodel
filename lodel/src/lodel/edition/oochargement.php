@@ -255,7 +255,10 @@ try
 
 		$contents = array();
 		$teiContents = file_get_contents($source);
-
+		if(empty($context['idtype']))
+		{ // reload
+			$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
+		}
 		try
 		{
 			$parser = new TEIParser($context['idtype']);
@@ -356,6 +359,11 @@ try
 	$i = 0;
 	$mode = C::get('mode') ? C::get('mode') : 'strict';
 	$nb = count($sources);
+	if(empty($context['idtype']))
+	{ // reload
+		$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
+	}
+	$parser = new TEIParser($context['idtype']);
 
 	foreach($sources as $sourceoriginale => $source)
 	{
@@ -395,11 +403,6 @@ RDF;
 				die();
 			}
 
-			if(empty($context['idtype']))
-			{ // reload
-				$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
-			}
-
 			$odtconverted = $source.'-odt.converted';
 			if(!writefile($odtconverted, $client->odt))
 			{
@@ -416,7 +419,6 @@ RDF;
 
 			try
 			{
-				$parser = new TEIParser($context['idtype']);
 				$contents['contents'] = $parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
 			}
 			catch(Exception $e)
