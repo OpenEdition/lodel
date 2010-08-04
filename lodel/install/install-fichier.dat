@@ -248,3 +248,5 @@ ln tpl/importxml_checktables.html
 ln tpl/importxml_checktypes.html
 ln tpl/importxml_checktypes_class.html
 ln tpl/importxmlmodel.html
+# DTD
+ln tpl/dtd.html
