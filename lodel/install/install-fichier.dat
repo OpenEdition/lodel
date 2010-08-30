@@ -241,6 +241,9 @@ ln tpl/schema-xsd.html
 ln tpl/edit_internal_messaging.html
 ln tpl/internal_messaging.html
 
+#association massive
+ln tpl/entries_massassoc.html
+
 #import xml du ME
 ln tpl/importxml_checkcontent.html
 ln tpl/importxml_checkfields.html
