@@ -29,7 +29,7 @@
 
       You should have received a copy of the GNU General Public License
       along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ]-->
 
 
@@ -38,12 +38,12 @@
 <meta name="ROBOTS" content="nofollow, noindex">
 <style type="text/css">
 body{
-	background: #cbcec5 url("[#SHAREURL]/images/bg_top.png") top left repeat-x;
+	background: #175D91 url("[#SHAREURL]/images/bg_top.png") top left repeat-x;
 }
 </style>
 <TITLE>[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</TITLE>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 <div id="loginscreen">
 	<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/>[@LODELADMIN.TITLE_LOGIN_LODELADMIN]</h1>
 	<form action="login.php" method="POST">
@@ -57,7 +57,7 @@ body{
 				<div class="error">
 					<IF COND="[#ERROR_LOGIN]">
 						[@COMMON.INVALID_LOGIN_PASSWORD]
-					</IF> 
+					</IF>
 					<IF COND="[#ERROR_OPENSESSION]">
 						[@COMMON.ERROR_OPENSESSION]
 					</IF>
@@ -69,7 +69,7 @@ body{
 					</IF>
 					<IF COND="[#ERROR_PRIVILEGE]">
 						[@COMMON.ERROR_RIGHTS]
-					</IF> 
+					</IF>
 				</div>
 				<label for="login">[@COMMON.LOGIN]</label>
 				<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
@@ -80,11 +80,11 @@ body{
 				<input type="hidden" id="login" name="login" value="[#LOGIN]" />
 				<input type="hidden" id="datab" name="datab" value="[#DATAB]" />
 				<label for="passwd">[@COMMON.OLDPASSWD]</label>
-				<input type="password" class="input_formulaire" id="old_passwd" name="old_passwd" />			
+				<input type="password" class="input_formulaire" id="old_passwd" name="old_passwd" />
 				<label for="passwd">[@COMMON.NEWPASSWD]</label>
 				<input type="password" class="input_formulaire" id="passwd" name="passwd" />
 				<label for="passwd">[@COMMON.RETYPEPASSWD]</label>
-				<input type="password" class="input_formulaire" id="passwd2" name="passwd2" />			
+				<input type="password" class="input_formulaire" id="passwd2" name="passwd2" />
 			</IF>
 			<p class="login">
 				<input type="submit" value="Valider" alt="Valider" class="button" />
