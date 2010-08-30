@@ -366,6 +366,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	otx tinytext NOT NULL,
 	upd		TIMESTAMP,
 	lang		VARCHAR(10) NOT NULL DEFAULT 'fr',
+	externalallowed tinyint(4) NOT NULL default '0',
 
 	PRIMARY KEY (id),
 	KEY index_type (type)
