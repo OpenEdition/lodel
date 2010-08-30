@@ -119,7 +119,7 @@ $cfg['sessionname']="session{$cfg['database']}";
 
 
 # type d'URL
-$cfg['extensionscripts']="";      # extension .php ou .html pour les scripts accessibles par les internautes 
+$cfg['extensionscripts']="";      # extension .php ou .html pour les scripts accessibles par les internautes
 define("URI","id");        # position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
 
 
@@ -129,6 +129,8 @@ $cfg['otxusername']="";
 $cfg['otxpasswd']="";
 # repertoire temporaire d'extraction d'OTX
 $cfg['tmpoutdir']="";
+# taille maximum du fichier permis à l'upload pour OTX
+$cfg['maxUploadFileSize'] = 10240000;
 
 # configuration du proxy pour atteindre OTX
 $cfg['proxyhost']="";
@@ -147,7 +149,7 @@ define("DONTUSELOCKTABLES",false);
 # la presence de ces variables est obligatoire pour la configuration
 $cfg['chooseoptions']="";
 $cfg['includepath']=""; # pour les sites qui ont un include automatique (defini par php.ini)
-$cfg['htaccess']="on";    # 
+$cfg['htaccess']="on";    #
 $cfg['filemask']="0777";
 $cfg['usesymlink']="";
 $cfg['installoption']="";

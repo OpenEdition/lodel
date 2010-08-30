@@ -31,7 +31,7 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@EDITION.OTX_IMPORT]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 
 <div id="pageContext">
 	<IF COND="![#MULTIPLE]">
@@ -55,7 +55,11 @@
 
 <div id="form">
 	<form name="formfic" id="formfic" enctype="multipart/form-data" action="[#URL]" method="post">
-		<input type="hidden" name="MAX_FILE_SIZE" value="25000000" />
+		<IF COND="C::get('maxUploadFileSize', 'cfg')">
+			<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo C::get('maxUploadFileSize', 'cfg');?>" />
+		<ELSE/>
+			<input type="hidden" name="MAX_FILE_SIZE" value="25000000" />
+		</IF>
 		<IF COND="[#IDPARENT]"><input type="hidden" name="idparent" value="[#IDPARENT]" /></IF>
 		<IF COND="[#IDTYPE]"><input type="hidden" name="idtype" value="[#IDTYPE]" /></IF>
 		<IF COND="[#IDENTITY]"><input type="hidden" name="identity" value="[#IDENTITY]" /></IF>
