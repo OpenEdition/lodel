@@ -132,7 +132,8 @@ $cfg['servoousername']="";
 $cfg['servoopasswd']="";
 # repertoire temporaire d'extraction ServOO
 $cfg['tmpoutdir']="";
-
+# taille maximum du fichier permis à l'upload pour OTX
+$cfg['maxUploadFileSize'] = 10240000;
 # configuration du proxy pour atteindre le ServOO
 $cfg['proxyhost']="";
 $cfg['proxyport']="8080";
