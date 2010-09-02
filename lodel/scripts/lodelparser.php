@@ -693,7 +693,10 @@ PHP;
 				$dbname = $this->database.".";
 			}
 		}
-		
+
+                $prefixedtable = $this->prefix.$table;
+                $mprefixedtable = $this->mprefix.$table;
+
         	if (isset($this->tablefields[$prefixedtable]) && ($dbname == "" || $dbname == $GLOBALS['currentdb'].".")) {
 			return $prefixedtable.$alias;
 		} elseif (isset($this->tablefields[$mprefixedtable]) && ($dbname == "" || $dbname == $this->database.".")) {
