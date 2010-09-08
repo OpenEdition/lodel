@@ -949,7 +949,8 @@ class TEIParser extends XMLReader
 
 							foreach($fieldContent as $fC)
 							{
-								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = '';
+								if(!isset($this->_contents['persons'][$style->id][$k]['data'][$field->name]))
+									$this->_contents['persons'][$style->id][$k]['data'][$field->name] = "";
 								$currentNode =& $this->_contents['persons'][$style->id][$k]['data'][$field->name];
 								$this->_currentClass[] = $field->name;
 
@@ -966,12 +967,13 @@ class TEIParser extends XMLReader
 											$currentNode .= $this->_parse($reader->readOuterXML());
 										$reader->next();
 									}
-									elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType)
-										$currentNode .= $this->_getText($reader->value);
+									elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType){
+										$currentNode .= $this->_parse($fC->asXML());
+									}
 								}
 								$reader->close();
 							}
-						}
+						}						
 					}
 				}
 			}
