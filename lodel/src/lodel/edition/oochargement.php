@@ -70,9 +70,11 @@ function printErrors($errors, $exit = true, $isFrame = true)
 	if($isFrame)
 		echo '<script type="text/javascript">';
 
-	foreach($errors as $error)
-		echo $isFrame ? 'window.parent.o.error("<p class=\"error\">Error: '.addcslashes($error, '"').'</p>");' : "<p class=\"error\">Error: ".addcslashes($error, '"')."</p>";
-
+	foreach($errors as $error){
+		$error = addcslashes(str_replace("\n", "", $error), '"'); 
+		echo $isFrame ? 'window.parent.o.error("<p class=\"error\">Error: ' . $error . '</p>");' : "<p class=\"error\">Error: $error </p>";
+	}
+	
 	if($isFrame)
 		echo '</script>';
 	flush();
