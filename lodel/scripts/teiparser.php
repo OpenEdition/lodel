@@ -1007,7 +1007,7 @@ class TEIParser extends XMLReader
 					}
 					else $currentNode =& $this->_contents[$obj->name][$id];
 
-					$currentNode .= $this->_parse($v->asXML());
+					$currentNode .= $v->asXML();
 				}
 			}
 		}
