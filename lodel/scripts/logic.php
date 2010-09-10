@@ -531,7 +531,10 @@ class Logic
 		$ufields = $this->_uniqueFields();
 		foreach ($ufields as $fields) { // all the unique set of fields
 			$conditions=array();
+		
 			foreach ($fields as $field) { // set of fields which has to be unique.
+				if(empty($context[$field]))
+					break 2;
 				$conditions[] = $field. "=". $db->quote($context[$field]);
 			}
 			// check
