@@ -521,9 +521,10 @@ class GenericLogic extends Logic
 		global $db;
  		$id = (int)$id;
 		$result = $db->getOne(lq("SELECT count(*) FROM #_TP_$class WHERE $name='$value' AND " . $this->_idfield . " !=$id"));
-		if ($result == 0) {
-			return true; } else {
-			return false; }
+		if ($result == 0 || empty($value))
+			return true;
+		else
+			return false;
 	}
 
 
