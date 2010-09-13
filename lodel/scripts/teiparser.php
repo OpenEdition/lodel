@@ -1007,7 +1007,7 @@ class TEIParser extends XMLReader
 					}
 					else $currentNode =& $this->_contents[$obj->name][$id];
 
-					$currentNode .= $v->asXML();
+					$currentNode .= $this->_parse($v->asXML());
 				}
 			}
 		}
@@ -1035,7 +1035,10 @@ class TEIParser extends XMLReader
 				$attrs = $this->_parseAttributes();
 
 				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
-				if(isset($attrs['rend']) && 'internetlink' === $attrs['rend']) unset($attrs['rend']);
+				if(isset($attrs['rend']) && 'internetlink' === $attrs['rend']){
+					 unset($attrs['rend']);
+					 $this->_tags[] = "";
+				}
 
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
 			}
