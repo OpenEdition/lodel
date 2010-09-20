@@ -946,34 +946,20 @@ class TEIParser extends XMLReader
 // 							}
 
 							if(empty($fieldContent)) continue;
-
+							$currentNode =& $this->_contents['persons'][$style->id][$k]['data'][$field->name];
+							
 							foreach($fieldContent as $fC)
 							{
 								if(!isset($this->_contents['persons'][$style->id][$k]['data'][$field->name]))
 									$this->_contents['persons'][$style->id][$k]['data'][$field->name] = "";
-								$currentNode =& $this->_contents['persons'][$style->id][$k]['data'][$field->name];
+								
 								$this->_currentClass[] = $field->name;
 
 // 								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = $this->_parse($fC->asXML());
 
-								$reader = new XMLReader();
-								$reader->XML($fC->asXML(), 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
-								$reader->read();
-								while($reader->read())
-								{
-									if(parent::ELEMENT === $reader->nodeType)
-									{
-										if('s' === $reader->localName || 'hi' === $reader->localName)
-											$currentNode .= $this->_parse($reader->readOuterXML());
-										$reader->next();
-									}
-									elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType){
-										$currentNode .= $this->_parse($fC->asXML());
-									}
-								}
-								$reader->close();
+								$currentNode .= $this->_parse($fC->asXML());
 							}
-						}						
+						}				
 					}
 				}
 			}
@@ -1051,8 +1037,8 @@ class TEIParser extends XMLReader
 
 				if(!empty($rend) && ('footnotesymbol' === strtolower($rend) || 'endnotesymbol' === strtolower($rend))) continue;
 
-    				$text .= $this->_closeTag();
-
+				$text .= $this->_closeTag();
+				
 				if(!empty($rend))
 				{
 					$rend = $this->_getStyle($rend);
