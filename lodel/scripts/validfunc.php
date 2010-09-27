@@ -154,7 +154,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'username' :
 		if ($text) {
 			$len = strlen($text);
-			if ($len < 3 || $len > 25 || !preg_match("/^[0-9A-Za-z_;.?!@:,&]+$/", $text)) {
+			if ($len < 3 || $len > 25 || !preg_match("/^[0-9A-Za-z_;.?!@:,&\-]+$/", $text)) {
 				return $type;
 			}
 		}
