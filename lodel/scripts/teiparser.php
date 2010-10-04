@@ -68,6 +68,7 @@
  */
 class TEIParser extends XMLReader
 {
+	private $isfoot = false;
 	/**
 	 * @var array tableau des styles locaux
 	 * @access private
@@ -146,6 +147,12 @@ class TEIParser extends XMLReader
 	 */
 	private $_images = array();
 
+	/**
+	 * @var array liste des tableaux
+	 * @access private
+	 */
+	private $_tables = array();
+	
 	/**
 	 * @var string titre du document si trouvé (tablefields.g_name == 'dc.title')
 	 * @access private
@@ -739,20 +746,23 @@ class TEIParser extends XMLReader
 	 * @access private
 	 * @return array tableau associatif nom => valeur
 	 */
-	private function _parseAttributes()
+	private function _parseAttributes(XMLReader $element)
 	{
-		if(!$this->hasAttributes) return array();
+		if( ! $element)
+			$element =& $this;
+		
+		if(!$element->hasAttributes) return array();
 
 		$attrs = array();
 
-		$this->moveToFirstAttribute();
+		$element->moveToFirstAttribute();
 		do
 		{
-			$attrs[$this->localName] = 'rendition' === $this->localName ? substr($this->value, 1) : $this->value;
+			$attrs[$element->localName] = 'rendition' === $element->localName ? substr($element->value, 1) : $element->value;
 		}
-		while($this->moveToNextAttribute());
+		while($element->moveToNextAttribute());
 
-		$this->moveToElement();
+		$element->moveToElement();
 
 		return $attrs;
 	}
@@ -879,22 +889,22 @@ class TEIParser extends XMLReader
 				$xpath = $obj->otx;
 			}
 
-                        $block = array();
+            $block = array();
 
-                        if(is_array($xpath))
-                        {
-                            foreach($xpath as $x)
-                            {
-                                $b = $simplexml->xpath($x);
-                                if(!empty($b))
-                                {
-                                    foreach($b as $v)
-                                        array_push($block, $v);
-                                }
-                            }
-                        }
-                        else
-                            $block = $simplexml->xpath($xpath);
+            if(is_array($xpath))
+            {
+                foreach($xpath as $x)
+                {
+                    $b = $simplexml->xpath($x);
+                    if(!empty($b))
+                    {
+                        foreach($b as $v)
+                            array_push($block, $v);
+                    }
+                }
+            }
+            else
+                $block = $simplexml->xpath($xpath);
 // 			if(false === $block)
 // 			{
 // 				$this->_log('Invalid xpath 1 : '.$xpath);
@@ -956,8 +966,27 @@ class TEIParser extends XMLReader
 								$this->_currentClass[] = $field->name;
 
 // 								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = $this->_parse($fC->asXML());
-
-								$currentNode .= $this->_parse($fC->asXML());
+								$reader = new XMLReader();
+								$reader->XML($fC->asXML(), 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+								
+								while($reader->read())
+								{
+									if(parent::ELEMENT === $reader->nodeType)
+									{  
+										if('s' === $reader->localName || 'hi' === $reader->localName)  
+										{   
+											$attrs = $this->_parseAttributes($reader);   
+											$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
+										}
+									}elseif(parent::TEXT === $reader->nodeType)
+										$currentNode .= $reader->readOuterXML();
+									elseif(parent::END_ELEMENT === $reader->nodeType) 
+										if('s' === $reader->localName || 'hi' === $reader->localName)
+											$currentNode .= $this->_closeTag();
+									
+								}
+								
+								//$currentNode .= $this->_parse($fC->asXML());
 							}
 						}				
 					}
@@ -1021,12 +1050,9 @@ class TEIParser extends XMLReader
 				$attrs = $this->_parseAttributes();
 
 				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
-				if(isset($attrs['rend']) && 'internetlink' === $attrs['rend']){
-					 unset($attrs['rend']);
-					 $this->_tags[] = "";
-				}
-
+				
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
+				
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
@@ -1494,6 +1520,11 @@ class TEIParser extends XMLReader
 				$text .= $this->_getText($this->value);
 		}
 
+		if(in_array($attrs['id'], $this->_tables))
+			return;
+		
+		$this->_tables[] = $attrs['id'];
+		
 		return $text;
 	}
 
