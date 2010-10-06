@@ -746,9 +746,9 @@ class TEIParser extends XMLReader
 	 * @access private
 	 * @return array tableau associatif nom => valeur
 	 */
-	private function _parseAttributes(XMLReader $element)
+	private function _parseAttributes(XMLReader $element = null)
 	{
-		if( ! $element)
+		if(!isset($element))
 			$element =& $this;
 		
 		if(!$element->hasAttributes) return array();
