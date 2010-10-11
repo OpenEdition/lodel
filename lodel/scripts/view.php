@@ -271,7 +271,7 @@ class View
 	 * @param boolean $caching Si on doit utiliser le cache ou non (par défaut à false)
 	 *
 	 */
-	public function render($tpl, $caching = false)
+	public function render($tpl, $caching = false, $gzip = true)
 	{
 		C::set('view.tpl', $tpl);
 		$format = C::get('format');
@@ -325,7 +325,7 @@ class View
 
 		// empty cache, let's calculate and display it
 		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
-        	$this->_print();
+        	$this->_print($gzip);
         
 		return true;
 	}
@@ -349,12 +349,12 @@ class View
 	* This function tries to compress the page with gz_handler
 	* It also call the trigger postview
 	*/
-	private function _print()
+	private function _print( $gzip = true )
 	{
 		C::trigger('postview');
 		// try to gzip the page
 		$encoding = false;
-		if(extension_loaded('zlib') && !ini_get('zlib.output_compression'))
+		if( $gzip && extension_loaded('zlib') && !ini_get('zlib.output_compression'))
 		{
 			if(function_exists('ob_gzhandler') && @ob_start('ob_gzhandler'))
 				$encoding = 'gzhandler';
