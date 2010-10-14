@@ -717,6 +717,7 @@ class C
 			if(!empty($filters)) $config->set('Filter.Custom', $filters);
 
 			$config->set('Core.Encoding', 'UTF-8');
+			$config->set('Core.LexerImpl', 'DirectLex');
 			$config->set('HTML.TidyLevel', 'heavy' );
 			$config->set('Attr.EnableID', true);
 			$config->set('Cache.SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );

@@ -125,7 +125,7 @@ try
 						$contents[$k][$lang][$key]['text'] = '';
 						while($reader->read())
 						{
-							if(XMLReader::ELEMENT === $reader->nodeType)
+							if( !$reader->isEmptyElement && ( XMLReader::ELEMENT === $reader->nodeType) )
 							{
 								if('lodelblock' === $reader->localName) continue;
 
@@ -238,7 +238,7 @@ try
 				$contents[$k][$key]['text'] = '';
 				while($reader->read())
 				{
-					if(XMLReader::ELEMENT === $reader->nodeType)
+					if( !$reader->isEmptyElement && ( XMLReader::ELEMENT === $reader->nodeType) )
 					{
 						if('lodelblock' === $reader->localName) continue;
 
