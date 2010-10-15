@@ -1156,6 +1156,8 @@ class TEIParser extends XMLReader
 					$style = explode(':', $style);
 					$attrsAdd[] = 'dir="'.$style[1].'"';
 					unset($rendition[$i]);
+				}elseif(0 === strpos($style, 'text-align')){
+					$rendition[] = "display:block";
 				}
 			}
 		}

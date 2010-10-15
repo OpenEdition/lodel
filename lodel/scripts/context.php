@@ -726,6 +726,7 @@ class C
 			$config->set('HTML.DefinitionRev', 1);
 			$config->set('HTML.SafeObject', true);
 			$config->set('HTML.SafeEmbed', true);
+			$config->set('CSS.AllowTricky',true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
 				'r2r',   // name
