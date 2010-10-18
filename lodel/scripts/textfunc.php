@@ -978,7 +978,14 @@ function cleanBadChars($str){
 		"\xc2\x9e" => "\xc5\xbe",     /* LATIN SMALL LETTER Z WITH CARON */
 		"\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
 		'&#39;'    => "'",
-		"\x20\x13" => "-"
+		"\x20\x13" => "-",
+		"\x0C" => "",
+		"\x0B" => "",
+		"\x02" => "",
+		"\x10" => "",
+		"\x12" => "",
+		"\x13" => "",
+		"\x14" => ""
 	);
 	$str = HTML2XML($str);
 	$str = preg_replace('/&(?!amp;|#[0-9]+;)/', '&amp;', $str);
