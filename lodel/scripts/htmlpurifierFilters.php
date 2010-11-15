@@ -97,8 +97,7 @@ if(defined('backoffice'))
 			libxml_use_internal_errors(false);
 			libxml_clear_errors();
 			if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped : '.print_r($errors,1).'<br/>'.htmlentities($matches[0], ENT_COMPAT, 'UTF-8'), E_USER_WARNING); return ''; }
-
-			return '<span class="lodel-TEI">'.htmlentities($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
+			return '<span class="lodel-TEI">'.htmlspecialchars($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
 		}
 
 		public function postFilter($html, $config, $context) 
