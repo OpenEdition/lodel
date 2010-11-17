@@ -1431,7 +1431,7 @@ class TEIParser extends XMLReader
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('list' === $this->localName)
-					$text .= $this->_parseList($attrs);
+					$text .= $this->_parseList($this->_parseAttributes());
 				elseif('item' === $this->localName)
 				{
 					$text .= '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
