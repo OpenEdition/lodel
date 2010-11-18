@@ -164,8 +164,8 @@ try
 									$contents[$k][$lang][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
 									if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
 									else $attrs['class'] = 'localstyles';
-									if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'].';';
-									else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'].';';
+									if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.htmlspecialchars($attrs['style']).';';
+									else $attrs['title'] = 'LOCALSTYLES:'.htmlspecialchars($attrs['style']).';';
 								}
 
 								if(isset($attrs['lang']))
@@ -198,7 +198,7 @@ try
 								if(!empty($attrs))
 								{
 									foreach($attrs as $name => $value)
-										$contents[$k][$lang][$key]['text'] .= ' '.$name.'="'.$value.'"';
+										$contents[$k][$lang][$key]['text'] .= ' '.$name.'="'.htmlspecialchars($value).'"';
 								}
 								$contents[$k][$lang][$key]['text'] .= '>';
 							}
@@ -281,8 +281,8 @@ try
 							}
 							if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
 							else $attrs['class'] = 'localstyles';
-							if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'].';';
-							else $attrs['title'] = 'LOCALSTYLES:'.$attrs['style'];
+							if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.htmlspecialchars($attrs['style']).';';
+							else $attrs['title'] = 'LOCALSTYLES:'.htmlspecialchars($attrs['style']);
 						}
 
 						if(isset($attrs['lang']))
@@ -315,7 +315,7 @@ try
 						if(!empty($attrs))
 						{
 							foreach($attrs as $name => $value)
-								$contents[$k][$key]['text'] .= ' '.$name.'="'.$value.'"';
+								$contents[$k][$key]['text'] .= ' '.$name.'="'.htmlspecialchars($value).'"';
 						}
 						$contents[$k][$key]['text'] .= '>';
 					}
