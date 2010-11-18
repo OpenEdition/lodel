@@ -156,7 +156,7 @@
 						<ELSE/>
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERROR.#NAME]"> error</IF>" id="[#NAME]"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
+									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERROR.#NAME]"> error</IF> [#NAME]"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE]<IF COND="[#VALUE.CLASS] NE [#NAME]"><br/>[#VALUE.CLASS]</IF></td>
 									<td class="contents">
 										<div class="overflowed">
 											<IF COND="[#TYPE] EQ 'date'">
