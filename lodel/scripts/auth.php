@@ -356,7 +356,7 @@ function mkurl($url, $extraarg)
 	if (strpos($url, "?") === FALSE) {
 		return $url. "?". $extraarg;
 	}	else {
-		return $url. "&". $extraarg;
+		return $url. "&amp;". $extraarg;
 	}
 }
 
