@@ -236,6 +236,7 @@ try
 			{
 				$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 				$contents[$k][$key]['text'] = '';
+				$contents[$k][$key]['localstyles'] = array();
 				while($reader->read())
 				{
 					if( !$reader->isEmptyElement && ( XMLReader::ELEMENT === $reader->nodeType) )
@@ -274,7 +275,10 @@ try
 
 						if(isset($attrs['style']))
 						{
-							$contents[$k][$key]['style'][] = '<span class="localstyles">'.$attrs['style'].'</span>';
+							if(!in_array($attrs['style'], $contents[$k][$key]['localstyles'])){
+								$contents[$k][$key]['style'][] 	     = '<span class="localstyles">'.$attrs['style'].'</span>';
+								$contents[$k][$key]['localstyles'][] = $attrs['style'];
+							}
 							if(isset($attrs['class'])) $attrs['class'] .= ' localstyles';
 							else $attrs['class'] = 'localstyles';
 							if(isset($attrs['title'])) $attrs['title'] .= 'LOCALSTYLES:'.$attrs['style'].';';
