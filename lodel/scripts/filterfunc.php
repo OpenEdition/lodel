@@ -73,8 +73,7 @@ function makefilterfunc()
 	while (!$result->EOF)	{
 		$row = $result->fields;
 		// convert filter into a function
-// 		$filters = preg_split("/\|/", $row['filtering']);
-		$filters = explode('|',$row['filter']);
+ 		$filters = explode("|", $row['filtering']);
 		$filterfunc = '$x';
 		foreach ($filters as $filter)	{
 			if (preg_match("/^([A-Za-z][A-Za-z_0-9]*)(?:\((.*?)\))?$/", $filter, $result2)) {
