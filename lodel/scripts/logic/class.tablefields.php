@@ -419,6 +419,7 @@ class TableFieldsLogic extends Logic
 									'allowedtags' => array('multipleselect', ''),
 									'edition' => array('select', ''),
 									'editionparams' => array('text', ''),
+									'editionhooks' => array('text', ''),
 									'weight' => array('select', ''),
 									'filtering' => array('text', ''),
 									'comment' => array('longtext', ''));

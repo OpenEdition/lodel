@@ -323,6 +323,10 @@ class Entities_EditionLogic extends GenericLogic
 					$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
+
+		/* Éxécution des hooks */
+		$this->_executeHooks($context, $error);
+
         	$ret = '';
 		if (!$this->validateFields($context, $error)) {
 			// error.
@@ -1049,6 +1053,28 @@ class Entities_EditionLogic extends GenericLogic
 		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
 	}
 	
+	/**
+	 * Execution des hooks
+	 * 
+	 * Cette méthode est appelée lors de l'édition d'une entitée afin d'exécuter les différents hooks 
+	 * définis pour chaque champ de l'entité.
+	 * 
+	 */
+	protected function _executeHooks(&$context, &$error){
+		require_once "hookfunc.php";
+		
+		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
+	
+		foreach($fields as $field){
+			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
+			foreach($hooks as $hook){
+				if(function_exists($hook)){
+					error_log($hook);
+					call_user_func($hook, &$context, $field->name);
+				}
+			}
+		}
+	}
 	// begin{publicfields} automatic generation  //
 	// end{publicfields} automatic generation  //
 

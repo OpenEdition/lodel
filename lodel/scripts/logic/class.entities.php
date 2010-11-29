@@ -239,6 +239,8 @@ class EntitiesLogic extends Logic
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
+		$this->_executeHooks($context, $error);
+		
 		// get the entities to modify and ancillary information
 		$access = abs ($status) >= 32 ? 'protect' : 'write';
 
@@ -277,7 +279,7 @@ class EntitiesLogic extends Logic
 		$this->_publishSoftRelation($ids, $status);
 		update();
 		return '_back';
-		}
+	}
 
 	
 	
@@ -475,6 +477,21 @@ class EntitiesLogic extends Logic
 	protected function _publicfields() 
 	{
 		return array();
+	}
+	
+	protected function _executeHooks(&$context, &$error){
+		/* Fausse modification du document afin d'executer les hooks */
+		$editlogic = Logic::getLogic('entities_edition');
+		/* Clonage du contexte afin de conserver le contexte actuel
+		 * un peu moche, mais nécessaire pour enlever toutes les références aux éléments du tableau. 
+		 */
+		$entitycontext = array();
+		foreach($context as $k => $v){
+			$entitycontext[$k] = $v;
+		}
+		$entitycontext['publishcontext'] = $context; // Permettre l'accès au contexte actuel
+		$editlogic->viewAction($entitycontext, $error);
+		$editlogic->editAction($entitycontext, $error);
 	}
 	// end{publicfields} automatic generation  //
 

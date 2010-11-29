@@ -96,6 +96,7 @@ class tablefieldsVO
 	public $allowedtags;
 	public $edition;
 	public $editionparams;
+	public $editionhooks;
 	public $weight;
 	public $filtering;
 	public $comment;
