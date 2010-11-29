@@ -166,7 +166,7 @@ class OTXClient extends SoapClient
 			// add the header for auth
 			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', new SoapVar(array(
 				'login' => $opts['otx.username'],
-				'password' => md5($opts['otx.passwd'].$sessionToken),
+				'password' => md5(md5($opts['otx.username'] . ":" . $opts['otx.passwd']).$sessionToken),
 				'lodel_user' => $opts['lodel_user'],
 				'lodel_site' => $opts['lodel_site']), SOAP_ENC_OBJECT))));
 
