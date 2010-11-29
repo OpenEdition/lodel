@@ -1078,7 +1078,7 @@ class Entities_EditionLogic extends GenericLogic
 	 * 
 	 */
 	protected function _executeHooks(&$context, &$error){
-		require_once "textfunc.php";
+		require_once "hookfunc.php";
 		
 		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
 	
