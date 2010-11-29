@@ -65,8 +65,8 @@
   <legend>[@ADMIN.IDENTIFICATION]</legend>
   <label for="name">[@ADMIN.UNIQUE_IDENTIFIER]<span class="optional">(*)</span> : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]">
+  <br class="nobr" />
+  <input type="text" size="30" name="name" id="name" class="text" value="[#NAME]" />
   <LOOP NAME="fielderror" FIELD="name">
     <a id="name"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.UNIQUE_IDENTIFIER]"></FUNC>
@@ -81,8 +81,8 @@
   </LOOP>
   <label for="title">[@ADMIN.INTERFACENAME]<span class="optional">(*)</span> : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]">
+  <br class="nobr" />
+  <input type="text" size="30" name="title" id="title" class="text" value="[#TITLE]" />
   <LOOP NAME="fielderror" FIELD="title">
     <a id="title"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.INTERFACENAME]"></FUNC>
@@ -91,14 +91,14 @@
   <br />
   <label for="altertitle">[@ADMIN.MULTILINGUAL_NAME] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <FUNC NAME="PRINT_EDIT_FIELD_XSLT" VARNAME="altertitle" TYPE="mltext" VALUE="[#ALTERTITLE]" FULLVARNAME="altertitle"></FUNC>
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.FIELDSET_PROTECTED]</legend>
   <label for="protected">[@ADMIN.PROTECTED_DATAFIELD] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <IF COND="abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
@@ -115,7 +115,7 @@
   <legend>[@ADMIN.DISPLAY_IN_INTERFACE]</legend>
   <label for="gui_user_complexity">[@ADMIN.ASSOCIATED_GUI_USER_COMPLEXITY] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="gui_user_complexity" id="gui_user_complexity">
     <?php 
 						makeSelect($context,"gui_user_complexity","tablefields","select");
@@ -133,7 +133,7 @@
   <IF COND="[#CLASSTYPE]=='entities'">
     <label for="idgroup">[@ADMIN.DATAFIELDGROUP] : 
 		</label>
-    <br class="nobr">
+    <br class="nobr" />
     <select name="idgroup" id="idgroup">
       <?php 
 						makeSelect($context,"idgroup","tablefields","select");
@@ -148,7 +148,7 @@
   </IF>
   <label for="type">[@ADMIN.FIELD_TYPE] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="type" id="type" onChange="confirm_change_type();displayMask();">
     <?php 
 						makeSelect($context,"type","tablefields","select");
@@ -162,7 +162,7 @@
   <br />
   <label for="g_name">[@ADMIN.DUBLIN_CORE_EQUIVALENT] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="g_name" id="g_name">
     <?php 
 						makeSelect($context,"g_name","tablefields","select");
@@ -179,8 +179,8 @@
   <legend>[@ADMIN.FIELDSET_CREATION]</legend>
   <label for="style">[@ADMIN.IMPORT_STYLE] : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]">
+  <br class="nobr" />
+  <input type="text" size="30" name="style" id="style" class="text" value="[#STYLE]" />
   <LOOP NAME="fielderror" FIELD="style">
     <a id="style"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.IMPORT_STYLE]"></FUNC>
@@ -189,7 +189,7 @@
   <br />
   <label for="cond">[@ADMIN.CONDITION] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="cond" id="cond">
     <?php 
 						makeSelect($context,"cond","tablefields","select");
@@ -203,8 +203,8 @@
   <br />
   <label for="defaultvalue">[@ADMIN.DEFAULT_VALUE] : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]">
+  <br class="nobr" />
+  <input type="text" size="30" name="defaultvalue" id="defaultvalue" class="text" value="[#DEFAULTVALUE]" />
   <LOOP NAME="fielderror" FIELD="defaultvalue">
     <a id="defaultvalue"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.DEFAULT_VALUE]"></FUNC>
@@ -213,8 +213,8 @@
   <br />
   <label for="processing">[@ADMIN.PROCESSING_IMPORT] : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]">
+  <br class="nobr" />
+  <input type="text" size="30" name="processing" id="processing" class="text" value="[#PROCESSING]" />
   <LOOP NAME="fielderror" FIELD="processing">
     <a id="processing"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROCESSING_IMPORT]"></FUNC>
@@ -224,8 +224,8 @@
 <IF COND="[#CLASSTYPE] EQ 'entities'">
   <div id="mask" style="display:none">
   <label for="mask">[@ADMIN.MASK_IMPORT] : </label>
-  <br class="nobr">
-    <input type="text" size="30" name="mask[user]" id="mask[user]" class="text" value="[#MASK.USER]">&nbsp;
+  <br class="nobr" />
+    <input type="text" size="30" name="mask[user]" id="mask[user]" class="text" value="[#MASK.USER]" />&nbsp;
     [@ADMIN.MASK_REASONNABLE] : <input name="mask_reasonable" value="1" type="checkbox" <IF COND="[#MASK.MODEL] EQ 'reasonable'">checked</IF>/>&nbsp;
     [@ADMIN.MASK_REGEXP] : <input type="checkbox" name="mask_regexp" value="1" <IF COND="[#MASK.MODEL] EQ 'regexp'">checked</IF>/>
     <LOOP NAME="fielderror" FIELD="mask"><a id="mask"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.MASK_ERROR]"></FUNC></span></LOOP>
@@ -245,7 +245,7 @@ displayMask();
   </IF>
   <label for="allowedtags">[@ADMIN.ALLOWED_TAGS] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select multiple name="allowedtags[]" id="allowedtags">
     <?php 
 						makeSelect($context,"allowedtags","tablefields","multipleselect");
@@ -262,7 +262,7 @@ displayMask();
   <legend>[@ADMIN.FIELDSET_EDITION]</legend>
   <label for="edition">[@ADMIN.INTERFACE_VIEW] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="edition" id="edition">
     <?php 
 						makeSelect($context,"edition","tablefields","select");
@@ -276,20 +276,23 @@ displayMask();
   <br />
   <label for="editionparams">[@ADMIN.PARAMETER_FOR_EDITION] : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]">
+  <br class="nobr" />
+  <input type="text" size="30" name="editionparams" id="editionparams" class="text" value="[#EDITIONPARAMS]" />
   <LOOP NAME="fielderror" FIELD="editionparams">
     <a id="editionparams"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PARAMETER_FOR_EDITION]"></FUNC>
     </span>
   </LOOP>
   <br />
+  <label for="editionhooks">[@ADMIN.HOOKS_FOR_EDITION] :</label>
+  <br class="nobr" />
+  <input type="text" name="editionhooks" id="editionhooks" class="text" value="[#EDITIONHOOKS]" />
 </fieldset>
 <fieldset>
   <legend>[@ADMIN.FIELDSET_INDEXATION]</legend>
   <label for="weight">[@ADMIN.WEIGHT_FOR_SEARCH_ENGINE] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <select name="weight" id="weight">
     <?php 
 						makeSelect($context,"weight","tablefields","select");
@@ -306,8 +309,8 @@ displayMask();
   <legend>[@ADMIN.VIEW_IN_SITE]</legend>
   <label for="filtering">[@ADMIN.AUTOMATIC_FILTERING] : 
 		</label>
-  <br class="nobr">
-  <input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]">
+  <br class="nobr" />
+  <input type="text" size="30" name="filtering" id="filtering" class="text" value="[#FILTERING]" />
   <LOOP NAME="fielderror" FIELD="filtering">
     <a id="filtering"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.AUTOMATIC_FILTERING]"></FUNC>
@@ -319,7 +322,7 @@ displayMask();
   <legend>[@ADMIN.COMMENT]</legend>
   <label for="comment">[@ADMIN.COMMENT] : 
 		</label>
-  <br class="nobr">
+  <br class="nobr" />
   <textarea size="30" name="comment" id="comment" class="text" row="10" cols="60">[#COMMENT]</textarea>
   <LOOP NAME="fielderror" FIELD="comment">
     <a id="comment"></a><span class="error">

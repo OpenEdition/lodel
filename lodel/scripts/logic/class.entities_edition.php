@@ -332,6 +332,10 @@ class Entities_EditionLogic extends GenericLogic
 		}
 		$class = $context['class']=$votype->class;
 		$context['lo'] = @$context['lo'];
+
+		/* Éxécution des hooks */
+		$this->_executeHooks($context, $error);
+
 		// Récupération des valeurs par défaut pour les champs vides À L'IMPORT
 		if ($context['lo'] == 'entities_import' && !empty($context['idtask']) && !$error) {
 			$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,defaultvalue");
@@ -1066,6 +1070,27 @@ class Entities_EditionLogic extends GenericLogic
 		return preg_replace(array("/\W+/", "/-+$/"), array('-', ''), makeSortKey(strip_tags($title)));
 	}
 	
+	/**
+	 * Execution des hooks
+	 * 
+	 * Cette méthode est appelée lors de l'édition d'une entitée afin d'exécuter les différents hooks 
+	 * définis pour chaque champ de l'entité.
+	 * 
+	 */
+	protected function _executeHooks(&$context, &$error){
+		require_once "textfunc.php";
+		
+		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
+	
+		foreach($fields as $field){
+			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
+			foreach($hooks as $hook){
+				if(function_exists($hook)){
+					call_user_func($hook, &$context, $field->name);
+				}
+			}
+		}
+	}
 	// begin{publicfields} automatic generation  //
 	// end{publicfields} automatic generation  //
 

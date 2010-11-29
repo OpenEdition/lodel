@@ -403,7 +403,12 @@
 		description="params pour l edition"
 		label="[@ADMIN.PARAMETER_FOR_EDITION]"
 		edittype="text" />
-	
+	<column name="editionhooks"
+        type="VARCHAR"
+        size="255"
+        description="hooks de l edition"
+        label="[@ADMIN.HOOKS_FOR_EDITION]"
+        edittype="text" />
 	</vgroup>
 	<vgroup name="grindexation"
 		label="[@ADMIN.FIELDSET_INDEXATION]">

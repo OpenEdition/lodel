@@ -148,6 +148,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	filtering	TEXT NOT NULL,			# traitement a faire a l'exportation
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
+	editionhooks   TEXT NOT NULL,      # hooks pour l'edition
 	weight		TINYINT NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur le champs
 	mask 		TEXT NOT NULL DEFAULT '',	# masque � appliquer sur le champs pour validation
