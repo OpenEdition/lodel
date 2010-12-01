@@ -62,9 +62,10 @@ try
 	include 'taskfunc.php';
 	include 'xmlimport.php';
 	include 'class.checkImportHandler.php';
-	$idtask = (int)C::get('idtask');
+	$idtask            = (int)C::get('idtask');
 	$task              = gettask($idtask);
 	$context['reload'] = (bool)C::get('reload');
+	$statistics        = array();
 	gettypeandclassfromtask($task, $context);
 
 	$context = array_merge($context, unserialize(base64_decode(file_get_contents($task['fichier']))));
