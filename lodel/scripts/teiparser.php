@@ -160,6 +160,12 @@ class TEIParser extends XMLReader
 	private $_docTitle = '';
 
 	/**
+	 * @var array namespaces du document
+	 * @access private
+	 */
+	 private $_namespaces;
+
+	/**
 	 * Constructeur
 	 *
 	 * Récupère les champs ainsi que les types d'entrées et de personnes, les styles internes et de caractères
@@ -334,8 +340,12 @@ class TEIParser extends XMLReader
 			throw new Exception("ERROR: Can't open XML");
 		}
 
-		$this->_parseRenditions($simplexml->teiHeader->encodingDesc->tagsDecl);
+		/* Récupération des namespaces du document */
+		$this->_namespaces = $simplexml->getNamespaces(true);
 
+		if($simplexml->teiHeader->encodingDesc->tagsDecl)
+			$this->_parseRenditions($simplexml->teiHeader->encodingDesc->tagsDecl);
+		
 		$this->_parseBlocks($simplexml);
 		unset($simplexml);
 
@@ -939,6 +949,7 @@ class TEIParser extends XMLReader
 					{
 						// quite boring to have to re-do this here
 						// but if we don't do this, the xpath will not be valid :/
+						$this->_updateNameSpaces($v);
 						$namespaces = $v->getDocNamespaces();
 						$v->registerXPathNamespace('tei', $namespaces['']);
 
@@ -1005,6 +1016,7 @@ class TEIParser extends XMLReader
 
 				foreach($block as $k => $v)
 				{
+					$this->_updateNameSpaces($v);
 					$xmlAttrs = $v->attributes('http://www.w3.org/XML/1998/namespace');
 					if(isset($xmlAttrs['id']) && 0 === strpos((string) $xmlAttrs['id'], 'otx_'))
 						$id = substr((string) $xmlAttrs['id'], '4'); // remove 'otx_'
@@ -1615,4 +1627,22 @@ class TEIParser extends XMLReader
 
 		return '<a class="'.$attrs['place'].'notecall" id="bodyftn'.$this->_nbNotes.'" href="#ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a>';
 	}
+	
+	/**
+	 * Remet les namespaces
+	 * 
+	 * @access private
+	 * @param  SimpleXMLElement
+	 */
+	 private function _updateNameSpaces(SimpleXMLElement &$v)
+	 {
+		foreach($this->_namespaces as $k => $ns){
+			if(empty($k)){
+				$empty = $ns;
+				$v->addAttribute("xmlns", $ns);
+			}else{
+				$v->addAttribute("xmlns:$k", $ns, "xmlns");
+			}
+		}	 	
+	 }
 }

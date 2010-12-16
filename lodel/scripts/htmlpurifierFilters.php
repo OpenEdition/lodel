@@ -92,12 +92,29 @@ if(defined('backoffice'))
 			$doc->resolveExternals = true;
 			$doc->validateOnParse = true;
 			$doc->loadXML($matches[0]);
+			
+			if($errors = libxml_get_errors()){
+				$doc = new DOMDocument('1.0', 'UTF-8');
+				$doc->resolveExternals = true;
+				$doc->validateOnParse = false;
 
-			$errors = libxml_get_errors();
+				$doc->loadXML($matches[0]);
+				$xsd = $doc->documentElement->getAttributeNS($doc->lookupNamespaceURI('xsi'), 'schemaLocation');
+				if(! @$doc->schemaValidate($xsd) )
+					$errors = libxml_get_errors();
+			}
+			
 			libxml_use_internal_errors(false);
 			libxml_clear_errors();
-			if(!empty($errors)) { trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped : '.print_r($errors,1).'<br/>'.htmlentities($matches[0], ENT_COMPAT, 'UTF-8'), E_USER_WARNING); return ''; }
-			return '<span class="lodel-TEI">'.htmlspecialchars($matches[3], ENT_QUOTES, 'UTF-8').'</span>';
+			if(!empty($errors)) {
+				foreach($errors as $error){
+					if($error->level === LIBXML_ERR_FATAL){
+						trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped : '.print_r($errors,1).'<br/>'.htmlentities($matches[0], ENT_COMPAT, 'UTF-8'), E_USER_WARNING);
+						return '';
+					}
+				} 
+			}
+			return '<span class="lodel-TEI">' . htmlspecialchars($matches[3], ENT_QUOTES, 'UTF-8') . '</span>';
 		}
 
 		public function postFilter($html, $config, $context) 
