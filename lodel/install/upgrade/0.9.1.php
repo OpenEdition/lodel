@@ -25,8 +25,8 @@
 		$db->execute('ALTER ' .
 				'TABLE `tablefields` ' .
 				'ADD COLUMN `editionhooks` TEXT NOT NULL ' .
-				'AFTER `editionparams`') 
-		or trigger_error("SQL ERROR: " . $db->ErrorMsg(), E_USER_ERROR);
+				'AFTER `editionparams`')
+		or error_log("SQL ERROR: " . $db->ErrorMsg(), E_USER_ERROR);
 	}
 
 ?>
