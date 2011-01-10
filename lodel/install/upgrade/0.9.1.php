@@ -13,7 +13,7 @@
 		authenticate(LEVEL_ADMINLODEL);
 
 	global $db;
-	$sites = $db->GetRow(lq("
+	$sites = $db->Execute(lq("
             SELECT name, status 
                 FROM #_MTP_sites 
                 WHERE status > 0")) 
@@ -21,11 +21,11 @@
 
 	
 	foreach($sites as $site){
-		$db->SelectDB(DATABASE . "_{$site}");
+		$db->SelectDB(DATABASE . "_{$site['name']}");
 		$db->execute('ALTER ' .
 				'TABLE `tablefields` ' .
 				'ADD COLUMN `editionhooks` TEXT NOT NULL ' .
-				'AFTER `editionparams`') 
+				'AFTER `editionparams`')
 		or error_log("SQL ERROR: " . $db->ErrorMsg(), E_USER_ERROR);
 	}
 
