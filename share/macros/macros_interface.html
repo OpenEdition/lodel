@@ -633,7 +633,7 @@ cp_[#VARNAME].writeDiv();
 		<LET VAR="external">1</LET>
 	<ELSE/>
 		<LET VAR="database_dist">`<?php echo $GLOBALS['currentdb']; ?>`</LET>
-		<LET VAR="where">entrytypes.type='[#VARNAME]'</LET>
+		<LET VAR="where">#_TP_entrytypes.type='[#VARNAME]'</LET>
 		<LET VAR="external">0</LET>
 	</IF>
       
