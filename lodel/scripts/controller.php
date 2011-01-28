@@ -755,7 +755,7 @@ class Controller
 		$class = C::get('site_ext', 'cfg') ? '`'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.#_TP_'.$row['class'] : '#_TP_'.$row['class'];
 	
 		// get the associated table
-		$row = $db->getRow(lq("SELECT * FROM #_TP_".$class." WHERE ".$longid."='".$id."'"));
+		$row = $db->getRow(lq("SELECT * FROM $class WHERE ".$longid."='".$id."'"));
 		
 		if ($row === false) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
