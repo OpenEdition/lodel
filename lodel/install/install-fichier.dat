@@ -208,6 +208,8 @@ ln tpl/edit_entrytypes.html
 ln tpl/entrytypes.html
 ln tpl/edit_entries.html
 ln tpl/entries.html
+ln tpl/entries_massassoc.html
+ln tpl/entrytypesbrowser.html
 
 ln tpl/edit_persontypes.html
 ln tpl/persontypes.html
