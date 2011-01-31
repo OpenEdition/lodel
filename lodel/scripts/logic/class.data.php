@@ -908,7 +908,7 @@ class DataLogic
 		if($archive)
 			$context['error_upload'] = $_FILES['archive']['error'];
 		$file = '';
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
+		if (!isset($context['error_upload']) && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
 				$context['error_regexp'] = 1;
