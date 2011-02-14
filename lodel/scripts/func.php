@@ -53,6 +53,10 @@
  */
 
 
+if (is_readable(C::get('home', 'cfg').'func_local.php'))
+        include 'func_local.php';
+
+
 function writefile ($filename,$text)
 {
 # echo "name de fichier : $filename";
