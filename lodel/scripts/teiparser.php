@@ -166,6 +166,15 @@ class TEIParser extends XMLReader
 	 private $_namespaces;
 
 	/**
+	 * @staticvar int ligne de quote 
+	 */
+	const QUOTE_TEXT		= 0;
+	const QUOTE_TEXT_LINE	= 1;
+	const QUOTE_TABLE		= 2;
+	const QUOTE_LINE		= 3;
+
+
+	/**
 	 * Constructeur
 	 *
 	 * Récupère les champs ainsi que les types d'entrées et de personnes, les styles internes et de caractères
@@ -1261,6 +1270,7 @@ class TEIParser extends XMLReader
 				if(!isset($attrs['place']))
 					break;
 
+			case 'quote':
 			case 'head': // title
 			case 'list': // list
 			case 'table': // table
@@ -1628,6 +1638,77 @@ class TEIParser extends XMLReader
 		return '<a class="'.$attrs['place'].'notecall" id="bodyftn'.$this->_nbNotes.'" href="#ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a>';
 	}
 	
+	private function _parseQuote(array $attrs)
+	{
+
+		if(! isset($attrs['type']) && ! isset($attrs['subtype'])){
+			$quotetype = self::QUOTE_LINE;
+		}elseif( isset($attrs['type']) && isset($attrs['subtype']) ){
+			$quotetype = self::QUOTE_TABLE;
+		}elseif( isset($attrs['type']) && isset($attrs['cols']) ){
+			$quotetype = self::QUOTE_TEXT_LINE;
+		}else{
+			$quotetype = self::QUOTE_TEXT;
+		}
+
+		$text = "";
+		$num  = null;
+		$cols = $attrs['cols'] or 0;
+
+		while( $this->read() )
+		{
+			if(parent::ELEMENT === $this->nodeType)
+			{
+				if( "quote" == $this->localName ){
+
+					$dom = $this->expand();
+					if($dom->childNodes->length > 1 ) $cols = 0;
+					foreach($dom->childNodes as $child)
+						if( "seg" == $child->localName )
+							$cols++;
+
+					$text .= $this->_getTagEquiv($this->localName, array_merge($this->_parseAttributes(), array('cols' => $cols) ));
+
+				}elseif( "seg" == $this->localName ){
+					$text .= "<td>";
+					$this->_tags[] = "td";
+				}elseif( "num" == $this->localName ){
+					$this->read();
+					$num = $this->_getText($this->value);
+				}else{
+					$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+				}
+
+			}elseif(parent::END_ELEMENT === $this->nodeType ){
+
+				if( "quote" == $this->localName ) break;
+				$text .= $this->_closeTag();
+
+			}elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
+				if( $quotetype === self::QUOTE_TEXT_LINE ){
+					$text .= "<tr class=\"{$attrs['type']}\"><td colspan=\"{$cols}\">" . $this->_getText($this->value) . "</td></tr>";
+				}else{
+					$text .= $this->_getText($this->value);
+				}
+				
+			}
+		}
+
+		switch($quotetype){
+			case self::QUOTE_TEXT:
+				$text = "<p class=\"{$attrs['type']}\">{$text}</p>";
+				break;
+			case self::QUOTE_TABLE:
+				$text = "<span class=\"{$attrs['type']}\">{$num}<table class=\"{$attrs['subtype']}\">{$text}</table></span>";
+				break;
+			case self::QUOTE_LINE:
+				$text = "<tr>$text</tr>";
+				break;
+		}
+
+		return $text;
+	}
+	
 	/**
 	 * Remet les namespaces
 	 * 
@@ -1637,7 +1718,7 @@ class TEIParser extends XMLReader
 	 private function _updateNameSpaces(SimpleXMLElement &$v)
 	 {
 		foreach($this->_namespaces as $k => $ns){
-			if(empty($k)){
+			if(empty($k) && !isset($empty)){
 				$empty = $ns;
 				$v->addAttribute("xmlns", $ns);
 			}else{
