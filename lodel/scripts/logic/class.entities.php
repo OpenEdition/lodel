@@ -478,20 +478,27 @@ class EntitiesLogic extends Logic
 	{
 		return array();
 	}
-	
+
 	protected function _executeHooks(&$context, &$error){
 		/* Fausse modification du document afin d'executer les hooks */
 		$editlogic = Logic::getLogic('entities_edition');
-		/* Clonage du contexte afin de conserver le contexte actuel
-		 * un peu moche, mais nécessaire pour enlever toutes les références aux éléments du tableau. 
-		 */
-		$entitycontext = array();
-		foreach($context as $k => $v){
-			$entitycontext[$k] = $v;
+
+		// Le statut est stoqué dans un champ différent.
+		$context['publishstatus'] = $context['status'];
+		$editlogic->viewAction($context, $error); 
+		/* Les champs multilingue doivent être parsés */
+		foreach($context['data'] as &$field){
+			if(strpos($field, 'r2r:ml')){
+				preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
+														$field, $results, PREG_SET_ORDER);
+
+				$field = array();
+				foreach($results as $result){
+					$field[$result[1]] = $result[2];
+				}
+			}
 		}
-		$entitycontext['publishcontext'] = $context; // Permettre l'accès au contexte actuel
-		$editlogic->viewAction($entitycontext, $error);
-		$editlogic->editAction($entitycontext, $error);
+		$editlogic->editAction($context, $error);
 	}
 	// end{publicfields} automatic generation  //
 

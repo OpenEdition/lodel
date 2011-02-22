@@ -11,8 +11,8 @@ if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
  * @param string $field le champ actuellement parsé
  */
 function updatedatepubli(&$context, &$field){
-	if($context['do'] == "publish" && $context['publishcontext']['status'] == 1){
-		$context['data']['datepubli'] = date("Y-m-d");
+	if($context['do'] == "publish" && $context['publishstatus'] == 1){
+		$context['data']['datemisenligne'] = date("Y-m-d");
 	}
 }
 
