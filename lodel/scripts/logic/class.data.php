@@ -905,7 +905,7 @@ class DataLogic
 	private function _extractImport(&$context)
 	{
 		$archive = empty($_FILES['archive']['tmp_name']) ? null : $_FILES['archive']['tmp_name'];
-		if($archive)
+		if($archive && $_FILES['archive']['error'] !== UPLOAD_ERR_OK )
 			$context['error_upload'] = $_FILES['archive']['error'];
 		$file = '';
 		if (!isset($context['error_upload']) && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
