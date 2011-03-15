@@ -173,12 +173,14 @@ class DataLogic
 	public function __construct()
 	{
 		$do = C::get('do');
- 		if (!C::get('admin', 'lodeluser')
+ 		if ((!C::get('admin', 'lodeluser')
                 || (!C::get('adminlodel', 'lodeluser') && ($do == 'import'
                 || $do == 'backup'
                 || $do == 'importmodel'
                 || $do == 'importxmlmodel'
-                || $do == 'globalbackup'))) {
+                || $do == 'globalbackup')))
+                && !(C::get('redactor', 'lodeluser') && $do == 'import') 
+                ) {
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
 

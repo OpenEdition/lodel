@@ -268,7 +268,7 @@ try
 		}
 		catch(Exception $e)
 		{
-			printErrors($parser->getLogs(), false);
+//			printErrors($parser->getLogs(), false);
 			printErrors($e->getMessage(), true, $isFrame);
 		}
 
@@ -353,6 +353,7 @@ try
 	}
 
 	// get the XML schema of the editorial model
+	C::set('do', 'import');
 	$datas['title'] = 'ME';
 	$datas['description'] = 'ME OTX';
 	$datas['author'] = 'Lodel';
