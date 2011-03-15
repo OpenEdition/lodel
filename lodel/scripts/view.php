@@ -177,9 +177,9 @@ class View
 		$this->_makeCachedFileName($tpl);
 		$included = get_included_files();
 		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
-			require 'Cache/Lite.php';
+			require_once 'Cache/Lite.php';
 		if(!in_array(realpath($home.'func.php'), $included))
-			require 'func.php';		
+			require_once 'func.php';		
 		$cache = new Cache_Lite($this->_cacheOptions);
 
 		// efface le cache si demandé
@@ -361,12 +361,9 @@ $code .= $content . '
 	private function _eval($content, &$context, $escapeRefreshManager=false) {
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			global $home;
-			$included = get_included_files();
-			if(!in_array(realpath($home.'loops.php'), $included))
-				require 'loops.php';
-			if(!in_array(realpath($home.'textfunc.php'), $included))
-				require 'textfunc.php';
-			
+			require_once 'loops.php';
+			require_once 'textfunc.php';
+
 			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
 			}
