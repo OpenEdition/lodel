@@ -177,9 +177,9 @@ class View
 		$this->_makeCachedFileName($tpl);
 		$included = get_included_files();
 		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
-			require 'Cache/Lite.php';
+			require_once 'Cache/Lite.php';
 		if(!in_array(realpath($home.'func.php'), $included))
-			require 'func.php';		
+			require_once 'func.php';		
 		$cache = new Cache_Lite($this->_cacheOptions);
 
 		// efface le cache si demandé
@@ -225,7 +225,7 @@ class View
 		$this->_makeCachedFileName();
 		$included = get_included_files();
 		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
-			require 'Cache/Lite.php';
+			require_once 'Cache/Lite.php';
 				
 		$cache = new Cache_Lite($this->_cacheOptions);
 		if($content = $cache->get($this->_cachedfile, $site)) {
@@ -235,7 +235,7 @@ class View
 				// on tente d'évaluer de nouveau le code pour être sur
 				$content = $this->_eval($content, $context, true);
 				if(!in_array(realpath($home.'func.php'), $included))
-					require 'func.php';
+					require_once 'func.php';
 				echo _indent($content);
 				flush();
 				return true;
@@ -278,7 +278,7 @@ class View
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
 					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
 		if(!in_array(realpath($home.'Cache/Lite.php'), get_included_files()))
-			require 'Cache/Lite.php';
+			require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
 		
 		if(!($content = $cache->get($cachedTemplateFileName, 'TemplateFile')) || $escRefresh) {
@@ -362,10 +362,8 @@ $code .= $content . '
 		if(FALSE !== strpos($content, '<?php')) { // on a du PHP, on l'execute
 			global $home;
 			$included = get_included_files();
-			if(!in_array(realpath($home.'loops.php'), $included))
-				require 'loops.php';
-			if(!in_array(realpath($home.'textfunc.php'), $included))
-				require 'textfunc.php';
+			require_once 'loops.php';
+			require_once 'textfunc.php';
 			
 			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);

@@ -43,7 +43,7 @@
  * @package lodel
  */
 
-if (is_readable($home.'textfunc_local.php'))
+if (is_readable(SITEROOT . $home.'textfunc_local.php'))
 	require_once 'textfunc_local.php';
 
 # fonction largement reprises de SPIP
