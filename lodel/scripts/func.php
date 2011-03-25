@@ -1421,6 +1421,7 @@ function getMimeType($ext)
 		case 'avi': return 'video/avi';
 		case 'wav': return 'audio/x-wav';
 		case 'mp3': return 'audio/mpeg';
+		case 'm4v':
 		case 'mp4': return 'video/mp4';
 		case 'flv': return 'video/x-flv';
 		case 'mov': return 'video/quicktime';
