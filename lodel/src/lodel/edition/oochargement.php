@@ -166,15 +166,80 @@ try
 	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
 	if($ext === 'zip')
 	{ // multiple
+		$unzipcmd = C::get('unzipcmd', 'cfg');
 		if(empty($context['multiple']))
 		{
-			printErrors('Please use multiple import page for importing documents from .zip file', true, $isFrame);
+		    if($isFrame) printJavascript('window.parent.o.changeStep(2);');
+		    
+			if ($unzipcmd && $unzipcmd != "pclzip") {
+                $log = exec( "$unzipcmd -o -d $tmpdir $source" );
+			}else{
+				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
+			    $archive = new PclZip($source);
+			    $arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
+			}
+			
+            $dir = opendir($tmpdir);
+            while ($file = readdir($dir)) {
+                if(is_file( $tmpdir . DIRECTORY_SEPARATOR . $file ) && preg_match( "/\.xml$/",$file) ){
+                    $contents = array();
+                    $teiContents = file_get_contents($tmpdir . DIRECTORY_SEPARATOR . $file);
+                    if(empty($context['idtype']))
+                    { // reload
+                        $context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
+                    }
+                    try
+                    {
+                        $parser = new TEIParser($context['idtype']);
+                        $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
+                    }
+                    catch(Exception $e)
+                    {
+            //          printErrors($parser->getLogs(), false);
+                        printErrors($e->getMessage(), true, $isFrame);
+                    }
+                    
+                    $contents['parserreport'] = $parser->getLogs();
+                    
+                    if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
+                    {
+                        array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+                        echo '<pre>'. print_r($contents, 1) . '</pre>';
+                        die();
+                    }
+                    
+                    $fileconverted = $source. '.converted';
+                    if (!writefile($fileconverted, base64_encode(serialize($contents))))
+                    {
+                        printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
+                    }
+            
+                    $tei = $source. '.tei';
+                    if(!writefile($tei, $teiContents))
+                    {
+                        printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
+                    }
+                    unset($contents);
+                    $row = array();
+                    $row['fichier']         = $fileconverted;
+                    $row['tei']             = $tei;
+                    $row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
+                    // build the import
+                    $row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
+                    $row['identity']        = $context['identity'];
+                    $row['idparent']        = $context['idparent'];
+                    $row['idtype']          = $context['idtype'];
+            
+                    function_exists('maketask') || include 'taskfunc.php';
+                    printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+                    die;
+                }
+            }
 		}
 		else
 		{
 			$oldtmpdir = $tmpdir;
 			$tmpdir = array();
-			$unzipcmd = C::get('unzipcmd', 'cfg');
 			if ($unzipcmd && $unzipcmd != "pclzip") {
 				$line = `$unzipcmd -o -d $tmpdir $source`;
 				$line = explode("\n", $line);

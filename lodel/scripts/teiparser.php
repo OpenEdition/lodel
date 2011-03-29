@@ -164,14 +164,12 @@ class TEIParser extends XMLReader
 	 * @access private
 	 */
 	 private $_namespaces;
-
-	/**
-	 * @staticvar int ligne de quote 
-	 */
-	const QUOTE_TEXT		= 0;
-	const QUOTE_TEXT_LINE	= 1;
-	const QUOTE_TABLE		= 2;
-	const QUOTE_LINE		= 3;
+	 
+	 /**
+	  * @var string répertoire temporaire d'extraction du document
+	  * @access private
+	  */
+	 private $_tmpdir;
 
 
 	/**
@@ -332,7 +330,7 @@ class TEIParser extends XMLReader
 
 		$odt = (string) $odt;
 		$this->_docTitle = (string) $filename;
-
+        $this->_tmpdir   = (string) $tmpdir;
 		if(!empty($odt))
 		{
 			$this->_extractImages($odt, $tmpdir);
@@ -346,7 +344,7 @@ class TEIParser extends XMLReader
 		if(!$simplexml)
 		{
 			$this->_log(libxml_get_errors());
-			throw new Exception("ERROR: Can't open XML");
+			throw new Exception("ERROR: Can't open XML".var_export(array(libxml_get_errors(),$xml),true));
 		}
 
 		/* Récupération des namespaces du document */
@@ -503,9 +501,8 @@ class TEIParser extends XMLReader
 			'/<(?!td)([a-z]+)\b[^>]*><\/\\1>/i', // strip empty tags
 			'/<p[^>]*>\s*(<(table|ul)[^>]*>)/i', // remove paragraph before tables and lists
 			'/<\/(table|ul)>\s*<\/p>/i',
-			'/<span>(.*?)<\/span>/s', // replace empty spans
-			"/\n\s*/"),
-				array('', "\\1", "</\\1>", "\\1", ''), $v);
+			'/<span>(.*?)<\/span>/s'), // replace empty spans
+				array('', "\\1", "</\\1>", "\\1"), $v);
 
 		C::clean($v);
 	}
@@ -1270,12 +1267,14 @@ class TEIParser extends XMLReader
 				if(!isset($attrs['place']))
 					break;
 
-			case 'quote':
+			case 'quote': 
 			case 'head': // title
+			case 'seg':
 			case 'list': // list
 			case 'table': // table
 			case 'figure': // image
 			case 'listBibl': // bibliography
+			case 'code':
 				return $this->{'_parse'.$name}($attrs);
 				break;
 
@@ -1518,6 +1517,7 @@ class TEIParser extends XMLReader
 
 		while($this->read())
 		{
+		    
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('table' === $this->localName)
@@ -1531,6 +1531,9 @@ class TEIParser extends XMLReader
 				{
 					$text .= '<td' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'td';
+					if($this->isEmptyElement){
+					    $text .= $this->_closeTag();
+					}
 				}
 				else
 					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
@@ -1541,8 +1544,9 @@ class TEIParser extends XMLReader
 
 				if('table' === $this->localName) break;
 			}
-			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
+			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
 				$text .= $this->_getText($this->value);
+			}
 		}
 
 		if(in_array($attrs['id'], $this->_tables))
@@ -1568,12 +1572,26 @@ class TEIParser extends XMLReader
 		{
 			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
 			{
-				$attrs = $this->_parseAttributes();
-				$id = basename($attrs['url']);
-				$nb = explode('-', $id);
-				// get images temporary url
-				if(isset($this->_images[$id]))
-					$attrs['url'] = $this->_images[$id];
+                $attrs = $this->_parseAttributes();
+			    if(isset($attrs['url']) && is_readable($this->_tmpdir . DIRECTORY_SEPARATOR . $attrs['url'] )){
+			        $source = $this->_tmpdir . DIRECTORY_SEPARATOR;
+			        
+			        /* Creation of import folder */
+			        $tmpdir = SITEROOT . 'docannexe/image/' . end(array_filter(explode('/', $this->_tmpdir))) . DIRECTORY_SEPARATOR;
+			        mkdir($tmpdir);
+                    chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+                    
+                    /* Getting file name */
+			        copy($source . $attrs['url'], $tmpdir . basename($attrs['url']) );
+			        
+			        $attrs['url'] = $tmpdir . basename($attrs['url']);
+			    }else{
+    				$id = basename($attrs['url']);
+    				$nb = explode('-', $id);
+    				// get images temporary url
+    				if(isset($this->_images[$id]))
+    					$attrs['url'] = $this->_images[$id];
+			    }
 				$text .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType && 'figure' === $this->localName)
@@ -1637,77 +1655,120 @@ class TEIParser extends XMLReader
 
 		return '<a class="'.$attrs['place'].'notecall" id="bodyftn'.$this->_nbNotes.'" href="#ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a>';
 	}
-	
+
+    /**
+     * Parse une citation ou un exemple (balise quote)
+     *
+     * @access private
+     * @param array $attrs les attributs du noeud
+     * @return string la citation ou l'exemple
+     */
 	private function _parseQuote(array $attrs)
 	{
+	    /* Count the childs */
+	    $childs = array();
+        foreach($this->expand()->childNodes as $child){
+            $childs[$child->nodeName]++;
+        }
 
-		if(! isset($attrs['type']) && ! isset($attrs['subtype'])){
-			$quotetype = self::QUOTE_LINE;
-		}elseif( isset($attrs['type']) && isset($attrs['subtype']) ){
-			$quotetype = self::QUOTE_TABLE;
-		}elseif( isset($attrs['type']) && isset($attrs['cols']) ){
-			$quotetype = self::QUOTE_TEXT_LINE;
-		}else{
-			$quotetype = self::QUOTE_TEXT;
-		}
+        if( (int) $childs['quote'] > 0 ){
+            if($attrs['quoteline']){
+                $text .= "<tr><td>{$attrs['n']}</td><td>";
+                $this->_tags[] = array("table", "td", "tr");
+                $attrs = $this->_parseAttributes();
+            }else{
+                $this->_tags[] = "table";
+            }
+            $text .= "<table class=\"{$attrs['type']}\">";
+            
+        }elseif( (int) $childs['seg'] > 0 ) {
+            $localattrs = $this->_parseAttributes();
+            $text .= "<tr class=\"{$localattrs['subtype']}\"><td>{$attrs['n']}</td>";
+            $this->_tags[] = 'tr';
+        }else{
+            $text .= "<tr><td>{$attrs['n']}</td><td colspan=\"{$attrs['cols']}\">";
+            $this->_tags[] = array('td','tr');
+        }
+        
+        $cols = 1;
+        
+	    while($this->read()){
+	        if(parent::ELEMENT === $this->nodeType){
+	            if( "quote" == $this->localName){
+        	           $childchilds = array();
+                       foreach($this->expand()->childNodes as $child){
+                           $childchilds[$child->nodeName]++;
+                       }
+                       if($childchilds[seg]) $cols = $childchilds[seg];
 
-		$text = "";
-		$num  = null;
-		$cols = $attrs['cols'] or 0;
-
-		while( $this->read() )
-		{
-			if(parent::ELEMENT === $this->nodeType)
-			{
-				if( "quote" == $this->localName ){
-
-					$dom = $this->expand();
-					if($dom->childNodes->length > 1 ) $cols = 0;
-					foreach($dom->childNodes as $child)
-						if( "seg" == $child->localName )
-							$cols++;
-
-					$text .= $this->_getTagEquiv($this->localName, array_merge($this->_parseAttributes(), array('cols' => $cols) ));
-
-				}elseif( "seg" == $this->localName ){
-					$text .= "<td>";
-					$this->_tags[] = "td";
-				}elseif( "num" == $this->localName ){
-					$this->read();
-					$num = $this->_getText($this->value);
-				}else{
-					$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
-				}
-
-			}elseif(parent::END_ELEMENT === $this->nodeType ){
-
-				if( "quote" == $this->localName ) break;
-				$text .= $this->_closeTag();
-
-			}elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
-				if( $quotetype === self::QUOTE_TEXT_LINE ){
-					$text .= "<tr class=\"{$attrs['type']}\"><td colspan=\"{$cols}\">" . $this->_getText($this->value) . "</td></tr>";
-				}else{
-					$text .= $this->_getText($this->value);
-				}
-				
-			}
-		}
-
-		switch($quotetype){
-			case self::QUOTE_TEXT:
-				$text = "<p class=\"{$attrs['type']}\">{$text}</p>";
-				break;
-			case self::QUOTE_TABLE:
-				$text = "<span class=\"{$attrs['type']}\">{$num}<table class=\"{$attrs['subtype']}\">{$text}</table></span>";
-				break;
-			case self::QUOTE_LINE:
-				$text = "<tr>$text</tr>";
-				break;
-		}
-
-		return $text;
+    	               $text .= $this->_getTagEquiv($this->localName, array('quoteline'   => true, 
+                                                                     'n'           => $attrs['n'],
+                                                                     'cols'        => $cols,
+                                                                   ));
+                       $attrs['n'] = "&nbsp;";
+	            }elseif( "bibl" == $this->localName || "gloss" == $this->localName ){
+	                $text .= "<tr><td>&nbsp;</td><td class=\"{$this->localName}\" colspan=\"$cols\">";
+	                $this->_tags[] = array('td','tr');
+	            }else{
+	                $text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+	            }
+	        }elseif(parent::END_ELEMENT === $this->nodeType){
+                $text .= $this->_closeTag();
+	            if( "quote" == $this->localName ) break;
+	            
+	        }elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
+                $text .= $this->_getText($this->value);
+	        }
+	    }
+	    
+	    return $text;
 	}
+	
+	private function _parseSeg(array $attrs)
+	{
+	    $text = "<td>";
+	    $this->_tags[] = "td";
+	    
+	    while($this->read()){
+	        if(parent::ELEMENT === $this->nodeType){
+	            $text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+	        }elseif(parent::END_ELEMENT === $this->nodeType){
+	            if('seg' === $this->localName) break;
+	            
+	            $text .= $this->_closeTag();
+	            
+	        }elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
+                $text .= $this->_getText($this->value);
+            }
+	    }
+	    
+	    $text .= $this->_closeTag();
+
+	    return $text;
+	}
+	
+    /**
+     * Parse une bloc de code
+     *
+     * @access private
+     * @param array $attrs les attributs du noeud
+     * @return string le code
+     */
+    private function _parseCode(array $attrs)
+    {
+        $text .= "<pre><code class=\"brush: {$attrs['lang']};\">";
+        while($this->read()){
+            if( parent::END_ELEMENT === $this->nodeType ){
+                $text .= $this->_closeTag();
+                break;
+            }elseif( parent::TEXT === $this->nodeType ){
+                $text .= "<![CDATA[\n{$this->value}\n]]>";
+            }
+        }
+        $text .= "</code></pre>";
+        return $text;
+    }
+	
 	
 	/**
 	 * Remet les namespaces

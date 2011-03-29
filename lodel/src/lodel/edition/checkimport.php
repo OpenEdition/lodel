@@ -224,9 +224,11 @@ try
 			$reader->XML('<lodelblock>'.$block.'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 			$reader->read() && $reader->read(); // jump to first element
 			$i=0;
+
 			do
 			{
-				$table[$k][] = array('text' => $reader->readOuterXML());
+			    if( $reader->nodeType !== XMLReader::SIGNIFICANT_WHITESPACE )
+    				$table[$k][] = array('text' => $reader->readOuterXML());
 			}
 			while($reader->next() && $reader->localName !== 'lodelblock');
 			$reader->close();
@@ -238,6 +240,7 @@ try
 				$reader->XML('<lodelblock>'.$container['text'].'</lodelblock>', 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 				$contents[$k][$key]['text'] = '';
 				$contents[$k][$key]['localstyles'] = array();
+
 				while($reader->read())
 				{
 					if( (!$reader->isEmptyElement || $reader->localName == "img" ) && ( XMLReader::ELEMENT === $reader->nodeType) )
@@ -342,7 +345,7 @@ try
 	$context['statistics'] = $statistics;
 	unset($contents, $statistics);
 
-	View::getView()->render('checkimport');
+	View::getView()->render('checkimport', false, false);
 }
 catch(LodelException $e)
 {

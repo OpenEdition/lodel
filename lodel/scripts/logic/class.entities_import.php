@@ -172,14 +172,16 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				@rmdir($rep);
 			}
 		}
+		
 		// remove files from import
-		$rep = dirname($source);
+		$rep = dirname($tei);
+
 		// first, contents of unzipped source
 		removefilesfromimport($rep);
 		$rep = array_filter(explode('/', $rep));
 		// then images
 		removefilesfromimport(SITEROOT.'/docannexe/image/'.end($rep));
-
+		
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
 		} elseif ($ret != '_error') {
