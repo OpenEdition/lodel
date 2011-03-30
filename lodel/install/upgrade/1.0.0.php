@@ -8,10 +8,10 @@ authenticate(LEVEL_ADMINLODEL);
 $sql = array();
 
 foreach( array('entrytypes', 'persontypes', 'internalstyles', 'characterstyles', 'tablefields') as $table ) {
-        $sql[] = "ALTER TABLE #_TP_$table ADD COLUMN `otx` tinytext NOT NULL AFTER `rank`";
+        $sql[] = lq("ALTER TABLE #_TP_{$table} ADD COLUMN `otx` tinytext NOT NULL AFTER `rank`");
 }
 
-$sql[] = "ALTER TABLE #_TP_$table ADD COLUMN `mask` text NOT NULL AFTER `comment`";
+$sql[] = lq("ALTER TABLE #_TP_tablefields ADD COLUMN `mask` text NOT NULL AFTER `comment`");
 
 $correspondances = array(
 	"motsclesfr" 	=> "/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='keyword']",
@@ -139,12 +139,12 @@ print_r($sql);
 echo '</pre>';
 
 if(!isset($_GET['valid']))
-	echo '<p>Si les requêtes vous semblent bonnes, et que vous avez fait un backup/dump de la base de données, vous pouvez les exécuter en cliquant <a href="./to10.php?valid=1">ici</a>.</p>';
+	echo '<p>Si les requêtes vous semblent bonnes, et que vous avez fait un backup/dump de la base de données, vous pouvez les exécuter en cliquant <a href="?valid=1">ici</a>.</p>';
 else
 {
     foreach($sql as $s)
     {
-            $db->execute($s) or die($db->errormsg());
+            $db->execute($s) or die($s . $db->errormsg());
     }
 
     echo "migration terminée";
