@@ -144,7 +144,10 @@ else
 {
     foreach($sql as $s)
     {
-            $db->execute($s) or die($s . $db->errormsg());
+            $db->execute($s);
+            if($db->errorno() !== 0 && $db->errorno() !== 1060)
+                die($s . $db->errormsg());
+            
     }
 
     echo "migration terminée";
