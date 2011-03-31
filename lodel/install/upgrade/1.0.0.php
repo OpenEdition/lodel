@@ -20,7 +20,7 @@ $correspondances = array(
 	"motsclesde" 	=> "/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='keyword']",
 	"chrono"		=> "/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='chronological']",
 	"theme"			=> "/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='subject']",
-	"license"		=> "/tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:availability",
+	"licence"		=> "/tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:availability",
 	"geographie"	=> "/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='geographical']"
 );
 
