@@ -351,7 +351,7 @@ class C
 			self::$_context['base_rep'] = array();
 			self::$_context['charset'] = 'utf-8';
 			// get all the triggers in self::$_triggers
-			self::_getTriggers();
+			if(!defined('backoffice-lodeladmin')) self::_getTriggers();
 		}
 
 		$GLOBALS['context'] =& self::$_context; // needed by template engine
