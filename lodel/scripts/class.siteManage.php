@@ -812,6 +812,7 @@ class siteManage {
 			}
 			@unlink($siteconfigdest); // try to delete before copying.
 			// try to copy now.
+
 			if (!@copy($siteconfigcache,$siteconfigdest)) {
 				C::set('siteconfigsrc', $siteconfigcache);
 				C::set('siteconfigdest', $siteconfigdest);
@@ -867,9 +868,6 @@ class siteManage {
 				break;
 			}
 		}
-		
-		// clean siteconfig
-		unlink($siteconfigcache);
 
 		if ($import) {
 			$go = C::get('url'). "/lodel/admin/index.php?do=importmodel&lo=data";
