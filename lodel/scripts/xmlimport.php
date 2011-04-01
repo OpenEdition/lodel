@@ -258,7 +258,7 @@ class XMLImportParser
 		$classstack = array (array ($this->mainclass, 'entities'));
 		$handler->openClass($classstack[0]);
 		$this->nbdoc = 0;
-		
+
 		for ($i = 1; $i < $n; $i += 3) {
 			$this->_parseOneStep($arr, $i, $datastack, $classstack, 'block');
 			
@@ -273,6 +273,7 @@ class XMLImportParser
 				}
 			}
 		}
+
 		// close the last tags
 		while ($classstack) {
 			$handler->closeClass(array_shift($classstack), $this->nbdoc > 1);

@@ -88,7 +88,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 	do { // block de control
 		if (!isset($_COOKIE[C::get('sessionname', 'cfg')]) && !defined('backoffice-lodeladmin') && !defined('backoffice'))
         	{
-                	if(file_exists(SITEROOT.'./CACHE/.no_restricted')) break;
+                	if(file_exists(getCachePath('.no_restricted'))) break;
                 	maintenance();
             
             		defined('INC_CONNECT') || include 'connect.php';
@@ -97,7 +97,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
 			if(!$users)
             		{
-                		touch(SITEROOT.'./CACHE/.no_restricted');
+                		touch(getCachePath('.no_restricted'));
                 		break;
             		}
 			list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
@@ -414,7 +414,7 @@ function maintenance()
 		return false;
 	}
 	
-	if(defined('backoffice-lodeladmin') || !file_exists(SITEROOT.'./CACHE/.lock')) return false;
+	if(defined('backoffice-lodeladmin') || !file_exists(getCachePath('.lock'))) return false;
 	
 	if(file_exists(C::get('home', 'cfg')."../../maintenance.html"))
 		die(include(C::get('home', 'cfg')."../../maintenance.html"));

@@ -56,12 +56,15 @@ require 'siteconfig.php';
 try
 {
 	include 'auth.php';
+	C::set('env', 'admin');
 	authenticate(LEVEL_VISITOR);
-
 	if (isset($_GET['page'])) { // call a special page (and template)
-		$page = $_GET['page'];
-		if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {
-			trigger_error('invalid page', E_USER_ERROR);
+		if ($base = C::get('page')) { // call a special page (and template)
+				if (strlen($base) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $base)) {
+					trigger_error("invalid page", E_USER_ERROR);
+				}
+			} else {
+				$base = 'admin';
 		}
 		View::getView()->renderCached($page);
 		exit;

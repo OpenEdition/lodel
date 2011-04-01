@@ -232,7 +232,7 @@ class siteManage {
 	
 			// clear the CACHEs
 			function_exists('removefilesincache') || include 'cachefunc.php';
-			removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
+			removefilesincache(getCachePath());
 	
 			$result->MoveNext();
 		}
@@ -775,11 +775,14 @@ class siteManage {
 		// verifie la presence ou copie les fichiers necessaires
 		// cherche dans le fichier install-file.dat les fichiers a copier
 		// on peut installer les fichiers
+		if(!function_exists('removefilesincache'))
+			include 'cachefunc.php';
+
 		if (!C::get('path')) {
 			C::set('path', '/'. C::get('name'));
 		}
 		$root = str_replace('//', '/', LODELROOT. C::get('path')). '/';
-		$siteconfigcache = 'CACHE/siteconfig.php';
+		$siteconfigcache = getCachePath('siteconfig.php');
 		if (C::get('downloadsiteconfig')) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
 			exit();
@@ -826,9 +829,7 @@ class siteManage {
 		}
 		
 		// clear the CACHEs
-		if(!function_exists('removefilesincache'))
-			include 'cachefunc.php';
-		removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
+		removefilesincache(getCachePath());
 	
 		// ok on a fini, on change le status du site
 		$db->SelectDB(C::get('database', 'cfg'));
@@ -920,7 +921,7 @@ class siteManage {
 			{
 				$status = $status == -64 ? 1 : -64;
 			}
-            		$lock = C::get('home', 'cfg').'../../'.(C::get('singledatabase', 'cfg') != "on" ? $site['name'].'/' : '').'CACHE/.lock';
+            		$lock = getCachePath('.lock');
 			if($status > 0)
 			{
 				unlink($lock);
@@ -955,7 +956,7 @@ class siteManage {
 					$db->Execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE id=".$site['id'])) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
-				touch($lock.($single ? $site['name'].'/' : '').'CACHE/.lock');
+				touch(getCachePath('lock'));
 				}
 			} 
 			elseif($maintenance === 2) 
@@ -972,7 +973,7 @@ class siteManage {
 						$db->Execute(lq("UPDATE #_MTP_sites SET status = -65 WHERE id=".$site['id'])) 
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
-					unlink($lock.($single ? $site['name'].'/' : '').'CACHE/.lock');
+					unlink(getCachePath('lock'));
 				}
 			}
 		}

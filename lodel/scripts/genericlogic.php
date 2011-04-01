@@ -324,7 +324,7 @@ class GenericLogic extends Logic
             			&& $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
 				$value = trim(strip_tags($value));
 			}
-			
+
 			$valid = validfield($value, $type, $field->defaultvalue, $name, 'data', '', $context);
 			if ($valid === true)	{
 				// good, nothing to do.

@@ -290,7 +290,7 @@ function loop_next($context, $funcname, $arguments)
 function loop_rss($context, $funcname, $arguments)
 {
 	defined('MAGPIE_CACHE_ON') || define("MAGPIE_CACHE_ON", TRUE);
-	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", './CACHE');
+	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", getCachePath());
 	defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
 	defined('MAGPIE_OUTPUT_ENCODING') || define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {

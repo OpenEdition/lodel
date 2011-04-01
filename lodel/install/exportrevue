@@ -39,7 +39,6 @@ FILE=/www-bin/revues/import/revue-$1.tar.gz
 echo "creer le fichier $FILE";
 
 find $1 \
-	-path '*/CACHE/*' \
 	-o -path '*/upload/*' \
 	-o -path '*/docannexe/*' \
 	-o -path '*/lodel/txt/*' \

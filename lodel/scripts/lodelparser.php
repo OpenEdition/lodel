@@ -538,13 +538,13 @@ class LodelParser extends Parser
 			if(!isset($this->nbLangs[$prefix]))
 				$this->nbLangs[$prefix] = $db->CacheGetOne($GLOBALS['sqlCacheTime']*365,"SELECT count(distinct(lang)) FROM {$prefix}translations");
                 
-            		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
+            		$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_il8n/');
 			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, 
 				"SELECT COUNT(id) AS nb 
 					FROM {$prefix}texts 
 					WHERE name=? AND textgroup=? 
 					LIMIT 1", array($name, $group));
-            		$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
+            		$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_tpl/');
             
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

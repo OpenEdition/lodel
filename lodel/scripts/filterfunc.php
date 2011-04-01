@@ -50,9 +50,8 @@
 * @version CVS:$Id:
 * @package lodel
 */
-
-if(!file_exists('CACHE/filterfunc.php')) makefilterfunc();
-@include 'CACHE/filterfunc.php';
+if(!file_exists(getCachePath('filterfunc.php'))) makefilterfunc();
+@include getCachePath('filterfunc.php');
 
 /**
 * Filtre les champs qu'il faut filtrer et converti les filtres en fonction
@@ -103,7 +102,7 @@ function makefilterfunc()
     	$result->Close();
 
 	// build the function with filtering
-    	if(FALSE === @file_put_contents("CACHE/filterfunc.php", '<'.'?php 
+    	if(FALSE === @file_put_contents(getCachePath('filterfunc.php'), '<'.'?php 
     function filtered_mysql_fetch_assoc($context, $result) {
         $row = $result->FetchRow();
         if (!$row) return array();
@@ -147,7 +146,7 @@ function makefilterfunc()
             }
         }
     }
-    ?'.'>')) trigger_error('Cannot write file CACHE/filterfunc.php', E_USER_ERROR);
-	@chmod($cacheDir."filterfunc.php", 0666 & octdec(C::get('filemask', 'cfg')));
+    ?'.'>')) trigger_error('Cannot write file filterfunc.php in cache', E_USER_ERROR);
+	@chmod(getCachePath("filterfunc.php"), 0666 & octdec(C::get('filemask', 'cfg')));
 }
 ?>

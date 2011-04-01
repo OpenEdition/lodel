@@ -203,7 +203,7 @@ class DataLogic
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
-		$context['importdirs'] = array('CACHE');
+		$context['importdirs'] = array(getCachePath());
 		if ($context['importdir']) {
   		    $context['importdirs'][] = $context['importdir'];
 		}
@@ -233,7 +233,7 @@ class DataLogic
 		
 				clearcache();
 		
-				// verifie les .htaccess dans le CACHE
+				// verifie les .htaccess dans le cache
 				$this->_checkFiles($context);
 			} while(0);
 		} else {
@@ -496,7 +496,7 @@ class DataLogic
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -511,7 +511,7 @@ class DataLogic
 		$file = $this->_extractImport($context);
 		
 		if ($file && !empty($context['delete'])) {// extra check. Need more ?
-			if (dirname($file) == 'CACHE') {
+			if (dirname($file) == getCachePath()) {
 				unlink($file);
 			}
 		} elseif ($file) {
@@ -758,13 +758,18 @@ class DataLogic
 	}
 
 	/**
-	 * Vérifie les fichiers CACHE et .htaccess et recrée les .htaccess.
+	 * Vérifie les fichiers cache et .htaccess et recrée les .htaccess.
 	 *
 	 * @param array $context le contexte passé par référence.
 	 */
 	private function _checkFiles(&$context)
 	{
-		$dirs = array('CACHE', 'lodel/admin/CACHE', 'lodel/edition/CACHE', 'lodel/txt', 'lodel/rtf', 'lodel/sources');
+		$dirs = array(	getCachePath()
+						, getCachePath('admin')
+						, getCachePath('edition')
+						, 'lodel/txt'
+						, 'lodel/rtf'
+						, 'lodel/sources' );
 		foreach ($dirs as $dir) {
 			if (!file_exists(SITEROOT. $dir)) {
 				continue;
@@ -905,7 +910,7 @@ class DataLogic
 		$archive = @$_FILES['archive']['tmp_name'];
 		$context['error_upload'] = @$_FILES['archive']['error'];
 		$file = '' ;
-		if (!$context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
+		if ( UPLOAD_ERR_OK === $context['error_upload'] && $archive && $archive != 'none' && is_uploaded_file($archive)) { // Le fichier a été uploadé
 			$file = $_FILES['archive']['name'];
 			if (!preg_match("/^".$this->fileRegexp."$/", $file)) {
 				$context['error_regexp'] = 1;
@@ -913,7 +918,7 @@ class DataLogic
 				//$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
 			}
 			
-			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
+			if (!move_uploaded_file($archive, getCachePath($file))) {
 				//trigger_error('ERROR: a problem occurs while moving the uploaded file.', E_USER_ERROR);
 				$context['error_upload'] = 1;
 				//return;
@@ -1056,7 +1061,7 @@ class DataLogic
 		global $db;
 		$err = '';
 		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -1067,7 +1072,6 @@ class DataLogic
 		$this->fileRegexp = $GLOBALS['fileregexp'] = "({$this->filePrefix})-\w+(?:-\d+)?.{$this->fileExtension}"; //restriction sur le nom du ZIP
 		$context['delete'] = isset($context['delete']) ? $context['delete'] : false;
 		$file = $this->_extractImport($context);
-		
 		if ($file && $context['delete']) {// extra check. Need more ?
 			if (dirname($file) == 'CACHE') {
 				@unlink($file);
@@ -1087,7 +1091,7 @@ class DataLogic
 			&& ($meObj = getFromCache('require_caching/ME.obj', false))) { // on a déjà parsé le XML
 			$class = __CLASS__;
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
-				$context['error'] = $error = 'Content in file "CACHE/require_caching/ME.obj" is not an object. Aborted.';
+				$context['error'] = $error = 'Content in file "require_caching/ME.obj" is not an object. Aborted.';
 				return 'importxmlmodel';
 			}
 			$this->_xmlStruct = $meObj->_xmlStruct;
@@ -1235,8 +1239,8 @@ class DataLogic
 			clearcache();
 		}
 
-		if(file_exists('CACHE/require_caching/ME.obj')) {
-			@unlink('CACHE/require_caching/ME.obj');
+		if(file_exists(getCachePath('require_caching/ME.obj'))) {
+			@unlink(getCachePath('require_caching/ME.obj'));
 		}		
 		return 'importxmlmodel';
 	}

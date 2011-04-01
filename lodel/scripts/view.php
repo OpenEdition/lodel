@@ -172,6 +172,7 @@ class View
 	{
 		$this->_regen = (bool) (C::get('recalcultpl') && C::get('admin', 'lodeluser'));
 		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
+		$this->_cacheOptions['cacheDir'] = getCachePath();
 		$this->_evalCalled = false;
 		$this->_cachedfile = null;
 		$this->_cache = null;
@@ -273,6 +274,7 @@ class View
 	 */
 	public function render($tpl, $caching = false, $gzip = true)
 	{
+	
 		C::set('view.tpl', $tpl);
 		$format = C::get('format');
 		C::set('view.format', $format);
@@ -581,7 +583,7 @@ class View
 				$this->_evalCalled = true;
 			}
 			
-            		$filename = $this->_cacheOptions['cacheDir'].'require_caching/'.uniqid(mt_rand(), true);
+            $filename = getCachePath('require_caching') . DIRECTORY_SEPARATOR  . uniqid(mt_rand(), true);
 
 			$fh = @fopen($filename, 'w+b');
 			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
@@ -643,6 +645,7 @@ class View
 			{
 				$cacheDir = $this->_cacheOptions['cacheDir'];
 				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = getCachePath('.');
 			}
 		
 			$group = $this->_site.'_tpl';
@@ -695,7 +698,7 @@ class View
 			$this->_cache->setOption('cacheDir', $cacheDir);
 		}
 
-        	return $template;
+    	return $template;
 	}
 
 	/**
@@ -732,6 +735,7 @@ class View
 			{
 				$cacheDir = $this->_cacheOptions['cacheDir'];
 				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = getCachePath('.');
 			}
 
 			if(!isset($this->_cache))

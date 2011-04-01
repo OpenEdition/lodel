@@ -85,6 +85,7 @@ function checkTypesCompatibility($id, $idparent, $idtype = 0)
 		$query = "SELECT cond FROM ". $table. " WHERE identitytype2=0 AND ". $criteria;
 	}
 // 	echo lq($query).'<br>';
+
 	$condition = $db->getOne(lq($query));
 	if ($db->errorno()) {
 		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

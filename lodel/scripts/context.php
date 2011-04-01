@@ -652,7 +652,7 @@ class C
 			$config->set('Core.Encoding', 'UTF-8');
 			$config->set('HTML.TidyLevel', 'heavy' );
 			$config->set('Attr.EnableID', true);
-			$config->set('Cache.SerializerPath', realpath(self::$_cfg['cacheOptions']['cacheDir'].'htmlpurifier/') );
+			$config->set('Cache.SerializerPath', realpath(getCachePath('htmlpurifier') ));
 			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
 			$config->set('HTML.DefinitionRev', 1);

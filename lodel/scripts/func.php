@@ -287,7 +287,7 @@ function getoption($name)
 	static $options_cache;
 	if (!$name) return;
 	if (!isset($options_cache)) {
-		$optionsfile=SITEROOT."CACHE/options_cache.php";
+		$optionsfile= getCachePath('options_cache.php');
 	
 		if (file_exists($optionsfile)) {
 			include($optionsfile);
@@ -340,7 +340,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 			ORDER BY lang DESC";
 	$text=false;
 	$create = false;
-    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_il8n/';
+    	$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_il8n/');
 	do {
 		$arr = $db->CacheExecute($GLOBALS['sqlCacheTime'], $query, array((string)$name, (string)$group, (string)$lang));
 		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -361,7 +361,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 		}
         	$arr->Close();
 	} while(!$text);
-    	$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
+    	$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_tpl/');
 	
 	$id=$text['id'];
 	$contents=$text['contents'];
@@ -744,7 +744,7 @@ function tmpdir()
     if(defined("TMPDIR") && '' !== (string)TMPDIR)
         $tmpdir = TMPDIR;
     elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
-        $tmpdir = 'CACHE/tmp';
+        $tmpdir = getCachePath('tmp');
 
     if (!file_exists($tmpdir)) { 
 		mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));

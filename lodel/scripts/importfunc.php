@@ -78,7 +78,7 @@ function extract_import($footprint, & $context, $ext = 'zip')
 			$file = $footprint."-import-".date("dmy").".".$ext;
 		}
 
-		if (!move_uploaded_file($archive, "CACHE/".$file)) {
+		if (!move_uploaded_file($archive, getCachePath($file))) {
 			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
 		}
 		$file = ""; // on repropose la page

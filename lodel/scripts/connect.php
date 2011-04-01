@@ -77,7 +77,7 @@ unset($single);
 function_exists('checkCacheDir') || include 'cachefunc.php';
 checkCacheDir('adodb_tpl'); // sql cache for templates
 checkCacheDir('adodb_il8n'); // sql cache from translations
-$GLOBALS['ADODB_CACHE_DIR'] = './CACHE/adodb_tpl/';
+$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('/adodb_tpl/');
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 $info_mysql = $GLOBALS['db']->ServerInfo();
