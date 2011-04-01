@@ -289,108 +289,115 @@ function loop_next($context, $funcname, $arguments)
  */
 function loop_rss($context, $funcname, $arguments)
 {
-	defined('MAGPIE_CACHE_ON') || define("MAGPIE_CACHE_ON", TRUE);
-	defined('MAGPIE_CACHE_DIR') || define("MAGPIE_CACHE_DIR", getCachePath());
-	defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
-	defined('MAGPIE_OUTPUT_ENCODING') || define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
-	if (!isset ($arguments['url'])) {
-		if (C::get('visitor', 'lodeluser'))
-			trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);
-		return;
-	}
-	if (isset($arguments['refresh']) && !is_numeric($arguments['refresh'])) {
-		if (C::get('visitor', 'lodeluser'))
-			trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
-		$arguments['refresh'] = 0;
-	}
+    defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
+    require_once 'SimplePieAutoloader.php';
+    if (!isset ($arguments['url'])) {
+        if (C::get('visitor', 'lodeluser'))
+            trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);
+        return;
+    }
+    if (isset($arguments['refresh']) && !is_numeric($arguments['refresh'])) {
+        if (C::get('visitor', 'lodeluser'))
+            trigger_error("ERROR: the REFRESH attribut in the loop \"rss\" has to be a number of second ", E_USER_ERROR);
+        $arguments['refresh'] = 0;
+    }
+    
+    $rss = new SimplePie();
+    //, getCachePath('SimplePie'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+    $rss->set_feed_url(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'));
+    $rss->set_cache_duration(isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+    if(isset($arguments['timeout']))
+        $rss->set_timeout((int)$arguments['timeout']);
+    checkCacheDir('SimplePie');
+    $rss->set_cache_location(getCachePath('SimplePie'));
+    
+    $rss->init();
 
-	if(isset($arguments['timeout']) && is_numeric($arguments['timeout']) && $arguments['timeout'] > 0)
-	{
-		defined('MAGPIE_FETCH_TIME_OUT') || define('MAGPIE_FETCH_TIME_OUT', (int)$arguments['timeout']);
-	}
-	$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
-	function_exists('fetch_rss') || include "magpierss/rss_fetch.inc";
-	$rss = fetch_rss(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
-	if (!$rss) {
-		if (C::get('visitor', 'lodeluser')) {
-			echo "<b>Warning: Erreur de connection RSS sur l'url ", $arguments['url'], "</b><br/>";
-		}	else {
-			if (C::get('contactbug', 'cfg'))
-				@mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
-			error_reporting($err);
-			return;
-		}
-	}
-	error_reporting($err);
-	$localcontext = $context;
-	foreach (array (# obligatoire
-	"title", "link", "description", # optionel
-	"language", "copyright", "managingEditor", "webMaster", "pubDate", "lastBuildDate", "category", "generator", "docs", "cloud", "ttl", "rating", "textInput", "skipHours", "skipDays") as $v)
-		$localcontext[strtolower($v)] = isset($rss->channel[$v]) ? $rss->channel[$v] : '';
+    $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);
 
-	// special treatment for "image"
-	if (isset($rss->channel['image'])) {
-		$localcontext['image_url'] = isset($rss->channel['image']['url']) ? $rss->channel['image']['url'] : '';
-		$localcontext['image_title'] = isset($rss->channel['image']['title']) ? $rss->channel['image']['title'] : '';
-		$localcontext['image_link'] = isset($rss->channel['image']['link']) ? $rss->channel['image']['link'] : '';
-		$localcontext['image_description'] = isset($rss->channel['image']['description']) ? $rss->channel['image']['description'] : '';
-		$localcontext['image_width'] = isset($rss->channel['image']['width']) ? $rss->channel['image']['width'] : '';
-        	$localcontext['image_height'] = isset($rss->channel['image']['height']) ? $rss->channel['image']['height'] : '';
-		if (!$localcontext['image_width'])
-			$localcontext['image_width'] = 88;
-		if ($localcontext['image_width'] > 144)
-			$localcontext['image_width'] = 144;
-		if (!$localcontext['image_height'])
-			$localcontext['image_height'] = 31;
-		if ($localcontext['image_height'] > 400)
-			$localcontext['image_height'] = 400;
-	}
+    if ($rss->error()) {
+        if (C::get('visitor', 'lodeluser')) {
+            echo "<b>Warning: Erreur de connection RSS sur l'url {$arguments['url']}: {$this->error()}</b><br/>";
+        }   else {
+            if (C::get('contactbug', 'cfg'))
+                @mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+            error_reporting($err);
+            return;
+        }
+    }
+    error_reporting($err);
+    $localcontext = $context;
+    
+    foreach (array (# obligatoire
+    "title", "link", "description", # optionel
+    "language", "copyright", "managingEditor", "webMaster", "pubDate", "lastBuildDate", "category", "generator", "docs", "cloud", "ttl", "rating", "textInput", "skipHours", "skipDays") as $v){
+       $function_name = "get_" . strtolower($v);
+       $localcontext[strtolower($v)] = method_exists($rss, $function_name ) ? $rss->$function_name() : '';
+    }
 
-	$localcontext['rssobject'] = $rss;
-	if (function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $context);
-	call_user_func("code_do_$funcname", $localcontext);
-	if (function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $context);
+    // special treatment for "image"
+    if ($rss->get_image_url()) {
+        $localcontext['image_url']    = $rss->get_image_url();
+        $localcontext['image_title']  = $rss->get_image_title();
+        $localcontext['image_link']   = $rss->get_image_link();
+        $localcontext['image_width']  = $rss->get_image_width();
+        $localcontext['image_height'] = $rss->get_image_height();
+        if (!$localcontext['image_width'])
+            $localcontext['image_width'] = 88;
+        if ($localcontext['image_width'] > 144)
+            $localcontext['image_width'] = 144;
+        if (!$localcontext['image_height'])
+            $localcontext['image_height'] = 31;
+        if ($localcontext['image_height'] > 400)
+            $localcontext['image_height'] = 400;
+    }
+
+    $localcontext['rssobject'] = $rss;
+    if (function_exists("code_before_$funcname"))
+        call_user_func("code_before_$funcname", $context);
+    call_user_func("code_do_$funcname", $localcontext);
+    if (function_exists("code_after_$funcname"))
+        call_user_func("code_after_$funcname", $context);
 } //end loop_rss
 
 function loop_rssitem($context, $funcname, $arguments)
 {
-	// check whether there are some items in the rssobject.
-	if (!is_object($context['rssobject']) || !isset($context['rssobject']->items)) {
-		if (function_exists("code_alter_$funcname"))
-			call_user_func("code_alter_$funcname", $localcontext);
-		error_reporting($err);
-		return;
-	}
 
-	$localcontext = $context;
-	// yes, there are, let's loop over them.
-	if (function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $localcontext);
+    // check whether there are some items in the rssobject.
+    if (!is_object($context['rssobject'])) {
+        if (function_exists("code_alter_$funcname"))
+            call_user_func("code_alter_$funcname", $localcontext);
+        error_reporting($err);
+        return;
+    }
 
-	$items = $context['rssobject']->items;
-	$context['nbresults'] = $context['nbresultats'] = count($items);
-	$count = 0;
-	if (isset($arguments['limit'])) {
-		list ($start, $length) = preg_split("/\s*,\s*/", $arguments['limit']);
-	} else {
-		$start = 0;
-		$length = count($context['rssobject']->items);
-	}
+    $localcontext = $context;
+    // yes, there are, let's loop over them.
+    if (function_exists("code_before_$funcname"))
+        call_user_func("code_before_$funcname", $localcontext);
 
-	for ($i = $start; $i < $start + $length; $i ++) {
-        	if(!isset($items[$i])) continue;
-		$item = $items[$i];
-		$localcontext = $context;
-		++$count;
-		$localcontext['count'] = $count;
-		foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubdate", "source") as $v)
-			$localcontext[strtolower($v)] = isset($item[$v]) ? $item[$v] : '';
-		call_user_func("code_do_$funcname", $localcontext);
-	}
-	if (function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $localcontext);
+    $count = 0;
+    if (isset($arguments['limit'])) {
+        list ($start, $length) = preg_split("/\s*,\s*/", $arguments['limit']);
+    }else{
+        $start  = 0;
+        $length = 20;
+    }
+
+    $items = $context['rssobject']->get_items((int)$start, (int)$start+$length);
+    $context['nbresults'] = $context['nbresultats'] = count($items);
+
+    foreach($items as $item){
+        $localcontext = $context;
+        $localcontext['count'] = ++$count;
+        foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubdate", "source") as $v){
+            $function_name = "get_{$v}";
+            $localcontext[$v] = method_exists($item, $function_name ) ? $item->$function_name() : '';
+        }
+        call_user_func("code_do_$funcname", $localcontext);
+    }
+    if (function_exists("code_after_$funcname"))
+        call_user_func("code_after_$funcname", $localcontext);
 } //end loop rss tiem
 
 /**
