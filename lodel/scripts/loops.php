@@ -312,7 +312,7 @@ function loop_rss($context, $funcname, $arguments)
     if(isset($arguments['timeout']))
         $rss->set_timeout((int)$arguments['timeout']);
 
-    checkCacheDir('./CACHE/SimplePie/');
+    checkCacheDir('SimplePie/');
     $rss->set_cache_location('./CACHE/SimplePie/');
     
     $rss->init();
