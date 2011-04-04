@@ -224,8 +224,8 @@ class C
 			self::$_cfg['qs'] = $uri; // query string for template engine
 			unset($uri);
 		}
-		
-		self::$_context = $GLOBALS['context'] = array(); // (re)init context
+
+		self::$_context = $GLOBALS['context'] = array( 'env' => isset(self::$_context['env']) ? self::$_context['env'] : null ); // (re)init context
 
 		if(empty($request))
 		{
@@ -351,7 +351,7 @@ class C
 			self::$_context['base_rep'] = array();
 			self::$_context['charset'] = 'utf-8';
 			// get all the triggers in self::$_triggers
-			if(!defined('backoffice-lodeladmin')) self::_getTriggers();
+			self::_getTriggers();
 		}
 
 		$GLOBALS['context'] =& self::$_context; // needed by template engine
@@ -364,7 +364,7 @@ class C
 	static private function _getTriggers()
 	{
 		if(defined('backoffice-lodeladmin')) return true; // no plugins in lodeladmin
-    
+
 		if(!(self::$_triggers = getFromCache('triggers')))
 		{
 			defined('INC_CONNECT') || include 'connect.php';
@@ -633,11 +633,11 @@ class C
 	static private function _sanitize(&$data)
 	{
 		if(!is_string($data)) return true; // useless on boolean, integer, objects or other types..
-        
+
 		if(!isset(self::$filter))
 		{
 			checkCacheDir('htmlpurifier');
-		
+
 			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
 		

@@ -52,6 +52,7 @@
  */
 define('backoffice-lodeladmin', true);
 require 'lodelconfig.php';
+C::set('env', 'lodeladmin');
 
 try
 {

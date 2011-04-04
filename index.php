@@ -65,7 +65,7 @@ if (file_exists("siteconfig.php")) {
 	C::setCfg($cfg);
 	require 'class.errors.php';
 }
-
+C::set('env', 'lodeladmin');
 try
 {
     include 'auth.php';

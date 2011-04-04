@@ -51,9 +51,12 @@
  * @package lodeladmin
  */
 
+define('backoffice-lodeladmin', true);
+
 require 'lodelconfig.php';
 try
 {
+    C::set('env', 'lodeladmin');
     require 'auth.php';
     authenticate();
     

@@ -59,11 +59,14 @@ require 'lodelconfig.php';
 
 try
 {
-	include 'auth.php';
-	C::set('env', 'lodeladmin');
-	authenticate(LEVEL_ADMINLODEL);
-	
+    C::set('env', 'lodeladmin');
+
+    include 'auth.php';
+    authenticate(LEVEL_ADMINLODEL);
+    
 	$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data', 'internal_messaging', 'mainplugins');
+	
+	C::set('nocache', true);
 	
 	Controller::getController()->execute($accepted_logics);
 }
