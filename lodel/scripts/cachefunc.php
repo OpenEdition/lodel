@@ -69,23 +69,31 @@ function clearcache($allCache=true)
 		$options   = C::get('cacheOptions', 'cfg');
 		if ($site) {
 			$cache = new Cache_Lite($options);
-			$cacheReps = array( getCachePath(), 
-								getCachePath("edition"), 
-								getCachePath("admin") );
-			foreach($cacheReps as $rep) 
+			$env   = C::get('env');
+			
+			$envs = array( '', 
+						   'edition', 
+						   'admin');
+			foreach($envs as $env) 
 			{
-				$options['cacheDir'] = $rep;
+			    C::set('env', $env);
+			    
+				$options['cacheDir'] = getCachePath();
+				
 				if(!file_exists($options['cacheDir'])) continue;
+
 				$cache->setOption('cacheDir', $options['cacheDir']);
 				$cache->clean($site.'_page'); // page html
 				$cache->clean($site.'_tpl_inc'); // tpl included
-                		removefilesincache($options['cacheDir'].'/adodb_tpl/');
+				$cache->clean();
+                removefilesincache( getCachePath('adodb_tpl') );
 			}
+			C::set('env', $env);
 		} else {
 			$cache = new Cache_Lite($options);
 			$cache->clean($site.'_page'); // page html
 			$cache->clean($site.'_tpl_inc'); // tpl included
-            		removefilesincache( getCachePath('adodb_tpl') );
+            removefilesincache( getCachePath('adodb_tpl') );
 		}
 	}
 }
@@ -100,7 +108,7 @@ function removefilesincache()
 {
 	$options = C::get('cacheOptions', 'cfg');
 	$dirs = func_get_args();
-    	clearstatcache();
+    clearstatcache();
 	foreach ($dirs as $rep) {
 
 		if(!is_dir($rep)) continue;
