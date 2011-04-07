@@ -45,6 +45,10 @@
  * @package lodel
  */
 
+if (is_readable($home.'func_local.php'))
+        require_once 'func_local.php';
+
+require_once 'cachefunc.php';
 
 function writefile ($filename,$text)
 {
@@ -304,7 +308,7 @@ function getoption($name)
 	static $options_cache;
 	if (!$name) return;
 	if (!isset($options_cache)) {
-		$optionsfile=SITEROOT."CACHE/options_cache.php";
+		$optionsfile=getCachePath("options_cache.php");
 	
 		if (file_exists($optionsfile)) {
 			require($optionsfile);
@@ -772,7 +776,7 @@ function checkdocannexedir($dir)
 
 function tmpdir()
 {
-	$tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : "CACHE/tmp";
+	$tmpdir=defined("TMPDIR") && (TMPDIR) ? TMPDIR : getCachePath("tmp");
 	if (!file_exists($tmpdir)) { 
 		mkdir($tmpdir,0777  & octdec($GLOBALS['filemask']));
 		chmod($tmpdir,0777 & octdec($GLOBALS['filemask'])); 

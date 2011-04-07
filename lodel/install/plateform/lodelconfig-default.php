@@ -150,7 +150,7 @@ $installlang="fr";
 # config du cache #
 # @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
 $cacheOptions = array(
-	'cacheDir' => './CACHE/',
+	'cacheDir' => sys_get_temp_dir() . PATH_SEPARATOR . 'lodel',
 	'lifeTime' => 3600,
 // pour débug : décommenter ici
 // 	'pearErrorMode' => CACHE_LITE_ERROR_DIE,

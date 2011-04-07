@@ -141,7 +141,7 @@ class DataLogic
 				@unlink($sqlfile);
 		
 				require_once 'cachefunc.php';
-				removefilesincache(SITEROOT, SITEROOT. 'lodel/edition', SITEROOT. 'lodel/admin');
+				clearcache();
 		
 				// verifie les .htaccess dans le CACHE
 				$this->_checkFiles($context);

@@ -393,7 +393,7 @@ class UsersLogic extends Logic
 
 		//on vérifie qu'on est bien administrateur
 		if($lodeluser['rights'] >= 40) {
-			$prefixe = ($site != '' && $site != "tous les sites") ? "#_TP_" : "#_MTP_";
+			$prefixe = ($site != '') ? "#_TP_" : "#_MTP_";
 	
 			$status = $db->getOne(lq("SELECT status FROM ".$prefixe."users WHERE id = '".$id."'"));
 	

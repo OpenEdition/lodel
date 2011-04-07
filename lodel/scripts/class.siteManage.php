@@ -44,6 +44,8 @@
  * @package lodeladmin
  */
 
+require_once 'cachefunc.php';
+
 class siteManage {
 	/**
 	 * Version lodel du site en cours de traitement
@@ -233,7 +235,7 @@ class siteManage {
 	
 			// clear the CACHEs
 			require_once 'cachefunc.php';
-			removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
+			removefilesincache(getCachePath(), getCachePath('edition') , getCachePath('admin'));
 	
 			$result->MoveNext();
 		}
@@ -865,7 +867,7 @@ class siteManage {
 			$this->context['path'] = '/'. $this->context['name'];
 		}
 		$root = str_replace('//', '/', LODELROOT. $this->context['path']). '/';
-		$siteconfigcache = 'CACHE/siteconfig.php';
+		$siteconfigcache = getCachePath('siteconfig.php');
 		if ($this->downloadsiteconfig) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
 			return false;
@@ -911,7 +913,7 @@ class siteManage {
 		
 		// clear the CACHEs
 		require_once 'cachefunc.php';
-		removefilesincache(LODELROOT, $root, $root. 'lodel/edition', $root. 'lodel/admin');
+		removefilesincache(getCachePath(), getCachePath('edition'), getCachePath('admin'));
 	
 		// ok on a fini, on change le status du site
 		mysql_select_db($GLOBALS[database]);

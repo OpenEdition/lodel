@@ -45,6 +45,7 @@
 
 require 'siteconfig.php';
 require 'auth.php';
+$env = "edition";
 authenticate(LEVEL_VISITOR);
 
 $class = 'search';

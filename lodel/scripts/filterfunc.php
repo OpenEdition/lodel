@@ -46,7 +46,7 @@
 
 
 makefilterfunc();
-require_once 'CACHE/filterfunc.php';
+require_once getCachePath('filterfunc.php');
 
 /**
 * Filtre les champs qu'il faut filtrer et converti les filtres en fonction
@@ -87,7 +87,8 @@ function makefilterfunc()
 	}
 	// build the function with filtering
 	// to update with ADODB
-	$fp = fopen("CACHE/filterfunc.php", "w");
+	checkCacheDir();
+	$fp = fopen(getCachePath("filterfunc.php"), "w");
 	fputs($fp, '<'.'?php function filtered_mysql_fetch_assoc($context, $result) {
 			$filters = array('.$filterstr.');
 		$count = mysql_num_fields($result);

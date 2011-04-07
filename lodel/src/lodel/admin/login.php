@@ -46,6 +46,8 @@
 require_once 'siteconfig.php';
 require_once 'auth.php';
 
+$env = "admin";
+
 $url_retour = strip_tags($url_retour);
 
 if($_POST['passwd'] && $_POST['passwd2'] && $_POST['login']) {

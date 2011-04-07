@@ -99,6 +99,7 @@ class View
 	private function View() {
 		global $cacheOptions;
 		$this->_cacheOptions = $cacheOptions;
+		$this->_cacheOptions['cacheDir'] = getCachePath();
 	}
 
 	/**
@@ -179,7 +180,7 @@ class View
 		if(!in_array(realpath($home.'Cache/Lite.php'), $included))
 			require_once 'Cache/Lite.php';
 		if(!in_array(realpath($home.'func.php'), $included))
-			require_once 'func.php';		
+			require_once 'func.php';	
 		$cache = new Cache_Lite($this->_cacheOptions);
 
 		// efface le cache si demandé
@@ -364,13 +365,15 @@ $code .= $content . '
 			$included = get_included_files();
 			require_once 'loops.php';
 			require_once 'textfunc.php';
-			
-			if(!file_exists("./CACHE/require_caching/") && !mkdir("./CACHE/require_caching/", 0777 & octdec($GLOBALS['filemask']))) {
+
+			if(!checkCacheDir('require_caching')) {
 				$this->_error("CACHE directory is not writeable.", __FUNCTION__);
 			}
-			$tmpFileName = "./CACHE/require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true));
+
+			$tmpFileName = getCachePath("require_caching/".md5(uniqid(mt_rand(0, 999999999999).mt_rand(0, 999999999999), true)));
 			if((FALSE || 0) === file_put_contents($tmpFileName, $content, LOCK_EX))
 				$this->_error("Error while writing CACHE required file.", __FUNCTION__);
+
 			ob_start();
 			$refresh = require $tmpFileName;
 			$ret = ob_get_contents();
@@ -409,7 +412,7 @@ $code .= $content . '
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
+	* @param string $cache_rep chemin vers répertoire cache si différent du répertoire cache d'origine
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (défaut à false)
 	*/
@@ -418,7 +421,8 @@ $code .= $content . '
 		global $home;
 		if(!empty($cache_rep))
 			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-
+        else
+			$this->_cacheOptions['cacheDir'] = getCachePath();
 		$group = $include ? 'TemplateFile' : 'tpl';
 
 		if ($_REQUEST['clearcache']) {
@@ -438,7 +442,7 @@ $code .= $content . '
 
 		$cache = new Cache_Lite($this->_cacheOptions);
 
-		if(myfilemtime(getCachedFileName($template_cache, $group, $this->_cacheOptions)) <= myfilemtime($tpl) || !$cache->get($template_cache, $group)) {
+		if(myfilemtime(getCachePath(getCachedFileName($template_cache, $group, $this->_cacheOptions))) <= myfilemtime($tpl) || !$cache->get($template_cache, $group)) {
 			// le tpl caché n'existe pas ou n'est pas à jour comparé au fichier de maquette
 			if(!in_array(realpath($home.'lodelparser.php'), get_included_files()))
 				require 'lodelparser.php';
@@ -447,7 +451,7 @@ $code .= $content . '
 			$cache->save($contents, $template_cache, $group);
 		}
 		// si jamais le path a été modifié on remet par défaut
-		$this->_cacheOptions['cacheDir'] = "./CACHE/";
+		$this->_cacheOptions['cacheDir'] = getCachePath();
 	}
 
 	/**
@@ -468,6 +472,8 @@ $code .= $content . '
 		if(!empty($cache_rep))
 			$this->_cacheOptions['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];	
 
+	   checkCacheDir();
+        
 		$group = $include ? 'TemplateFile' : 'tpl';
 		
 		if ($format && !preg_match("/\W/", $format)) {
@@ -495,7 +501,7 @@ $code .= $content . '
 			$this->_error($msg, __FUNCTION__);
 		} else {
 			// si jamais le path a été modifié on remet par défaut
-			$this->_cacheOptions['cacheDir'] = "./CACHE/";
+			$this->_cacheOptions['cacheDir'] = getCachePath();
 
 			// execute le template php
 			if ($GLOBALS['showhtml'] && $GLOBALS['lodeluser']['visitor']) {
@@ -654,10 +660,11 @@ function generateLangCache($lang, $file, $tags)
 
 		$txt.= "'". $tag. "'=>'". str_replace("'", "\'",(getlodeltextcontents($name, $group, $lang))). "',";
 	}
+    
 	$dir = dirname($file);
 	if (!is_dir($dir)) {
-		@mkdir($dir, 0777 & octdec($GLOBALS['filemask']));
-		@chmod($dir, 0777 & octdec($GLOBALS['filemask']));
+		mkdir($dir, 0777 & octdec($GLOBALS['filemask']));
+		chmod($dir, 0777 & octdec($GLOBALS['filemask']));
 	}
 
 	writefile($file, '<'.'?php if (!$GLOBALS[\'langcache\'][\''. $lang. '\']) $GLOBALS[\'langcache\'][\''. $lang. '\']=array(); $GLOBALS[\'langcache\'][\''. $lang. '\']+=array('. $txt. '); ?'. '>');

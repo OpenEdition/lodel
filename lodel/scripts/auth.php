@@ -139,7 +139,7 @@ function authenticate($level = 0, $mode = "")
 			$GLOBALS['session'] = $name;
 	
 			// verifie qu'on est dans le bon site
-			if ($row['site'] != "tous les sites" && $row['site'] != $site) {
+			if ( $row['site'] != $site ) {
 				break;
 			}
 

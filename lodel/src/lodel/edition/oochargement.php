@@ -46,6 +46,9 @@
 
 require_once 'siteconfig.php';
 require_once 'auth.php';
+
+$env = "edition";
+
 authenticate(LEVEL_REDACTOR);
 require_once 'func.php';
 require_once 'utf8.php'; // conversion des caracteres

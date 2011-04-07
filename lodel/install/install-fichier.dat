@@ -1,7 +1,6 @@
 # les droits doivent etre tres larges, ils sont ensuite reduits par le filemask
 
 
-mkdir CACHE 0777
 mkdir upload 0777
 mkdir tpl 0755
 mkdir css 0755
@@ -14,7 +13,6 @@ mkdir lodel/edition 0755
 mkdir lodel/admin 0755
 
 htaccess tpl
-htaccess CACHE
 
 # evite que l'internaute puisse lister ces repertoires
 touch docannexe/index.html
@@ -77,11 +75,9 @@ ln tpl/edit_entities_edition.html
 
 mkdir lodel/edition 0755
 mkdir lodel/edition/tpl 0755
-mkdir lodel/edition/CACHE 0777
 
 dirdestination lodel/edition
 
-htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site
@@ -153,11 +149,9 @@ ln tpl/search.html
 
 mkdir lodel/admin 0755
 mkdir lodel/admin/tpl 0755
-mkdir lodel/admin/CACHE 0777
 
 dirdestination lodel/admin
 
-htaccess CACHE
 htaccess tpl
 
 dirsource . # repertoire du site

@@ -248,7 +248,7 @@ function loop_next($context, $funcname, $arguments)
 function loop_rss($context, $funcname, $arguments)
 {
 	define("MAGPIE_CACHE_ON", TRUE);
-	define("MAGPIE_CACHE_DIR", "./CACHE");
+	define("MAGPIE_CACHE_DIR", getCachePath());
 	define("DIRECTORY_SEPARATOR", "/");
 	define('MAGPIE_OUTPUT_ENCODING', 'UTF-8');
 	if (!isset ($arguments['url'])) {

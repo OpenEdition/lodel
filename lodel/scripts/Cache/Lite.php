@@ -19,7 +19,7 @@
 *
 * @package Cache_Lite
 * @category Caching
-* @version $Id: Lite.php,v 1.51 2008/06/08 08:46:22 tacker Exp $
+* @version $Id: Lite.php 308851 2011-03-02 11:01:42Z tacker $
 * @author Fabien MARTY <fab@php.net>
 */
 
@@ -273,6 +273,14 @@ class Cache_Lite
     *     'hashedDirectoryUmask' => umask for hashed directory structure (int),
     *     'errorHandlingAPIBreak' => API break for better error handling ? (boolean)
     * );
+    * 
+    * If sys_get_temp_dir() is available and the 
+    * 'cacheDir' option is not provided in the 
+    * constructor options array its output is used 
+    * to determine the suitable temporary directory.
+    * 
+    * @see http://de.php.net/sys_get_temp_dir
+    * @see http://pear.php.net/bugs/bug.php?id=18328
     *
     * @param array $options options
     * @access public
@@ -281,6 +289,9 @@ class Cache_Lite
     {
         foreach($options as $key => $value) {
             $this->setOption($key, $value);
+        }
+        if (!isset($options['cacheDir']) && function_exists('sys_get_temp_dir')) {
+        	$this->setOption('cacheDir', sys_get_temp_dir() . DIRECTORY_SEPARATOR);
         }
     }
     
@@ -375,12 +386,9 @@ class Cache_Lite
                     return true;
                 }
             }
-            if ($this->_automaticCleaningFactor>0) {
-                $rand = rand(1, $this->_automaticCleaningFactor);
-                if ($rand==1) {
-                    $this->clean(false, 'old');
-                }
-            }
+            if ($this->_automaticCleaningFactor>0 && ($this->_automaticCleaningFactor==1 || mt_rand(1, $this->_automaticCleaningFactor)==1)) {
+				$this->clean(false, 'old');			
+			}
             if ($this->_writeControl) {
                 $res = $this->_writeAndControl($data);
                 if (is_bool($res)) {
@@ -537,7 +545,7 @@ class Cache_Lite
     */
     function raiseError($msg, $code)
     {
-        include_once('PEAR/PEAR.php');
+        include_once('PEAR.php');
         return PEAR::raiseError($msg, $code, $this->_pearErrorMode);
     }
     
@@ -625,7 +633,7 @@ class Cache_Lite
                             case 'old':
                                 // files older than lifeTime get deleted from cache
                                 if (!is_null($this->_lifeTime)) {
-                                    if ((mktime() - @filemtime($file2)) > $this->_lifeTime) {
+                                    if ((time() - @filemtime($file2)) > $this->_lifeTime) {
                                         $result = ($result and ($this->_unlink($file2)));
                                     }
                                 }
@@ -715,7 +723,9 @@ class Cache_Lite
             clearstatcache();
             $length = @filesize($this->_file);
             $mqr = get_magic_quotes_runtime();
-            set_magic_quotes_runtime(0);
+            if ($mqr) {
+                set_magic_quotes_runtime(0);
+            }
             if ($this->_readControl) {
                 $hashControl = @fread($fp, 32);
                 $length = $length - 32;
@@ -725,7 +735,9 @@ class Cache_Lite
             } else {
                 $data = '';
             }
-            set_magic_quotes_runtime($mqr);
+            if ($mqr) {
+                set_magic_quotes_runtime($mqr);
+            }
             if ($this->_fileLocking) @flock($fp, LOCK_UN);
             @fclose($fp);
             if ($this->_readControl) {
@@ -770,9 +782,13 @@ class Cache_Lite
                 @fwrite($fp, $this->_hash($data, $this->_readControlType), 32);
             }
             $mqr = get_magic_quotes_runtime();
-            set_magic_quotes_runtime(0);
+            if ($mqr) {
+                set_magic_quotes_runtime(0);
+            }
             @fwrite($fp, $data);
-            set_magic_quotes_runtime($mqr);
+            if ($mqr) {
+                set_magic_quotes_runtime($mqr);
+            }
             if ($this->_fileLocking) @flock($fp, LOCK_UN);
             @fclose($fp);
             return true;

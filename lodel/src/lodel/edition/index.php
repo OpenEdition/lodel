@@ -48,6 +48,8 @@
 include ('siteconfig.php');
 require_once ('auth.php');
 
+$env = "edition";
+
 // Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
 if ($_GET['page'] == 'backend' && $_GET['format'] ) {
 	authenticate(LEVEL_VISITOR, 'HTTP');

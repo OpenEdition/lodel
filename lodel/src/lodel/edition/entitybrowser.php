@@ -46,6 +46,9 @@
 
 require 'siteconfig.php';
 require 'auth.php';
+
+$env = "edition";
+
 authenticate(LEVEL_REDACTOR);
 
 define('UPLOADDIR', SITEROOT. 'upload');

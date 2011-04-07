@@ -76,7 +76,7 @@ $view = &View::getView();
 if(empty($_POST)) { // pas d'utilisation du cache pour traiter correctement les formulaires
 	// get the view and check the cache.
 	if ($view->renderIfCacheIsValid()) {
-		return;
+	    return;
 	}
 }
 $id         = intval($_GET['id']);
@@ -311,7 +311,7 @@ function printEntities($id, $identifier, &$context)
 		}
 		exit; 
 	}
-	if (!(@include_once('CACHE/filterfunc.php'))) {
+	if (!(@include_once(getCachePath('filterfunc.php')))) {
 		require_once 'filterfunc.php';
 	}
 	//Merge $row et applique les filtres définis dans le ME
@@ -393,7 +393,7 @@ function printIndex($id, $classtype, &$context)
 	if (!$row) {
 		die("ERROR: internal error");
 	}
-	if (!(@include_once("CACHE/filterfunc.php"))) {
+	if (!(@include_once(getCachePath("filterfunc.php")))) {
 		require_once "filterfunc.php";
 	}
 	merge_and_filter_fields($context, $row['class'], $row);

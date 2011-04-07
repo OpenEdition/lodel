@@ -114,7 +114,7 @@ function check_auth($login, & $passwd, & $site)
 		if (($row = $result->fields))	{
 
 			// le user est dans la base generale
-			$site = "tous les sites";
+			$site = "";
 		}	elseif ($GLOBALS['currentdb'] && $GLOBALS['currentdb'] != DATABASE)	{ // le user n'est pas dans la base generale
 			if (!$site)
 				break; // si $site n'est pas definie on s'ejecte

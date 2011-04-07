@@ -46,6 +46,8 @@ require_once 'siteconfig.php';
 require_once 'lang.php';
 require_once 'auth.php';
 
+$env = "admin";
+
 authenticate(LEVEL_VISITOR);
 if ($_GET['page']) { // call a special page (and template)
 	$page = $_GET['page'];

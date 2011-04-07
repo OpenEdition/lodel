@@ -386,7 +386,7 @@ class LodelParser extends Parser
 			$options['sqlfetchassoc'] = 'filtered_mysql_fetch_assoc($context,%s)';
 			if (!$this->filterfunc_loaded){
 				$this->filterfunc_loaded = TRUE;
-				$this->fct_txt .= 'if (!(@include_once("CACHE/filterfunc.php"))) require_once("filterfunc.php");';
+				$this->fct_txt .= 'if (!(@include_once(getCachePath("filterfunc.php")))) require_once("filterfunc.php");';
 			}
 		}
 	}
@@ -490,7 +490,7 @@ class LodelParser extends Parser
 		}
 		if ($this->translationtags)	{
 			$text = '<'.'?php
-	$langfile="CACHE/lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__);
+	$langfile=getCachePath("lang-". $GLOBALS[\'lang\']. "/". basename(__FILE__));
 	if (!file_exists($langfile)) {
 		if(!function_exists("generateLangCache")) { require "view.php"; }
 		generateLangCache($GLOBALS[\'lang\'], $langfile, array('. join(',', $this->translationtags).'));

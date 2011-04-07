@@ -47,7 +47,7 @@
 require_once 'connect.php';
 
 // try first to get the cached array
-if (!(@include ("CACHE/tablefields.php"))) {
+if (!(@include (getCachePath("tablefields.php")))) {
 
 	// no, we have to build the tablefields array
 	if (!function_exists("var_export"))	{
@@ -98,7 +98,7 @@ if (!function_exists("maketablefields"))	{
 			}
 		}
 
-		$fp = fopen("CACHE/tablefields.php", "w");
+		$fp = fopen(getCachePath("tablefields.php"), "w");
 		fputs($fp, '<?php  $tablefields='.var_export($tablefields, TRUE).' ; ?>');
 		fclose($fp);
 	}

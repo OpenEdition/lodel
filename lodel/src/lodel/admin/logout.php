@@ -45,6 +45,9 @@
 
 require_once 'siteconfig.php';
 require_once 'auth.php';
+
+$env = "admin";
+
 authenticate(LEVEL_VISITOR | LEVEL_RESTRICTEDUSER);
 
 $name = addslashes($_COOKIE[$sessionname]);

@@ -54,22 +54,20 @@
  */
 function clearcache($allCache=true)
 {
-	global $site;
+	global $site, $env;
 	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
 	if($allCache) {
-		if (defined("SITEROOT")) {
-			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-		}	else {
-			removefilesincache(".");
-		}
+		removefilesincache(getCachePath());
 	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
 		require_once 'Cache/Lite.php';
 		$options = $GLOBALS['cacheOptions'];
 		if (defined("SITEROOT")) {
-			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-			while(list(,$rep) = each($cacheReps)) {
-				$rep = "./".$rep;
-				$options['cacheDir'] = $rep.'/CACHE/';
+		    $envs   = array("", "edition", "admin");
+		    $oldenv = $env; 
+			
+		    foreach($envs as $environment){  
+		        $env = $environment;
+				$options['cacheDir'] = getCachePath();
 				if(!file_exists($options['cacheDir']))
 					continue;
 				$cache = new Cache_Lite($options);
@@ -80,6 +78,7 @@ function clearcache($allCache=true)
 				}
 				$cache = null;
 			}
+			$env = $oldenv;
 		} else {
 			$cache = new Cache_Lite($GLOBALS['cacheOptions']);
 			if($site) {
@@ -102,10 +101,6 @@ function removefilesincache()
 	global $site;
 	$options = $GLOBALS['cacheOptions'];
 	foreach (func_get_args() as $rep) {
-		$rep = "./".$rep;
-		if(FALSE === strpos($rep, '/CACHE/'))
-			$rep .= "/CACHE/";
-
 		// fichiers/répertoires gérés indépendament de cache_lite
 		if(!file_exists($rep))
 			continue;
@@ -137,7 +132,7 @@ function getCachedFileName($id, $group, $options) {
         } else {
             $suffix = 'cache_'.$group.'_'.$id;
         }
-        $root = $options['cacheDir'] ? $options['cacheDir'] : './CACHE/';
+        $root = getCachePath();
         if ($options['hashedDirectoryLevel']>0) {
             $hash = md5($suffix);
             for ($i=0 ; $i<$options['hashedDirectoryLevel'] ; $i++) {
@@ -145,5 +140,53 @@ function getCachedFileName($id, $group, $options) {
             }   
         }
         return $root.$suffix;
+}
+
+/*
+ * 
+ */
+function checkCacheDir( $dir = "" ){
+    
+    global $filemask;
+    
+    $dir = getCachePath($dir);
+
+    if(is_dir($dir))
+    {
+        if(is_writeable($dir)) return true;
+        trigger_error('ERROR: cannot write in directory '.$dir, E_USER_ERROR);
+    }
+    elseif(file_exists($dir))
+    {
+        if(!@unlink($dir)) trigger_error('ERROR: file '.$dir.' exists, is not a dir and cannot be removed!', E_USER_ERROR);
+    }
+
+
+    if(! is_dir( $dir ) ){
+        mkdir($dir, 0777 & octdec($filemask), true);
+        chmod($dir, 0777 & octdec($filemask));
+    }
+
+    if( is_writeable( $dir ) ) {
+        @mkdir($dir, 0777 & octdec($filemask));
+        @chmod($dir, 0777 & octdec($filemask));
+    } else {
+        trigger_error('ERROR : cannot write in CACHE directory.', E_USER_ERROR);
+    }
+    return true;
+    
+}
+
+/**
+ * 
+ */
+function getCachePath( $path = "" ){
+    global $site, $env;
+        
+    $options = $GLOBALS['cacheOptions'];
+    return $options['cacheDir'] . DIRECTORY_SEPARATOR
+            . $site . DIRECTORY_SEPARATOR
+            . $env .DIRECTORY_SEPARATOR
+            . $path;
 }
 ?>
