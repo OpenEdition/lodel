@@ -120,7 +120,10 @@ function cacheOptionsInFile($optionsfile=null)
 			$id = $result->fields['id'];
 			$name = $result->fields['name'];
 			$idgroup = $result->fields['idgroup'];
-			if(!isset($arr[$idgroup])) continue;
+			if(!isset($arr[$idgroup])){
+			    $result->MoveNext();
+			    continue;
+			} 
 
 			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
 			if('username' != $result->fields['type'] && 'passwd' !== $result->fields['type'])
