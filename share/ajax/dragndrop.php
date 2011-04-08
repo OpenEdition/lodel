@@ -86,7 +86,7 @@ try
         $i++;
     }
 
-    removefilesincache('.', './lodel/edition/');
+    removefilesincache(getCachePath(), getCachePath('edition'));
     echo 'ok';
 }
 catch(Exception $e)
