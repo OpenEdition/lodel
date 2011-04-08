@@ -97,7 +97,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		function_exists('gettask') || include ("taskfunc.php");
 		$this->task = $task = gettask ($idtask);
 		gettypeandclassfromtask ($task, $context);
-		$context['id'] = @$task['identity'];
+		$this->id = $context['id'] = @$task['identity'];
 		class_exists('XMLImportParser', false) || include "xmlimport.php";
 		$parser=new XMLImportParser();
 		$parser->init (@$context['class']);
