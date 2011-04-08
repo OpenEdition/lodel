@@ -69,7 +69,7 @@ function clearcache($allCache=true)
 		$options   = C::get('cacheOptions', 'cfg');
 		if ($site) {
 			$cache = new Cache_Lite($options);
-			$env   = C::get('env');
+			$oldenv   = C::get('env');
 			
 			$envs = array( '', 
 						   'edition', 
@@ -88,8 +88,9 @@ function clearcache($allCache=true)
 				$cache->clean();
                 removefilesincache( getCachePath('adodb_tpl') );
 			}
-			C::set('env', $env);
+			C::set('env', $oldenv);
 		} else {
+			$options['cacheDir'] = getCachePath();
 			$cache = new Cache_Lite($options);
 			$cache->clean($site.'_page'); // page html
 			$cache->clean($site.'_tpl_inc'); // tpl included
@@ -147,7 +148,6 @@ function checkCacheDir($dir)
     }
 
 	$filemask = C::get('filemask', 'cfg');
-
 	if(! is_dir( $dir ) ){
 		mkdir($dir, 0777 & octdec($filemask), true);
         chmod($dir, 0777 & octdec($filemask));
