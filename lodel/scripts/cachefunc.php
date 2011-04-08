@@ -112,7 +112,7 @@ function removefilesincache()
     clearstatcache();
 	foreach ($dirs as $rep) {
 
-		if(!is_dir($rep)) continue;
+		if(!is_dir($rep) || strpos( realpath($rep), realpath($options['cacheDir']) ) !== 0 ) continue;
 
 		// fichiers/répertoires gérés indépendament de cache_lite
 		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
