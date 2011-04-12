@@ -65,7 +65,7 @@ function extract_import($footprint, & $context, $ext = 'zip')
 	$context['importdir'] = C::get('importdir', 'cfg');
 	$GLOBALS['fileregexp'] = '('.$footprint.')-\w+(?:-\d+)?.'.$ext;
 
-	$GLOBALS['importdirs'] = array ("CACHE", C::get('home', 'cfg')."../install/plateform");
+	$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg')."../install/plateform");
 	if ($context['importdir']) {
 		$GLOBALS['importdirs'][] = $context['importdir'];
 	}
