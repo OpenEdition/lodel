@@ -1239,7 +1239,7 @@ class TEIParser extends XMLReader
 				'>';
 		}
 
-		$this->_tags[] = array_reverse($tags);
+		if(!empty($tags[0])) $this->_tags[] = array_reverse($tags);
 
 		return $ret;
 	}
@@ -1531,12 +1531,14 @@ class TEIParser extends XMLReader
 				{
 					$text .= '<td' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'td';
-					if($this->isEmptyElement){
-					    $text .= $this->_closeTag();
-					}
 				}
 				else
 					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
+                
+				if($this->isEmptyElement){
+                    $text .= $this->_closeTag();
+                }
+					
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
