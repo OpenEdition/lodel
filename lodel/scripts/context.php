@@ -145,7 +145,7 @@ class C
 	 */
 	private function __construct(array &$cfg)
 	{
-		header("Content-Type: text/html; charset=UTF-8");
+		if(!headers_sent()) header("Content-Type: text/html; charset=UTF-8");
         	self::$filter = null;
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
