@@ -165,7 +165,7 @@ switch($tache)
 	{
 		require($install->get('lodelconfig'));
 		$GLOBALS['tableprefix'] = $cfg['tableprefix'];
-		require("context.php");
+		require_once("context.php");
 		$cfg['home'] = LODELROOT.$cfg['home'];
 		C::setCfg($cfg);
 		// log this user in
