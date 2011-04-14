@@ -694,14 +694,15 @@ class siteManage {
 					View::getView()->render('site-createdir');
 					exit();
 				}
+
 				// on essaie
-				if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec(C::get('filemask')))) {
+				if (!file_exists($dir) && !@mkdir($dir, 0777 & octdec(C::get('filemask', 'cfg')))) {
 					// on y arrive pas... pas les droits surement
 					C::set('error_mkdir', $dir);
 					View::getView()->render('site-createdir');
 					exit();
 				}
-				@chmod($dir, 0777 & octdec(C::get('filemask')));
+				@chmod($dir, 0777 & octdec(C::get('filemask', 'cfg')));
 			}
 		}
 		
