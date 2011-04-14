@@ -45,6 +45,8 @@ foreach($correspondances as $k => $v)
 	$sql[] = lq("UPDATE #_TP_persontypes SET otx=".$db->quote($v)." WHERE type=".$db->quote($k));
 }
 
+/* Style internes */
+
 $sql[] = lq("update #_TP_internalstyles set otx=''");
 
 $correspondances = array(
@@ -72,17 +74,25 @@ $correspondances = array(
 								=>	"//*[@rend='figure-license']",
 	"remerciements,acknowledgment"
 								=>	"/tei:TEI/tei:text/tei:front/tei:div[@type='ack']",
+    "remerciements"             =>  "/tei:TEI/tei:text/tei:front/tei:div[@type='ack']",
 	"encadre"					=>  "//*[@rend='box']"
 // 	"pigraphe"					=>	"body:epigraph",
 // 	"sparateur"					=>	"text:break",
-// 	"puces"						=>	"text:item",
-
 );
 
 foreach($correspondances as $k => $v)
 {
 	$sql[] = lq("UPDATE #_TP_internalstyles SET otx=".$db->quote($v)." WHERE style=".$db->quote($k));
 }
+
+/* Suppression de styles internes */
+$suppression = array("puces");
+foreach($suppression as $k)
+{
+    $sql[] = lq("DELETE FROM #_TP_internalstyles WHERE style=".$db->quote($k));
+}
+
+/* Styles de documents */
 
 $sql[] = lq("update #_TP_tablefields set otx=''");
 
@@ -149,6 +159,5 @@ else
                 die($s . $db->errormsg());
             
     }
-
-    echo "migration terminée";
+    echo "Migration terminée";
 }
