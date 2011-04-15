@@ -1532,6 +1532,10 @@ class TEIParser extends XMLReader
 					$text .= '<td' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'td';
 				}
+                elseif('anchor' === $this->localName)
+                {
+                    continue;
+                }
 				else
 					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
                 
