@@ -1072,6 +1072,8 @@ class TEIParser extends XMLReader
 				
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
 				
+				if($this->isEmptyElement) $text .= $this->_closeTag();
+				
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
@@ -1538,8 +1540,8 @@ class TEIParser extends XMLReader
                 }
 				else
 					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
-                
-				if($this->isEmptyElement){
+
+				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
                     $text .= $this->_closeTag();
                 }
 					
@@ -1559,7 +1561,7 @@ class TEIParser extends XMLReader
 			return;
 		
 		$this->_tables[] = $attrs['id'];
-		
+
 		return $text;
 	}
 
