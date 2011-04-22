@@ -126,7 +126,7 @@ try
 						$contents[$k][$lang][$key]['text'] = '';
 						while($reader->read())
 						{
-							if( ( !$reader->isEmptyElement || $reader->localName == "img" ) && ( XMLReader::ELEMENT === $reader->nodeType) )
+							if( ( !$reader->isEmptyElement || in_array($reader->localName, array("img","br")) ) && ( XMLReader::ELEMENT === $reader->nodeType) )
 							{
 								if('lodelblock' === $reader->localName) continue;
 
@@ -243,7 +243,7 @@ try
 
 				while($reader->read())
 				{
-					if( (!$reader->isEmptyElement || $reader->localName == "img" ) && ( XMLReader::ELEMENT === $reader->nodeType) )
+					if( (!$reader->isEmptyElement || in_array($reader->localName, array("img","br")) ) && ( XMLReader::ELEMENT === $reader->nodeType) )
 					{
 						if('lodelblock' === $reader->localName) continue;
 
