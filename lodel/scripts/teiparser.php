@@ -1072,8 +1072,6 @@ class TEIParser extends XMLReader
 				
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
 				
-				if($this->isEmptyElement) $text .= $this->_closeTag();
-				
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
