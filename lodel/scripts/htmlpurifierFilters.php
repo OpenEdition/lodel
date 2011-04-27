@@ -67,7 +67,7 @@ if(defined('backoffice'))
 		public function preFilter($html, $config, $context) 
 		{
 			if(empty($html) || is_numeric($html)) return $html;
-			$pre_regex = '#<\?xml\b[^\?]+\?>\s*(<!DOCTYPE[^>]+>\s*)?(<TEI([^>]*>.+?)</TEI>)#si';
+			$pre_regex = '#<\?xml\b[^\?]+\?>\s*(<!DOCTYPE[^>]+>\s*)?(<TEI([^>]*>.+?)</TEI>)$#si';
 			$ret = preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
 			if(empty($ret) && preg_last_error() === PREG_BACKTRACK_LIMIT_ERROR)
                         {
@@ -99,9 +99,14 @@ if(defined('backoffice'))
 				$doc->validateOnParse = false;
 
 				$doc->loadXML($matches[0]);
-				$xsd = $doc->documentElement->getAttributeNS($doc->lookupNamespaceURI('xsi'), 'schemaLocation');
-				if(! @$doc->schemaValidate($xsd) )
-					$errors = libxml_get_errors();
+
+				if( isset($doc->documentElement) ){
+    				$xsd = $doc->documentElement->getAttributeNS($doc->lookupNamespaceURI('xsi'), 'schemaLocation');
+    
+        			if(! @$doc->schemaValidate($xsd) )
+        				$errors = libxml_get_errors();
+				}
+
 			}
 			
 			libxml_use_internal_errors(false);
@@ -110,7 +115,6 @@ if(defined('backoffice'))
 				foreach($errors as $error){
 					if($error->level === LIBXML_ERR_FATAL){
 						trigger_error('ERROR: Invalid TEI regarding to the DTD, escaped : '.print_r($errors,1).'<br/>'.htmlentities($matches[0], ENT_COMPAT, 'UTF-8'), E_USER_WARNING);
-						return '';
 					}
 				} 
 			}
