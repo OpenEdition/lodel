@@ -230,11 +230,11 @@ class TEIParser extends XMLReader
 				{
 					// extract the name of the converted style
 					if(preg_match("/\[(@(type|rend)='([^']+)')]$/", $field->otx, $m))
-                                        {
-						$this->_styles[$m[3]] = $field;
+                    {
+                        $this->_styles[$m[3]] = $field;
                                                 // get associated blocks
-                                                $field->otx = array($field->otx, "//tei:*[starts-with(@type, '".$m[3]."-')]", "//tei:*[starts-with(@rend, '".$m[3]."-')]");
-                                        }
+                                                // $field->otx = array($field->otx, "//tei:*[starts-with(@type, '".$m[3]."-')]", "//tei:*[starts-with(@rend, '".$m[3]."-')]");
+                    }
 
 					$this->_styles[$field->name] = $field;
 
@@ -340,6 +340,7 @@ class TEIParser extends XMLReader
 
 		$this->_logs = $this->_contents = $this->_tags = $this->_currentClass = array();
 		$this->_contents['entries'] = $this->_contents['persons'] = $this->_contents['error'] = array();
+
 		$simplexml = simplexml_load_string($xml);
 		if(!$simplexml)
 		{
@@ -358,7 +359,7 @@ class TEIParser extends XMLReader
 
 		$this->_parseAfter();
 
-		if(count($this->_tags)) throw new Exception('ERROR: The number of opening/closing tag does not match : '.print_r($this->_tags,1));
+		if(count($this->_tags)) throw new Exception('ERROR: The number of opening/closing tag does not match : '.var_export($this->_tags, true));
 
 		return $this->_contents;
 	}
@@ -989,23 +990,18 @@ class TEIParser extends XMLReader
 								while($reader->read())
 								{
 									if(parent::ELEMENT === $reader->nodeType)
-									{  
-										if('s' === $reader->localName || 'hi' === $reader->localName)  
-										{   
-											$attrs = $this->_parseAttributes($reader);   
-											$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
-										}
+									{
+   										$attrs = $this->_parseAttributes($reader);   
+   										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
 									}elseif(parent::TEXT === $reader->nodeType)
 										$currentNode .= $reader->readOuterXML();
-									elseif(parent::END_ELEMENT === $reader->nodeType) 
-										if('s' === $reader->localName || 'hi' === $reader->localName)
-											$currentNode .= $this->_closeTag();
-									
+									elseif(parent::END_ELEMENT === $reader->nodeType && $reader->nodeType !== "hi")
+								        $currentNode .= $this->_closeTag();
 								}
 								
 								//$currentNode .= $this->_parse($fC->asXML());
 							}
-						}				
+						}
 					}
 				}
 			}
