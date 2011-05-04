@@ -353,7 +353,7 @@ class TEIParser extends XMLReader
 
 		if($simplexml->teiHeader->encodingDesc->tagsDecl)
 			$this->_parseRenditions($simplexml->teiHeader->encodingDesc->tagsDecl);
-		
+
 		$this->_parseBlocks($simplexml);
 		unset($simplexml);
 
@@ -986,23 +986,25 @@ class TEIParser extends XMLReader
 // 								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = $this->_parse($fC->asXML());
 								$reader = new XMLReader();
 								$reader->XML($fC->asXML(), 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
-								
+
 								while($reader->read())
 								{
 									if(parent::ELEMENT === $reader->nodeType)
 									{
    										$attrs = $this->_parseAttributes($reader);   
    										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
+   										if($reader->isEmptyElement)
+   										   $currentNode .= $this->_closeTag();
 									}elseif(parent::TEXT === $reader->nodeType)
 										$currentNode .= $reader->readOuterXML();
-									elseif(parent::END_ELEMENT === $reader->nodeType && $reader->nodeType !== "hi")
+									elseif(parent::END_ELEMENT === $reader->nodeType && $reader->localName !== "hi" )
 								        $currentNode .= $this->_closeTag();
 								}
-								
 								//$currentNode .= $this->_parse($fC->asXML());
 							}
 						}
 					}
+					
 				}
 			}
 			else
@@ -1632,7 +1634,7 @@ class TEIParser extends XMLReader
 		isset($this->_contents[$type]) || $this->_contents[$type] = array();
 		$first = false;
 
-		$text =& $this->_contents[$type][];
+		$text =& $this->_contents[$type][$attrs['n']];
 
 		while($this->read())
 		{
