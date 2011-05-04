@@ -989,7 +989,7 @@ class TEIParser extends XMLReader
 
 								while($reader->read())
 								{
-									if(parent::ELEMENT === $reader->nodeType)
+									if(parent::ELEMENT === $reader->nodeType && $reader->localName !== "hi" )
 									{
    										$attrs = $this->_parseAttributes($reader);   
    										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
