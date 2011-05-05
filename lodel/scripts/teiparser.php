@@ -721,20 +721,20 @@ class TEIParser extends XMLReader
 
 		if(false !== strpos($rend, '-'))
 		{
-			$style = array_reverse(explode('-', $rend));
-                        foreach($style as $k => $v)
-                        {
-                            if(isset($this->_internalstyles[$v]))
-                                    return array('class' => $full ? $this->_internalstyles[$v] : $this->_internalstyles[$v]->style);
-                            elseif(isset($this->_characterstyles[$v]))
-                                    return array('class' => $full ? $this->_characterstyles[$v] : $this->_characterstyles[$v]->style);
-                            elseif(isset($this->_entrytypes[$v]))
-                                    return array('class' => $full ? $this->_entrytypes[$v] : $this->_entrytypes[$v]->type);
-                            elseif(isset($this->_persontypes[$v]))
-                                    return array('class' => $full ? $this->_persontypes[$v] : $this->_persontypes[$v]->type);
-                            elseif(isset($this->_styles[$v]))
-                                    return array('class' => $full ? $this->_styles[$v] : $this->_styles[$v]->name);
-                        }
+			$style = array_reverse(explode('-', $rend, 2));
+            foreach($style as $k => $v)
+            {
+                if(isset($this->_internalstyles[$v]))
+                        return array('class' => $full ? $this->_internalstyles[$v] : $this->_internalstyles[$v]->style);
+                elseif(isset($this->_characterstyles[$v]))
+                        return array('class' => $full ? $this->_characterstyles[$v] : $this->_characterstyles[$v]->style);
+                elseif(isset($this->_entrytypes[$v]))
+                        return array('class' => $full ? $this->_entrytypes[$v] : $this->_entrytypes[$v]->type);
+                elseif(isset($this->_persontypes[$v]))
+                        return array('class' => $full ? $this->_persontypes[$v] : $this->_persontypes[$v]->type);
+                elseif(isset($this->_styles[$v]))
+                        return array('class' => $full ? $this->_styles[$v] : $this->_styles[$v]->name);
+            }
 		}
 
 		$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNKNOWN_STYLE', 'edition'), $rend, $rend));
