@@ -86,10 +86,22 @@ foreach($correspondances as $k => $v)
 }
 
 /* Suppression de styles internes */
+
 $suppression = array("puces");
 foreach($suppression as $k)
 {
     $sql[] = lq("DELETE FROM #_TP_internalstyles WHERE style=".$db->quote($k));
+}
+
+/* Modification de style interne */
+$modifications = array(
+    'separateur'            => '',
+    'separateur,sparateur'  => ',',
+);
+
+foreach($modifications as $k => $v)
+{
+    $sql[] = lq("UPDATE #_TP_internalstyles SET conversion=".$db->quote($v)." WHERE style=".$db->quote($k));
 }
 
 /* Styles de documents */
