@@ -1277,6 +1277,7 @@ class TEIParser extends XMLReader
 				break;
 
 			case 'hi': // local style
+			case 's':
 				return $this->_addLocalStyle($attrs, true);
 				break;
 
