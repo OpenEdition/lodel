@@ -135,9 +135,9 @@ class GenericLogic extends Logic
 					if ($context['classtype'] == "persons") {
 						$criteria = "class='".$class."'";
 						// degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
-						if (isset($context['identifier'])) {
+						//if (isset($context['identifier'])) {
 						$criteria .= " OR class='entities_".$class."'";
-						}
+						//}
 					}   elseif ($context['classtype'] == "entries") {
 						$criteria = "class='".$class."'";
 					}   else {
