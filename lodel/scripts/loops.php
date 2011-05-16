@@ -454,7 +454,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	$arguments['limit'] = $context['limitinfo'];
 	$offsetname = $context['offsetname'];
 	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
-	$currenturl = basename($_SERVER['SCRIPT_NAME'])."?";
+	$currenturl = basename($_SERVER['SCRIPT_FILENAME'])."?";
 	$cleanquery = preg_replace(array("/(^|&amp;)".$offsetname."=\d+/","/(^|&amp;)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
 	if ($cleanquery[0] == "&")
 		$cleanquery = substr($cleanquery, 1);
