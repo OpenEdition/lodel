@@ -333,8 +333,8 @@ try
 		}
 		catch(Exception $e)
 		{
-//			printErrors($parser->getLogs(), false);
-			printErrors($e->getMessage(), true, $isFrame);
+			printErrors($parser->getLogs(), false, $isFrame);
+//			printErrors($e->getMessage(), true, $isFrame);
 		}
 
 		$contents['parserreport'] = $parser->getLogs();
