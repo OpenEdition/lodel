@@ -59,11 +59,11 @@
  * @param bool $allCache
  * @see func.php -> function update()
  */
-function clearcache($allCache=true)
+function clearcache($allCache=false, $require_caching=false)
 {
     $_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
     $site = C::get('site', 'cfg');
-    if($allCache) {
+    if(!$allCache) {
         removefilesincache(getCachePath());
     } else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
         $options   = C::get('cacheOptions', 'cfg');
@@ -87,6 +87,8 @@ function clearcache($allCache=true)
                 $cache->clean($site.'_tpl_inc'); // tpl included
                 $cache->clean();
                 removefilesincache( getCachePath('adodb_tpl') );
+                if($require_caching)
+                    removefilesincache( getCachePath('require_caching') );
             }
             C::set('env', $oldenv);
         } else {
