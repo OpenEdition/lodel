@@ -85,6 +85,7 @@ function printErrors($errors, $exit = true, $isFrame = true)
 try
 {
 	include 'auth.php';
+    C::set('env', 'edition');
 	authenticate(LEVEL_REDACTOR);
 	// require 'func.php';
 	include 'utf8.php'; // conversion des caracteres

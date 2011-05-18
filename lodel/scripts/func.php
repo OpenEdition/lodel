@@ -286,7 +286,7 @@ function getoption($name)
 	static $options_cache;
 	if (!$name) return;
 	if (!isset($options_cache)) {
-		$optionsfile=SITEROOT."CACHE/options_cache.php";
+		$optionsfile=getCachePath("options_cache.php");
 	
 		if (file_exists($optionsfile)) {
 			include($optionsfile);
@@ -739,7 +739,7 @@ function tmpdir($name = '')
         if(defined("TMPDIR") && '' !== (string)TMPDIR)
                 $tmpdir = TMPDIR;
         elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
-                $tmpdir = 'CACHE/tmp';
+                $tmpdir = getCachePath('tmp');
 
         if (!file_exists($tmpdir)) {
                 mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));

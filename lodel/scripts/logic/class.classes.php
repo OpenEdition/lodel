@@ -265,7 +265,7 @@ class ClassesLogic extends Logic
 			}
 		}
 
-		if ($alter) {        // update the CACHE ?
+		if ($alter) {        // update the cache ?
 			clearcache();
 		}
 	}

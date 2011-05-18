@@ -306,14 +306,14 @@ function loop_rss($context, $funcname, $arguments)
     }
     
     $rss = new SimplePie();
-    //, getCachePath('SimplePie'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+
     $rss->set_feed_url(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'));
     $rss->set_cache_duration(isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
     if(isset($arguments['timeout']))
         $rss->set_timeout((int)$arguments['timeout']);
 
     checkCacheDir('SimplePie/');
-    $rss->set_cache_location('./CACHE/SimplePie/');
+    $rss->set_cache_location(getCachePath('SimplePie'));
     
     $rss->init();
 

@@ -58,6 +58,7 @@ require 'lodelconfig.php';
 try
 {
 	include 'auth.php';
+    C::set('env', 'lodeladmin');
 	authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 	
 	include 'class.siteManage.php';

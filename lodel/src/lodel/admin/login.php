@@ -55,7 +55,8 @@ require 'siteconfig.php';
 try
 {
     include 'auth.php';
-    
+    C::set('env', 'admin');
+
     $login = C::get('login');
     
     if($login && C::get('passwd') && C::get('passwd2')) {

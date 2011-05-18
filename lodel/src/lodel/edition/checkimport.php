@@ -57,6 +57,7 @@ require 'siteconfig.php';
 try
 {
 	include 'auth.php';
+    C::set('env', 'edition');
 	authenticate(LEVEL_REDACTOR);
 
 	include 'taskfunc.php';

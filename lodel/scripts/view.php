@@ -165,6 +165,7 @@ class View
 	private function __construct() 
 	{
 		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
+		$this->_cacheOptions['cacheDir'] = getCachePath();
 		$this->_evalCalled = false;
 		$this->_cachedfile = null;
 		$this->_cache = null;
@@ -571,7 +572,7 @@ class View
 				$this->_evalCalled = true;
 			}
 			
-            		$filename = $this->_cacheOptions['cacheDir'].'require_caching/'.uniqid(mt_rand(), true);
+    		$filename = getCachePath('require_caching') . DIRECTORY_SEPARATOR  . uniqid(mt_rand(), true);
 
 			$fh = @fopen($filename, 'w+b');
 			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
@@ -588,7 +589,7 @@ class View
 			ob_start();
 			include $filename;
 			$contents = ob_get_clean();
-            		@fclose($fh);
+    		@fclose($fh);
 			@unlink($filename);
 		}
 		return $contents;
@@ -599,7 +600,7 @@ class View
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers répertoire cache si différent de ./CACHE/
+	* @param string $cache_rep chemin vers répertoire cache si différent du cache
 	* @param string $base_rep chemin vers répertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
 	* @param int $blockId (optionnel) numero du block
@@ -632,6 +633,7 @@ class View
 			{
 				$cacheDir = $this->_cacheOptions['cacheDir'];
 				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = getCachePath('.');
 			}
 		
 			$group = $this->_site.'_tpl';
@@ -693,7 +695,7 @@ class View
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers repertoire cache si different de ./CACHE/
+	* @param string $cache_rep chemin vers repertoire cache si different du cache
 	* @param string $base_rep chemin vers repertoire tpl
 	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
 	* @param int $blockId (optionnel) 
@@ -720,6 +722,7 @@ class View
 			{
 				$cacheDir = $this->_cacheOptions['cacheDir'];
 				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
+				$this->_cacheOptions['cacheDir'] = getCachePath('.');
 			}
 
 			if(!isset($this->_cache))
@@ -791,7 +794,7 @@ class View
 	* @param string $query la requete SQL
 	* @param string $tablename le nom de la table SQL (par défaut vide)
 	* @param string $line ligne contenant l'erreur
-	* @param string $file fichier contenant l'erreur (par défaut dans ./CACHE/require_caching/)
+	* @param string $file fichier contenant l'erreur (par défaut dans le cache require_caching/)
 	*/
 	public function myMysqlError($query, $tablename = '', $line, $file)
 	{
@@ -829,7 +832,7 @@ class View
  *
  * @param array $context le context
  * @param string $tpl le nom du fichier template
- * @param string $cache_rep chemin vers repertoire cache si different de ./CACHE/
+ * @param string $cache_rep chemin vers repertoire cache si different du cache
  * @param string $base_rep chemin vers repertoire tpl
  * @param int $blockId (optionnel) numero d'un block de template
  * @param string $loopName (optionnel) nom de la loop

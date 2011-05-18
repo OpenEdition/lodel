@@ -56,6 +56,7 @@ require 'siteconfig.php';
 try
 {
 	include 'auth.php';
+    C::set('env', 'admin');
 	authenticate(LEVEL_VISITOR);
 
 	if (isset($_GET['page'])) { // call a special page (and template)

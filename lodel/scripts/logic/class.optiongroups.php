@@ -259,7 +259,7 @@ class OptiongroupsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(SITEROOT. "CACHE/options");
+		@unlink(getCachePath("options"));
 	}
 
 	// begin{publicfields} automatic generation  //

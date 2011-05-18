@@ -626,7 +626,7 @@ class MainPluginsLogic extends Logic
 			$db->SelectDB($database.'_'.$vo->name) or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 			$plogic->enableAction($context,$error);
 			if($error) return '_error';
-			@unlink($home.'../../'.$vo->name.'/CACHE/triggers'); // remove cache triggers
+			@unlink(getCachePath('triggers', $vo->name) ); // remove cache triggers
 		}
 		$db->SelectDB($database) or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 		clearcache();
@@ -673,7 +673,7 @@ class MainPluginsLogic extends Logic
 			$db->SelectDB($database.'_'.$vo->name) or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 			$plogic->disableAction($context,$error);
 			if($error) return '_error';
-			@unlink($home.'../../'.$vo->name.'/CACHE/triggers'); // remove cache triggers
+			@unlink(getCachePath('triggers', $vo->name)); // remove cache triggers
 		}
 		$db->SelectDB($database) or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 		clearcache();

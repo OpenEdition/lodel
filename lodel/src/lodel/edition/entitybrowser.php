@@ -62,6 +62,7 @@ try
     }
     
     include 'auth.php';
+    C::set('env', 'edition');
     authenticate(LEVEL_REDACTOR);
     
     define('UPLOADDIR', SITEROOT. 'upload');

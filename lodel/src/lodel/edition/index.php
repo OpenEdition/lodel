@@ -59,6 +59,7 @@ require 'siteconfig.php';
 try
 {
 	include 'auth.php';
+    C::set('env', 'edition');
 
 	// Authentification HTTP pour les flux RSS coté édition (flux du tableau de bord) : Cf. auth.php
 	if (C::get('page') == 'backend' && C::get('format')) {

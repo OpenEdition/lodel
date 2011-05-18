@@ -108,7 +108,7 @@ class Restricted_UsersLogic extends Logic
 	public function editAction(&$context, &$error, $clean=false)
 	{
 		$ret = parent::editAction($context, $error);
-		@unlink(SITEROOT.'CACHE/.no_restricted');
+		@unlink(getCachePath('.no_restricted'));
 		return $ret;
 	}
 

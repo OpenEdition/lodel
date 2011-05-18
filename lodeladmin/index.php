@@ -59,7 +59,8 @@ require 'lodelconfig.php';
 
 try
 {
-	include 'auth.php';
+    include 'auth.php';
+    C::set('env', 'lodeladmin');
 	authenticate(LEVEL_ADMINLODEL);
 	
 	$accepted_logics = array('texts', 'translations', 'texts', 'users', 'sites', 'data', 'internal_messaging', 'mainplugins');

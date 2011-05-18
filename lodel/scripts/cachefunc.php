@@ -61,36 +61,42 @@
  */
 function clearcache($allCache=true)
 {
-	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
-	$site = C::get('site', 'cfg');
-	if($allCache) {
-		if ($site) {
-			removefilesincache(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-		}	else {
-			removefilesincache(".");
-		}
-	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
-		if ($site) {
-			$options = C::get('cacheOptions', 'cfg');
-			$cache = new Cache_Lite($options);
-			$cacheReps = array(SITEROOT, SITEROOT."lodel/edition", SITEROOT."lodel/admin");
-			foreach($cacheReps as $rep) 
-			{
-				$rep = "./".$rep;
-				$options['cacheDir'] = $rep.'/CACHE/';
-				if(!file_exists($options['cacheDir'])) continue;
-				$cache->setOption('cacheDir', $options['cacheDir']);
-				$cache->clean($site.'_page'); // page html
-				$cache->clean($site.'_tpl_inc'); // tpl included
-                		removefilesincache($options['cacheDir'].'/adodb_tpl/');
-			}
-		} else {
-			$cache = new Cache_Lite(C::get('cacheOptions', 'cfg'));
-			$cache->clean($site.'_page'); // page html
-			$cache->clean($site.'_tpl_inc'); // tpl included
-            		removefilesincache('CACHE/adodb_tpl/');
-		}
-	}
+    $_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
+    $site = C::get('site', 'cfg');
+    if($allCache) {
+        removefilesincache(getCachePath());
+    } else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
+        $options   = C::get('cacheOptions', 'cfg');
+        if ($site) {
+            $cache = new Cache_Lite($options);
+            $oldenv   = C::get('env');
+            
+            $envs = array( '', 
+                           'edition', 
+                           'admin');
+            foreach($envs as $env) 
+            {
+                C::set('env', $env);
+                
+                $options['cacheDir'] = getCachePath();
+                
+                if(!file_exists($options['cacheDir'])) continue;
+
+                $cache->setOption('cacheDir', $options['cacheDir']);
+                $cache->clean($site.'_page'); // page html
+                $cache->clean($site.'_tpl_inc'); // tpl included
+                $cache->clean();
+                removefilesincache( getCachePath('adodb_tpl') );
+            }
+            C::set('env', $oldenv);
+        } else {
+            $options['cacheDir'] = getCachePath();
+            $cache = new Cache_Lite($options);
+            $cache->clean($site.'_page'); // page html
+            $cache->clean($site.'_tpl_inc'); // tpl included
+            removefilesincache( getCachePath('adodb_tpl') );
+        }
+    }
 }
 
 /**
@@ -103,25 +109,23 @@ function removefilesincache()
 {
 	$options = C::get('cacheOptions', 'cfg');
 	$dirs = func_get_args();
-    	clearstatcache();
+    clearstatcache();
 	foreach ($dirs as $rep) {
-		$rep = "./".$rep;
-		if(FALSE === strpos($rep, 'CACHE'))
-			$rep .= "/CACHE/";
 
-		if(!is_dir($rep)) continue;
+        if(!is_dir($rep) || strpos( realpath($rep), realpath($options['cacheDir']) ) !== 0 ) continue;
 
-		// fichiers/répertoires gérés indépendament de cache_lite
-		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
-		while (($file = readdir($fd)) !== false) {
-			if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching') || ('import_' === substr($file, 0, 7)))
-				continue;
-			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
-				removefilesincache($file);
-			} else {@unlink($file);}
-		}
-		closedir($fd);	
+        // fichiers/répertoires gérés indépendament de cache_lite
+        $fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+
+        while (($file = readdir($fd)) !== false) {
+            if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching'))
+                continue;
+            $file = $rep. "/". $file;
+            if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+                removefilesincache($file);
+            } else {@unlink($file);}
+        }
+        closedir($fd);  
 	}
 }
 
@@ -131,7 +135,8 @@ function removefilesincache()
  */
 function checkCacheDir($dir)
 {
-    $dir = './CACHE/'.$dir;
+    $dir = getCachePath( $dir ) . DIRECTORY_SEPARATOR ;
+
     if(is_dir($dir))
     {
         if(is_writeable($dir)) return true;
@@ -142,7 +147,13 @@ function checkCacheDir($dir)
 	if(!@unlink($dir)) trigger_error('ERROR: file '.$dir.' exists, is not a dir and cannot be removed!', E_USER_ERROR);
     }
 
-    if(is_writeable('./CACHE/')) {
+    $filemask = C::get('filemask', 'cfg');
+    if(! is_dir( $dir ) ){
+        mkdir($dir, 0777 & octdec($filemask), true);
+        chmod($dir, 0777 & octdec($filemask));
+    }
+
+    if(is_writeable( $dir )) {
         $filemask = C::get('filemask', 'cfg');
         @mkdir($dir, 0777 & octdec($filemask));
         @chmod($dir, 0777 & octdec($filemask));
@@ -163,7 +174,7 @@ function checkCacheDir($dir)
  */
 function getFromCache($filename, $siteroot=true)
 {
-	$filename = './CACHE/'.$filename;
+	$filename = getCachePath($filename);
 	if($siteroot) $filename = SITEROOT . $filename;
 
 	if(!($fh = @fopen($filename, 'rb'))) return false;
@@ -189,10 +200,10 @@ function getFromCache($filename, $siteroot=true)
  */
 function writeToCache($filename, $datas, $siteroot=true)
 {
-	$filename = 'CACHE/'.$filename;
-	if($siteroot) $filename = SITEROOT . $filename;
-	$filemask = octdec(C::get('filemask', 'cfg'));
-	
+    $filename = getCachePath($filename);
+    
+    $filemask = octdec(C::get('filemask', 'cfg'));
+    
 	$dir = dirname($filename);
 	if(!is_dir($dir)) 
 	{
@@ -216,3 +227,18 @@ function writeToCache($filename, $datas, $siteroot=true)
 	
 	return $ret;
 }
+
+/**
+ * Get the path of CACHE directory of the site
+ * 
+ * @return string CACHE directory
+ */
+function getCachePath( $path = "", $site = null)
+{
+    $cache = new Cache_Lite(C::get('cacheOptions', 'cfg'));
+    return $cache->_cacheDir . DIRECTORY_SEPARATOR 
+            . ( $site ? $site : C::get('site','cfg') ) . DIRECTORY_SEPARATOR 
+            . C::get('env') . DIRECTORY_SEPARATOR 
+            . $path;
+}
+?>

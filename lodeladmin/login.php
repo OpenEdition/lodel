@@ -56,8 +56,8 @@ require 'lodelconfig.php';
 try
 {
 	include 'auth.php';
-	
-    	$login = C::get('login');
+    C::set('env', 'lodeladmin');
+	$login = C::get('login');
     
 	if($login && C::get('passwd') && C::get('passwd2')) {
 		include 'loginfunc.php';

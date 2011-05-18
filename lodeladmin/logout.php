@@ -55,6 +55,7 @@ require 'lodelconfig.php';
 try
 {
     require 'auth.php';
+    C::set('env', 'lodeladmin');
     authenticate();
     
     if(isset($_COOKIE[C::get('sessionname', 'cfg')]))

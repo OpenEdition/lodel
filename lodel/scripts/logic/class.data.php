@@ -205,7 +205,7 @@ class DataLogic
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
-		$context['importdirs'] = array('CACHE');
+		$context['importdirs'] = array(getCachePath());
 		if ($context['importdir']) {
   		    $context['importdirs'][] = $context['importdir'];
 		}
@@ -235,7 +235,7 @@ class DataLogic
 		
 				clearcache();
 		
-				// verifie les .htaccess dans le CACHE
+				// verifie les .htaccess dans le cache
 				$this->_checkFiles($context);
 			} while(0);
 		} else {
@@ -500,7 +500,7 @@ class DataLogic
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -515,7 +515,7 @@ class DataLogic
 		$file = $this->_extractImport($context);
 		
 		if ($file && !empty($context['delete'])) {// extra check. Need more ?
-			if (dirname($file) == 'CACHE') {
+			if (dirname($file) == getCachePath()) {
 				unlink($file);
 			}
 		} elseif ($file) {
@@ -768,7 +768,12 @@ class DataLogic
 	 */
 	private function _checkFiles(&$context)
 	{
-		$dirs = array('CACHE', 'lodel/admin/CACHE', 'lodel/edition/CACHE', 'lodel/txt', 'lodel/rtf', 'lodel/sources');
+		$dirs = array(    getCachePath()
+                        , getCachePath('admin')
+                        , getCachePath('edition')
+                        , 'lodel/txt'
+                        , 'lodel/rtf'
+                        , 'lodel/sources' );
 		foreach ($dirs as $dir) {
 			if (!file_exists(SITEROOT. $dir)) {
 				continue;
@@ -918,7 +923,7 @@ class DataLogic
 				//$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
 			}
 			
-			if (!move_uploaded_file($archive, 'CACHE/'.$file)) {
+			if (!move_uploaded_file($archive, getCachePath($file))) {
 				//trigger_error('ERROR: a problem occurs while moving the uploaded file.', E_USER_ERROR);
 				$context['error_upload'] = 1;
 				//return;
@@ -1061,7 +1066,7 @@ class DataLogic
 		global $db;
 		$err = '';
 		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array ('CACHE', C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -1240,9 +1245,9 @@ class DataLogic
 			clearcache();
 		}
 
-		if(file_exists('CACHE/require_caching/ME.obj')) {
-			@unlink('CACHE/require_caching/ME.obj');
-		}		
+        if(file_exists(getCachePath('require_caching/ME.obj'))) {
+            @unlink(getCachePath('require_caching/ME.obj'));
+        }
 		return 'importxmlmodel';
 	}
 	

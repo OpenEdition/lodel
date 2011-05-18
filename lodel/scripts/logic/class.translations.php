@@ -305,7 +305,6 @@ class TranslationsLogic extends Logic {
 						$localcontext=$context;
 						$localcontext['filename']=$file;
 						$localcontext['fullfilename']="$dir/$file";
-						if ($dir=="CACHE") $localcontext['maybedeleted']=1;
 						call_user_func("code_do_$funcname",$localcontext);	   
 					}
 					closedir ($dh);
