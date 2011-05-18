@@ -27,6 +27,7 @@
 				'ADD COLUMN `editionhooks` TEXT NOT NULL ' .
 				'AFTER `editionparams`')
 		or error_log("SQL ERROR: " . $db->ErrorMsg(), E_USER_ERROR);
+		$db->execute("ALTER TABLE entrytypes ADD `externalallowed` TINYINT(4) NOT NULL DEFAULT '0';");
 	}
 
 ?>
