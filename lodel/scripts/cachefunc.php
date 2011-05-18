@@ -201,17 +201,15 @@ function getFromCache($filename, $siteroot=true)
 function writeToCache($filename, $datas, $siteroot=true)
 {
     $filename = getCachePath($filename);
-    
     $filemask = octdec(C::get('filemask', 'cfg'));
     
 	$dir = dirname($filename);
-	if(!is_dir($dir)) 
-	{
-		if(file_exists($dir)) trigger_error('invalid file '.$filename, E_USER_ERROR);
-		@mkdir($dir, 0777 & $filemask);
-		@chmod($dir, 0777 & $filemask);
-	}
-	
+    if(! is_dir( $dir ) ){
+        if(file_exists($dir)) trigger_error('invalid file '.$filename, E_USER_ERROR);
+        mkdir($dir, 0777 & $filemask, true);
+        chmod($dir, 0777 & $filemask);
+     }
+
 	$fh = @fopen($filename, 'w+b');
 	if(!$fh)
 		trigger_error('Cannot open file '.$filename, E_USER_ERROR);
