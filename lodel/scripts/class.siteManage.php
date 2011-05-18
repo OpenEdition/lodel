@@ -954,7 +954,7 @@ class siteManage {
 					$db->Execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE id=".$site['id'])) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
-				touch(getCachePath('lock'));
+				touch(getCachePath('.lock'));
 				}
 			} 
 			elseif($maintenance === 2) 
@@ -971,7 +971,7 @@ class siteManage {
 						$db->Execute(lq("UPDATE #_MTP_sites SET status = -65 WHERE id=".$site['id'])) 
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
-					unlink(getCachePath('lock'));
+					unlink(getCachePath('.lock'));
 				}
 			}
 		}
