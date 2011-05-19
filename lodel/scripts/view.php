@@ -546,8 +546,9 @@ class View
 	private function _makeCachedFileName() 
 	{
 		// Calcul du nom du fichier en cache
-		$this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id').'//'.C::get('sitelang') .
-			"//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
+        $this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id'). C::get('format') .'//'.C::get('sitelang') .
+                           "//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
+	    
 	}
 
 	/**
