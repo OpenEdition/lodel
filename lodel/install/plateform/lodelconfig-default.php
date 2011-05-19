@@ -177,7 +177,6 @@ $cfg['debugMode']=false; // mettre à true pour afficher les erreurs générées
 $cfg['locale']="fr_FR.UTF8";
 setlocale (LC_ALL,$cfg['locale']);
 date_default_timezone_set('Europe/Paris');
-set_magic_quotes_runtime(0);
 ignore_user_abort();
 
 
