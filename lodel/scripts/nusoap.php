@@ -265,11 +265,11 @@ class nusoap_base {
     * @access	public
 	*/
 	function serialize_val($val,$name=false,$type=false,$name_ns=false,$type_ns=false,$attributes=false,$use='encoded'){
-    	if(is_object($val) && 
-	   (get_class($val) == 'soapval') ||
-	   (get_class($val) == 'servooattachment') ) {
-        	return $val->serialize($use);
-        }
+    	if( is_object($val) ) {
+    	   if(get_class($val) == 'soapval' || get_class($val) == 'servooattachment') {
+                return $val->serialize($use);
+           }
+    	}
 	$this->debug( "in serialize_val: $val, $name, $type, $name_ns, $type_ns, $attributes, $use");
 	// if no name, use item
 	$name = (!$name|| is_numeric($name)) ? 'soapVal' : $name;
@@ -369,7 +369,7 @@ class nusoap_base {
 	case (is_array($val) || $type):
 	  // detect if struct or array
 	  $valueType = $this->isArraySimpleOrStruct($val);
-	  if($valueType=='arraySimple' || ereg('^ArrayOf',$type)){
+	  if($valueType=='arraySimple' || preg_match('/^ArrayOf/',$type)){
 	    $i = 0;
 	    if(is_array($val) && count($val)> 0){
 	      foreach($val as $v){
@@ -1660,7 +1660,7 @@ class soap_transport_http extends nusoap_base {
 	*/
 	function soap_transport_http($url){
 		$this->setURL($url);
-		ereg('\$Revisio' . 'n: ([^ ]+)', $this->revision, $rev);
+		preg_match('/\$Revisio' . 'n: ([^ ]+)/', $this->revision, $rev);
 		$this->outgoing_headers['User-Agent'] = $this->title.'/'.$this->version.' ('.$rev[1].')';
 	}
 
@@ -1966,7 +1966,7 @@ class soap_transport_http extends nusoap_base {
 			$this->outgoing_headers['Connection'] = 'close';
 			$this->persistentConnection = false;
 		}
-		set_magic_quotes_runtime(0);
+		@set_magic_quotes_runtime(0);
 		// deprecated
 		$this->encoding = $enc;
 	}
@@ -2149,7 +2149,7 @@ class soap_transport_http extends nusoap_base {
 				}
 			}
 			// remove 100 header
-			if(isset($lb) && ereg('^HTTP/1.1 100',$data)){
+			if(isset($lb) && preg_match('/^HTTP\/1.1 100/',$data)){
 				unset($lb);
 				$data = '';
 			}//
@@ -4857,7 +4857,7 @@ class soap_parser extends nusoap_base {
 			$key_localpart = $this->getLocalPart($key);
 			// if ns declarations, add to class level array of valid namespaces
             if($key_prefix == 'xmlns'){
-				if(ereg('^http://www.w3.org/[0-9]{4}/XMLSchema$',$value)){
+				if(preg_match('#^http://www.w3.org/[0-9]{4}/XMLSchema$#',$value)){
 					$this->XMLSchemaVersion = $value;
 					$this->namespaces['xsd'] = $this->XMLSchemaVersion;
 					$this->namespaces['xsi'] = $this->XMLSchemaVersion.'-instance';
@@ -5294,7 +5294,7 @@ class mysoapclient extends nusoap_base  {
 				
 				// instantiate wsdl object and parse wsdl file
 				$this->debug('instantiating wsdl class with doc: '.$endpoint);
-				$this->wsdl =& new wsdl($this->wsdlFile,$this->proxyhost,$this->proxyport,$this->proxyusername,$this->proxypassword,$this->timeout,$this->response_timeout);
+				$this->wsdl = new wsdl($this->wsdlFile,$this->proxyhost,$this->proxyport,$this->proxyusername,$this->proxypassword,$this->timeout,$this->response_timeout);
 			}
 			$this->appendDebug($this->wsdl->getDebug());
 			$this->wsdl->clearDebug();
@@ -5523,7 +5523,7 @@ class mysoapclient extends nusoap_base  {
 		// detect transport
 		switch(true){
 			// http(s)
-			case ereg('^http',$this->endpoint):
+			case preg_match('/^http/',$this->endpoint):
 				$this->debug('transporting via HTTP');
 				if($this->persistentConnection == true && is_object($this->persistentConnection)){
 					$http =& $this->persistentConnection;
@@ -5545,10 +5545,10 @@ class mysoapclient extends nusoap_base  {
 					$http->setEncoding($this->http_encoding);
 				}
 				$this->debug('sending message, length: '.strlen($msg));
-				if(ereg('^http:',$this->endpoint)){
+				if(preg_match('/^http:/',$this->endpoint)){
 				//if(strpos($this->endpoint,'http:')){
 					$this->responseData = $http->send($msg,$timeout,$response_timeout);
-				} elseif(ereg('^https',$this->endpoint)){
+				} elseif(preg_match('/^https/',$this->endpoint)){
 				//} elseif(strpos($this->endpoint,'https:')){
 					//if(phpversion() == '4.3.0-dev'){
 						//$response = $http->send($msg,$timeout,$response_timeout);
@@ -5605,7 +5605,7 @@ class mysoapclient extends nusoap_base  {
 		if (strpos($headers['content-type'], '=')) {
 			$enc = str_replace('"', '', substr(strstr($headers["content-type"], '='), 1));
 			$this->debug('Got response encoding: ' . $enc);
-			if(eregi('^(utf-8|US-ASCII|UTF-8)$',$enc)){
+			if(preg_match('/^(utf-8|US-ASCII|UTF-8)$/i',$enc)){
 				$this->xml_encoding = strtoupper($enc);
 			} else {
 				$this->xml_encoding = 'US-ASCII';
