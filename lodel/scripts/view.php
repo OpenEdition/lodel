@@ -304,7 +304,8 @@ class View
 			if(!$contents) $recalcul = true;
 			elseif(C::get('debugMode', 'cfg'))
 			{ // if in debug mode we compare the last modified time of both template and cache files
-				if($this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html'))
+                if($this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
+                   || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() ) )
 					$recalcul = true;
 			}
 
