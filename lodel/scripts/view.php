@@ -328,7 +328,7 @@ class View
 		/* Si c'est de la re-génération, on vide le cache SQL */
         if($this->_regen){
             global $db;
-            $db->CacheFlush();
+            if(isset($db)) $db->CacheFlush();
         }
 		// empty cache, let's calculate and display it
 		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
