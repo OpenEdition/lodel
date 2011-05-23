@@ -298,18 +298,17 @@ class View
 				$this->_cache = new Cache_Lite($this->_cacheOptions);
 			}
 
-			$recalcul = false;
 			$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
 
-			if(!$contents) $recalcul = true;
+			if(!$contents) $this->_regen = true;
 			elseif(C::get('debugMode', 'cfg'))
 			{ // if in debug mode we compare the last modified time of both template and cache files
                 if($this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
                    || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() ) )
-					$recalcul = true;
+					$this->_regen = true;
 			}
 
-			if(!$recalcul)
+			if(!$this->_regen)
 			{
 				$pos = strpos($contents, "\n");
 				$timestamp = (int)substr($contents, 0, $pos);
@@ -325,7 +324,12 @@ class View
             
             		unset($contents);
 		} 
-
+		
+		/* Si c'est de la re-génération, on vide le cache SQL */
+        if($this->_regen){
+            global $db;
+            $db->CacheFlush();
+        }
 		// empty cache, let's calculate and display it
 		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
         	$this->_print($gzip);
@@ -601,7 +605,7 @@ class View
 			ob_start();
 			include $filename;
 			$contents = ob_get_clean();
-            		@fclose($fh);
+            @fclose($fh);
 			@unlink($filename);
 		}
 		
@@ -725,8 +729,9 @@ class View
 		C::set('format', null); // en cas de nouvel appel a calcul_page
 		
 		$template_cache = "tpl_{$base}";
-			
+
 		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
+
 		$template['contents'] = _indent($this->_eval($template['contents'], $context));
 
 		if(!self::$nocache && 
