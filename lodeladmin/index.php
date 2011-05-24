@@ -48,6 +48,8 @@ if (!file_exists('../lodelconfig.php')) {
 	exit;
 }
 
+$env = "lodeladmin";
+
 require 'lodelconfig.php';
 require_once 'auth.php';
 authenticate(LEVEL_ADMINLODEL);

@@ -46,9 +46,8 @@ require_once 'siteconfig.php';
 require_once 'lang.php';
 require_once 'auth.php';
 
-$env = "admin";
-
 authenticate(LEVEL_VISITOR);
+$env = "admin";
 if ($_GET['page']) { // call a special page (and template)
 	$page = $_GET['page'];
   	if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {

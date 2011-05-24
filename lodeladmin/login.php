@@ -44,6 +44,8 @@
  * @package lodeladmin
  */
 
+$env = "lodeladmin";
+
 require 'lodelconfig.php';
 require_once 'auth.php';
 
