@@ -292,14 +292,14 @@ class View
 
 			$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
 
-            if(!$contents 
-               || $this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
-               || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() ))
-            {
-               $this->_regen = true;
-            }
+            $recalcul = 
+                (!$contents 
+                    || $this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
+                    || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() )) 
+                ? true : false;
+                
 
-			if(!$this->_regen)
+			if(!$recalcul)
 			{
 				$pos = strpos($contents, "\n");
 				$timestamp = (int)substr($contents, 0, $pos);
@@ -317,14 +317,14 @@ class View
 		}
 
         /* Si c'est de la re-génération, on vide le cache SQL */
-        if($this->_regen){
+        if($recalcul){
             global $db;
             if(isset($db)) $db->CacheFlush();
         }
 
 		// empty cache, let's calculate and display it
 		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
-        	$this->_print($gzip);
+    	$this->_print($gzip);
         
 		return true;
 	}
