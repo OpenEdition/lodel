@@ -292,13 +292,12 @@ class View
 
 			$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
 
-			if(!$contents) $this->_regen = true;
-			elseif(C::get('debugMode', 'cfg'))
-			{ // if in debug mode we compare the last modified time of both template and cache files
-				if($this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
-				   || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() ) )
-					$this->_regen = true;
-			}
+            if(!$contents 
+               || $this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
+               || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() ))
+            {
+               $this->_regen = true;
+            }
 
 			if(!$this->_regen)
 			{
@@ -314,7 +313,7 @@ class View
 				unset($timestamp, $pos);
 			}
             
-            		unset($contents);
+    		unset($contents);
 		}
 
         /* Si c'est de la re-génération, on vide le cache SQL */
