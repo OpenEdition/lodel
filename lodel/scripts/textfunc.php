@@ -872,14 +872,14 @@ function paranumber($texte, $styles='texte')
 * @param  string $filename le nom du fichier
 * @param bool $return 
 */
-function getFileMime($filename, $return=false){
-	$mime = null;
-	exec('file -i -b '.escapeshellarg($filename), $mime);
-	if($return) return join('',$mime);
-	foreach($mime as $l)
-		echo $l;
-}
 
+function getFileMime($filename, $return=false){
+        $mime = null;
+        exec('file --mime-type -b '.escapeshellarg($filename), $mime);
+        if($return) return join('',$mime);
+        foreach($mime as $l)
+                echo $l;
+}
 
 /** renvoie le type seul d'un fichier 
 * @author Bruno Cénou
