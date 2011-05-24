@@ -182,6 +182,7 @@ class View
 		if(!in_array(realpath($home.'func.php'), $included))
 			require_once 'func.php';	
 		$cache = new Cache_Lite($this->_cacheOptions);
+        $base = $tpl.($format ? '_'.$format : '');
 
 		// efface le cache si demandé
 		if($_REQUEST['clearcache']) {
@@ -189,13 +190,21 @@ class View
 		} elseif (!$caching) { 
 			clearcache(false);
 		} elseif($content = $cache->get($this->_cachedfile, $site)) {
-			if(FALSE !== ($content = $this->_iscachevalid($content, $context))) {
+			if(FALSE !== ($content = $this->_iscachevalid($content, $context))
+			   && $cache->lastModified() > @filemtime('./tpl/'.$base.'.html')
+			   && $cache->lastModified() > strtotime($context['upd'])
+			    ) {
 				$content = $this->_eval($content, $context, true);
 				echo _indent($content);
 				flush();
 				return;
 			}
 		}
+		
+		/* on vide le cache SQL, s'il s'agit de la generation */
+		global $db;
+		if(isset($db)) $db->CacheFlush();
+		
 		// pas de fichier dispo dans le cache ou fichier cache à recompiler
 		// on le calcule, l'enregistre, l'execute et affiche le résultat
 		$content = $this->_calcul_page($context, $tpl);
