@@ -324,7 +324,7 @@ function loop_rss($context, $funcname, $arguments)
             echo "<b>Warning: Erreur de connection RSS sur l'url {$arguments['url']}: {$this->error()}</b><br/>";
         }   else {
             if (C::get('contactbug', 'cfg'))
-                @mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url ".$arguments['url']);
+                @mail(C::get('contactbug', 'cfg'), "[WARNING] LODEL - ".C::get('version', 'cfg')." - $GLOBALS[currentdb]", "Erreur de connection RSS sur l'url {$arguments['url']}: {$this->error()}");
             error_reporting($err);
             return;
         }
