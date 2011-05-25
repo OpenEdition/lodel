@@ -281,7 +281,7 @@ class View
 		$base = $tpl.($format ? '_'.$format : '');
 	
 		$context =& C::getC();
-
+		
 		// we try to reach the cache only if asked and no POST datas
 		if($caching && !self::$nocache) 
 		{
@@ -314,6 +314,8 @@ class View
 			}
             
     		unset($contents);
+		}else{
+		    $recalcul = true;
 		}
 
         /* Si c'est de la re-génération, on vide le cache SQL */
