@@ -330,11 +330,12 @@ function loop_rss($context, $funcname, $arguments)
     
     foreach (array (# obligatoire
     "title", "link", "description", # optionel
-    "language", "copyright", "managingEditor", "webMaster", "pubDate", "lastBuildDate", "category", "generator", "docs", "cloud", "ttl", "rating", "textInput", "skipHours", "skipDays") as $v){
+    "language", "copyright", "managingEditor", "webMaster", "lastBuildDate", "category", "generator", "docs", "cloud", "ttl", "rating", "textInput", "skipHours", "skipDays") as $v){
        $function_name = "get_" . strtolower($v);
        $localcontext[strtolower($v)] = method_exists($rss, $function_name ) ? $rss->$function_name() : '';
     }
-
+    $localcontext['pubdate'] = $item->get_date(); 
+    
     // special treatment for "image"
     if ($rss->get_image_url()) {
         $localcontext['image_url']    = $rss->get_image_url();
@@ -390,10 +391,11 @@ function loop_rssitem($context, $funcname, $arguments)
     foreach($items as $item){
         $localcontext = $context;
         $localcontext['count'] = ++$count;
-        foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "pubdate", "source") as $v){
+        foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "source") as $v){
             $function_name = "get_{$v}";
             $localcontext[$v] = method_exists($item, $function_name ) ? $item->$function_name() : '';
         }
+        $localcontext['pubdate'] = $item->get_date(); 
         call_user_func("code_do_$funcname", $localcontext);
     }
     if (function_exists("code_after_$funcname"))
