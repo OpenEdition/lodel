@@ -334,7 +334,6 @@ function loop_rss($context, $funcname, $arguments)
        $function_name = "get_" . strtolower($v);
        $localcontext[strtolower($v)] = method_exists($rss, $function_name ) ? $rss->$function_name() : '';
     }
-    $localcontext['pubdate'] = $rss->get_date(); 
     
     // special treatment for "image"
     if ($rss->get_image_url()) {
