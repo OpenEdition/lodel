@@ -22,8 +22,8 @@ if (!defined('PMA_VERSION')) {
 
 // php version
 if (!defined('PMA_PHP_INT_VERSION')) {
-    if (!ereg('([0-9]{1,2}).([0-9]{1,2}).([0-9]{1,2})', phpversion(), $match)) {
-        $result = ereg('([0-9]{1,2}).([0-9]{1,2})', phpversion(), $match);
+    if (!preg_match('@([0-9]{1,2}).([0-9]{1,2}).([0-9]{1,2})@', phpversion(), $match)) {
+        $result = preg_match('@([0-9]{1,2}).([0-9]{1,2})@', phpversion(), $match);
     }
     if (isset($match) && !empty($match[1])) {
         if (!isset($match[2])) {
@@ -43,10 +43,10 @@ if (!defined('PMA_PHP_INT_VERSION')) {
 // MySQL client API
 if (!defined('PMA_MYSQL_CLIENT_API')) {
     if (function_exists('mysql_get_client_info') || function_exists('mysqli_get_client_info')) {
-	if('mysql' == DBDRIVER)
-        	$client_api = mysql_get_client_info();
-	else
-		$client_api = mysqli_get_client_info();
+    if('mysql' == DBDRIVER)
+            $client_api = mysql_get_client_info();
+    else
+        $client_api = mysqli_get_client_info();
     } else {
         // for compatibility with php <= 4.0.5
         // expect the worst!
@@ -59,7 +59,7 @@ if (!defined('PMA_MYSQL_CLIENT_API')) {
 
 // Whether the os php is running on is windows or not
 if (!defined('PMA_IS_WINDOWS')) {
-    if (defined('PHP_OS') && eregi('win', PHP_OS)) {
+    if (defined('PHP_OS') && preg_match('/win/i', PHP_OS)) {
         define('PMA_IS_WINDOWS', 1);
     } else {
         define('PMA_IS_WINDOWS', 0);
