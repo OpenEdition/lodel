@@ -1054,7 +1054,7 @@ class TEIParser extends XMLReader
 	 */
 	private function _parse($xml)
 	{
-		$this->XML($xml, 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
+        $this->XML($xml, 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
 
 		$text = '';
 
@@ -1578,12 +1578,15 @@ class TEIParser extends XMLReader
 			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
 			{
                 $attrs = $this->_parseAttributes();
+                $nb    = array();
+                $id    = "";
 			    if(isset($attrs['url']) && is_readable($this->_tmpdir . DIRECTORY_SEPARATOR . $attrs['url'] )){
 			        $source = $this->_tmpdir . DIRECTORY_SEPARATOR;
 			        
 			        /* Creation of import folder */
-			        $tmpdir = SITEROOT . 'docannexe/image/' . end(array_filter(explode('/', $this->_tmpdir))) . DIRECTORY_SEPARATOR;
-			        mkdir($tmpdir);
+			        $array  = array_filter(explode('/', $this->_tmpdir));
+			        $tmpdir = SITEROOT . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
+			        if( ! file_exists($tmpdir) ) mkdir($tmpdir);
                     chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
                     
                     /* Getting file name */
