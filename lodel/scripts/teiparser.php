@@ -1020,7 +1020,7 @@ class TEIParser extends XMLReader
 
 				foreach($block as $k => $v)
 				{
-					$this->_updateNameSpaces($v);
+					//$this->_updateNameSpaces($v);
 					$xmlAttrs = $v->attributes('http://www.w3.org/XML/1998/namespace');
 					if(isset($xmlAttrs['id']) && 0 === strpos((string) $xmlAttrs['id'], 'otx_'))
 						$id = substr((string) $xmlAttrs['id'], '4'); // remove 'otx_'
