@@ -1764,7 +1764,7 @@ class TEIParser extends XMLReader
      */
     private function _parseCode(array $attrs)
     {
-        $text .= "<pre><code class=\"brush: {$attrs['lang']};\">";
+        $text = "<pre><code class=\"brush: {$attrs['lang']};\">";
         while($this->read()){
             if( parent::END_ELEMENT === $this->nodeType ){
                 $text .= $this->_closeTag();
