@@ -349,7 +349,7 @@ class TEIParser extends XMLReader
 		}
 
 		/* Récupération des namespaces du document */
-		$this->_namespaces = $simplexml->getNamespaces(true);
+		$this->_namespaces = $simplexml->getDocNamespaces(true);
 
 		if($simplexml->teiHeader->encodingDesc->tagsDecl)
 			$this->_parseRenditions($simplexml->teiHeader->encodingDesc->tagsDecl);
@@ -1020,7 +1020,7 @@ class TEIParser extends XMLReader
 
 				foreach($block as $k => $v)
 				{
-					//$this->_updateNameSpaces($v);
+					$this->_updateNameSpaces($v);
 					$xmlAttrs = $v->attributes('http://www.w3.org/XML/1998/namespace');
 					if(isset($xmlAttrs['id']) && 0 === strpos((string) $xmlAttrs['id'], 'otx_'))
 						$id = substr((string) $xmlAttrs['id'], '4'); // remove 'otx_'
@@ -1786,13 +1786,17 @@ class TEIParser extends XMLReader
 	 */
 	 private function _updateNameSpaces(SimpleXMLElement &$v)
 	 {
-		foreach($this->_namespaces as $k => $ns){
-			if(empty($k) && !isset($empty)){
-				$empty = $ns;
-				$v->addAttribute("xmlns", $ns);
-			}else{
-				$v->addAttribute("xmlns:$k", $ns, "xmlns");
-			}
-		}	 	
+  		foreach($this->_namespaces as $k => $ns){
+  		    if(empty($k) && !isset($empty)){
+  		        $empty = $ns;
+  		        $v->addAttribute("xmlns", $ns);
+  		    }else{
+  		        /* Hack permettant de générer le bon XML, PHP 5.3 a changé le comportement
+  		         * de SimpleXML, qui supprime le prefixe du namespace, mais qui ne sait pas
+  		         * le traiter après coup. Bizarre. 
+  		         */
+   				$v->addAttribute("xmlns:xmlns:{$k}", $ns, $empty);
+  		    }
+  		}
 	 }
 }
