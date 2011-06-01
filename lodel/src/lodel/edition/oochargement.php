@@ -179,7 +179,7 @@ try
 			    $archive = new PclZip($source);
 			    $arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
 			}
-			
+
             $dir = opendir($tmpdir);
             while ($file = readdir($dir)) {
                 if(is_file( $tmpdir . DIRECTORY_SEPARATOR . $file ) && preg_match( "/\.xml$/",$file) ){
@@ -225,6 +225,7 @@ try
                     $row['fichier']         = $fileconverted;
                     $row['tei']             = $tei;
                     $row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
+                    $row['source']          = $source;
                     // build the import
                     $row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
                     $row['identity']        = $context['identity'];

@@ -178,7 +178,9 @@
 			<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=source&amp;id=[#ID]">[@EDITION.GET_SOURCE_FILE]</a></li>
 			<IF COND="[#CREATIONMETHOD] EQ 'otx'">
 				<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=tei&amp;id=[#ID]">[@EDITION.GET_TEI_FILE]</a></li>
-				<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=odt&amp;id=[#ID]">[@EDITION.GET_ODT_FILE]</a></li>
+				<IF COND="[#CREATIONINFO|pathinfo(PATHINFO_EXTENSION)] NE 'zip'">
+				    <li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=odt&amp;id=[#ID]">[@EDITION.GET_ODT_FILE]</a></li>
+				</IF>
 			</IF>
 		<ELSE/>
 			<li><a onClick="preserveDatas();" href="index.php?do=download&amp;type=tei&amp;id=[#ID]">[@EDITION.GET_SOURCE_FILE]</a></li>
