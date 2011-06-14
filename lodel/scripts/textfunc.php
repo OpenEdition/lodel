@@ -852,18 +852,24 @@ function paranumber($texte, $styles='texte')
 	for($i=1; $i < $length_tab_classes; $i++) {
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
+
+	$texte = str_replace("\n", "\\n", $texte);
+
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*?<\/\\1>/s", "", $texte);
-	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
+	$tmpTexte = preg_replace("/<p[^>]*>(:?\s|\\n)*<a[^>]*>(:?\s|\\n)*<img[^>]*\/>(:?\s|\\n)*<\/a>(:?\s|\\n)*<\/p>/", "", $tmpTexte);
+	
 	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/s';
 	// on récupère les paragraphes à numéroter
 	preg_match_all($regexp, $tmpTexte, $m);
+
 	// on effectue la numérotation et on remplace dans le texte
 	foreach($m[0] as $k=>$paragraphe) {
 		$tmpTexte2 = explode($paragraphe, $texte, 2);
 		$texte = $tmpTexte2[0].str_replace($paragraphe, replacement($m[1][$k], $m[3][$k], $m[4][$k], $m[5][$k]), $paragraphe).$tmpTexte2[1];
 	}
-	return $texte;
+
+	return str_replace("\\n", "\n", $texte);
 }
 
 
