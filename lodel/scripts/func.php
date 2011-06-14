@@ -1371,7 +1371,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
 	// set headers
 	$message->setSubject($subject);
-	$message->setFrom($fromname);
+	$message->setFrom( "$fromname <$fromaddress>");
 	
 	// body creation
 	$isHTML ? $message->setHTMLBody($body) : $message->setTxtBody($body);
@@ -1391,13 +1391,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	}
 	else $headers =& $message->headers();
 
-	// bug if the $fromname contains accentued chars
-	// @see http://pear.php.net/bugs/bug.php?id=11238
-	// hardcode it
-	$from = $message->_encodeHeaders(array('From'=>"<".$fromaddress.">"));
-	$headers['From'] .= $from['From'];
-
-	unset($message, $from);
+	unset($message);
 	// send the mail
 	$r = Mail::factory('mail')->send($to, $headers, $body);
 	$ret = true;
