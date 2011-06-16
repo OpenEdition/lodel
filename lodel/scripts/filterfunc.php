@@ -8,10 +8,10 @@
 *
 * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-* Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-* Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-* Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-* Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+* Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+* Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+* Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+* Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
 *
 * Home page: http://www.lodel.org
 *
@@ -35,9 +35,9 @@
 *
 * @author Ghislain Picard
 * @author Jean Lamy
-* @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-* @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-* @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
+* @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+* @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+* @copyright 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
 * @licence http://www.gnu.org/copyleft/gpl.html
 * @version CVS:$Id:
 * @package lodel
@@ -89,42 +89,47 @@ function makefilterfunc()
 	// to update with ADODB
 	checkCacheDir();
 	$fp = fopen(getCachePath("filterfunc.php"), "w");
-	fputs($fp, '<'.'?php function filtered_mysql_fetch_assoc($context, $result) {
-			$filters = array('.$filterstr.');
-		$count = mysql_num_fields($result);
-		$row = mysql_fetch_row($result);
-		if (!$row) return array();
-		for($i = 0; $i < $count; $i++) {
-			$fieldname[$i] = mysql_field_name($result, $i);
-			$fullfieldname[$i] = mysql_field_table($result,$i). ".". $fieldname[$i];
-			$ret[$fieldname[$i]] = $row[$i];
-		}
-		$localcontext=array_merge($context, $ret);
-		for($i = 0; $i < $count; $i++) {
-			if ($filters[$fullfieldname[$i]]) {
-					$filter = create_function(\'$x, $context\', $filters[$fullfieldname[$i]]);
-					$ret[$fieldname[$i]] = $filter($ret[$fieldname[$i]], $localcontext);
-	# echo $filters[$fullfieldname[$i]], " ", $fieldname[$i], " ", $ret[$fieldname[$i]]," ", $filter, "<br>";
-			}
-		}
-		return $ret;
-	}
+	fputs($fp, '<'.'?php
+        if(!function_exists("filtered_mysql_fetch_assoc")){
+            function filtered_mysql_fetch_assoc($context, $result) {
+                $filters = array('.$filterstr.');
+                $count = mysql_num_fields($result);
+                $row = mysql_fetch_row($result);
+                if (!$row) return array();
+                for($i = 0; $i < $count; $i++) {
+                    $fieldname[$i] = mysql_field_name($result, $i);
+                    $fullfieldname[$i] = mysql_field_table($result,$i). ".". $fieldname[$i];
+                    $ret[$fieldname[$i]] = $row[$i];
+                }
+                $localcontext=array_merge($context, $ret);
+                for($i = 0; $i < $count; $i++) {
+                    if ($filters[$fullfieldname[$i]]) {
+                        $filter = create_function(\'$x, $context\', $filters[$fullfieldname[$i]]);
+                        $ret[$fieldname[$i]] = $filter($ret[$fieldname[$i]], $localcontext);
+                        # echo $filters[$fullfieldname[$i]], " ", $fieldname[$i], " ", $ret[$fieldname[$i]]," ", $filter, "<br>";
+                    }
+                }
+                return $ret;
+            }
+        }
 	
 	/**
 	* Function to filter field of a single class.
 	*/
-	function merge_and_filter_fields(&$context, $class, &$assoc)
-	{
-		$filters = array('. $filterstr. ');
-		$localcontext = array_merge($context, $assoc);
-		foreach($assoc as $k=>$v) {
-			if ($filters[$class. ".". $k]) {
-				$filter = create_function(\'$x, $context\', $filters[$class. ".". $k]);
-				$context[$k] = $filter($v, $localcontext);
-			} else {
-		$context[$k] = $v;
-			}
-		}
+	if(!function_exists("merge_and_filter_fields")){
+    	function merge_and_filter_fields(&$context, $class, &$assoc)
+    	{
+    		$filters = array('. $filterstr. ');
+    		$localcontext = array_merge($context, $assoc);
+    		foreach($assoc as $k=>$v) {
+    			if ($filters[$class. ".". $k]) {
+    				$filter = create_function(\'$x, $context\', $filters[$class. ".". $k]);
+    				$context[$k] = $filter($v, $localcontext);
+    			} else {
+    		$context[$k] = $v;
+    			}
+    		}
+    	}
 	}
 	?'.'>');
 	fclose($fp);
