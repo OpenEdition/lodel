@@ -171,6 +171,16 @@ class TEIParser extends XMLReader
 	  */
 	 private $_tmpdir;
 
+	 /**
+	  * @var array tableau de styles correspondant aux notes de fin et bas de page
+	  * @access private  
+	  */
+	 private $_notesstyles = array(
+	                               'footnotesymbol',
+	                               'footnotereference',
+	                               'endnotesymbol',
+	                               'endnotereference',
+	                               );
 
 	/**
 	 * Constructeur
@@ -812,7 +822,7 @@ class TEIParser extends XMLReader
 
 		$name = strtolower($name);
 
-		if('footnotesymbol' !== $name && 'endnotesymbol' !== $name)
+		if(!in_array($name, $this->_notesstyles))
 			$this->_log(sprintf(getlodeltextcontents("TEIPARSER_UNKNOWN_LOCAL_STYLE", 'edition'), $name));
 
 		return '';
@@ -1068,8 +1078,8 @@ class TEIParser extends XMLReader
 
 				$attrs = $this->_parseAttributes();
 
-				if(isset($attrs['rend']) && ('footnotesymbol' === strtolower($attrs['rend']) || 'endnotesymbol' === strtolower($attrs['rend']))) continue;
-				
+				if(isset($attrs['rend']) && in_array(strtolower($attrs['rend']), $this->_notesstyles) ) continue;
+
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
 				
 			}
@@ -1080,7 +1090,7 @@ class TEIParser extends XMLReader
 
 				$rend = $this->getAttribute('rend');
 
-				if(!empty($rend) && ('footnotesymbol' === strtolower($rend) || 'endnotesymbol' === strtolower($rend))) continue;
+                if(isset($rend) && in_array(strtolower($rend), $this->_notesstyles) ) continue;
 
 				$text .= $this->_closeTag();
 				
