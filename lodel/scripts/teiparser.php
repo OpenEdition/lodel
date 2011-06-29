@@ -1235,7 +1235,11 @@ class TEIParser extends XMLReader
 					elseif('direction(ltr)' === $style)
 						$attrsAdd[] = 'dir="ltr"';
 				}
+			}else{
+			    $ret   .= '<span>';
+			    $tags[] = 'span';
 			}
+            
 			unset($attrs['rend']);
 		}
 
