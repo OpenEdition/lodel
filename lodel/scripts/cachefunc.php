@@ -64,7 +64,10 @@ function clearcache($allCache=false, $require_caching=false)
     $_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
     $site = C::get('site', 'cfg');
     if(!$allCache) {
+        $oldenv = C::get('env');
+        C::set('env', '');
         removefilesincache(getCachePath());
+        C::set('env', $oldenv);
     } else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
         $options   = C::get('cacheOptions', 'cfg');
         if ($site) {
@@ -122,7 +125,7 @@ function removefilesincache()
         while (($file = readdir($fd)) !== false) {
             if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching') || ( $file == "tmp" ) )
                 continue;
-            $file = $rep. "/". $file;
+            $file = $rep. DIRECTORY_SEPARATOR . $file;
             if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
                 removefilesincache($file);
             } else {@unlink($file);}
