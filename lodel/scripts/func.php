@@ -742,7 +742,7 @@ function tmpdir($name = '')
                 $tmpdir = getCachePath('tmp');
 
         if (!file_exists($tmpdir)) {
-                mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
+                mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')), true);
                 chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
         }
 
@@ -750,7 +750,7 @@ function tmpdir($name = '')
         {
                 $tmpdir .= '/'.$name;
                 if (!file_exists($tmpdir)) {
-                        mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')));
+                        mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')), true);
                         chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
                 }
         }
