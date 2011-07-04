@@ -176,6 +176,7 @@ class TEIParser extends XMLReader
 	  * @access private  
 	  */
 	 private $_notesstyles = array(
+                                   'footnote',
 	                               'footnotesymbol',
 	                               'footnotereference',
 	                               'endnotesymbol',
@@ -1235,7 +1236,8 @@ class TEIParser extends XMLReader
 					elseif('direction(ltr)' === $style)
 						$attrsAdd[] = 'dir="ltr"';
 				}
-			}else{
+			}elseif(!in_array($attrs['rend'], $this->_notesstyles)){
+				var_dump($attrs['rend']);
 			    $ret   .= '<span>';
 			    $tags[] = 'span';
 			}
