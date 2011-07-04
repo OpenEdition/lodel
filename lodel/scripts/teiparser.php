@@ -1236,8 +1236,7 @@ class TEIParser extends XMLReader
 					elseif('direction(ltr)' === $style)
 						$attrsAdd[] = 'dir="ltr"';
 				}
-			}elseif(!in_array($attrs['rend'], $this->_notesstyles)){
-				var_dump($attrs['rend']);
+			}elseif( $this->localName !== "p" ){
 			    $ret   .= '<span>';
 			    $tags[] = 'span';
 			}
