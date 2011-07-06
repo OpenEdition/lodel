@@ -676,7 +676,7 @@ class TEIParser extends XMLReader
 					$person['g_name'] = strip_tags($person['g_name']);
 					if($lastname && $firstname)
 					{
-						$name = preg_split("/(\s|\xc2\xa0)+/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY);
+						$name = preg_split("/\s+/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY);
 						$persons[$personType][$k]['data'][$lastname['class']] = array_pop($name);
 						$persons[$personType][$k]['data'][$firstname['class']] = join(' ', $name);
 					}
