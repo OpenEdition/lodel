@@ -393,6 +393,7 @@ function verbs_processing()
 
 	if ($args['verb']) {
 		$format = strtolower($args['verb']);
+		C::set('format', $format);
 		switch ($args['verb']) {
 		case 'Identify':
 			unset($args['verb']);
