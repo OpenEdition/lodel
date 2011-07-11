@@ -1236,10 +1236,9 @@ class TEIParser extends XMLReader
 						$attrsAdd[] = 'dir="ltr"';
 				}
 			}elseif( $this->localName !== "p" ){
-			    $ret   .= '<span>';
-			    $tags[] = 'span';
+				$ret   .= '<span class="' . $styles['class'] . '">';
+				$tags[] = 'span';
 			}
-            
 			unset($attrs['rend']);
 		}
 
