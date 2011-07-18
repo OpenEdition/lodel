@@ -318,7 +318,7 @@ class Restricted_UsersLogic extends Logic
 
 		if (!parent::validateFields($context,$error)) return false;
 		// check the user has the right equal or higher to the new user
-		if (empty($context['userrights']) || C::get('rights', 'lodeluser') < $context['userrights'])
+		if (C::get('rights', 'lodeluser') < $context['userrights'])
 			trigger_error("ERROR: You don't have the right to create a user with rights higher than yours", E_USER_ERROR);
 
 		usecurrentdb();
