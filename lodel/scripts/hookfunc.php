@@ -10,7 +10,7 @@ if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
  * @param array $context le contexte contenant l'article
  * @param string $field le champ actuellement parsé
  */
-function updatedatepubli(&$context, &$field){
+function updatedatepubli(&$context, $field){
 	if($context['do'] == "publish" && $context['publishstatus'] == 1){
 		$context['data']['datemisenligne'] = date("Y-m-d");
 	}
