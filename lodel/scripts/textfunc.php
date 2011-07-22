@@ -852,16 +852,31 @@ function paranumber($texte, $styles='texte')
 	for($i=1; $i < $length_tab_classes; $i++) {
 		$chaine_classes .= '|"'.$tab_classes[$i].'"';
 	}
+
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
-	$tmpTexte = preg_replace("/<(td|li)[^>]*>.*?<\/\\1>/s", "", $texte);
-	$tmpTexte = preg_replace("/<p[^>]*>\s*<img[^>]*\/>/", "", $tmpTexte);
-	$regexp = '/(<p[^>]+class=('.$chaine_classes.'))([^>]*>)(.*?)(<\/p>)/s';
-	// on récupère les paragraphes à numéroter
-	preg_match_all($regexp, $tmpTexte, $m);
-	// on effectue la numérotation et on remplace dans le texte
-	foreach($m[0] as $k=>$paragraphe) {
-		$tmpTexte2 = explode($paragraphe, $texte, 2);
-		$texte = $tmpTexte2[0].str_replace($paragraphe, replacement($m[1][$k], $m[3][$k], $m[4][$k], $m[5][$k]), $paragraphe).$tmpTexte2[1];
+	$doc = new DOMDocument();
+	$doc->loadXML("<body>$texte</body>");
+	$dom = new DOMXpath($doc);
+
+	$res = $dom->query("//p[@class='$styles']");
+	$count = 0;
+	$illegalparents = array('li', 'td');
+	foreach($res as $node){
+		if(in_array($node->parentNode->localName, $illegalparents) 
+			|| in_array($node->parentNode->parentNode->localName, $illegalparents)
+			|| $dom->query(".//img", $node)->length) continue;
+		++$count;
+		$parnum = $doc->createElement('span');
+		$parnum->setAttribute('class', 'paranumber');
+		$parnum->nodeValue = $count;
+		$clone = $node->cloneNode(true);
+		$clone->appendChild($parnum);
+		$node->parentNode->replaceChild($clone, $node);
+	}
+
+	$texte = "";
+	foreach($dom->query('/body/*') as $elem ) {
+		$texte .= $doc->saveXML($elem);
 	}
 	return $texte;
 }
