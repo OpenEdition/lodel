@@ -97,37 +97,117 @@ function couper($texte, $long)
 }
 
 /**
- * Cut text keeping whole words
+ * Truncates text.
+ *
+ * Cuts a string to the length of $length and replaces the last characters
+ * with the ending if the text is longer than length.
+ *
+ * This function is checked out from CakePHP code.
+ *
+ * ### Options:
+ *
+ * - `ending` Will be used as Ending and appended to the trimmed string
+ * - `exact` If false, $text will not be cut mid-word
+ * - `html` If true, HTML tags would be handled correctly
+ *
+ * @param string  $text String to truncate.
+ * @param integer $length Length of returned string, including ellipsis.
+ * @param array $options An array of html attributes and options.
+ * @return string Trimmed string.
+ * @access public
+ * @link http://book.cakephp.org/view/1469/Text#truncate-1625
  */
-function cuttext($text, $length, $dots=false)
-{
+function cuttext($text, $length = 100, $dots = false) {
 	$GLOBALS['textfunc_hasbeencut'] = false;
+	$options = array(
+		'ending' => '', 'exact' => false, 'html' => true
+	);
+
+	if($dots) $options['ending'] = '...';
+
+	extract($options);
 	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
-	$open = mb_strpos($text, "<", 0, $encoding);
-	if ($open === false || $open > $length){
-		return cut_without_tags($text, $length, $dots);}
-	$length -= $open;
-	$stack = array ();
-	while ($open !== FALSE) {
-		$close = mb_strpos($text, ">", $open, $encoding);
-		if (mb_substr($text, $open+1, 1, $encoding) == "/") {
-			array_pop($stack); // fermante
-		}	elseif (mb_substr($text, $close-1, 1, $encoding) != "/") {
-			$tag = mb_substr($text, $open +1, $close -1 - $open, $encoding);
-			if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
-			else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
+
+	if ($html) {
+		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
+			return $text;
 		}
-		$open = mb_strpos($text, "<", $close, $encoding);
-		$piecelen = $open -1 - $close;
-		if ($open === FALSE || $piecelen > $length)
-		{
-			if($dots) array_push($stack, ' (...)');
-			return mb_substr($text, 0, $close +1, $encoding).cut_without_tags(mb_substr($text, $close +1, $length +2, $encoding), $length).// 2 pour laisser de la marge
-			join("", array_reverse($stack));
+		$totalLength = mb_strlen(strip_tags($ending), $encoding);
+		$openTags = array();
+		$truncate = '';
+
+		preg_match_all('/(<\/?([\w+]+)[^>]*>)?([^<>]*)/', $text, $tags, PREG_SET_ORDER);
+		foreach ($tags as $tag) {
+			if (!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2])) {
+				if (preg_match('/<[\w]+[^>]*>/s', $tag[0])) {
+					array_unshift($openTags, $tag[2]);
+				} else if (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
+					$pos = array_search($closeTag[1], $openTags);
+					if ($pos !== false) {
+						array_splice($openTags, $pos, 1);
+					}
+				}
+			}
+			$truncate .= $tag[1];
+
+			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]), $encoding);
+			if ($contentLength + $totalLength > $length) {
+				$left = $length - $totalLength;
+				$entitiesLength = 0;
+				if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', $tag[3], $entities, PREG_OFFSET_CAPTURE)) {
+					foreach ($entities[0] as $entity) {
+						if ($entity[1] + 1 - $entitiesLength <= $left) {
+							$left--;
+							$entitiesLength += mb_strlen($entity[0], $encoding);
+						} else {
+							break;
+						}
+					}
+				}
+
+				$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength, $encoding);
+				break;
+			} else {
+				$truncate .= $tag[3];
+				$totalLength += $contentLength;
+			}
+			if ($totalLength >= $length) {
+				break;
+			}
 		}
-		$length -= $piecelen;
+	} else {
+		if (mb_strlen($text, $encoding) <= $length) {
+			return $text;
+		} else {
+			$truncate = mb_substr($text, 0, $length - mb_strlen($ending, $encoding), $encoding);
+		}
 	}
-	return $text;
+	if (!$exact) {
+		$spacepos = mb_strrpos($truncate, ' ', $encoding);
+		if (isset($spacepos)) {
+			if ($html) {
+				$bits = mb_substr($truncate, $spacepos, null, $encoding);
+				preg_match_all('/<\/([a-z]+)>/', $bits, $droppedTags, PREG_SET_ORDER);
+				if (!empty($droppedTags)) {
+					foreach ($droppedTags as $closingTag) {
+						if (!in_array($closingTag[1], $openTags)) {
+							array_unshift($openTags, $closingTag[1]);
+						}
+					}
+				}
+			}
+			$truncate = mb_substr($truncate, 0, $spacepos, $encoding);
+		}
+	}
+	$truncate .= $ending;
+
+	if ($html) {
+		foreach ($openTags as $tag) {
+			$truncate .= '</'.$tag.'>';
+		}
+	}
+
+	return $truncate;
 }
 
 function cut_without_tags($text, $length, $dots=false)
