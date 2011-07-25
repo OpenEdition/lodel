@@ -832,10 +832,15 @@ function replacement($arg0, $arg1, $arg2, $arg3)
  * @param DOMDocument $dom Le dom du corps du texte
  */
 function cleanIllegalTags( DOMDocument &$dom ){
-	/* suppression des <a> vide */
 	$xpath = new DOMXpath($dom);
-	foreach($xpath->query('//a[not(@href) and not(text())]') as $elem){
-		$elem->parentNode->removeChild($elem);
+	$paths = array(
+					'//a[not(@href) and not(text())]',
+					'//em[not(text())]'
+					);
+	foreach( $paths as $path ){
+		foreach($xpath->query($path) as $elem){
+			$elem->parentNode->removeChild($elem);
+		}
 	}
 }
 
