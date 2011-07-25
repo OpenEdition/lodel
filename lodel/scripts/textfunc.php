@@ -827,6 +827,19 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 }
 
 /**
+ * Nettoie le texte de balises <a> vides et autofermées
+ * 
+ * @param DOMDocument $dom Le dom du corps du texte
+ */
+function cleanIllegalTags( DOMDocument &$dom ){
+	/* suppression des <a> vide */
+	$xpath = new DOMXpath($dom);
+	foreach($xpath->query('//a[not(@href) and not(text())]') as $elem){
+		$elem->parentNode->removeChild($elem);
+	}
+}
+
+/**
  * Filtre de numerotation des paragraphes
  * 
  * Ajoute un <span class="paranumber"> contenant une ancre avec le numero du paragraphe
@@ -857,6 +870,8 @@ function paranumber($texte, $styles='texte')
 	$doc = new DOMDocument();
 	$doc->loadXML("<body>$texte</body>");
 	$dom = new DOMXpath($doc);
+
+	cleanIllegalTags($doc);
 
 	$res = $dom->query("//p[@class='$styles']");
 	$count = 0;
