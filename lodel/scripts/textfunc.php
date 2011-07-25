@@ -869,9 +869,8 @@ function paranumber($texte, $styles='texte')
 		$parnum = $doc->createElement('span');
 		$parnum->setAttribute('class', 'paranumber');
 		$parnum->nodeValue = $count;
-		$clone = $node->cloneNode(true);
-		$clone->appendChild($parnum);
-		$node->parentNode->replaceChild($clone, $node);
+
+		$node->insertBefore($parnum, $node->firstChild);
 	}
 
 	$texte = "";
