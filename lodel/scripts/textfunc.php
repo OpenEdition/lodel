@@ -120,7 +120,7 @@ function couper($texte, $long)
 function cuttext($text, $length = 100, $dots = false) {
 	$GLOBALS['textfunc_hasbeencut'] = false;
 	$options = array(
-		'ending' => '', 'exact' => false, 'html' => true
+		'ending' => '', 'exact' => true, 'html' => true
 	);
 
 	if($dots) $options['ending'] = '...';
@@ -906,6 +906,23 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 	return $repl;
 }
 
+function cleanHTML( $text ) {
+	$GLOBALS['textfunc_hasbeencleaned'] = true;
+
+	if(class_exists('tidy')){
+		$config = array(
+					'quote-nbsp' => false,
+					'output-xhtml' => true,
+					'preserve-entities' => true,
+					);
+		$tidy = new tidy();
+		$tidy->parseString( $text, $config, 'utf8');
+		$tidy->cleanRepair();
+		return $tidy->body()->value;
+	}
+	return $text;
+}
+
 /**
  * Nettoie le texte de balises <a> vides et autofermées
  * 
@@ -915,7 +932,8 @@ function cleanIllegalTags( DOMDocument &$dom ){
 	$xpath = new DOMXpath($dom);
 	$paths = array(
 					'//a[not(@href) and not(text())]',
-					'//em[not(text())]'
+					'//em[not(text())]',
+					'//p[not(text())]'
 					);
 	foreach( $paths as $path ){
 		foreach($xpath->query($path) as $elem){
@@ -953,7 +971,8 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
-	$doc->loadXML("<body>$texte</body>");
+	if(!$doc->loadXML(cleanHTML($texte)))
+		return $texte;
 	$dom = new DOMXpath($doc);
 
 	cleanIllegalTags($doc);
