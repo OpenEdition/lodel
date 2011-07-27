@@ -120,7 +120,7 @@ function couper($texte, $long)
 function cuttext($text, $length = 100, $dots = false) {
 	$GLOBALS['textfunc_hasbeencut'] = false;
 	$options = array(
-		'ending' => '', 'exact' => false, 'html' => true
+		'ending' => '', 'exact' => true, 'html' => true
 	);
 
 	if($dots) $options['ending'] = '...';
@@ -182,6 +182,7 @@ function cuttext($text, $length = 100, $dots = false) {
 			$truncate = mb_substr($text, 0, $length - mb_strlen($ending, $encoding), $encoding);
 		}
 	}
+
 	if (!$exact) {
 		$spacepos = mb_strrpos($truncate, ' ', $encoding);
 		if (isset($spacepos)) {
@@ -199,6 +200,7 @@ function cuttext($text, $length = 100, $dots = false) {
 			$truncate = mb_substr($truncate, 0, $spacepos, $encoding);
 		}
 	}
+
 	$truncate .= $ending;
 
 	if ($html) {
@@ -907,15 +909,35 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 }
 
 /**
- * Nettoie le texte de balises <a> vides et autofermées
+ * Nettoie le document de malformations, comme des balises non-fermées, coupées, mal ouvertes, etc…
+ * 
+ * @param $text le texte du document
+ */
+function cleanHTML( $text ) {
+	$GLOBALS['textfunc_hasbeencleaned'] = true;
+
+	if(class_exists('tidy')){
+		$config = array('quote-nbsp' => false, 'output-xhtml' => true);
+		$tidy = new tidy();
+		$tidy->parseString( $text, $config, 'utf8');
+		$tidy->cleanRepair();
+		return $tidy->body()->value;
+	}
+	return $text;
+}
+
+/**
+ * Nettoie le texte de balises vides et autofermées qui ne devraient pas
  * 
  * @param DOMDocument $dom Le dom du corps du texte
  */
 function cleanIllegalTags( DOMDocument &$dom ){
+	
 	$xpath = new DOMXpath($dom);
 	$paths = array(
 					'//a[not(@href) and not(text())]',
-					'//em[not(text())]'
+					'//em[not(text())]',
+					'//p[not(text())]'
 					);
 	foreach( $paths as $path ){
 		foreach($xpath->query($path) as $elem){
@@ -953,7 +975,8 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
-	$doc->loadXML("<body>$texte</body>");
+	if(!$doc->loadXML(cleanHTML($texte)))
+		return $texte;
 	$dom = new DOMXpath($doc);
 
 	cleanIllegalTags($doc);
