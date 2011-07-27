@@ -869,7 +869,7 @@ class siteManage {
 		}
 		
 		// clean siteconfig
-		unlink($siteconfigcache);
+		@unlink($siteconfigcache);
 
 		if ($import) {
 			$go = C::get('url'). "/lodel/admin/index.php?do=importmodel&lo=data";
