@@ -789,9 +789,10 @@ class siteManage {
 			unlink($siteconfigcache);
 		}
 		$atroot = C::get('path') == '/' ? 'root' : '';
-		if (!copy(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php", $siteconfigcache)) {
-			trigger_error("ERROR: unable to write in cache.", E_USER_ERROR);
-		}
+                checkCacheDir(dirname($siteconfigcache));
+                if (!copy(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php", $siteconfigcache)) {
+                        trigger_error("ERROR: unable to write in cache : $siteconfigcache", E_USER_ERROR);
+                }
 		if(!$this->maj_siteconfig($siteconfigcache, array('site' => C::get('name'))))
 		{
 			View::getView()->render('site-file');
