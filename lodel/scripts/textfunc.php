@@ -916,14 +916,11 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 function cleanHTML( $text ) {
 	$GLOBALS['textfunc_hasbeencleaned'] = true;
 
-	if(class_exists('tidy')){
-		$config = array('quote-nbsp' => false, 'output-xhtml' => true);
-		$tidy = new tidy();
-		$tidy->parseString( $text, $config, 'utf8');
-		$tidy->cleanRepair();
-		return $tidy->body()->value;
-	}
-	return $text;
+	require_once 'htmLawed.php';
+	$config = array(
+		'valid_xhtml' => 1,
+	);
+	return htmLawed($text, $config);
 }
 
 /**
@@ -975,7 +972,7 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
-	if(!$doc->loadXML(cleanHTML($texte)))
+	if(!$doc->loadXML("<body>" . cleanHTML($texte) . "</body>"))
 		return $texte;
 	$dom = new DOMXpath($doc);
 
