@@ -934,6 +934,7 @@ function cleanIllegalTags( DOMDocument &$dom ){
 	$paths = array(
 					'//a[not(@href) and not(text())]',
 					'//em[not(text())]',
+					'//p[not(./*) and not(text())]',
 					);
 	foreach( $paths as $path ){
 		foreach($xpath->query($path) as $elem){
