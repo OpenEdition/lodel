@@ -922,10 +922,12 @@ function cleanHTML( $text ) {
  * @param DOMDocument $dom Le dom du corps du texte
  */
 function cleanIllegalTags( DOMDocument &$dom ){
+	
 	$xpath = new DOMXpath($dom);
 	$paths = array(
 					'//a[not(@href) and not(text())]',
 					'//em[not(text())]',
+					'//p[not(./*) and not(text())]',
 					);
 	foreach( $paths as $path ){
 		foreach($xpath->query($path) as $elem){
