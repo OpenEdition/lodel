@@ -934,7 +934,6 @@ function cleanIllegalTags( DOMDocument &$dom ){
 	$paths = array(
 					'//a[not(@href) and not(text())]',
 					'//em[not(text())]',
-					'//p[not(text())]'
 					);
 	foreach( $paths as $path ){
 		foreach($xpath->query($path) as $elem){
@@ -976,7 +975,7 @@ function paranumber($texte, $styles='texte')
 		return $texte;
 	$dom = new DOMXpath($doc);
 
-	cleanIllegalTags($doc);
+	cleanIllegalTags(&$doc);
 
 	$res = $dom->query("//p[@class='$styles']");
 	$count = 0;
