@@ -933,7 +933,7 @@ function cleanIllegalTags( DOMDocument &$dom ){
 	$xpath = new DOMXpath($dom);
 	$paths = array(
 					'//a[not(@href) and not(text())]',
-					'//em[not(text())]',
+					'//em[not(text()) and not(node())]',
 					'//p[not(./*) and not(text())]',
 					);
 	foreach( $paths as $path ){
@@ -981,10 +981,12 @@ function paranumber($texte, $styles='texte')
 	$res = $dom->query("//p[@class='$styles']");
 	$count = 0;
 	$illegalparents = array('li', 'td');
+
 	foreach($res as $node){
 		if(in_array($node->parentNode->localName, $illegalparents) 
 			|| in_array($node->parentNode->parentNode->localName, $illegalparents)
 			|| $dom->query(".//img", $node)->length) continue;
+
 		++$count;
 		$parnum = $doc->createElement('span');
 		$parnum->setAttribute('class', 'paranumber');
