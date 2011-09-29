@@ -912,6 +912,7 @@ function cleanHTML( $text ) {
 	require_once 'htmLawed.php';
 	$config = array(
 		'valid_xhtml' => 1,
+		'make_tag_strict' => 0,
 	);
 	return htmLawed($text, $config);
 }
