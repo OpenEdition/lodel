@@ -913,6 +913,7 @@ function cleanHTML( $text ) {
 	$config = array(
 		'valid_xhtml' => 1,
 		'make_tag_strict' => 0,
+		'unique_ids' => 0,
 	);
 	return htmLawed($text, $config);
 }
