@@ -205,9 +205,9 @@ class DataLogic
 		$this->fileRegexp = $context['fileregexp'] = '(site|revue)-[a-z0-9\-]+-\d{6}.'. $this->fileExtension;
 
 		// les répertoires d'import
-		$context['importdirs'] = array(getCachePath());
+		$context['importdirs'] = array();
 		if ($context['importdir']) {
-  		    $context['importdirs'][] = $context['importdir'];
+			$context['importdirs'][] = $context['importdir'];
 		}
 
 		$file = $this->_extractImport($context);
@@ -500,7 +500,7 @@ class DataLogic
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		//Vérifie que l'on peut bien faire cet import
 		$context['importdir'] = C::get('importdir', 'cfg'); //cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array ( C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -514,11 +514,7 @@ class DataLogic
 		$this->filePrefix = 'model';
 		$file = $this->_extractImport($context);
 		
-		if ($file && !empty($context['delete'])) {// extra check. Need more ?
-			if (dirname($file) == getCachePath()) {
-				unlink($file);
-			}
-		} elseif ($file) {
+		if ($file) {
 			$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
@@ -768,12 +764,7 @@ class DataLogic
 	 */
 	private function _checkFiles(&$context)
 	{
-		$dirs = array(    getCachePath()
-                        , getCachePath('admin')
-                        , getCachePath('edition')
-                        , 'lodel/txt'
-                        , 'lodel/rtf'
-                        , 'lodel/sources' );
+		$dirs = array( 'lodel/sources' );
 		foreach ($dirs as $dir) {
 			if (!file_exists(SITEROOT. $dir)) {
 				continue;
@@ -922,8 +913,8 @@ class DataLogic
 				return;
 				//$file = $this->filePrefix . '-import-'. date("dmy"). '.'. $this->fileExtension;
 			}
-			
-			if (!move_uploaded_file($archive, getCachePath($file))) {
+
+			if (!move_uploaded_file( $archive, cache_get_path( null ) . DIRECTORY_SEPARATOR . $file )) {
 				//trigger_error('ERROR: a problem occurs while moving the uploaded file.', E_USER_ERROR);
 				$context['error_upload'] = 1;
 				//return;
@@ -1062,11 +1053,14 @@ class DataLogic
 	 */
 	public function importxmlmodelAction(&$context, &$error) 
 	{
+		$cache   = getCacheObject();
+		$cacheid = getCacheIdFromId('ME.obj');
+
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$err = '';
 		$context['importdir'] = C::get('importdir', 'cfg'); // cherche le rep d'import défini dans la conf
-		$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg'). '../install/plateform');
+		$GLOBALS['importdirs'] = array (C::get('home', 'cfg'). '../install/plateform');
 		if ($context['importdir']) {
 			$GLOBALS['importdirs'][] = $context['importdir'];
 		}
@@ -1078,11 +1072,7 @@ class DataLogic
 		$context['delete'] = isset($context['delete']) ? $context['delete'] : false;
 		$file = $this->_extractImport($context);
 		
-		if ($file && $context['delete']) {// extra check. Need more ?
-			if (dirname($file) == 'CACHE') {
-				@unlink($file);
-			}
-		} elseif ($file) {
+		if ($file) {
 			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			$acceptedexts = array('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff', 'js');
@@ -1094,10 +1084,10 @@ class DataLogic
 		}
 		
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
-			&& ($meObj = getFromCache('require_caching/ME.obj', false))) { // on a déjà parsé le XML
+			&& ($meObj = cache_get('ME.obj'))) { // on a déjà parsé le XML
 			$class = __CLASS__;
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
-				$context['error'] = $error = 'Content in file "CACHE/require_caching/ME.obj" is not an object. Aborted.';
+				$context['error'] = $error = 'Content in file "ME.obj" is not an object. Aborted.';
 				return 'importxmlmodel';
 			}
 			$this->_xmlStruct = $meObj->_xmlStruct;
@@ -1126,7 +1116,8 @@ class DataLogic
 			}
 			// parse la base
 			$this->_parseSQL();
-			writeToCache('require_caching/ME.obj', $this, false);
+			
+			$cache->set($cacheid, serialize($this));
 		}
 
 		if(isset($context['checkcontent'])) {
@@ -1139,7 +1130,8 @@ class DataLogic
 				return 'importxml_checktables';
 			}
 			if(!empty($this->_changedFields)) {
-				writeToCache('require_caching/ME.obj', $this, false);
+				$cache->set($cacheid, serialize($this));
+
 				unset($this->_changedFields[lq('#_TP_tablefields')]);
 				$context['modifiedfields'] = $this->_changedFields;
 				return 'importxml_checkfields';
@@ -1189,7 +1181,9 @@ class DataLogic
 		} elseif(isset($file)) {
 			$this->_cleanDatabase();
 			if(!isset($context['checkcontent']) && TRUE === $this->_checkContents()) {
-				writeToCache('require_caching/ME.obj', $this, false);
+				$cache = getCacheObject();
+				$cache->set($cacheid, serialize($this));
+
 				$context['changedcontent'] = $this->_changedContent;
 				return 'importxml_checkcontent';
 			} elseif(count($this->_changedTables['dropped'])>0 || count($this->_changedTables['added'])>0) {
@@ -1217,7 +1211,9 @@ class DataLogic
 					return 'importxmlmodel';
 				}
 				if(!empty($this->_changedTypes)) {
-					writeToCache('require_caching/ME.obj', $this, false);
+
+					$cache->set($cacheid, serialize($this));
+
 					$context['modifiedoldtypes'] = $this->_changedTypes;
 					$types = lq('#_TP_types');
 					$entrytypes = lq('#_TP_entrytypes');
@@ -1245,8 +1241,8 @@ class DataLogic
 			clearcache();
 		}
 
-        if(file_exists(getCachePath('require_caching/ME.obj'))) {
-            @unlink(getCachePath('require_caching/ME.obj'));
+        if($cache->get($cacheid)) {
+            $cache->delete($cacheid);
         }
 		return 'importxmlmodel';
 	}
@@ -1375,7 +1371,9 @@ class DataLogic
 				}
 			}
 		}
-		writeToCache('require_caching/ME.obj', $this, false);
+		
+		$cache = getCacheObject();
+		$cache->set(getCacheIdFromId('ME.obj'), serialize($this));
 	}
 
 	/**
@@ -1490,9 +1488,9 @@ class DataLogic
 			return;
 		}
 		// on récupère les noms des tables sur la base
-		if(!($tablefields = getFromCache('tablefields')))
-        	{
-                	include 'tablefields.php';
+		if(!($tablefields = cache_get('tablefields')))
+		{
+			include 'tablefields.php';
 		}
 
 		// on récupère la structure de la base XML ainsi que les données
@@ -1774,7 +1772,8 @@ class DataLogic
 				$this->_xmlDatas['classes'][] = $class;
 				$this->_classes[] = $class['class'];
 			}
-			writeToCache('require_caching/ME.obj', $this, false);
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('ME.obj'), serialize($this));
 		}
 		if(empty($context['data']['added']) || !is_array($context['data']['added'])) return;
 		$tablefield = lq('#_TP_tablefields');
@@ -2446,9 +2445,7 @@ function loop_files_model(&$context, $funcname)
 				$localcontext = $context;
 				$localcontext['filename']     = $file;
 				$localcontext['fullfilename'] = "$dir/$file";
-				if ($dir == "CACHE") {
-					$localcontext['maybedeleted'] = 1;
-				}
+
 				// open ZIP archive and extract model.(sql|xml)
 				if ($unzipcmd && $unzipcmd != "pclzip") {
 	  				$line = `$unzipcmd $dir/$file -c $model`;

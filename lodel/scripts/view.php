@@ -84,17 +84,6 @@
 
 class View
 {
-	/** 
-	 * Le nom du fichier de cache
-	 * @var string 
-	 */
-	private $_cachedfile;
-    
-	/**
-	* Le nom réel du fichier mis dans le cache par Cache_Lite
-	* @var string
-	*/
-	private $_cachedfilename;
 
 	/** 
 	 * Les options du cache
@@ -164,16 +153,13 @@ class View
 	 */
 	private function __construct() 
 	{
-		$this->_cacheOptions = C::get('cacheOptions', 'cfg');
-		$this->_cacheOptions['cacheDir'] = getCachePath();
 		$this->_evalCalled = false;
-		$this->_cachedfile = null;
 		$this->_cache = null;
 		$this->_site = C::get('site', 'cfg');
 		$this->_home = C::get('home', 'cfg');
-        	self::$time = time();
+		self::$time = time();
 		self::$microtime = microtime(true);
-        	self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
+		self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
 	}
 
 	/**
@@ -270,10 +256,6 @@ class View
 		C::set('view.tpl', $tpl);
 		$format = C::get('format');
 		C::set('view.format', $format);
-		if(!isset($this->_cachedfile))
-		{	
-			$this->_makeCachedFileName();
-		}
 
 		C::trigger('preview');
 		$tpl = C::get('view.tpl');
@@ -281,25 +263,18 @@ class View
 		$base = $tpl.($format ? '_'.$format : '');
 	
 		$context =& C::getC();
-		
+
 		// we try to reach the cache only if asked and no POST datas
 		if($caching && !self::$nocache) 
 		{
 			if(!isset($this->_cache))
 			{
-				$this->_cache = new Cache_Lite($this->_cacheOptions);
+				$this->_cache = getCacheObject();
 			}
 
-			$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
+			$contents = $this->_cache->get(getCacheIdFromId( $context['id'] ));
 
-            $recalcul = 
-                (!$contents 
-                    || $this->_cache->lastModified() < @filemtime('./tpl/'.$base.'.html') 
-                    || ( isset($context['upd']) && strtotime($context['upd']) > $this->_cache->lastModified() )) 
-                ? true : false;
-                
-
-			if(!$recalcul)
+			if($contents)
 			{
 				$pos = strpos($contents, "\n");
 				$timestamp = (int)substr($contents, 0, $pos);
@@ -312,22 +287,21 @@ class View
 				
 				unset($timestamp, $pos);
 			}
-            
-    		unset($contents);
-		}else{
-		    $recalcul = true;
+
+			unset($contents);
 		}
 
-        /* Si c'est de la re-génération, on vide le cache SQL */
-        if($recalcul){
-            global $db;
-            if(isset($db)) $db->CacheFlush();
-        }
+		/* Si c'est de la re-génération, on vide le cache SQL */
+		if(!$caching || self::$nocache){
+			global $db;
+			if(isset($db)) $db->CacheFlush();
+		}
 
 		// empty cache, let's calculate and display it
 		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
-    	$this->_print($gzip);
-        
+
+		$this->_print($gzip);
+
 		return true;
 	}
 
@@ -411,14 +385,14 @@ class View
 	*/
 	public function renderIfCacheIsValid()
 	{
-        	if(self::$nocache) return false;
-        	C::trigger('preview');
-		$this->_makeCachedFileName();
+		if(self::$nocache) return false;
+		C::trigger('preview');
+
 		if(!isset($this->_cache))
 		{
-			$this->_cache = new Cache_Lite($this->_cacheOptions);
+			$this->_cache = getCacheObject();
 		}
-		$contents = $this->_cache->get($this->_cachedfile, $this->_site.'_page');
+		$contents = $this->_cache->get($this->_cachedfile);
 		if(!$contents) return false;
 		$pos = strpos($contents, "\n");
 		$timestamp = (int)substr($contents, 0, $pos);
@@ -460,46 +434,36 @@ class View
 		$tplFile = $base_rep. $tpl. '.html';
 		$blockId = (int) $blockId;
 		$idcontext = (int) (isset($context['id']) ? $context['id'] : 0);
-        	$recalcul = true;
+		$recalcul = true;
 
 		if(!self::$nocache)
-        	{
+		{
 			if($blockId > 0)
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
-					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-					$blockId.$sum.'//'.C::get('qs', 'cfg');
+				$template_cache = $tpl.'_'.$idcontext.'_'.C::get('sitelang') ."_". 
+					C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'.
+					$blockId.$sum.'_'.C::get('qs', 'cfg');
 			}
 			elseif(isset($loopName))
 			{
-				$template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
-					C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
-					$loopName.$sum.'//'.C::get('qs', 'cfg');
+				$template_cache = $tpl.'_'.$idcontext.'_'.C::get('sitelang') ."_". 
+					C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'.
+					$loopName.$sum.'_'.C::get('qs', 'cfg');
 			}
-			else $template_cache = $tpl.'//'.$idcontext.'//'.C::get('sitelang') ."//". 
-				C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.
+			else $template_cache = $tpl.'_'.$idcontext.'_'.C::get('sitelang') ."_". 
+				C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'.
 				C::get('qs', 'cfg');
-		
-			if(!empty($cache_rep)) 
-			{
-				$cacheDir = $this->_cacheOptions['cacheDir'];
-				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-			}
-			
-			$group = $this->_site.'_tpl_inc';
-			
+
 			if(!isset($this->_cache))
 			{
-				$this->_cache = new Cache_Lite($this->_cacheOptions);
+				$this->_cache = getCacheObject();
 			}
-			elseif(isset($cacheDir))
-			{
-				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
-			}
-			
+
+			$template_cache = getCacheIdFromId($template_cache, $this->_cache);
+
 			$recalcul = false;
 
-			if($contents = $this->_cache->get($template_cache, $group))
+			if($contents = $this->_cache->get($template_cache))
 			{
 				$pos = strpos($contents, "\n");
 				$timestamp = (int)substr($contents, 0, $pos);
@@ -511,7 +475,7 @@ class View
 				$recalcul = true;
 			}
 		}
-        
+
 		if($recalcul)
 		{
 			$template = $this->_calcul_template($tpl, $cache_rep, $base_rep, $blockId, $loopName);
@@ -521,41 +485,17 @@ class View
 			{
 				if(!isset($this->_cache))
 				{
-					$this->_cache = new Cache_Lite($this->_cacheOptions);
+					$this->_cache = getCacheObject();
 				} 
-				elseif(isset($cacheDir))
-				{
-					$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
-				}
 
 				$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
-				$this->_cache->save($timestamp."\n".$template['contents'], $template_cache, $group);
+				$this->_cache->set($template_cache, $timestamp."\n".$template['contents']);
 				unset($timestamp);
 			}
 			$contents = $template['contents'];
 			unset($template);
 		}
-	
-		if(isset($cacheDir))
-		{
-			$this->_cache->setOption('cacheDir', $cacheDir);
-		}
-
 		return $contents;
-	}
-
-	/**
-	 * Modifie le nom du fichier à utiliser pour mettre en cache 
-	 *
-	 * Cette fonction calcule le nom du fichier mis en cache uniquement pour la page principale
-	 * et non pour les templates inclus dynamiquement
-	 */
-	private function _makeCachedFileName() 
-	{
-		// Calcul du nom du fichier en cache
-        $this->_cachedfile = basename($_SERVER['PHP_SELF']).'//'.C::get('id'). C::get('format') .'//'.C::get('sitelang') .
-                           "//". C::get('name', 'lodeluser'). "//". C::get('rights', 'lodeluser').'//'.C::get('qs', 'cfg');
-	    
 	}
 
 	/**
@@ -576,29 +516,12 @@ class View
 				defined('INC_LOOPS') || include 'loops.php';
 				defined('INC_TEXTFUNC') || include 'textfunc.php';
 				defined('INC_FUNC') || include 'func.php';
-				checkCacheDir('require_caching');
 				$this->_evalCalled = true;
 			}
 			
-    		$filename = getCachePath('require_caching') . DIRECTORY_SEPARATOR  . uniqid(mt_rand(), true);
-
-			$fh = @fopen($filename, 'w+b');
-			if(!$fh) trigger_error('Cannot open file '.$filename, E_USER_ERROR);
-		
-			@flock($fh, LOCK_EX);
-			$ret = @fwrite($fh, $contents);
-		
-			if(false === $ret)
-			{
-				@fclose($fh);
-				trigger_error('Cannot write in file '.$filename, E_USER_ERROR);
-			}
-
 			ob_start();
-			include $filename;
+			eval("?>" . $contents);
 			$contents = ob_get_clean();
-    		@fclose($fh);
-			@unlink($filename);
 		}
 		return $contents;
 	}
@@ -617,10 +540,11 @@ class View
 	private function _calcul_template($base, $cache_rep = '', $base_rep = './tpl/', $blockId=0, $loopName=null) 
 	{
 		$tpl = $base_rep. $base. '.html';
+
 		if (!file_exists($tpl)) 
 		{
 			$base_rep = C::get('view.base_rep.'.$base);
-            		$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
+			$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
 			if(!$base_rep || !file_exists($tpl = $plugin_base_rep.$base_rep.'/tpl/'.$base.'.html'))
 			{
 				if (!headers_sent()) {
@@ -632,68 +556,49 @@ class View
 				$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, true);
 			}
 		}
-        
-        	$contents = false;
-        
+
+		$contents = false;
+
 		if(!self::$nocache)
 		{
-			if(!empty($cache_rep)) 
-			{
-				$cacheDir = $this->_cacheOptions['cacheDir'];
-				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-				$this->_cacheOptions['cacheDir'] = getCachePath('.');
-			}
-		
-			$group = $this->_site.'_tpl';
-			
+
 			if($blockId>0)
 			{
-				$template_cache = "tpl_{$base}_block_{$blockId}";
+				$template_cache = getCacheIdFromId("tpl_{$base}_block_{$blockId}", $this->_cache);
 			}
 			elseif(isset($loopName))
 			{
-				$template_cache = "tpl_{$base}_loop_{$loopName}";
+				$template_cache = getCacheIdFromId("tpl_{$base}_loop_{$loopName}", $this->_cache);
 			}
 			else
 			{
-				$template_cache = "tpl_{$base}";
+				$template_cache = getCacheIdFromId("tpl_{$base}", $this->_cache);
 			}
 		
 			if(!isset($this->_cache))
 			{
-				$this->_cache = new Cache_Lite($this->_cacheOptions);
-			}
-			elseif(isset($cacheDir))
-			{
-				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
+				$this->_cache = getCacheObject();
 			}
 			
-			$contents = $this->_cache->get($template_cache, $group);
+			$contents = $this->_cache->get($template_cache);
 		}
-        
-		if($contents && !(C::get('debugMode', 'cfg') && $this->_cache->lastModified() < @filemtime($tpl)) )
+
+		if($contents && !C::get('debugMode', 'cfg'))
 		{
 			$pos = strpos($contents, "\n");
 			$template['refresh'] = (int)substr($contents, 0, $pos);
 			$template['contents'] = substr($contents, $pos+1);
 		}
-        	else
+		else
 		{
 			// le tpl cache n'existe pas ou n'est pas a jour compare au fichier de maquette
-            		$template = LodelParser::getParser()->parse($tpl, $blockId, $cache_rep, $loopName);
-            		if(!self::$nocache)
-			    $this->_cache->save($template['refresh']."\n".$template['contents'], $template_cache, $group);
+			$template = LodelParser::getParser()->parse($tpl, $blockId, $cache_rep, $loopName);
+			if(!self::$nocache)
+				$this->_cache->set($template_cache, $template['refresh']."\n".$template['contents']);
 		}
-        	unset($contents);
+		unset($contents);
 
-		// si jamais le path a ete modifie on remet par defaut
-		if(isset($cacheDir)) 
-		{
-			$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
-			$this->_cache->setOption('cacheDir', $cacheDir);
-		}
-
-        	return $template;
+		return $template;
 	}
 
 	/**
@@ -717,40 +622,26 @@ class View
 			$base .= "_{$format}";
 		}
 		C::set('format', null); // en cas de nouvel appel a calcul_page
-		
+
 		$template_cache = "tpl_{$base}";
-			
+
 		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
 		$template['contents'] = _indent($this->_eval($template['contents'], $context));
 
 		if(!self::$nocache && 
-        		(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
+			(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
 		{
-			if(!empty($cache_rep)) 
-			{
-				$cacheDir = $this->_cacheOptions['cacheDir'];
-				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cache_rep . $this->_cacheOptions['cacheDir'];
-				$this->_cacheOptions['cacheDir'] = getCachePath('.');
-			}
 
 			if(!isset($this->_cache))
 			{
-				$this->_cache = new Cache_Lite($this->_cacheOptions);
+				$this->_cache = getCacheObject();
 			}
-			elseif(isset($cacheDir))
-				$this->_cache->setOption('cacheDir', $this->_cacheOptions['cacheDir']);
 
 			$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
-			$this->_cache->save($timestamp."\n".$template['contents'], $this->_cachedfile, $this->_site.'_page');
-			unset($timestamp);
-			// si jamais le path a été modifié on remet par défaut
-			if(isset($cacheDir)) 
-			{
-				$this->_cacheOptions['cacheDir'] = $GLOBALS['cacheOptions']['cacheDir'] = $cacheDir;
-				$this->_cache->setOption('cacheDir', $cacheDir);
-			}
+
+			$this->_cache->set(getCacheIdFromId($base), $timestamp."\n".$template['contents']);
 		}
-        
+
 		return $template['contents'];
 	}
 
@@ -918,7 +809,7 @@ function renderOptions($arr, $selected)
  */
 function generateLangCache($lang, $file, $tags)
 {
-    	$txt = '';
+	$txt = '';
 	foreach($tags as $tag) {
 		$dotpos = strpos($tag, '.');
 		$group  = substr($tag, 0, $dotpos);
@@ -926,8 +817,9 @@ function generateLangCache($lang, $file, $tags)
 
 		$txt[$tag] = getlodeltextcontents($name, $group, $lang);
 	}
-	
-    	writeToCache($file, $txt, false);
+
+	$cache = getCacheObject();
+	$cache->set(getCacheIdFromId($file), $txt);
 	return $txt;
 }
 
@@ -1069,7 +961,7 @@ function _indent($source, $indenter = '  ')
 function fix_newlines_for_clean_html($fixthistext)
 {
 	$fixthistext_array = explode("\n", $fixthistext);
-    	$fixedtext_array = array();
+	$fixedtext_array = array();
 	foreach ($fixthistext_array as $unfixedtextkey => $unfixedtextvalue) {
 
  		// Exception for fckeditor
@@ -1086,7 +978,7 @@ function fix_newlines_for_clean_html($fixthistext)
 		}
 		
 	}
-	
+
 	if (!empty($fixedtext_array)) {
 		return implode("\n", $fixedtext_array);
 	} else {

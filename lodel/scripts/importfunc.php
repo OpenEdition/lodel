@@ -65,7 +65,7 @@ function extract_import($footprint, & $context, $ext = 'zip')
 	$context['importdir'] = C::get('importdir', 'cfg');
 	$GLOBALS['fileregexp'] = '('.$footprint.')-\w+(?:-\d+)?.'.$ext;
 
-	$GLOBALS['importdirs'] = array (getCachePath(), C::get('home', 'cfg')."../install/plateform");
+	$GLOBALS['importdirs'] = array ( C::get('home', 'cfg')."../install/plateform");
 	if ($context['importdir']) {
 		$GLOBALS['importdirs'][] = $context['importdir'];
 	}
@@ -79,7 +79,7 @@ function extract_import($footprint, & $context, $ext = 'zip')
 			$file = $footprint."-import-".date("dmy").".".$ext;
 		}
 
-		if (!move_uploaded_file($archive, getCachePath($file))) {
+		if (!move_uploaded_file($archive, cache_get_path(null) . DIRECTORY_SEPARATOR . $file)) {
 			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
 		}
 		$file = ""; // on repropose la page

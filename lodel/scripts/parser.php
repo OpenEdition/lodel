@@ -128,7 +128,7 @@ class Parser
 		$this->conditions['php'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"==",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
 		$this->joinedconditions['php'] = join('|',array_keys($this->conditions['php']));
 
-		$cachedVars = getFromCache('parser_vars');
+		$cachedVars = cache_get('parser_vars');
 		$this->_cachedVars = $cachedVars ? $cachedVars : array();
 		$this->_translationMode = C::get('translationmode', 'lodeluser');
 	}
@@ -206,10 +206,12 @@ PHP;
 
         	$template['refresh'] = $this->refresh;
 		
-		if($this->_originalCachedVars != $this->_cachedVars)
-			writeToCache('parser_vars', $this->_cachedVars);
+		if($this->_originalCachedVars != $this->_cachedVars){
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('parser_vars'), $this->_cachedVars);
+		}
 
-        	return $template;
+		return $template;
 	}
 
 	protected function parse_variable(& $text, $escape = 'php')
@@ -221,10 +223,9 @@ PHP;
 			$startvar = $i;
 
 			if(!isset($text{++$i})) // not a var, just a '['
-			{
 				return;
-			}
-            		$varchar = $text{$i};
+
+			$varchar = $text{$i};
 			// parenthesis syntaxe [(
 			if ($varchar == '(') {
 				$para = true;
@@ -300,12 +301,12 @@ PHP;
 							$varchar = $text{$i};
 						}
 
-                        			//if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
+						// if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
 					} 
-                    			while($varchar != ']' && $varchar != '|' && $varchar != ':');
+					while($varchar != ']' && $varchar != '|' && $varchar != ':');
 				}
 
-                		$pipefunction = '';
+				$pipefunction = '';
 
 				if ($varchar == ':')	{ // a lang
 					$lang = '';
@@ -319,7 +320,7 @@ PHP;
 						{
 							return;
 						}
-                        			$varchar = $text{$i};
+						$varchar = $text{$i};
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
 						while (($varchar >= 'A' && $varchar < 'Z') || $varchar == '.' || $varchar == '#' || $varchar == '_' || 
@@ -436,7 +437,7 @@ PHP;
 
 		if(isset($this->_cachedVars[$prefix][$varname]) && !$this->_translationMode)
 		{
-            		$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
+			$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
 		}
 		else
 		{

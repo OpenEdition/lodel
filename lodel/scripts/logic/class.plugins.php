@@ -109,7 +109,6 @@ class PluginsLogic extends MainPluginsLogic
 			return '_error';
 		}
 
-		@unlink(getCachePath('triggers'));
 		clearcache();
 		return '_location:index.php?lo=plugins&do=list';
 	}
@@ -145,7 +144,6 @@ class PluginsLogic extends MainPluginsLogic
 		$vo->status = 0;
 		$context['id'] = $dao->save($vo);
 		
-		@unlink(getCachePath('triggers'));
 		clearcache();
 		return '_location:index.php?lo=plugins&do=list';
 	}

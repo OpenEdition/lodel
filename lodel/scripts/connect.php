@@ -73,6 +73,17 @@ $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::ge
 defined("SINGLESITE") || define("SINGLESITE", !$single); // synonyme currently but may change in the future
 unset($single);
 
+$cache_config = cache_get_config();
+if( $cache_config['driver'] == "memcache") {
+	$GLOBALS['db']->memCache = true;
+
+	$servers = array();
+	foreach( $cache_config['servers'] as $server) $servers[] = $server['host'];
+	$GLOBALS['db']->memCacheHost = $servers;
+	$GLOBALS['db']->memCachePort = 11211;
+	$GLOBALS['db']->memCacheCompress= false;
+}
+
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 $info_mysql = $GLOBALS['db']->ServerInfo();
@@ -114,8 +125,8 @@ function usemaindb()
 	if (DATABASE == $GLOBALS['currentdb'] || $GLOBALS['db']->database == DATABASE) {
 		return false; // nothing to do
 	}
-    	$GLOBALS['db']->SelectDB(DATABASE);
-    	return true;
+	$GLOBALS['db']->SelectDB(DATABASE);
+	return true;
 }
 
 /**

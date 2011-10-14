@@ -55,10 +55,10 @@ require 'siteconfig.php';
 
 try
 {
-	include 'auth.php';
-    C::set('env', 'admin');
-	authenticate(LEVEL_VISITOR);
 
+	include 'auth.php';
+	authenticate(LEVEL_VISITOR);
+	
 	if (isset($_GET['page'])) { // call a special page (and template)
 		$page = $_GET['page'];
 		if (strlen($page) > 64 || preg_match("/[^a-zA-Z0-9_\/-]/", $page)) {

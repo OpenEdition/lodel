@@ -57,7 +57,7 @@ function PMA_fieldTypes($db, $table,$use_backquotes) {
     PMA_mysql_select_db($db);
     $table_def = PMA_mysql_query('SHOW FIELDS FROM ' . PMA_backquote($db) . '.' . PMA_backquote(str_replace('#_MTP_','',lodelprefix($table))));
     while($row = PMA_mysql_fetch_array($table_def)) {
-        $types[PMA_backquote($row['Field'],$use_backquotes)] = ereg_replace('\\(.*', '', $row['Type']);
+        $types[PMA_backquote($row['Field'],$use_backquotes)] = preg_replace('/\\(.*/', '', $row['Type']);
     }
     return $types;
 }
@@ -352,7 +352,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         $schema_create     .= ',' . $crlf;
     } // end while
     $result->Close();
-    $schema_create         = ereg_replace(',' . $crlf . '$', '', $schema_create);
+    $schema_create         = preg_replace('/,' . $crlf . '$/', '', $schema_create);
 
     $local_query = 'SHOW KEYS FROM ' . PMA_backquote($table) . ' FROM ' . PMA_backquote($db);
     $result      = PMA_mysql_query($local_query) or PMA_mysqlDie('', $local_query, '', $error_url);
@@ -663,7 +663,7 @@ function PMA_getTableContentOld($db, $table, $crlf, $error_url, $sql_query)
                 $schema_insert .= "'', ";
             } // end if
         } // end for
-        $schema_insert = trim(ereg_replace(', $', '', $schema_insert));
+        $schema_insert = trim(preg_replace('/, $/', '', $schema_insert));
         $schema_insert .= ')';
 
         if (!PMA_exportOutputHandler($schema_insert . $eol_dlm . $crlf)) return FALSE;

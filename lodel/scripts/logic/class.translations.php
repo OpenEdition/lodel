@@ -233,8 +233,8 @@ class TranslationsLogic extends Logic {
 		if (empty($context['id'])) $context['modificationdate'] = date("Y-m-d");
 
 		$ret = parent::editAction($context,$error);
-        	clearcache();
-        	return $ret;
+		clearcache();
+		return $ret;
 	}
 
 	/**

@@ -53,7 +53,7 @@
 
 // build the arrays containing tables and fields
 // try first to get the cached array
-if (!($tablefields = getFromCache('tablefields'))) 
+if (!($tablefields = cache_get('tablefields'))) 
 {
 	if (!function_exists("maketablefields"))	
 	{
@@ -85,8 +85,8 @@ if (!($tablefields = getFromCache('tablefields')))
 					}
 				}
 			}
-
-			writeToCache('tablefields', $tablefields);
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('tablefields'), $tablefields);
 		}
 	}
 	maketablefields($tablefields);

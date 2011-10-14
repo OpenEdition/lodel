@@ -49,6 +49,7 @@
 
 
 define('backoffice-lodeladmin', true);
+define('backoffice-lodelindex', true);
 
 if (!file_exists("lodelconfig.php")) {
 	header('location: lodeladmin-1.0/install.php');

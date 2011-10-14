@@ -63,14 +63,15 @@
  * @return array le tableau des options
  */
 	
-function cacheOptionsInFile($optionsfile=null)
+function cacheOptionsInFile( $cache_name = null )
 {
-	if(!isset($optionsfile) && ($options = getFromCache('options')))
+	$cache = getCacheObject();
+	if(!isset( $cache_name ) && ($options = $cache->get('options')))
 	{
-        	return $options;
+		return $options;
 	}
-    
-    	defined('INC_CONNECT') || include 'connect.php';
+
+	defined('INC_CONNECT') || include 'connect.php';
 	global $db;
 	$ids = $arr = array();
 	do {
@@ -83,33 +84,30 @@ function cacheOptionsInFile($optionsfile=null)
 		$i = 1;
 		$l = 1;
 		while (!$result->EOF) {
-			$id = $result->fields['id'];
-			$name = $result->fields['name'];
+			$id       = $result->fields['id'];
+			$name     = $result->fields['name'];
 			$idparent = $result->fields['idparent'];
-			$ids[] = $id;
-			if ($idparent)
-				$name = $parent[$idparent].".".$name;
-			#$d = $rank[$id] = $rank[$idparent]+($i*1.0)/$l;
+			$ids[]    = $id;
+			if ($idparent) $name = $parent[$idparent].".".$name;
 			$arr[$id] = $name;
 			$parent[$id] = $name;
 			$l *= 100;
 			++$i;
 			$result->MoveNext();
 		}
-        	$result->Close();
+		$result->Close();
 	}	while ($ids);
-    
+
 	$sql = 'SELECT id, idgroup, name, value, defaultvalue, type 
                FROM '.$GLOBALS['tp'].'options 
                WHERE status > 0 ';
-               
-    	if(!isset($optionsfile))
-        	$sql .= 'AND type != "passwd" AND type != "username" ';
-        
-    	$sql .= 'ORDER BY rank';
+
+		if(!isset($optionsfile))
+			$sql .= 'AND type != "passwd" AND type != "username" ';
+		$sql .= 'ORDER BY rank';
 
 	$result = $db->Execute($sql) 
-       		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 	if(isset($optionsfile))
 	{
@@ -121,8 +119,8 @@ function cacheOptionsInFile($optionsfile=null)
 			$name = $result->fields['name'];
 			$idgroup = $result->fields['idgroup'];
 			if(!isset($arr[$idgroup])){
-			    $result->MoveNext();
-			    continue;
+				$result->MoveNext();
+				continue;
 			} 
 
 			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
@@ -137,16 +135,13 @@ function cacheOptionsInFile($optionsfile=null)
 			$options_cache[$optname] = addslashes($value);
 			$result->MoveNext();
 		}
-        	$result->Close();
-        	$txt .= ");\n";
-        	$txt2 .= var_export($options_cache_return, true).";?".">";
-        
-		if(FALSE === file_put_contents($optionsfile, $txt.$txt2)) 
-			trigger_error("Cannot write $optionsfile.", E_USER_ERROR);
-        
-        	@chmod ($optionsfile,0666 & octdec(C::get('filemask', 'cfg'))); 
-		
-        	return $options_cache;
+		$result->Close();
+		$txt .= ");\n";
+		$txt2 .= var_export($options_cache_return, true).";?".">";
+
+		$cache->set($cache_name, $txt . $txt2 );
+
+		return $options_cache;
 	}
 	else
 	{
@@ -156,8 +151,8 @@ function cacheOptionsInFile($optionsfile=null)
 			$name = $result->fields['name'];
 			$idgroup = $result->fields['idgroup'];
 			if(!isset($arr[$idgroup])){ 
-                $result->MoveNext();
-			    continue;
+				$result->MoveNext();
+				continue;
 			}
 
 			$value = $result->fields['value'] ? $result->fields['value'] : $result->fields['defaultvalue'];
@@ -170,8 +165,10 @@ function cacheOptionsInFile($optionsfile=null)
 			$result->MoveNext();
 		}
 		$result->Close();
-		if($options_cache_return)
-			writeToCache('options', $options_cache_return);
+		if($options_cache_return){
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('options'), $options_cache_return);
+		}
 		return $options_cache_return;
 	}
 }

@@ -223,7 +223,7 @@ class siteManage {
 			if (!$row['path']) {
 				$row['path'] = '/'. $row['name'];
 			}
-            		$root = str_replace('//', '/', LODELROOT. $row['path']). '/'; 
+			$root = str_replace('//', '/', LODELROOT. $row['path']). '/'; 
 			if ($row['path'] == '/') { // c'est un peu sale ca.
 				$this->install_file($root, "lodel-".C::get('version', 'cfg')."/src", '');
 			} else {
@@ -231,8 +231,8 @@ class siteManage {
 			}
 	
 			// clear the CACHEs
-			function_exists('removefilesincache') || include 'cachefunc.php';
-			removefilesincache(getCachePath());
+			function_exists('clearcache') || include 'cachefunc.php';
+			clearcache();
 	
 			$result->MoveNext();
 		}
@@ -726,10 +726,9 @@ class siteManage {
 	 * @param var $var nom des sites
 	 * @param var $val variable de travail pour la boucle foreach
 	 */
-	function maj_siteconfig($siteconfig, $var, $val = -1)
+	function maj_siteconfig($text, $var, $val = -1)
 	{
 		// lit le fichier
-		$text   = file_get_contents($siteconfig);
 		$search = array(); 
 		$rpl = array();
 		if (is_array($var)) {
@@ -751,17 +750,10 @@ class siteManage {
 		if ($newtext == $text) {
 			return true;
 		}
-        	unset($text);
+		unset($text);
 		// ecrit le fichier
-		if (!(@unlink($siteconfig)) ) {
-			return false;
-		}
-		if (false !== file_put_contents($siteconfig, $newtext)) {
-			@chmod ($siteconfig, 0666 & octdec(C::get('filemask', 'cfg')));
-			return true;
-		} else {
-			return false;
-		}
+		$cache = getCacheObject();
+		return $cache->set(getCacheIdFromId('siteconfig.php'), $newtext);
 	}	
 
 	/**
@@ -780,19 +772,16 @@ class siteManage {
 			C::set('path', '/'. C::get('name'));
 		}
 		$root = str_replace('//', '/', LODELROOT. C::get('path')). '/';
-		$siteconfigcache = getCachePath('siteconfig.php');
+		$siteconfigcache = cache_get('siteconfig.php');
 		if (C::get('downloadsiteconfig')) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
 			exit();
 		}
-		if (file_exists($siteconfigcache)) {
-			unlink($siteconfigcache);
-		}
+
 		$atroot = C::get('path') == '/' ? 'root' : '';
-                checkCacheDir(dirname($siteconfigcache));
-                if (!copy(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php", $siteconfigcache)) {
-                        trigger_error("ERROR: unable to write in cache : $siteconfigcache", E_USER_ERROR);
-                }
+
+		$siteconfigcache = file_get_contents(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php");
+
 		if(!$this->maj_siteconfig($siteconfigcache, array('site' => C::get('name'))))
 		{
 			View::getView()->render('site-file');
@@ -801,7 +790,7 @@ class siteManage {
 		$siteconfigdest = $root. 'siteconfig.php';
 
 		// cherche si le fichier n'existe pas ou s'il est different de l'original
-		if (!file_exists($siteconfigdest) || md5_file($siteconfigcache) != md5_file($siteconfigdest)) {
+		if (!file_exists($siteconfigdest) || md5($siteconfigcache) != md5_file($siteconfigdest)) {
 			$installoption = C::get('installoption', 'cfg');
 			if(false === $installoption)
 				$installoption = C::get('installoption');
@@ -811,8 +800,8 @@ class siteManage {
 			}
 			@unlink($siteconfigdest); // try to delete before copying.
 			// try to copy now.
-			if (!@copy($siteconfigcache,$siteconfigdest)) {
-				C::set('siteconfigsrc', $siteconfigcache);
+
+			if (!@file_put_contents($siteconfigdest, cache_get('siteconfig.php'))) {
 				C::set('siteconfigdest', $siteconfigdest);
 				C::set('error_writing', 1);
 				View::getView()->render('site-file');
@@ -827,10 +816,10 @@ class siteManage {
 			$this->install_file($root, "../".$this->versiondir."/src", LODELROOT);
 		}
 		
-		// clear the CACHEs
-		if(!function_exists('removefilesincache'))
+		// clear the cache
+		if(!function_exists('clearcache'))
 			include 'cachefunc.php';
-		removefilesincache(getCachePath());
+		clearcache();
 	
 		// ok on a fini, on change le status du site
 		$db->SelectDB(C::get('database', 'cfg'));
@@ -848,7 +837,7 @@ class siteManage {
 
 			if(!preg_match("`".$pattern."`", C::get('dbname')))
 			{
-                		C::set('dbname', C::get('dbname').C::get('name'));
+				C::set('dbname', C::get('dbname').C::get('name'));
 			}
 			$db->SelectDB(C::get('dbname'));
 		}
@@ -861,16 +850,13 @@ class siteManage {
                 FROM #_TP_$table 
                 WHERE status>-64 
                 LIMIT 0,1")) 
-            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
 			if ($result->RecordCount()) {
 				$import = false;
 				break;
 			}
 		}
-		
-		// clean siteconfig
-		@unlink($siteconfigcache);
 
 		if ($import) {
 			$go = C::get('url'). "/lodel/admin/index.php?do=importmodel&lo=data";
@@ -922,14 +908,15 @@ class siteManage {
 			{
 				$status = $status == -64 ? 1 : -64;
 			}
-    		$lock = getCachePath('.lock');
+    		$lock = cache_get('lock');
 			if($status > 0)
 			{
-				unlink($lock);
+				cache_delete($lock);
 			}
 			else
 			{
-				touch($lock);
+				$cache = getCacheObject();
+				$cache->set(getCacheIdFromId('lock'), true);
 			}
 			$db->Execute(lq("
         UPDATE #_MTP_sites 
@@ -957,7 +944,8 @@ class siteManage {
 					$db->Execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE id=".$site['id'])) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
-				touch(getCachePath('.lock'));
+				$cache = getCacheObject();
+				$cache->set(getCacheIdFromId('lock'), true);
 				}
 			} 
 			elseif($maintenance === 2) 
@@ -974,7 +962,7 @@ class siteManage {
 						$db->Execute(lq("UPDATE #_MTP_sites SET status = -65 WHERE id=".$site['id'])) 
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
-					unlink(getCachePath('.lock'));
+					cache_delete('lock');
 				}
 			}
 		}

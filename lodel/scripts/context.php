@@ -146,12 +146,12 @@ class C
 	private function __construct(array &$cfg)
 	{
 		if(!headers_sent()) header("Content-Type: text/html; charset=UTF-8");
-        	self::$filter = null;
+		self::$filter = null;
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
-        	defined('SITEROOT') || define('SITEROOT', '');
-       		function_exists('checkCacheDir') || include 'cachefunc.php';
+		defined('SITEROOT') || define('SITEROOT', '');
+		function_exists('cache_get') || include 'cachefunc.php';
 		spl_autoload_register(array('self', '__autoload'));
 	}
 
@@ -286,7 +286,7 @@ class C
 			}
 
 			if (!empty($_POST)) 
-            		{
+			{
 				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
 				self::clean($_POST);
 				foreach($_POST as $k=>&$v)
@@ -374,7 +374,7 @@ class C
 
 		// dir
 		if (isset(self::$_context['dir']) && !(self::$_context['dir'] == 'up' || self::$_context['dir'] == 'down' || is_numeric(self::$_context['dir'])
-            	|| self::$_context['dir'] == 'asc' || self::$_context['dir'] == 'desc'))
+				|| self::$_context['dir'] == 'asc' || self::$_context['dir'] == 'desc'))
 		{
 			unset(self::$_context['dir']);
 		}
@@ -411,8 +411,10 @@ class C
 	static private function _getTriggers()
 	{
 		if(defined('backoffice-lodeladmin')) return true; // no plugins in lodeladmin
-    
-		if(!(self::$_triggers = getFromCache('triggers')))
+
+		$cache      = getCacheObject();
+		$cache_name = getCacheIdFromId('triggers');
+		if(!(self::$_triggers = @unserialize($cache->get($cache_name))))
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
@@ -420,14 +422,14 @@ class C
 			self::$_triggers = array();
 			foreach($triggers as $trigger)
 			{
-            			self::$_triggers['trigger_'.$trigger] = array();
+				self::$_triggers['trigger_'.$trigger] = array();
 			}
 			
 			$trigObj = $db->Execute(lq('
 				SELECT * 
 					FROM #_MTP_mainplugins
 					WHERE status > 0')) 
-                		or trigger_error($db->ErrorMsg(), E_USER_ERROR);
+					or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 			while(!$trigObj->EOF)
 			{
 				$plug = $db->getOne(lq('
@@ -451,8 +453,8 @@ class C
 				}
 				$trigObj->MoveNext();
 			}
-            		$trigObj->Close();
-            		writeToCache('triggers', self::$_triggers);
+			$trigObj->Close();
+			$cache->set($cache_name, serialize(self::$_triggers));
 		}
 
 		// bootstrap for all activated plugins
@@ -625,7 +627,7 @@ class C
 			elseif(empty(self::$_lodeluser))
 			{
 				self::$_lodeluser = self::$_context['lodeluser'] = $v;
-                		// don't want to have access to the session id or name in templates
+				// don't want to have access to the session id or name in templates
 				self::$_context['lodeluser']['session'] = self::$_context['lodeluser']['idsession'] = null;
 				return true;
 			}
@@ -633,7 +635,7 @@ class C
 		}
 
 		$n = (string)$n;
-        
+
 		if(false === strpos($n, '.'))
 		{
 			if(isset(self::$_lodeluser[$n]))
@@ -686,7 +688,7 @@ class C
 		{
 			self::_sanitize($data);
 		}
-        
+
 		return $data;
 	}
 
@@ -704,8 +706,8 @@ class C
 
 		if(!isset(self::$filter))
 		{
-			checkCacheDir('htmlpurifier');
-		
+			$cache = cache_get_path('htmlpurifier');
+
 			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
 		
@@ -721,7 +723,7 @@ class C
 			$config->set('Core.LexerImpl', 'DirectLex');
 			$config->set('HTML.TidyLevel', 'heavy' );
 			$config->set('Attr.EnableID', true);
-			$config->set('Cache.SerializerPath', realpath( getCachePath('htmlpurifier') ) );
+			$config->set('Cache.SerializerPath', $cache );
 			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
 			$config->set('HTML.DefinitionRev', 1);

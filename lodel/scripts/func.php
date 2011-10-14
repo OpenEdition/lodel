@@ -286,20 +286,21 @@ function getoption($name)
 	static $options_cache;
 	if (!$name) return;
 	if (!isset($options_cache)) {
-		$optionsfile=getCachePath("options_cache.php");
+		$cache       = getCacheObject();
+		$options_cache = $cache->get('options_cache');
 	
-		if (file_exists($optionsfile)) {
-			include($optionsfile);
+		if ($options_cache) {
+			eval($options_cache);
 		} else {
 			function_exists('cacheOptionsInFile') || include('optionfunc.php');
-			$options_cache = cacheOptionsInFile($optionsfile);
+			$options_cache = cacheOptionsInFile( 'options_cache' );
 		}
 	}
 	if (is_array($name)) {
 		foreach ($name as $n) {
 			if (isset($options_cache[$n])) $ret[$n]=stripslashes($options_cache[$n]);
 			else $ret[$n] = null;
-		}    
+		}
 		return  ($ret);
 	} else {
 		if ($options_cache[$name]) // cached ?
@@ -739,23 +740,9 @@ function tmpdir($name = '')
         if(defined("TMPDIR") && '' !== (string)TMPDIR)
                 $tmpdir = TMPDIR;
         elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
-                $tmpdir = getCachePath('tmp');
+                $tmpdir = cache_get_path('tmp');
 
-        if (!file_exists($tmpdir)) {
-                mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')), true);
-                chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
-        }
-
-        if(!empty($name))
-        {
-                $tmpdir .= '/'.$name;
-                if (!file_exists($tmpdir)) {
-                        mkdir($tmpdir,0777  & octdec(C::get('filemask', 'cfg')), true);
-                        chmod($tmpdir,0777 & octdec(C::get('filemask', 'cfg')));
-                }
-        }
-
-        return $tmpdir.'/';
+        return $tmpdir . DIRECTORY_SEPARATOR;
 }
 
 function myhtmlentities($text)

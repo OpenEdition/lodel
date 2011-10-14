@@ -344,20 +344,3 @@ function loop_person_relations_fields(&$context, $funcname)
 		call_user_func("code_after_$funcname", $context);
 
 }
-
-/**
- * Put the XHTML namespace in each tag with no namespace and delete r2r namespace
- * Met le namespace xhtml pour toutes balises qui n'ont pas de namespace et supprime le namespace r2r.
- *
- * @param string $text le texte auquel on rajoute le namespace
- */
-function namespace($text)
-{
-	$ns = "xhtml";
-	// put namespace on each html tag
-	$text = preg_replace(array("/<(\/?)(\w+(\s+[^>]*)?>)/", // add xhtml
-											"/(<\/?)r2r:/"), // remove r2r
-	array("<\\1$ns:\\2", "\\1"), $text);
-	// then put namespace on each attribute
-	return $text;
-}

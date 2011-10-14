@@ -58,7 +58,6 @@ require 'lodelconfig.php';
 try
 {
 	include 'auth.php';
-    C::set('env', 'lodeladmin');
 	authenticate(LEVEL_ADMINLODEL, NORECORDURL);
 	
 	include 'class.siteManage.php';
@@ -90,7 +89,7 @@ try
 		$website->reinstall();
 	}
 	
-    	$task = C::get('task');
+	$task = C::get('task');
 
 	// ajoute ou edit
 	if (C::get('edit') || C::get('maindefault')) {
@@ -110,7 +109,7 @@ try
 	$website->set('database', $database);
 	
 	if(C::get('name') && !C::get('dbname'))
-        	C::set('dbname', (C::get('singledatabase', 'cfg') == 'on') ? $database : $database. '_'. C::get('name'));
+	C::set('dbname', (C::get('singledatabase', 'cfg') == 'on') ? $database : $database. '_'. C::get('name'));
 
 	if ($task === 'createdb') 
 	{

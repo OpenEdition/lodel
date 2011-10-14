@@ -77,8 +77,8 @@ function operation($operation, $archivetmp, $archivefilename, &$context)
 		download($archivetmp, $archivefilename);
 		@ unlink($archivetmp);
 		return TRUE;
-	}	elseif ($operation == 'cache' || $operation == 'importdir')	{
-		$context['outfilename'] = $operation == 'cache' ? getCachePath($archivefilename) : C::get('importdir', 'cfg')."/$archivefilename";
+	}	elseif ( $operation == 'importdir' )	{
+		$context['outfilename'] = C::get('importdir', 'cfg')."/$archivefilename";
 		if (!(@ rename($archivetmp, $context['outfilename']))) {
 			$context['error'] = 1;
 			return FALSE;

@@ -50,9 +50,9 @@
 * @version CVS:$Id:
 * @package lodel
 */
-
-if(!file_exists(getCachePath('filterfunc.php'))) makefilterfunc();
-@include getCachePath('filterfunc.php');
+$cache_name = getCacheIdFromId('filterfunc');
+if(!cache_exists($cache_name)) makefilterfunc();
+cache_include($cache_name);
 
 /**
 * Filtre les champs qu'il faut filtrer et converti les filtres en fonction
@@ -61,14 +61,14 @@ if(!file_exists(getCachePath('filterfunc.php'))) makefilterfunc();
 function makefilterfunc()
 {
 	global $db;
-    	defined('INC_CONNECT') || include 'connect.php';
+	defined('INC_CONNECT') || include 'connect.php';
 	// cherche les champs a filtrer	
 	$result = $db->Execute("
 	SELECT class,name,filtering 
 		FROM {$GLOBALS['tp']}tablefields 
 		WHERE status > 0 AND filtering!=''") 
 		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-    	
+
 	$filterstr = '';
 	while (!$result->EOF)	{
 		$row = $result->fields;
@@ -100,10 +100,13 @@ function makefilterfunc()
 			#echo "filterstr=$filterstr";
 		$result->MoveNext();
 	}
-    	$result->Close();
+	$result->Close();
+
+	$cache      = getCacheObject();
+	$cache_name = getCacheIdFromId('filterfunc');
 
 	// build the function with filtering
-    	if(FALSE === @file_put_contents(getCachePath('filterfunc.php'), '<'.'?php
+	$filterfunc = '
     function filtered_mysql_fetch_assoc($context, $result) {
         $row = $result->FetchRow();
         if (!$row) return array();
@@ -146,6 +149,6 @@ function makefilterfunc()
                 $context[$k] = $v;
             }
         }
-    }')) trigger_error('Cannot write file filterfunc.php', E_USER_ERROR);
-	@chmod(getCachePath("filterfunc.php"), 0666 & octdec(C::get('filemask', 'cfg')));
+    }';
+	$cache->set($cache_name, $filterfunc);
 }
