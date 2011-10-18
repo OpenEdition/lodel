@@ -312,9 +312,10 @@ function loop_rss($context, $funcname, $arguments)
     if(isset($arguments['timeout']))
         $rss->set_timeout((int)$arguments['timeout']);
 
-    $cacheOptions = C::get('cacheOptions', 'cfg');
+    $cacheOptions = cache_get_config();
     if( $cacheOptions['driver'] == "memcache") {
-    	$path = "memcache";
+    	$server = isset($cacheOptions['servers'][0]) ? $cacheOptions['servers'][0]['host'] : '127.0.0.1' ;
+    	$path   = "memcache:{$server}";
     }else{
     	$path = cache_get_path("SimplePie");
     }
