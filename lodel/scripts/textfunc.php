@@ -208,7 +208,7 @@ function cuttext($text, $length = 100, $dots = false) {
 			$truncate .= '</'.$tag.'>';
 		}
 	}
-
+        $GLOBALS['textfunc_hasbeencut'] = true;
 	return $truncate;
 }
 
