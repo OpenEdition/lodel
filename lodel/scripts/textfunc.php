@@ -967,7 +967,8 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
-	if(!$doc->loadXML("<body>" . cleanHTML($texte) . "</body>"))
+	if(!isset($GLOBALS['textfunc_hasbeencleaned'])) $texte = cleanHTML($texte);
+	if(!$doc->loadXML("<body>" . $texte . "</body>"))
 		return $texte;
 	$dom = new DOMXpath($doc);
 
