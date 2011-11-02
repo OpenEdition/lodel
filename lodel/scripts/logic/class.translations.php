@@ -280,7 +280,7 @@ class TranslationsLogic extends Logic {
 		$lang="";
 
 		function_exists('extract_import') || include "importfunc.php";
-		$file=extract_import("translation",$context,"xml");
+		$file = extract_import("translation",$context,"xml");
 
 		if ($file) {
 			class_exists('XMLDB_Translations', false) || include("translationfunc.php");
