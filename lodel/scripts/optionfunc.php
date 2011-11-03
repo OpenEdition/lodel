@@ -59,7 +59,7 @@
  * Tableau de la forme [groupname.optionname][value]
  *
  * Si la fonction est appelée sans argument, le fichier n'est pas écrit et le tableau est de la forme [groupname][optionname][value] : utilisé pour passer les options dans le $context
- * @param string $optionsfile le nom du fichier cache des options
+ * @param string $cache_name le nom du fichier cache des options
  * @return array le tableau des options
  */
 	
@@ -104,7 +104,7 @@ function cacheOptionsInFile( $cache_name = null )
                FROM '.$GLOBALS['tp'].'options 
                WHERE status > 0 ';
                
-    	if(!isset($optionsfile))
+    	if(!isset($cache_name))
         	$sql .= 'AND type != "passwd" AND type != "username" ';
         
     	$sql .= 'ORDER BY rank';
@@ -112,7 +112,7 @@ function cacheOptionsInFile( $cache_name = null )
 	$result = $db->Execute($sql) 
        		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-	if(isset($optionsfile))
+	if(isset($cache_name))
 	{
 		$options_cache_return = $options_cache = array();
 		$txt = "<"."?php\n\$options_cache=array(\n";
@@ -129,16 +129,16 @@ function cacheOptionsInFile( $cache_name = null )
 			$options_cache[$optname] = addslashes($value);
 			$result->MoveNext();
 		}
-        	$result->Close();
-        	$txt .= ");\n";
-        	$txt2 .= var_export($options_cache_return, true).";?".">";
-        
-		if(FALSE === file_put_contents($optionsfile, $txt.$txt2)) 
-			trigger_error("Cannot write $optionsfile.", E_USER_ERROR);
-        
-        	@chmod ($optionsfile,0666 & octdec(C::get('filemask', 'cfg'))); 
-		
-        	return $options_cache;
+		$result->Close();
+		$txt .= ");\n";
+		$txt2 .= var_export($options_cache_return, true).";?".">";
+
+		if(FALSE === file_put_contents($cache_name, $txt.$txt2)) 
+			trigger_error("Cannot write $cache_name.", E_USER_ERROR);
+
+		$cache->set($cache_name, $txt . $txt2 );
+
+		return $options_cache;
 	}
 	else
 	{
