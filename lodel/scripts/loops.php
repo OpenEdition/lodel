@@ -303,14 +303,21 @@ function loop_rss($context, $funcname, $arguments)
     }
     
     $rss = new SimplePie();
-    //, getCachePath('SimplePie'), isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
+
     $rss->set_feed_url(html_entity_decode($arguments['url'], ENT_COMPAT, 'UTF-8'));
     $rss->set_cache_duration(isset($arguments['refresh']) ? $arguments['refresh'] : 3600);
     if(isset($arguments['timeout']))
         $rss->set_timeout((int)$arguments['timeout']);
-    checkCacheDir('SimplePie');
-    $rss->set_cache_location(getCachePath('SimplePie'));
+
+    $cacheOptions = cache_get_config();
+    if( $cacheOptions['driver'] == "memcache") {
+    	$server = isset($cacheOptions['servers'][0]) ? $cacheOptions['servers'][0]['host'] : '127.0.0.1' ;
+    	$path   = "memcache:{$server}";
+    }else{
+    	$path = cache_get_path("SimplePie");
+    }
     
+    $rss->set_cache_location($path);
     $rss->init();
 
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE);

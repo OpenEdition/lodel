@@ -63,14 +63,15 @@
  * @return array le tableau des options
  */
 	
-function cacheOptionsInFile($optionsfile=null)
+function cacheOptionsInFile( $cache_name = null )
 {
-	if(!isset($optionsfile) && ($options = getFromCache('options')))
+	$cache = getCacheObject();
+	if(!isset( $cache_name ) && ($options = $cache->get('options')))
 	{
-        	return $options;
+		return $options;
 	}
-    
-    	defined('INC_CONNECT') || include 'connect.php';
+
+	defined('INC_CONNECT') || include 'connect.php';
 	global $db;
 	$ids = $arr = array();
 	do {
@@ -96,9 +97,9 @@ function cacheOptionsInFile($optionsfile=null)
 			++$i;
 			$result->MoveNext();
 		}
-        	$result->Close();
-	}	while ($ids);
-    
+		$result->Close();
+	}while ($ids);
+
 	$sql = 'SELECT id, idgroup, name, value, defaultvalue, type 
                FROM '.$GLOBALS['tp'].'options 
                WHERE status > 0 ';
@@ -152,8 +153,10 @@ function cacheOptionsInFile($optionsfile=null)
 			$result->MoveNext();
 		}
 		$result->Close();
-		if($options_cache_return)
-			writeToCache('options', $options_cache_return);
+		if($options_cache_return){
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('options'), $options_cache_return);
+		}
 		return $options_cache_return;
 	}
 }

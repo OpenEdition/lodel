@@ -51,194 +51,157 @@
  * @package lodel
  */
 
-
 /**
- * Nettoyage du répertoire de CACHE
+ * Nettoyage du cache
+ * Vide le cache de toute l'installation lodel, si $all est à True.
  *
- * Cette fonction appelle removefilesincache() si $allCache = true
- * @param bool $allCache
+ * @param bool $all
  * @see func.php -> function update()
  */
-function clearcache($allCache=false, $require_caching=false)
+function clearcache( $all = false )
 {
-	$_REQUEST['clearcache'] = false; // to avoid to erase the CACHE again
-	$site = C::get('site', 'cfg');
-	if(!$allCache) {
-		removefilesincache(getCachePath());
-	} else { // seules les données ont été modifiées : on supprime seulement les fichiers HTML mis en cache
-		$options   = C::get('cacheOptions', 'cfg');
-		if ($site) {
-			$cache = new Cache_Lite($options);
-			$oldenv   = C::get('env');
-			
-			$envs = array( '', 
-						   'edition', 
-						   'admin');
-			foreach($envs as $env) 
-			{
-			    C::set('env', $env);
-			    
-				$options['cacheDir'] = getCachePath();
-				
-				if(!file_exists($options['cacheDir'])) continue;
+	$cache   = getCacheObject();
 
-				$cache->setOption('cacheDir', $options['cacheDir']);
-				$cache->clean($site.'_page'); // page html
-				$cache->clean($site.'_tpl_inc'); // tpl included
-				$cache->clean();
-                removefilesincache( getCachePath('adodb_tpl') );
-                if($require_caching)
-                    removefilesincache( getCachePath('require_caching') );
-			}
-			C::set('env', $oldenv);
-		} else {
-			$options['cacheDir'] = getCachePath();
-			$cache = new Cache_Lite($options);
-			$cache->clean($site.'_page'); // page html
-			$cache->clean($site.'_tpl_inc'); // tpl included
-            removefilesincache( getCachePath('adodb_tpl') );
-		}
+	if( $all ){
+		$cache->delete_all();
+	}else{
+		$site    = C::get('site','cfg') ? C::get('site','cfg') : 'general';
+		$session = $cache->get("session_{$site}") + 1;
+		$cache->set("session_{$site}", $session);
 	}
-}
-
-/**
- * Nettoyage des fichiers du répertoire de CACHE
- *
- * On ajoute le répertoire CACHE dans le code, ce qui empêche de détruire le contenu d'un autre
- * répertoire.
- */
-function removefilesincache()
-{
-	$options = C::get('cacheOptions', 'cfg');
-	$dirs = func_get_args();
-    clearstatcache();
-	foreach ($dirs as $rep) {
-
-		if(!is_dir($rep) || strpos( realpath($rep), realpath($options['cacheDir']) ) !== 0 ) continue;
-
-		// fichiers/répertoires gérés indépendament de cache_lite
-		$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
-
-		while (($file = readdir($fd)) !== false) {
-			if (($file{0} == ".") || ($file == "upload") || ($file == 'require_caching'))
-				continue;
-			$file = $rep. "/". $file;
-			if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
-				removefilesincache($file);
-			} else {@unlink($file);}
-		}
-		closedir($fd);	
-	}
-}
-
-/**
- * Check for a specific directory in cache
- * It will try to create it if it does not exists
- */
-function checkCacheDir($dir)
-{
-	$dir = getCachePath( $dir ) . DIRECTORY_SEPARATOR ;
-
-    if(is_dir($dir))
-    {
-        if(is_writeable($dir)) return true;
-        trigger_error('ERROR: cannot write in directory '.$dir, E_USER_ERROR);
-    }
-    elseif(file_exists($dir))
-    {
-	if(!@unlink($dir)) trigger_error('ERROR: file '.$dir.' exists, is not a dir and cannot be removed!', E_USER_ERROR);
-    }
-
-	$filemask = C::get('filemask', 'cfg');
-	if(! is_dir( $dir ) ){
-		mkdir($dir, 0777 & octdec($filemask), true);
-        chmod($dir, 0777 & octdec($filemask));
-	}
-
-    if(is_writeable( $dir ) ) {
-        @mkdir($dir, 0777 & octdec($filemask));
-        @chmod($dir, 0777 & octdec($filemask));
-    } else {
-        trigger_error('ERROR : cannot write in CACHE directory.', E_USER_ERROR);
-    }
-    return true;
 }
 
 /**
  * Try to get serialized datas from cache
- * This function uses file locking
- * Please note that this function will by default read datas from the siteroot cache
  *
- * @param string $filename
- * @param string $siteroot  
- * @return boolean or file contents
+ * @param string $name
+ * @return boolean or cache contents
  */
-function getFromCache($filename, $siteroot=true)
+function cache_get($name)
 {
-	$filename = getCachePath($filename);
-	if($siteroot) $filename = SITEROOT . $filename;
+	$cache = getCacheObject();
 
-	if(!($fh = @fopen($filename, 'rb'))) return false;
-	
-	@flock($fh, LOCK_SH);
-	$datas = @stream_get_contents($fh);
-	@fclose($fh);
-	
-	if(false === $datas) return false;
-	
-	return (@unserialize(base64_decode($datas)));
+	if($datas = $cache->get(getCacheIdFromId($name))){
+		if($content = @unserialize(base64_decode($datas))) return $content;
+		else return $datas;
+	}else
+		return false;
 }
 
-/**
- * Try to write serialized datas into cache
- * This function uses file locking
- * Please note that this function will by default write into the siteroot cache
- *
- * @param string $filename
- * @param string $datas
- * @param string $siteroot  
- * @return boolean false or int 
- */
-function writeToCache($filename, $datas, $siteroot=true)
-{
-	$filename = getCachePath($filename);
-	$filemask = octdec(C::get('filemask', 'cfg'));
-	
-	$dir = dirname($filename);
-	if(!is_dir($dir)) 
-	{
-		if(file_exists($dir)) trigger_error('invalid file '.$filename, E_USER_ERROR);
-		@mkdir($dir, 0777 & $filemask);
-		@chmod($dir, 0777 & $filemask);
+function cache_delete($name){
+	$cache = getCacheObject();
+
+	return $cache->delete(getCacheIdFromId($name));
+}
+
+function getCacheIdFromId( $id ){
+	$cache = getCacheObject();
+	$cache_config = cache_get_config();
+	$site  = C::get('site','cfg') ? C::get('site','cfg') : 'general';
+	$env   = defined('backoffice-lodelindex') ? 'lodelindex' : defined('backoffice-admin') ? 'admin' : defined('backoffice-edition') ? 'edition' : 'site' ;
+	$sessionsite = $cache->get( "session_{$site}", 0 );
+
+	return  ( isset($cache_config['prefix']) ? "{$cache_config['prefix']}_" : "" ) 
+			. "{$site}_{$env}_{$sessionsite}_{$id}" 
+			. ( C::get('lang') ? "_" . C::get('lang') : null );
+}
+
+function getCacheObject(){
+	$config = cache_get_config();
+	return Cache::instance('lodel', $config);
+}
+
+function cache_exists($cacheid){
+	$cache = getCacheObject();
+	if($cache->get($cacheid)) return true;
+	else return false;
+}
+
+function cache_include($cacheid){
+	$cache = getCacheObject();
+	if($content = $cache->get($cacheid)){
+		eval ($content);
 	}
-	
-	$fh = @fopen($filename, 'w+b');
-	if(!$fh)
-		trigger_error('Cannot open file '.$filename, E_USER_ERROR);
-	
-	@flock($fh, LOCK_EX);
-	$ret = @fwrite($fh, base64_encode(serialize($datas)));
-	@fclose($fh);
-	
-	if(false === $ret)
-		trigger_error('Cannot write in file '.$filename, E_USER_ERROR);
-		
-	@chmod ($filename,0666 & $filemask);
-	
-	return $ret;
 }
 
-/**
- * Get the path of CACHE directory of the site
- * 
- * @return string CACHE directory
- */
-function getCachePath( $path = "", $site = null)
-{
-	$cache = new Cache_Lite(C::get('cacheOptions', 'cfg'));
-	return $cache->_cacheDir . DIRECTORY_SEPARATOR 
-			. ( $site ? $site : C::get('site','cfg') ) . DIRECTORY_SEPARATOR 
-			. C::get('env') . DIRECTORY_SEPARATOR 
-			. $path;
+function cache_get_path( $name ) {
+	$cache_path = C::get('cacheDir', 'cfg') . DIRECTORY_SEPARATOR . $name;
+
+	if(!is_readable($cache_path)){
+		mkdir($cache_path, octdec(C::get('filemask', 'cfg')), true);
+	}
+	return realpath($cache_path);
 }
-?>
+
+function cache_get_config(){
+	$config = array
+		(
+		'memcache' => array(
+			'driver'             => 'memcache',
+			'default_expire'     => 3600,
+			'compression'        => FALSE,              // Use Zlib compression (can cause issues with integers)
+			'servers'            => array(
+				array(
+					'host'             => 'localhost',  // Memcache Server
+					'port'             => 11211,        // Memcache port number
+					'persistent'       => FALSE,        // Persistent connection
+					'weight'           => 1,
+					'timeout'          => 1,
+					'retry_interval'   => 15,
+					'status'           => TRUE,
+				),
+			),
+			'instant_death'      => TRUE,               // Take server offline immediately on first fail (no retry)
+		),
+		'memcachetag' => array(
+			'driver'             => 'memcachetag',
+			'default_expire'     => 3600,
+			'compression'        => FALSE,              // Use Zlib compression (can cause issues with integers)
+			'servers'            => array(
+				array(
+					'host'             => 'localhost',  // Memcache Server
+					'port'             => 11211,        // Memcache port number
+					'persistent'       => FALSE,        // Persistent connection
+					'weight'           => 1,
+					'timeout'          => 1,
+					'retry_interval'   => 15,
+					'status'           => TRUE,
+				),
+			),
+			'instant_death'      => TRUE,
+		),
+		'apc'      => array(
+			'driver'             => 'apc',
+			'default_expire'     => 3600,
+		),
+		'wincache' => array(
+			'driver'             => 'wincache',
+			'default_expire'     => 3600,
+		),
+		'sqlite'   => array(
+			'driver'             => 'sqlite',
+			'default_expire'     => 3600,
+			'database'           => sys_get_temp_dir() . DIRECTORY_SEPARATOR .'lodel-cache.sql3',
+			'schema'             => 'CREATE TABLE caches(id VARCHAR(127) PRIMARY KEY, tags VARCHAR(255), expiration INTEGER, cache TEXT)',
+		),
+		'eaccelerator'           => array(
+			'driver'             => 'eaccelerator',
+		),
+		'xcache'   => array(
+			'driver'             => 'xcache',
+			'default_expire'     => 3600,
+		),
+		'file'    => array(
+			'driver'             => 'file',
+			'cache_dir'          => sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cache',
+			'default_expire'     => 3600,
+			'ignore_on_delete'   => array(
+				'.gitignore',
+				'.git',
+				'.svn'
+			)
+		)
+	);
+	$localconfig = C::get('cacheOptions', 'cfg');
+	return array_merge($config[$localconfig['driver']], $localconfig);
+}

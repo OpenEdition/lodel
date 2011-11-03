@@ -43,67 +43,76 @@
  * @todo phpDoc comments
  */
 
-
-class SimplePie_Cache
+class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 {
-	/**
-	 * Cache handler classes
-	 *
-	 * These receive 3 parameters to their constructor, as documented in
-	 * {@see register()}
-	 * @var array
-	 */
-	protected static $handlers = array(
-		'mysql' => 'SimplePie_Cache_MySQL',
-		'memcache' => 'SimplePie_Cache_Memcache',
-	);
+	protected $cache;
+	protected $options;
+	protected $name;
 
-	/**
-	 * Don't call the constructor. Please.
-	 */
-	private function __construct() { }
-
-	/**
-	 * Create a new SimplePie_Cache object
-	 */
-	public static function create($location, $filename, $extension)
+	public function __construct($url, $filename, $extension)
 	{
-		$type = explode(':', $location, 2);
-		$type = $type[0];
-		if (!empty(self::$handlers[$type]))
-		{
-			$class = self::$handlers[$type];
-			return new $class($location, $filename, $extension);
-		}
+		$this->options = array(
+			'host' => '127.0.0.1',
+			'port' => 11211,
+			'extras' => array(
+				'timeout' => 3600, // one hour
+				'prefix' => 'simplepie_',
+			),
+		);
+		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($url));
+		$this->name = $this->options['extras']['prefix'] . md5("$filename:$extension");
 
-		return new SimplePie_Cache_File($location, $filename, $extension);
+		$this->cache = new Memcache();
+		$this->cache->addServer($this->options['host'], (int) $this->options['port']);
 	}
 
-	/**
-	 * Register a handler
-	 *
-	 * @param string $type DSN type to register for
-	 * @param string $class Name of handler class. Must implement SimplePie_Cache_Base
-	 */
-	public static function register($type, $class)
+	public function save($data)
 	{
-		self::$handlers[$type] = $class;
+		if (is_a($data, 'SimplePie'))
+		{
+			$data = $data->data;
+		}
+		return $this->cache->set($this->name, serialize($data), MEMCACHE_COMPRESSED, (int) $this->options['extras']['timeout']);
 	}
 
-	/**
-	 * Parse a URL into an array
-	 *
-	 * @param string $url
-	 * @return array
-	 */
-	public static function parse_URL($url)
+	public function load()
 	{
-		$params = parse_url($url);
-		$params['extras'] = array();
-		if (isset($params['query']))
+		$data = $this->cache->get($this->name);
+
+		if ($data !== false)
 		{
-			parse_str($params['query'], $params['extras']);
+			return unserialize($data);
 		}
-		return $params;
+		return false;
+	}
+
+	public function mtime()
+	{
+		$data = $this->cache->get($this->name);
+
+		if ($data !== false)
+		{
+			// essentially ignore the mtime because Memcache expires on it's own
+			return time();
+		}
+
+		return false;
+	}
+
+	public function touch()
+	{
+		$data = $this->cache->get($this->name);
+
+		if ($data !== false)
+		{
+			return $this->cache->set($this->name, $data, MEMCACHE_COMPRESSED, (int) $this->duration);
+		}
+
+		return false;
+	}
+
+	public function unlink()
+	{
+		return $this->cache->delete($this->name, 0);
 	}
 }

@@ -129,7 +129,7 @@ class Parser
 		$this->conditions['php'] = array('gt'=>'>','lt'=>'<','ge'=>'>=','le'=>'<=','eq'=>"==",'ne'=>'!=', 'and'=>'&&', 'or'=> '||', 'sne'=>'!==', 'seq'=>'===');
 		$this->joinedconditions['php'] = join('|',array_keys($this->conditions['php']));
 
-		$cachedVars = getFromCache('parser_vars');
+		$cachedVars = cache_get('parser_vars');
 		$this->_cachedVars = $cachedVars ? $cachedVars : array();
 	}
 
@@ -205,12 +205,14 @@ PHP;
 			convertHTMLtoUTF8($template['contents']);
 		}
 
-        	$template['refresh'] = $this->refresh;
+		$template['refresh'] = $this->refresh;
 		
-		if($this->_originalCachedVars != $this->_cachedVars)
-			writeToCache('parser_vars', $this->_cachedVars);
+		if($this->_originalCachedVars != $this->_cachedVars){
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('parser_vars'), $this->_cachedVars);
+		}
 
-        	return $template;
+		return $template;
 	}
 
 	protected function parse_variable(& $text, $escape = 'php')

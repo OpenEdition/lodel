@@ -1844,4 +1844,14 @@ function lin_array($arr, $search)
 	return in_array($search, (array)$arr);
 }
 define('INC_TEXTFUNC', 1);
-?>
+
+/**
+* Permet de savoir si une revue a un accès restreint ou pas.
+*
+* @return boolean
+* Enter description here ...
+* @return boolean
+*/
+function is_restricted(){
+	return cache_get('no_restricted') ? false : true ;
+}

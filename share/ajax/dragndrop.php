@@ -86,7 +86,7 @@ try
         $i++;
     }
 
-    removefilesincache(getCachePath(), getCachePath('edition'));
+    clearcache();
     echo 'ok';
 }
 catch(Exception $e)

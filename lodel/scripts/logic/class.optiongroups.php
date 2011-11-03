@@ -260,7 +260,7 @@ class OptiongroupsLogic extends Logic {
 	 */
 	public function clearCache()
 	{
-		@unlink(getCachePath('options'));
+		cache_delete('options');
 	}
 
 	// begin{publicfields} automatic generation  //

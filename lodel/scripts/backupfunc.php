@@ -78,7 +78,7 @@ function operation($operation, $archivetmp, $archivefilename, &$context)
 		@ unlink($archivetmp);
 		return TRUE;
 	}	elseif ($operation == 'cache' || $operation == 'importdir')	{
-		$context['outfilename'] = $operation == 'cache' ? getCachePath($archivefilename) : C::get('importdir', 'cfg')."/$archivefilename";
+		$context['outfilename'] = C::get('importdir', 'cfg'). DIRECTORY_SEPARATOR  . $archivefilename;
 		if (!(@ rename($archivetmp, $context['outfilename']))) {
 			$context['error'] = 1;
 			return FALSE;

@@ -63,7 +63,6 @@ defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
 include "adodb/adodb.inc.php";
 error_reporting($err);
-// include 'adodb_hack.php';
 
 // connect to the database server
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
@@ -74,10 +73,17 @@ $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::ge
 defined("SINGLESITE") || define("SINGLESITE", !$single); // synonyme currently but may change in the future
 unset($single);
 
-function_exists('checkCacheDir') || include 'cachefunc.php';
-checkCacheDir('adodb_tpl'); // sql cache for templates
-checkCacheDir('adodb_il8n'); // sql cache from translations
-$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('/adodb_tpl/');
+$cache_config = cache_get_config();
+if( $cache_config['driver'] == "memcache") {
+	$GLOBALS['db']->memCache = true;
+
+	$servers = array();
+	foreach( $cache_config['servers'] as $server) $servers[] = $server['host'];
+	$GLOBALS['db']->memCacheHost = $servers;
+	$GLOBALS['db']->memCachePort = 11211;
+	$GLOBALS['db']->memCacheCompress= false;
+}
+
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 $info_mysql = $GLOBALS['db']->ServerInfo();

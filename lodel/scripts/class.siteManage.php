@@ -231,8 +231,8 @@ class siteManage {
 			}
 	
 			// clear the CACHEs
-			function_exists('removefilesincache') || include 'cachefunc.php';
-			removefilesincache(getCachePath());
+			function_exists('clearcache') || include 'cachefunc.php';
+			clearcache();
 	
 			$result->MoveNext();
 		}
@@ -782,7 +782,7 @@ class siteManage {
 			C::set('path', '/'. C::get('name'));
 		}
 		$root = str_replace('//', '/', LODELROOT. C::get('path')). '/';
-		$siteconfigcache = getCachePath('siteconfig.php');
+		$siteconfigcache = cache_get('siteconfig.php');
 		if (C::get('downloadsiteconfig')) { // download the siteconfig
 			download($siteconfigcache, 'siteconfig.php');
 			exit();
@@ -830,7 +830,9 @@ class siteManage {
 		}
 		
 		// clear the CACHEs
-		removefilesincache(getCachePath());
+		if(!function_exists('clearcache'))
+			include 'cachefunc.php';
+		clearcache();
 	
 		// ok on a fini, on change le status du site
 		$db->SelectDB(C::get('database', 'cfg'));
@@ -896,19 +898,19 @@ class siteManage {
 	function maintenance()
 	{
 		global $db;
-        	$id = C::get('id');
+		$id = C::get('id');
  		if($id > 0) 
-        	{
+		{
 			$site = $db->GetRow(lq("
             SELECT name, status 
                 FROM #_MTP_sites 
                 WHERE ".$this->critere."")) 
-            		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            
-            		$status = $site['status'];
-            
+				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+			$status = $site['status'];
+
 			if($status == 32) 
-            		{
+			{
 				$status = -65;
 			} 
 			elseif($status == -65) 
@@ -919,14 +921,15 @@ class siteManage {
 			{
 				$status = $status == -64 ? 1 : -64;
 			}
-            		$lock = getCachePath('.lock');
+					$lock = cache_get('lock');
 			if($status > 0)
 			{
-				unlink($lock);
+				cache_delete($lock);
 			}
 			else
 			{
-				touch($lock);
+				$cache = getCacheObject();
+				$cache->set(getCacheIdFromId('lock'), true);
 			}
 			$db->Execute(lq("
         UPDATE #_MTP_sites 
@@ -935,7 +938,7 @@ class siteManage {
                 	or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		elseif($id === 0) 
-        	{
+		{
 			$maintenance = (int)C::get('maintenance');
 			$sites = $db->Execute(lq('SELECT id, status, name FROM #_MTP_sites'));
 			$single = C::get('singledatabase', 'cfg') != "on";
@@ -954,7 +957,8 @@ class siteManage {
 					$db->Execute(lq("UPDATE #_MTP_sites SET status = 32 WHERE id=".$site['id'])) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
-				touch(getCachePath('.lock'));
+				$cache = getCacheObject();
+				$cache->set(getCacheIdFromId('lock'), true);
 				}
 			} 
 			elseif($maintenance === 2) 
@@ -971,7 +975,7 @@ class siteManage {
 						$db->Execute(lq("UPDATE #_MTP_sites SET status = -65 WHERE id=".$site['id'])) 
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					}
-					unlink(getCachePath('.lock'));
+					cache_delete('lock');
 				}
 			}
 		}

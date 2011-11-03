@@ -57,7 +57,7 @@ function PMA_fieldTypes($db, $table,$use_backquotes) {
     PMA_mysql_select_db($db);
     $table_def = PMA_mysql_query('SHOW FIELDS FROM ' . PMA_backquote($db) . '.' . PMA_backquote(str_replace('#_MTP_','',lodelprefix($table))));
     while($row = PMA_mysql_fetch_array($table_def)) {
-        $types[PMA_backquote($row['Field'],$use_backquotes)] = ereg_replace('\\(.*', '', $row['Type']);
+        $types[PMA_backquote($row['Field'],$use_backquotes)] = preg_replace('/\\(.*/', '', $row['Type']);
     }
     return $types;
 }

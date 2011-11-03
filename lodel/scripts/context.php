@@ -365,7 +365,9 @@ class C
 	{
 		if(defined('backoffice-lodeladmin')) return true; // no plugins in lodeladmin
 
-		if(!(self::$_triggers = getFromCache('triggers')))
+		$cache      = getCacheObject();
+		$cache_name = getCacheIdFromId('triggers');
+		if(!(self::$_triggers = @unserialize($cache->get($cache_name))))
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
@@ -373,14 +375,14 @@ class C
 			self::$_triggers = array();
 			foreach($triggers as $trigger)
 			{
-            			self::$_triggers['trigger_'.$trigger] = array();
+				self::$_triggers['trigger_'.$trigger] = array();
 			}
 			
 			$trigObj = $db->Execute(lq('
 				SELECT * 
 					FROM #_MTP_mainplugins
 					WHERE status > 0')) 
-                		or trigger_error($db->ErrorMsg(), E_USER_ERROR);
+					or trigger_error($db->ErrorMsg(), E_USER_ERROR);
 			while(!$trigObj->EOF)
 			{
 				$plug = $db->getOne(lq('
@@ -404,8 +406,8 @@ class C
 				}
 				$trigObj->MoveNext();
 			}
-            		$trigObj->Close();
-            		writeToCache('triggers', self::$_triggers);
+			$trigObj->Close();
+			$cache->set($cache_name, serialize(self::$_triggers));
 		}
 		// bootstrap for all activated plugins
 		foreach(self::$_triggers as $name=>$values)
@@ -636,7 +638,7 @@ class C
 
 		if(!isset(self::$filter))
 		{
-			checkCacheDir('htmlpurifier');
+			$cache = cache_get_path('htmlpurifier');
 
 			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
 			$config = HTMLPurifier_Config::createDefault();
@@ -652,7 +654,7 @@ class C
 			$config->set('Core.Encoding', 'UTF-8');
 			$config->set('HTML.TidyLevel', 'heavy' );
 			$config->set('Attr.EnableID', true);
-			$config->set('Cache.SerializerPath', realpath(getCachePath('htmlpurifier') ));
+			$config->set('Cache.SerializerPath', $cache);
 			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
 			$config->set('HTML.DefinitionRev', 1);

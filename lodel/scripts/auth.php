@@ -87,19 +87,20 @@ function authenticate($level = 0, $mode = "", $return = false)
 	$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
 	do { // block de control
 		if (!isset($_COOKIE[C::get('sessionname', 'cfg')]) && !defined('backoffice-lodeladmin') && !defined('backoffice'))
-        	{
-                	if(file_exists(getCachePath('.no_restricted'))) break;
-                	maintenance();
-            
-            		defined('INC_CONNECT') || include 'connect.php';
+		{
+			if(cache_get('no_restricted')) break;
+			maintenance();
+
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
 			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
 			if(!$users)
-            		{
-                		touch(getCachePath('.no_restricted'));
-                		break;
-            		}
+			{
+				$cache = getCacheObject();
+				$cache->set(getCacheIdFromId('no_restricted'), true);
+				break;
+			}
 			list($oct[0],$oct[1],$oct[2],$oct[3]) = sscanf($_SERVER['REMOTE_ADDR'], "%d.%d.%d.%d");
 			$name = false;
 			foreach($users as $user) 
@@ -414,7 +415,7 @@ function maintenance()
 		return false;
 	}
 	
-	if(defined('backoffice-lodeladmin') || !file_exists(getCachePath('.lock'))) return false;
+	if(defined('backoffice-lodeladmin') || !cache_get('lock')) return false;
 	
 	if(file_exists(C::get('home', 'cfg')."../../maintenance.html"))
 		die(include(C::get('home', 'cfg')."../../maintenance.html"));
@@ -430,7 +431,7 @@ C::setRequest();
 // Tableau des options du site dans le $context
 if (C::get('site', 'cfg')) 
 { // pas besoin quand on est dans l'admin générale (options définies pour un site)
-	if(!($options = getFromCache('options')))
+	if(!($options = cache_get('options')))
 	{
 		function_exists('cacheOptionsInFile') || include 'optionfunc.php';
 		C::set('options', cacheOptionsInFile());

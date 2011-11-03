@@ -144,17 +144,17 @@ class LodelParser extends Parser
 		parent::__construct();
 		$this->variablechar = '@'; // catch the @
 		
-		if(!($this->tablefields = getFromCache('tablefields')))
-        	{
-                	include_once 'tablefields.php';
-		    	$this->tablefields =& $tablefields;
+		if(!($this->tablefields = cache_get('tablefields')))
+		{
+			include_once 'tablefields.php';
+			$this->tablefields =& $tablefields;
 		}
-        
+
 		$this->prefix = C::get('tableprefix', 'cfg');
 		$this->database = C::get('database', 'cfg');
-       		$this->mprefix = '`'.$this->database.'`.'.$this->prefix;
+		$this->mprefix = '`'.$this->database.'`.'.$this->prefix;
 
-		if(isset($this->tablefields[$this->prefix."classes"]) && !($this->classes = getFromCache('classes')))
+		if(isset($this->tablefields[$this->prefix."classes"]) && !($this->classes = cache_get('classes')))
 		{
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
@@ -168,7 +168,8 @@ class LodelParser extends Parser
 			$obj->Close();
 			unset($obj);
 			// caching
-			writeToCache('classes', $this->classes);
+			$cache = getCacheObject();
+			$cache->set(getCacheIdFromId('classes'), $this->classes);
 		}
 	}
 
@@ -534,18 +535,17 @@ class LodelParser extends Parser
 
 		if (C::get('visitor', 'lodeluser') && !isset($done[$tag][$group][$name])) 
 		{ // cherche si le texte existe
-            		$prefix = ($group != "site") ? $this->mprefix : $this->prefix;
+			$prefix = ($group != "site") ? $this->mprefix : $this->prefix;
 			if(!isset($this->nbLangs[$prefix]))
 				$this->nbLangs[$prefix] = $db->CacheGetOne($GLOBALS['sqlCacheTime']*365,"SELECT count(distinct(lang)) FROM {$prefix}translations");
-                
-            		$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_il8n/');
+
+
 			$textexists = $db->CacheExecute($GLOBALS['sqlCacheTime']*365, 
 				"SELECT COUNT(id) AS nb 
 					FROM {$prefix}texts 
 					WHERE name=? AND textgroup=? 
 					LIMIT 1", array($name, $group));
-            		$GLOBALS['ADODB_CACHE_DIR'] = getCachePath('adodb_tpl/');
-            
+
 			if ($db->errorno()) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
@@ -617,7 +617,7 @@ PHP;
 <?php 
 \$langfile="lang-".\$context['sitelang']."/tpl_{$this->tpl}";
 if(!isset(\$GLOBALS['langcache'][\$context['sitelang']])) { \$GLOBALS['langcache'][\$context['sitelang']] = array(); }
-if (!(\$langcontents = getFromCache(\$langfile, false))) {
+if (!(\$langcontents = cache_get(\$langfile))) {
 	\$GLOBALS['langcache'][\$context['sitelang']] += generateLangCache(\$context['sitelang'], \$langfile, array({$tt}));
 } else {
 	\$GLOBALS['langcache'][\$context['sitelang']] += \$langcontents;
