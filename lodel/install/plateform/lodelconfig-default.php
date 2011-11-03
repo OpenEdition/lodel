@@ -159,20 +159,13 @@ $cfg['installlang']="fr";
 ############################################
 
 # config du cache #
-# @see http://pear.php.net/manual/en/package.caching.cache-lite.cache-lite.cache-lite.php
+$cfg['cacheDir'] = sys_get_temp_dir();
 $cfg['cacheOptions'] = array(
-	'cacheDir' => sys_get_temp_dir() . PATH_SEPARATOR . 'lodel',
-	'lifeTime' => 3600,
-// pour débug : décommenter ici
-// 	'pearErrorMode' => 8,
-	'pearErrorMode' => 1,
-	'fileNameProtection'=>true,
-	'readControl'=>true,
-	'readControlType'=>'crc32',
-	'writeControl'=>true,
-	'hashedDirectoryLevel'=>2,
-	'fileLocking'=>true
-	);
+        'driver'    => 'file',
+        'prefix'    => 'lodel',
+        'cache_dir'          => sys_get_temp_dir(),
+        'default_expire'     => 3600,
+);
 ##################
 $GLOBALS['cacheOptions'] = $cfg['cacheOptions'];
 $cfg['debugMode']=false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
