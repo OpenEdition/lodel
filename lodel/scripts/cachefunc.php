@@ -193,7 +193,7 @@ function cache_get_config(){
 		),
 		'file'    => array(
 			'driver'             => 'file',
-			'cache_dir'          => sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cache',
+			'cache_dir'          => sys_get_temp_dir(),
 			'default_expire'     => 3600,
 			'ignore_on_delete'   => array(
 				'.gitignore',
