@@ -59,7 +59,7 @@
  * Tableau de la forme [groupname.optionname][value]
  *
  * Si la fonction est appelée sans argument, le fichier n'est pas écrit et le tableau est de la forme [groupname][optionname][value] : utilisé pour passer les options dans le $context
- * @param string $optionsfile le nom du fichier cache des options
+ * @param string $cache_name le nom du fichier cache des options
  * @return array le tableau des options
  */
 	
@@ -102,14 +102,14 @@ function cacheOptionsInFile( $cache_name = null )
                FROM '.$GLOBALS['tp'].'options 
                WHERE status > 0 ';
 
-		if(!isset($optionsfile))
+		if(!isset($cache_name))
 			$sql .= 'AND type != "passwd" AND type != "username" ';
 		$sql .= 'ORDER BY rank';
 
 	$result = $db->Execute($sql) 
 			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-	if(isset($optionsfile))
+	if(isset($cache_name))
 	{
 		$options_cache_return = $options_cache = array();
 		$txt = "<"."?php\n\$options_cache=array(\n";
