@@ -291,7 +291,7 @@ function getoption($name)
 		$options_cache = $cache->get('options_cache');
 
 		if (file_exists($optionsfile)) {
-			include($optionsfile);
+			eval( "?>" . $optionsfile);
 		} else {
 			function_exists('cacheOptionsInFile') || include('optionfunc.php');
 			$options_cache = cacheOptionsInFile($optionsfile);
