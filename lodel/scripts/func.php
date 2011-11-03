@@ -290,7 +290,7 @@ function getoption($name)
 		$options_cache = $cache->get('options_cache');
 	
 		if ($options_cache) {
-			eval($options_cache);
+			eval("?>" . $options_cache);
 		} else {
 			function_exists('cacheOptionsInFile') || include('optionfunc.php');
 			$options_cache = cacheOptionsInFile( 'options_cache' );
