@@ -725,10 +725,9 @@ class siteManage {
 	 * @param var $var nom des sites
 	 * @param var $val variable de travail pour la boucle foreach
 	 */
-	function maj_siteconfig($siteconfig, $var, $val = -1)
+	function maj_siteconfig($text, $var, $val = -1)
 	{
 		// lit le fichier
-		$text   = file_get_contents($siteconfig);
 		$search = array(); 
 		$rpl = array();
 		if (is_array($var)) {
@@ -750,17 +749,10 @@ class siteManage {
 		if ($newtext == $text) {
 			return true;
 		}
-        	unset($text);
+		unset($text);
 		// ecrit le fichier
-		if (!(@unlink($siteconfig)) ) {
-			return false;
-		}
-		if (false !== file_put_contents($siteconfig, $newtext)) {
-			@chmod ($siteconfig, 0666 & octdec(C::get('filemask', 'cfg')));
-			return true;
-		} else {
-			return false;
-		}
+		$cache = getCacheObject();
+		return $cache->set(getCacheIdFromId('siteconfig.php'), $newtext);
 	}	
 
 	/**
@@ -775,9 +767,6 @@ class siteManage {
 		// verifie la presence ou copie les fichiers necessaires
 		// cherche dans le fichier install-file.dat les fichiers a copier
 		// on peut installer les fichiers
-		if(!function_exists('removefilesincache'))
-			include 'cachefunc.php';
-
 		if (!C::get('path')) {
 			C::set('path', '/'. C::get('name'));
 		}
@@ -787,13 +776,11 @@ class siteManage {
 			download($siteconfigcache, 'siteconfig.php');
 			exit();
 		}
-		if (file_exists($siteconfigcache)) {
-			unlink($siteconfigcache);
-		}
+
 		$atroot = C::get('path') == '/' ? 'root' : '';
-		if (!copy(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php", $siteconfigcache)) {
-			trigger_error("ERROR: unable to write in CACHE.", E_USER_ERROR);
-		}
+
+		$siteconfigcache = file_get_contents(LODELROOT. $this->versiondir."/src/siteconfig$atroot.php");
+
 		if(!$this->maj_siteconfig($siteconfigcache, array('site' => C::get('name'))))
 		{
 			View::getView()->render('site-file');
@@ -802,7 +789,7 @@ class siteManage {
 		$siteconfigdest = $root. 'siteconfig.php';
 
 		// cherche si le fichier n'existe pas ou s'il est different de l'original
-		if (!file_exists($siteconfigdest) || md5_file($siteconfigcache) != md5_file($siteconfigdest)) {
+		if (!file_exists($siteconfigdest) || md5($siteconfigcache) != md5_file($siteconfigdest)) {
 			$installoption = C::get('installoption', 'cfg');
 			if(false === $installoption)
 				$installoption = C::get('installoption');
@@ -812,9 +799,8 @@ class siteManage {
 			}
 			@unlink($siteconfigdest); // try to delete before copying.
 			// try to copy now.
-
-			if (!@copy($siteconfigcache,$siteconfigdest)) {
-				C::set('siteconfigsrc', $siteconfigcache);
+	
+			if (!@file_put_contents($siteconfigdest, cache_get('siteconfig.php'))) {
 				C::set('siteconfigdest', $siteconfigdest);
 				C::set('error_writing', 1);
 				View::getView()->render('site-file');
@@ -850,7 +836,7 @@ class siteManage {
 
 			if(!preg_match("`".$pattern."`", C::get('dbname')))
 			{
-                		C::set('dbname', C::get('dbname').C::get('name'));
+				C::set('dbname', C::get('dbname').C::get('name'));
 			}
 			$db->SelectDB(C::get('dbname'));
 		}
@@ -864,7 +850,7 @@ class siteManage {
                 WHERE status>-64 
                 LIMIT 0,1")) 
             		or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            
+
 			if ($result->RecordCount()) {
 				$import = false;
 				break;
