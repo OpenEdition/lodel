@@ -466,7 +466,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	}
 	
 	$cleanquery = preg_replace(array("/(id=\d+)/", "/(^|&)".$offsetname."=\d+/","/(^|&)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
-	if ($cleanquery[0] == "&")
+	if (isset($cleanquery[0]) && $cleanquery[0] == "&")
 		$cleanquery = substr($cleanquery, 1);
 	if ($cleanquery)
 		$currenturl .= $cleanquery."&";
