@@ -237,6 +237,7 @@ ln tpl/internal_messaging.html
 
 #association massive
 ln tpl/entries_massassoc.html
+ln tpl/entrytypesbrowser.html
 
 #import xml du ME
 ln tpl/importxml_checkcontent.html
