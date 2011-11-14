@@ -494,7 +494,9 @@ function removeendnotes($text)
 
 function removenotes($text)
 {
-	return preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
+	$text = preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
+	$text = preg_replace('/<sup[^>]*>\s*(<[^>]+\/?>\s*<\/[^>]+>)*\s*<\/sup>/s', "", $text);
+	return $text;
 }
 
 /** 
