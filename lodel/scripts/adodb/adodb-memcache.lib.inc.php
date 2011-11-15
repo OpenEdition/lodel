@@ -163,7 +163,7 @@ $db->CacheExecute($sql);
 		
 		function flushcache($filename, $debug=false)
 		{
-			$del = $this->_memcache->delete($filename);
+			$del = $this->_memcache->delete($filename, 0);
 			
 			if ($debug) 
 				if (!$del) ADOConnection::outp("flushcache: $key entry doesn't exist on memcached server!<br>\n");
