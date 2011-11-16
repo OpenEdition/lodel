@@ -1181,7 +1181,6 @@ class DataLogic
 		} elseif(isset($file)) {
 			$this->_cleanDatabase();
 			if(!isset($context['checkcontent']) && TRUE === $this->_checkContents()) {
-				$cache = getCacheObject();
 				$cache->set($cacheid, serialize($this));
 
 				$context['changedcontent'] = $this->_changedContent;
