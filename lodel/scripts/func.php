@@ -736,13 +736,13 @@ function checkdocannexedir($dir)
 
 function tmpdir($name = '')
 {
-        $tmpdir = '';
-        if(defined("TMPDIR") && '' !== (string)TMPDIR)
-                $tmpdir = TMPDIR;
-        elseif(!($tmpdir = C::get('tmpoutdir', 'cfg')))
-                $tmpdir = cache_get_path('tmp');
+	$tmpdir = '';
+	if(defined("TMPDIR") && '' !== (string)TMPDIR)
+		$tmpdir = TMPDIR;
+	elseif(!( $tmpdir = C::get('tmpoutdir', 'cfg') ))
+		$tmpdir = cache_get_path('tmp' . DIRECTORY_SEPARATOR . $name) ;
 
-        return $tmpdir . DIRECTORY_SEPARATOR;
+	return $tmpdir . DIRECTORY_SEPARATOR;
 }
 
 function myhtmlentities($text)

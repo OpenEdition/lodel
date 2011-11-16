@@ -85,7 +85,7 @@ function printErrors($errors, $exit = true, $isFrame = true)
 try
 {
 	include 'auth.php';
-    C::set('env', 'edition');
+
 	authenticate(LEVEL_REDACTOR);
 	// require 'func.php';
 	include 'utf8.php'; // conversion des caracteres
@@ -112,19 +112,19 @@ try
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
 		$file = $_FILES['file1'];
 		if($file['error'] > 0)
-	        {
-	            switch($file['error'])
-	            {
-	                case UPLOAD_ERR_NO_FILE: printErrors('Missing file', true, $isFrame); break;
-	                case UPLOAD_ERR_INI_SIZE: printErrors('Filesize is more than limit configuration : '.ini_get('upload_max_filesize'), true, $isFrame); break;
-	                case UPLOAD_ERR_FORM_SIZE: printErrors('Filesize is more than form limit configuration : 25Mo', true, $isFrame); break;
-	                case UPLOAD_ERR_PARTIAL: printErrors('Error while transfering, try again', true, $isFrame); break;
-			case UPLOAD_ERR_NO_TMP_DIR: printErrors('No temporary directory found', true, $isFrame); break;
-			case UPLOAD_ERR_CANT_WRITE: printErrors("Can't write file", true, $isFrame); break;
-			case UPLOAD_ERR_EXTENSION: printErrors('A PHP extension stopped file upload', true, $isFrame); break;
-	                default: printErrors('An error occured, try again', true, $isFrame); break;
-	            }
-	        }
+		{
+			switch($file['error'])
+			{
+				case UPLOAD_ERR_NO_FILE: printErrors('Missing file', true, $isFrame); break;
+				case UPLOAD_ERR_INI_SIZE: printErrors('Filesize is more than limit configuration : '.ini_get('upload_max_filesize'), true, $isFrame); break;
+				case UPLOAD_ERR_FORM_SIZE: printErrors('Filesize is more than form limit configuration : 25Mo', true, $isFrame); break;
+				case UPLOAD_ERR_PARTIAL: printErrors('Error while transfering, try again', true, $isFrame); break;
+				case UPLOAD_ERR_NO_TMP_DIR: printErrors('No temporary directory found', true, $isFrame); break;
+				case UPLOAD_ERR_CANT_WRITE: printErrors("Can't write file", true, $isFrame); break;
+				case UPLOAD_ERR_EXTENSION: printErrors('A PHP extension stopped file upload', true, $isFrame); break;
+				default: printErrors('An error occured, try again', true, $isFrame); break;
+			}
+		}
 
 		if(empty($file['tmp_name']) || $file['tmp_name'] == 'none' || !is_uploaded_file($file['tmp_name']))
 			printErrors("Le fichier n'est pas un fichier chargé", true, $isFrame);
@@ -132,7 +132,8 @@ try
 		$file1 = $file['tmp_name'];
 		$sourceoriginale = $file['name'];
 		$tmpdir = tmpdir(uniqid('import_', true)); // use here and later.
-		$source = $tmpdir. "/". basename($file1). '-source';
+		$source = $tmpdir. DIRECTORY_SEPARATOR . basename($file1). '-source';
+
 		// move first because some provider does not allow operation in the upload dir
 		if(!move_uploaded_file($file['tmp_name'], $source))
 			printErrors("Impossible de déplacer le fichier chargé", true, $isFrame);
@@ -142,7 +143,7 @@ try
 		$sourceoriginale = basename($localfile);
 		$file1           = SITEROOT. 'upload/'. $sourceoriginale;
 		$tmpdir          = tmpdir(uniqid('import_', true)); // use here and later.
-		$source          = $tmpdir. "/". basename($file1). '-source';
+		$source          = $tmpdir. DIRECTORY_SEPARATOR . basename($file1). '-source';
 		if(!copy($file1, $source))
 			printErrors("Impossible de déplacer le fichier", true, $isFrame);
 	}
@@ -170,14 +171,14 @@ try
 		$unzipcmd = C::get('unzipcmd', 'cfg');
 		if(empty($context['multiple']))
 		{
-		    if($isFrame) printJavascript('window.parent.o.changeStep(2);');
-		    
+			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
+
 			if ($unzipcmd && $unzipcmd != "pclzip") {
-                $log = exec( "$unzipcmd -o -d $tmpdir $source" );
+				$log = exec( "$unzipcmd -o -d $tmpdir $source" );
 			}else{
 				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
-			    $archive = new PclZip($source);
-			    $arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
+				$archive = new PclZip($source);
+				$arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
 			}
 
             $dir = opendir($tmpdir);
@@ -523,16 +524,16 @@ RDF;
 
 			unset($contents);
 			$row = array();
-			$row['fichier']         = $fileconverted;
-			$row['odt']		= $odtconverted;
-			$row['tei']		= $tei;
-			$row['source']          = $source;
-			$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
+			$row['fichier']			= $fileconverted;
+			$row['odt']				= $odtconverted;
+			$row['tei']				= $tei;
+			$row['source']			= $source;
+			$row['sourceoriginale']	= magic_stripslashes($sourceoriginale);
 			// build the import
-			$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
-			$row['identity']      = $context['identity'];
-			$row['idparent']      = $context['idparent'];
-			$row['idtype']        = $context['idtype'];
+			$row['importversion']	= "oochargement ".C::get('version', 'cfg').";";
+			$row['identity']		= $context['identity'];
+			$row['idparent']		= $context['idparent'];
+			$row['idtype']			= $context['idtype'];
 
 			function_exists('maketask') || include 'taskfunc.php';
 			if(empty($context['multiple']))
