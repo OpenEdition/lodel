@@ -159,7 +159,7 @@ class View
 		$this->_home = C::get('home', 'cfg');
 		self::$time = time();
 		self::$microtime = microtime(true);
-		self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
+		self::$nocache = (bool)(C::get('nocache') || C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
 	}
 
 	/**
@@ -557,6 +557,11 @@ class View
 			}
 		}
 
+		if(!isset($this->_cache))
+		{
+			$this->_cache = getCacheObject();
+		}
+
 		$contents = false;
 
 		if(!self::$nocache)
@@ -575,10 +580,7 @@ class View
 				$template_cache = getCacheIdFromId("tpl_{$base}", $this->_cache);
 			}
 		
-			if(!isset($this->_cache))
-			{
-				$this->_cache = getCacheObject();
-			}
+
 			
 			$contents = $this->_cache->get($template_cache);
 		}
