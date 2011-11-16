@@ -1069,7 +1069,6 @@ class Entities_EditionLogic extends GenericLogic
 			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
 			foreach($hooks as $hook){
 				if(function_exists($hook)){
-					error_log($hook);
 					call_user_func($hook, &$context, $field->name);
 				}
 			}
