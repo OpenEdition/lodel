@@ -599,6 +599,7 @@ class View
 		else
 		{
 			// le tpl cache n'existe pas ou n'est pas a jour compare au fichier de maquette
+			class_exists('LodelParser') || include 'lodelparser.php';
 			$template = LodelParser::getParser()->parse($tpl, $blockId, $cache_rep, $loopName);
 			if(!self::$nocache)
 				$this->_cache->set($template_cache, $template['refresh']."\n".$template['contents']);
