@@ -302,7 +302,10 @@ function setLang($lang=null)
 			$lang = C::get('options.metadonneessite.langueprincipale');
 			$lang = !$lang ? 'fr' : $lang;
 		}
+		else
+		{
 		setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
+		}
 	}
 	// do we have to set another locale ?
 	if('fr' !== substr($lang, 0, 2))
@@ -321,7 +324,7 @@ function setLang($lang=null)
 		C::set('locale', $l.'_'.$lu.'.UTF8');
 		unset($l, $lu);
 	}
-	
+        	
 	C::set('sitelang', $lang);
 }
 
