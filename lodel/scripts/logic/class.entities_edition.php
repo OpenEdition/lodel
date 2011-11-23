@@ -971,7 +971,7 @@ class Entities_EditionLogic extends GenericLogic
 				unset($ref); // detach from the other references
 				$ref   = $result->fields;
 				$class = $result->fields['class'];
-				$relatedtable[$class][$result->fields['id']] = &$ref;
+				$relatedtable[$class][$result->fields['id']][$degree] = &$ref;
 				if ($table == "persons") {
 					$relatedrelationtable[$class][$result->fields['idrelation']] = &$ref;
 				}
@@ -986,8 +986,10 @@ class Entities_EditionLogic extends GenericLogic
 					$result2=$db->execute(lq("SELECT * FROM #_TP_".$class." WHERE ".$idfield." ".sql_in_array(array_keys($ids)))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					while (!$result2->EOF) {
 						$id = $result2->fields[$idfield];
-						if(!isset($ids[$id]['data']) || !is_array($ids[$id]['data'])) $ids[$id]['data'] = array();
-						$ids[$id]['data'] = array_merge((array)$ids[$id]['data'], $result2->fields);
+						foreach( array_keys($ids[$id]) as $degree){
+							if(!isset($ids[$id][$degree]['data']) || !is_array($ids[$id][$degree]['data'])) $ids[$id][$degree]['data'] = array();
+							$ids[$id][$degree]['data'] = array_merge((array)$ids[$id][$degree]['data'], $result2->fields);
+						}
 						$result2->MoveNext();
 					}
 				}
