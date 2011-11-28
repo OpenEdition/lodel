@@ -95,7 +95,7 @@ $GLOBALS['xhtmlgroups']['xhtml:fontstyle'] = array ("tt", "i", "b", "big", "smal
 
 $GLOBALS['xhtmlgroups']['xhtml:phrase'] = array ("em", "strong", "dfn", "code", "q", "samp", "kbd", "var", "cite", "abbr", "acronym", "sub", "sup", "del");
 
-$GLOBALS['xhtmlgroups']['xhtml:special'] = array ("span", "img", "object", "br", "bdo", "map", "embed", "param");
+$GLOBALS['xhtmlgroups']['xhtml:special'] = array ("span", "img", "object", "br", "bdo", "map", "embed", "param", "iframe");
 
 	$GLOBALS['xhtmlgroups']['xhtml:block'] = array (
 		"p", "h1", "h2", "h3", "h4", "h5", "h6", # heading
