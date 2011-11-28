@@ -212,13 +212,13 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				continue;
 			}
 			$text=&$context[$k];
-       			preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
+			preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
 			foreach ($results as $result) {
 				$imgfile=$result[1];	   $ext=$result[2];
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
 				// local.image so
 				if (isset($imglist[$imgfile])) { // is it in the cache ?
-					$text=str_replace ($result[0], "<img src=\\\"$imglist[$imgfile]\\\"", $text);
+					$text = str_replace ($result[0], "<img src=\"$imglist[$imgfile]\" />", $text);
 				} else {
 					// not in the cache let's move it
 					if (!$dir) {
@@ -226,7 +226,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$this->_checkdir ($dir);
 					}
 					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
-					$ok = @copy ($imgfile, SITEROOT.$newimgfile);
+					$ok = copy ($imgfile, SITEROOT.$newimgfile);
 					@unlink ($imgfile);
 					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
