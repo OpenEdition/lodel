@@ -566,16 +566,42 @@ function loop_mltext(& $context, $funcname)
 			call_user_func("code_do_$funcname", $localcontext);
 		}
 		// pas super cette regexp... mais l argument a deja ete processe !
-	}	elseif (/*preg_match_all("/&amp;lt;r2r:ml lang\s*=&amp;quot;(\w+)&amp;quot;&amp;gt;(.*?)&amp;lt;\/r2r:ml&amp;gt;/s", 
-													$context['value'], $results, PREG_SET_ORDER) || */
-        preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
-														$context['value'], $results, PREG_SET_ORDER))	{
-		foreach ($results as $result)	{
+	}	elseif (
+		preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
+														$context['value'], $results, PREG_SET_ORDER)
+		){
+			foreach ($results as $result)	{
+				$localcontext = $context;
+				$localcontext['lang'] = $result[1];
+				$localcontext['value'] = $result[2];
+				call_user_func("code_do_$funcname", $localcontext);
+			}
+	}
+}
+
+/**
+ * function loop_mldate
+ * Display multi dates.
+ */
+function loop_mldate( &$context, $funcname )
+{
+	if(is_array($context['value'])){
+		foreach ($context['value'] as $key => $value) {
 			$localcontext = $context;
-			$localcontext['lang'] = $result[1];
-			$localcontext['value'] = $result[2];
+			$localcontext['key'] = $key;
+			$localcontext['value'] = $value;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
+	}elseif (
+		preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml key\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s",
+								$context['value'], $results, PREG_SET_ORDER)
+	){
+			foreach ($results as $result)	{
+				$localcontext = $context;
+				$localcontext['lang'] = $result[1];
+				$localcontext['value'] = $result[2];
+				call_user_func("code_do_$funcname", $localcontext);
+			}
 	}
 }
 

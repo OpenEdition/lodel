@@ -408,6 +408,10 @@
 	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
 
 <ELSE/>
+<!--[ --------------- MLDATE ------------------------- ]-->
+<IF COND="[#TYPE] eq 'mldate'">
+	<FUNC NAME="EDIT_MLDATE">
+<ELSE/>
 <!--[ ---------------FILE, IMAGE ------------- ]-->	    
 <IF COND="[#TYPE] eq 'image' OR [#TYPE] eq 'file'">
 	<div class="oneItem">
@@ -524,6 +528,7 @@ cp_[#VARNAME].writeDiv();
 </IF>
 </IF>
 </IF>
+</IF>
 
 <!--[ error management ]-->
 <LOOP NAME="fielderror" FIELD="[#VARNAME]">
@@ -559,6 +564,31 @@ cp_[#VARNAME].writeDiv();
 </DEFFUNC>
 
 
+<!--[ -----------------------------------------------------------
+      Widget for editing a multi date
+--------------------------------------------------------------- ]-->
+
+<DEFFUNC NAME="EDIT_MLDATE">
+	<div class="add">
+		<a href="#down" onclick="addmldate(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
+	</div>
+
+	<div id="mldate_[#VARNAME]" class="mldate" >
+		<LOOP NAME="mldate">
+			<br class="nobr" />
+			<input type="text" name="data[[#VARNAME]][[#KEY]]" id="[#VARNAME][[#KEY]]" value="[#VALUE]"  />
+			<a href="#" onclick="deletemldate(this, '[@EDITION.CONFIRMATION_DELETE_DATE]'); return false;" class="delete">[@COMMON.DELETE]</a>
+			<br class="nobr" />
+		</LOOP>
+	</div>
+	<div id="mldate_[#VARNAME]_for_copy" style="display: none;">
+			<br class="nobr" />
+			<input type="text" name="data[[#VARNAME]][__lodel_wildcard]" id="[#VARNAME][__lodel_wildcard]" value="" />
+			<a href="#" onclick="deletemldate(this, '[@EDITION.CONFIRMATION_DELETE_DATE]'); return false;" class="delete">[@COMMON.DELETE]</a>
+			<br class="nobr" />
+	</div>
+
+</DEFFUNC>
 <!--[ -----------------------------------------------------------
       Widget for editing person
 --------------------------------------------------------------- ]-->

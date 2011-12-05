@@ -2,12 +2,12 @@
    LODEL - Logiciel d'Edition ELectronique.
    Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
    Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+   Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
+   Copyright (c) 2008, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
+   Copyright (c) 2009, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
    Home page: http://www.lodel.org
    E-Mail: lodel@lodel.org
                              All Rights Reserved
@@ -35,7 +35,7 @@ function getXMLHttpRequest() {
 			xhr = new ActiveXObject("Microsoft.XMLHTTP");
 		}
 	}
-	else { // XMLHttpRequest non supporté par le navigateur 
+	else { // XMLHttpRequest non supportï¿½ par le navigateur 
 		xhr = false; 
 	}
 	return xhr;
@@ -144,6 +144,22 @@ function addlanginmltext(obj,name){
 	obj.selectedIndex=0;
 }
 
+function addmldate(object, name){
+	var block=document.getElementById('mldate_'+name+'_for_copy')
+	var clone=block.cloneNode(true);
+	clone.style.display="block";
+	clone.setAttribute('id','');
+	changeNameAttributes(clone,'');
+	
+	// label
+	var label=clone.getElementsByTagName('label');
+
+	// other fields
+	clone.setAttribute('id','');
+
+	document.getElementById('mldate_'+name).appendChild(clone);
+}
+
 function deletelanginmltext(obj, msg) 
 {
 	// get the edit box
@@ -152,6 +168,17 @@ function deletelanginmltext(obj, msg)
 	if (edit.length<1) {
 		edit=obj.getElementsByTagName("textarea");
 	}
+	if (edit[0].value.length>0) {
+		if (!confirm(msg)) return;
+	}
+	obj.parentNode.removeChild(obj);
+}
+
+function deletemldate(obj, msg) 
+{
+	// get the edit box
+	obj=obj.parentNode;
+	var edit=obj.getElementsByTagName("input");
 	if (edit[0].value.length>0) {
 		if (!confirm(msg)) return;
 	}

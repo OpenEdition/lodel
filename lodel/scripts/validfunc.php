@@ -76,7 +76,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	static $tmpdir;
 	static $masks = array();
 
-    	isset($GLOBALS['lodelfieldtypes']) || include 'fieldfunc.php';
+	isset($GLOBALS['lodelfieldtypes']) || include 'fieldfunc.php';
 
 	if (isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
@@ -335,6 +335,19 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'select' :
 	case 'multipleselect' :
 		return true; // cannot validate
+	case 'mldate':
+		if(is_array($text)){
+			function_exists('mysqldatetime') || include 'date.php';
+			$str = "";
+			foreach($text as $key => $date){
+				if(is_int($key)){
+					$date = mysqldate($date, "date");
+					$str .= "<r2r:ml key=\"{$key}\">{$date}</r2r:ml>";
+				}
+			}
+			$text = $str;
+		}
+		return true;
 	case 'mltext' :
 		if (is_array($text)) {
 			$str = "";

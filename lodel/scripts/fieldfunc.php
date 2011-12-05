@@ -109,6 +109,7 @@ $GLOBALS['g_entities_persons_fields'] = array('Title');
 					'email' => array ('sql' => 'text', 'autostriptags' => true),
 					'color' => array ('sql' => 'char(10)', 'autostriptags' => true),
 					'date' => array ('sql' => 'date', 'autostriptags' => true),
+					'mldate' => array('sql' => 'text'),
 					'datetime' => array ('sql' => 'datetime', 'autostriptags' => true),
 					'time' => array ('sql' => 'time', 'autostriptags' => true),
 					'int' => array ('sql' => 'int', 'autostriptags' => true),
