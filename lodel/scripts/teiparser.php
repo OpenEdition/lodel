@@ -1001,16 +1001,17 @@ class TEIParser extends XMLReader
 								while($reader->read())
 								{
 									if(parent::ELEMENT === $reader->nodeType 
-									   && ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) )
+										&& ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) )
 									{
-   										$attrs = $this->_parseAttributes($reader);   
-   										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
+										$attrs = $this->_parseAttributes($reader);   
+										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
+										if($reader->isEmptyElement) $currentNode .= $this->_closeTag();
 									}elseif(parent::TEXT === $reader->nodeType){
 										$currentNode .= $reader->readOuterXML();
 									}elseif(parent::END_ELEMENT === $reader->nodeType 
-									       && ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) ){
-								        $currentNode .= $this->_closeTag();
-							        }
+											&& ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) ){
+										$currentNode .= $this->_closeTag();
+									}
 								}
 								//$currentNode .= $this->_parse($fC->asXML());
 							}
