@@ -74,10 +74,13 @@ function extract_import($footprint, & $context, $ext = 'zip')
 	if($archive) $context['error_upload'] = $_FILES['archive']['error'];
 
 	if (empty($context['error_upload']) && $archive && $archive != "none" && is_uploaded_file($archive)) { // Upload
-		$file = cache_get_path(null) . DIRECTORY_SEPARATOR . $_FILES['archive']['name'];
-		if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $file)) {
+		if (!preg_match("/^".$GLOBALS['fileregexp']."$/", $_FILES['archive']['name'])) {
 			$file = $footprint."-import-".date("dmy").".".$ext;
+		}else{
+			$file = $_FILES['archive']['name'];
 		}
+
+		$file = cache_get_path(null) . DIRECTORY_SEPARATOR . $file;
 
 		if (!move_uploaded_file($archive, $file)) {
 			trigger_error("ERROR: a problem occurs while moving the uploaded file.", E_USER_ERROR);
