@@ -573,14 +573,16 @@ cp_[#VARNAME].writeDiv();
 		<a href="#down" onclick="addmldate(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
 	</div>
 
-	<LOOP NAME="mldate" VALUE="[#VALUE]">
-		<div id="mldate_[#VARNAME]" class="mldate" >
-			<br class="nobr" />
-			<input type="text" name="data[[#VARNAME]][[#KEY]]" id="[#VARNAME][[#KEY]]" value="[#VALUE]"  />
-			<a href="#" onclick="deletemldate(this, '[@EDITION.CONFIRMATION_DELETE_DATE]'); return false;" class="delete">[@COMMON.DELETE]</a>
-			<br />
-		</div>
-	</LOOP>
+	<div id="mldate_[#VARNAME]">
+		<LOOP NAME="mldate" VALUE="[#VALUE]">
+			<div class="mldate" >
+				<br class="nobr" />
+				<input type="text" name="data[[#VARNAME]][[#KEY]]" id="[#VARNAME][[#KEY]]" value="[#VALUE]"  />
+				<a href="#" onclick="deletemldate(this, '[@EDITION.CONFIRMATION_DELETE_DATE]'); return false;" class="delete">[@COMMON.DELETE]</a>
+				<br />
+			</div>
+		</LOOP>
+	</div>
 	<div id="mldate_[#VARNAME]_for_copy" style="display: none;">
 		<br class="nobr" />
 		<input type="text" name="data[[#VARNAME]][__lodel_wildcard]" id="[#VARNAME][__lodel_wildcard]" value="" />
