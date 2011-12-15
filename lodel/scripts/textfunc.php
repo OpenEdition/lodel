@@ -131,7 +131,7 @@ function cuttext($text, $length = 100, $dots = false) {
 
 	if ($html) {
 		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
-			return $text;
+			return htmlspecialchars($text);
 		}
 		$totalLength = mb_strlen(strip_tags($ending), $encoding);
 		$openTags = array();
