@@ -122,6 +122,7 @@ function cuttext($text, $length = 100, $dots = false) {
 	$options = array(
 		'ending' => '', 'exact' => true, 'html' => true
 	);
+	$text = htmlspecialchars_decode($text);
 
 	if($dots) $options['ending'] = '...';
 
@@ -177,7 +178,7 @@ function cuttext($text, $length = 100, $dots = false) {
 		}
 	} else {
 		if (mb_strlen($text, $encoding) <= $length) {
-			return $text;
+			return htmlspecialchars($text);
 		} else {
 			$truncate = mb_substr($text, 0, $length - mb_strlen($ending, $encoding), $encoding);
 		}
@@ -207,7 +208,7 @@ function cuttext($text, $length = 100, $dots = false) {
 		}
 	}
 	$GLOBALS['textfunc_hasbeencut'] = true;
-	return $truncate;
+	return  htmlspecialchars($truncate);
 }
 
 function cut_without_tags($text, $length, $dots=false)
@@ -972,7 +973,11 @@ function paranumber($texte, $styles='texte')
 	if(!isset($GLOBALS['textfunc_hasbeencleaned'])) $texte = cleanHTML($texte);
 	if(!$doc->loadXML("<body>" . $texte . "</body>"))
 		return $texte;
+
 	$dom = new DOMXpath($doc);
+
+	$dom->preserveWhiteSpace = true;
+	$dom->formatOutput       = false;
 
 	cleanIllegalTags(&$doc);
 
