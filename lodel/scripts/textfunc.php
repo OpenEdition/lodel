@@ -122,7 +122,7 @@ function cuttext($text, $length = 100, $dots = false) {
 	$options = array(
 		'ending' => '', 'exact' => true, 'html' => true
 	);
-	$text = htmlspecialchars_decode($text);
+	$text = $text;
 
 	if($dots) $options['ending'] = '...';
 
@@ -131,7 +131,7 @@ function cuttext($text, $length = 100, $dots = false) {
 
 	if ($html) {
 		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
-			return htmlspecialchars($text);
+			return $text;
 		}
 		$totalLength = mb_strlen(strip_tags($ending), $encoding);
 		$openTags = array();
@@ -176,14 +176,15 @@ function cuttext($text, $length = 100, $dots = false) {
 				break;
 			}
 		}
+		$truncate = preg_replace('/\&[0-9a-z]{0,8}$/i', '', $truncate);
+
 	} else {
 		if (mb_strlen($text, $encoding) <= $length) {
-			return htmlspecialchars($text);
+			return $text;
 		} else {
 			$truncate = mb_substr($text, 0, $length - mb_strlen($ending, $encoding), $encoding);
 		}
 	}
-
 	if (!$exact) {
 		$spacepos = mb_strrpos($truncate, ' ', $encoding);
 		if (isset($spacepos)) {
@@ -201,7 +202,6 @@ function cuttext($text, $length = 100, $dots = false) {
 			$truncate = mb_substr($truncate, 0, $spacepos, $encoding);
 		}
 	}
-
 	$truncate .= $ending;
 
 	if ($html) {
@@ -209,8 +209,8 @@ function cuttext($text, $length = 100, $dots = false) {
 			$truncate .= '</'.$tag.'>';
 		}
 	}
-        $GLOBALS['textfunc_hasbeencut'] = true;
-	return htmlspecialchars($truncate);
+	$GLOBALS['textfunc_hasbeencut'] = true;
+	return  $truncate;
 }
 
 function cut_without_tags($text, $length, $dots=false)
