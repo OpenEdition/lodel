@@ -419,7 +419,7 @@ class Entities_EditionLogic extends GenericLogic
                                 $gdaoaf = DAO::getGenericDAO ($class, "identity");
                                 $tmpfile = $gdaoaf->getById($id, $ffield->name);
                                 $fieldname = $ffield->name;
-                                if($context['data'][$ffield->name] == 'deleted') {
+                                if(isset($context['data'][$ffield->name]) && $context['data'][$ffield->name] == 'deleted') {
                                         $context['data'][$ffield->name] = '';
                                 } elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
                                         $name = $ffield->name;
