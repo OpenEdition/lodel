@@ -1006,9 +1006,9 @@ function paranumber($texte, $styles='texte')
 
 	$texte = "";
 	foreach($dom->query('/body/*') as $elem ) {
-		$texte .= $doc->saveXML($elem);
+		$texte .= $doc->saveXML($elem, LIBXML_NOEMPTYTAG);
 	}
-	return $texte;
+	return cleanHTML($texte);
 }
 
 
