@@ -302,6 +302,7 @@ class Entities_EditionLogic extends GenericLogic
 		$status = isset($context['status']) ? $context['status'] : null;
 		$this->_isAuthorizedStatus($status);
 		// iduser
+
 		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
 		function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
@@ -327,7 +328,7 @@ class Entities_EditionLogic extends GenericLogic
 		/* Éxécution des hooks */
 		$this->_executeHooks($context, $error);
 
-        	$ret = '';
+		$ret = '';
 		if (!$this->validateFields($context, $error)) {
 			// error.
 			// if the entity is imported and will be checked
@@ -398,17 +399,17 @@ class Entities_EditionLogic extends GenericLogic
 //			}
 
 			$Filefields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND (type='file' OR type='image')", "",   "name");
-                        foreach($Filefields as $ffield) {
-                                $gdaoaf = DAO::getGenericDAO ($class, "identity");
-                                $tmpfile = $gdaoaf->getById($id, $ffield->name);
-                                $fieldname = $ffield->name;
-                                if($context['data'][$ffield->name] == 'deleted') {
-                                        $context['data'][$ffield->name] = '';
-                                } elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
-                                        $name = $ffield->name;
-                                        $context['data'][$ffield->name] = $tmpfile->$name;
-                                }
-                        }
+			foreach($Filefields as $ffield) {
+				$gdaoaf = DAO::getGenericDAO ($class, "identity");
+				$tmpfile = $gdaoaf->getById($id, $ffield->name);
+				$fieldname = $ffield->name;
+				if(isset($context['data'][$ffield->name]) && $context['data'][$ffield->name] == 'deleted') {
+					$context['data'][$ffield->name] = '';
+				} elseif(empty($context['data'][$ffield->name]) && !empty($tmpfile->$fieldname)) {
+					$name = $ffield->name;
+					$context['data'][$ffield->name] = $tmpfile->$name;
+				}
+			}
 
 			// change the usergroup of the entity ?
 			if (C::get('admin', 'lodeluser') && C::get('usergroup', 'lodeluser')) {
@@ -459,7 +460,7 @@ class Entities_EditionLogic extends GenericLogic
 		if (!empty($context['creationinfo'])) {
 			$vo->creationinfo = $context['creationinfo'];
 		}
-	
+
 		$id = $context['id'] = $dao->save($vo);
 		// change the group recursively
 		$gdao = DAO::getGenericDAO ($class, "identity");
@@ -470,6 +471,7 @@ class Entities_EditionLogic extends GenericLogic
 		$gvo->identity = $id;
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo, $new);  // save the related table
+
 		if ($new) {
 			$this->_createRelationWithParents ($id, $idparent);
 		}
@@ -481,7 +483,7 @@ class Entities_EditionLogic extends GenericLogic
 			return "_error";
 		}
 		// pour indexer aller dans lodel/admin/ et cliquer sur réindexer
-        	// ou activer l'option dans le siteconfig.php
+		// ou activer l'option dans le siteconfig.php
 		if (C::get('searchEngine', 'cfg') && $votype->search) {
 			$lo_entities_index = new Entities_IndexLogic();
 			$lo_entities_index->addIndexAction($context, $error);
