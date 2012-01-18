@@ -919,6 +919,7 @@ function cleanHTML( $text ) {
 		'valid_xhtml' => 1,
 		'make_tag_strict' => 0,
 		'unique_ids' => 0,
+		'scheme' => '*: *',
 	);
 	return htmLawed($text, $config);
 }
