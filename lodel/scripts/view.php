@@ -438,7 +438,7 @@ class View
 			$base_rep = $this->_home. '../tpl/';
 		}
 	
-		$tplFile = $base_rep. $tpl. '.html';
+		$tplFile = $base_rep . DIRECTORY_SEPARATOR . $tpl. '.html';
 		$blockId = (int)$blockId;
 		$idcontext = (int)@$context['id'];
 		$recalcul = true;
@@ -546,7 +546,7 @@ class View
 	*/
 	private function _calcul_template($base, $cache_rep = '', $base_rep = './tpl/', $blockId=0, $loopName=null) 
 	{
-		$tpl = $base_rep. $base. '.html';
+		$tpl = $base_rep . DIRECTORY_SEPARATOR . $base. '.html';
 
 		if (!file_exists($tpl)) 
 		{
