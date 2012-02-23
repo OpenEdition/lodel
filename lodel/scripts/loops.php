@@ -566,20 +566,16 @@ function loop_mltext(& $context, $funcname)
 			call_user_func("code_do_$funcname", $localcontext);
 		}
 		// pas super cette regexp... mais l argument a deja ete processe !
-	}else{
-		$dom = new DOMDocument();
-		@$dom->loadXML( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><doc>" . html_entity_decode($context['value']) . "</doc>" );
-		$xpath = new DOMXPath($dom);
-		$results = $xpath->query('/doc/ml[@lang]');
-		foreach ($results as $result)   {
-			$localcontext = $context;
-			$localcontext['lang']  = $result->getAttribute('lang');
-			$localcontext['value'] = "";
-			foreach ($result->childNodes as $child){
-				$localcontext['value'] .= htmlentities($dom->saveXML($child));
+	}	elseif (
+		preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
+														$context['value'], $results, PREG_SET_ORDER)
+		){
+			foreach ($results as $result)	{
+				$localcontext = $context;
+				$localcontext['lang'] = $result[1];
+				$localcontext['value'] = $result[2];
+				call_user_func("code_do_$funcname", $localcontext);
 			}
-			call_user_func("code_do_$funcname", $localcontext);
-		}
 	}
 }
 
