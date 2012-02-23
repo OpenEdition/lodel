@@ -272,7 +272,7 @@
 <IF COND="[#EDITION] eq 'display'">
 	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-	    <div class="mlTitle">[(#LANG|humanlang|ucfirst)]</div><div class="displayfield">[#VALUE]</div>
+	    <div class="mlTitle">[(#LANG|humanlang|ucfirst)]</div><div class="displayfield">[#VALUE|html_entity_decode]</div>
 	  </LOOP>
 	<ELSE/> <!--[ other cases ]-->
 		<div class="displayfield [#TYPE]">

@@ -568,7 +568,7 @@ function loop_mltext(& $context, $funcname)
 		// pas super cette regexp... mais l argument a deja ete processe !
 	}else{
 		$dom = new DOMDocument();
-		$dom->loadXML( "<doc>" . html_entity_decode($context['value']) . "</doc>" );
+		@$dom->loadXML( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><doc>" . html_entity_decode($context['value']) . "</doc>" );
 		$xpath = new DOMXPath($dom);
 		$results = $xpath->query('/doc/ml[@lang]');
 		foreach ($results as $result)   {
@@ -576,7 +576,7 @@ function loop_mltext(& $context, $funcname)
 			$localcontext['lang']  = $result->getAttribute('lang');
 			$localcontext['value'] = "";
 			foreach ($result->childNodes as $child){
-				$localcontext['value'] .= $dom->saveXML($child);
+				$localcontext['value'] .= htmlentities($dom->saveXML($child));
 			}
 			call_user_func("code_do_$funcname", $localcontext);
 		}
