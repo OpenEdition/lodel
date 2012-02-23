@@ -565,9 +565,9 @@ function loop_mltext(& $context, $funcname)
 		// pas super cette regexp... mais l argument a deja ete processe !
 	}else{
 		$dom = new DOMDocument();
-		$dom->loadXML(html_entity_decode($context['value']));
+		$dom->loadXML( "<doc>" . html_entity_decode($context['value']) . "</doc>" );
 		$xpath = new DOMXPath($dom);
-		$results = $xpath->query('/ml[@lang]');
+		$results = $xpath->query('/doc/ml[@lang]');
 		foreach ($results as $result)   {
 			$localcontext = $context;
 			$localcontext['lang']  = $result->getAttribute('lang');
