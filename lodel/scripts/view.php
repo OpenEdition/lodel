@@ -539,7 +539,7 @@ class View
 	*/
 	private function _calcul_template($base, $cache_rep = '', $base_rep = './tpl/', $blockId=0, $loopName=null) 
 	{
-		$tpl = $base_rep. $base. '.html';
+		$tpl = $base_rep . DIRECTORY_SEPARATOR . $base. '.html';
 
 		if (!file_exists($tpl)) 
 		{
