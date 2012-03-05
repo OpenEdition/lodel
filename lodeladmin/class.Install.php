@@ -1204,7 +1204,7 @@ class Install {
 		$GLOBALS['dbusername'] = $cfg['dbusername'];
 		$GLOBALS['dbpasswd'] = $cfg['dbpasswd'];
 		$GLOBALS['dbhost'] = $cfg['dbhost'];
-		require("../lodel".$this->versionsuffix."/scripts/context.php");
+		require_once("../lodel".$this->versionsuffix."/scripts/context.php");
 		C::setCfg($cfg);
  		require("../lodel".$this->versionsuffix."/scripts/connect.php");
 		global $db;
