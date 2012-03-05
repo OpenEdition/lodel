@@ -622,6 +622,7 @@ class Install {
 	 */
 	public function checkFunc()
 	{
+		require_once 'context.php';
 		if ((include(LODELROOT."lodel".$this->versionsuffix."/scripts/func.php"))!=568) { // on accede au fichier func.php
 			trigger_error("ERROR: unable to access the ../lodel".$this->versionsuffix."/scripts/func.php file. Check the file exists and the rights and/or report the bug.", E_USER_ERROR);
 		}
