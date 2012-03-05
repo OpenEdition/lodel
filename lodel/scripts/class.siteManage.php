@@ -774,7 +774,7 @@ class siteManage {
 		$root = str_replace('//', '/', LODELROOT. C::get('path')). '/';
 		$siteconfigcache = cache_get('siteconfig.php');
 		if (C::get('downloadsiteconfig')) { // download the siteconfig
-			download($siteconfigcache, 'siteconfig.php');
+			download('', 'siteconfig.php', $siteconfigcache);
 			exit();
 		}
 
@@ -789,8 +789,8 @@ class siteManage {
 		}
 		$siteconfigdest = $root. 'siteconfig.php';
 
-		// cherche si le fichier n'existe pas ou s'il est different de l'original
-		if (!file_exists($siteconfigdest) || md5($siteconfigcache) != md5_file($siteconfigdest)) {
+		// Si le fichier de conf n'existe pas on le crée ou propose de le créer
+		if (!file_exists($siteconfigdest)) {
 			$installoption = C::get('installoption', 'cfg');
 			if(false === $installoption)
 				$installoption = C::get('installoption');
@@ -798,7 +798,7 @@ class siteManage {
 				View::getView()->render('site-file');
 				exit();
 			}
-			@unlink($siteconfigdest); // try to delete before copying.
+			@unlink($siteconfigdest); // try to delete before copying. (?)
 			// try to copy now.
 
 			if (!@file_put_contents($siteconfigdest, cache_get('siteconfig.php'))) {
