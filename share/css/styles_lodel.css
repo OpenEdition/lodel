@@ -2397,6 +2397,10 @@ table.chkbalisage td.informations
 	width:15%;
 }
 
+table.chkbalisage td.contents td {
+	border: thin dotted lightGray !important;
+}
+
 span.paranumber
 {
 	position:absolute;
