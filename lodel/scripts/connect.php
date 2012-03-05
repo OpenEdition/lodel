@@ -82,6 +82,10 @@ if( $cache_config['driver'] == "memcache") {
 	$GLOBALS['db']->memCacheHost = $servers;
 	$GLOBALS['db']->memCachePort = 11211;
 	$GLOBALS['db']->memCacheCompress= false;
+} else if( $cache_config['driver'] == "file") {
+	// Création d'un dossier cache spécifique pour adodb
+	$GLOBALS['ADODB_CACHE_DIR'] = $cache_config['cache_dir']."adodb/";
+	@mkdir($GLOBALS['ADODB_CACHE_DIR']);
 }
 
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
