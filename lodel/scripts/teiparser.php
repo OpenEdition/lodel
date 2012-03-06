@@ -660,6 +660,22 @@ class TEIParser extends XMLReader
 		}
 
 		// manages persons
+		// Créer une entrée de tableau par auteur lorsque ceux-ci sont enregistrés dans le même champ et séparés par des virgules
+		// laisse les entrées vides qui seront dénoncées dans la fonction suivante
+		$personExplode = array();
+		foreach ($persons as $personType => $ps){
+			foreach ($ps as $k => $person) {
+				if (!empty($person['g_name']))	{
+					foreach(preg_split("/\s*,\s*/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY) as $name) {
+						$person['g_name'] = $name;
+						$personExplode[$personType][] = $person;
+					}
+				} else {
+					$personExplode[$personType][] = $person;
+				}
+			}
+		}
+		$persons = $personExplode;
 		// we construct the var for lodel and strip tags from firstname/lastname
 		foreach($persons as $personType => $ps)
 		{
