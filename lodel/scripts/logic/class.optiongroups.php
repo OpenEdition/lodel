@@ -176,7 +176,7 @@ class OptiongroupsLogic extends Logic {
 			if (!$this->oldvo)
 				trigger_error("ERROR: internal error in OptionGroups::_prepareEdit", E_USER_ERROR);
 
-			if(!isset($context['idparent']) || $idparent != $this->oldvo->idparent) //can't change the parent of an optiongroup !
+			if(!isset($context['idparent']) || $context['idparent'] != $this->oldvo->idparent) //can't change the parent of an optiongroup !
 				trigger_error("ERROR : Changing the parent of a group is forbidden", E_USER_ERROR);
 			
 		}
