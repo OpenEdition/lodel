@@ -1542,6 +1542,9 @@ class TEIParser extends XMLReader
 	 */
 	private function _parseTable(array $attrs)
 	{
+		static $tableCount = 0;
+		if (!$attrs['id']) $attrs['id'] = "Table".(++$tableCount);
+
 		$text = '<table id="'.$attrs['id'].'"' . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) .'>';
 
 		$this->_tags[] = 'table';
