@@ -153,6 +153,13 @@ class View
 	*/
 	static public $nocache;
     
+	/**
+	* no indent
+	* used to disable autoindentation of template result
+	* @var bool
+	*/
+	static public $noindent;
+
 	/** 
 	 * Constructeur privé
 	 * @access private
@@ -166,6 +173,7 @@ class View
 		self::$time = time();
 		self::$microtime = microtime(true);
 		self::$nocache = (bool)(C::get('nocache') || C::get('isPost', 'cfg') || C::get('debugMode', 'cfg'));
+		self::$noindent = (bool) C::get('nocache') ? true : false;
 	}
 
 	/**
@@ -486,7 +494,8 @@ class View
 		if($recalcul)
 		{
 			$template = $this->_calcul_template($tpl, $cache_rep, $base_rep, $blockId, $loopName);
-			$template['contents'] = _indent($this->_eval($template['contents'], $context));
+			$template['contents'] = $this->_eval($template['contents'], $context);
+			if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
 			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60))
 			{
@@ -634,8 +643,9 @@ class View
 		$template_cache = "tpl_{$base}";
 
 		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
-		$template['contents'] = _indent($this->_eval($template['contents'], $context));
-
+		$template['contents'] = $this->_eval($template['contents'], $context);
+		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
+		
 		if(!self::$nocache && 
 			(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
 		{
