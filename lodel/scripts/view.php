@@ -147,6 +147,12 @@ class View
 	*/
 	static public $nocache;
     
+	/**
+	 * no indent
+	 * used to disable autoindentation of template result
+	 * @var bool
+	 */
+	static public $noindent;
 	/** 
 	 * Constructeur privé
 	 * @access private
@@ -160,6 +166,7 @@ class View
 		self::$time = time();
 		self::$microtime = microtime(true);
 		self::$nocache = (bool)(C::get('nocache') || C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
+		self::$noindent = (bool) C::get('nocache') ? true : false;
 	}
 
 	/**
@@ -479,7 +486,8 @@ class View
 		if($recalcul)
 		{
 			$template = $this->_calcul_template($tpl, $cache_rep, $base_rep, $blockId, $loopName);
-			$template['contents'] = _indent($this->_eval($template['contents'], $context));
+			$template['contents'] = $this->_eval($template['contents'], $context);
+			if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
 			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60))
 			{
@@ -629,7 +637,9 @@ class View
 		$template_cache = "tpl_{$base}";
 
 		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
-		$template['contents'] = _indent($this->_eval($template['contents'], $context));
+
+		$template['contents'] = $this->_eval($template['contents'], $context);
+		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
 		if(!self::$nocache && 
 			(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
@@ -835,11 +845,7 @@ function generateLangCache($lang, $file, $tags)
  */
 function _indent($source, $indenter = '  ')
 {
-	/*if(false !== strpos($source, '<?xml')) {
-			$source = preg_replace('/<\?xml[^>]*\s* version\s*=\s*[\'"]([^"\']*)[\'"]\s*encoding\s*=\s*[\'"]([^"\']*)[\'"]\s*\?>/i', '', $source);
-			function_exists('indentXML') || include 'xmlfunc.php';
-			return indentXML($source, false, $indenter);
-	} else*/
+
 	if(!preg_match("/<[^>]+>/", $source)) { // no tags
 		return _indent_xhtml($source,$indenter);
 	}
