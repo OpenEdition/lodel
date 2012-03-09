@@ -509,14 +509,14 @@ class TEIParser extends XMLReader
 	{
 		if(!trim($v)) return;
 
+		C::clean($v);
+
 		$v = preg_replace(array(
 			'/<(?!td)([a-z]+)\b[^>]*><\/\\1>/i', // strip empty tags
 			'/<p[^>]*>\s*(<(table|ul)[^>]*>)/i', // remove paragraph before tables and lists
 			'/<\/(table|ul)>\s*<\/p>/i',
 			'/<span>(.*?)<\/span>/s'), // replace empty spans
 				array('', "\\1", "</\\1>", "\\1"), $v);
-
-		C::clean($v);
 	}
 
 	/**
