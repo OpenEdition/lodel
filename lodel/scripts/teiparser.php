@@ -1864,7 +1864,7 @@ class TEIParser extends XMLReader
 	 * @return DOMNode le tag en DOMNode
 	 */
 	private function _tag2domNode($tag) {
-		if (! strpos($tag,"<")===0 && strpos($tag,">")==strlen($tag)-1) return false;
+		if (! preg_match('/^<[^>]+>$/', $tag)) return false;
 		if (strpos($tag, '/>')===false)
 			$tag = str_replace('>','/>',$tag);
 		$doc = new DOMDocument();
