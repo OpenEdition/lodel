@@ -1834,4 +1834,57 @@ class TEIParser extends XMLReader
   		    }
   		}
 	 }
+
+	/**
+	 * Enlève certains attributs d'un tag
+	 *
+	 * @access private
+	 * @param string $node le noeud en XHTML
+	 * @param array $attributes les attributs à enlever
+	 * @return array string le noeud en XTML sans les attributs, string les attributs XHTML
+	 */
+	private function _removeAttributes($tag, $attributes = array('dir','xml:lang','lang')) {
+		if (!$nodeElem = $this->_tag2domNode($tag))
+			return array($tag, '');
+		foreach ($attributes as $attr) {
+			if ($nodeElem->hasAttribute($attr)) {
+				$removed .= " $attr=\"".$nodeElem->getAttribute($attr)."\"";
+				$nodeElem->removeAttribute($attr);
+			}
+		}
+		$tag = $this->_domNode2tag($nodeElem, !((strpos($tag, '/>')===false)));
+		return array($tag, $removed);
+	}
+
+	/**
+	 * Transforme un tag en DOMNode
+	 *
+	 * @access private
+	 * @param string $tag le tag en caractères
+	 * @return DOMNode le tag en DOMNode
+	 */
+	private function _tag2domNode($tag) {
+		if (! strpos($tag,"<")===0 && strpos($tag,">")==strlen($tag)-1) return false;
+		if (strpos($tag, '/>')===false)
+			$tag = str_replace('>','/>',$tag);
+		$doc = new DOMDocument();
+		if (!$doc->loadXML($tag)) return false;
+		return $doc->firstChild;
+	}
+
+	/**
+	 * Transforme un DOMNode en tag
+	 *
+	 * @access private
+	 * @param DOMNode le tag en DOMNode
+	 * @return string $tag le tag en caractères
+	 */
+	private function _domNode2tag($domNode, $selfClosed = false) {
+		$tag = "<".$domNode->nodeName;
+		foreach ($domNode->attributes as $attr => $v) {
+			$tag .= " $attr=\"".$domNode->getAttribute($attr)."\"";
+		}
+		return $tag . ($selfClosed ? " />" : ">");
+	}
+
 }
