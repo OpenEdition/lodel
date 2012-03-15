@@ -1400,7 +1400,14 @@ class TEIParser extends XMLReader
 
 		if(!empty($tags)) $this->_tags[] = $tags;
 
-		return $tag.($closing ? '/>' : '').$this->_addLocalStyle($attrs, $inline);
+		$inlineTag = $this->_addLocalStyle($attrs, $inline);
+		if (!$inline && $inlineTag) {
+			list($inlineTag, $removed) = $this->_removeAttributes($inlineTag,array('dir'));
+			if ($removed) {
+				$tag = preg_replace('/^<([^ ]*)/',"<$1$removed",$tag);
+			}
+		}
+		return $tag.($closing ? '/>' : '').$inlineTag;
 	}
 
 	/**
