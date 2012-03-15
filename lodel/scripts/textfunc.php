@@ -117,10 +117,10 @@ function couper($texte, $long)
  * @access public
  * @link http://book.cakephp.org/view/1469/Text#truncate-1625
  */
-function cuttext($text, $length = 100, $dots = false) {
+function cuttext($text, $length = 100, $dots = false, $html = true) {
 	$GLOBALS['textfunc_hasbeencut'] = false;
 	$options = array(
-		'ending' => '', 'exact' => true, 'html' => true
+		'ending' => '', 'exact' => true, 'html' => $html,
 	);
 	$text = $text;
 
