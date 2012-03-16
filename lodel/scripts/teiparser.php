@@ -1846,21 +1846,32 @@ class TEIParser extends XMLReader
 	 * Enlève certains attributs d'un tag
 	 *
 	 * @access private
-	 * @param string $node le noeud en XHTML
+	 * @param string $tagStr le noeud en XHTML
 	 * @param array $attributes les attributs à enlever
 	 * @return array string le noeud en XTML sans les attributs, string les attributs XHTML
 	 */
-	private function _removeAttributes($tag, $attributes = array('dir','xml:lang','lang')) {
-		if (!$nodeElem = $this->_tag2domNode($tag))
-			return array($tag, '');
-		foreach ($attributes as $attr) {
-			if ($nodeElem->hasAttribute($attr)) {
-				$removed .= " $attr=\"".$nodeElem->getAttribute($attr)."\"";
-				$nodeElem->removeAttribute($attr);
+	private function _removeAttributes($tagStr, $attributes = array('dir','xml:lang','lang')) {
+		$removed = array();
+		$tags = explode('>',$tagStr);
+		foreach ($tags as $tag) {
+			if ($tag) {
+				$tag .= '>';
+				if (!$nodeElem = $this->_tag2domNode($tag)) {
+					$newTags[] = $tag;
+				} else {
+					foreach ($attributes as $attr) {
+						if ($nodeElem->hasAttribute($attr)) {
+							$removed[] = " $attr=\"".$nodeElem->getAttribute($attr)."\"";
+							$nodeElem->removeAttribute($attr);
+						}
+					}
+					$newTags[] = $this->_domNode2tag($nodeElem, !((strpos($tag, '/>')===false)));
+				}
 			}
 		}
-		$tag = $this->_domNode2tag($nodeElem, !((strpos($tag, '/>')===false)));
-		return array($tag, $removed);
+		$newTags = implode('',$newTags);
+		$removed = implode('',array_unique($removed));
+		return array($newTags, $removed);
 	}
 
 	/**
@@ -1888,8 +1899,9 @@ class TEIParser extends XMLReader
 	 */
 	private function _domNode2tag($domNode, $selfClosed = false) {
 		$tag = "<".$domNode->nodeName;
-		foreach ($domNode->attributes as $attr => $v) {
-			$tag .= " $attr=\"".$domNode->getAttribute($attr)."\"";
+		foreach ($domNode->attributes as $DOMAttr) {
+			$prefix = $DOMAttr->prefix;
+			$tag .= " ".($prefix?"$prefix:":"").$DOMAttr->name."=\"".$DOMAttr->value."\"";
 		}
 		return $tag . ($selfClosed ? " />" : ">");
 	}
