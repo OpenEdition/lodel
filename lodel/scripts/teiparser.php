@@ -1485,28 +1485,32 @@ class TEIParser extends XMLReader
 		$this->_tags[] = $tag;
 		$text = '<'.$tag . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
 
-		while($this->read())
-		{
+		while($this->read()) {
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('list' === $this->localName)
 					$text .= $this->_parseList($this->_parseAttributes());
 				elseif('item' === $this->localName)
 				{
-					$text .= '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
+					$tags = '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'li';
 				}
 				else
-					$text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
+					$tags .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
-    				$text .= $this->_closeTag();
-
+				$text .= $this->_closeTag();
 				if('list' === $this->localName) break;
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
-				$text .= $this->_getText($this->value);
+			{
+				list($tags, $removed) = $this->_removeAttributes($tags, array('dir'));
+				if ($removed)
+					$tags = preg_replace('/^<([^ >]*)/', "<$1$removed", $tags);
+				$text .= $tags . $this->_getText($this->value);
+				$tags = '';
+			}
 		}
 
 		return $text;
