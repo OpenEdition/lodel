@@ -1404,7 +1404,7 @@ class TEIParser extends XMLReader
 		if (!$inline && $inlineTag) {
 			list($inlineTag, $removed) = $this->_removeAttributes($inlineTag,array('dir'));
 			if ($removed) {
-				$tag = preg_replace('/^<([^ ]*)/',"<$1$removed",$tag);
+				$tag = preg_replace('/^<([^ >]*)/',"<$1$removed",$tag);
 			}
 		}
 		return $tag.($closing ? '/>' : '').$inlineTag;
