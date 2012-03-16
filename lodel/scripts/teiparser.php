@@ -1402,7 +1402,7 @@ class TEIParser extends XMLReader
 
 		$inlineTag = $this->_addLocalStyle($attrs, $inline);
 		if (!$inline && $inlineTag) {
-			list($inlineTag, $removed) = $this->_removeAttributes($inlineTag,array('dir'));
+			list($inlineTag, $removed) = $this->_getAttributes($inlineTag,array('dir'));
 			if ($removed) {
 				$tag = preg_replace('/^<([^ >]*)/',"<$1$removed",$tag);
 			}
@@ -1505,7 +1505,7 @@ class TEIParser extends XMLReader
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
 			{
-				list($tags, $removed) = $this->_removeAttributes($tags, array('dir'));
+				list($tags, $removed) = $this->_getAttributes($tags, array('dir'));
 				if ($removed)
 					$tags = preg_replace('/^<([^ >]*)/', "<$1$removed", $tags);
 				$text .= $tags . $this->_getText($this->value);
@@ -1847,14 +1847,15 @@ class TEIParser extends XMLReader
 	 }
 
 	/**
-	 * Enlève certains attributs d'un tag
+	 * Trouve certains attributs d'un tag
 	 *
 	 * @access private
 	 * @param string $tagStr le noeud en XHTML
-	 * @param array $attributes les attributs à enlever
-	 * @return array string le noeud en XTML sans les attributs, string les attributs XHTML
+	 * @param array $attributes les attributs
+	 * @param bool $remove permet d'effacer les attributs par la même occasion
+	 * @return array string le noeud en XTML, string les attributs XHTML
 	 */
-	private function _removeAttributes($tagStr, $attributes = array('dir','xml:lang','lang')) {
+	private function _getAttributes($tagStr, $attributes = array('dir','xml:lang','lang'), $remove=false) {
 		$removed = array();
 		$tags = explode('>',$tagStr);
 		foreach ($tags as $tag) {
@@ -1866,10 +1867,11 @@ class TEIParser extends XMLReader
 					foreach ($attributes as $attr) {
 						if ($nodeElem->hasAttribute($attr)) {
 							$removed[] = " $attr=\"".$nodeElem->getAttribute($attr)."\"";
-							$nodeElem->removeAttribute($attr);
+							if ($remove) $nodeElem->removeAttribute($attr);
 						}
 					}
-					$newTags[] = $this->_domNode2tag($nodeElem, !((strpos($tag, '/>')===false)));
+					if ($remove) $newTags[] = $this->_domNode2tag($nodeElem, !((strpos($tag, '/>')===false)));
+					else $newTags[] = $tag;
 				}
 			}
 		}
