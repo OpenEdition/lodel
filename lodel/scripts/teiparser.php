@@ -1466,7 +1466,9 @@ class TEIParser extends XMLReader
 		{
 			$tag = 'h'.$level;
 			$this->_tags[] = $tag;
-			$text = '<'.$tag . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
+			if ($inlineTag = $this->_addLocalStyle($attrs, $inline))
+				list($inlineTag, $localAttrs) = $this->_getAttributes($inlineTag, array('dir'));
+			$text = '<'.$tag . $localAttrs . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
 		}
 
 		return $text;
