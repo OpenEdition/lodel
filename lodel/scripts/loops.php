@@ -93,7 +93,7 @@ function loop_parentsentities(& $context, $funcname, $critere = "")
  */
 function loop_toc($context, $funcname, $arguments)
 {
-	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b[^>]*>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
+	if (!preg_match_all("/<((?:r2r:section|h)(\d+))\b([^>]*)>(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
 		if (!preg_match_all("/<(div)\s+class=\"section(\d+)\">(.*?)<\/\\1>/is", $arguments['text'], $results, PREG_SET_ORDER)) {
 			if (function_exists("code_alter_$funcname"))
 				call_user_func("code_alter_$funcname", $context);
@@ -109,12 +109,17 @@ function loop_toc($context, $funcname, $arguments)
 	foreach ($results as $result) {
 		++$i;
 		$localcontext = $context;
-		$level = (int)$result[2];
+		list( , , $level, $attributs, $titre) = $result;
+		$level = intval($level);
 		$localcontext['level'] = $localcontext['niveau'] = $level; //for compatibility
         	if(!isset($tocid[$level])) $tocid[$level] = 0; 
 		$localcontext['tocid'] = $level."n". (++ $tocid[$level]);
 		// cleaning bad anchor putted by servoo
-		$localcontext['title'] = $localcontext['titre'] = preg_replace('/<a\b\s* id="[^"]+">\s*<\/a>/', '', $result[3]); //for compatibility
+		$localcontext['title'] = $localcontext['titre'] = preg_replace('/<a\b\s* id="[^"]+">\s*<\/a>/', '', $titre); //for compatibility
+		if (preg_match("/dir=[\"']([^\"']+)[\"']/", $attributs, $m)) {
+			error_log("dir: ".var_export($m,true));
+			$localcontext['dir'] = $m[1];
+		}
 		if ($i == 1 && function_exists("code_dofirst_$funcname")) {
 			call_user_func("code_dofirst_$funcname", $localcontext);
 		}	elseif ($i == count($results) && function_exists("code_dolast_$funcname")) {
