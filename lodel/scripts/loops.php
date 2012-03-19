@@ -117,7 +117,6 @@ function loop_toc($context, $funcname, $arguments)
 		// cleaning bad anchor putted by servoo
 		$localcontext['title'] = $localcontext['titre'] = preg_replace('/<a\b\s* id="[^"]+">\s*<\/a>/', '', $titre); //for compatibility
 		if (preg_match("/dir=[\"']([^\"']+)[\"']/", $attributs, $m)) {
-			error_log("dir: ".var_export($m,true));
 			$localcontext['dir'] = $m[1];
 		}
 		if ($i == 1 && function_exists("code_dofirst_$funcname")) {
