@@ -513,7 +513,7 @@ class DataLogic
 		}
 		$this->filePrefix = 'model';
 		$file = $this->_extractImport($context);
-		
+
 		if ($file) {
 			$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
@@ -917,9 +917,10 @@ class DataLogic
 			if (!move_uploaded_file( $archive, cache_get_path( null ) . DIRECTORY_SEPARATOR . $file )) {
 				//trigger_error('ERROR: a problem occurs while moving the uploaded file.', E_USER_ERROR);
 				$context['error_upload'] = 1;
-				//return;
+				return;
+			}else{
+				$file = cache_get_path( null ) . DIRECTORY_SEPARATOR . $file;
 			}
-			$file = ''; // on repropose la page
 		} elseif (!empty($context['file'])) {
 			if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
 				file_exists($context['file']))	{ // fichier sur le disque
