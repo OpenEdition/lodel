@@ -1558,8 +1558,9 @@ class TEIParser extends XMLReader
 		static $tableCount = 0;
 		if (!$attrs['id']) $attrs['id'] = "Table".(++$tableCount);
 
-		$text = '<table id="'.$attrs['id'].'"' . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) .'>';
-
+		$attributs = $this->_addAttributes($attrs);
+		if (preg_match('/direction:([^\'";]+)/',$attributs,$m)) $attributs .= " dir=\"".$m[1]."\"";
+		$text = '<table id="'.$attrs['id'].'"' . $attributs . $this->_addAttributes(array('class' => end($this->_currentClass))) .'>';
 		$this->_tags[] = 'table';
 
 		while($this->read())
@@ -1576,19 +1577,21 @@ class TEIParser extends XMLReader
 				}
 				elseif('cell' === $this->localName)
 				{
-					$text .= '<td' . $this->_addAttributes($this->_parseAttributes()) . '>';
+					$attributs = $this->_addAttributes($this->_parseAttributes());
+					if (preg_match('/direction:([^\'";]+)/',$attributs,$m)) $attributs .= " dir=\"".$m[1]."\"";
+					$text .= '<td' . $attributs . '>';
 					$this->_tags[] = 'td';
 				}
-                elseif('anchor' === $this->localName)
-                {
-                    continue;
-                }
+				elseif('anchor' === $this->localName)
+				{
+						continue;
+				}
 				else
 					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
 
 				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
-                    $text .= $this->_closeTag();
-                }
+					$text .= $this->_closeTag();
+				}
 					
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
