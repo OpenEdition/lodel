@@ -1021,7 +1021,7 @@ class TEIParser extends XMLReader
 									{
 										$attrs = $this->_parseAttributes($reader);   
 										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
-										if($reader->isEmptyElement) $currentNode .= $this->_closeTag();
+										if($reader->isEmptyElement && 'lb' !== $reader->localName) $currentNode .= $this->_closeTag();
 									}elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType){
 										$currentNode .= $reader->readOuterXML();
 									}elseif(parent::END_ELEMENT === $reader->nodeType 
