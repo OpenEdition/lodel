@@ -1507,9 +1507,11 @@ class TEIParser extends XMLReader
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
 			{
-				list($tags, $removed) = $this->_getAttributes($tags, array('dir'));
-				if ($removed)
-					$tags = preg_replace('/^<([^ >]*)/', "<$1$removed", $tags);
+				if ($tags) {
+					list($tags, $removed) = $this->_getAttributes($tags, array('dir'));
+					if ($removed)
+						$tags = preg_replace('/^<([^ >]*)/', "<$1$removed", $tags);
+				}
 				$text .= $tags . $this->_getText($this->value);
 				$tags = '';
 			}
