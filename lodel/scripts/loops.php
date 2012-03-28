@@ -469,7 +469,7 @@ function _constructPages(& $context, $funcname, $arguments)
    if(preg_match( "/id=(\d+)/", $_SERVER['QUERY_STRING'], $matches )){
         $currenturl = makeurlwithid($matches[1]) . "?";
     }else{
-       $currenturl = "/?";
+       $currenturl = "?";
     }
 
 	$cleanquery = preg_replace(array("/(^|&amp;)".$offsetname."=\d+/","/(^|&amp;)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
