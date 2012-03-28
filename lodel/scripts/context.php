@@ -350,6 +350,13 @@ class C
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::get('tableprefix', 'cfg');
 			self::$_context['base_rep'] = array();
 			self::$_context['charset'] = 'utf-8';
+
+			/* Get the site URL */
+			defined('INC_CONNECT') || include 'connect.php';
+			defined('INC_FUNC') || include 'func.php';
+			global $db;
+			self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+
 			// get all the triggers in self::$_triggers
 			self::_getTriggers();
 		}
