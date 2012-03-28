@@ -396,6 +396,13 @@ class C
 			if(!defined('backoffice-lodeladmin')) 
 				self::$_context['site'] = self::$_cfg['site'];
 			// get all the triggers in self::$_triggers
+
+			/* Get the site URL */
+			defined('INC_CONNECT') || include 'connect.php';
+			defined('INC_FUNC') || include 'func.php';
+			global $db;
+			self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+
 			self::_getTriggers();
 		}
 
