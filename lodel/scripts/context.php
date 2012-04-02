@@ -279,7 +279,7 @@ class C
 			// POST only
 			unset($_GET['login'], $_GET['passwd'], $_GET['passwd2'], $_GET['old_passwd']);
 
-			self::clean($_GET);
+			self::cleanRequest($_GET);
 			foreach($_GET as $k=>&$v)
 			{
 				self::$_context[$k] =& $v;
@@ -288,7 +288,7 @@ class C
 			if (!empty($_POST)) 
 			{
 				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
-				self::clean($_POST);
+				self::cleanRequest($_POST);
 				foreach($_POST as $k=>&$v)
 				{
 					self::$_context[$k] =& $v;
@@ -326,7 +326,7 @@ class C
 		}
 		else
 		{
-			self::clean($request);
+			self::cleanRequest($request);
 			foreach($request as $k=>&$v)
 			{
 				self::$_context[$k] =& $v;
@@ -676,6 +676,23 @@ class C
 			return ((bool)($set = $v));
 		}
 		return false;
+	}
+
+	/**
+	 * Public function to clean input from users (GET and POST)
+	 *
+	 * @param mixed $data the value to sanitize (can be either a string or an array)
+	 * @access public
+	 * @static
+	 */
+	static public function cleanRequest(&$data)
+	{
+		if(is_array($data))
+			array_walk_recursive($data, array('self', 'cleanRequest'));
+		else
+			$data = get_magic_quotes_gpc() ? stripslashes($data) : $data;
+
+		return $data;
 	}
 
 	/**
