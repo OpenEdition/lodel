@@ -771,7 +771,7 @@ class C
 		$data = (get_magic_quotes_gpc() ? strtr(trim(stripslashes($data)), array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>')) : 
 						  strtr(trim($data), array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>')));
 		$data = self::$filter->purify($data);
-		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>'));
+		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>')); // TODO Ceci ne marche pas < est transformé en &lt; juste avant…
 		return true;
 	}
 }
