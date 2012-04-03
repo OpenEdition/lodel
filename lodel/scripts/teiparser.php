@@ -1559,7 +1559,7 @@ class TEIParser extends XMLReader
 	private function _parseTable(array $attrs)
 	{
 		static $tableCount = 0;
-		if (!$attrs['id']) $attrs['id'] = "Table".(++$tableCount);
+		if (!isset($attrs['id'])) $attrs['id'] = "Table".(++$tableCount);
 
 		$attributs = $this->_addAttributes($attrs);
 		if (preg_match('/direction:([^\'";]+)/',$attributs,$m)) $attributs .= " dir=\"".$m[1]."\"";
