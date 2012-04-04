@@ -453,6 +453,21 @@ function loop_page_scale(& $context, $funcname, $arguments)
 
 /**
  * @private
+ * construct page url
+ * 
+ */
+function _buildPageUrl($offsetname, $offset)
+{
+	$parsed_url = parse_url($_SERVER['REQUEST_URI']);
+	if(! array_key_exists('query', $parsed_url)) { $parsed_url['query'] = ''; }
+	parse_str($parsed_url['query'], $parsed_query);
+	$parsed_query[$offsetname] = $offset;
+	$parsed_url['query'] = http_build_query($parsed_query, '', '&amp;');
+	return $parsed_url['path'].'?'.$parsed_url['query']; #TODO use pecl_http's http_build_url?
+}
+
+/**
+ * @private
  * construct page listing by given nbresults and currentoffset in the results
  * 
  */
@@ -466,27 +481,15 @@ function _constructPages(& $context, $funcname, $arguments)
 	$offsetname = $context['offsetname'];
 	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 
-   if(preg_match( "/id=(\d+)/", $_SERVER['QUERY_STRING'], $matches )){
-        $currenturl = makeurlwithid($matches[1]) . "?";
-    }else{
-       $currenturl = "?";
-    }
-
-	$cleanquery = preg_replace(array("/(^|&amp;)".$offsetname."=\d+/","/(^|&amp;)clearcache=[^&]+/"), "", $_SERVER['QUERY_STRING']);
-	if (isset($cleanquery[0]) && $cleanquery[0] == "&")
-		$cleanquery = substr($cleanquery, 1);
-	if ($cleanquery)
-		$currenturl .= $cleanquery."&";
-
 	$context['nbresults'] = isset($context['nbresults']) ? $context['nbresults'] : 0;
 	//construct next url
 	if ($context['nbresults'] > ($currentoffset + $arguments['limit']))
-		$context['nexturl'] = $currenturl.$offsetname."=". ($currentoffset + $arguments['limit']);
+		$context['nexturl'] = _buildPageUrl($offsetname, $currentoffset + $arguments['limit']);
 	else
 		$context['nexturl'] = "";
 	//construct previous url
 	if ($currentoffset > 0)
-		$context['previousurl'] = $currenturl.$offsetname."=". ($currentoffset - $arguments['limit']);
+		$context['previousurl'] = _buildPageUrl($offsetname, $currentoffset - $arguments['limit']);
 	else
 		$context['previousurl'] = "";
 	//construct pages table
@@ -494,7 +497,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	//previous pages 
 	$i = 0;
 	while ($i + $arguments['limit'] <= (int)$currentoffset) {
-		$urlpage = $currenturl.$offsetname."=".$i;
+		$urlpage = _buildPageUrl($offsetname, $i);
 		$pages[($i / $arguments['limit'] + 1)] = $urlpage;
 		$i += $arguments['limit'];
 	}
@@ -504,7 +507,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	$i = $currentoffset;
 	while ($i + $arguments['limit'] < $context['nbresults']) {
 		$i += $arguments['limit'];
-		$urlpage = $currenturl.$offsetname."=".$i;
+		$urlpage = _buildPageUrl($offsetname, $i);
 		$pages[($i / $arguments['limit'] + 1)] = $urlpage;
 	}
 	if (count($pages) > 10)	{
@@ -589,24 +592,31 @@ function loop_mltext(& $context, $funcname)
  */
 function loop_mldate( &$context, $funcname, $arguments )
 {
-	if(is_array($arguments['value'])){
-		foreach ($arguments['value'] as $key => $value) {
-			$localcontext = $context;
+	$localcontext = $context;
+
+	if (function_exists("code_before_$funcname"))
+		call_user_func("code_before_$funcname", $localcontext);
+
+	$regexp = "/(?:&amp;lt;|&lt;|<)r2r:ml key\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s";
+	if (is_array($arguments['value'])) {
+		$context['nbresults'] = count($arguments['value']);
+		foreach ($context['value'] as $key => $value) {
 			$localcontext['key'] = $key;
 			$localcontext['value'] = $value;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
-	}elseif (
-		preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml key\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s",
-								$arguments['value'], $results, PREG_SET_ORDER)
-	){
-			foreach ($results as $result)	{
-				$localcontext = $context;
-				$localcontext['key'] = $result[1];
-				$localcontext['value'] = $result[2];
-				call_user_func("code_do_$funcname", $localcontext);
-			}
+	} elseif (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER)) {
+		$context['nbresults'] = count($results);
+		$localcontext['array'] = array_map(function($r){return $r[2];}, $results);
+		foreach ($results as $result) {
+			$localcontext['key'] = $result[1];
+			$localcontext['value'] = $result[2];
+			call_user_func("code_do_$funcname", $localcontext);
+		}
 	}
+
+	if (function_exists("code_after_$funcname"))
+		call_user_func("code_after_$funcname", $localcontext);
 }
 
 /**
@@ -697,7 +707,7 @@ function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
 
-	if(empty($arguments['array']) || !is_array($arguments['array'])) {
+	if(empty($arguments['array']) || !(is_array($arguments['array']) || $arguments['array'] instanceof Traversable)) {
 		if(function_exists("code_alter_$funcname"))
 			call_user_func("code_alter_$funcname", $localcontext);
 		return;
