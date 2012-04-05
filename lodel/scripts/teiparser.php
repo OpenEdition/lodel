@@ -1504,7 +1504,8 @@ class TEIParser extends XMLReader
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
-				$text .= $this->_closeTag();
+				$text .= $tags . $this->_closeTag();
+				$tags = '';
 				if('list' === $this->localName) break;
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType)
