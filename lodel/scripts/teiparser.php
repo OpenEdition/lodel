@@ -1487,6 +1487,7 @@ class TEIParser extends XMLReader
 		$tag = !isset($attrs['type']) || 'unordered' === $attrs['type'] ? 'ul' : 'ol';
 		$this->_tags[] = $tag;
 		$text = '<'.$tag . $this->_addAttributes($attrs) . $this->_addAttributes(array('class' => end($this->_currentClass))) . '>';
+		$tags = '';
 
 		while($this->read()) {
 			if(parent::ELEMENT === $this->nodeType)
