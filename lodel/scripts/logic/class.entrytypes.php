@@ -143,6 +143,7 @@ class EntryTypesLogic extends Logic
 			'pool' => getlodeltextcontents('edit_pool', 'admin'),
 			'multipleselect' => getlodeltextcontents('edit_multipleselect', 'admin'),
 			'select' => getlodeltextcontents('edit_select', 'admin'),
+			'inline' => getlodeltextcontents('edit_inline', 'admin'),
 			);
 			renderOptions($arr,isset($context['edition']) ? $context['edition'] : '');
 			break;

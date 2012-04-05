@@ -190,6 +190,7 @@ class TableFieldsLogic extends Logic
 				$g_namefields = $GLOBALS['g_entities_persons_fields'];# array('Title');
 				break;
 			case 'entries':
+			case 'entities_entries':
 				$g_namefields = array('Index key');
 				break;
 			default:
@@ -219,17 +220,6 @@ class TableFieldsLogic extends Logic
 			break;
 		}
 	}
-
-	/*** In 0.7 we check the field is not moved in another class... it's not 100% required in fact
-		function validateFields(&$context,&$error) {
-		if (!Logic::validateFields($context,$error)) return false;
-		// check the group does not change 
-		if ($oldidgroup!=$idgroup) {
-	$set['rank']=get_rank_max("fields","idgroup='$idgroup'");      
-	// check the new group has the same class (extra security)
-	$result=mysql_query("SELECT 1 FROM $GLOBALS[tp]tablefieldgroups WHERE id='$idgroup' AND class='".$context['class']."'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	if (mysql_num_rows($result)!=1) trigger_error("ERROR: the new and the old group of the field are not in the same class", E_USER_ERROR);
-			}**/
 
 	/**
 	* Préparation de l'action Edit

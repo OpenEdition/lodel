@@ -136,6 +136,52 @@ class Entities_EditionLogic extends GenericLogic
 				}
 			}	  
 		}
+
+		if(!function_exists('loop_inline_entries_by_type_in_entities')){
+			function loop_inline_entries_by_type_in_entities($context, $funcname)
+			{
+				if (empty($context['varname'])) {
+					return;
+				}
+				$varname = $context['varname'];
+
+				if (empty($context['idtype']) || !is_numeric($context['idtype'])) {
+					return;
+				}
+
+				if(!isset($context['entries'][$context['idtype']])){
+					return;
+				}
+
+				global $db;
+				$idtype = $context['idtype'];
+				$votype = DAO::getDAO("entrytypes")->getById($idtype, "id,sort,flat");
+				if (!$votype) {
+					trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
+				}
+				$context['id'] = 0; // start by the parents
+				$degree        = 0;
+				$maxdegree     = 0;
+
+				foreach ( $context['entries'][$idtype] as $entry ) {
+					$localcontext              = array_merge($context, $entry);
+					$localcontext['name']      = $varname;
+					$localcontext['classtype'] = 'entries';
+					$localcontext['degree']    = $degree;
+
+					call_user_func("code_do_$funcname", $localcontext);
+					if($degree > $maxdegree) $maxdegree = $degree;
+					$degree++;
+				}
+
+				if (function_exists("code_after_$funcname")) {
+					$localcontext = $context;
+					$localcontext['maxdegree'] = $maxdegree;
+					call_user_func("code_after_$funcname", $localcontext);
+				}
+			}
+		}
+
 		if(!function_exists('loop_entries_in_entities'))
 		{
 			function loop_entries_in_entities($context, $funcname) 
@@ -159,6 +205,7 @@ class Entities_EditionLogic extends GenericLogic
 						$checkarr[] = &$entry['g_name'];
 					}
 				}
+
 				$context['id'] = 0; // start by the parents
 				loop_entries_in_entities_rec ($context, $funcname, $votype, $checkarr);
 			}
@@ -648,7 +695,8 @@ class Entities_EditionLogic extends GenericLogic
 			if (empty($context[$table]) || !is_array($context[$table])) {
 				continue;
 			}
-            		$idtypes = array_keys ($context[$table]);
+
+			$idtypes = array_keys ($context[$table]);
 			$logic = Logic::getLogic($table);
 			$ids         = array();
 			$idrelations = array();
@@ -656,7 +704,9 @@ class Entities_EditionLogic extends GenericLogic
 				if (empty($context[$table][$idtype])) {
 					continue;
 				}
-                		$itemscontext = $context[$table][$idtype];
+
+				$itemscontext = $context[$table][$idtype];
+
 				if(!is_array($itemscontext)) trigger_error('ERROR: invalid items', E_USER_ERROR);
 				$degree = 1;
 				foreach ($itemscontext as $k => $itemcontext) {
@@ -667,6 +717,7 @@ class Entities_EditionLogic extends GenericLogic
 					$itemcontext['idtype']   = $idtype;
 					$itemcontext['status']   = $status;
 					$itemcontext['degree']   = $degree++;
+
 					//$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
 					$ret = $logic->editAction($itemcontext, $error);
 					if ($ret!="_error" && $itemcontext['id']) {
@@ -698,10 +749,11 @@ class Entities_EditionLogic extends GenericLogic
 			#echo "criteria=$criteria";
 			$this->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
+
 		// Entities
 		if (!empty($context['entities'])) {
 			$dao = DAO::getDAO('tablefields');
-            		$keys = array_keys ($context['entities']);
+			$keys = array_keys ($context['entities']);
 			foreach ($keys as $name) {
 				$name = addslashes ($name);
 				$vofield = $dao->find("class='". $context['class']. "' AND name='". $name. "' AND type='entities'");
@@ -957,7 +1009,7 @@ class Entities_EditionLogic extends GenericLogic
 				$ref   = $result->fields;
 				$class = $result->fields['class'];
 				$relatedtable[$class][$result->fields['id']][$degree] = &$ref;
-				if ($table == "persons") {
+				if ($table == "persons" || $table == "entries") {
 					$relatedrelationtable[$class][$result->fields['idrelation']] = &$ref;
 				}
 				if(!isset($context[$table])) $context[$table] = array();

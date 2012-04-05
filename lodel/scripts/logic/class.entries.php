@@ -341,8 +341,27 @@ class EntriesLogic extends GenericLogic
 		$this->_moveFiles($id,$this->files_to_move,$gvo);
 		$gdao->save($gvo,$new);  // save the related table
 
-		$context['degree'] = 0;
 		$this->saveRelations($vo, $context);
+		// save the entities_class table
+		if (!empty($context['identity'])) {
+			$dao=DAO::getDAO ("relations");
+			$rvo=$dao->find("id1='".(int) $context['identity']. "' AND id2='". $id. "' AND nature='E'", "idrelation");
+			if (!$rvo) {
+				$dao->instantiateObject ($rvo);
+				$rvo->id1=(int)$context['identity'];
+				$rvo->id2=$id;
+				$rvo->degree=(int)$context['degree'];
+				$rvo->nature='E';
+				$idrelation=$context['idrelation'] = $dao->save($rvo);
+			} else {
+				$idrelation=$context['idrelation'] = $rvo->idrelation;
+			}
+			$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
+			$gdao->instantiateObject($gvo);
+			$this->_populateObject($gvo,$context['data']);
+			$gvo->idrelation=$idrelation;
+			$gdao->save($gvo,true);  // save the related table
+		}
 		
 		update();
 		return "_back";

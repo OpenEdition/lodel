@@ -185,6 +185,57 @@ function deletemldate(obj, msg)
 	obj.parentNode.removeChild(obj);
 }
 
+function addentries(obj,name) {
+	var block=document.getElementById('entries_'+name+'_for_copy');
+	var clone=block.cloneNode(true);
+	var degree = document.getElementById('entries_' + name + '_degree');
+	
+	clone.style.display='block';
+	changeNameAttributes(clone, degree.value);
+	document.getElementById('entries_' + name + '_degree').value = parseInt(degree.value) + 1;
+	// other fields
+	clone.setAttribute('id','');
+	document.getElementById('entries_'+name).appendChild(clone);
+
+	var textareas = document.getElementById('entries_'+name).getElementsByTagName('textarea');
+	if(textareas) {
+		var i=0;
+		for(i=0;textareas[i];i++) {
+			var ck = textareas[i].getAttribute('fckeditor');
+			var ckname = textareas[i].getAttribute('name');
+			var mode = textareas[i].getAttribute('mode');
+			if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
+				replaceCKEDITOR[mode](textareas[i]);
+			}
+		}
+	}
+
+	obj.selectedIndex=0;
+}
+
+function deleteentries(obj,name,msg) 
+{
+	// get the edit box
+	obj=obj.parentNode.parentNode;
+	var edit=obj.getElementsByTagName("input");
+	var bconfirm=false;
+	for(i=0; i<edit.length; i++) {
+		if (edit[i].value.length>0) bconfirm=true;
+	}
+	edit=obj.getElementsByTagName("textarea");
+	for(i=0; i<edit.length; i++) {
+		if (edit[i].value.length>0) bconfirm=true;
+	}
+	if (edit.length<1) {
+		edit=obj.getElementsByTagName("textarea");
+	}
+	if (bconfirm) {
+		if (!confirm(msg)) return;
+	}
+	obj.parentNode.removeChild(obj);
+	// don't decrease the degree, so that we are sure it is always maximal
+}
+
 function addpersons(obj,name) {
 	var block=document.getElementById('persons_'+name+'_for_copy');
 	var clone=block.cloneNode(true);

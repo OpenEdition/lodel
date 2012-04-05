@@ -597,59 +597,58 @@ cp_[#VARNAME].writeDiv();
 
 <DEFFUNC NAME="EDIT_PERSONS">
 	<div class="add">
-         <a href="#down" onclick="addpersons(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
+		<a href="#down" onclick="addpersons(this,'[#VARNAME]');return false;" class="add">[@COMMON.ADD]</a>
 	</div>
-  <div id="persons_[#VARNAME]" class="personseditionarea" >
-        <LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
-        <LET VAR="idtype">[#ID]</LET>
-	<LOOP NAME="persons_in_entities">
-        <DO>
-		<LOOP NAME="edition_fields">
-			<BEFORE>
-			<div class="oneItem">
-			</BEFORE>
-		        <DO>
-			  <label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
-			<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
-			<br />
-		        </DO>
-	        	<AFTER>
-			<div class="delete">
-                        <a href="#" onclick="deletepersons(this, '', '[@EDITION.CONFIRMATION_DELETE_PERSONS]'); return false;" class="delete">[@COMMON.DELETE]</a>
-			</div>
-			</div>
-        		</AFTER>
-	    	</LOOP>
-	</DO>
-	<AFTER>
-            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#MAXDEGREE]" />
-	</AFTER>
-	<ALTERNATIVE>
-            <input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0" />
-	</ALTERNATIVE>
-	</LOOP>
-        <!--[ widget available for adding new persons of this type ]-->
- 	<LOOP NAME="edition_fields">
-		<BEFORE>
-	       		<div id="persons_[#VARNAME]_for_copy" style="display:block">
-			<div class="oneItem">
-		</BEFORE>
-		<DO>
-			<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
-				<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
-			<br />
-		</DO>
-        	<AFTER>
-			<div class="delete">
-                        <a href="#" onclick="deletepersons(this,'[#VARNAME]', '[@EDITION.CONFIRMATION_DELETE_PERSONS]'); return false;" class="delete">[@COMMON.DELETE]</a>
-			</div>
-			</div>
-			</div>
-        	</AFTER>
-	    </LOOP>
-      </LOOP>
-
-  </div>
+	<div id="persons_[#VARNAME]" class="personseditionarea" >
+		<LOOP NAME="persontypes" TABLE="persontypes,classes" WHERE="classes.class=persontypes.class AND type='[#VARNAME]' AND classes.classtype='persons'">
+			<LET VAR="idtype">[#ID]</LET>
+			<LOOP NAME="persons_in_entities">
+				<DO>
+					<LOOP NAME="edition_fields">
+						<BEFORE>
+							<div class="oneItem">
+						</BEFORE>
+						<DO>
+							<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+							<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+							<br />
+						</DO>
+						<AFTER>
+							<div class="delete">
+								<a href="#" onclick="deletepersons(this, '', '[@EDITION.CONFIRMATION_DELETE_PERSONS]'); return false;" class="delete">[@COMMON.DELETE]</a>
+							</div>
+							</div>
+						</AFTER>
+					</LOOP>
+				</DO>
+				<AFTER>
+					<input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="[#MAXDEGREE]" />
+				</AFTER>
+				<ALTERNATIVE>
+					<input type="hidden" name="persons[[#VARNAME]][maxdegree]" value="0" />
+				</ALTERNATIVE>
+			</LOOP>
+			<!--[ widget available for adding new persons of this type ]-->
+			<LOOP NAME="edition_fields">
+				<BEFORE>
+					<div id="persons_[#VARNAME]_for_copy" style="display:block">
+					<div class="oneItem">
+				</BEFORE>
+				<DO>
+					<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+					<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+					<br />
+				</DO>
+				<AFTER>
+					<div class="delete">
+						<a href="#" onclick="deletepersons(this,'[#VARNAME]', '[@EDITION.CONFIRMATION_DELETE_PERSONS]'); return false;" class="delete">[@COMMON.DELETE]</a>
+					</div>
+					</div>
+					</div>
+				</AFTER>
+			</LOOP>
+		</LOOP>
+	</div>
 </DEFFUNC>
 
 
@@ -736,6 +735,54 @@ cp_[#VARNAME].writeDiv();
 	addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]'); 
 	--></script>
 
+	</IF>
+	<IF COND="[#EDITION] EQ 'inline'">
+		<div class="add">
+			<a href="#down" onclick="addentries(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
+		</div>
+		<div id="entries_[#VARNAME]" class="entrieseditionarea" >
+			<input type="hidden" id="entries_[#VARNAME]_degree" value="0" />
+			<LOOP NAME="entries_types" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+				<LET VAR="idtype">[#ID]</LET>
+				<LOOP NAME="inline_entries_by_type_in_entities">
+					<LOOP NAME="edition_fields">
+						<BEFORE>
+							<div class="oneItem">
+						</BEFORE>
+						<DO>
+							<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+							<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="entries[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="entries[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+							<br />
+						</DO>
+						<AFTER>
+							<div class="delete">
+								<a href="#" onclick="deleteentries(this,'[#VARNAME]', '[@EDITION.CONFIRMATION_DELETE_ENTRIES]'); return false;" class="delete">[@COMMON.DELETE]</a>
+							</div>
+							</div>
+						</AFTER>
+					</LOOP>
+				</LOOP>
+				<!--[ widget available for adding new persons of this type ]-->
+				<LOOP NAME="edition_fields">
+					<BEFORE>
+						<div id="entries_[#VARNAME]_for_copy" style="display:none;">
+						<div class="oneItem">
+					</BEFORE>
+					<DO>
+						<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+						<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="entries[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="entries[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
+						<br />
+					</DO>
+					<AFTER>
+						<div class="delete">
+							<a href="#" onclick="deleteentries(this,'[#VARNAME]', '[@EDITION.CONFIRMATION_DELETE_ENTRIES]'); return false;" class="delete">[@COMMON.DELETE]</a>
+						</div>
+						</div>
+						</div>
+					</AFTER>
+				</LOOP>
+			</LOOP>
+		</div>
 	</IF>
 	</IF>
 	</IF>

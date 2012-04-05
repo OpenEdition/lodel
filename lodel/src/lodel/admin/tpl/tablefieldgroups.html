@@ -74,7 +74,6 @@
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 	</table>
 
-	<IF COND="[#CLASSTYPE]=='persons'">
 	<!--[ Affichage des champs de la table li�e � l'index de personnes : entities_nom_Index_de_personnes ]-->
 		<ul id="actionsOnEntitiesPath">
 			<li><span class="intit">[@ADMIN.DEFINITION_DATAFIELDS_RELATION_BETWEEN_ENTITIES_AND_PERSONS]</span></li>
@@ -102,7 +101,6 @@
 		</tr>
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='entities_[#CLASS]'">
 	</table>
-	</IF>
 
 	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
 

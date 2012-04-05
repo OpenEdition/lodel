@@ -218,6 +218,7 @@ class ClassesLogic extends Logic
 				break;
 			case 'entries' :
 				$create = "identry	INTEGER UNSIGNED  UNIQUE, KEY index_identry (identry)";
+				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				break;
 			case 'persons' :
 				$create = "idperson	INTEGER UNSIGNED  UNIQUE, KEY index_idperson (idperson)";
