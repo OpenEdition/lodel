@@ -824,11 +824,11 @@ class Logic
 			foreach ($fields as $field) {
 				$value = "";
 				$this->_calculateHistoryField ($value, $context, $status);
-				if (isset ($context['data'][$field->name])) { //if a value for this field is in the context, use it (to allow user to modify the field
-					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT('". $value. "','\n".$context['data'][$field->name] . "')";
+				if (isset ($context['data'][$field->name])) { //if a value for this field is in the context, use it (to allow user to modify the field)
+					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT(". $db->Quote($value). "," .$db->Quote("\n".$context['data'][$field->name]) . ")";
 				}
 				else {
-					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$value. ",'\n".$field->name . "')";
+					$updatecrit = ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$db->Quote($value). ",'\n".$field->name . "')";
 				}
 			}
 			$db->execute (lq ("UPDATE #_TP_$class SET $updatecrit WHERE identity='". $context['id'].  "'"));
