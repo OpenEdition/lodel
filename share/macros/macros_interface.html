@@ -288,8 +288,8 @@
 		</div>
 	</IF>
 <ELSE/>
-<!--[ --------------- TEXT, LONGTEXT -------------- ]-->
-<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'xpath'">
+<!--[ --------------- TEXT, LONGTEXT, HISTORY -------------- ]-->
+<IF COND="[#TYPE] eq 'text' or [#TYPE] eq 'tinytext' or [#TYPE] eq 'longtext' or [#TYPE] eq 'xpath' or [#TYPE] eq 'history'">
 	<IF COND="[#EDITION] LIKE /wysiwyg_/ OR [#EDITION] EQ 'fckeditor'">
 		<MACRO NAME="FCK_EDITOR_PARAMETERS">
 <?php
@@ -371,8 +371,8 @@
 	<?php 	} ?>
 
 <ELSE/>
-<!--[ --------------- USERNAME, EMAIL, URL, HISTORY-------------- ]-->
-<IF COND="[#TYPE] eq 'username' or [#TYPE] eq 'url' or [#TYPE] eq 'email' or [#TYPE] eq 'history'">
+<!--[ --------------- USERNAME, EMAIL, URL -------------- ]-->
+<IF COND="[#TYPE] eq 'username' or [#TYPE] eq 'url' or [#TYPE] eq 'email'">
 	<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
 <ELSE/>
 <!--[ --------------- PASSWD -------------- ]-->
