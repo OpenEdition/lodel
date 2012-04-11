@@ -2,6 +2,8 @@
 
 if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
 	include 'hookfunc_local.php';
+if (is_readable(C::get('home', 'cfg').'hookfunc_local_calenda.php'))
+	include 'hookfunc_local_calenda.php';
 
 /**
  * Met à jour la date de publication
