@@ -844,41 +844,38 @@ class Logic
 	{
 		if(empty($context['id'])) return;
 
-            	$dao = DAO::getDAO('users');
-		if(C::get('lodeladmin', 'lodeluser')) {
+		$dao = DAO::getDAO('users');
+		if(C::get('adminlodel', 'lodeluser')) {
 			usemaindb();
-			$vo = $dao->getById (C::get('id', 'lodeluser'));
+			$vo = $dao->getById(C::get('id', 'lodeluser'));
 			usecurrentdb();
 		}
 		else {
-			$vo = $dao->getById (C::get('id', 'lodeluser'));
+			$vo = $dao->getById(C::get('id', 'lodeluser'));
 		}
 		//edition or change of status
 		switch($status) {
 			case 0:
-				$line .= getlodeltextcontents('editedby', 'common');
+				$line = getlodeltextcontents('editedby', 'common');
 				break;
 			case 1:
-				$line .= getlodeltextcontents('publishedby', 'common');
+				$line = getlodeltextcontents('publishedby', 'common');
 				break;
 			case -1:
-				$line .= getlodeltextcontents('unpublishedby', 'common');
+				$line = getlodeltextcontents('unpublishedby', 'common');
 				break;
 			case 8:
-				$line .= getlodeltextcontents('protectedby', 'common');
+				$line = getlodeltextcontents('protectedby', 'common');
 				break;
 			case -8:
-				$line .= getlodeltextcontents('draftedby','common');
+				$line = getlodeltextcontents('draftedby','common');
 				break;
 			default: //creation
-				$line .= getlodeltextcontents('createdby', 'common');
+				$line = getlodeltextcontents('createdby', 'common');
 		}
-		$line .= " ". ($vo->name ? $vo->name : ($vo->username ? $vo->username : C::get('lastname', 'lodeluser')));
-		#print_r($context['lodeluser']);
-		#$line .= ' '.$context['lodeluser']['username'];
+		$line .= " ". (isset($vo->name) ? $vo->name : (isset($vo->username) ? $vo->username : C::get('lastname', 'lodeluser')));
 		$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
 		$value = $line;
-		#echo "value=$value";
 		unset($line);
 	}
 
