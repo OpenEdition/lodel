@@ -296,7 +296,9 @@ class Entities_EditionLogic extends GenericLogic
 					$context['data'][$field->name] = $field->defaultvalue;
 			}
 		}
-	
+
+		$context['timestamp'] = time();
+
 		if (isset($context['check']) && !$error) {
 			$context['status'] = -1;
 			//il semble nécessaire de nettoyer request pour eviter les requetes pétées.
@@ -327,14 +329,21 @@ class Entities_EditionLogic extends GenericLogic
 		if (isset($context['cancel'])) {
 			return '_back';
 		}
+
 		$id = isset($context['id']) ? $context['id'] : null;
 		if (!empty($id)) {
 			$select = array();
 			if(empty($context['idparent'])) $select[] = 'idparent';
 			if(empty($context['idtype'])) $select[] = 'idtype';
 			if(empty($context['status'])) $select[] = 'status';
+			if(!empty($context['timestamp'])) $select[] = 'upd';
 			if(!empty($select)) {
 				$vo  = $this->_getMainTableDAO()->getById($id, join(',', $select));
+				/* Vérification de modification concurrente */
+				if ((int)$context['timestamp'] < strtotime($vo->upd)) {
+					$error['concurrent'] = "concurrent_edition";
+					return "_error";
+				}
 				if(!$vo) trigger_error('ERROR: can not find entity '.$id, E_USER_ERROR);
 				foreach($select as $v)
 					$context[$v] = $vo->$v;

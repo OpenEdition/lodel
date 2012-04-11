@@ -113,6 +113,7 @@
 <IF COND="[#ERROR] eq 'numeric'">[@COMMON.ERROR_FIELD_MUST_BE_NUMERIC|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR|strpos('mask:')] SEQ 0">[#ERROR|substr(5)]</IF>
 <IF COND="[#ERROR] eq 'xpath'">[@COMMON.ERROR_INVALID_XPATH|sprintf([#TITLE])]</IF>
+<IF COND="[#ERROR] eq 'concurrent_edition'">[@COMMON.ERROR_CONCURRENT_EDITION]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 
