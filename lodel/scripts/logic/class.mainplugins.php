@@ -381,12 +381,14 @@ class MainPluginsLogic extends Logic
 							$vo->hooktype = $plugin['hooktype'];
 							$vo->title = (isset($plugin['title']) ? $plugin['title'] : "");
 							$vo->description = (isset($plugin['description']) ? $plugin['description'] : "");
-							foreach($this->_triggers as $trigger)
-							{
-								$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
-							}
 							$vo->id = $dao->save($vo, true);
 						}
+						// On remet à jour la liste des triggers à chaque fois
+						foreach($this->_triggers as $trigger)
+						{
+							$vo->{'trigger_'.$trigger} = $plugin['trigger_'.$trigger];
+						}
+						$dao->save($vo, true);
 						$db->SelectDB($database);
 						$context['plugins'][$pName] = $plugin;
 						$context['plugins'][$pName]['status'] = $vo->status;
