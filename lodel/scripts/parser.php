@@ -1100,6 +1100,7 @@ PHP;
 
 			$preprocesslimit = 
 <<<PHP
+\$split = intval("{$split}");
 \$currentoffset=0;
 if(isset(\$_REQUEST['{$offsetname}'])) { \$currentoffset=(int)\$_REQUEST['{$offsetname}']; }
 PHP;
@@ -1107,16 +1108,16 @@ PHP;
 <<<PHP
 \$currenturl=basename(\$_SERVER['SCRIPT_NAME'])."?";
 \$cleanquery=preg_replace(array("/(^|&){$offsetname}=\d+/","/(^|&)clearcache=[^&]+/"), "", \$_SERVER['QUERY_STRING']);
-if(\$cleanquery[0]=="&") \$cleanquery=substr(\$cleanquery,1);
+if(strlen(\$cleanquery) && \$cleanquery[0]=="&") \$cleanquery=substr(\$cleanquery,1);
 if(\$cleanquery) \$currenturl.=\$cleanquery."&";
-if(\$context['nbresults']>{$split}) {
-	\$context['nexturl']=\$currenturl."{$offsetname}=".(\$currentoffset + {$split});
+if(\$context['nbresults']>\$split) {
+	\$context['nexturl']=\$currenturl."{$offsetname}=".(\$currentoffset + \$split);
 } else {
 	\$context['nexturl']="";
 }
 \$context['offsetname'] = '{$offsetname}';
-\$context['limitinfo'] = {$split};
-\$context['previousurl']= (\$currentoffset>={$split}) ? \$currenturl."{$offsetname}=".(\$currentoffset - {$split}) : "";
+\$context['limitinfo'] = \$split;
+\$context['previousurl']= (\$currentoffset>=\$split) ? \$currenturl."{$offsetname}=".(\$currentoffset - \$split) : "";
 PHP;
 			$limit = 
 <<<PHP
