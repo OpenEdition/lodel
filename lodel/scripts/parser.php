@@ -1094,7 +1094,7 @@ PHP;
 			$selectparts['groupby'] = 'GROUP BY '. $selectparts['groupby']; // besoin de group by ?
 
 		// special treatment for limit when only one value is given.
-		if (!empty($selectparts['split'])) {
+		if (!empty($selectparts['split']) && !isset($_REQUEST['listall'])) {
 			$split = $selectparts['split'];
 			$offsetname = 'offset_'. substr(md5($name), 0, 5);
 
