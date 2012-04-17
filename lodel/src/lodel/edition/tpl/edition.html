@@ -427,9 +427,11 @@ function autoScroll(e){
 		<ul class="listEntities" id="ul_listEntities">
 	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank">
+	<IF COND="[#ID]"><LET VAR="coupe">10000</LET><ELSE /><LET VAR="coupe">50</LET></IF>
+	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
+			<IF COND="[#NBRESULTS] GT [#COUPE]"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 		</BEFORE>
 		<DO>
 			<IF COND="[#COUNT] % 2">
