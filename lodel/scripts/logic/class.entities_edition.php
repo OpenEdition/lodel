@@ -382,7 +382,7 @@ class Entities_EditionLogic extends GenericLogic
 		}
 
 		/* Éxécution des hooks */
-		$this->_executeHooks($context, $error);
+		$this->_executeHooks($context, $error, 'pre');
 
 		$ret = '';
 		if (!$this->validateFields($context, $error)) {
@@ -545,6 +545,7 @@ class Entities_EditionLogic extends GenericLogic
 			$lo_entities_index->addIndexAction($context, $error);
 		}
 		update();
+		$this->_executeHooks($context, $error, 'post');
 
 		// pour import de plusieurs entités à la suite
 		if(isset($context['next_entity'])) {
@@ -1125,16 +1126,19 @@ class Entities_EditionLogic extends GenericLogic
 	 * définis pour chaque champ de l'entité.
 	 * 
 	 */
-	protected function _executeHooks(&$context, &$error){
+	protected function _executeHooks(&$context, &$error, $prefix='pre'){
 		require_once "hookfunc.php";
-		
+
 		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
-	
+
 		foreach($fields as $field){
 			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
 			foreach($hooks as $hook){
-				if(function_exists($hook)){
-					call_user_func($hook, &$context, $field->name);
+				$hook = str_replace("$prefix:",'',$hook, $count);
+				if ($count>0 || ($prefix=='pre' && strpos($hook, ':')===false)) { // Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
+					if(function_exists($hook)){
+						call_user_func($hook, &$context, $field->name);
+					}
 				}
 			}
 		}
