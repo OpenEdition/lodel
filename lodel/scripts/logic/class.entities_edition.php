@@ -528,6 +528,8 @@ class Entities_EditionLogic extends GenericLogic
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo, $new);  // save the related table
 
+		$this->_executeHooks($context, $error, 'post');
+
 		if ($new) {
 			$this->_createRelationWithParents ($id, $idparent);
 		}
@@ -545,7 +547,6 @@ class Entities_EditionLogic extends GenericLogic
 			$lo_entities_index->addIndexAction($context, $error);
 		}
 		update();
-		$this->_executeHooks($context, $error, 'post');
 
 		// pour import de plusieurs entités à la suite
 		if(isset($context['next_entity'])) {
