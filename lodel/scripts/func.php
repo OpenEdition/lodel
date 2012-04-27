@@ -1426,6 +1426,22 @@ function getMimeType($ext)
 	}
 }
 
+function find_in_path($fichier) {
+	static $chemins = array();
+	if (empty($chemins)) {
+		$chemins[] = '';
+		if ($siteroot = C::get('siteroot')) $chemins[] = $siteroot;
+		$chemins[] = $sharedir = C::get('sharedir', 'cfg').DIRECTORY_SEPARATOR;
+		foreach(C::get('view.base_rep') as $rep) {
+			$chemins[] = $sharedir.'plugins'.DIRECTORY_SEPARATOR.'custom'.DIRECTORY_SEPARATOR. $rep.DIRECTORY_SEPARATOR;
+		}
+	}
+	foreach ($chemins as $chemin)
+		if (file_exists($f = $chemin . $fichier))
+			return $f;
+	return '';
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
