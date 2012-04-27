@@ -1436,9 +1436,10 @@ function find_in_path($fichier) {
 			$chemins[] = $sharedir.'plugins'.DIRECTORY_SEPARATOR.'custom'.DIRECTORY_SEPARATOR. $rep.DIRECTORY_SEPARATOR;
 		}
 	}
-	foreach ($chemins as $chemin)
+	foreach ($chemins as $chemin) {
 		if (file_exists($f = $chemin . $fichier))
 			return $f;
+	}
 	return '';
 }
 

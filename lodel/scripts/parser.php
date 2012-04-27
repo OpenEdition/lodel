@@ -597,26 +597,11 @@ PHP;
 			if (isset($attrs['MACROFILE'])) 
 			{
 				$macrofilename = $attrs['MACROFILE'];
-				if (file_exists("./tpl/".$macrofilename))	
-				{
-					$path = './tpl/';
-				} 
-				elseif(file_exists($this->base_rep.$macrofilename))
-				{
-					$path = $this->base_rep;
-				}
-				elseif (file_exists($sharedir."/macros/".$macrofilename)) 
-				{
-					$path = $sharedir."/macros/";
-				} 
-				elseif (file_exists($home."../tpl/".$macrofilename)) 
-				{
-					$path = $home."../tpl/";
-				} 
-				else 
+				if (!(($path = find_in_path("tpl/$macrofilename")) || ($path = find_in_path("macros/$macrofilename")))) 
 				{
 					$this->_errmsg("the macro file \"$macrofilename\" doesn't exist");
 				}
+				$path = str_replace($macrofilename,'',$path);
 				$macro = file_get_contents($path.$macrofilename);
 				$this->macros_txt .= stripcommentandcr($macro);
 				unset($macro);
@@ -625,14 +610,11 @@ PHP;
 			elseif (isset($attrs['TEMPLATEFILE']))
 			{
 				$this->_clearposition();
-				if (file_exists("./tpl/".$attrs['TEMPLATEFILE'].'.html'))   {
-					$path = './tpl/';
-				} elseif (file_exists($home."../tpl/".$attrs['TEMPLATEFILE'].'.html')) {
-					$path = $home."../tpl/";
-				} else {
+				if (!($path = find_in_path("tpl/".$attrs['TEMPLATEFILE'].'.html')))   {
 					$this->_errmsg("the template file \"{$attrs['TEMPLATEFILE']}\" doesn't exist");
 				}
-				
+				$path = str_replace($attrs['TEMPLATEFILE'].'.html','',$path);
+
 				$refresh = false;
 	
 				if(isset($attrs['BLOCKID']))
