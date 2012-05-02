@@ -565,11 +565,13 @@ function plageDeRecherche($numPageCourante, $nbPagesTotal)
  */
 function loop_mltext(& $context, $funcname)
 {
+	$count = 0;
 	if (is_array($context['value'])) {
 		foreach ($context['value'] as $lang => $value) {
 			$localcontext = $context;
 			$localcontext['lang'] = $lang;
 			$localcontext['value'] = $value;
+			$localcontext['count'] = $count++;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
 		// pas super cette regexp... mais l argument a deja ete processe !
@@ -581,6 +583,7 @@ function loop_mltext(& $context, $funcname)
 				$localcontext = $context;
 				$localcontext['lang'] = $result[1];
 				$localcontext['value'] = $result[2];
+				$localcontext['count'] = $count++;
 				call_user_func("code_do_$funcname", $localcontext);
 			}
 	}
