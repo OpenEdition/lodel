@@ -1432,7 +1432,7 @@ function find_in_path($fichier) {
 		$chemins[] = '';
 		if ($siteroot = C::get('siteroot')) $chemins[] = $siteroot;
 		$chemins[] = $sharedir = C::get('sharedir', 'cfg').DIRECTORY_SEPARATOR;
-		foreach(C::get('view.base_rep') as $rep) {
+		foreach( (array) C::get('view.base_rep') as $rep) {
 			$chemins[] = $sharedir.'plugins'.DIRECTORY_SEPARATOR.'custom'.DIRECTORY_SEPARATOR. $rep.DIRECTORY_SEPARATOR;
 		}
 	}
