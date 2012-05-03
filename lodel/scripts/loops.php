@@ -571,7 +571,7 @@ function loop_mltext(& $context, $funcname)
 			$localcontext = $context;
 			$localcontext['lang'] = $lang;
 			$localcontext['value'] = $value;
-			$localcontext['count'] = $count++;
+			$localcontext['count'] = ++$count;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
 		// pas super cette regexp... mais l argument a deja ete processe !
@@ -583,7 +583,7 @@ function loop_mltext(& $context, $funcname)
 				$localcontext = $context;
 				$localcontext['lang'] = $result[1];
 				$localcontext['value'] = $result[2];
-				$localcontext['count'] = $count++;
+				$localcontext['count'] = ++$count;
 				call_user_func("code_do_$funcname", $localcontext);
 			}
 	}
@@ -596,30 +596,38 @@ function loop_mltext(& $context, $funcname)
 function loop_mldate( &$context, $funcname, $arguments )
 {
 	$localcontext = $context;
-
-	if (function_exists("code_before_$funcname"))
-		call_user_func("code_before_$funcname", $localcontext);
+	$count = 0;
 
 	$regexp = "/(?:&amp;lt;|&lt;|<)r2r:ml key\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s";
 	if (is_array($arguments['value'])) {
+		if (function_exists("code_before_$funcname"))
+			call_user_func("code_before_$funcname", $localcontext);
 		$context['nbresults'] = count($arguments['value']);
 		foreach ($context['value'] as $key => $value) {
 			$localcontext['key'] = $key;
 			$localcontext['value'] = $value;
+			$localcontext['count'] = ++$count;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
+		if (function_exists("code_after_$funcname"))
+			call_user_func("code_after_$funcname", $localcontext);
 	} elseif (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER)) {
+		if (function_exists("code_before_$funcname"))
+			call_user_func("code_before_$funcname", $localcontext);
 		$context['nbresults'] = count($results);
 		$localcontext['array'] = array_map(function($r){return $r[2];}, $results);
 		foreach ($results as $result) {
 			$localcontext['key'] = $result[1];
 			$localcontext['value'] = $result[2];
+			$localcontext['count'] = ++$count;
 			call_user_func("code_do_$funcname", $localcontext);
 		}
+		if (function_exists("code_after_$funcname"))
+			call_user_func("code_after_$funcname", $localcontext);
+	} else {
+		if (function_exists("code_alter_$funcname"))
+			call_user_func("code_alter_$funcname", $context);
 	}
-
-	if (function_exists("code_after_$funcname"))
-		call_user_func("code_after_$funcname", $localcontext);
 }
 
 /**
