@@ -889,7 +889,7 @@ class Logic
 	//echo $this->maintable . '<p>' . $status . '<p>';
 		switch ($this->maintable) {
 			case 'entities' :
-				$this->_authorizedStatus = C::get('temporary', 'lodeluser') ? array(-1) : array(-64, -8, -1, 1, 8, 17, 24);
+				$this->_authorizedStatus = C::get('temporary', 'lodeluser') ? array(-1) : array(-64, -8, -4, -3, -2, -1, 1, 8, 17, 24);
 				break;
 			case 'persons' :
 			case 'entries' :
