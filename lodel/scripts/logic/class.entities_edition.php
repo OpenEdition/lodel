@@ -340,7 +340,7 @@ class Entities_EditionLogic extends GenericLogic
 			if(!empty($select)) {
 				$vo  = $this->_getMainTableDAO()->getById($id, join(',', $select));
 				/* Vérification de modification concurrente */
-				if ((int)$context['timestamp'] < strtotime($vo->upd)) {
+				if ( isset($context['timestamp']) && (int)$context['timestamp'] < strtotime($vo->upd)) {
 					$error['concurrent'] = "concurrent_edition";
 					return "_error";
 				}
