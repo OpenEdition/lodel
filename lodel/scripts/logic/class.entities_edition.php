@@ -710,7 +710,7 @@ class Entities_EditionLogic extends GenericLogic
 			$idtypes = array_keys ($context[$table]);
 			$logic = Logic::getLogic($table);
 			$ids         = array();
-			$idrelations = array();
+			$active_relations = array();
 			foreach ($idtypes as $idtype) {
 				if (empty($context[$table][$idtype])) {
 					continue;
@@ -720,6 +720,8 @@ class Entities_EditionLogic extends GenericLogic
 
 				if(!is_array($itemscontext)) trigger_error('ERROR: invalid items', E_USER_ERROR);
 				$degree = 1;
+				$newRelations = false;
+				$relations = array();
 				foreach ($itemscontext as $k => $itemcontext) {
 					if (!is_numeric($k)) {
 						continue;
@@ -729,35 +731,33 @@ class Entities_EditionLogic extends GenericLogic
 					$itemcontext['status']   = $status;
 					$itemcontext['degree']   = $degree++;
 
-					//$ret = $logic->editAction($itemcontext, $error, 'CLEAN');
 					$ret = $logic->editAction($itemcontext, $error);
 					if ($ret!="_error" && $itemcontext['id']) {
 						if(!isset($ids[$idtype])) $ids[$idtype] = array();
 						$ids[$idtype][] = $itemcontext['id'];
 						if (isset($itemcontext['idrelation'])) {
-							$idrelations[] = $itemcontext['idrelation'];
+							$relations[] = $itemcontext['idrelation'];
+						} else {
+							$newRelations = true;
 						}
 					}
 				}
-			}
-			// delete relation not used
-			if ($ids && !$idrelations) { // new item but relation has not been created
-				if (!$vo->id) {
-					trigger_error("ERROR: internal error in Entities_EditionLogic ::_saveRelatedTables");
-				}
-				$values      = array ();
-				$idrelations = array ();
-				foreach ($ids as $ids2) {
-					$degree = 1;
-					foreach ($ids2 as $id) {
-						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						$idrelations[] = $db->insert_id();
+				if ($newRelations) {
+					if (!$vo->id) {
+						trigger_error("ERROR: internal error in Entities_EditionLogic ::_saveRelatedTables");
 					}
+					$degree = 1;
+					foreach ($ids[$idtype] as $id) {
+						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$active_relations[] = $db->insert_id();
+					}
+				} else {
+					$active_relations = array_merge($active_relations, $relations);
 				}
 			}
-			$criteria = $idrelations ? "AND idrelation NOT IN ('". join ("','", $idrelations). "')" : "";
-			
-			#echo "criteria=$criteria";
+
+			// delete relation not used
+			$criteria = $active_relations ? "AND idrelation NOT IN ('". join ("','", $active_relations). "')" : "";
 			$this->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
 
