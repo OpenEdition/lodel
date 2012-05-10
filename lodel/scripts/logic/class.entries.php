@@ -286,13 +286,10 @@ class EntriesLogic extends GenericLogic
 			$tmpgname = $context['g_name'];
 			myaddslashes($tmpgname);
 			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
-			//$vo = $dao->find ("g_name='". $context['g_name']. "' AND idtype='". $idtype."' AND status>-64","id,status");
 			if ($vo && $vo->id) {
-				$context['id']=$vo->id;
-				return; // nothing to do.
-			} else {
-				$context['data'][$g_index_key]=$context['g_name'];
+				$new=false;
 			}
+			$context['data'][$g_index_key]=$context['g_name'];
 		}
 
 		if(empty($context['data'][$g_index_key]))
@@ -300,11 +297,10 @@ class EntriesLogic extends GenericLogic
 
 		$index_key = &$context['data'][$g_index_key];
 		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
-		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not exist
+		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not a duplicate
 			$tmpindex_key = $index_key;
 			myaddslashes($tmpindex_key);
 			$vo=$dao->find("BINARY g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
-			//$vo=$dao->find("g_name='". $index_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
 			if ($vo && $vo->id) {
 				$error[$g_index_key] = "1";
 				return '_error';
