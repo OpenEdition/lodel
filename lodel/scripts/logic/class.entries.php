@@ -285,9 +285,11 @@ class EntriesLogic extends GenericLogic
 			// search if the entries exists
 			$tmpgname = $context['g_name'];
 			myaddslashes($tmpgname);
-			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64","id,status");
+			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64");
 			if ($vo && $vo->id) {
 				$new=false;
+				if (isset($dao->rights['protect']))
+					$context['protected'] = true;
 			}
 			$context['data'][$g_index_key]=$context['g_name'];
 		}
