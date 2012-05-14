@@ -264,10 +264,7 @@ class EntriesLogic extends GenericLogic
 
 		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
-				// error.
-				// if the entity is imported and will be checked
-				// that's fine, let's continue, if not return an error
-				if ($status>-64) {
+				if ($status>-64) { // if the entity is imported and will be checked that's fine, let's continue
 					return "_error";
 				}
 			}
@@ -276,14 +273,15 @@ class EntriesLogic extends GenericLogic
 		if (!$g_index_key) {
 			trigger_error("ERROR: The generic field 'index key' is required. Please edit your editorial model.", E_USER_ERROR);
 		}
-		
-		$vo = null;
-		$entry_exists = false;
+
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
+
+		// search if the entries exists
+		$vo = null;
+		$entry_exists = false;
 		if (isset ($context['g_name'])) {
 			if (!$context['g_name']) return '_error'; // empty entry!
-			// search if the entries exists
 			$tmpgname = $context['g_name'];
 			myaddslashes($tmpgname);
 			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64");
@@ -313,8 +311,8 @@ class EntriesLogic extends GenericLogic
 				}
 			}
 
-			if (!$vo) {
-				if ($id) { // create or edit the entity
+			if (!$vo) { // create or edit the entity
+				if ($id) {
 					$new=false;
 					$dao->instantiateObject ($vo);
 					$vo->id=$id;
@@ -333,11 +331,13 @@ class EntriesLogic extends GenericLogic
 			} else {
 				$vo->idparent= (int) (isset($context['idparent']) ? $context['idparent'] : 0);
 			}
+
 			// populate the entry table
 			$vo->idtype=$idtype;
 			$vo->g_name=$index_key;
 			$vo->sortkey=makeSortKey($vo->g_name);
 			$id=$context['id']=$dao->save($vo);
+
 			// save the class table
 			$gdao=DAO::getGenericDAO($class,"identry");
 			$gdao->instantiateObject($gvo);
@@ -345,11 +345,12 @@ class EntriesLogic extends GenericLogic
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->identry=$id;
 			$this->_moveFiles($id,$this->files_to_move,$gvo);
-			$gdao->save($gvo,$new);  // save the related table
+			$gdao->save($gvo,$new);
 		}
 
 		$this->saveRelations($vo, $context);
-		// save the entities_class table
+
+		// save the related tables
 		if (!empty($context['identity'])) {
 			$dao=DAO::getDAO ("relations");
 			$rvo=$dao->find("id1='".(int) $context['identity']. "' AND id2='". $id. "' AND nature='E'", "idrelation");
@@ -363,13 +364,14 @@ class EntriesLogic extends GenericLogic
 			} else {
 				$idrelation=$context['idrelation'] = $rvo->idrelation;
 			}
+			// save the entities_class table
 			$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;
-			$gdao->save($gvo,true);  // save the related table
+			$gdao->save($gvo,true);
 		}
-		
+
 		$this->_executeHooks($context, $error, 'post');
 		update();
 		return "_back";
