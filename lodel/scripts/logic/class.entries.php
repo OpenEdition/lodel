@@ -278,6 +278,7 @@ class EntriesLogic extends GenericLogic
 		}
 		
 		$vo = null;
+		$entry_exists = false;
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO ();
 		if (isset ($context['g_name'])) {
@@ -287,9 +288,11 @@ class EntriesLogic extends GenericLogic
 			myaddslashes($tmpgname);
 			$vo = $dao->find ("BINARY g_name='". $tmpgname. "' AND idtype='". $idtype."' AND status>-64");
 			if ($vo && $vo->id) {
-				$new=false;
+				$entry_exists=true;
 				if (isset($dao->rights['protect']))
 					$context['protected'] = true;
+				$context['idparent'] = $vo->idparent;
+				$id=$context['id'] = $vo->id;
 			}
 			$context['data'][$g_index_key]=$context['g_name'];
 		}
@@ -297,50 +300,53 @@ class EntriesLogic extends GenericLogic
 		if(empty($context['data'][$g_index_key]))
 			return '_error';
 
-		$index_key = &$context['data'][$g_index_key];
-		$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
-		if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not a duplicate
-			$tmpindex_key = $index_key;
-			myaddslashes($tmpindex_key);
-			$vo=$dao->find("BINARY g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
-			if ($vo && $vo->id) {
-				$error[$g_index_key] = "1";
-				return '_error';
+		if (!$entry_exists) {
+			$index_key = &$context['data'][$g_index_key];
+			$index_key = str_replace(',',' ',$index_key); // remove the , because it is a separator
+			if (isset($context['lo']) && $context['lo'] == 'entries') {  // check it does not a duplicate
+				$tmpindex_key = $index_key;
+				myaddslashes($tmpindex_key);
+				$vo=$dao->find("BINARY g_name='". $tmpindex_key. "' AND idtype='". $idtype. "' AND status>-64 AND id!='".$id."'", 'id');
+				if ($vo && $vo->id) {
+					$error[$g_index_key] = "1";
+					return '_error';
+				}
 			}
-		}
 
-		if (!$vo) {
-			if ($id) { // create or edit the entity
-				$new=false;
-				$dao->instantiateObject ($vo);
-				$vo->id=$id;
+			if (!$vo) {
+				if ($id) { // create or edit the entity
+					$new=false;
+					$dao->instantiateObject ($vo);
+					$vo->id=$id;
+				} else {
+					if (!$votype->newbyimportallowed && (!isset($context['lo']) || $context['lo']!="entries")) {
+						return "_error";
+					}
+					$new=true;
+					$vo=$dao->createObject();
+					$vo->status=$status ? $status : -1;
+				}
+			}
+			if (isset($dao->rights['protect'])) $vo->protect = !empty($context['protected']) ? 1 : 0;
+			if ($votype->flat) {
+				$vo->idparent=0; // force the entry to be at root
 			} else {
-				if (!$votype->newbyimportallowed && (!isset($context['lo']) || $context['lo']!="entries")) { return "_error"; }
-				$new=true;
-				$vo=$dao->createObject();
-				$vo->status=$status ? $status : -1;
+				$vo->idparent= (int) (isset($context['idparent']) ? $context['idparent'] : 0);
 			}
+			// populate the entry table
+			$vo->idtype=$idtype;
+			$vo->g_name=$index_key;
+			$vo->sortkey=makeSortKey($vo->g_name);
+			$id=$context['id']=$dao->save($vo);
+			// save the class table
+			$gdao=DAO::getGenericDAO($class,"identry");
+			$gdao->instantiateObject($gvo);
+			$context['data']['id']=$context['id'];
+			$this->_populateObject($gvo,$context['data']);
+			$gvo->identry=$id;
+			$this->_moveFiles($id,$this->files_to_move,$gvo);
+			$gdao->save($gvo,$new);  // save the related table
 		}
-		if (isset($dao->rights['protect'])) $vo->protect = !empty($context['protected']) ? 1 : 0;
-		if ($votype->flat) {
-			$vo->idparent=0; // force the entry to be at root
-		} else {
-			$vo->idparent= (int) (isset($context['idparent']) ? $context['idparent'] : 0);
-		}
-		// populate the entry table
-		$vo->idtype=$idtype;
-		$vo->g_name=$index_key;
-		$vo->sortkey=makeSortKey($vo->g_name);
-		$id=$context['id']=$dao->save($vo);
-		// save the class table
-		$gdao=DAO::getGenericDAO($class,"identry");
-		$gdao->instantiateObject($gvo);
-		$context['data']['id']=$context['id'];
-		$this->_populateObject($gvo,$context['data']);
-		$gvo->identry=$id;
-
-		$this->_moveFiles($id,$this->files_to_move,$gvo);
-		$gdao->save($gvo,$new);  // save the related table
 
 		$this->saveRelations($vo, $context);
 		// save the entities_class table
