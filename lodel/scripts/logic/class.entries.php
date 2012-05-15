@@ -249,18 +249,18 @@ class EntriesLogic extends GenericLogic
 			trigger_error("ERROR: idtype must be known in EntriesLogic::editAction", E_USER_ERROR);
 		}
 
-		$id = isset($context['id']) ? $context['id'] : null;
-		$idtype = $context['idtype'];
-		$status = isset($context['status']) ? $context['status'] : null;
 		// get the class 
+		$idtype = $context['idtype'];
 		$daotype = DAO::getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort");
 		if(!$votype)
 			trigger_error("ERROR: invalid idtype", E_USER_ERROR);
 
-		$class = $context['class'] = $votype->class;
-
 		$this->_executeHooks($context, $error, 'pre');
+
+		$id = isset($context['id']) ? $context['id'] : null;
+		$status = isset($context['status']) ? $context['status'] : null;
+		$class = $context['class'] = $votype->class;
 
 		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
