@@ -1851,3 +1851,53 @@ define('INC_TEXTFUNC', 1);
 function is_restricted(){
 	return cache_get('no_restricted') ? false : true ;
 }
+
+/**
+ * Retourne la valeur héxadécimale d'une chaîne de caractère UTF-8
+ *
+ * @param string $data la chaine à transformer
+ * @return string
+ */
+function hex_chars($data) {
+	$mb_hex = '';
+	for ($i=0; $i<mb_strlen($data, 'UTF-8'); $i++) {
+		$c = mb_substr($data, $i, 1, 'UTF-8');
+		$o = unpack('N', mb_convert_encoding($c, 'UCS-4BE', 'UTF-8'));
+		$mb_hex .= hex_format($o[1]);
+	}
+	return $mb_hex;
+}
+
+/**
+ * Retourne la valeur hexadécimale d'un caractère
+ * 
+ * @param string $o caractère
+ * @return string
+ */
+function hex_format($o) {
+	$h = strtoupper(dechex($o));
+	$len = strlen($h);
+	if ($len % 2 == 1)
+		$h = "0$h";
+	return $h;
+}
+
+/**
+ * Split une chaine UTF-8 en un tableau
+ * 
+ * @param string $str la chaine de caractère à splitter
+ * @param int $l longueur du tableau retourné
+ * @return array
+ */
+function str_split_unicode($str, $l = 0) {
+	if ($l > 0) {
+		$ret = array();
+		$len = mb_strlen($str, "UTF-8");
+		for ($i = 0; $i < $len; $i += $l) {
+			$ret[] = mb_substr($str, $i, $l, "UTF-8");
+		}
+		return $ret;
+	}
+	return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
+}
+
