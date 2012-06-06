@@ -489,7 +489,7 @@ class EntitiesLogic extends Logic
 		/* Les champs multilingue doivent être parsés */
 		foreach($context['data'] as &$field){
 			if(strpos($field, 'r2r:ml')){
-				preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml lang\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
+				preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml (?:lang|key)\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
 														$field, $results, PREG_SET_ORDER);
 
 				$field = array();
