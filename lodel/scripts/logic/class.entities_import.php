@@ -69,6 +69,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 */
 	public $g_name;
 	
+	private $_moved_images = array();
+	
 	protected $prefixregexp="Pr\.|Dr\.|Mr\.|Ms\.";
 	
 	protected $context; // save the current context
@@ -133,6 +135,9 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			copy ($odt, $sourcefileodt);
 			@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
+
+		$this->_fixImagesPath($tei);
+
 		@unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		copy($tei, SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));
@@ -191,7 +196,30 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		}
 	}
 
+	/**
+	 * fix the path of images in the TEI
+	 * @access private
+	 * @param string the TEI file
+	 */
+	private function _fixImagesPath( $tei ){
+		$dom = new DOMDocument();
+		$dom->preserveWhiteSpace = true;
+		$dom->formatOutput       = false;
 
+		$dom->load($tei);
+	
+		$a = $dom->getElementsByTagName('graphic');
+		foreach($a as $image){
+			foreach($this->_moved_images as $original => $new){
+				if( $image->hasAttribute('url') && preg_match("#{$original}$#", $image->getAttribute('url')) ){
+					$image->setAttribute('url', $new);
+					break;
+				}
+			}
+		}
+
+		file_put_contents($tei, $dom->saveXML());
+	}
 	/**
 	 * method to move img link when the new id is known
 	 * @access private
@@ -217,6 +245,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$imgfile=$result[1];	   $ext=$result[2];
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
 				// local.image so
+
 				if (isset($imglist[$imgfile])) { // is it in the cache ?
 					$text = str_replace ($result[0], "<img src=\"$imglist[$imgfile]\" />", $text);
 				} else {
@@ -226,7 +255,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$this->_checkdir ($dir);
 					}
 					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
-					$ok = copy ($imgfile, SITEROOT.$newimgfile);
+					$ok = @copy ($imgfile, SITEROOT.$newimgfile);
 					@unlink ($imgfile);
 					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
@@ -236,6 +265,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$text=str_replace ($result[0], "<span class=\"image_error\">[Image non convertie]</span>", $text);
 					}
 				}
+				
+				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
 		}
 	}
