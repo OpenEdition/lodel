@@ -216,6 +216,20 @@ class Controller
 				$ret = '_next';
 			}
 			
+			// Demande de retour avec un format spécifique
+			if (isset($context['format']) && $context['format']=='json') {
+				$json = array();
+				foreach(array('id','error') as $safedata) {
+					if (isset($context[$safedata])) {
+						$json[$safedata] = $context[$safedata];
+					}
+				}
+				$json = json_encode($json);
+				header('Content-Type: text/javascript; charset=utf8');
+				echo $json;
+				exit;
+			}
+
 			//Appel de la vue nécessaire
 			switch($ret) {
 				case '_ajax': // ajax request, we just have to die here, the logic manages the rest
