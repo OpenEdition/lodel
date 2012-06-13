@@ -232,6 +232,14 @@ class EntitiesLogic extends Logic
 			trigger_error("ERROR: invalid status in EntitiesLogic::publishAction", E_USER_ERROR);
 		}
 
+		if(empty($context['id']))
+			return '_back';
+
+		// get the class
+		$context['class'] = $db->getOne(lq("SELECT t.class from #_TP_entities as e, #_TP_types as t WHERE e.id=".$context['id']." AND e.idtype=t.id")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+		$this->_executeHooks($context, $error, 'pre');
+
 		$status = $context['status'];
 		$this->_isAuthorizedStatus($status);
 
@@ -239,13 +247,9 @@ class EntitiesLogic extends Logic
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
 
-		$this->_executeHooks($context, $error);
-		
 		// get the entities to modify and ancillary information
 		$access = abs ($status) >= 32 ? 'protect' : 'write';
 
-		if(empty($context['id']))
-			return '_back';
 
 		$this->_getEntityHierarchy($context['id'], $access,"#_TP_entities.status>-8", $ids, $classes, $softprotectedids, $lockedids);
 
@@ -278,6 +282,8 @@ class EntitiesLogic extends Logic
 		//mise à jour des personnes et entrées liées à ces entités
 		$this->_publishSoftRelation($ids, $status);
 		update();
+
+		$this->_executeHooks($context, $error, 'post');
 		return '_back';
 	}
 
@@ -479,27 +485,6 @@ class EntitiesLogic extends Logic
 		return array();
 	}
 
-	protected function _executeHooks(&$context, &$error){
-		/* Fausse modification du document afin d'executer les hooks */
-		$editlogic = Logic::getLogic('entities_edition');
-
-		// Le statut est stoqué dans un champ différent.
-		$context['publishstatus'] = $context['status'];
-		$editlogic->viewAction($context, $error); 
-		/* Les champs multilingue doivent être parsés */
-		foreach($context['data'] as &$field){
-			if(strpos($field, 'r2r:ml')){
-				preg_match_all("/(?:&amp;lt;|&lt;|<)r2r:ml (?:lang|key)\s*=(?:&amp;quot;|&quot;|\")(\w+)(?:&amp;quot;|&quot;|\")(?:&amp;gt;|&gt;|>)(.*?)(?:&amp;lt;|&lt;|<)\/r2r:ml(?:&amp;gt;|&gt;|>)/s", 
-														$field, $results, PREG_SET_ORDER);
-
-				$field = array();
-				foreach($results as $result){
-					$field[$result[1]] = $result[2];
-				}
-			}
-		}
-		$editlogic->editAction($context, $error);
-	}
 	// end{publicfields} automatic generation  //
 
 	// begin{uniquefields} automatic generation  //

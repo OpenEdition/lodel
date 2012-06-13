@@ -952,27 +952,4 @@ class EntriesLogic extends GenericLogic
 		}
 	}
 
-	/**
-	 * Execution des hooks
-	 * 
-	 * Cette méthode est appelée lors de l'édition d'une entrée d'index afin d'exécuter les différents hooks 
-	 * définis pour chaque champ de l'entité.
-	 * 
-	 */
-	protected function _executeHooks(&$context, &$error, $prefix='pre'){
-		require_once "hookfunc.php";
-
-		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
-
-		foreach($fields as $field){
-			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
-			foreach($hooks as $hook){
-				$hook = str_replace("$prefix:",'',$hook, $count);
-				if ($count>0 && function_exists($hook)) {
-					call_user_func($hook, &$context, $field->name);
-				}
-			}
-		}
-	}
-
 } // class 
