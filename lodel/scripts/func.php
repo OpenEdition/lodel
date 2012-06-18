@@ -973,14 +973,13 @@ function rightonentity ($action, $context)
   		if (!$groupright) return false;
 	}
 	
-	// only admin can work at the base.
-	$editorok= C::get('editor', 'lodeluser') && !empty($context['idparent']);
+	$editorok= C::get('editor', 'lodeluser');
 	// redactor are ok, only if they own the document and it is not protected.
 	$redactorok = ($context['iduser']==C::get('id', 'lodeluser') && C::get('redactor', 'lodeluser')) && $context['status']<8 && !empty($context['idparent']);
 
 	switch($action) {
 	case 'create' :
-		return (C::get('editor', 'lodeluser') ||  (C::get('redactor', 'lodeluser') && $context['status']<8));// &&  $context['id'];
+		return ($editorok ||  (C::get('redactor', 'lodeluser') && $context['status']<8));// &&  $context['id'];
 		break;
 	case 'delete' :
 		return (abs($context['status'])<8 && $editorok) || ($context['status']<0 && $redactorok);
