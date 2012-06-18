@@ -714,7 +714,7 @@ class DataLogic
 		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class, classtype');
 		foreach ($vos as $vo)	{
 			$tables[] = lq("#_TP_". $vo->class);
-			if ($vo->classtype == 'persons')
+			if (in_array($vo->classtype, array('persons', 'entries') ) )
 				$tables[] = lq('#_TP_entities_'. $vo->class);
 		}
 		// dump structure + données
