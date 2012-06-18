@@ -973,7 +973,9 @@ function rightonentity ($action, $context)
   		if (!$groupright) return false;
 	}
 	
-	$editorok= C::get('editor', 'lodeluser');
+	// only admin can delete at the base.
+	$editorDelete = C::get('editor', 'lodeluser') && !empty($context['idparent']);
+	$editorok = C::get('editor', 'lodeluser');
 	// redactor are ok, only if they own the document and it is not protected.
 	$redactorok = ($context['iduser']==C::get('id', 'lodeluser') && C::get('redactor', 'lodeluser')) && $context['status']<8 && !empty($context['idparent']);
 
@@ -982,7 +984,7 @@ function rightonentity ($action, $context)
 		return ($editorok ||  (C::get('redactor', 'lodeluser') && $context['status']<8));// &&  $context['id'];
 		break;
 	case 'delete' :
-		return (abs($context['status'])<8 && $editorok) || ($context['status']<0 && $redactorok);
+		return (abs($context['status'])<8 && $editorDelete) || ($context['status']<0 && $redactorok);
 		break;
 	case 'edit':
 	case 'advanced' :
