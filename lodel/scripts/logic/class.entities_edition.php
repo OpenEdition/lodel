@@ -727,6 +727,7 @@ class Entities_EditionLogic extends GenericLogic
 						continue;
 					}
 					$itemcontext['identity'] = $vo->id;
+					$itemcontext['do']       = $context['do'];
 					$itemcontext['idtype']   = $idtype;
 					$itemcontext['status']   = $status;
 					$itemcontext['degree']   = $degree++;

@@ -165,6 +165,7 @@ class PersonsLogic extends EntriesLogic
 		if (!empty($context['identity'])) {
 			$dao=DAO::getDAO ("relations");
 			$vo=$dao->find ("id1='".(int) $context['identity']. "' AND id2='". $id. "' AND nature='G' AND degree='".(int)$context['degree']. "'", "idrelation");
+			$new_relation = false;
 			if (!$vo) {
 				$dao->instantiateObject ($vo);
 				$vo->id1=(int)$context['identity'];
@@ -172,6 +173,7 @@ class PersonsLogic extends EntriesLogic
 				$vo->degree=(int)$context['degree'];
 				$vo->nature='G';
 				$idrelation=$context['idrelation'] = $dao->save($vo);
+				$new_relation = true;
 			} else {
 				$idrelation=$context['idrelation'] = $vo->idrelation;
 			}
@@ -180,7 +182,7 @@ class PersonsLogic extends EntriesLogic
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;
-			$gdao->save($gvo,true);  // save the related table
+			$gdao->save($gvo,$new_relation);  // save the related table
 		}
 
 		update();

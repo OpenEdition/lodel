@@ -354,6 +354,7 @@ class EntriesLogic extends GenericLogic
 		if (!empty($context['identity'])) {
 			$dao=DAO::getDAO ("relations");
 			$rvo=$dao->find("id1='".(int) $context['identity']. "' AND id2='". $id. "' AND nature='E'", "idrelation");
+			$new_relation = false;
 			if (!$rvo) {
 				$dao->instantiateObject ($rvo);
 				$rvo->id1=(int)$context['identity'];
@@ -361,6 +362,7 @@ class EntriesLogic extends GenericLogic
 				$rvo->degree=(int)$context['degree'];
 				$rvo->nature='E';
 				$idrelation=$context['idrelation'] = $dao->save($rvo);
+				$new_relation = true;
 			} else {
 				$idrelation=$context['idrelation'] = $rvo->idrelation;
 			}
@@ -369,7 +371,7 @@ class EntriesLogic extends GenericLogic
 			$gdao->instantiateObject($gvo);
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->idrelation=$idrelation;
-			$gdao->save($gvo,true);
+			$gdao->save($gvo,$new_relation);
 		}
 
 		$this->_executeHooks($context, $error, 'post');
