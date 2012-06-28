@@ -138,6 +138,14 @@ class TranslationsLogic extends Logic {
 			function loop_textgroups(&$context,$funcname)
 			{
 				if(empty($context['textgroups']) || empty($GLOBALS['translations_textgroups'][$context['textgroups']])) return;
+
+				// permettre aux adminlodel d'accéder à tous les textgroup de traduction 
+				if ($context['textgroups']=='interface' && C::get('adminlodel', 'lodeluser')) {
+					global $db;
+					$textgroups = $db->GetCol(lq("select distinct textgroup from #_MTP_texts;"));
+					$GLOBALS['translations_textgroups'][$context['textgroups']] = array_unique(array_merge($GLOBALS['translations_textgroups'][$context['textgroups']], $textgroups));
+				}
+
 				foreach($GLOBALS['translations_textgroups'][$context['textgroups']] as $textgroup) {
 					$localcontext=$context;
 					$localcontext['textgroup']=$textgroup;
