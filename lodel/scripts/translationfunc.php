@@ -177,12 +177,6 @@ class XMLDB_Translations extends XMLDB
 	function insertRow($table, $record)
 	{
 		global $db;
-		#echo "table:$table\n<br>";
-		#print_r($record);
-
-		// protect record
-		clean_request_variable($record);
-
 		switch ($table) {
 			//
 			// table translations
