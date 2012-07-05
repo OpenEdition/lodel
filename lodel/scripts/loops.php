@@ -723,7 +723,8 @@ function loop_foreach(&$context, $funcname, $arguments)
 			call_user_func("code_alter_$funcname", $localcontext);
 		return;
 	}
-	$localcontext['count'] = count($arguments['array']);
+	$localcontext['nbresults'] = $context['nbresults'] = count($arguments['array']);
+	$localcontext['count'] = 0;
 	//Le before
 	if (function_exists("code_before_$funcname")) {
 		call_user_func("code_before_$funcname", $context);
@@ -732,7 +733,14 @@ function loop_foreach(&$context, $funcname, $arguments)
 	foreach($arguments['array'] as $key => $value) {
 		$localcontext['key'] = $key;
 		$localcontext['value'] = $value;
-		call_user_func("code_do_$funcname", $localcontext);
+		$localcontext['count']++;
+		if ($localcontext['count'] == 1 && function_exists("code_dofirst_$funcname")) {
+			call_user_func("code_dofirst_$funcname", $localcontext);
+		}	elseif ($localcontext['count'] == $localcontext['nbresults'] && function_exists("code_dolast_$funcname")) {
+			call_user_func("code_dolast_$funcname", $localcontext);
+		}	else {
+			call_user_func("code_do_$funcname", $localcontext);
+		}
 	}
 		
 	//L'after
