@@ -1311,6 +1311,26 @@ if(!function_exists('code_alter_{$localtpl}{$name}')) {
 }
 PHP;
 		}
+		if (!empty($contents['DOFIRST']))	{ // genere le code de dofirst
+			$this->fct_txt .= 
+<<<PHP
+if(!function_exists('code_dofirst_{$localtpl}{$name}')) {
+	function code_dofirst_{$localtpl}{$name}(\$context) { 
+?>{$contents['DOFIRST']}<?php 
+	} 
+}
+PHP;
+		}
+		if (!empty($contents['DOLAST']))	{ // genere le code de dolast
+			$this->fct_txt .= 
+<<<PHP
+if(!function_exists('code_dolast_{$localtpl}{$name}')) {
+	function code_dolast_{$localtpl}{$name}(\$context) { 
+?>{$contents['DOLAST']}<?php 
+	} 
+}
+PHP;
+		}
 		// fin ajout
 	}
 
