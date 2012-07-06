@@ -78,8 +78,6 @@ try
                     'internalstyles', 'characterstyles', 'entities_index',
                     'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
 
-	if (C::get('lo')=='translations') C::set('nocache',true); // ainsi ne pas indenter (et perdre les \n) des pages de traduction
-
 	$do = C::get('do');
 	if(!empty($do) && '_' === $do{0})
 		C::set('lo', 'plugins');
