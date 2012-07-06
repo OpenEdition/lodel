@@ -225,7 +225,7 @@ class Controller
 					}
 				}
 				$json = json_encode($json);
-				header('Content-Type: text/javascript; charset=utf8');
+				header('Content-Type: text/json;charset=UTF-8');
 				echo $json;
 				exit;
 			}
