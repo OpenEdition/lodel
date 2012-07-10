@@ -528,15 +528,15 @@ class Entities_EditionLogic extends GenericLogic
 		$this->_moveFiles ($id, $this->files_to_move, $gvo);
 		$gdao->save ($gvo, $new);  // save the related table
 
-		$this->_executeHooks($context, $error, 'post');
-
 		if ($new) {
 			$this->_createRelationWithParents ($id, $idparent);
 		}
 		$this->_saveRelatedTables ($vo, $context);
 		// check if the entities have an history field defined
 		$this->_processSpecialFields ('history', $context);
-		
+
+		$this->_executeHooks($context, $error, 'post');
+
 		if ($ret=="_error") {
 			return "_error";
 		}
