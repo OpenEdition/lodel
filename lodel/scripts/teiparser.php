@@ -1633,35 +1633,34 @@ class TEIParser extends XMLReader
 		{
 			if(parent::ELEMENT === $this->nodeType && 'graphic' === $this->localName)
 			{
-                $attrs = $this->_parseAttributes();
-                $nb    = array();
-                $id    = "";
-			    if(isset($attrs['url']) && is_readable($this->_tmpdir . DIRECTORY_SEPARATOR . $attrs['url'] )){
-			        $source = $this->_tmpdir . DIRECTORY_SEPARATOR;
-			        
-			        /* Creation of import folder */
-			        $array  = array_filter(explode('/', $this->_tmpdir));
-			        $tmpdir = SITEROOT . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
-			        if( ! file_exists($tmpdir) ) mkdir($tmpdir);
-                    chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
-                    
-                    /* Getting file name */
-			        copy($source . $attrs['url'], $tmpdir . basename($attrs['url']) );
-			        
-			        $attrs['url'] = $tmpdir . basename($attrs['url']);
-			    }else{
-    				$id = basename($attrs['url']);
-    				$nb = explode('-', $id);
-    				// get images temporary url
-    				if(isset($this->_images[$id]))
-    					$attrs['url'] = $this->_images[$id];
-			    }
+				$attrs = $this->_parseAttributes();
+				$nb    = array();
+				$id    = "";
+				$source = realpath(dirname($this->_docTitle)) . DIRECTORY_SEPARATOR;
+
+				if(isset($attrs['url']) && is_readable($source . $attrs['url'] )){
+					/* Creation of import folder */
+					$array  = array_filter(explode('/', $this->_tmpdir));
+					$tmpdir = SITEROOT . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
+					if( ! file_exists($tmpdir) ) mkdir($tmpdir);
+					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+
+					/* Getting file name */
+					copy($source . $attrs['url'], $tmpdir . basename($attrs['url']) );
+
+					$attrs['url'] = $tmpdir . basename($attrs['url']);
+				}else{
+					$id = basename($attrs['url']);
+					$nb = explode('-', $id);
+					// get images temporary url
+					if(isset($this->_images[$id]))
+						$attrs['url'] = $this->_images[$id];
+				}
 				$text .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType && 'figure' === $this->localName)
 				break;
 		}
-
 		return $text;
 	}
 
@@ -1731,12 +1730,14 @@ class TEIParser extends XMLReader
 	{
 	    /* Count the childs */
 	    $childs = array();
+	    $text   = "";
         foreach($this->expand()->childNodes as $child){
-            $childs[$child->nodeName]++;
+            if(!isset($childs[$child->nodeName])) $childs[$child->nodeName] = 0;
+        	$childs[$child->nodeName]++;
         }
 
-        if( (int) $childs['quote'] > 0 ){
-            if($attrs['quoteline']){
+        if( isset($childs['quote']) && (int) $childs['quote'] > 0 ){
+            if(isset($attrs['quoteline'])){
                 $text .= "<tr><td>{$attrs['n']}</td><td>";
                 $this->_tags[] = array("table", "td", "tr");
                 $attrs = $this->_parseAttributes();
@@ -1747,6 +1748,7 @@ class TEIParser extends XMLReader
             
         }elseif( (int) $childs['seg'] > 0 ) {
             $localattrs = $this->_parseAttributes();
+            if(!isset($localattrs['subtype'])) $localattrs['subtype'] = "";
             $text .= "<tr class=\"{$localattrs['subtype']}\"><td>{$attrs['n']}</td>";
             $this->_tags[] = 'tr';
         }else{
@@ -1756,14 +1758,15 @@ class TEIParser extends XMLReader
         
         $cols = 1;
         
-	    while($this->read()){
-	        if(parent::ELEMENT === $this->nodeType){
-	            if( "quote" == $this->localName){
-        	           $childchilds = array();
+        while($this->read()){
+            if(parent::ELEMENT === $this->nodeType){
+                if( "quote" == $this->localName){
+                       $childchilds = array();
                        foreach($this->expand()->childNodes as $child){
+                           if(!isset($childchilds[$child->nodeName])) $childchilds[$child->nodeName] = 0;
                            $childchilds[$child->nodeName]++;
                        }
-                       if($childchilds[seg]) $cols = $childchilds[seg];
+                       if($childchilds['seg']) $cols = $childchilds['seg'];
 
     	               $text .= $this->_getTagEquiv($this->localName, array('quoteline'   => true, 
                                                                      'n'           => $attrs['n'],
