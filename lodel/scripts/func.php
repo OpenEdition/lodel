@@ -288,7 +288,7 @@ function getoption($name)
 	if (!isset($options_cache)) {
 		$cache       = getCacheObject();
 		$options_cache = $cache->get('options_cache');
-	
+
 		if ($options_cache) {
 			eval("?>" . $options_cache);
 		} else {
@@ -363,7 +363,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	$id=$text['id'];
 	$contents=$text['contents'];
 	$status=$text['status'];
-	if (!$contents && C::get('visitor', 'lodeluser')) $contents="@".$name;
+	if (!$contents && (C::get('visitor', 'lodeluser') || C::get('debugMode', 'cfg'))) $contents="@".$name;
 }
 
 function getlodeltextcontents($name,$group="",$lang=-1)
