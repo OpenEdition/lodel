@@ -345,7 +345,7 @@ class GenericLogic extends Logic
 			if ($valid === true)	{
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
-					if (preg_match("/\/tmpdir-\d+\/[^\/]+$/", $value)) {
+					if (strpos(realpath($value), realpath(C::get('cacheDir','cfg'))) === 0) {
 						// add this file to the file to move.
 						$this->files_to_move[$name] = array ('filename' => $value, 'type' => $type, 'name' => $name);
 					}
@@ -473,7 +473,7 @@ class GenericLogic extends Logic
 	{
 		foreach ($files_to_move as $file)
 		{
-			$src = preg_match("`".SITEROOT."`", $file['filename']) ? $file['filename'] : SITEROOT.$file['filename'];
+			$src = ( strpos(realpath($file['filename']), realpath(C::get('cacheDir','cfg'))) === 0 ) ? $file['filename'] : SITEROOT.$file['filename'];
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
 				trigger_error("ERROR: error in move_files", E_USER_ERROR);
