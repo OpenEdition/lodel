@@ -306,7 +306,7 @@ class DAO
 	public function quote(&$vo)
 	{
 		foreach ($vo as $k => $v) {
-			if (isset ($v)){
+			if (isset ($v) && is_string($v)){
 				$vo->$k = addslashes($v);
 			}
 		}
