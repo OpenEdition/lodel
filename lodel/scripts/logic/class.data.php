@@ -644,7 +644,7 @@ class DataLogic
 			$tables = array();
 			foreach ($vos as $vo) {
 				$tables[] = lq('#_TP_'. $vo->class);
-				if ($vo->classtype == 'persons') {
+				if ($vo->classtype == 'persons' || $vo->classtype == 'entries') {
 					$tables[] = lq('#_TP_entities_'. $vo->class);
 				}
 			}
