@@ -308,7 +308,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'boolean' :
-		$text = $text ? 1 : 0;
+		$text = (boolean) ( empty($text) ? $default : ( $text ? 1 : 0 ) );
 		break;
 	case 'tplfile' :
 		$text = trim($text); // should be done elsewhere but to be sure...
