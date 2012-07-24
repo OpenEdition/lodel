@@ -1440,7 +1440,7 @@ class DataLogic
 		$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
 		foreach($vos as $vo) {
 			$this->_tables[$GLOBALS['tableprefix'].$vo->class] = false;
-			if ($vo->classtype == 'persons') {
+			if ($vo->classtype == 'persons' || $vo->classtype == 'entries') {
 				$this->_tables[$GLOBALS['tableprefix'].'entities_'. $vo->class] = false;
 			}
 		}
