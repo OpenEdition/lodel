@@ -12,7 +12,11 @@ if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
  */
 function updatedatepubli(&$context, $field){
 	if($context['do'] == "publish" && $context['status'] == 1){
-		$context['data']['datemisenligne'] = date("Y-m-d");
+		global $db;
+		$id = $context['id'];
+		$class = $context['class'];
+		$date = date("Y-m-d");
+		$db->execute(lq("UPDATE #_TP_$class SET datemisenligne='$date' WHERE identity=$id")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
