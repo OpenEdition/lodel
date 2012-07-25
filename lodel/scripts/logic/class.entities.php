@@ -238,14 +238,14 @@ class EntitiesLogic extends Logic
 		// get the class
 		$context['class'] = $db->getOne(lq("SELECT t.class from #_TP_entities as e, #_TP_types as t WHERE e.id=".$context['id']." AND e.idtype=t.id")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-		$this->_executeHooks($context, $error, 'pre');
-
 		$status = $context['status'];
 		$this->_isAuthorizedStatus($status);
 
 		if (!rightonentity ($status > 0 ? 'publish' : 'unpublish', $context)) {
 			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
 		}
+
+		$this->_executeHooks($context, $error, 'pre');
 
 		// get the entities to modify and ancillary information
 		$access = abs ($status) >= 32 ? 'protect' : 'write';
