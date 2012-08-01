@@ -52,7 +52,7 @@
  */
 
 if (is_readable(C::get('home', 'cfg').'textfunc_local.php'))
-	include 'textfunc_local.php';
+	include_once 'textfunc_local.php';
 
 # fonction largement reprises de SPIP
 
