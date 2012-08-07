@@ -106,7 +106,9 @@ class LodelException extends Exception
 		if(C::get('contactbug', 'cfg'))
 		{
 			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
-			$contenu = "Erreur sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
+			$contenu = "Erreur sur la page ";
+			if (isset($_SERVER['HTTP_HOST']))
+				$contenu .= "http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n";
 			$contenu .= (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code) ? '' : 'PHP ';
 			$contenu .= "Error ".(isset(self::$type[$this->code]) ? "(".self::$type[$this->code].")" : '')." in file '".$this->file."' on line ".$this->line." : ".$this->message;
 			@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
