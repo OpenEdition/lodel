@@ -602,25 +602,37 @@ function loop_mldate( &$context, $funcname, $arguments )
 	if (is_array($arguments['value'])) {
 		if (function_exists("code_before_$funcname"))
 			call_user_func("code_before_$funcname", $localcontext);
-		$context['nbresults'] = count($arguments['value']);
+		$localcontext['nbresults'] = count($arguments['value']);
 		foreach ($context['value'] as $key => $value) {
 			$localcontext['key'] = $key;
 			$localcontext['value'] = $value;
 			$localcontext['count'] = ++$count;
-			call_user_func("code_do_$funcname", $localcontext);
+			if ($localcontext['count'] == 1 && function_exists("code_dofirst_$funcname")) {
+				call_user_func("code_dofirst_$funcname", $localcontext);
+			}	elseif ($localcontext['count'] == $localcontext['nbresults'] && function_exists("code_dolast_$funcname")) {
+				call_user_func("code_dolast_$funcname", $localcontext);
+			}	else {
+				call_user_func("code_do_$funcname", $localcontext);
+			}
 		}
 		if (function_exists("code_after_$funcname"))
 			call_user_func("code_after_$funcname", $localcontext);
 	} elseif (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER)) {
 		if (function_exists("code_before_$funcname"))
 			call_user_func("code_before_$funcname", $localcontext);
-		$context['nbresults'] = count($results);
+		$localcontext['nbresults'] = count($results);
 		$localcontext['array'] = array_map(function($r){return $r[2];}, $results);
 		foreach ($results as $result) {
 			$localcontext['key'] = $result[1];
 			$localcontext['value'] = $result[2];
 			$localcontext['count'] = ++$count;
-			call_user_func("code_do_$funcname", $localcontext);
+			if ($localcontext['count'] == 1 && function_exists("code_dofirst_$funcname")) {
+				call_user_func("code_dofirst_$funcname", $localcontext);
+			}	elseif ($localcontext['count'] == $localcontext['nbresults'] && function_exists("code_dolast_$funcname")) {
+				call_user_func("code_dolast_$funcname", $localcontext);
+			}	else {
+				call_user_func("code_do_$funcname", $localcontext);
+			}
 		}
 		if (function_exists("code_after_$funcname"))
 			call_user_func("code_after_$funcname", $localcontext);
