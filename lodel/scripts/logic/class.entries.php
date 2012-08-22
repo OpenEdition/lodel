@@ -252,7 +252,7 @@ class EntriesLogic extends GenericLogic
 		// get the class 
 		$idtype = $context['idtype'];
 		$daotype = DAO::getDAO ("entrytypes");
-		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort");
+		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort,status");
 		if(!$votype)
 			trigger_error("ERROR: invalid idtype", E_USER_ERROR);
 		$class = $context['class'] = $votype->class;
@@ -261,7 +261,8 @@ class EntriesLogic extends GenericLogic
 
 		$id = isset($context['id']) ? $context['id'] : null;
 		$status = isset($context['status']) ? $context['status'] : null;
-
+		if ($votype->status == 21) // 21 == INDÉPUBLIABLE
+			$status = 21;
 		if (!$clean) {
 			if (!$this->validateFields($context,$error)) {
 				if ($status>-64) { // if the entity is imported and will be checked that's fine, let's continue

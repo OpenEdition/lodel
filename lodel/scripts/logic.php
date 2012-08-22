@@ -886,14 +886,13 @@ class Logic
 	 */
 	protected function _isAuthorizedStatus($status)
 	{
-	//echo $this->maintable . '<p>' . $status . '<p>';
 		switch ($this->maintable) {
-			case 'entities' :
+			case 'entities' : // -4: refusé, -3: proposé, -2: en édition
 				$this->_authorizedStatus = C::get('temporary', 'lodeluser') ? array(-3, -1) : array(-64, -8, -4, -3, -2, -1, 1, 8, 17, 24);
 				break;
 			case 'persons' :
-			case 'entries' :
-				$this->_authorizedStatus = array(-64, -32, -1, 1, 32);
+			case 'entries' : // 1: publié, 21: indépubliable, 32: protégé
+				$this->_authorizedStatus = array(-64, -32, -1, 1, 21, 32);
 				break;
 			case 'texts' :
 				$this->_authorizedStatus = array(-1, 1, 2);

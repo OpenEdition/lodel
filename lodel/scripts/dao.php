@@ -248,7 +248,8 @@ class DAO
 		if (isset($vo->$idfield) && $vo->$idfield > 0 && !$forcecreate) { // Update - Mise à jour
 			$update = ''; //critère de mise à jour
 			if (isset ($vo->protect))	{ // special processing for the protection
-				$update = 'status=(2*(status>0)-1)'. ($vo->protect ? '*32' : ''); //reglage du status
+				if (!$vo->status == 21)
+					$update = 'status=(2*(status>0)-1)'. ($vo->protect ? '*32' : ''); //reglage du status sauf si INDÉPUBLIALBLE
 				unset ($vo->status);
 				unset ($vo->protect);
 			}
@@ -267,7 +268,8 @@ class DAO
 			}
 		}	else	{ // new  - Ajout
 			if (isset ($vo->protect))	{ // special processing for the protection
-				$vo->status = ($vo->status > 0 ? 1 : -1) * ($vo->protect ? 32 : 1);
+				if (!$vo->status == 21) // 21 == INDÉPUBLIALBLE
+					$vo->status = ($vo->status > 0 ? 1 : -1) * ($vo->protect ? 32 : 1);
 				unset ($vo->protect);
 			}
 			$insert = ''; //condition SQL pour INSERT

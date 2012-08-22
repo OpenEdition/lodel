@@ -313,13 +313,14 @@ class EntitiesLogic extends Logic
 
 		// select all the items not in entities_$table
 		// those with status<=1 must be deleted
-		// thise with status> must be depublished
+		// those with status> must be depublished
+		// SAUF status == 21 == INDÉPUBLIABLE
 		foreach(array_keys($idrelation) as $nature) {
 			$idlist=join(",",$idrelation[$nature]);
 			$table=$nature=='G' ? "persons" : "entries";
 			$db->execute(lq("DELETE FROM #_TP_relations WHERE idrelation IN (".$idlist.")")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-			$result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL AND status!=21")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	
 			$idstodelete=array();
 			$idstounpublish=array();
@@ -396,8 +397,8 @@ class EntitiesLogic extends Logic
 				}
 				if (!empty($ids[$nature])) {
 					$idlist = join(',', array_keys($ids[$nature]));
-					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités :
-					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist)")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+					// dépublie les entrées ou personnes qui n'ont pas été publiés par d'autres entités (SAUF status==21==INDÉPUBLIABLE):
+					$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN ($idlist) AND status!=21")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
 			} // status < 0
 		} // foreach
