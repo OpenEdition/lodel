@@ -928,11 +928,9 @@ class Entities_EditionLogic extends GenericLogic
 
 			if ($idstodelete) {
 				$logic = Logic::getLogic($table);
-				foreach ($idstodelete as $id) {
-					$localcontext = array('id' => $id, 'idrelation' => array());
-					$err = array();
-					$logic->deleteAction($localcontext, $err);
-				}
+				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
+				$err = array();
+				$logic->deleteAction($localcontext, $err);
 			}
 
 			if ($idstounpublish) {
