@@ -858,7 +858,7 @@ class Entities_EditionLogic extends GenericLogic
 	 *
 	 * Suppression des personnes ou entrées d'indexs liées à une entité
 	 *
-	 * @param array $ids les identifiants des objets liés
+	 * @param mixed $ids array d'id des entitées, int de l'entitée ou string critère WHERE SQL de sélection des entitées dans la table relation
 	 * @param string $nature la nature des objets liés
 	 */
 	//most of this should be transfered in the entries and persons logic
@@ -872,7 +872,7 @@ class Entities_EditionLogic extends GenericLogic
 		} else {
 			$criteria = $ids;
 		}
-        	$checkjointtable = false;
+		$checkjointtable = false;
 		if ($nature == 'E') {
 			$naturecriteria = " AND nature='E'";
 		} elseif ($nature == 'G') {
@@ -880,12 +880,13 @@ class Entities_EditionLogic extends GenericLogic
 			$checkjointtable = true;
 		} elseif (strlen ($nature)>1) {
 			$naturecriteria = " AND nature='". $nature. "'";
-			$checkjointtable = false;
 		} else  {
 			$naturecriteria = " AND nature IN ('G','E') OR LENGTH(nature)>1";
 			$checkjointtable = true;
 		}
 
+		// Effacer les attributs des relations qui vont être effacé
+		// TODO: il manque les attributs de relation des indexs là !!!!!
 		if ($checkjointtable) {
 		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
 		// get the joint table first
@@ -937,7 +938,7 @@ class Entities_EditionLogic extends GenericLogic
 			if ($idstounpublish) {
 				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
-		} //end of foreach tables
+		}
 	}
 
 
