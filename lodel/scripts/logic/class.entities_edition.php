@@ -697,8 +697,9 @@ class Entities_EditionLogic extends GenericLogic
 		if ($vo->status >= 1) {
 			$status = 1;
 		}
-		//Mise à jour des softs relations
-		Logic::getLogic('entities')->_publishSoftRelation(array($vo->id), $vo->status);
+
+		$entitiesLogic = Logic::getLogic('entities');
+		$entitiesLogic->_publishSoftRelation(array($vo->id), $vo->status); //Mise à jour des softs relations
 
 		// Entries and Persons
 		foreach (array ('entries' => 'E', 'persons' => 'G') as $table => $nature) {
@@ -759,7 +760,7 @@ class Entities_EditionLogic extends GenericLogic
 
 			// delete relation not used
 			$criteria = $active_relations ? "AND idrelation NOT IN ('". join ("','", $active_relations). "')" : "";
-			$this->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
+			$entitiesLogic->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
 
 		// Entities
@@ -791,7 +792,7 @@ class Entities_EditionLogic extends GenericLogic
 					}
 				}
 				$criteria = $idrelations ? "AND idrelation NOT IN ('". join("','", $idrelations). "')" : "";
-				$this->_deleteSoftRelation("id1='". $vo->id. "' ". $criteria, $name);
+				$entitiesLogic->_deleteSoftRelation("id1='". $vo->id. "' ". $criteria, $name);
 			} // for each entities fields
 		}
 
@@ -852,94 +853,6 @@ class Entities_EditionLogic extends GenericLogic
 			}
 		}
 	} //end of function
-
-	/**
-	 * Suppression des relations dites 'soft'
-	 *
-	 * Suppression des personnes ou entrées d'indexs liées à une entité
-	 *
-	 * @param mixed $ids array d'id des entitées, int de l'entitée ou string critère WHERE SQL de sélection des entitées dans la table relation
-	 * @param string $nature la nature des objets liés
-	 */
-	//most of this should be transfered in the entries and persons logic
-	protected function _deleteSoftRelation ($ids, $nature = '')
-	{
-		global $db;
-		if (is_array ($ids)) {
-			$criteria = "id1 IN ('".join ("','", $ids). "')";
-		} elseif (is_numeric ($ids)) {
-			$criteria = "id1='". $ids. "'";
-		} else {
-			$criteria = $ids;
-		}
-		$checkjointtable = false;
-		if ($nature == 'E') {
-			$naturecriteria = " AND nature='E'";
-		} elseif ($nature == 'G') {
-			$naturecriteria = " AND nature='G'";
-			$checkjointtable = true;
-		} elseif (strlen ($nature)>1) {
-			$naturecriteria = " AND nature='". $nature. "'";
-		} else  {
-			$naturecriteria = " AND nature IN ('G','E') OR LENGTH(nature)>1";
-			$checkjointtable = true;
-		}
-
-		// Effacer les attributs des relations qui vont être effacé
-		// TODO: il manque les attributs de relation des indexs là !!!!!
-		if ($checkjointtable) {
-		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
-		// get the joint table first
-			$dao = DAO::getDAO('relations');
-			$vos = $dao->findMany($criteria. $naturecriteria, '', 'idrelation');
-			$ids = array();
-			foreach ($vos as $vo) { 
-				$ids[]= $vo->idrelation; 
-			}
-			if ($ids) {
-				// getting the tables name from persons and persontype would be to long. Let's suppose
-				// the number of classes are low and it is worse trying to delete in all the tables
-				$dao    = DAO::getDAO('classes');
-				$tables = $dao->findMany("classtype='persons'", '', 'class');
-				$where  = "idrelation IN ('".join("','",$ids)."')";
-				foreach($tables as $table) {
-					$db->execute(lq("DELETE FROM #_TP_entities_". $table->class. " WHERE ". $where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				}
-			}
-		}
-		$db->execute(lq("DELETE FROM #_TP_relations WHERE ". $criteria. $naturecriteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-
-		// select all the items not in entities_$table
-		// those with status<=1 must be deleted
-		// those with status> must be depublished
-		// SAUF status == 21 == INDÉPUBLIABLE
-		foreach(array('entries', 'persons') as $table) {
-			$result = $db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL AND status!=21")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			$idstodelete    = array();
-			$idstounpublish = array();
-			while (!$result->EOF) {
-				if (abs ($result->fields['status']) == 1) {
-					$idstodelete[]    = $result->fields['id']; 
-				} else {
-					$idstounpublish[] = $result->fields['id']; 
-				}
-				$result->MoveNext();
-			}
-
-			if ($idstodelete) {
-				$logic = Logic::getLogic($table);
-				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
-				$err = array();
-				$logic->deleteAction($localcontext, $err);
-			}
-
-			if ($idstounpublish) {
-				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			}
-		}
-	}
-
-
 
 	/**
 	 * Récupère le groupe utilisateur d'une nouvelle entité

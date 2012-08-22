@@ -287,64 +287,90 @@ class EntitiesLogic extends Logic
 		return '_back';
 	}
 
-	
-	
-
 	/**
-	 * Suppressions des relations entre une entité et des persons et des entries
+	 * Suppression des relations dites 'soft'
 	 *
-	 * Dans la table relations, le champ nature = G ou E (G = gens, E=entrées)
-	 * @access private
-	 * @param array $ids les identifiants numériques des entités
+	 * Suppression des personnes ou entrées d'indexs liées à une entité
+	 *
+	 * @param mixed $ids array d'id des entitées, int de l'entitée ou string critère WHERE SQL de sélection des entitées dans la table relation
+	 * @param string $nature la nature des objets liés
 	 */
-	protected function _deleteSoftRelation($ids) 
+	//most of this should be transfered in the entries and persons logic
+	public function _deleteSoftRelation ($ids, $nature = '')
 	{
-		// most of this should be transfered in the entries and persons logic
 		global $db;
-		$criteria = 'id1 '. sql_in_array($ids);
-		$result = $db->execute(lq("SELECT idrelation,nature FROM #_TP_relations WHERE $criteria AND nature IN ('G','E')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		$idrelation = array();
-		while(!$result->EOF) {
-			$nature = $result->fields['nature'];
-			if(!isset($idrelation[$nature])) $idrelation[$nature] = array();
-			$idrelation[$nature][] = $result->fields['idrelation'];
-			$result->MoveNext();
+		if (is_array ($ids)) {
+			$criteria = "id1 IN ('".join ("','", $ids). "')";
+		} elseif (is_numeric ($ids)) {
+			$criteria = "id1='". $ids. "'";
+		} else {
+			$criteria = $ids;
 		}
+		$checkjointtable = false;
+		if ($nature == 'E') {
+			$naturecriteria = " AND nature='E'";
+		} elseif ($nature == 'G') {
+			$naturecriteria = " AND nature='G'";
+			$checkjointtable = true;
+		} elseif (strlen ($nature)>1) {
+			$naturecriteria = " AND nature='". $nature. "'";
+		} else  {
+			$naturecriteria = " AND nature IN ('G','E') OR LENGTH(nature)>1";
+			$checkjointtable = true;
+		}
+
+		// Effacer les attributs des relations qui vont être effacé
+		// TODO: il manque les attributs de relation des indexs là !!!!!
+		if ($checkjointtable) {
+		// with Mysql 4.0 we could do much more rapid stuff using multiple delete. How is it supported by PostgreSQL, I don't not... so brute force:
+		// get the joint table first
+			$dao = DAO::getDAO('relations');
+			$vos = $dao->findMany($criteria. $naturecriteria, '', 'idrelation');
+			$ids = array();
+			foreach ($vos as $vo) { 
+				$ids[]= $vo->idrelation; 
+			}
+			if ($ids) {
+				// getting the tables name from persons and persontype would be to long. Let's suppose
+				// the number of classes are low and it is worse trying to delete in all the tables
+				$dao    = DAO::getDAO('classes');
+				$tables = $dao->findMany("classtype='persons'", '', 'class');
+				$where  = "idrelation IN ('".join("','",$ids)."')";
+				foreach($tables as $table) {
+					$db->execute(lq("DELETE FROM #_TP_entities_". $table->class. " WHERE ". $where)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				}
+			}
+		}
+		$db->execute(lq("DELETE FROM #_TP_relations WHERE ". $criteria. $naturecriteria)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		// select all the items not in entities_$table
 		// those with status<=1 must be deleted
 		// those with status> must be depublished
 		// SAUF status == 21 == INDÉPUBLIABLE
-		foreach(array_keys($idrelation) as $nature) {
-			$idlist=join(",",$idrelation[$nature]);
-			$table=$nature=='G' ? "persons" : "entries";
-			$db->execute(lq("DELETE FROM #_TP_relations WHERE idrelation IN (".$idlist.")")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-
-			$result=$db->execute(lq("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL AND status!=21")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	
-			$idstodelete=array();
-			$idstounpublish=array();
+		foreach(array('entries', 'persons') as $table) {
+			$result = $db->execute (lq ("SELECT id,status FROM #_TP_$table LEFT JOIN #_TP_relations ON id2=id WHERE id1 is NULL AND status!=21")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$idstodelete    = array();
+			$idstounpublish = array();
 			while (!$result->EOF) {
-				if (abs($result->fields['status'])==1) {
-					$idstodelete[]=$result->fields['id']; 
+				if (abs ($result->fields['status']) == 1) {
+					$idstodelete[]    = $result->fields['id']; 
 				} else {
-					$idstounpublish[]=$result->fields['id']; 
+					$idstounpublish[] = $result->fields['id']; 
 				}
 				$result->MoveNext();
 			}
 
 			if ($idstodelete) {
-				$logic=Logic::getLogic($table);
-				$localcontext=array("id"=>$idstodelete,"idrelation"=>$idrelation[$nature]);
-				$localerror=array();
-				$logic->deleteAction($localcontext,$localerror);
+				$logic = Logic::getLogic($table);
+				$localcontext = array('id' => $idstodelete, 'idrelation' => array());
+				$err = array();
+				$logic->deleteAction($localcontext, $err);
 			}
 
 			if ($idstounpublish) {
-			// should be in $table dao or logic
-			$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR); 
+				$db->execute(lq("UPDATE #_TP_$table SET status=-abs(status) WHERE id IN (". join(",", $idstounpublish). ") AND status>=32")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
-		} // tables
+		}
 	}
 
 	/**
