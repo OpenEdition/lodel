@@ -191,7 +191,7 @@ class TableFieldsLogic extends Logic
 				break;
 			case 'entries':
 			case 'entities_entries':
-				$g_namefields = array('Index key');
+				$g_namefields = array('Index key','Screen name');
 				break;
 			default:
 				trigger_error("class type ?",E_USER_ERROR);

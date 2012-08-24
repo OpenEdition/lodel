@@ -231,6 +231,15 @@ class EntriesLogic extends GenericLogic
 		if(!isset($context['type']) || !is_array($context['type']))
 			$context['type'] = array();
 
+		$daotablefields = DAO::getDAO("tablefields");
+		$g_names = $daotablefields->findMany("class='". $votype->class. "' AND status>0 AND g_name!=''", "", "name,g_name");
+		foreach ($g_names as $g_name) {
+			$name = str_replace(' ', '_', $g_name->g_name);
+			$context[$name] = $g_name->name;
+		}
+		if (!isset($context['screen_name']))
+			$context['screen_name'] = $context['index_key'];
+
 		$this->_populateContext ($votype, $context['type']);
 		return '_ok';
 	}

@@ -172,8 +172,8 @@
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall, external">
-	<IF COND="[#EXTERNAL]"><LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET>
-	<ELSE/><LET VAR="table">#_TP_entries</LET>
+	<IF COND="[#EXTERNAL]"><LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET><LET VAR="attributes_table">`[#DB_EXT]`.#_TP_[#TYPE.CLASS]</LET>
+	<ELSE/><LET VAR="table">#_TP_entries</LET><LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
 	</IF>
 	<IF COND="[#SORT] EQ 'sortkey'">
 		<IF COND="[#LISTALL]">	
@@ -182,7 +182,7 @@
 		<LET VAR="table">entries</LET>
 		<LOOP NAME="alphabetSpec">
 			<LET VAR="lettresql">[#LETTRE|replace("'", "\'")]</LET>
-			<LOOP NAME="series_sortkey_listall" TABLE="[#CURTABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]">
+			<LOOP NAME="series_sortkey_listall" TABLE="[#CURTABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]">
 				<BEFORE>
 					<h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
 					<ul class="listEntities">
@@ -198,7 +198,7 @@
 						<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
 					</div>
 					<div class="document">
-						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
+						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
 						<IF COND="[#TYPE.EXTERNALALLOWED]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
@@ -217,7 +217,7 @@
 		</LOOP>
 		<ELSE />
 		<LET VAR="lettresql"><IF COND="[#LETTER]">[#LETTER|replace("'", "\'")]<ELSE />A</IF></LET>
-		<LOOP NAME="series_sortkey" TABLE="[#TABLE]" WHERE="idtype='[#TYPE.ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
+		<LOOP NAME="series_sortkey" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND upper(substring(sortkey,1,1)) = '[#LETTRESQL]'" ORDER="[#SORT]" SPLIT="30">
 			<BEFORE>
 				<h2 id="[#LETTRESQL|stripslashes]">
 					<a href="#alphabet">[#LETTRESQL|stripslashes]</a>
@@ -236,7 +236,7 @@
 				<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
 				</div>
 				<div class="document">
-					<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
+					<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
 					<IF COND="[#TYPE.EXTERNALALLOWED]">
 					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
@@ -255,7 +255,7 @@
 		</LOOP>
 		</IF>
 	<ELSEIF COND="[#SORT] EQ 'id'" />
-			<LOOP NAME="series_id" TABLE="[#TABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id" SPLIT="30">
+			<LOOP NAME="series_id" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="id" SPLIT="30">
 				<BEFORE>
 					<ul class="listEntities">
 					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
@@ -271,7 +271,7 @@
 					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
 					</div>
 					<div class="document">
-						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
+						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
 						<IF COND="[#TYPE.EXTERNALALLOWED]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
@@ -290,7 +290,7 @@
 				</ALTERNATIVE>
 			</LOOP>
 	<ELSEIF COND="[#SORT] EQ 'rank'" />
-			<LOOP NAME="series_rank" TABLE="[#TABLE]"  WHERE="idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
+			<LOOP NAME="series_rank" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
 				<BEFORE>
 					<IF COND="[#FOLDER]">
 						<li class="unfoldedentities"><ul class="listEntities">
@@ -310,7 +310,7 @@
 					<FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
 					</div>
 					<div class="document">
-						<span class="titre_document">[#G_NAME|nbsp]</span>&nbsp;
+						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
 						<IF COND="[#TYPE.EXTERNALALLOWED]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
