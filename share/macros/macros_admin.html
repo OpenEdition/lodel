@@ -392,14 +392,14 @@
 </DEFFUNC>
 
 <DEFMACRO NAME="CHANGE_ENTRIES_STATUS">
-	<IF COND="([#STATUS] EQ 1) OR ([#STATUS] EQ 32)">
+	<IF COND="([#STATUS] EQ 1) OR ([#STATUS] EQ 21) OR ([#STATUS] EQ 32)">
 		<IF COND="[#LODELUSER.EDITOR]">
 			<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a></span>
 		<ELSE/>
 			<span class="item inactif">[@EDITION.UNPUBLISH]</span>
 		</IF>	
 	<ELSE/>
-		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -32) ">
+		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -21) OR ([#STATUS] EQ -32) ">
 	 		<IF COND="[#LODELUSER.EDITOR]">
 				<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]">[@EDITION.PUBLISH]</a></span>
 			<ELSE/>
