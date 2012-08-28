@@ -346,7 +346,9 @@ class GenericLogic extends Logic
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
 					// add this file to the file to move.
-					$this->files_to_move[$name] = array ('filename' => $value, 'type' => $type, 'name' => $name);
+					if ($value) {
+						$this->files_to_move[$name] = array ('filename' => $value, 'type' => $type, 'name' => $name);
+					}
 				}
 			}	elseif (is_string($valid))	{
 				$error[$name] = $valid; // error
