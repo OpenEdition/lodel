@@ -592,25 +592,6 @@ class siteManage {
 	}
 
 	/**
-	 * Gestion des erreurs de création des tables
-	 *
-	 * Cette fonction gère les erreurs retournées lors de la création des tables
-	 *
-	 * @param var &$context contexte du site
-	 * @param var $funcname nom de la fonction à appeller (nom = code_do_$funcname)
-	 */	
-	function loop_errors_createtables(&$context, $funcname)
-	{
-		$error = C::get('error_createtables');
-		do {
-            		$localcontext = array();
-			$localcontext['command'] = array_shift($error);
-			$localcontext['error']   = array_shift($error);
-			call_user_func("code_do_$funcname", array_merge(C::getC(), $localcontext));
-		} while ($error);
-	}
-
-	/**
 	 * Création des tables
 	 *
 	 * Cette fonction crée les tables lors de l'installation
@@ -974,4 +955,24 @@ class siteManage {
 		}
 	}
 }
+
+/**
+	* Gestion des erreurs de création des tables
+	*
+	* Cette fonction gère les erreurs retournées lors de la création des tables
+	*
+	* @param var &$context contexte du site
+	* @param var $funcname nom de la fonction à appeller (nom = code_do_$funcname)
+	*/	
+function loop_errors_createtables(&$context, $funcname)
+{
+	$error = C::get('error_createtables');
+	do {
+				$localcontext = array();
+		$localcontext['command'] = array_shift($error);
+		$localcontext['error']   = array_shift($error);
+		call_user_func("code_do_$funcname", array_merge(C::getC(), $localcontext));
+	} while ($error);
+}
+
 ?>
