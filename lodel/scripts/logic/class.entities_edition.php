@@ -191,23 +191,38 @@ class Entities_EditionLogic extends GenericLogic
 				}
 				$varname = $context['varname'];
 
-				
 				if (empty($context['idtype']) || !is_numeric($context['idtype'])) {
 					return;
 				}
+
+				global $db;
+				$external = isset($context['external']) && $context['external'] ? true : false;
+
+				if($external) {
+					$entries_name = 'externalentries';
+					$db->SelectDB(DATABASE.'_'.$context['matches'][1][0]);
+				} else $entries_name = 'entries';
+
 				$idtype = $context['idtype'];
 				$votype = DAO::getDAO("entrytypes")->getById($idtype, "id,sort,flat");
 				if (!$votype) {
 					trigger_error("ERROR: internal error in loop_entries_in_entities", E_USER_ERROR);
 				}
-				if (isset($context['entries'][$idtype]) && is_array($context['entries'][$idtype])) {
-					foreach ($context['entries'][$idtype] as $entry) {
+
+				if($external) $idtype = $context['matches'][1][0].'.'.$idtype;
+
+				$checkarr = array();
+				if (isset($context[$entries_name][$idtype]) && is_array($context[$entries_name][$idtype])) {
+					foreach ($context[$entries_name][$idtype] as $entry) {
 						$checkarr[] = &$entry['g_name'];
 					}
 				}
 
 				$context['id'] = 0; // start by the parents
 				loop_entries_in_entities_rec ($context, $funcname, $votype, $checkarr);
+				if($external) {
+					usecurrentdb();
+				}
 			}
 		}
 		if(!function_exists('loop_entries_in_entities_rec'))
