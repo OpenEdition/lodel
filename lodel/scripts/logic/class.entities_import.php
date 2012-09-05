@@ -90,7 +90,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function importAction (&$context, &$error) 
+	public function importAction (&$context, &$error, $delete = true) 
 	{
 		global $db;
 		$this->context=&$context;
@@ -109,6 +109,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$context['idtype'] = $task['idtype'];
 		$context['idparent'] = $task['idparent'];
 		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
+		$context['externalentries'] = !empty($contents['contents']['externalentries']) ? $contents['contents']['externalentries'] : array();
 		$context['persons'] = !empty($contents['contents']['persons']) ? $contents['contents']['persons'] : array();
 		$context['entities'] = !empty($contents['contents']['entities']) ? $contents['contents']['entities'] : array();
 		unset($contents['contents']['entities'], $contents['contents']['persons'], $contents['contents']['entries']);
@@ -122,14 +123,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
 		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
-		@unlink ($sourcefile);
+		if($delete) @unlink ($sourcefile);
 		if(isset($source))
 		{
 			copy ($source, $sourcefile);
 			@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
-		@unlink ($sourcefileodt);
+		if($delete) @unlink ($sourcefileodt);
 		if(isset($odt))
 		{
 			copy ($odt, $sourcefileodt);
@@ -138,7 +139,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 		$this->_fixImagesPath($tei);
 
-		@unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
+		if($delete) @unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		copy($tei, SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
 		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));
 // 		class_exists('XMLImportParser', false) || include "xmlimport.php";
@@ -177,15 +178,16 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				@rmdir($rep);
 			}
 		}
-		
-		// remove files from import
-		$rep = dirname($tei);
-
-		// first, contents of unzipped source
-		removefilesfromimport($rep);
-		$rep = array_filter(explode('/', $rep));
-		// then images
-		removefilesfromimport(SITEROOT.'/docannexe/image/'.end($rep));
+		if($delete){
+			// remove files from import
+			$rep = dirname($tei);
+	
+			// first, contents of unzipped source
+			removefilesfromimport($rep);
+			$rep = array_filter(explode('/', $rep));
+			// then images
+			removefilesfromimport(SITEROOT.'/docannexe/image/'.end($rep));
+		}
 		
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
@@ -218,7 +220,9 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			}
 		}
 
-		file_put_contents($tei, $dom->saveXML());
+		@unlink($tei);
+		@file_put_contents($tei, $dom->saveXML());
+		@chmod($tei, 0664);
 	}
 	/**
 	 * method to move img link when the new id is known
@@ -255,6 +259,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$this->_checkdir ($dir);
 					}
 					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
+
 					$ok = @copy ($imgfile, SITEROOT.$newimgfile);
 					@unlink ($imgfile);
 					if ($ok) { // ok, the image has been correctly copied
