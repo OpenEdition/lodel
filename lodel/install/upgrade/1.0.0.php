@@ -153,7 +153,6 @@ foreach($correspondances as $k => $v)
 	$sql[] = lq("UPDATE #_TP_tablefields SET otx=".$db->quote($k)." WHERE name=".$db->quote(current($v))." AND class=".$db->quote(end($v)));
 }
 
-
 echo '<pre>';
 
 print_r($sql);
