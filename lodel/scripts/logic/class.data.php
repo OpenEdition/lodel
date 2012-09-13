@@ -683,13 +683,13 @@ class DataLogic
 
 	/**
 	 * Dump SQL d'un site donné
-	 * @access private
+	 * @access protected
 	 * @param string $site le nom du site
 	 * @param string $outfile le fichier dans lequel écrire le dump SQL
 	 * @param resource $fh le descripteur de fichier (par défaut 0)
 	 * @param array $error tableau des erreurs
 	 */
-	private function _dump($site, $outfile, &$error, $fh = 0)
+	protected function _dump($site, $outfile, &$error, $fh = 0)
 	{
 		global $db;
         	$closefh = false;
@@ -730,11 +730,11 @@ class DataLogic
 	 * Execute un dump (fichier SQL) pointé par $url
 	 *
 	 * @todo vérifier que cette fonction ne prends pas trop de place en mémoire.
-	 * @access private
+	 * @access protected
 	 * @param string $url le fichier SQL
 	 * @param boolean $ignoreerrors. false par défaut
 	 * @return true si le dump a bien été executé	 */
-	private function _execute_dump($url, $ignoreerrors = false) 
+	protected function _execute_dump($url, $ignoreerrors = false) 
 	{
 		global $db;
 		$file_content = file($url);
@@ -762,7 +762,7 @@ class DataLogic
 	 *
 	 * @param array $context le contexte passé par référence.
 	 */
-	private function _checkFiles(&$context)
+	protected function _checkFiles(&$context)
 	{
 		$dirs = array( 'lodel/sources' );
 		foreach ($dirs as $dir) {
