@@ -51,6 +51,8 @@ class DataCLI extends DataLogic {
 	}
 	
 	public function importSite($site, $source){
+		global $db;
+		$db->SelectDB(DATABASE . "_{$site}");
 
 		$sqlfile = tempnam(tmpdir(), 'lodelimport_');
 		$accepteddirs = array('lodel/sources', 'lodel/icons', 'docannexe/file', 'docannexe/image', 'docannexe/fichier');
