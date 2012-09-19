@@ -238,7 +238,7 @@ class EntriesLogic extends GenericLogic
 			$name = str_replace(' ', '_', $g_name->g_name);
 			$context[$name] = $g_name->name;
 		}
-		if (!isset($context['screen_name']))
+		if (!isset($context['screen_name']) && isset($context['index_key']))
 			$context['screen_name'] = $context['index_key'];
 
 		$this->_populateContext ($votype, $context['type']);
