@@ -688,7 +688,7 @@ class View
 
 		if(!C::get('redactor', 'lodeluser')) 
 		{
-			if(C::get('contactbug', 'cfg'))
+			if(C::get('contactbug', 'cfg') && (bool)C::get('debugMode', 'cfg'))
 			{
 				$sujet = "[BUG] LODEL - ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb']." / ".$this->_site;
 				@mail(C::get('contactbug', 'cfg'), $sujet, $err);
