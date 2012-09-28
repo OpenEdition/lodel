@@ -916,7 +916,12 @@ class Logic
 	 * 
 	 */
 	protected function _executeHooks(&$context, &$error, $prefix='pre'){
+		global $db;
 		require_once "hookfunc.php";
+
+		if(!isset($context['class'])){
+			$context['class'] = $db->GetOne(lq("SELECT class FROM #_TP_entities LEFT JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) WHERE #_TP_entities.id = " . $db->Quote($context['id'])));
+		}
 
 		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
 
