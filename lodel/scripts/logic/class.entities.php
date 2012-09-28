@@ -187,6 +187,9 @@ class EntitiesLogic extends Logic
 			return 'delete_confirm';
 		}
 
+		/* Éxécution des hooks */
+		$this->_executeHooks($context, $error, 'pre');
+
 		// delete all the entities
 		$this->_getMainTableDAO()->deleteObject($ids);
 
@@ -208,6 +211,9 @@ class EntitiesLogic extends Logic
 
 		// delete the entity from the search_engine table
 		$db->execute(lq("DELETE FROM #_TP_search_engine WHERE identity ".sql_in_array($ids))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+		/* Éxécution des hooks */
+		$this->_executeHooks($context, $error, 'post');
 
 		update();
 		return '_back';
