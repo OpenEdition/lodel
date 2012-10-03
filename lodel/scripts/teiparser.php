@@ -342,6 +342,7 @@ class TEIParser extends XMLReader
 		$odt = (string) $odt;
 		$this->_docTitle = (string) $filename;
         $this->_tmpdir   = (string) $tmpdir;
+        var_dump($this->_tmpdir);
 		if(!empty($odt))
 		{
 			$this->_extractImages($odt, $tmpdir);
@@ -1636,7 +1637,7 @@ class TEIParser extends XMLReader
 				$attrs = $this->_parseAttributes();
 				$nb    = array();
 				$id    = "";
-				$source = realpath(dirname($this->_docTitle)) . DIRECTORY_SEPARATOR;
+				$source = realpath($this->_tmpdir) . DIRECTORY_SEPARATOR;
 
 				if(isset($attrs['url']) && is_readable($source . $attrs['url'] )){
 					/* Creation of import folder */
