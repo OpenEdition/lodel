@@ -52,6 +52,7 @@
  * @since Fichier ajouté dans la version 0.8
  */
 //contient la liste des langues disponibles pour installer lodel
+// Tiré de http://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1
 $GLOBALS['installlanguages'] = array(
 #			    "AA"=> "Afaraf",
 #			    "AB"=> "Аҧсуа",
