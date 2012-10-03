@@ -309,7 +309,7 @@ class EntitiesLogic extends Logic
 			$criteria = "id1 IN ('".join ("','", $ids). "')";
 		} elseif (is_numeric ($ids)) {
 			$criteria = "id1='". $ids. "'";
-		} else {
+		} elseif ( strlen($ids) > 0 ) {
 			$criteria = $ids;
 		}
 		$checkjointtable = false;
@@ -321,7 +321,7 @@ class EntitiesLogic extends Logic
 		} elseif (strlen ($nature)>1) {
 			$naturecriteria = " AND nature='". $nature. "'";
 		} else  {
-			$naturecriteria = " AND nature IN ('G','E') OR LENGTH(nature)>1";
+			$naturecriteria = " AND ( nature IN ('G','E') OR LENGTH(nature)>1 )";
 			$checkjointtable = true;
 		}
 
