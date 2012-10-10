@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,19 +33,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
+/**
+ * Base class for database-based caches
+ *
+ * @package SimplePie
+ * @subpackage Caching
+ */
 abstract class SimplePie_Cache_DB implements SimplePie_Cache_Base
 {
-	protected static function prepare_simplepie_object_for_cache(&$data)
+	/**
+	 * Helper for database conversion
+	 *
+	 * Converts a given {@see SimplePie} object into data to be stored
+	 *
+	 * @param SimplePie $data
+	 * @return array First item is the serialized data for storage, second item is the unique ID for this item
+	 */
+	protected static function prepare_simplepie_object_for_cache($data)
 	{
 		$items = $data->get_items();
 		$items_by_id = array();

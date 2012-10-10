@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,24 +33,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
+/**
+ * Caches data to a MySQL database
+ *
+ * Registered for URLs with the "mysql" protocol
+ *
+ * For example, `mysql://root:password@localhost:3306/mydb?prefix=sp_` will
+ * connect to the `mydb` database on `localhost` on port 3306, with the user
+ * `root` and the password `password`. All tables will be prefixed with `sp_`
+ *
+ * @package SimplePie
+ * @subpackage Caching
+ */
 class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 {
+	/**
+	 * PDO instance
+	 *
+	 * @var PDO
+	 */
 	protected $mysql;
+
+	/**
+	 * Options
+	 *
+	 * @var array
+	 */
 	protected $options;
+
+	/**
+	 * Cache ID
+	 *
+	 * @var string
+	 */
 	protected $id;
 
-	public function __construct($url, $name, $extension)
+	/**
+	 * Create a new cache object
+	 *
+	 * @param string $location Location string (from SimplePie::$cache_location)
+	 * @param string $name Unique ID for the cache
+	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+	 */
+	public function __construct($location, $name, $type)
 	{
 		$this->options = array(
 			'user' => null,
@@ -62,7 +96,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 				'prefix' => '',
 			),
 		);
-		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($url));
+		$this->options = array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
 
 		// Path is prefixed with a "/"
 		$this->options['dbname'] = substr($this->options['path'], 1);
@@ -77,7 +111,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return;
 		}
 
-		$this->id = $name . $extension;
+		$this->id = $name . $type;
 
 		if (!$query = $this->mysql->query('SHOW TABLES'))
 		{
@@ -110,6 +144,12 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Save data to the cache
+	 *
+	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 * @return bool Successfulness
+	 */
 	public function save($data)
 	{
 		if ($this->mysql === null)
@@ -117,7 +157,7 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 			return false;
 		}
 
-		if (is_a($data, 'SimplePie'))
+		if ($data instanceof SimplePie)
 		{
 			$data = clone $data;
 
@@ -243,6 +283,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		return false;
 	}
 
+	/**
+	 * Retrieve the data saved to the cache
+	 *
+	 * @return array Data for SimplePie::$data
+	 */
 	public function load()
 	{
 		if ($this->mysql === null)
@@ -316,6 +361,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		return false;
 	}
 
+	/**
+	 * Retrieve the last modified time for the cache
+	 *
+	 * @return int Timestamp
+	 */
 	public function mtime()
 	{
 		if ($this->mysql === null)
@@ -335,6 +385,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Set the last modified time to the current time
+	 *
+	 * @return bool Success status
+	 */
 	public function touch()
 	{
 		if ($this->mysql === null)
@@ -355,6 +410,11 @@ class SimplePie_Cache_MySQL extends SimplePie_Cache_DB
 		}
 	}
 
+	/**
+	 * Remove the cache
+	 *
+	 * @return bool Success status
+	 */
 	public function unlink()
 	{
 		if ($this->mysql === null)

@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,18 +33,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
 /**
+ * Used for data cleanup and post-processing
+ *
+ *
+ * This class can be overloaded with {@see SimplePie::set_sanitize_class()}
+ *
+ * @package SimplePie
  * @todo Move to using an actual HTML parser (this will allow tags to be properly stripped, and to switch between HTML and XHTML), this will also make it easier to shorten a string while preserving HTML tags
  */
 class SimplePie_Sanitize
@@ -63,23 +67,16 @@ class SimplePie_Sanitize
 	var $enable_cache = true;
 	var $cache_location = './cache';
 	var $cache_name_function = 'md5';
-	var $cache_class = 'SimplePie_Cache';
-	var $file_class = 'SimplePie_File';
 	var $timeout = 10;
 	var $useragent = '';
 	var $force_fsockopen = false;
+	var $replace_url_attributes = null;
 
-	var $replace_url_attributes = array(
-		'a' => 'href',
-		'area' => 'href',
-		'blockquote' => 'cite',
-		'del' => 'cite',
-		'form' => 'action',
-		'img' => array('longdesc', 'src'),
-		'input' => 'src',
-		'ins' => 'cite',
-		'q' => 'cite'
-	);
+	public function __construct()
+	{
+		// Set defaults
+		$this->set_url_replacements(null);
+	}
 
 	public function remove_div($enable = true)
 	{
@@ -98,6 +95,11 @@ class SimplePie_Sanitize
 		}
 	}
 
+	public function set_registry(SimplePie_Registry $registry)
+	{
+		$this->registry = $registry;
+	}
+
 	public function pass_cache_data($enable_cache = true, $cache_location = './cache', $cache_name_function = 'md5', $cache_class = 'SimplePie_Cache')
 	{
 		if (isset($enable_cache))
@@ -114,20 +116,10 @@ class SimplePie_Sanitize
 		{
 			$this->cache_name_function = (string) $cache_name_function;
 		}
-
-		if ($cache_class)
-		{
-			$this->cache_class = (string) $cache_class;
-		}
 	}
 
 	public function pass_file_data($file_class = 'SimplePie_File', $timeout = 10, $useragent = '', $force_fsockopen = false)
 	{
-		if ($file_class)
-		{
-			$this->file_class = (string) $file_class;
-		}
-
 		if ($timeout)
 		{
 			$this->timeout = (string) $timeout;
@@ -201,12 +193,32 @@ class SimplePie_Sanitize
 	 * Set element/attribute key/value pairs of HTML attributes
 	 * containing URLs that need to be resolved relative to the feed
 	 *
-	 * @access public
+	 * Defaults to |a|@href, |area|@href, |blockquote|@cite, |del|@cite,
+	 * |form|@action, |img|@longdesc, |img|@src, |input|@src, |ins|@cite,
+	 * |q|@cite
+	 *
 	 * @since 1.0
-	 * @param array $element_attribute Element/attribute key/value pairs
+	 * @param array|null $element_attribute Element/attribute key/value pairs, null for default
 	 */
-	public function set_url_replacements($element_attribute = array('a' => 'href', 'area' => 'href', 'blockquote' => 'cite', 'del' => 'cite', 'form' => 'action', 'img' => array('longdesc', 'src'), 'input' => 'src', 'ins' => 'cite', 'q' => 'cite'))
+	public function set_url_replacements($element_attribute = null)
 	{
+		if ($element_attribute === null)
+		{
+			$element_attribute = array(
+				'a' => 'href',
+				'area' => 'href',
+				'blockquote' => 'cite',
+				'del' => 'cite',
+				'form' => 'action',
+				'img' => array(
+					'longdesc',
+					'src'
+				),
+				'input' => 'src',
+				'ins' => 'cite',
+				'q' => 'cite'
+			);
+		}
 		$this->replace_url_attributes = (array) $element_attribute;
 	}
 
@@ -232,25 +244,27 @@ class SimplePie_Sanitize
 				$data = base64_decode($data);
 			}
 
-			if ($type & SIMPLEPIE_CONSTRUCT_XHTML)
-			{
-				if ($this->remove_div)
-				{
-					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
-					$data = preg_replace('/<\/div>$/', '', $data);
-				}
-				else
-				{
-					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
-				}
-			}
-
 			if ($type & (SIMPLEPIE_CONSTRUCT_HTML | SIMPLEPIE_CONSTRUCT_XHTML))
 			{
+
+				$document = new DOMDocument();
+				$document->encoding = 'UTF-8';
+				$data = $this->preprocess($data, $type);
+
+				set_error_handler(array('SimplePie_Misc', 'silence_errors'));
+				$document->loadHTML($data);
+				restore_error_handler();
+
 				// Strip comments
 				if ($this->strip_comments)
 				{
-					$data = SimplePie_Misc::strip_comments($data);
+					$xpath = new DOMXPath($document);
+					$comments = $xpath->query('//comment()');
+
+					foreach ($comments as $comment)
+					{
+						$comment->parentNode->removeChild($comment);
+					}
 				}
 
 				// Strip out HTML tags and attributes that might cause various security problems.
@@ -260,11 +274,7 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_htmltags as $tag)
 					{
-						$pcre = "/<($tag)" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . "(>(.*)<\/$tag" . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>|(\/)?>)/siU';
-						while (preg_match($pcre, $data))
-						{
-							$data = preg_replace_callback($pcre, array(&$this, 'do_strip_htmltags'), $data);
-						}
+						$this->strip_tag($tag, $document, $type);
 					}
 				}
 
@@ -272,7 +282,7 @@ class SimplePie_Sanitize
 				{
 					foreach ($this->strip_attributes as $attrib)
 					{
-						$data = preg_replace('/(<[A-Za-z][^\x09\x0A\x0B\x0C\x0D\x20\x2F\x3E]*)' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . trim($attrib) . '(?:\s*=\s*(?:"(?:[^"]*)"|\'(?:[^\']*)\'|(?:[^\x09\x0A\x0B\x0C\x0D\x20\x22\x27\x3E][^\x09\x0A\x0B\x0C\x0D\x20\x3E]*)?))?' . SIMPLEPIE_PCRE_HTML_ATTRIBUTE . '>/', '\1\2\3>', $data);
+						$this->strip_attr($attrib, $document);
 					}
 				}
 
@@ -280,36 +290,34 @@ class SimplePie_Sanitize
 				$this->base = $base;
 				foreach ($this->replace_url_attributes as $element => $attributes)
 				{
-					$data = $this->replace_urls($data, $element, $attributes);
+					$this->replace_urls($document, $element, $attributes);
 				}
 
 				// If image handling (caching, etc.) is enabled, cache and rewrite all the image tags.
 				if (isset($this->image_handler) && ((string) $this->image_handler) !== '' && $this->enable_cache)
 				{
-					$images = SimplePie_Misc::get_element('img', $data);
+					$images = $document->getElementsByTagName('img');
 					foreach ($images as $img)
 					{
-						if (isset($img['attribs']['src']['data']))
+						if ($img->hasAttribute('src'))
 						{
-							$image_url = call_user_func($this->cache_name_function, $img['attribs']['src']['data']);
-							$cache = call_user_func(array($this->cache_class, 'create'), $this->cache_location, $image_url, 'spi');
+							$image_url = call_user_func($this->cache_name_function, $img->getAttribute('src'));
+							$cache = $this->registry->call('Cache', 'create', array($this->cache_location, $image_url, 'spi'));
 
 							if ($cache->load())
 							{
-								$img['attribs']['src']['data'] = $this->image_handler . $image_url;
-								$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+								$img->setAttribute('src', $this->image_handler . $image_url);
 							}
 							else
 							{
-								$file = new $this->file_class($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen);
+								$file = $this->registry->create('File', array($img['attribs']['src']['data'], $this->timeout, 5, array('X-FORWARDED-FOR' => $_SERVER['REMOTE_ADDR']), $this->useragent, $this->force_fsockopen));
 								$headers = $file->headers;
 
 								if ($file->success && ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($file->status_code === 200 || $file->status_code > 206 && $file->status_code < 300)))
 								{
 									if ($cache->save(array('headers' => $file->headers, 'body' => $file->body)))
 									{
-										$img['attribs']['src']['data'] = $this->image_handler . $image_url;
-										$data = str_replace($img['full'], SimplePie_Misc::element_implode($img), $data);
+										$img->setAttribute('src', $this->image_handler . $image_url);
 									}
 									else
 									{
@@ -321,13 +329,34 @@ class SimplePie_Sanitize
 					}
 				}
 
-				// Having (possibly) taken stuff out, there may now be whitespace at the beginning/end of the data
-				$data = trim($data);
+				// Remove the DOCTYPE
+				// Seems to cause segfaulting if we don't do this
+				if ($document->firstChild instanceof DOMDocumentType)
+				{
+					$document->removeChild($document->firstChild);
+				}
+
+				// Move everything from the body to the root
+				$real_body = $document->getElementsByTagName('body')->item(0)->childNodes->item(0);
+				$document->replaceChild($real_body, $document->firstChild);
+
+				// Finally, convert to a HTML string
+				$data = trim($document->saveHTML());
+
+				if ($this->remove_div)
+				{
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '', $data);
+					$data = preg_replace('/<\/div>$/', '', $data);
+				}
+				else
+				{
+					$data = preg_replace('/^<div' . SIMPLEPIE_PCRE_XML_ATTRIBUTE . '>/', '<div>', $data);
+				}
 			}
 
 			if ($type & SIMPLEPIE_CONSTRUCT_IRI)
 			{
-				$data = SimplePie_Misc::absolutize_url($data, $base);
+				$data = $this->registry->call('Misc', 'absolutize_url', array($data, $base));
 			}
 
 			if ($type & (SIMPLEPIE_CONSTRUCT_TEXT | SIMPLEPIE_CONSTRUCT_IRI))
@@ -337,40 +366,57 @@ class SimplePie_Sanitize
 
 			if ($this->output_encoding !== 'UTF-8')
 			{
-				$data = SimplePie_Misc::change_encoding($data, 'UTF-8', $this->output_encoding);
+				$data = $this->registry->call('Misc', 'change_encoding', array($data, 'UTF-8', $this->output_encoding));
 			}
 		}
 		return $data;
 	}
 
-	public function replace_urls($data, $tag, $attributes)
+	protected function preprocess($html, $type)
 	{
+		$ret = '';
+		if ($type & ~SIMPLEPIE_CONSTRUCT_XHTML)
+		{
+			// Atom XHTML constructs are wrapped with a div by default
+			// Note: No protection if $html contains a stray </div>!
+			$html = '<div>' . $html . '</div>';
+			$ret .= '<!DOCTYPE html>';
+			$content_type = 'text/html';
+		}
+		else
+		{
+			$ret .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+			$content_type = 'application/xhtml+xml';
+		}
+
+		$ret .= '<html><head>';
+		$ret .= '<meta http-equiv="Content-Type" content="' . $content_type . '; charset=utf-8" />';
+		$ret .= '</head><body>' . $html . '</body></html>';
+		return $ret;
+	}
+
+	public function replace_urls($document, $tag, $attributes)
+	{
+		if (!is_array($attributes))
+		{
+			$attributes = array($attributes);
+		}
+
 		if (!is_array($this->strip_htmltags) || !in_array($tag, $this->strip_htmltags))
 		{
-			$elements = SimplePie_Misc::get_element($tag, $data);
+			$elements = $document->getElementsByTagName($tag);
 			foreach ($elements as $element)
 			{
-				if (is_array($attributes))
+				foreach ($attributes as $attribute)
 				{
-					foreach ($attributes as $attribute)
+					if ($element->hasAttribute($attribute))
 					{
-						if (isset($element['attribs'][$attribute]['data']))
-						{
-							$element['attribs'][$attribute]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attribute]['data'], $this->base);
-							$new_element = SimplePie_Misc::element_implode($element);
-							$data = str_replace($element['full'], $new_element, $data);
-							$element['full'] = $new_element;
-						}
+						$value = $this->registry->call('Misc', 'absolutize_url', array($element->getAttribute($attribute), $this->base));
+						$element->setAttribute($attribute, $value);
 					}
-				}
-				elseif (isset($element['attribs'][$attributes]['data']))
-				{
-					$element['attribs'][$attributes]['data'] = SimplePie_Misc::absolutize_url($element['attribs'][$attributes]['data'], $this->base);
-					$data = str_replace($element['full'], SimplePie_Misc::element_implode($element), $data);
 				}
 			}
 		}
-		return $data;
 	}
 
 	public function do_strip_htmltags($match)
@@ -395,6 +441,102 @@ class SimplePie_Sanitize
 		else
 		{
 			return '';
+		}
+	}
+
+	protected function strip_tag($tag, $document, $type)
+	{
+		$xpath = new DOMXPath($document);
+		$elements = $xpath->query('body//' . $tag);
+		if ($this->encode_instead_of_strip)
+		{
+			foreach ($elements as $element)
+			{
+				$fragment = $document->createDocumentFragment();
+
+				// For elements which aren't script or style, include the tag itself
+				if (!in_array($tag, array('script', 'style')))
+				{
+					$text = '<' . $tag;
+					if ($element->hasAttributes())
+					{
+						$attrs = array();
+						foreach ($element->attributes as $name => $attr)
+						{
+							$value = $attr->value;
+
+							// In XHTML, empty values should never exist, so we repeat the value
+							if (empty($value) && ($type & SIMPLEPIE_CONSTRUCT_XHTML))
+							{
+								$value = $name;
+							}
+							// For HTML, empty is fine
+							elseif (empty($value) && ($type & SIMPLEPIE_CONSTRUCT_HTML))
+							{
+								$attrs[] = $name;
+								continue;
+							}
+
+							// Standard attribute text
+							$attrs[] = $name . '="' . $attr->value . '"';
+						}
+						$text .= ' ' . implode(' ', $attrs);
+					}
+					$text .= '>';
+					$fragment->appendChild(new DOMText($text));
+				}
+
+				$number = $element->childNodes->length;
+				for ($i = $number; $i > 0; $i--)
+				{
+					$child = $element->childNodes->item(0);
+					$fragment->appendChild($child);
+				}
+
+				if (!in_array($tag, array('script', 'style')))
+				{
+					$fragment->appendChild(new DOMText('</' . $tag . '>'));
+				}
+
+				$element->parentNode->replaceChild($fragment, $element);
+			}
+
+			return;
+		}
+		elseif (in_array($tag, array('script', 'style')))
+		{
+			foreach ($elements as $element)
+			{
+				$element->parentNode->removeChild($element);
+			}
+
+			return;
+		}
+		else
+		{
+			foreach ($elements as $element)
+			{
+				$fragment = $document->createDocumentFragment();
+				$number = $element->childNodes->length;
+				for ($i = $number; $i > 0; $i--)
+				{
+					$child = $element->childNodes->item(0);
+					$fragment->appendChild($child);
+				}
+
+				$element->parentNode->replaceChild($fragment, $element);
+			}
+		}
+	}
+
+	protected function strip_attr($attrib, $document)
+	{
+		$xpath = new DOMXPath($document);
+		$elements = $xpath->query('//*[@' . $attrib . ']');
+
+		foreach ($elements as $element)
+		{
+			$element->removeAttribute($attrib);
 		}
 	}
 }
