@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,18 +33,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
 /**
+ * Used for fetching remote files and reading local files
+ *
+ * Supports HTTP 1.0 via cURL or fsockopen, with spotty HTTP 1.1 support
+ *
+ * This class can be overloaded with {@see SimplePie::set_file_class()}
+ *
+ * @package SimplePie
+ * @subpackage HTTP
  * @todo Move to properly supporting RFC2616 (HTTP/1.1)
  */
 class SimplePie_File
@@ -238,15 +244,23 @@ class SimplePie_File
 										break;
 
 									case 'deflate':
-										if (($body = gzuncompress($this->body)) === false)
+										if (($decompressed = gzinflate($this->body)) !== false)
 										{
-											if (($body = gzinflate($this->body)) === false)
-											{
-												$this->error = 'Unable to decode HTTP "deflate" stream';
-												$this->success = false;
-											}
+											$this->body = $decompressed;
 										}
-										$this->body = $body;
+										else if (($decompressed = gzuncompress($this->body)) !== false)
+										{
+											$this->body = $decompressed;
+										}
+										else if (function_exists('gzdecode') && ($decompressed = gzdecode($this->body)) !== false)
+										{
+											$this->body = $decompressed;
+										}
+										else
+										{
+											$this->error = 'Unable to decode HTTP "deflate" stream';
+											$this->success = false;
+										}
 										break;
 
 									default:

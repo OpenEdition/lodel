@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,26 +33,40 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
+/**
+ * Handles `<atom:source>`
+ *
+ * Used by {@see SimplePie_Item::get_source()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_source_class()}
+ *
+ * @package SimplePie
+ * @subpackage API
+ */
 class SimplePie_Source
 {
 	var $item;
 	var $data = array();
+	protected $registry;
 
 	public function __construct($item, $data)
 	{
 		$this->item = $item;
 		$this->data = $data;
+	}
+
+	public function set_registry(SimplePie_Registry $registry)
+	{
+		$this->registry = $registry;
 	}
 
 	public function __toString()
@@ -91,11 +105,11 @@ class SimplePie_Source
 	{
 		if ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'title'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'title'))
 		{
@@ -157,7 +171,7 @@ class SimplePie_Source
 			{
 				$label = $this->sanitize($category['attribs']['']['label'], SIMPLEPIE_CONSTRUCT_TEXT);
 			}
-			$categories[] = new $this->item->feed->category_class($term, $scheme, $label);
+			$categories[] = $this->registry->create('Category', array($term, $scheme, $label));
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'category') as $category)
 		{
@@ -172,20 +186,20 @@ class SimplePie_Source
 			{
 				$scheme = null;
 			}
-			$categories[] = new $this->item->feed->category_class($term, $scheme, null);
+			$categories[] = $this->registry->create('Category', array($term, $scheme, null));
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_11, 'subject') as $category)
 		{
-			$categories[] = new $this->item->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_10, 'subject') as $category)
 		{
-			$categories[] = new $this->item->feed->category_class($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$categories[] = $this->registry->create('Category', array($this->sanitize($category['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 
 		if (!empty($categories))
 		{
-			return SimplePie_Misc::array_unique($categories);
+			return array_unique($categories);
 		}
 		else
 		{
@@ -228,7 +242,7 @@ class SimplePie_Source
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$authors[] = new $this->item->feed->author_class($name, $uri, $email);
+				$authors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
 		if ($author = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'author'))
@@ -250,25 +264,25 @@ class SimplePie_Source
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$authors[] = new $this->item->feed->author_class($name, $url, $email);
+				$authors[] = $this->registry->create('Author', array($name, $url, $email));
 			}
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator') as $author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_DC_10, 'creator') as $author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ITUNES, 'author') as $author)
 		{
-			$authors[] = new $this->item->feed->author_class($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null);
+			$authors[] = $this->registry->create('Author', array($this->sanitize($author['data'], SIMPLEPIE_CONSTRUCT_TEXT), null, null));
 		}
 
 		if (!empty($authors))
 		{
-			return SimplePie_Misc::array_unique($authors);
+			return array_unique($authors);
 		}
 		else
 		{
@@ -311,7 +325,7 @@ class SimplePie_Source
 			}
 			if ($name !== null || $email !== null || $uri !== null)
 			{
-				$contributors[] = new $this->item->feed->author_class($name, $uri, $email);
+				$contributors[] = $this->registry->create('Author', array($name, $uri, $email));
 			}
 		}
 		foreach ((array) $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'contributor') as $contributor)
@@ -333,13 +347,13 @@ class SimplePie_Source
 			}
 			if ($name !== null || $email !== null || $url !== null)
 			{
-				$contributors[] = new $this->item->feed->author_class($name, $url, $email);
+				$contributors[] = $this->registry->create('Author', array($name, $url, $email));
 			}
 		}
 
 		if (!empty($contributors))
 		{
-			return SimplePie_Misc::array_unique($contributors);
+			return array_unique($contributors);
 		}
 		else
 		{
@@ -412,7 +426,7 @@ class SimplePie_Source
 			$keys = array_keys($this->data['links']);
 			foreach ($keys as $key)
 			{
-				if (SimplePie_Misc::is_isegment_nz_nc($key))
+				if ($this->registry->call('Misc', 'is_isegment_nz_nc', array($key)))
 				{
 					if (isset($this->data['links'][SIMPLEPIE_IANA_LINK_RELATIONS_REGISTRY . $key]))
 					{
@@ -446,11 +460,11 @@ class SimplePie_Source
 	{
 		if ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'subtitle'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'tagline'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_RSS_10, 'description'))
 		{
@@ -490,11 +504,11 @@ class SimplePie_Source
 	{
 		if ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_10, 'rights'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_10_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_10_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_ATOM_03, 'copyright'))
 		{
-			return $this->sanitize($return[0]['data'], SimplePie_Misc::atom_03_construct_type($return[0]['attribs']), $this->get_base($return[0]));
+			return $this->sanitize($return[0]['data'], $this->registry->call('Misc', 'atom_03_construct_type', array($return[0]['attribs'])), $this->get_base($return[0]));
 		}
 		elseif ($return = $this->get_source_tags(SIMPLEPIE_NAMESPACE_RSS_20, 'copyright'))
 		{

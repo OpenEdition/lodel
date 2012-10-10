@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,17 +33,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
+/**
+ * Miscellanous utilities
+ *
+ * @package SimplePie
+ */
 class SimplePie_Misc
 {
 	public static function time_hms($seconds)
@@ -77,63 +80,17 @@ class SimplePie_Misc
 	public static function absolutize_url($relative, $base)
 	{
 		$iri = SimplePie_IRI::absolutize(new SimplePie_IRI($base), $relative);
-		return $iri->get_iri();
+		return $iri->get_uri();
 	}
 
-	public static function remove_dot_segments($input)
-	{
-		$output = '';
-		while (strpos($input, './') !== false || strpos($input, '/.') !== false || $input === '.' || $input === '..')
-		{
-			// A: If the input buffer begins with a prefix of "../" or "./", then remove that prefix from the input buffer; otherwise,
-			if (strpos($input, '../') === 0)
-			{
-				$input = substr($input, 3);
-			}
-			elseif (strpos($input, './') === 0)
-			{
-				$input = substr($input, 2);
-			}
-			// B: if the input buffer begins with a prefix of "/./" or "/.", where "." is a complete path segment, then replace that prefix with "/" in the input buffer; otherwise,
-			elseif (strpos($input, '/./') === 0)
-			{
-				$input = substr_replace($input, '/', 0, 3);
-			}
-			elseif ($input === '/.')
-			{
-				$input = '/';
-			}
-			// C: if the input buffer begins with a prefix of "/../" or "/..", where ".." is a complete path segment, then replace that prefix with "/" in the input buffer and remove the last segment and its preceding "/" (if any) from the output buffer; otherwise,
-			elseif (strpos($input, '/../') === 0)
-			{
-				$input = substr_replace($input, '/', 0, 4);
-				$output = substr_replace($output, '', strrpos($output, '/'));
-			}
-			elseif ($input === '/..')
-			{
-				$input = '/';
-				$output = substr_replace($output, '', strrpos($output, '/'));
-			}
-			// D: if the input buffer consists only of "." or "..", then remove that from the input buffer; otherwise,
-			elseif ($input === '.' || $input === '..')
-			{
-				$input = '';
-			}
-			// E: move the first path segment in the input buffer to the end of the output buffer, including the initial "/" character (if any) and any subsequent characters up to, but not including, the next "/" character or the end of the input buffer
-			elseif (($pos = strpos($input, '/', 1)) !== false)
-			{
-				$output .= substr($input, 0, $pos);
-				$input = substr_replace($input, '', 0, $pos);
-			}
-			else
-			{
-				$output .= $input;
-				$input = '';
-			}
-		}
-		return $output . $input;
-	}
-
+	/**
+	 * Get a HTML/XML element from a HTML string
+	 *
+	 * @deprecated Use DOMDocument instead (parsing HTML with regex is bad!)
+	 * @param string $realname Element name (including namespace prefix if applicable)
+	 * @param string $string HTML document
+	 * @return array
+	 */
 	public static function get_element($realname, $string)
 	{
 		$return = array();
@@ -267,29 +224,29 @@ class SimplePie_Misc
 	{
 		$iri = new SimplePie_IRI($url);
 		return array(
-			'scheme' => (string) $iri->get_scheme(),
-			'authority' => (string) $iri->get_authority(),
-			'path' => (string) $iri->get_path(),
-			'query' => (string) $iri->get_query(),
-			'fragment' => (string) $iri->get_fragment()
+			'scheme' => (string) $iri->scheme,
+			'authority' => (string) $iri->authority,
+			'path' => (string) $iri->path,
+			'query' => (string) $iri->query,
+			'fragment' => (string) $iri->fragment
 		);
 	}
 
 	public static function compress_parse_url($scheme = '', $authority = '', $path = '', $query = '', $fragment = '')
 	{
 		$iri = new SimplePie_IRI('');
-		$iri->set_scheme($scheme);
-		$iri->set_authority($authority);
-		$iri->set_path($path);
-		$iri->set_query($query);
-		$iri->set_fragment($fragment);
-		return $iri->get_iri();
+		$iri->scheme = $scheme;
+		$iri->authority = $authority;
+		$iri->path = $path;
+		$iri->query = $query;
+		$iri->fragment = $fragment;
+		return $iri->get_uri();
 	}
 
 	public static function normalize_url($url)
 	{
 		$iri = new SimplePie_IRI($url);
-		return $iri->get_iri();
+		return $iri->get_uri();
 	}
 
 	public static function percent_encoding_normalization($match)
@@ -377,6 +334,14 @@ class SimplePie_Misc
 		if ($output === 'windows-949')
 		{
 			$output = 'EUC-KR';
+		}
+		if ($input === 'Windows-31J')
+		{
+			$input = 'SJIS';
+		}
+		if ($output === 'Windows-31J')
+		{
+			$output = 'SJIS';
 		}
 
 		// Check that the encoding is supported
@@ -1748,40 +1713,6 @@ class SimplePie_Misc
 		return $curl;
 	}
 
-	public static function is_subclass_of($class1, $class2)
-	{
-		if (func_num_args() !== 2)
-		{
-			trigger_error('Wrong parameter count for SimplePie_Misc::is_subclass_of()', E_USER_WARNING);
-		}
-		elseif (version_compare(PHP_VERSION, '5.0.3', '>=') || is_object($class1))
-		{
-			return is_subclass_of($class1, $class2);
-		}
-		elseif (is_string($class1) && is_string($class2))
-		{
-			if (class_exists($class1))
-			{
-				if (class_exists($class2))
-				{
-					$class2 = strtolower($class2);
-					while ($class1 = strtolower(get_parent_class($class1)))
-					{
-						if ($class1 === $class2)
-						{
-							return true;
-						}
-					}
-				}
-			}
-			else
-			{
-				trigger_error('Unknown class passed as parameter', E_USER_WARNNG);
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Strip HTML comments
 	 *
@@ -1815,7 +1746,7 @@ class SimplePie_Misc
 	/**
 	 * Decode HTML entities
 	 *
-	 * @static
+	 * @deprecated Use DOMDocument instead
 	 * @param string $data Input data
 	 * @return string Output data
 	 */
@@ -1894,18 +1825,6 @@ class SimplePie_Misc
 		else
 		{
 			return trim(substr($mime, 0, $pos));
-		}
-	}
-
-	public static function htmlspecialchars_decode($string, $quote_style)
-	{
-		if (function_exists('htmlspecialchars_decode'))
-		{
-			return htmlspecialchars_decode($string, $quote_style);
-		}
-		else
-		{
-			return strtr($string, array_flip(get_html_translation_table(HTML_SPECIALCHARS, $quote_style)));
 		}
 	}
 
@@ -2022,48 +1941,6 @@ class SimplePie_Misc
 		return $tokens;
 	}
 
-	public static function array_unique($array)
-	{
-		if (version_compare(PHP_VERSION, '5.2', '>='))
-		{
-			return array_unique($array);
-		}
-		else
-		{
-			$array = (array) $array;
-			$new_array = array();
-			$new_array_strings = array();
-			foreach ($array as $key => $value)
-			{
-				if (is_object($value))
-				{
-					if (method_exists($value, '__toString'))
-					{
-						$cmp = $value->__toString();
-					}
-					else
-					{
-						trigger_error('Object of class ' . get_class($value) . ' could not be converted to string', E_USER_ERROR);
-					}
-				}
-				elseif (is_array($value))
-				{
-					$cmp = (string) reset($value);
-				}
-				else
-				{
-					$cmp = (string) $value;
-				}
-				if (!in_array($cmp, $new_array_strings))
-				{
-					$new_array[$key] = $value;
-					$new_array_strings[] = $cmp;
-				}
-			}
-			return $new_array;
-		}
-	}
-
 	/**
 	 * Converts a unicode codepoint to a UTF-8 character
 	 *
@@ -2137,9 +2014,10 @@ class SimplePie_Misc
 	 *
 	 * @todo Add support for EBCDIC
 	 * @param string $data XML data
+	 * @param SimplePie_Registry $registry Class registry
 	 * @return array Possible encodings
 	 */
-	public static function xml_encoding($data)
+	public static function xml_encoding($data, $registry)
 	{
 		// UTF-32 Big Endian BOM
 		if (substr($data, 0, 4) === "\x00\x00\xFE\xFF")
@@ -2171,7 +2049,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x00\x00\x00\x3F\x00\x00\x00\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8'));
+				$parser = $registry->create('XML_Declaration_Parser', array(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32BE', 'UTF-8')));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -2184,7 +2062,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x00\x00\x00\x3E\x00\x00\x00"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8'));
+				$parser = $registry->create('XML_Declaration_Parser', array(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 20), 'UTF-32LE', 'UTF-8')));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -2197,7 +2075,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x00\x3F\x00\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8'));
+				$parser = $registry->create('XML_Declaration_Parser', array(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16BE', 'UTF-8')));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -2210,7 +2088,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x00\x3E\x00"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8'));
+				$parser = $registry->create('XML_Declaration_Parser', array(SimplePie_Misc::change_encoding(substr($data, 20, $pos - 10), 'UTF-16LE', 'UTF-8')));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -2223,7 +2101,7 @@ class SimplePie_Misc
 		{
 			if ($pos = strpos($data, "\x3F\x3E"))
 			{
-				$parser = new SimplePie_XML_Declaration_Parser(substr($data, 5, $pos - 5));
+				$parser = $registry->create('XML_Declaration_Parser', array(substr($data, 5, $pos - 5)));
 				if ($parser->parse())
 				{
 					$encoding[] = $parser->encoding;
@@ -2249,10 +2127,6 @@ class SimplePie_Misc
 		header('Cache-Control: must-revalidate');
 		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 604800) . ' GMT'); // 7 days
 		?>
-function embed_odeo(link) {
-	document.writeln('<embed src="http://odeo.com/flash/audio_player_fullsize.swf" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" quality="high" width="440" height="80" wmode="transparent" allowScriptAccess="any" flashvars="valid_sample_rate=true&external_url='+link+'"></embed>');
-}
-
 function embed_quicktime(type, bgcolor, width, height, link, placeholder, loop) {
 	if (placeholder != '') {
 		document.writeln('<embed type="'+type+'" style="cursor:hand; cursor:pointer;" href="'+link+'" src="'+placeholder+'" width="'+width+'" height="'+height+'" autoplay="false" target="myself" controller="false" loop="'+loop+'" scale="aspect" bgcolor="'+bgcolor+'" pluginspage="http://www.apple.com/quicktime/download/"></embed>');
@@ -2359,6 +2233,11 @@ function embed_wmedia(width, height, link) {
 			}
 		}
 		return $info;
+	}
+
+	public static function silence_errors($num, $str)
+	{
+		// No-op
 	}
 }
 

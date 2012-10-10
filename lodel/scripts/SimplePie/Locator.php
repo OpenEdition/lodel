@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,17 +33,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
-
+/**
+ * Used for feed auto-discovery
+ *
+ *
+ * This class can be overloaded with {@see SimplePie::set_locator_class()}
+ *
+ * @package SimplePie
+ */
 class SimplePie_Locator
 {
 	var $useragent;
@@ -51,23 +57,31 @@ class SimplePie_Locator
 	var $file;
 	var $local = array();
 	var $elsewhere = array();
-	var $file_class = 'SimplePie_File';
 	var $cached_entities = array();
 	var $http_base;
 	var $base;
 	var $base_location = 0;
 	var $checked_feeds = 0;
 	var $max_checked_feeds = 10;
-	var $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer';
+	protected $registry;
 
-	public function __construct(&$file, $timeout = 10, $useragent = null, $file_class = 'SimplePie_File', $max_checked_feeds = 10, $content_type_sniffer_class = 'SimplePie_Content_Type_Sniffer')
+	public function __construct(SimplePie_File $file, $timeout = 10, $useragent = null, $max_checked_feeds = 10)
 	{
-		$this->file =& $file;
-		$this->file_class = $file_class;
+		$this->file = $file;
 		$this->useragent = $useragent;
 		$this->timeout = $timeout;
 		$this->max_checked_feeds = $max_checked_feeds;
-		$this->content_type_sniffer_class = $content_type_sniffer_class;
+
+		$this->dom = new DOMDocument();
+
+		set_error_handler(array('SimplePie_Misc', 'silence_errors'));
+		$this->dom->loadHTML($this->file->body);
+		restore_error_handler();
+	}
+
+	public function set_registry(SimplePie_Registry $registry)
+	{
+		$this->registry = $registry;
 	}
 
 	public function find($type = SIMPLEPIE_LOCATOR_ALL, &$working)
@@ -79,7 +93,7 @@ class SimplePie_Locator
 
 		if ($this->file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($this->file);
+			$sniffer = $this->registry->create('Content_Type_Sniffer', array($this->file));
 			if ($sniffer->get_type() !== 'text/html')
 			{
 				return null;
@@ -121,11 +135,11 @@ class SimplePie_Locator
 		return null;
 	}
 
-	public function is_feed(&$file)
+	public function is_feed($file)
 	{
 		if ($file->method & SIMPLEPIE_FILE_SOURCE_REMOTE)
 		{
-			$sniffer = new $this->content_type_sniffer_class($file);
+			$sniffer = $this->registry->create('Content_Type_Sniffer', array($file));
 			$sniffed = $sniffer->get_type();
 			if (in_array($sniffed, array('application/rss+xml', 'application/rdf+xml', 'text/rdf', 'application/atom+xml', 'text/xml', 'application/xml')))
 			{
@@ -150,13 +164,13 @@ class SimplePie_Locator
 	{
 		$this->http_base = $this->file->url;
 		$this->base = $this->http_base;
-		$elements = SimplePie_Misc::get_element('base', $this->file->body);
+		$elements = $this->dom->getElementsByTagName('base');
 		foreach ($elements as $element)
 		{
-			if ($element['attribs']['href']['data'] !== '')
+			if ($element->hasAttribute('href'))
 			{
-				$this->base = SimplePie_Misc::absolutize_url(trim($element['attribs']['href']['data']), $this->http_base);
-				$this->base_location = $element['offset'];
+				$this->base = $this->registry->call('Misc', 'absolutize_url', array(trim($element->getAttribute('href')), $this->http_base));
+				$this->base_location = method_exists($element, 'getLineNo') ? $element->getLineNo() : 0;
 				break;
 			}
 		}
@@ -164,43 +178,11 @@ class SimplePie_Locator
 
 	public function autodiscovery()
 	{
-		$links = array_merge(SimplePie_Misc::get_element('link', $this->file->body), SimplePie_Misc::get_element('a', $this->file->body), SimplePie_Misc::get_element('area', $this->file->body));
 		$done = array();
 		$feeds = array();
-		foreach ($links as $link)
-		{
-			if ($this->checked_feeds === $this->max_checked_feeds)
-			{
-				break;
-			}
-			if (isset($link['attribs']['href']['data']) && isset($link['attribs']['rel']['data']))
-			{
-				$rel = array_unique(SimplePie_Misc::space_seperated_tokens(strtolower($link['attribs']['rel']['data'])));
-
-				if ($this->base_location < $link['offset'])
-				{
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->base);
-				}
-				else
-				{
-					$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
-				}
-
-				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && !empty($link['attribs']['type']['data']) && in_array(strtolower(SimplePie_Misc::parse_mime($link['attribs']['type']['data'])), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
-				{
-					$this->checked_feeds++;
-					$headers = array(
-						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
-					);
-					$feed = new $this->file_class($href, $this->timeout, 5, $headers, $this->useragent);
-					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
-					{
-						$feeds[$href] = $feed;
-					}
-				}
-				$done[] = $href;
-			}
-		}
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('link', $done, $feeds));
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('a', $done, $feeds));
+		$feeds = array_merge($feeds, $this->search_elements_by_tag('area', $done, $feeds));
 
 		if (!empty($feeds))
 		{
@@ -212,27 +194,69 @@ class SimplePie_Locator
 		}
 	}
 
-	public function get_links()
+	protected function search_elements_by_tag($name, &$done, $feeds)
 	{
-		$links = SimplePie_Misc::get_element('a', $this->file->body);
+		$links = $this->dom->getElementsByTagName($name);
 		foreach ($links as $link)
 		{
-			if (isset($link['attribs']['href']['data']))
+			if ($this->checked_feeds === $this->max_checked_feeds)
 			{
-				$href = trim($link['attribs']['href']['data']);
-				$parsed = SimplePie_Misc::parse_url($href);
+				break;
+			}
+			if ($link->hasAttribute('href') && $link->hasAttribute('rel'))
+			{
+				$rel = array_unique($this->registry->call('Misc', 'space_seperated_tokens', array(strtolower($link->getAttribute('rel')))));
+				$line = method_exists($link, 'getLineNo') ? $link->getLineNo() : 1;
+
+				if ($this->base_location < $line)
+				{
+					$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
+				}
+				else
+				{
+					$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
+				}
+
+				if (!in_array($href, $done) && in_array('feed', $rel) || (in_array('alternate', $rel) && !in_array('stylesheet', $rel) && $link->hasAttribute('type') && in_array(strtolower($this->registry->call('Misc', 'parse_mime', array($link->getAttribute('type')))), array('application/rss+xml', 'application/atom+xml'))) && !isset($feeds[$href]))
+				{
+					$this->checked_feeds++;
+					$headers = array(
+						'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
+					);
+					$feed = $this->registry->create('File', array($href, $this->timeout, 5, $headers, $this->useragent));
+					if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
+					{
+						$feeds[$href] = $feed;
+					}
+				}
+				$done[] = $href;
+			}
+		}
+
+		return $feeds;
+	}
+
+	public function get_links()
+	{
+		$links = $this->dom->getElementsByTagName('a');
+		foreach ($links as $link)
+		{
+			if ($link->hasAttribute('href'))
+			{
+				$href = trim($link->getAttribute('href'));
+				$parsed = $this->registry->call('Misc', 'parse_url', array($href));
 				if ($parsed['scheme'] === '' || preg_match('/^(http(s)|feed)?$/i', $parsed['scheme']))
 				{
-					if ($this->base_location < $link['offset'])
+					if ($this->base_location < $link->getLineNo())
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->base);
+						$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->base));
 					}
 					else
 					{
-						$href = SimplePie_Misc::absolutize_url(trim($link['attribs']['href']['data']), $this->http_base);
+						$href = $this->registry->call('Misc', 'absolutize_url', array(trim($link->getAttribute('href')), $this->http_base));
 					}
 
-					$current = SimplePie_Misc::parse_url($this->file->url);
+					$current = $this->registry->call('Misc', 'parse_url', array($this->file->url));
 
 					if ($parsed['authority'] === '' || $parsed['authority'] === $current['authority'])
 					{
@@ -269,7 +293,7 @@ class SimplePie_Locator
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$feed = new $this->file_class($value, $this->timeout, 5, $headers, $this->useragent);
+				$feed = $this->registry->create('File', array($value, $this->timeout, 5, $headers, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;
@@ -297,7 +321,7 @@ class SimplePie_Locator
 				$headers = array(
 					'Accept' => 'application/atom+xml, application/rss+xml, application/rdf+xml;q=0.9, application/xml;q=0.8, text/xml;q=0.8, text/html;q=0.7, unknown/unknown;q=0.1, application/unknown;q=0.1, */*;q=0.1',
 				);
-				$feed = new $this->file_class($value, $this->timeout, 5, null, $this->useragent);
+				$feed = $this->registry->create('File', array($value, $this->timeout, 5, null, $this->useragent));
 				if ($feed->success && ($feed->method & SIMPLEPIE_FILE_SOURCE_REMOTE === 0 || ($feed->status_code === 200 || $feed->status_code > 206 && $feed->status_code < 300)) && $this->is_feed($feed))
 				{
 					return $feed;

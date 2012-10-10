@@ -5,7 +5,7 @@
  * A PHP-Based RSS and Atom Feed Framework.
  * Takes the hard work out of managing a complete RSS/Atom solution.
  *
- * Copyright (c) 2004-2009, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
+ * Copyright (c) 2004-2012, Ryan Parman, Geoffrey Sneddon, Ryan McCue, and contributors
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
@@ -33,14 +33,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3-dev
- * @copyright 2004-2010 Ryan Parman, Geoffrey Sneddon, Ryan McCue
+ * @version 1.3
+ * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
  * @author Ryan McCue
  * @link http://simplepie.org/ SimplePie
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
- * @todo phpDoc comments
  */
 
 
@@ -48,6 +47,7 @@
  * HTTP Response Parser
  *
  * @package SimplePie
+ * @subpackage HTTP
  */
 class SimplePie_HTTP_Parser
 {
@@ -457,7 +457,7 @@ class SimplePie_HTTP_Parser
 	 */
 	protected function chunked()
 	{
-		if (!preg_match('/^[0-9a-f]+(\s|\r|\n)+/mi', trim($this->body)))
+		if (!preg_match('/^([0-9a-f]+)[^\r\n]*\r\n/i', trim($this->body)))
 		{
 			$this->state = 'emit';
 			return;
@@ -468,7 +468,7 @@ class SimplePie_HTTP_Parser
 
 		while (true)
 		{
-			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)(\s|\r|\n)+/mi', $encoded, $matches );
+			$is_chunked = (bool) preg_match( '/^([0-9a-f]+)[^\r\n]*\r\n/i', $encoded, $matches );
 			if (!$is_chunked)
 			{
 				// Looks like it's not chunked after all
@@ -476,12 +476,20 @@ class SimplePie_HTTP_Parser
 				return;
 			}
 
-			$length = hexdec($matches[1]);
+			$length = hexdec(trim($matches[1]));
+			if ($length === 0)
+			{
+				// Ignore trailer headers
+				$this->state = 'emit';
+				$this->body = $decoded;
+				return;
+			}
+
 			$chunk_length = strlen($matches[0]);
 			$decoded .= $part = substr($encoded, $chunk_length, $length);
-			$encoded = ltrim(substr($encoded, $chunk_length + $length), "\r\n");
+			$encoded = substr($encoded, $chunk_length + $length + 2);
 
-			if (trim($encoded) === '0')
+			if (trim($encoded) === '0' || empty($encoded))
 			{
 				$this->state = 'emit';
 				$this->body = $decoded;
