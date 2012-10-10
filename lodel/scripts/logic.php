@@ -828,7 +828,7 @@ class Logic
 					$updatecrit .= ($updatecrit ? "," : ""). $field->name. "=CONCAT(". $db->Quote($value). "," .$db->Quote("\n".$context['data'][$field->name]) . ")";
 				}
 				else {
-					$updatecrit .= ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$db->Quote($value). ",'\n".$field->name . "')";
+					$updatecrit .= ($updatecrit ? "," : ""). $field->name. "=CONCAT(".$db->Quote($value). ",".$field->name . ")";
 				}
 			}
 			$db->execute (lq ("UPDATE #_TP_$class SET $updatecrit WHERE identity='". $context['id'].  "'"));
@@ -856,6 +856,7 @@ class Logic
 		//edition or change of status
 		switch($status) {
 			case 0:
+			case -2:
 				$line = getlodeltextcontents('editedby', 'common');
 				break;
 			case 1:
@@ -863,6 +864,9 @@ class Logic
 				break;
 			case -1:
 				$line = getlodeltextcontents('unpublishedby', 'common');
+				break;
+			case -4:
+				$line = getlodeltextcontents('refusedby', 'common');
 				break;
 			case 8:
 				$line = getlodeltextcontents('protectedby', 'common');
@@ -875,7 +879,7 @@ class Logic
 		}
 		$line .= " ". (isset($vo->name) ? $vo->name : (isset($vo->username) ? $vo->username : C::get('lastname', 'lodeluser')));
 		$line .= " ".getlodeltextcontents('on', 'common'). " ". date('d/m/Y H:i');
-		$value = $line;
+		$value = $line."\n";
 		unset($line);
 	}
 
