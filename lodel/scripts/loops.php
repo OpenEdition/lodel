@@ -427,7 +427,9 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	}
 
 	$local_context = $context;
-	$local_context['pages'] = $cache[$funcname];
+	$local_context['pages'] = $cache[$funcname]['pages'];
+	$local_context['nexturl'] = $cache[$funcname]['nexturl'];
+	$local_context['previousurl'] = $cache[$funcname]['previousurl'];
 	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname", $local_context);
 		return;
@@ -517,7 +519,7 @@ function _constructPages(& $context, $funcname, $arguments)
 				unset ($pages[$key]);
 		}
 	}
-	return $pages;
+	return array('pages' => $pages, 'nexturl' => $context['nexturl'], 'previousurl' => $context['previousurl']);
 }
 /**
  * Return an array with the first and last page taking into account the current
