@@ -1083,7 +1083,7 @@ class DataLogic
 		}
 		
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
-			&& ($meObj = getFromCache('require_caching/ME.obj', false))) { // on a déjà parsé le XML
+			&& ($meObj = cache_get('require_caching/ME.obj'))) { // on a déjà parsé le XML
 			$class = __CLASS__;
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
 				$context['error'] = $error = 'Content in file "require_caching/ME.obj" is not an object. Aborted.';
@@ -1483,7 +1483,7 @@ class DataLogic
 			return;
 		}
 		// on récupère les noms des tables sur la base
-		if(!($tablefields = getFromCache('tablefields')))
+		if(!($tablefields = cache_get('tablefields')))
         	{
                 	include 'tablefields.php';
 		}
