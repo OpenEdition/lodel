@@ -230,7 +230,10 @@ class Cache_Memcache extends Cache implements Cache_Arithmetic {
 		}
 
 		// Set the data to memcache
-		return $this->_memcache->set($this->_sanitize_id($id), $data, $this->_flags, $lifetime);
+		if( ! $this->_memcache->replace($this->_sanitize_id($id), $data, $this->_flags, $lifetime)){
+			return $this->_memcache->set($this->_sanitize_id($id), $data, $this->_flags, $lifetime);
+		}
+		return true;
 	}
 
 	/**
