@@ -1081,12 +1081,13 @@ class DataLogic
 			}
 			$up = true;
 		}
-		
+
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
-			&& ($meObj = cache_get('require_caching/ME.obj'))) { // on a déjà parsé le XML
+			&& ($meObj = unserialize($cache->get($cacheid)))) { // on a déjà parsé le XML
 			$class = __CLASS__;
+
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
-				$context['error'] = $error = 'Content in file "require_caching/ME.obj" is not an object. Aborted.';
+				$context['error'] = $error = 'Content in file "ME.obj" is not an object. Aborted.';
 				return 'importxmlmodel';
 			}
 			$this->_xmlStruct = $meObj->_xmlStruct;
@@ -1115,6 +1116,7 @@ class DataLogic
 			}
 			// parse la base
 			$this->_parseSQL();
+
 			$cache->set($cacheid, serialize($this));
 		}
 
@@ -1293,13 +1295,15 @@ class DataLogic
 			$maxId = 0;
 			$ids = array();
 			$childTable = ( (FALSE !== strpos($table, 'groups')) ? str_replace('group', '', $table) : false);
-			foreach($this->_xmlDatas[$table] as $k=>$tbl) {
-				if('fields' === (string)$k) continue;
-				if($tbl[0] > $maxId) $maxId = $tbl[0];
-				$ids[] = $tbl[0];
+			if(isset($this->_xmlDatas[$table])){
+				foreach($this->_xmlDatas[$table] as $k=>$tbl) {
+					if('fields' === (string)$k) continue;
+					if($tbl[0] > $maxId) $maxId = $tbl[0];
+					$ids[] = $tbl[0];
+				}
 			}
 			foreach($fields['oldcontent'] as $key=>$value) {
-				if(false !== ($kk = array_search($value, $content[$table]['newcontent']))) { // correspondance
+				if(false !== ($kk = array_search($value, $content[$table]['newcontent'])) && isset($this->_xmlDatas[$table])) { // correspondance
 					foreach($this->_xmlDatas[$table] as $k=>&$tble) {
 						if('fields' === (string)$k || !isset($this->_changedContent['newcontent'][$table])) continue;
 						foreach($this->_changedContent['newcontent'][$table] as $ffield) {
@@ -1896,61 +1900,64 @@ class DataLogic
 		$entitytypeTable = lq('#_TP_entitytypes_entitytypes');
 		$entitiesTable = lq('#_TP_entities');
 		$typesTable = lq('#_TP_types');
-		foreach($this->_xmlStruct as $table=>$content) {
-			// données à insérer
-			if(isset($this->_xmlDatas[$table][0])) {
-				// copie au cas où
-				if(!isset($this->_existingTables[$table.'__oldME']))
-					$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
-				$this->_sql[] = "DELETE FROM `{$table}`;\n";
-				$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
-				$tmpSql = "INSERT INTO `{$table}` (".join(',', $this->_xmlDatas[$table]['fields']).") VALUES ";
-				foreach($this->_xmlDatas[$table] as $i=>$fields) {
-					if('fields' === $i || !is_array($fields)) continue;
-					$f = array();
-					$tmpSql .= ($i === 0) ? "\n(" : ",\n(";
-					foreach($fields as $j=>&$val) {
-						$val = str_replace('"', '\"', $val);
-						$f[] = '"'.$val.'"';
+		if(is_array($this->_xmlStruct ))
+		{
+			foreach($this->_xmlStruct as $table=>$content) {
+				// données à insérer
+				if(isset($this->_xmlDatas[$table][0])) {
+					// copie au cas où
+					if(!isset($this->_existingTables[$table.'__oldME']))
+						$this->_sql[] = "CREATE TABLE `{$table}__oldME` SELECT * FROM `{$table}`;\n";
+					$this->_sql[] = "DELETE FROM `{$table}`;\n";
+					$nbFields = count($this->_xmlDatas[$table]['fields']) - 1;
+					$tmpSql = "INSERT INTO `{$table}` (".join(',', $this->_xmlDatas[$table]['fields']).") VALUES ";
+					foreach($this->_xmlDatas[$table] as $i=>$fields) {
+						if('fields' === $i || !is_array($fields)) continue;
+						$f = array();
+						$tmpSql .= ($i === 0) ? "\n(" : ",\n(";
+						foreach($fields as $j=>&$val) {
+							$val = str_replace('"', '\"', $val);
+							$f[] = '"'.$val.'"';
+						}
+						$tmpSql .= join(',',$f).")";
 					}
-					$tmpSql .= join(',',$f).")";
+					$this->_sql[] = $tmpSql.";\n";
+					$f = $this->_xmlDatas[$table]['fields'];
+					unset($this->_xmlDatas[$table]);
+					$this->_xmlDatas[$table]['fields'] = $f;
+					unset($f);
 				}
-				$this->_sql[] = $tmpSql.";\n";
-				$f = $this->_xmlDatas[$table]['fields'];
-				unset($this->_xmlDatas[$table]);
-				$this->_xmlDatas[$table]['fields'] = $f;
-				unset($f);
-			}
-			// clés
-			if((isset($this->_xmlStruct[$table]['keys']) && isset($this->_sqlStruct[$table]['keys']) && is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) 
-			&& (array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys']))) {
-				// on efface toutes les clés présentes dans la table
-				if(is_array($this->_sqlStruct[$table]['keys'])) {
-					foreach($this->_sqlStruct[$table]['keys'] as $k=>$v) {
+				// clés
+				if((isset($this->_xmlStruct[$table]['keys']) && isset($this->_sqlStruct[$table]['keys']) && is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) 
+				&& (array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys']))) {
+					// on efface toutes les clés présentes dans la table
+					if(is_array($this->_sqlStruct[$table]['keys'])) {
+						foreach($this->_sqlStruct[$table]['keys'] as $k=>$v) {
+							$key = explode('_', $k);
+							$key = $key[0];
+							if('PRIMARY' == $key) {
+								$drop = 'PRIMARY KEY';
+							} else {
+								preg_match("/^`([^`]+)`/", $v, $m);
+								$drop = 'KEY `'.$m[1].'`';
+							}
+							$this->_sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
+						}
+					}
+					// on ajoute les clés
+					foreach($this->_xmlStruct[$table]['keys'] as $k=>$v) {
 						$key = explode('_', $k);
 						$key = $key[0];
-						if('PRIMARY' == $key) {
-							$drop = 'PRIMARY KEY';
-						} else {
-							preg_match("/^`([^`]+)`/", $v, $m);
-							$drop = 'KEY `'.$m[1].'`';
-						}
-						$this->_sql[] = "ALTER TABLE `{$table}` DROP {$drop};\n";
+						if('KEY' != $key)
+							$key .= ' KEY';
+						$this->_sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
 					}
 				}
-				// on ajoute les clés
-				foreach($this->_xmlStruct[$table]['keys'] as $k=>$v) {
-					$key = explode('_', $k);
-					$key = $key[0];
-					if('KEY' != $key)
-						$key .= ' KEY';
-					$this->_sql[] = "ALTER TABLE `{$table}` ADD {$key} {$v};\n";
+				unset($this->_xmlStruct[$table]['keys']);
+				// table options
+				if(isset($this->_xmlStruct[$table]['tableOptions']) && isset($this->_sqlStruct[$table]['tableOptions']) && $this->_xmlStruct[$table]['tableOptions'] != $this->_sqlStruct[$table]['tableOptions']) {
+					$this->_sql[] = "ALTER TABLE `{$table}` {$this->_xmlStruct[$table]['tableOptions']};\n";
 				}
-			}
-			unset($this->_xmlStruct[$table]['keys']);
-			// table options
-			if(isset($this->_xmlStruct[$table]['tableOptions']) && isset($this->_sqlStruct[$table]['tableOptions']) && $this->_xmlStruct[$table]['tableOptions'] != $this->_sqlStruct[$table]['tableOptions']) {
-				$this->_sql[] = "ALTER TABLE `{$table}` {$this->_xmlStruct[$table]['tableOptions']};\n";
 			}
 		}
 		// on execute les requetes en cours
