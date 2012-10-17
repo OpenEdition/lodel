@@ -1155,9 +1155,11 @@ function getgenericfields(&$context)
                FROM '.$GLOBALS['tp'].$context['class']. " 
                WHERE identity='".$context['id']."'";
 	#echo "sql=$sql";
-	$row = $db->getRow($sql);
-	foreach ($row as $key => $value) {
-		$values[$key] = $value;
+	if($row = $db->getRow($sql))
+	{
+		foreach ($row as $key => $value) {
+			$values[$key] = $value;
+		}
 	}
 	if(!isset($context['generic'])) $context['generic'] = array();
 	//Contruit le tableau des champs génériques avec leur valeur
@@ -1329,13 +1331,13 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
 	if(!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
 
-	$message = new Mail_mime("\n");
+	$message = new Mail_mime(array('eol' => "\n", ));
 
 	if(preg_match_all('/<img\b[^>]+src="([^"]+)"[^>]*\/?>/', $body, $m))
 	{
 		foreach($m[1] as $img)
 		{
-			if(false !== strpos($img, 'http://', $img)) continue;
+			if(false !== strpos($img, 'http://')) continue;
 			$r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
 			if(PEAR::isError($r))
 			{
@@ -1367,6 +1369,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 		"text_charset"  => "UTF-8",
 		"html_charset"  => "UTF-8",
 		"head_charset"  => "UTF-8",
+//		"head_charset"  => "ISO-8859-15",
 	);
 	$body =& $message->get($aParam);
 
