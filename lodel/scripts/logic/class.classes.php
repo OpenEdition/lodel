@@ -299,7 +299,7 @@ class ClassesLogic extends Logic
 		global $db;
 		if (!$this->vo) trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
 		$db->execute (lq ("DROP TABLE #_TP_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		if ($this->vo->classtype=="persons") {
+		if ( in_array($this->vo->classtype, array("persons", "entries")) ) {
 			$db->execute(lq("DROP TABLE #_TP_entities_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 		// delete associated types
