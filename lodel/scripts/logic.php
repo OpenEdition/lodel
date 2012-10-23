@@ -305,8 +305,8 @@ class Logic
 		$this->_prepareDelete($dao, $context);
 		$dao->deleteObject($id);
 
-		$ret=$this->_deleteRelatedTables($id);
 
+		$ret=$this->_deleteRelatedTables($id);
 		update();
 		return $ret ? $ret : '_back';
 	}
@@ -935,7 +935,7 @@ class Logic
 				$hook = str_replace("$prefix:",'',$hook, $count);
 				if ($count>0 || ($prefix=='pre' && strpos($hook, ':')===false)) { // Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
 					if(function_exists($hook)){
-						call_user_func($hook, &$context, $field->name);
+						call_user_func($hook, &$context, $field->name, &$error);
 					}
 				}
 			}
