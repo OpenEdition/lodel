@@ -50,8 +50,8 @@ form.entry{
 }
 
 div.passwdHelper {
-	clear: both; 
-	color: #6666fa; 
+	clear: both;
+	color: #6666fa;
 	font-size: 0.8em;
 }
 
@@ -714,7 +714,7 @@ div.actionOnEntity option, div.actionOnEntity optgroup{
 	background-color:white;
 }
 
-div.actionOnEntity select option.class{ 
+div.actionOnEntity select option.class{
 	color: #0075AB;
 	background-color:white;
 }
@@ -1181,7 +1181,7 @@ div.close{
 	text-align: left;
 	background: #fff;
 	border: 1px solid #333;
-	margin: 6em auto; 
+	margin: 6em auto;
 	width: 350px;
 }
 
@@ -1276,7 +1276,7 @@ div.close{
 
 #sitesLodel td {
 	padding:1em;
-	
+
 }
 
 #sitesLodel td.site {
@@ -2307,12 +2307,12 @@ div#checkimport a
 
 div.actions_top
 {
-	margin-right:3em;
+    margin:1.5em 0 -1.5em 2em;
 }
 
 div.actions_bottom
 {
-	margin:0 3em 2em 0;
+    margin:1.5em 0 2em 2em;
 }
 
 .mestyles
