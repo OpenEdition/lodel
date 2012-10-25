@@ -71,10 +71,10 @@ function printErrors($errors, $exit = true, $isFrame = true)
 		echo '<script type="text/javascript">';
 
 	foreach($errors as $error){
-		$error = addcslashes(str_replace("\n", "", $error), '"'); 
+		$error = addcslashes(str_replace("\n", "", $error), '"');
 		echo $isFrame ? 'window.parent.o.error("<p class=\"error\">Error: ' . $error . '</p>");' : "<p class=\"error\">Error: $error </p>";
 	}
-	
+
 	if($isFrame)
 		echo '</script>';
 	flush();
@@ -174,7 +174,7 @@ try
 			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
 
 			if ($unzipcmd && $unzipcmd != "pclzip") {
-				$log = exec( "$unzipcmd -o -d $tmpdir $source" );
+				exec( "$unzipcmd -o -d $tmpdir ".escapeshellarg($source) );
 			}else{
 				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
 				$archive = new PclZip($source);
@@ -200,22 +200,22 @@ try
             //          printErrors($parser->getLogs(), false);
                         printErrors($e->getMessage(), true, $isFrame);
                     }
-                    
+
                     $contents['parserreport'] = $parser->getLogs();
-                    
+
                     if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
                     {
                         array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
                         echo '<pre>'. print_r($contents, 1) . '</pre>';
                         die();
                     }
-                    
+
                     $fileconverted = $source. '.converted';
                     if (!writefile($fileconverted, base64_encode(serialize($contents))))
                     {
                         printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
                     }
-            
+
                     $tei = $source. '.tei';
                     if(!writefile($tei, $teiContents))
                     {
@@ -232,7 +232,7 @@ try
                     $row['identity']        = $context['identity'];
                     $row['idparent']        = $context['idparent'];
                     $row['idtype']          = $context['idtype'];
-            
+                    $row['reload']          = $context['reload'];
                     function_exists('maketask') || include 'taskfunc.php';
                     printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
                     die;
@@ -244,8 +244,7 @@ try
 			$oldtmpdir = $tmpdir;
 			$tmpdir = array();
 			if ($unzipcmd && $unzipcmd != "pclzip") {
-				$line = `$unzipcmd -o -d $tmpdir $source`;
-				$line = explode("\n", $line);
+				exec("$unzipcmd -o -d $oldtmpdir ".escapeshellarg($source), $line);
 				if(count($line) > 1 && !empty($line[1]))
 				{
 					unset($line[0]);
@@ -264,7 +263,7 @@ try
 				}
 				else
 				{
-					printErrors('No files were extracted from the archive', true, $isFrame);
+					printErrors('No files were extracted from the archive '.$source, true, $isFrame);
 				}
 			} else {
 				function LodelOtxPostExtractCallBack($p_event, &$p_header)
@@ -279,7 +278,7 @@ try
 
 				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
 				$archive = new PclZip($source);
-				$arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
+				$arr = $archive->extract(PCLZIP_OPT_PATH, $oldtmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
 
 				if($arr)
 				{
@@ -371,6 +370,7 @@ try
 		$row['identity']      = $context['identity'];
 		$row['idparent']      = $context['idparent'];
 		$row['idtype']        = $context['idtype'];
+		$row['reload']        = $context['reload'];
 
 		function_exists('maketask') || include 'taskfunc.php';
 		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
@@ -534,6 +534,7 @@ RDF;
 			$row['identity']		= $context['identity'];
 			$row['idparent']		= $context['idparent'];
 			$row['idtype']			= $context['idtype'];
+                        $row['reload']                  = $context['reload'];
 
 			function_exists('maketask') || include 'taskfunc.php';
 			if(empty($context['multiple']))
