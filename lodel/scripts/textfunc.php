@@ -1085,6 +1085,8 @@ function formatIdentifier($str) {
 */
 
 function cleanBadChars($str){
+
+	if(!is_string($str)) return $str;
 	$replace = array (
 		"\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
 		"\xc2\x81" => "",
