@@ -37,14 +37,19 @@
 	<li>[@EDITION.TITLE_CHECK_STYLING]</li>
 </ul>
 
+<div class="actions_top">
+    <input class="styled assoc_blue" type="button" value="[@COMMON.IMPORT_AND_VIEW]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui&amp;visualiserdocument=oui&amp;reload=[#RELOAD]'">&nbsp;
+    <input class="styled assoc_blue" type="button" value="[@COMMON.IMPORT]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui&amp;reload=[#RELOAD]'">&nbsp;
+    <input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;reload=[#RELOAD]';"/>&nbsp;
+    <input class="styled assoc_grey" type="button" value="[@EDITION.REDO_IMPORT]" onclick="javascript:window.location='oochargement.php?identity=[#IDENTITY]&amp;idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]&amp;reload=[#RELOAD]';">&nbsp;
+    <input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]&amp;reload=[#RELOAD]'"/>
+</div>
+
 <div id="headerContainer">
 	<ul id="headerMenu">
 		<li class="left selected topleftrounded" id="select_results" onclick="chk.toggleTab('results', this);">[@EDITION.RESULTS|mb_strtoupper('utf-8')]</li>
 		<li class="left topleftrounded" id="select_informations" onclick="chk.toggleTab('informations', this);">[@COMMON.INFORMATIONS|mb_strtoupper('utf-8')]</li>
 	</ul>
-	<div class="actions_top right">
-		<input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui';"/>&nbsp;<input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'"/>
-	</div>
 </div>
 
 <div id="checkimport" class="toprightrounded">
@@ -253,8 +258,12 @@
 	</div>
 </div>
 
-<div class="actions_bottom right">
-	<input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui';"/>&nbsp;<input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]'"/>
+<div class="actions_bottom">
+    <input class="styled assoc_blue" type="button" value="[@COMMON.IMPORT_AND_VIEW]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui&amp;visualiserdocument=oui&amp;reload=[#RELOAD]'">&nbsp;
+    <input class="styled assoc_blue" type="button" value="[@COMMON.IMPORT]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;finish=oui&amp;reload=[#RELOAD]'">&nbsp;
+    <input type="button" class="styled assoc_blue" value="[@COMMON.CONTINUE]" onclick="javascript:window.location='index.php?do=import&amp;idtask=[#IDTASK]&amp;reload=[#RELOAD]';"/>&nbsp;
+    <input class="styled assoc_grey" type="button" value="[@EDITION.REDO_IMPORT]" onclick="javascript:window.location='oochargement.php?identity=[#IDENTITY]&amp;idparent=[#IDPARENT]&amp;idtype=[#IDTYPE]&amp;reload=[#RELOAD]';">&nbsp;
+    <input class="styled assoc_grey" type="button" value="[@COMMON.CANCEL]" onclick="javascript:window.location='index.php?do=delete&amp;lo=tasks&amp;id=[#IDTASK]&amp;reload=[#RELOAD]'"/>
 </div>
 
 <MACRO NAME="MOOTOOLS"/>
