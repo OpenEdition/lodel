@@ -152,7 +152,7 @@ class TEIParser extends XMLReader
 	 * @access private
 	 */
 	private $_tables = array();
-	
+
 	/**
 	 * @var string titre du document si trouvé (tablefields.g_name == 'dc.title')
 	 * @access private
@@ -164,7 +164,7 @@ class TEIParser extends XMLReader
 	 * @access private
 	 */
 	 private $_namespaces;
-	 
+
 	 /**
 	  * @var string répertoire temporaire d'extraction du document
 	  * @access private
@@ -173,7 +173,7 @@ class TEIParser extends XMLReader
 
 	 /**
 	  * @var array tableau de styles correspondant aux notes de fin et bas de page
-	  * @access private  
+	  * @access private
 	  */
 	 private $_notesstyles = array(
                                    'footnote',
@@ -341,7 +341,7 @@ class TEIParser extends XMLReader
 
 		$odt = (string) $odt;
 		$this->_docTitle = (string) $filename;
-        $this->_tmpdir   = (string) $tmpdir;
+                $this->_tmpdir   = (string) $tmpdir;
 		if(!empty($odt))
 		{
 			$this->_extractImages($odt, $tmpdir);
@@ -447,10 +447,9 @@ class TEIParser extends XMLReader
 		}
 		else
 		{ // use unzip
-			$line = `$unzipcmd -o -d $tmpdir $odt`;
+			exec("$unzipcmd -o -d $tmpdir ".escapeshellarg($odt), $line);
 			$tmpdir = array_filter(explode('/', $tmpdir));
 			$tmpdir = end($tmpdir);
-			$line = explode("\n", $line);
 			if(count($line) > 1 && !empty($line[1]))
 			{
 				unset($line[0]);
@@ -692,7 +691,11 @@ class TEIParser extends XMLReader
 					$person['g_name'] = strip_tags($person['g_name']);
 					if($lastname && $firstname)
 					{
-						$name = preg_split("/\s+/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY);
+                                                $name = array_filter(explode(" ", $person['g_name']));
+                                                if(count($name) === 1)
+                                                {
+                                                    $name = preg_split("/(\xc2\xa0)+/u", $person['g_name'], -1, PREG_SPLIT_NO_EMPTY);
+                                                }
 						$persons[$personType][$k]['data'][$lastname['class']] = array_pop($name);
 						$persons[$personType][$k]['data'][$firstname['class']] = join(' ', $name);
 					}
@@ -703,7 +706,7 @@ class TEIParser extends XMLReader
 				}
 				else
 				{
-					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_FIRSTNAME_LASTNAME_NOT_FOUND', 'edition'), print_r($person, 1)));
+					$this->_log(sprintf(getlodeltextcontents('TEIPARSER_FIRSTNAME_LASTNAME_NOT_FOUND', 'edition'), print_r($person, 1)).print_r($ps, 1));
 				}
 				unset($persons[$personType][$k]['g_name']);
 			}
@@ -794,7 +797,7 @@ class TEIParser extends XMLReader
 	{
 		if(!isset($element))
 			$element =& $this;
-		
+
 		if(!$element->hasAttributes) return array();
 
 		$attrs = array();
@@ -987,7 +990,20 @@ class TEIParser extends XMLReader
 						$namespaces = $v->getDocNamespaces();
 						$v->registerXPathNamespace('tei', $namespaces['']);
 
-						$this->_contents['persons'][$style->id][$k] = array('data' => array(), 'g_name' => (string) (isset($v->name) ? $v->name : $v));
+                                                $this->_contents['persons'][$style->id][$k] = array('data' => array());
+                                                if(!isset($v->persName))
+                                                    $this->_contents['persons'][$style->id][$k]['g_name'] = (string) (isset($v->name) ? $v->name : $v);
+                                                elseif(isset($v->persName[0]->forename) || isset($v->persName[0]->surname)) {
+                                                    $this->_contents['persons'][$style->id][$k]['g_name'] = '';
+
+                                                    if(isset($v->persName[0]->forename))
+                                                        $this->_contents['persons'][$style->id][$k]['g_name'] .= preg_replace("/\s+/u", "\xc2\xa0", (string) $v->persName[0]->forename)." ";
+                                                    if(isset($v->persName[0]->surname))
+                                                        $this->_contents['persons'][$style->id][$k]['g_name'] .= preg_replace("/\s+/u", "\xc2\xa0", (string) $v->persName[0]->surname)." ";
+                                                } else {
+                                                    $this->_contents['persons'][$style->id][$k]['g_name'] = (string) $v->persName[0];
+                                                }
+
 
 						foreach($this->_persontypes[$class]['fields'] as $key => $field)
 						{
@@ -1002,12 +1018,12 @@ class TEIParser extends XMLReader
 
 							if(empty($fieldContent)) continue;
 							$currentNode =& $this->_contents['persons'][$style->id][$k]['data'][$field->name];
-							
+
 							foreach($fieldContent as $fC)
 							{
 								if(!isset($this->_contents['persons'][$style->id][$k]['data'][$field->name]))
 									$this->_contents['persons'][$style->id][$k]['data'][$field->name] = "";
-								
+
 								$this->_currentClass[] = $field->name;
 
 // 								$this->_contents['persons'][$style->id][$k]['data'][$field->name] = $this->_parse($fC->asXML());
@@ -1016,15 +1032,15 @@ class TEIParser extends XMLReader
 
 								while($reader->read())
 								{
-									if(parent::ELEMENT === $reader->nodeType 
+									if(parent::ELEMENT === $reader->nodeType
 										&& ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) )
 									{
-										$attrs = $this->_parseAttributes($reader);   
+										$attrs = $this->_parseAttributes($reader);
 										$currentNode .= $this->_getTagEquiv($reader->localName, $attrs);
 										if($reader->isEmptyElement && 'lb' !== $reader->localName) $currentNode .= $this->_closeTag();
 									}elseif(parent::TEXT === $reader->nodeType || parent::WHITESPACE === $reader->nodeType || parent::SIGNIFICANT_WHITESPACE === $reader->nodeType){
 										$currentNode .= $reader->readOuterXML();
-									}elseif(parent::END_ELEMENT === $reader->nodeType 
+									}elseif(parent::END_ELEMENT === $reader->nodeType
 											&& ( $reader->localName !== "hi" || $reader->getAttribute('rendition') ) ){
 										$currentNode .= $this->_closeTag();
 									}
@@ -1033,7 +1049,7 @@ class TEIParser extends XMLReader
 							}
 						}
 					}
-					
+
 				}
 			}
 			else
@@ -1098,7 +1114,7 @@ class TEIParser extends XMLReader
 				if(isset($attrs['rend']) && in_array(strtolower($attrs['rend']), $this->_notesstyles) ) continue;
 
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
-				
+
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
@@ -1110,7 +1126,7 @@ class TEIParser extends XMLReader
                 if(isset($rend) && in_array(strtolower($rend), $this->_notesstyles) ) continue;
 
 				$text .= $this->_closeTag();
-				
+
 				if(!empty($rend))
 				{
 					$rend = $this->_getStyle($rend);
@@ -1252,7 +1268,7 @@ class TEIParser extends XMLReader
 					elseif('direction(ltr)' === $style)
 						$attrsAdd[] = 'dir="ltr"';
 				}
-			}elseif( $this->localName !== "p" ){
+			}elseif( $this->localName !== "p" && $this->localName !== "q"){ // le <p> indique un paragraphe, le <q> indique une citation
 				$ret   .= '<span class="' . $styles['class'] . '">';
 				$tags[] = 'span';
 			}
@@ -1297,7 +1313,7 @@ class TEIParser extends XMLReader
 				if(!isset($attrs['place']))
 					break;
 
-			case 'quote': 
+			case 'quote':
 			case 'head': // title
 			case 'seg':
 			case 'list': // list
@@ -1570,7 +1586,7 @@ class TEIParser extends XMLReader
 
 		while($this->read())
 		{
-		    
+
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('table' === $this->localName)
@@ -1597,7 +1613,7 @@ class TEIParser extends XMLReader
 				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
 					$text .= $this->_closeTag();
 				}
-					
+
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
@@ -1612,7 +1628,7 @@ class TEIParser extends XMLReader
 
 		if(in_array($attrs['id'], $this->_tables))
 			return;
-		
+
 		$this->_tables[] = $attrs['id'];
 
 		return $text;
@@ -1745,7 +1761,7 @@ class TEIParser extends XMLReader
                 $this->_tags[] = "table";
             }
             $text .= "<table class=\"{$attrs['type']}\">";
-            
+
         }elseif( (int) $childs['seg'] > 0 ) {
             $localattrs = $this->_parseAttributes();
             if(!isset($localattrs['subtype'])) $localattrs['subtype'] = "";
@@ -1755,9 +1771,9 @@ class TEIParser extends XMLReader
             $text .= "<tr><td>{$attrs['n']}</td><td colspan=\"{$attrs['cols']}\">";
             $this->_tags[] = array('td','tr');
         }
-        
+
         $cols = 1;
-        
+
         while($this->read()){
             if(parent::ELEMENT === $this->nodeType){
                 if( "quote" == $this->localName){
@@ -1768,7 +1784,7 @@ class TEIParser extends XMLReader
                        }
                        if($childchilds['seg']) $cols = $childchilds['seg'];
 
-    	               $text .= $this->_getTagEquiv($this->localName, array('quoteline'   => true, 
+    	               $text .= $this->_getTagEquiv($this->localName, array('quoteline'   => true,
                                                                      'n'           => $attrs['n'],
                                                                      'cols'        => $cols,
                                                                    ));
@@ -1782,38 +1798,38 @@ class TEIParser extends XMLReader
 	        }elseif(parent::END_ELEMENT === $this->nodeType){
                 $text .= $this->_closeTag();
 	            if( "quote" == $this->localName ) break;
-	            
+
 	        }elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
                 $text .= $this->_getText($this->value);
 	        }
 	    }
-	    
+
 	    return $text;
 	}
-	
+
 	private function _parseSeg(array $attrs)
 	{
 	    $text = "<td>";
 	    $this->_tags[] = "td";
-	    
+
 	    while($this->read()){
 	        if(parent::ELEMENT === $this->nodeType){
 	            $text .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
 	        }elseif(parent::END_ELEMENT === $this->nodeType){
 	            if('seg' === $this->localName) break;
-	            
+
 	            $text .= $this->_closeTag();
-	            
+
 	        }elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
                 $text .= $this->_getText($this->value);
             }
 	    }
-	    
+
 	    $text .= $this->_closeTag();
 
 	    return $text;
 	}
-	
+
     /**
      * Parse une bloc de code
      *
@@ -1835,11 +1851,10 @@ class TEIParser extends XMLReader
         $text .= "</code></pre>";
         return $text;
     }
-	
-	
+
 	/**
 	 * Remet les namespaces
-	 * 
+	 *
 	 * @access private
 	 * @param  SimpleXMLElement
 	 */
@@ -1852,7 +1867,7 @@ class TEIParser extends XMLReader
   		    }else{
   		        /* Hack permettant de générer le bon XML, PHP 5.3 a changé le comportement
   		         * de SimpleXML, qui supprime le prefixe du namespace, mais qui ne sait pas
-  		         * le traiter après coup. Bizarre. 
+  		         * le traiter après coup. Bizarre.
   		         */
    				$v->addAttribute("xmlns:xmlns:{$k}", $ns, $empty);
   		    }
