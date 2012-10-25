@@ -50,4 +50,37 @@ function check_isbn($context, $field, &$errors)
 	}
 }
 
+function check_issn($context, $field, &$errors)
+{
+	if(isset($context['do']) && $context['do'] == "edit" && !empty($context['data'][$field]))
+	{
+		$value = preg_replace('/[ -]/', '', $context['data'][$field]);
+        $checksum = substr($value, -1, 1);
+        $values   = str_split(substr($value, 0, -1));
+        $check    = 0;
+        $multi    = 8;
+        foreach($values as $token) {
+            if ($token == 'X') {
+                $token = 10;
+            }
+
+            $check += ($token * $multi);
+            --$multi;
+        }
+
+        $check %= 11;
+        $check  = 11 - $check;
+
+        if ($check == $checksum || (($check == 10) && ($checksum == 'X'))) {
+        	$context['data'][$field] = wordwrap($value,4,'-', true);
+            return;
+        }else{
+        	$errors[$field] = 'tablefield';
+        	return;
+        }
+
+	}
+}
+
+
 ?>
