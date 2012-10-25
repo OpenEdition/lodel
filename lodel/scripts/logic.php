@@ -55,7 +55,7 @@
 
 /**
  * Classe des logiques métiers.
- * 
+ *
  * <p>Cette classe définit les actions de base des différentes logiques métiers utilisées dans Lodel.
  * Elle est la classe 'mère' des logiques métiers se trouvant dans le répertoire /logic.
  * Elles est aussi la liaison entre la couche d'abstraction de la base de données (DAO/VO) et la
@@ -101,13 +101,13 @@ class Logic
 
 	static protected $_logics = array();
 
-	/** 
+	/**
 	 * Constructeur de la classe.
-	 * 
+	 *
 	 * Positionne simplement le nom de la table principale.
 	 * @param string $maintable le nom de la table principale.
 	 */
-	public function __construct($maintable) 
+	public function __construct($maintable)
 	{
 		$this->maintable = $maintable;
 	}
@@ -116,7 +116,7 @@ class Logic
 	* Logic factory
 	* @param string $table the name of the logic to call
 	*/
-	public static function getLogic($table) 
+	public static function getLogic($table)
 	{
 		if (isset(self::$_logics[$table])) {
 			return self::$_logics[$table]; // cache
@@ -133,7 +133,7 @@ class Logic
 				trigger_error('ERROR: cannot find the class, or the logic plugin file does not extend the Logic OR GenericLogic class', E_USER_ERROR);
 		}
 		self::$_logics[$table] = new $logicclass;
-	
+
 		return self::$_logics[$table];
 	}
 
@@ -142,7 +142,7 @@ class Logic
 	 *
 	 * Cette fonction récupère les données de l'objet <em>via</em> la DAO de l'objet. Ensuite elle
 	 * met ces données dans le context (utilisation de la fonction privée _populateContext())
-	 * 
+	 *
 	 * view an object Action
 	 * @param array $context le tableau des données passé par référence.
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
@@ -164,7 +164,7 @@ class Logic
 			$context['mask'] = unserialize(html_entity_decode(stripslashes($context['mask'])));
 		}
 		//ajout d'informations supplémentaires dans le contexte (éventuellement)
-		$ret=$this->_populateContextRelatedTables($vo, $context); 
+		$ret=$this->_populateContextRelatedTables($vo, $context);
 
 		return $ret ? $ret : "_ok";
 	}
@@ -204,7 +204,7 @@ class Logic
 	 * données sont validées (suivant leur type) puis elles sont rentrées dans la base de données <em>via</em> la DAO associée à l'objet.
 	 * Utilise _prepareEdit() pour effectuer des opérations de préparation avant l'édition de l'objet puis _populateContext() pour ajouter des informations supplémentaires au context. Et enfin _saveRelatedTables() pour sauver d'éventuelles informations dans des tables liées.
 	 * </p>
-	
+
 	 * add/edit Action
 	 * @param array $context le tableau des données passé par référence.
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
@@ -218,7 +218,7 @@ class Logic
 				return '_error';
 			}
 		}
-		
+
 		// get the dao for working with the object
 		$dao = $this->_getMainTableDAO();
 		$this->_prepareEdit($dao, $context);
@@ -233,7 +233,7 @@ class Logic
 		if (isset($dao->rights['protect'])) {
 			$vo->protect = isset($context['protected']) && $context['protected'] ? 1 : 0;
 		}
-		// put the context into 
+		// put the context into
 		$this->_populateObject($vo, $context);
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
@@ -245,8 +245,8 @@ class Logic
 	}
 
 	/**
-	 * Implémentation par défaut de l'action qui permet de changer le rang d'un objet. 
-	 * 
+	 * Implémentation par défaut de l'action qui permet de changer le rang d'un objet.
+	 *
 	 * Cette action modifie la rang (rank) d'un objet. Peut-être restreinte à un status particulier
 	 * et à un étage particulier (groupe).
 	 *
@@ -313,14 +313,14 @@ class Logic
 
 	/**
 	 * Implémentation par défaut de la fonction right
-	 * 
+	 *
 	 * Cette fonction permet de retourner les droits pour un niveau d'accès particulier
-	 * 
+	 *
 	 * Return the right for a given kind of access
 	 * @param string $access le niveau d'accès
 	 * @return integer entier représentant le droit pour l'accès demandé.
 	 */
-	public function rights($access) 
+	public function rights($access)
 	{
 		$dao = $this->_getMainTableDAO();
 		return isset($dao->rights[$access]) ? $dao->rights[$access] : '';
@@ -357,12 +357,12 @@ class Logic
 	/**#@+
 	 * @access private
 	 */
-	
-	protected function _getMainTableDAO() 
+
+	protected function _getMainTableDAO()
 	{
 		return DAO::getDAO($this->maintable);
 	}
-   
+
 
 	/**
 	 * Change the rank of an Object
@@ -412,7 +412,7 @@ class Logic
 		}
 
 		return;
-		
+
 		$newrank = $dir>0 ? 1 : $count;
 		for ($i = 0 ; $i < $count ; $i++) {
 			if ($vos[$i]->id == $id) {
@@ -443,10 +443,10 @@ class Logic
 		return;
 
 // 		$desc = $dir>0 ? "" : "DESC";
-// 
+//
 // 		$dao = $this->_getMainTableDAO();
 // 		$vos = $dao->findMany($criteria, "rank $desc, id $desc", "id, rank");
-// 
+//
 // 		$count = count($vos);
 // 		$newrank = $dir>0 ? 1 : $count;
 // 		for ($i = 0 ; $i < $count ; $i++) {
@@ -474,10 +474,10 @@ class Logic
 	 * Validated the public fields and the unicity.
 	 * @return return an array containing the error and warning, null otherwise.
 	 */
-	public function validateFields(&$context, &$error) 
+	public function validateFields(&$context, &$error)
 	{
 		global $db;
-		
+
 		// Noms des logics qui sont traitées par des formulaires dans lesquels il y a des champs de type file ou image, et qui ont besoin d'un traitement particulier pour ces champs (i.e. pas des docs annexes)
 		// Ne concerne que la partie admin de l'interface, ajouté pour les icônes liées aux classes et aux types
 		// Cf. par ex. les formulaires edit_types.html ou edit_classes.html
@@ -498,7 +498,7 @@ class Logic
 			} else {
 				if (($type == "image" || $type == "file") && in_array($this->maintable, $adminFormLogics)){
 					// traitement particulier des champs de type file et images dans les formulaires de la partie admin
-					
+
 					// répertoire de destination pour les fichiers et les images : array ($field, $répertoire)
 					$directory =array ('icon' => 'lodel/icons');
 					$valid = validfield($context[$field], $type, "",$field, "", $directory[$field]);
@@ -531,7 +531,7 @@ class Logic
 		$ufields = $this->_uniqueFields();
 		foreach ($ufields as $fields) { // all the unique set of fields
 			$conditions=array();
-		
+
 			foreach ($fields as $field) { // set of fields which has to be unique.
 				if(empty($context[$field]))
 					break 2;
@@ -592,7 +592,7 @@ class Logic
 					$chars = false;
 					$unknown = false;
 					$ponct = false;
-				} elseif( ($c >= 'a' && $c <= 'z') || 
+				} elseif( ($c >= 'a' && $c <= 'z') ||
 					($c >= 'A' && $c <= 'Z')  ||
 					(preg_match("/^[".ACCENTS."]$/u", $c)>0) ) {
 					$regexp .= (false === $chars ? '[a-zA-Z'.ACCENTS.']+' : '');
@@ -654,7 +654,7 @@ class Logic
 						}
 						$spaces = 0;
 						$num++;
-					} elseif(($c >= 'a' && $c <= 'z') || 
+					} elseif(($c >= 'a' && $c <= 'z') ||
 						($c >= 'A' && $c <= 'Z')  ||
 						(preg_match("/^[".ACCENTS."]$/u", $c)>0) ) {
 						if($num === 0 && $chars === 0) {
@@ -686,7 +686,7 @@ class Logic
 						$num = 0;
 						$chars = 0;
 					}
-					
+
 				}
 				if($chars > 0 || $num > 0) {
 					$pmask .= ($chars > 1 || $num > 1 ? ']+' : ']');
@@ -715,7 +715,7 @@ class Logic
 	 * Return the unique fields
 	 * @access protected
 	 */
-	protected function _publicfields() 
+	protected function _publicfields()
 	{
 		trigger_error("call to abstract publicfields", E_USER_ERROR);
 		return array();
@@ -734,7 +734,7 @@ class Logic
 	 * Return the unique fields
 	 * @access protected
 	 */
-	protected function _uniqueFields() 
+	protected function _uniqueFields()
 	{
 		trigger_error("call to abstract uniquefields", E_USER_ERROR);
 		return array();
@@ -744,7 +744,7 @@ class Logic
 	 * Populate the object from the context. Only the public fields are inputted.
 	 * @private
 	 */
-	protected function _populateObject($vo, &$context) 
+	protected function _populateObject($vo, &$context)
 	{
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
@@ -756,12 +756,12 @@ class Logic
 	 * Populate the context from the object. All fields are outputted.
 	 * @protected
 	 */
-	protected function _populateContext($vo, &$context) 
+	protected function _populateContext($vo, &$context)
 	{
 		$view = (isset($context['do']) && $context['do'] == 'view');
 		foreach ($vo as $k=>$v) {
 			//Added by Jean - Be carefull using it
-			//if value is a string and we want to view it (or edit it in a form, 
+			//if value is a string and we want to view it (or edit it in a form,
 			//open a form is a view action) then we htmlize it
 			$context[$k] = is_string($v) && $view ? htmlspecialchars($v) : $v;
 		}
@@ -790,17 +790,17 @@ class Logic
 	protected function _deleteRelatedTables($id) {}
 
 	/**
-	 * Used in viewAction to do extra populate in the context 
+	 * Used in viewAction to do extra populate in the context
 	 */
 	protected function _populateContextRelatedTables($vo, &$context) {}
-	
+
 	/**
 	 * process of particular type of fields
 	 * @param string $type the type of the field
 	 * @param array $context the context
 	 * @param int $status the status; by default 0 if no status changed
 	 */
-	protected function _processSpecialFields($type, &$context, $status = 0) 
+	protected function _processSpecialFields($type, &$context, $status = 0)
 	{
 		global $db;
 
@@ -840,7 +840,7 @@ class Logic
 	 * @param string $value the current value of the field
 	 * @param array $context the current context
 	 */
-	protected function _calculateHistoryField(&$value, &$context, $status = 0) 
+	protected function _calculateHistoryField(&$value, &$context, $status = 0)
 	{
 		if(empty($context['id'])) return;
 
@@ -902,7 +902,7 @@ class Logic
 				$this->_authorizedStatus = array(-1, 1, 2);
 				break;
 			default : trigger_error("ERROR: Cannot find authorized status", E_USER_ERROR);
-				
+
 		}
 		if (in_array($status, $this->_authorizedStatus) || $status == 0) {
 			return true;
@@ -914,10 +914,10 @@ class Logic
 
 	/**
 	 * Execution des hooks
-	 * 
-	 * Cette méthode est appelée lors de l'édition d'une entitée afin d'exécuter les différents hooks 
+	 *
+	 * Cette méthode est appelée lors de l'édition d'une entitée afin d'exécuter les différents hooks
 	 * définis pour chaque champ de l'entité.
-	 * 
+	 *
 	 */
 	protected function _executeHooks(&$context, &$error, $prefix='pre'){
 		global $db;
@@ -930,13 +930,13 @@ class Logic
 		$fields = DAO::getDAO("tablefields")->findMany("class='". $context['class']. "' AND status>0 AND type!='passwd'", "", "name,editionhooks");
 
 		foreach($fields as $field){
-			$hooks = preg_split('/,/', $field->editionhooks, -1, PREG_SPLIT_NO_EMPTY );
+			$hooks = array_filter(explode(',', $field->editionhooks));
 			foreach($hooks as $hook){
 				$hook = str_replace("$prefix:",'',$hook, $count);
-				if ($count>0 || ($prefix=='pre' && strpos($hook, ':')===false)) { // Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
-					if(function_exists($hook)){
-						call_user_func($hook, &$context, $field->name, &$error);
-					}
+				if (($count>0 || ($prefix=='pre' && preg_match("/[a-zA-Z09\-_]:[a-zA-Z09\-_]/", $hook) === 0))  // Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
+                                    && is_callable($hook) ) { // vérifie qu'on peut appeller la fonction, ie qu'elle existe
+					if(is_callable($hook))
+                                            call_user_func($hook, &$context, $field->name, &$error);
 				}
 			}
 		}

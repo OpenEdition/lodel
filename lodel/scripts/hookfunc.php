@@ -24,7 +24,7 @@ function updatedatepubli(&$context, $field){
 				foreach( $db->getArray(lq("SELECT id, idtype FROM #_TP_entities WHERE idparent = " . $db->quote($id) )) as $entity){
 					$type = $db->getRow(lq("SELECT class FROM #_TP_types WHERE id = " . $db->quote($entity['idtype'])));
 					$db->execute(lq("UPDATE #_TP_{$type['class']} SET $field = " . $db->quote($date) . " WHERE identity = " . $db->quote($entity['id'])));
-					
+
 					update_childs($field, $entity['id'], $date);
 				}
 			}
@@ -82,5 +82,53 @@ function check_issn($context, $field, &$errors)
 	}
 }
 
+/**
+ * Filtre permettant de vérifier que l'extension du fichier uploadé correspond à celle que l'on attend
+ *
+ * @author Pierre-Alain Mignot
+ */
+class Lodel_Filter_File_Type
+{
+    /**
+    * Vérifie que l'extension du fichier correspond à ce que l'on attend
+    * On fait un appel à la méthode statique Lodel_Filter_File_Type::PDF pour valider l'extension .pdf
+    *
+    * @author Pierre-Alain Mignot
+    * @param string $name le nom de la méthode appellée, convertie en nom de l'extension à valider
+    * @param array $args les arguments passés à la fonction, array(context, champ, erreurs)
+    */
+    public static function __callStatic($name, $args)
+    {
+        $fileExt = strtolower($name);
 
-?>
+        $context = $args[0];
+        $field = $args[1];
+        $errors =& $args[2];
+
+        if(empty($context['data'][$field]) || !is_array($context['data'][$field])) return;
+
+        switch($context['data'][$field]['radio'])
+        {
+            case 'upload':
+                $file = $_FILES['data']['name'][$field]['upload'];
+                break;
+
+            case 'delete': return;
+                break;
+
+            case 'serverfile':
+                $file = $context['data'][$field]['localfilename'];
+                break;
+
+            case '':
+                $file = isset($context['data'][$field]['previousvalue']) ? $context['data'][$field]['previousvalue'] : '';
+                if(empty($file)) return;
+                break;
+
+            default: return;
+        }
+
+        if($fileExt !== substr(strtolower(strrchr($file,'.')), 1))
+            $errors[$field] = 'tablefield';
+    }
+}
