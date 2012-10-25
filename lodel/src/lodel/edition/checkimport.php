@@ -70,6 +70,8 @@ try
 	gettypeandclassfromtask($task, $context);
 
 	$context = array_merge($context, unserialize(base64_decode(file_get_contents($task['fichier']))));
+        if(!empty($task['identity']))
+            $context['identity'] = $task['identity'];
 	$context['idtype'] = $task['idtype'];
 	if(!empty($context['contents']['entries']))
 		$context['entries'] = $context['contents']['entries'];
