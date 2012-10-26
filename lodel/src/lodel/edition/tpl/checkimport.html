@@ -99,10 +99,10 @@
 
 			<SWITCH TEST="[#TYPE]">
 				<DO CASE="entries">
-					<LOOP NAME="getIdEntrytype" SELECT="id,title,class" TABLE="entrytypes" WHERE="type='[#NAME]'">
+					<LOOP NAME="getIdEntrytype" SELECT="id,title,class,type" TABLE="entrytypes" WHERE="type='[#NAME]'">
 						<IF COND="[#ENTRIES.#ID]">
 							<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
-								<td class="title">[#TITLE]</td>
+								<td class="title <IF COND="[#ERROR.#TYPE]">error</IF>">[#TITLE]</td>
 								<td class="contents">
 									<div class="overflowed">[#ENTRIES.#ID]</div>
 								</td>

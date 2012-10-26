@@ -196,7 +196,7 @@ OtxLoad.prototype = {
 				$('otxanalyse').removeClass('actif').addClass('done').getFirst('img').set('src', '[#SHAREURL]/images/done.png').set('alt', '[@EDITION.DONE]');
 				if(!this.multiple) {
 					$('otxanalyse').getFirst('span').set('text', "[@EDITION.CHECKIMPORT_REDIRECT]");
-					window.location = 'checkimport.php?idtask='+opt;
+					window.location = 'checkimport.php?idtask='+opt+'&reload=[#RELOAD]';
 				} else {
 					$('otxresult').adopt(new Element('div', {'html':opt}).getFirst());
 				}

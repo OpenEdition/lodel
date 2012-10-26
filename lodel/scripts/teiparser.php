@@ -241,11 +241,11 @@ class TEIParser extends XMLReader
 				{
 					// extract the name of the converted style
 					if(preg_match("/\[(@(type|rend)='([^']+)')]$/", $field->otx, $m))
-                    {
-                        $this->_styles[$m[3]] = $field;
-                                                // get associated blocks
-                                                // $field->otx = array($field->otx, "//tei:*[starts-with(@type, '".$m[3]."-')]", "//tei:*[starts-with(@rend, '".$m[3]."-')]");
-                    }
+                                        {
+                                            $this->_styles[$m[3]] = $field;
+                                            // get associated blocks
+                                            // $field->otx = array($field->otx, "//tei:*[starts-with(@type, '".$m[3]."-')]", "//tei:*[starts-with(@rend, '".$m[3]."-')]");
+                                        }
 
 					$this->_styles[$field->name] = $field;
 
@@ -313,11 +313,14 @@ class TEIParser extends XMLReader
 				$this->_persontypes[$field->class][$field->type] = $field;
 		}
 
-		$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $entriesClassTypes)).')', 'id', 'id,type,title,style,otx,lang');
+		$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $entriesClassTypes)).')', 'id', 'id,type,title,style,otx,lang,newbyimportallowed');
 		if($fields)
 		{
 			foreach($fields as $field)
+			{
 				$this->_entrytypes[$field->type] = $field;
+				$this->_entrytypes[$field->id] = $field;
+                        }
 		}
 	}
 
@@ -646,6 +649,11 @@ class TEIParser extends XMLReader
 			$entries[$k] = strip_tags(join(',', $v));
 
 		$this->_contents['entries'] = $entries;
+		foreach($this->_contents['entries'] as $type => $arrType)
+		{
+                    if(!$this->_entrytypes[$type]->newbyimportallowed)
+                        $this->_contents['error'][$this->_entrytypes[$type]->type] = 'importnotallowed';
+		}
 		unset($entries);
 
 		// get the firstname/lastname field name

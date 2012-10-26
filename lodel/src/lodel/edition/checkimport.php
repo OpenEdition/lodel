@@ -72,6 +72,8 @@ try
 	$context = array_merge($context, unserialize(base64_decode(file_get_contents($task['fichier']))));
         if(!empty($task['identity']))
             $context['identity'] = $task['identity'];
+        if(!empty($task['idparent']))
+            $context['idparent'] = $task['idparent'];
 	$context['idtype'] = $task['idtype'];
 	if(!empty($context['contents']['entries']))
 		$context['entries'] = $context['contents']['entries'];

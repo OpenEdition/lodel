@@ -33,7 +33,7 @@
 </DEFMACRO>
 
 <!--[ -----------------------------------------------------------
-  Print a listing of all detected errors in to the form  
+  Print a listing of all detected errors in to the form
 --------------------------------------------------------------- ]-->
 <DEFFUNC NAME="PRINT_ERROR_LISTING">
 <LOOP NAME="errors">
@@ -114,6 +114,7 @@
 <IF COND="[#ERROR|strpos('mask:')] SEQ 0">[#ERROR|substr(5)]</IF>
 <IF COND="[#ERROR] eq 'xpath'">[@COMMON.ERROR_INVALID_XPATH|sprintf([#TITLE])]</IF>
 <IF COND="[#ERROR] eq 'concurrent_edition'">[@COMMON.ERROR_CONCURRENT_EDITION]</IF>
+<IF COND="[#ERROR] eq 'importnotallowed'">[@COMMON.CANT_IMPORT_NEW_ENTRIES_FOR_THIS_TYPE]</IF>
 <!--[ Unknown error ]-->
 </DEFFUNC>
 
@@ -144,7 +145,7 @@
                                 <div class="hidden">
                         </IF>
                                 <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
-                                <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE"> 
+                                <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE">
                                 <!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
                                 <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
                                 <br />
@@ -167,7 +168,7 @@
   Syntax : Mode, Width, Height, Language, AutoDetectLanguage, Skin
   Example :
           Simple, 800, 600
-        or	
+        or
           Advanced, 800, 600, en, false, Silver
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="FCK_EDITOR_PARAMETERS">
@@ -201,8 +202,8 @@
   }
 
   if(empty($context['fck_language']))
-  { 
-      $context['fck_language'] = C::get('sitelang'); 
+  {
+      $context['fck_language'] = C::get('sitelang');
   }
 ?>
 </DEFMACRO>
@@ -304,11 +305,11 @@
 	if(!C::get('fckeditor_included')) {?>
 		<script type="text/javascript" src="[#SHAREURL]/plugins/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript">replaceCKEDITOR = new Array();</script>
-<?php 
+<?php
 		C::set('fckeditor_included', true);
 	}
 	if(!C::get('fckeditor_'.$context['fck_mode'])) {?>
-	
+
 		<script type="text/javascript">
 			replaceCKEDITOR['[#FCK_MODE]'] = function(obj) {
 				if(!obj.status) {
@@ -321,7 +322,7 @@
 					});
 					obj.status = 1;
 				}
-			}; 
+			};
 			var l = function() {
 				var textareas = document.getElementsByTagName('textarea');
 				if(textareas) {
@@ -329,7 +330,7 @@
 					for(i=0;textareas[i];i++) {
 						var ck = textareas[i].getAttribute('fckeditor');
 						var ckname = textareas[i].getAttribute('name');
-						var mode = textareas[i].getAttribute('mode');	
+						var mode = textareas[i].getAttribute('mode');
 						if(ck && (-1 === ckname.indexOf('__lodel_wildcard'))) {
 							replaceCKEDITOR[mode](textareas[i]);
 						}
@@ -358,12 +359,12 @@
 			<input size="50" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[#VALUE]" />
         	</IF>
       </IF>
-	<?php 
+	<?php
 			if(isset($context['nom'])) {	?>
 				<script type="text/javascript">
 					if(document.getElementById("persons_[#NOM]_for_copy")) {
 						function cacher_copie(nom_elmt) {
-							var elmt = "persons_"+nom_elmt+"_for_copy";	
+							var elmt = "persons_"+nom_elmt+"_for_copy";
 							document.getElementById(elmt).style.display = "none";
 						}
 						setTimeout("cacher_copie('[#NOM]')", 3000);
@@ -404,7 +405,7 @@
 		<?php  makeSelect($context,"value",@$context['lo'],@$context['type']); ?>
 	    </select>
 <ELSE/>
-<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
+<!--[ --------------- DATE DATETIME TIME ------------- ]-->
 <IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
 	<input size="30" type="text" name="[#FULLVARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]" />
 
@@ -413,7 +414,7 @@
 <IF COND="[#TYPE] eq 'mldate'">
 	<FUNC NAME="EDIT_MLDATE">
 <ELSE/>
-<!--[ ---------------FILE, IMAGE ------------- ]-->	    
+<!--[ ---------------FILE, IMAGE ------------- ]-->
 <IF COND="[#TYPE] eq 'image' OR [#TYPE] eq 'file'">
 	<div class="oneItem">
 		<IF COND="[#VALUE] AND [#VALUE] NE 'Array'">
@@ -430,7 +431,7 @@
 			<label for="delete[#VARNAME]" class="boolean">[@COMMON.DELETE]</label><br />
 			</div>
 		</IF>
-		
+
 		<div class="fileUpload">
 			<input type="hidden" class="noText" id="uploadType[#VARNAME]" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />
 			<!--<input type="hidden" class="noText" id="uploadType" name="[#FULLVARNAME][radio]" value="upload" disabled="disabled" />-->
@@ -447,7 +448,7 @@
 		</div>
 	</div>
 <ELSE/>
-<!--[ --------------- COLOR ------------- ]-->	    
+<!--[ --------------- COLOR ------------- ]-->
 <IF COND="[#TYPE] eq 'color'">
 <script type="text/javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
 <script type="text/javascript">
@@ -464,16 +465,16 @@ cp_[#VARNAME].writeDiv();
 -->
 </script>
 <ELSE/>
-<!--[ --------------- PERSONS ------------- ]-->	    
+<!--[ --------------- PERSONS ------------- ]-->
 <IF COND="[#TYPE] eq 'persons'">
 <FUNC NAME="EDIT_PERSONS">
 
 <ELSE/>
-<!--[ --------------- ENTRIES ------------- ]-->	    
+<!--[ --------------- ENTRIES ------------- ]-->
 <IF COND="[#TYPE] eq 'entries'">
 <FUNC NAME="EDIT_ENTRIES">
 <ELSE/>
-<!--[ --------------- ENTITIES ------------- ]-->	    
+<!--[ --------------- ENTITIES ------------- ]-->
 <IF COND="[#TYPE] eq 'entities'">
 	<IF COND="[#CONDITION]==1">
 	<a href="javascript:;" onclick="javascript:window.open('entitybrowser.php?caller=[#VARNAME]&amp;single&amp;id=[%ID]','','width=500,height=500,top=100,left=100,resizable=yes,scrollbars=yes');return false;">[@EDITION.CHOOSE_AN_ENTITY]</a>
@@ -548,7 +549,7 @@ cp_[#VARNAME].writeDiv();
 <DEFFUNC NAME="EDIT_MLTEXT">
   <div id="mltext_[#VARNAME]" class="mltexteditionarea" >
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-    <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label> 
+    <div ><label class="labelmltext">[(#LANG|humanlang|ucfirst)] :</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" FULLVARNAME="data[[#VARNAME]][[#LANG]]" VALUE="[#VALUE]" />
 	<a href="#" onclick="preserveDatas;deletelanginmltext(this, '[@EDITION.CONFIRMATION_DELETE_MLTEXT]');return false;" class="delete">[@COMMON.DELETE]</a>
     </div>
@@ -659,7 +660,7 @@ cp_[#VARNAME].writeDiv();
 
 <DEFFUNC NAME="EDIT_ENTRIES">
 <div id="entries_[#VARNAME]" class="entrieseditionarea" >
-	
+
 	<IF COND="[#VARNAME] LIKE /([a-z0-9\-]+)\.(\d+)/">
 		<LET VAR="database_dist"><?php echo '`'.DATABASE.'_';?>[#MATCHES.1.0]`</LET>
 		<LET VAR="where">#_TP_entrytypes.id=[#MATCHES.2.0]</LET>
@@ -669,12 +670,12 @@ cp_[#VARNAME].writeDiv();
 		<LET VAR="where">#_TP_entrytypes.type='[#VARNAME]'</LET>
 		<LET VAR="external">0</LET>
 	</IF>
-      
+
         <LOOP DATABASE="[#DATABASE_DIST]" NAME="entrytypes" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND [#WHERE] AND classes.classtype='entries'">
         <LET VAR="idtype">[#ID]</LET>
 	<LET VAR="fieldname"><IF COND="[#EXTERNAL]">externalentries[[#MATCHES.1.0].[#IDTYPE]]<ELSE/>entries[[#IDTYPE]]</IF></LET>
 	<!--[ -----------[ SELECT ]---------- ]-->
-	
+
 	<IF COND="[#EDITION] EQ 'select'">
 		<select id="[#FIELDNAME]" name="[#FIELDNAME]">
 			<LOOP NAME="entries_in_entities">
@@ -687,18 +688,18 @@ cp_[#VARNAME].writeDiv();
 		<FUNC NAME="JS_MULTIPLESELECT">
 		<table>
 		<tr><td>
-		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />	
+		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />
 		<select onchange="multipleSelectUpdate('[#FIELDNAME]','pool_member_[#VARNAME]')" multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
 			<LOOP NAME="entries_in_entities">
 			<option  value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#ROOT][#G_NAME]</option>
 			</LOOP>
 		</select>
 		<script type="text/javascript">
-		<!-- 
+		<!--
 			multipleSelectUpdate('[#FIELDNAME]','pool_member_[#VARNAME]');
 		-->
 		</script>
-		</td></tr>	
+		</td></tr>
 		</table>
 	<ELSE/>
 	<!--[ -----------[ POOL ]---------- ]-->
@@ -706,7 +707,7 @@ cp_[#VARNAME].writeDiv();
 		<table>
 		<tr><td>[@COMMON.AVAILABLE_ENTRIES]</td><td></td><td>[@COMMON.SELECTED_ENTRIES]</td></tr>
 		<tr><td>
-		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />	
+		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />
 		<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 			<LOOP NAME="entries_in_entities">
 			<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
@@ -715,11 +716,11 @@ cp_[#VARNAME].writeDiv();
 		</td><td>
 			<input type="button" class="button" value="-&gt;" onclick="addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]')" /><br/>
 			<input type="button" class="button" value="&lt;-" onclick="removemember('pool_member_[#VARNAME]','[#FIELDNAME]')" />&nbsp;
-		<td>	
-		<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">	
+		<td>
+		<select multiple="multiple" size="10" style="width:250px" id="pool_member_[#VARNAME]" name="pool_member_[#VARNAME]">
 		</select>
 		</td>
-		<IF COND="[#NEWBYIMPORTALLOWED]">
+		<!--[<IF COND="[#NEWBYIMPORTALLOWED]">]-->
 		<tr>
 		<td>&nbsp;</td><td>&nbsp;</td>
 		<td>
@@ -729,11 +730,11 @@ cp_[#VARNAME].writeDiv();
 		</IF>
 		</td>
 		</tr>
-		</IF>
+		<!--[</IF>]-->
 		</tr>
 		</table>
-		<script type="text/javascript"><!-- 
-	addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]'); 
+		<script type="text/javascript"><!--
+	addmember('pool_candidats_[#VARNAME]', 'pool_member_[#VARNAME]', '[#FIELDNAME]');
 	--></script>
 
 	</IF>
@@ -804,53 +805,53 @@ cp_[#VARNAME].writeDiv();
 		<FUNC NAME="JS_MULTIPLESELECT">
 		<table>
 		<tr><td>
-		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />	
+		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />
 		<select onchange="multipleSelectUpdate('[#VARNAME]','select_[#VARNAME]')" multiple="multiple" size="4" style="width:100px" id="select_[#VARNAME]" name="select_[#VARNAME]">
 			<LOOP NAME="field_selection_values">
 			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option>
 			</LOOP>
 		</select>
 		<script type="text/javascript">
-		<!-- 
+		<!--
 			multipleSelectUpdate('[#VARNAME]','select_[#VARNAME]');
 		-->
 		</script>
-		</td></tr>	
+		</td></tr>
 		</table>
 	<ELSE/>
 	<IF COND="[#EDITION] EQ 'radio'">
 		<FUNC NAME="JS_RADIOS">
-		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />	
+		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />
 		<LOOP NAME="field_selection_values">
-			<input onchange="radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]')" type="radio" class="noText" 
-							id="radio_[#VARNAME]" name="radio_[#VARNAME]" 
+			<input onchange="radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]')" type="radio" class="noText"
+							id="radio_[#VARNAME]" name="radio_[#VARNAME]"
 							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
 		</LOOP>
 		<script type="text/javascript">
-		<!-- 
+		<!--
 			radiosSelectUpdate('[#VARNAME]','radio_[#VARNAME]');
 		-->
 		</script>
 	<ELSE/>
 	<IF COND="[#EDITION] EQ 'checkbox'">
 	<FUNC NAME="JS_CHECKBOXES">
-		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />	
+		<input type="hidden" value="" name="[#FULLVARNAME]" id="[#VARNAME]" />
 		<LOOP NAME="field_selection_values">
-			<input onchange="checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]')" type="checkbox" class="noText" 
-							id="checkbox_[#VARNAME]" name="checkbox_[#VARNAME]" 
+			<input onchange="checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]')" type="checkbox" class="noText"
+							id="checkbox_[#VARNAME]" name="checkbox_[#VARNAME]"
 							value="[#VALUE]" [#CHECKED] />&nbsp;[#VALUE]
 		</LOOP>
 	<script type="text/javascript">
-		<!-- 
+		<!--
 			checkboxesSelectUpdate('[#VARNAME]','checkbox_[#VARNAME]');
 		-->
 		</script>
 	<ELSE/>
 		<select id="[#VARNAME]" name="[#FULLVARNAME]">
 		<LOOP NAME="field_selection_values">
-			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option> 
+			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option>
 		</LOOP>
-		</select>		
+		</select>
 	</IF>
 	</IF>
 	</IF>
@@ -895,7 +896,7 @@ cp_[#VARNAME].writeDiv();
 		var txt = document.getElementById(textfield);
 		var slct = document.getElementsByName(selectfield);
 		var str = '';
-		
+
 		if(slct.length > 0)
 		{
 			for(i=0; i< slct.length; i++)
@@ -925,14 +926,14 @@ cp_[#VARNAME].writeDiv();
 		var txt = document.getElementById(textfield);
 		var slct = document.getElementsByName(selectfield);
 		var str = '';
-	
+
 		if(slct.length > 0)
 		{
 			for(i=0; i< slct.length; i++)
 			{
 				if(slct[i].checked==true)
 					str += slct[i].value+',';
-				
+
 			}
 		}
 		txt.value = str.substring(0, str.length - 1);
@@ -996,8 +997,8 @@ cp_[#VARNAME].writeDiv();
 </fieldset>
 <input class="button" type="submit" name="submit_s" value="<IF COND="[#QUERY]">[@EDITION.BUTTON_REFINE_YOUR_SEARCH]<ELSE/>[@EDITION.BUTTON_SEARCH]</IF>" />
 </fieldset>
-</form>	
-	
+</form>
+
 </DEFFUNC>
 
 <DEFFUNC NAME="LIGHT_SEARCH_ENGINE" OPTIONAL="query,qstatus,qtype,qfield,qnbresults">
@@ -1012,8 +1013,8 @@ cp_[#VARNAME].writeDiv();
 			<input class="text" type="text" name="query" value="<IF COND="![#QUERY]">[@EDITION.BUTTON_SEARCH]<ELSE/>[#QUERY|htmlspecialchars|stripslashes]</IF>" onfocus="if(this.value == '[@EDITION.BUTTON_SEARCH]')this.value=''"/>
 			<input class="lightSearch" type="submit" name="submit_s" value="[@COMMON.OK]" />
 		</fieldset>
-	</form>	
-	
+	</form>
+
 </DEFFUNC>
 
 
@@ -1033,7 +1034,7 @@ cp_[#VARNAME].writeDiv();
 	[@COMMON.FIELD] <strong>[#QFIELD]</strong>
 </IF>
 <IF COND="[#QSTATUS]">
-([@COMMON.STATUS] 
+([@COMMON.STATUS]
 	<IF COND="[#QSTATUS] EQ -16">
 	[@COMMON.DRAFT]
 	</IF>
@@ -1054,7 +1055,7 @@ cp_[#VARNAME].writeDiv();
 <ELSE/>
 ([#NBRESULTS] [@COMMON.RESULTS])
 </IF>
- 
+
 </div>
 </DEFMACRO>
 
@@ -1081,16 +1082,16 @@ cp_[#VARNAME].writeDiv();
 		<ELSE/>
 			<li><span class="currentpage">
 		</IF>
-		
+
 		[#PAGENUMBER]
 		<IF COND="[#URLPAGE] NE ''">
 			</a></li>
 		<ELSE/>
 			</span></li>
 		</IF>
-	
+
 	</DO>
-	
+
 	<AFTER>
 		<IF COND="[#NEXTURL]">
 		<li>
@@ -1146,7 +1147,7 @@ C'est ignoble de remettre cette macro là alors qu'elle est déjà dans macros_a
 	</fieldset>
 </DEFMACRO>
 
-<!--[ 
+<!--[
 
 Macros rapatriées de lodel/src/lodel/edition/tpl
 
@@ -1164,7 +1165,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <!--[ Met la valeur "true" dans le champ caché "reload"  ]-->
 <!--[ du formulaire, puis fait un submit du formulaire.  ]-->
 	<script type="text/javascript"><!--
-	
+
 		function reloadForm(){
 			document.forms[0].reload.value="true";
 			document.forms[0].submit();
@@ -1282,14 +1283,14 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<LOOP NAME="entrytypes" TABLE="entrytypes" TABLE="entitytypes_entrytypes" WHERE="identrytype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
 			<br />
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
 					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
 				</tr>
 			</table>
 			<br />
-		
+
 			<table class="table_form_popup" width="100%" cellpadding="5" cellspacing="0" border="0">
 				<tr>
 					<td width="200" valign="top">[#TITLE] (*) :</td>
@@ -1312,7 +1313,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<!--[ boucle sur les types de personne ]-->
 	<LOOP NAME="persontypes" TABLE="persontypes" TABLE="entitytypes_persontypes" WHERE="idpersontype=id AND identitytype='[#IDTYPE]' AND status gt 0" ORDER="rank">
 		<DO>
-			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">	
+			<table class="table_popup" width="100%" cellpadding="0" cellspacing="0" border="0">
 				<tr>
 					<td height="35" width="75" align="right" background="[#SHAREURL]/images/fond_intitule_popup_edition.png"><img src="[#SHAREURL]/images/fleche_verte_popup_edition.png" /></td>
 					<td height="35" width="*" background="[#SHAREURL]/images/fond_intitule_popup_edition.png" class="titre_partie_popup">[#TITLE]</td>
@@ -1434,7 +1435,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
-	
+
 	/* on pré-charge les image */
 	//img1=new Image(82,18); /* on déclare les images */
 	//img2=new Image(82,18);
@@ -1451,25 +1452,25 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="JS_FONCTIONS_ARBORESCENCE">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
-	
+
 		function change(obj) {
 			var cat = document.getElementById(obj);
 			var img = document.getElementById('img_' + obj);
-			
+
 			if(cat.style.display=='none') {
 				cat.style.display='block';
 				img.src="images/plie.png";
 			}
 			else {
 				cat.style.display='none';
-				img.src="images/deplie.png";					
+				img.src="images/deplie.png";
 			}
 		}
-		
+
 		function developpe_tout(id) {
 			var cat = document.getElementById(id);
 			var img = document.getElementById('img_' + id);
-			cat.style.display = "block";	
+			cat.style.display = "block";
 			img.src="images/plie.png";
 			for(var i = 0 ; i < cat.childNodes.length; i++) {
 				if(cat.childNodes[i].nodeName == "DIV" && cat.childNodes[i].id != "") {
@@ -1477,24 +1478,24 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				}
 			}
 		}
-		
+
 		function reduit(id) {
 			var cat = document.getElementById(id);
 			var img = document.getElementById('img_' + id);
 			cat.style.display = "none";
-			img.src="images/deplie.png";				
+			img.src="images/deplie.png";
 			for(var i = 0 ; i < cat.childNodes.length; i++) {
 				if(cat.childNodes[i].nodeName == "DIV" && cat.childNodes[i].id != "") {
 					reduit(cat.childNodes[i].id);
 				}
-			}				
+			}
 		}
 
 		function affiche(id) {
 			if(id=="")
 				return;
 
-			var cat = document.getElementById(id);			
+			var cat = document.getElementById(id);
 			var img = document.getElementById('img_' + id);
 			cat.style.display = "block";
 			img.src="images/plie.png"
@@ -1509,17 +1510,17 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="JS_AFFICHE_IMAGE">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
-	
+
 		function affiche_image(visible) {
 			var dis;
-			
+
 			if(visible)
 				dis = "inline";
 			else
 				dis = "none";
-			
+
 			for (i=0;i<document.getElementsByTagName("img").length; i++) {
-				
+
 				if (document.getElementsByTagName("img").item(i).className == "illus"){
 					document.getElementsByTagName("img").item(i).style.display = dis;
 				}
@@ -1532,11 +1533,11 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="JS_TRONQUER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<script type="text/javascript"><!--
-	
+
 	function tronquer($long1, $long2, $texte) {
 	        $debut = "" ;
 	        $fin = substr($texte, -$long2);
-	
+
 	        if(($off = strlen($texte)-$long2) > 0) {
 	                $debut = substr($texte, 0, $off);
 	                if(strlen($debut) > $long1 + 5) { // debut est suffisament long
@@ -1552,7 +1553,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 <DEFMACRO NAME="JS_POPUP">
 	<!--[ exemple de Javascript pour une popup ]-->
 	<script type="text/javascript"><!--
-	
+
 	 function popup(url,nom) {
 	 	// remove an attribute if you don't want it to show up
 		// options : menubar,toolbar,location,directories,status,scrollbars,resizable,width=640,height=480
@@ -1574,7 +1575,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<li> &gt; <a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></a> </li>
 		</LOOP>
 		<LOOP NAME="g_title_entity" SELECT="g_title" TABLE="entities" WHERE="id='[#ID]'">
-				<IF COND="[#G_TITLE]"> 
+				<IF COND="[#G_TITLE]">
 					<li class="this"> &gt; [#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF></li>
 				<ELSE/>
 					<li class="this">&gt; [@EDITION.NEW]</li>
@@ -1704,7 +1705,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				<AFTER>
 					</select></li>
 				</AFTER>
-			
+
 			</LOOP>
 		</LOOP>
 		</ul>
@@ -1818,7 +1819,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<IF COND="[#DISPLAY] EQ 'unfolded'"><FUNC NAME="ADD_AN_ENTITY_SIMPLE"></IF>
 
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-			
+
 			<IF COND="[#DISPLAY] eq 'unfolded'">
 				<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 			</IF>
@@ -1884,14 +1885,14 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT_EDIT">
 			<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
-			
+
 			</li>
 		<IF COND="[#DISPLAY] eq 'unfolded'">
 			<FUNC NAME="LIST_ENTITIES" ID="[#ID]" FOLDER="yes">
 		</IF>
 		</DO>
 		<AFTER>
-			<IF COND="[#FOLDER]"></ul></li><ELSE /></ul></IF>			
+			<IF COND="[#FOLDER]"></ul></li><ELSE /></ul></IF>
 		</AFTER>
 		<ALTERNATIVE>
 			<IF COND="![#FOLDER]"><MACRO NAME="AUCUNE_ENTITY_DISPONIBLE"></IF>
@@ -1905,7 +1906,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<DO>
 		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=up&amp;idparent=[#IDPARENT]"><img src="[#SHAREURL]/images/fleche_haut.png" class="haut"  alt="haut" /></a>
 		<a href="index.php?do=changerank&amp;id=[#ID]&amp;dir=down&amp;idparent=[#IDPARENT]"><img src="[#SHAREURL]/images/fleche_bas.png" class="bas"  alt="bas" /></a>
-		
+
 	</DO>
 	</LOOP>
 	</div>
@@ -1938,7 +1939,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<ELSE />
 			<span class="item inactif">[@EDITION.DELETE]</span>
 		</IF>
-		
+
 	</div>
 </DEFMACRO>
 
@@ -1963,7 +1964,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<li><span class="inactif">[@COMMON.EDIT]</span></li>
 		</ALTERNATIVE>
 	</LOOP>
-	
+
 	<LOOP NAME="getStatus0" TABLE="entities" WHERE="id = '[#ID]'">
 		<li><MACRO NAME="CHANGER_STATUS_ENTITIES"></li>
 		<ALTERNATIVE>
@@ -2022,7 +2023,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		<LOOP NAME="rightonentity" ACTION="changestatus">
 			<DO>
 				|&nbsp;<a onclick="preserveDatas();" href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php?do=changestatus&amp;id=[#ID]&amp;status=1">[@EDITION.SET_PUBLISHED]</a>&nbsp;|&nbsp;
-	
+
 			</DO>
 			<ALTERNATIVE>
 				|&nbsp;<span class="inactif">[@EDITION.SET_PUBLISHED]</span>&nbsp;|&nbsp;
@@ -2043,7 +2044,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 		    <ALTERNATIVE>
 			<span class="inactif">[@EDITION.UNPUBLISH]</span>
 		    </ALTERNATIVE>
-                    </LOOP>		
+                    </LOOP>
 		<ELSE/>
 		<IF COND="[#STATUS]==8">
 			<span class="inactif">[@COMMON.PROTECTED]</span>
@@ -2132,9 +2133,9 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 				<DOFIRST><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a> &gt; <a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
 				<DO>&nbsp;&gt;&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
 				<ALTERNATIVE>[@EDITION.BASE] &gt;</ALTERNATIVE>
-			</LOOP>	
+			</LOOP>
 			<AFTER></div></AFTER>
-		</LOOP>	
+		</LOOP>
 	</div>
 </DEFFUNC>
 
@@ -2153,7 +2154,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	</span>
 	&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>&nbsp;
-	<span class="type_document">([#TYPE])</span> 
+	<span class="type_document">([#TYPE])</span>
 	<LOOP NAME="getcomments" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 1" ORDER="type, entities.rank">
 		<AFTER><span class="comment" title="[#NBRESULTS] [@COMMON.COMMENTS]"><MACRO NAME="PNG_COMMENT" /> <sup>([#NBRESULTS])</sup></span></AFTER>
 	</LOOP>

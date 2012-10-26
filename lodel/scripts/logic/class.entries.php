@@ -1,5 +1,5 @@
 <?php
-/**	
+/**
  * Logique des entrées et des personnes
  *
  * PHP version 5
@@ -46,7 +46,7 @@
 
 /**
  * Classe de logique des entrées
- * 
+ *
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
@@ -81,14 +81,14 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function viewAction (&$context, &$error) 
+	public function viewAction (&$context, &$error)
 	{
 		if(!function_exists('loop_entities_select'))
 		{
 			function loop_entities_select($context, $funcname)
 			{
 				global $db;
-				
+
 				if (empty($context['varname'])) {
 					if (function_exists("code_alter_$funcname")) {
 						call_user_func("code_alter_$funcname",$context);
@@ -114,13 +114,13 @@ class EntriesLogic extends GenericLogic
 						$ids = preg_split("/,/", $values, -1, PREG_SPLIT_NO_EMPTY);
 					}
 					else $ids = $values;
-	
+
 					if($ids)
 					{
 						$result = $db->execute(lq("
-						SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition 
-							FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id) 
-							WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids))) 
+						SELECT #_TP_entities.*, #_TP_types.type, #_TP_types.tpledition
+							FROM #_TP_entities JOIN #_TP_types ON (#_TP_entities.idtype=#_TP_types.id)
+							WHERE #_TP_entities.status>-64 AND #_TP_entities.id ". sql_in_array($ids)))
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						while (!$result->EOF) {
 							$localcontext = array_merge($context, $result->fields);
@@ -161,13 +161,13 @@ class EntriesLogic extends GenericLogic
 		if (!$vo) {
 			trigger_error("ERROR: interface error in EntriesLogic::publishAction ", E_USER_ERROR);
 		}
-		
+
 		if ($vo->status <= 0) {
 			$vo->status = abs($vo->status);
 		} else {
 			$vo->status = -abs($vo->status);
 		}
-		
+
 		$dao->save($vo);
 		update();
 		return '_back';
@@ -253,13 +253,13 @@ class EntriesLogic extends GenericLogic
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
 	 */
-	public function editAction (&$context, &$error, $clean=false) 
+	public function editAction (&$context, &$error, $clean=false)
 	{
 		if (empty($context['idtype'])) {
 			trigger_error("ERROR: idtype must be known in EntriesLogic::editAction", E_USER_ERROR);
 		}
 
-		// get the class 
+		// get the class
 		$idtype = $context['idtype'];
 		$daotype = DAO::getDAO ("entrytypes");
 		$votype = $daotype->getById ($idtype, "class,newbyimportallowed,flat,sort,status");
@@ -328,7 +328,12 @@ class EntriesLogic extends GenericLogic
 					$dao->instantiateObject ($vo);
 					$vo->id=$id;
 				} else {
-					if (!$votype->newbyimportallowed && (!isset($context['lo']) || $context['lo']!="entries")) {
+					if (!$votype->newbyimportallowed && // entrytype does not allow entry creation
+                                            (!isset($context['lo']) || ($context['lo']!="entries")) && // if we are not in entry creation page
+                                            C::get('lo') != "entities_edition" && // but allow it in entity edit page
+                                            !C::get("identity") && // and from reloading page
+                                            (C::get('lo') != 'entities_import' && !C::get('reload'))
+                                            ) {
 						return "_error";
 					}
 					$new=true;
@@ -358,6 +363,8 @@ class EntriesLogic extends GenericLogic
 			$this->_moveFiles($id,$this->files_to_move,$gvo);
 			$gdao->save($gvo,$new);
 		}
+		elseif(!$votype->newbyimportallowed && C::get('lo') === 'entities_import' && !C::get('reload'))
+                    return '_error'; // document reloading ? if not we don't keep current entries if entrytype dos not allow it
 
 		$this->saveRelations($vo, $context);
 
@@ -389,7 +396,7 @@ class EntriesLogic extends GenericLogic
 		update();
 		return "_back";
 	}
-	
+
 	/**
 	 * Used in editAction to do extra operation after the object has been saved
 	 * Here we save relations between entries where sort type is defined as rank
@@ -400,7 +407,7 @@ class EntriesLogic extends GenericLogic
 	public function saveRelations($vo, &$context)
 	{
 		$votype = DAO::getDAO ("entrytypes")->getById ($vo->idtype, "sort");
-		
+
 		if('rank' == $votype->sort && $vo->idparent && !empty($context['id']))
 		{
 			$daorel = DAO::getDAO('relations');
@@ -413,7 +420,7 @@ class EntriesLogic extends GenericLogic
 			$this->saveRelations(DAO::getDAO('entries')->getById($vo->idparent), $context);
 		}
 	}
-	
+
 	/**
 	 * Changement du rang d'un objet (index seulement)
 	 *
@@ -670,7 +677,7 @@ class EntriesLogic extends GenericLogic
 			$identry = $context['identries'];
 			$daoEntries = DAO::getDAO('entries');
 			$daoEntrytypes = DAO::getDAO('entrytypes');
-				
+
 			$idtype = $context['idtype'];
 			if(false !== strpos($idtype, '.'))
 			{ // site.idtype
@@ -834,7 +841,7 @@ class EntriesLogic extends GenericLogic
 	 * @param string $var le nom de la variable du select
 	 * @param string $edittype le type d'édition
 	 */
-	public function makeSelect (&$context, $var) 
+	public function makeSelect (&$context, $var)
 	{
 		global $db;
 		switch($var) {
@@ -849,10 +856,10 @@ class EntriesLogic extends GenericLogic
 			$context['idtype'] = isset($context['idtype']) ? $context['idtype'] : null;
 			do {
 				$result=$db->execute (lq ("
-				SELECT * 
-					FROM #_TP_entries 
-					WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). " 
-					AND ABS(status) = 32 ORDER BY ". $context['type']['sort'])) 
+				SELECT *
+					FROM #_TP_entries
+					WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). "
+					AND ABS(status) = 32 ORDER BY ". $context['type']['sort']))
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$ids=array();
 				$i=0;
@@ -922,13 +929,13 @@ class EntriesLogic extends GenericLogic
 	/**
 	 * Used in deleteAction to do extra operation after the object has been deleted (index ET persons)
 	 */
-	protected function _deleteRelatedTables($id) 
+	protected function _deleteRelatedTables($id)
 	{
 		global $db;
 		foreach ($this->classes as $class) {
 			$gdao=DAO::getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
-		
+
 			if($this->maintable == 'persons') {
 				if ($this->idrelation) {
 					$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
@@ -943,7 +950,7 @@ class EntriesLogic extends GenericLogic
 		}
 
 		is_array($id) || $id = (array)$id;
-		
+
 		foreach($id as $i)
 		{
 			$ids = $db->execute(lq('SELECT * FROM #_TP_relations_ext WHERE id1='.$i.' AND nature="EE"'))
@@ -955,14 +962,14 @@ class EntriesLogic extends GenericLogic
 				$db->SelectDB(DATABASE.'_'.$ids->fields['site']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id2='.$i.' AND nature="E" AND site='.$db->quote(C::get('site', 'cfg'))))
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	
+
 				$ids->MoveNext();
 			}
-	
+
 			usecurrentdb();
 			$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id1='.$i.' AND nature="EE"'))
 				or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
 	}
 
-} // class 
+} // class
