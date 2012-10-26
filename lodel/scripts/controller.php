@@ -54,8 +54,8 @@
 // {{{ class
 /**
  * Classe gérant la partie contrôleur du modèle MVC utilisé par Lodel 0.8
- * 
- * 
+ *
+ *
  *
  * @package lodel
  * @author Ghislain Picard
@@ -74,7 +74,7 @@
  * @see logic.php
  * @see view.php
  */
-class Controller 
+class Controller
 {
 	/**
 	 * @var object
@@ -121,7 +121,7 @@ class Controller
 	 * @param array $logics Les logiques métiers acceptées par le point d'entrée
 	 * @param string $lo La logique métier appelée. Par défaut cette valeur est vide
 	 * @param array $request La requête à traiter, si elle n'est passée ni en GET ni en POST (dans un script par ex.) : utilisé pour l'import massif de XML
-	 * 
+	 *
 	 */
 	private function __construct()
 	{
@@ -147,7 +147,7 @@ class Controller
 			$c = __CLASS__;
 			self::$_instance = new $c;
 		}
-		
+
 		return self::$_instance;
 	}
 
@@ -168,13 +168,13 @@ class Controller
 			$isInternal = true;
 			C::setRequest($request, true);
 		}
-		
+
 		$context =& C::getC();
-	
+
 		if(empty($context['do']) && $isInternal)
 			trigger_error('ERROR: you need to specify an action', E_USER_ERROR);
-	
-		if ($isInternal || !empty($context['do'])) 
+
+		if ($isInternal || !empty($context['do']))
 		{
 			if(!isset($lo)) $lo = C::get('lo');
 	                if ($lo != 'texts' && !in_array($lo, $logics)) {
@@ -184,19 +184,19 @@ class Controller
 				$context['do'] = substr($context['do'], 1);
 
 			$do = $context['do'].'Action';
-			if ($do == 'backAction') 
+			if ($do == 'backAction')
 			{
 				View::getView()->back(2); //revient 2 rang en arrière dans l'historique.
 				return;
 			}
-		
+
 			$error = array();
 			$context['error'] = array();
 			$ret = $this->_execute($context, $do, $lo, $logics, $error);
 
 			if($error) $context['error'] = array_merge((array)$context['error'], (array)$error);
 
-			if (!$ret) 
+			if (!$ret)
 				trigger_error('ERROR: invalid return from the logic.', E_USER_ERROR);
 
 			if($do != 'listAction') C::trigger('postedit');
@@ -205,17 +205,17 @@ class Controller
 			{ // maybe an error from plugins
 				$ret = '_error';
 			}
-		
+
 			if($isInternal)
 			{
 				if($ret == '_error' && !$error)
 				{
 				// strange, what to do ????
 				}
-				
+
 				$ret = '_next';
 			}
-			
+
 			// Demande de retour avec un format spécifique
 			if (isset($context['format']) && $context['format']=='json') {
 				$json = array();
@@ -236,7 +236,7 @@ class Controller
 					exit;
 				break;
 
-				case '_next' : 
+				case '_next' :
 					// controller called by a script
 					C::reset();
 					return ($error ? $error : '_next');
@@ -247,12 +247,11 @@ class Controller
 				break;
 
 				case '_error' :
-					// hum... needs to remove the slashes... don't really like that, because some value may still 
+					// hum... needs to remove the slashes... don't really like that, because some value may still
 					// come from  database or lodel. Doing this way is not a security issue but may forbide
 					// user to use \' in there text
 					#require_once 'func.php';
 					mystripslashes($context);
-					$error = array();
 					if(false !== ($p = strpos($do, '_')))
 					{ // plugin call
 						Logic::getLogic('mainplugins')->factory($context, $error, substr($do, 0, $p).'_viewAction');
@@ -262,7 +261,6 @@ class Controller
 						$logic = Logic::getLogic($lo);
 						if(method_exists($logic, 'viewAction'))
 							$logic->viewAction($context, $error); // in case anything is needed to be put in the context
-						
 					}
 					$context['error'] = array_merge((array)$context['error'], (array)$error);
 				case '_ok' :
@@ -278,25 +276,25 @@ class Controller
 				break;
 			}
 			exit;
-		} 
-		elseif(isset($context['file'])) 
+		}
+		elseif(isset($context['file']))
 		{
 			// appel d'un docannexe
 			$this->_getAnnexe($context);
 		}
-		elseif (!C::get('id', 'lodeluser') && isset($context['login']) && isset($context['passwd'])) 
+		elseif (!C::get('id', 'lodeluser') && isset($context['login']) && isset($context['passwd']))
 		{ // restricted area, only if we are not already logged in
 			$this->_auth($context);
-		} 
-		
+		}
+
 		$context['identifier'] = C::get('identifier');
-		
-		if ($context['id'] || $context['identifier']) 
+
+		if ($context['id'] || $context['identifier'])
 		{ // ID ou IDENTIFIER
 			defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 			global $db;
 			do { // exception block
-				if ($context['id']) 
+				if ($context['id'])
 				{
 					if(C::get('site_ext', 'cfg'))
 					{
@@ -326,7 +324,7 @@ class Controller
 						if ($db->errorno() && C::get('rights', 'lodeluser') > LEVEL_VISITOR) {
 							trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						}
-						if (!$class) { 
+						if (!$class) {
 							header("HTTP/1.0 404 Not Found");
 							header("Status: 404 Not Found");
 							header("Connection: Close");
@@ -335,16 +333,16 @@ class Controller
 							} else {
 								header('Location: not-found.html');
 							}
-							exit; 
+							exit;
 						}
 					}
-				} 
-				elseif ($context['identifier']) 
+				}
+				elseif ($context['identifier'])
 				{
 					$class = 'entities';
-				} 
+				}
 				else trigger_error("?? strange", E_USER_ERROR);
-				
+
 				switch($class) {
 					case 'entities':
 					$this->_printEntities($context['id'], $context['identifier'], $context);
@@ -353,7 +351,7 @@ class Controller
 					case 'entrytypes':
 						if(C::get('site_ext', 'cfg'))
 						{
-							$result = $db->execute(lq("SELECT * FROM `".DATABASE.'_'.C::get('site_ext', 'cfg')."`.#_TP_{$class} WHERE id='{$context['id']}' AND status>0")) 
+							$result = $db->execute(lq("SELECT * FROM `".DATABASE.'_'.C::get('site_ext', 'cfg')."`.#_TP_{$class} WHERE id='{$context['id']}' AND status>0"))
 		                                                or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	                	                        $context['type'] = $result->fields;
                         	                	$result->Close();
@@ -361,7 +359,7 @@ class Controller
 							break;
 						}
 					case 'persontypes':
-					$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0")) 
+					$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0"))
 						or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					$context['type'] = $result->fields;
 					$result->Close();
@@ -384,7 +382,7 @@ class Controller
 		} else {
 			//tente de récupérer le path - parse la query string pour trouver l'entité
 			$query = preg_replace("/[&?](format|clearcache)=\w+/", '', $_SERVER['QUERY_STRING']);
-			
+
 			if($query && !preg_match("/[^a-zA-Z0-9_\/-]/", $query)) {
 				// maybe a path to the document
 				$path = preg_split("#/#", $query, -1, PREG_SPLIT_NO_EMPTY);
@@ -399,7 +397,7 @@ class Controller
 		}
 		View::getView()->renderCached('index');
 	} // constructor }}}
-	
+
 	/**
 	 * Try to add an object which is NOT an entity
 	 *
@@ -411,16 +409,16 @@ class Controller
 		global $db;
 
 		// for other sensible types, better way is to call Controller::execute
-		if(!in_array($type, self::$_authorizedTypes)) 
+		if(!in_array($type, self::$_authorizedTypes))
 			trigger_error('ERROR: invalid type of object, please use Controller::execute instead', E_USER_ERROR);
-		
+
 		$request['do'] = 'edit';
 		$request['lo']= $type;
 		$request['creationmethod'] = 'Lodel::Controller::addObject';
 		$request['edit'] = 1;
 		$request['status'] = 1;
 		$request['protected'] = 1;
-		
+
 		$where = array();
 		$uniqueFields = Logic::getLogic($type)->getUniqueFields();
 		if(!empty($uniqueFields))
@@ -438,10 +436,10 @@ class Controller
 			else
 				$vo = getDAO($type)->find(join(' AND ', $where), 'id');
 			unset($where);
-			
+
 			$request['id'] = $vo ? $vo->id : 0;
 		}
-		
+
 		$ret = self::getController()->execute(array($type), $type, $request);
 		if('_next' !== $ret)
 		{
@@ -455,19 +453,19 @@ class Controller
 	 *
 	 * @param string $type the type of the object to remove
 	 * @param array $request the request passed by reference
-	 */	
+	 */
 	static public function removeObject($type, array &$request)
 	{
 		if(!isset($request['id']) || !($request['id'] = (int)$request['id']))
 			trigger_error('ERROR: a valid id is needed', E_USER_ERROR);
 
 		// for other sensible types, better way is to call Controller::execute
-		if(!in_array($type, self::$_authorizedTypes)) 
+		if(!in_array($type, self::$_authorizedTypes))
 			trigger_error('ERROR: invalid type of object, please use Controller::execute instead', E_USER_ERROR);
-		
+
 		$request['do'] = 'delete';
 		$request['lo']= $type;
-		
+
 		$ret = self::getController()->execute(array($type), $type, $request);
 		if('_next' !== $ret)
 		{
@@ -475,7 +473,7 @@ class Controller
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Will try to authenticate the user.
 	 * Warning : here we only manage restricted users !
@@ -493,7 +491,7 @@ class Controller
 				C::setUser();
 				break;
 			}
-		
+
 			//vérifie que le compte n'est pas en suspend. Si c'est le cas, on amène l'utilisateur à modifier son mdp, sinon on l'identifie
 			if(!check_expiration()) {
 				$context['error_expiration'] = $err = 1;
@@ -514,7 +512,7 @@ class Controller
 		if($err) // une erreur : besoin de l'afficher, donc pas d'utilisation du cache
 			$context['nocache'] = true;
 	}
-	
+
 	/**
 	 * Will try to get a docannexe and send it to the browser to download
 	 *
@@ -524,41 +522,41 @@ class Controller
 	{
 		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
-		$critere = C::get('rights', 'lodeluser') >= LEVEL_VISITOR ? '' : 
+		$critere = C::get('rights', 'lodeluser') >= LEVEL_VISITOR ? '' :
 		" AND {$GLOBALS['tableprefix']}entities.status>0 AND {$GLOBALS['tableprefix']}types.status>0";
-		
+
 		$row = $db->getRow("
-		SELECT {$GLOBALS['tp']}tablefields.name, {$GLOBALS['tp']}tablefields.class 
-			FROM {$GLOBALS['tp']}tablefields, 
-			{$GLOBALS['tp']}entities LEFT JOIN {$GLOBALS['tp']}types ON ({$GLOBALS['tp']}entities.idtype = {$GLOBALS['tp']}types.id) 
-			WHERE {$GLOBALS['tp']}entities.id='{$context['id']}' AND {$GLOBALS['tp']}tablefields.class = {$GLOBALS['tp']}types.class 
+		SELECT {$GLOBALS['tp']}tablefields.name, {$GLOBALS['tp']}tablefields.class
+			FROM {$GLOBALS['tp']}tablefields,
+			{$GLOBALS['tp']}entities LEFT JOIN {$GLOBALS['tp']}types ON ({$GLOBALS['tp']}entities.idtype = {$GLOBALS['tp']}types.id)
+			WHERE {$GLOBALS['tp']}entities.id='{$context['id']}' AND {$GLOBALS['tp']}tablefields.class = {$GLOBALS['tp']}types.class
 			AND {$GLOBALS['tp']}tablefields.type = 'file'{$critere} ORDER BY {$GLOBALS['tp']}tablefields.id");
-		if($row) 
+		if($row)
 		{
 			$datepubli = $db->getRow("
-			SELECT name 
-				FROM {$GLOBALS['tableprefix']}tablefields 
+			SELECT name
+				FROM {$GLOBALS['tableprefix']}tablefields
 				WHERE class = '{$row['class']}' AND name = 'datepubli'");
-			
-			if(!$datepubli) 
+
+			if(!$datepubli)
 			{
 				$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
 				if(!empty($file[$row['name']])) {
 					download($file[$row['name']]);
 					exit();
 				}
-			} 
-			else 
+			}
+			else
 			{
 				$datepubli = $db->getRow("SELECT datepubli FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
 				$datepubli = $datepubli['datepubli'];
-		
+
 				defined('INC_TEXTFUNC') || include 'textfunc.php';
-				
-				if(!$datepubli || $datepubli <= today() || C::get('rights', 'lodeluser') >= LEVEL_RESTRICTEDUSER) 
+
+				if(!$datepubli || $datepubli <= today() || C::get('rights', 'lodeluser') >= LEVEL_RESTRICTEDUSER)
 				{
 					$file = $db->getRow("SELECT {$row['name']} FROM {$GLOBALS['tableprefix']}{$row['class']} WHERE identity = '{$context['id']}'");
-					if(!empty($file[$row['name']])) 
+					if(!empty($file[$row['name']]))
 					{
 						download($file[$row['name']]);
 						exit();
@@ -568,7 +566,7 @@ class Controller
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Execute the given action and call the trigger preedit
 	 *
@@ -582,9 +580,9 @@ class Controller
 	{
 		defined('INC_CONNECT') || include 'connect.php'; // init DB if not already done
 		global $db;
-		
+
 		// que fait-on suivant l'action demandée
-		switch($do) 
+		switch($do)
 		{
 			case 'listAction' :
 				recordurl(); //enregistre l'url dans la pile
@@ -592,27 +590,27 @@ class Controller
 				#recordurl();
 			default:
 				if($do != 'listAction') C::trigger('preedit');
-				
+
 				if(!empty($context['error'])) return '_error';
-				
+
 				$logic = Logic::getLogic($lo);
 				// create the logic for the table
-				if (!method_exists($logic, $do)) 
+				if (!method_exists($logic, $do))
 				{
-					if ('listAction' == $do) 
+					if ('listAction' == $do)
 					{
 						return '_ok';
-					} 
-					elseif('plugins' == $lo) 
+					}
+					elseif('plugins' == $lo)
 					{
 						return $logic->factory($context, $error, $do);
-					} 
-					else 
+					}
+					else
 					{
 						trigger_error('ERROR: invalid action', E_USER_ERROR);
 					}
-				} 
-				else 
+				}
+				else
 				{
 					// call the logic action
 					return $logic->$do($context, $error);
@@ -627,7 +625,7 @@ class Controller
 	* Affiche une entité grâce à son id, son identifiant. Appelle la vue associée
 	*
     	* @param integer $id identifiant numérique de l'index
-	* @param string $identifier 
+	* @param string $identifier
    	 * @param array &$context le context par référence
 	*/
 	private function _printEntities($id, $identifier, &$context)
@@ -636,7 +634,7 @@ class Controller
 		global $db;
 		$context['classtype'] = 'entities';
 		$critere = C::get('visitor', 'lodeluser') ? 'AND #_TP_entities.status>-64' : 'AND #_TP_entities.status>0 AND #_TP_types.status>0';
-		
+
         	// cherche le document, et le template
 		do {
 			if ($identifier) {
@@ -649,7 +647,7 @@ class Controller
 			if ($row === false) {
 				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
-			if (!$row) { 
+			if (!$row) {
 				header("HTTP/1.0 404 Not Found");
 				header("Status: 404 Not Found");
 				header("Connection: Close");
@@ -658,16 +656,16 @@ class Controller
 				} else {
 					header('Location: not-found.html');
 				}
-				exit; 
+				exit;
 			}
 			$base = $row['tpl']; // le template à utiliser pour l'affichage
-			if (!$base) { 
+			if (!$base) {
 				$id = $row['idparent'];
 				$relocation = TRUE;
 			}
-		} while (!$base && !$identifier && $id); 
-	
-		if (isset($relocation)) { 
+		} while (!$base && !$identifier && $id);
+
+		if (isset($relocation)) {
 			header('location: '. makeurlwithid('index', $id));
 			exit;
 		}
@@ -685,7 +683,7 @@ class Controller
 			} else {
 				header('Location: not-found.html');
 			}
-			exit; 
+			exit;
 		}
 
 		function_exists('merge_and_filter_fields') || include 'filterfunc.php';
@@ -767,10 +765,10 @@ class Controller
 		$context['type'] = $row;
 
 		$class = C::get('site_ext', 'cfg') ? '`'.DATABASE.'_'.C::get('site_ext', 'cfg').'`.#_TP_'.$row['class'] : '#_TP_'.$row['class'];
-	
+
 		// get the associated table
 		$row = $db->getRow(lq("SELECT * FROM $class WHERE ".$longid."='".$id."'"));
-		
+
 		if ($row === false) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
