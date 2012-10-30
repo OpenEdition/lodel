@@ -114,16 +114,20 @@ class UserOptionGroupsLogic extends Logic {
 		
 		$context['id'] = (int) $context['id'];
 		$options=$dao->findMany("idgroup='".$context['id']."'","","id,name,type,defaultvalue,userrights");
-		
+
 		function_exists('validfield') || include 'validfunc.php';
 
 		foreach ($options as $option) {
 			if ($option->type=="passwd" && (!isset($context['data'][$option->name]) || !trim($context['data'][$option->name]))) continue; // empty password means we keep the previous one.
-			$valid=validfield($context['data'][$option->name],$option->type,"",$option->name);
+			$valid= validfield($context['data'][$option->name],$option->type,"",$option->name, true);
 			if ($valid===false) trigger_error("ERROR: \"".$option->type."\" can not be validated in UserOptionGroups::editAction.php", E_USER_ERROR);
 			if ( ($option->type=="file" || $option->type=="image") && preg_match("/\/tmpdir-\d+\/[^\/]+$/",$context['data'][$option->name]) ) {
-				$dir=dirname($context['data'][$option->name]);
-				rename(SITEROOT.$dir,SITEROOT.preg_replace("/\/tmpdir-\d+$/","/option-".$option->id,$dir));
+				$file_informations = pathinfo($context['data'][$option->name]);
+				
+				$new_path = "docannexe/file/option-{$option->id}." . $file_informations['extension'];
+				
+				rename($context['data'][$option->name], SITEROOT . "/{$new_path}");
+				$context['data'][$option->name] = $new_path;
 			}
 			if (is_string($valid)) $error[$option->name]=$valid;
 		}
