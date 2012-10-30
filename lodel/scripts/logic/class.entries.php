@@ -228,7 +228,6 @@ class EntriesLogic extends GenericLogic
 		if (!$votype) {
 			trigger_error("ERROR: idtype must be known in EntriesLogic::viewAction", E_USER_ERROR);
 		}
-		usecurrentdb();
 		if(!isset($context['type']) || !is_array($context['type']))
 			$context['type'] = array();
 
@@ -240,6 +239,8 @@ class EntriesLogic extends GenericLogic
 		}
 		if (!isset($context['screen_name']))
 			$context['screen_name'] = isset($context['index_key']) ? $context['index_key'] : "";
+
+		usecurrentdb();
 
 		$this->_populateContext ($votype, $context['type']);
 		return '_ok';
