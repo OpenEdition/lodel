@@ -1429,6 +1429,40 @@ function getMimeType($ext)
 	}
 }
 
+function thumbnail($path, $width = null, $height = null)
+{
+	global $context;
+	class_exists('Zebra_Image') || require 'Zebra_Image.php';
+
+	$image_infos = pathinfo($path);
+
+	$tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
+	file_put_contents($tmp_path, file_get_contents($path));
+
+	$new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
+
+	if(!file_exists(dirname($new_path))) mkdir(dirname($new_path));
+
+	if(file_exists($new_path)) return $new_path;
+
+	$image = new Zebra_Image();
+	$image->source_path = $tmp_path;
+	$image->target_path = $new_path;
+
+	$image->jpeg_quality = 100;
+	$image->preserve_aspect_ratio = true;
+	$image->enlarge_smaller_images = false;
+	$image->preserve_time = true;
+
+	if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED)) {
+		return $path;
+	}
+	else
+	{
+		return $new_path;
+	}
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
