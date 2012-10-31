@@ -1469,7 +1469,7 @@ function thumbnail($path, $width = null, $height = null)
 	$image->enlarge_smaller_images = false;
 	$image->preserve_time = true;
 	
-	if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED)) {
+	if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1)) {
 		return $path;
 	}
 	else
