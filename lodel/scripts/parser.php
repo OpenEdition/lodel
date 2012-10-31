@@ -597,12 +597,11 @@ PHP;
 			if (isset($attrs['MACROFILE']))
 			{
 				$macrofilename = $attrs['MACROFILE'];
-				if (!(($path = find_in_path("tpl/$macrofilename")) || ($path = find_in_path("macros/$macrofilename"))))
+				if (!($path = find_in_path("tpl/$macrofilename")) && !($path = find_in_path("macros/$macrofilename")))
 				{
 					$this->_errmsg("the macro file \"$macrofilename\" doesn't exist");
 				}
-				$path = str_replace($macrofilename,'',$path);
-				$macro = file_get_contents($path.$macrofilename);
+				$macro = file_get_contents($path);
 				$this->macros_txt .= stripcommentandcr($macro);
 				unset($macro);
 				$this->_clearposition();
@@ -1938,23 +1937,27 @@ PHP;
 				$home = C::get('home', 'cfg');
 				foreach($m[1] as $f)
 				{
-					if (file_exists("./tpl/".$f))
-					{
-						$path = './tpl/';
-					}
-					elseif (file_exists($sharedir."/macros/".$f))
-					{
-						$path = $sharedir."/macros/";
-					}
-					elseif (file_exists($home."../tpl/".$f))
-					{
-						$path = $home."../tpl/";
-					}
-					else
-					{
-						$this->_errmsg("the macro file \"$f\" doesn't exist");
-					}
-					$macrofile = file_get_contents($path.$f);
+                                    if (!($path = find_in_path("tpl/$f")) && !($path = find_in_path("macros/$f")))
+                                    {
+                                            $this->_errmsg("the macro file \"$f\" doesn't exist");
+                                    }
+// 					if (file_exists("./tpl/".$f))
+// 					{
+// 						$path = './tpl/';
+// 					}
+// 					elseif (file_exists($sharedir."/macros/".$f))
+// 					{
+// 						$path = $sharedir."/macros/";
+// 					}
+// 					elseif (file_exists($home."../tpl/".$f))
+// 					{
+// 						$path = $home."../tpl/";
+// 					}
+// 					else
+// 					{
+// 						$this->_errmsg("the macro file \"$f\" doesn't exist");
+// 					}
+					$macrofile = file_get_contents($path);
 					$macros .= stripcommentandcr($macrofile);
 					unset($macrofile);
 				}
