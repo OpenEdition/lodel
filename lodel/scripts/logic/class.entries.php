@@ -937,11 +937,9 @@ class EntriesLogic extends GenericLogic
 			$gdao=DAO::getGenericDAO ($class, $this->idtype);
 			$gdao->deleteObject ($id);
 
-			if($this->maintable == 'persons') {
-				if ($this->idrelation) {
-					$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
-					$gdao->deleteObject($this->idrelation);
-				}
+			if ($this->idrelation) {
+				$gdao=DAO::getGenericDAO("entities_".$class,"idrelation");
+				$gdao->deleteObject($this->idrelation);
 			}
 		}
 
