@@ -521,10 +521,10 @@ class DAO
 		//execute delete statement
 		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) 
 			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		if ($db->affected_Rows() < $nbid) {
+		if (($db->affected_Rows() < $nbid) && $this->rightscriteria("write")) {
 			trigger_error("ERROR: you don't have the right to delete some objects in table ". $this->table, E_USER_ERROR);
 		}
-		// in theory, this is bad in the $mixed is an array because 
+		// in theory, this is bad if the $mixed is an array because 
 		// some but not all of the object may have been deleted
 		// in practice, it is an error in the interface. The database may be corrupted (object in fact).
 
