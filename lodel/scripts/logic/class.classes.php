@@ -302,6 +302,10 @@ class ClassesLogic extends Logic
 		if ( in_array($this->vo->classtype, array("persons", "entries")) ) {
 			$db->execute(lq("DROP TABLE #_TP_entities_".$this->vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
+		// delete externalentrytypes
+		if ($this->vo->classtype == "entries") {
+			$db->Execute(lq("DELETE FROM #_TP_relations_ext WHERE id1=$id"));
+		}
 		// delete associated types
 		// collect the type to delete
 		$types=DAO::getDAO ($this->typestable ($this->vo->classtype))->findMany ("class='". $this->vo->class. "'", "id");
