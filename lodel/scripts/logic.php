@@ -486,6 +486,7 @@ class Logic
 		$publicfields = $this->_publicfields();
 		foreach ($publicfields as $field => $fielddescr) {
 			list($type, $condition) = $fielddescr;
+error_log("A: ".var_export($type,true));
 			if ($condition == "+" && $type != "boolean" && // boolean false are not transfered by HTTP/POST
 					(
 						!isset($context[$field]) ||   // not set

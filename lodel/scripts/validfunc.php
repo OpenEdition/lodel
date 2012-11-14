@@ -349,6 +349,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		return true;
 	case 'mltext' :
+	case 'mllongtext' :
 		if (is_array($text)) {
 			$str = "";
 			foreach ($text as $lang => $v) {
