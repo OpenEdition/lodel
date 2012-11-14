@@ -103,6 +103,7 @@ $GLOBALS['g_entities_persons_fields'] = array('Title');
 		array ('tinytext' => array ('sql' => 'tinytext'),
 					'text' => array ('sql' => 'text'),
 					'mltext' => array ('sql' => 'text'),
+					'mllongtext' => array ('sql' => 'longtext'),
 					'image' => array ('sql' => 'tinytext', 'autostriptags' => true),
 					'file' => array ('sql' => 'tinytext', 'autostriptags' => true),
 				 	'url' => array ('sql' => 'text', 'autostriptags' => true),
