@@ -32,7 +32,7 @@
 <MACRO NAME="HEADER_HEAD_OPEN">
 <title>[@ADMIN.TITLE_DATAFIELDS]</title>
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 
 <LOOP NAME="class_name" TABLE="classes" WHERE="class='[#CLASS]'">
 
@@ -74,12 +74,13 @@
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 	</table>
 
-	<!--[ Affichage des champs de la table li�e � l'index de personnes : entities_nom_Index_de_personnes ]-->
+	<!--[ Affichage des champs de la table liée à l'index de personnes : entities_nom_Index_de_personnes ]-->
+
 		<ul id="actionsOnEntitiesPath">
 			<li><span class="intit">[@ADMIN.DEFINITION_DATAFIELDS_RELATION_BETWEEN_ENTITIES_AND_PERSONS]</span></li>
-			<li>
+			<!--[<li>
 				<ul class="actions">
-					<li class="isolated">
+					<li class="isolated">[#CLASSTYPE] - [#CLASS]
 						<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
 							<a href="index.php?do=view&amp;lo=tablefields&amp;class=entities_[#CLASS]">[@ADMIN.ADD_FIELD]</a>
 						<ELSE />
@@ -87,7 +88,7 @@
 						</IF>
 					</li>
 				</ul>
-			</li>
+			</li>]-->
 		</ul>
 		<br />&nbsp;<br />
 	<table class="statistics fields">
@@ -115,8 +116,8 @@
 				<FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]">
 		                <FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]" TITLE="[#TITLE]">
 			</td>
-		</tr>	
-	        <tr>	
+		</tr>
+	        <tr>
         	<td colspan="5" class="actions">
 			    <MACRO NAME="PNG_PLUS">
 				<IF COND="([#LODELUSER.RIGHTS] ge [#LO|rights('protect')]) or ([#LODELUSER.RIGHTS] ge [#LO|rights('write')] and [#STATUS] lt 32)">
