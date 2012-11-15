@@ -105,9 +105,9 @@ class Lodel_Filter_File_Type
         $field = $args[1];
         $errors =& $args[2];
 
-        if(empty($context['data'][$field]) || !is_array($context['data'][$field])) return;
-
-        switch($context['data'][$field]['radio'])
+        if(empty($context['data'][$field]) || !is_array($context['data'][$field]) || empty($context['data'][$field]['radio'])) return;
+        
+	switch($context['data'][$field]['radio'])
         {
             case 'upload':
                 $file = $_FILES['data']['name'][$field]['upload'];
