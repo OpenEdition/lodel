@@ -543,7 +543,7 @@ class TEIParser extends XMLReader
 		function_exists('validfield') || include 'validfunc.php';
 
 		$def = $this->_tablefields[$name];
-		if($def->type === 'mltext')
+		if($def->type === 'mltext'  || $def->type === 'mllongtext')
 		{
 			foreach($field as $k => $f)
 			{
@@ -623,7 +623,7 @@ class TEIParser extends XMLReader
 
 			if(empty($this->_contents[$name])) continue;
 
-			if('mltext' === $obj->type)
+			if('mltext' === $obj->type || 'mllongtext' === $obj->type)
 			{
 				foreach($this->_contents[$name] as $lang => $v)
 				{
@@ -1081,7 +1081,7 @@ class TEIParser extends XMLReader
 
 					$this->_currentClass[] = $name;
 
-					if('mltext' === $obj->type)
+					if('mltext' === $obj->type || 'mllongtext' === $obj->type)
 					{
 						$lang = (string) $xmlAttrs['lang'];
 						if(!isset($this->_contents[$obj->name][$lang]))

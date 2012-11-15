@@ -98,7 +98,7 @@
 			<IF COND="[#TYPE] eq 'boolean'">
 				<LET VAR="xsdsimpletype">xsd:boolean</LET>
 			<ELSE/>
-				<IF COND="[#TYPE] eq 'mltext'">
+				<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
 				<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
 				<ELSE/>
   	        		<IF COND="[#TYPE] eq 'lang'">
@@ -217,7 +217,7 @@
 		<IF COND="[#TYPE] eq 'boolean'">
 		<LET VAR="xsdsimpletype">xsd:boolean</LET>
 		<ELSE/>
-		<IF COND="[#TYPE] eq 'mltext'">
+		<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
 		<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
 		<ELSE/>
 		<IF COND="[#TYPE] eq 'lang'">
@@ -319,7 +319,7 @@
 		<IF COND="[#TYPE] eq 'boolean'">
 		<LET VAR="xsdsimpletype">xsd:boolean</LET>
 		<ELSE/>
-		<IF COND="[#TYPE] eq 'mltext'">
+		<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
 		<LET VAR="xsdsimpletype">TexteMultiLangue</LET>
 		<ELSE/>
 		<IF COND="[#TYPE] eq 'lang'">

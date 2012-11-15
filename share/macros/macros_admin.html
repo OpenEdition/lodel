@@ -543,8 +543,8 @@
 <IF COND="[#TYPE] eq 'boolean'">
     <input type="checkbox" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] [#VALUE|yes]>
 <ELSE/>
-<!--[ --------------- MLTEXT -------------- ]-->
-<IF COND="[#TYPE] eq 'mltext'">
+<!--[ --------------- MLTEXT, MLLONGTEXT -------------- ]-->
+<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
     <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />

@@ -138,7 +138,7 @@
 
 				<DO CASE="default">
 					<IF COND="[#CONTENTS.#NAME]">
-						<IF COND="[#TYPE] EQ 'mltext'">
+						<IF COND="[#TYPE] EQ 'mltext' OR [#TYPE] eq 'mllongtext'">
 							<LOOP NAME="foreach" ARRAY="[#CONTENTS.#NAME]">
 								<tr<IF COND="[%FIRSTCLASS]"> class="[%FIRSTCLASS]"<LET VAR="firstclass" GLOBAL="1"></LET></IF>>
 									<td class="title<IF COND="[#VALUE.ERROR] OR [#ERROR.#NAME]"> error</IF>"><IF COND="[#VALUE.ERROR]">[@EDITION.UNKNOWN_STYLE]</IF> [#TITLE] ([#KEY])</td>

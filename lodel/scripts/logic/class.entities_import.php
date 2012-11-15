@@ -379,7 +379,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$data = preg_replace ('/(<p\b[^>]+class=")([^"]*)(")/e', "myfunction('\\0', '\\1','\\2','\\3','". $styles_string."','".$obj->style."')", $data);
 		if ($obj->type=="file" || $obj->type=="image") {
 			// nothing...
-		} elseif ($obj->type=="mltext") {
+		} elseif ($obj->type=="mltext" || $obj->type=="mllongtext") {
 			$lang=!empty($obj->lang) ? $obj->lang : C::get('lang', 'lodeluser');
 			//$this->_currentcontext['data'][$obj->name][$lang].=addslashes ($data);
 			if(!isset($this->_currentcontext['data']))

@@ -329,7 +329,7 @@ fieldset label.boolean{
 	display: inline;
 }
 
-fieldset label.persons, fieldset label.entries, fieldset label.mltext{
+fieldset label.persons, fieldset label.entries, fieldset label.mltext, fieldset label.mllongtext{
 	color: #0096b7;
 	font-weight: bold;
 }

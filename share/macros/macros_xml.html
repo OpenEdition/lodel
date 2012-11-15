@@ -35,7 +35,7 @@
 	<IF COND="[#TYPE] eq 'boolean'">
   	<[#NAME]><IF COND="[#VALUE]">true<ELSE/>false</IF></[#NAME]>
   <ELSE/>
- 	<IF COND="[#TYPE] eq 'mltext'">
+ 	<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
 		<LOOP NAME="mltext">
 			<[#NAME] lang="[#LANG]">[(#VALUE|namespace)]</[#NAME]>
 	  </LOOP>

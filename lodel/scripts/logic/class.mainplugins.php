@@ -306,7 +306,7 @@ class MainPluginsLogic extends Logic
 													break 5;
 												}
 												$param['type'] = $reader->value;
-												if(!in_array($param['type'], array('boolean', 'text', 'int', 'email', 'lang', 'date', 'mltext', 'datetime', 'file', 'url', 'image', 'number', 'select', 'multipleselect')))
+												if(!in_array($param['type'], array('boolean', 'text', 'int', 'email', 'lang', 'date', 'mltext', 'mllongtext', 'datetime', 'file', 'url', 'image', 'number', 'select', 'multipleselect')))
 												{
 													$error[] = 'Bad type '.$param['type'].' for plugin '.$pName;
 												}
