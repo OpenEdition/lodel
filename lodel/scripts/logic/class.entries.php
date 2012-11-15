@@ -304,6 +304,7 @@ class EntriesLogic extends GenericLogic
 				$context['idparent'] = $vo->idparent;
 				$id=$context['id'] = $vo->id;
 			}
+
 			$context['data'][$g_index_key]=$context['g_name'];
 		}
 
@@ -736,8 +737,8 @@ class EntriesLogic extends GenericLogic
 						if($site_ext)
 						{
 							$query .= "(id1,id2,nature,degree,site) VALUES ({$id}, {$identry}, 'E', ".++$degree.", ".$db->quote($site_ext).")";
-							$query2 = "REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$id}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")";
-							$db->Execute(lq($query2)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+							if(!C::get('db_no_intrusion.'.$site_ext, 'cfg'))
+                                                            $db->Execute(lq("REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$id}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")")) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
 						}
 						else
 						{
@@ -795,8 +796,8 @@ class EntriesLogic extends GenericLogic
 					if($site_ext)
 					{
 						$query .= "(id1,id2,nature,degree,site) VALUES ({$childId}, {$identry}, 'E', ".++$degree.", '{$site_ext}')";
-						$query2 = "REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$childId}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")";
-						$db->Execute(lq($query2)) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
+						if(!C::get('db_no_intrusion.'.$site_ext, 'cfg'))
+                                                    $db->Execute(lq("REPLACE INTO `".DATABASE.'_'.$site_ext."`.#_TP_relations_ext (id1,id2,nature,degree,site) VALUES ({$childId}, {$identry}, 'EE', ".$degree.", ".$db->quote(C::get('site', 'cfg')).")")) or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
 					}
 					else
 					{

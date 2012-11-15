@@ -1,5 +1,5 @@
 <?php
-/**	
+/**
  * Logique des classes d'objets du système
  *
  * PHP version 5
@@ -44,7 +44,7 @@
 
 /**
  * Classe de logique des classes du système - Fille de la classe Logic
- * 
+ *
  * @package lodel/logic
  * @author Ghislain Picard
  * @author Jean Lamy
@@ -60,7 +60,7 @@
  * @since Classe ajouté depuis la version 0.8
  * @see logic.php
  */
-class ClassesLogic extends Logic 
+class ClassesLogic extends Logic
 {
 
 	/**
@@ -119,7 +119,7 @@ class ClassesLogic extends Logic
 	 * @param string $classtype le type de la classe
 	 * @return une valeur parmis : type, entrytypes et persontypes
 	*/
-	public function typestable ($classtype) 
+	public function typestable ($classtype)
 	{
 		switch ($classtype) {
 		case 'entities':
@@ -156,7 +156,7 @@ class ClassesLogic extends Logic
 	 * données sont validées (suivant leur type) puis elles sont rentrées dans la base de données <em>via</em> la DAO associée à l'objet.
 	 * Utilise _prepareEdit() pour effectuer des opérations de préparation avant l'édition de l'objet puis _populateContext() pour ajouter des informations supplémentaires au context. Et enfin _saveRelatedTables() pour sauver d'éventuelles informations dans des tables liées.
 	 * </p>
-	
+
 	 * add/edit Action
 	 * @param array $context le tableau des données passé par référence.
 	 * @param array $error le tableau des erreurs rencontrées passé par référence.
@@ -189,11 +189,11 @@ class ClassesLogic extends Logic
 		if (!empty($dao->rights['protect'])) {
 			$vo->protect = !empty($context['protected']) ? 1 : 0;
 		}
-		// put the context into 
+		// put the context into
 		$this->_populateObject($vo, $context);
 		if (!$dao->save($vo)) trigger_error("You don't have the rights to modify or create this object", E_USER_ERROR);
 		$ret = $this->_saveRelatedTables($vo, $context);
-		
+
 		update();
 		return $ret ? $ret : "_back";
 	}
@@ -205,7 +205,7 @@ class ClassesLogic extends Logic
 	 * @param object $vo l'objet qui a été créé
 	 * @param array $context le contexte
 	 */
-	protected function _saveRelatedTables ($vo, &$context) 
+	protected function _saveRelatedTables ($vo, &$context)
 	{
 		global $db;
 
@@ -229,7 +229,7 @@ class ClassesLogic extends Logic
 			$alter=true;
 			//---------------- change class name ?
 		} elseif ($this->oldvo->class!=$vo->class) {
-			// change table name 
+			// change table name
 			$db->execute (lq ("RENAME TABLE #_TP_". $this->oldvo->class. " TO #_TP_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if ($vo->classtype=="persons") {
 				$db->execute (lq ("RENAME TABLE #_TP_entities_". $this->oldvo->class. " TO #_TP_entities_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -251,18 +251,21 @@ class ClassesLogic extends Logic
 			$entrytypes = array_filter(array_map('trim', explode(',', $context['externalentrytypes'])));
 			if(!empty($entrytypes))
 			{
-				$sql = lq('REPLACE INTO #_TP_relations_ext(id1,id2,nature,degree,site) VALUES ');
-				foreach($entrytypes as $entrytype)
-				{
-					preg_match('/^([\w\-_]+)\.(\d+)$/', $entrytype, $result);
-					$sql .= "({$vo->id}, {$result[2]}, 'ET', 0, '{$result[1]}'),";
-					$db->SelectDB(DATABASE.'_'.$result[1]) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					$db->execute(lq("REPLACE INTO #_TP_relations_ext SET id1={$result[2]}, id2={$vo->id}, nature='EET', degree=0, site=".$db->quote(C::get('site', 'cfg')))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				}
+                            $cursite = $db->quote(C::get('site', 'cfg'));
+                            $sql = lq('REPLACE INTO #_TP_relations_ext(id1,id2,nature,degree,site) VALUES ');
+                            foreach($entrytypes as $entrytype)
+                            {
+                                    preg_match('/^([\w\-_]+)\.(\d+)$/', $entrytype, $result);
+                                    $sql .= "({$vo->id}, {$result[2]}, 'ET', 0, '{$result[1]}'),";
+                                    if(!C::get('db_no_intrusion.'.$result[1], 'cfg'))
+                                    {
+                                        $db->SelectDB(DATABASE.'_'.$result[1]) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                                        $db->execute(lq("REPLACE INTO #_TP_relations_ext SET id1={$result[2]}, id2={$vo->id}, nature='EET', degree=0, site=".$cursite)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                                    }
+                            }
 
-				usecurrentdb();
-				$sql = substr($sql, 0, -1);
-				$db->Execute($sql) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+                            usecurrentdb();
+                            $db->Execute(substr($sql, 0, -1)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
 
@@ -280,7 +283,7 @@ class ClassesLogic extends Logic
 	 * @param object $dao la DAO utilisée
 	 * @param array &$context le contexte passé par référénce
 	 */
-	protected function _prepareDelete ($dao, &$context) 
+	protected function _prepareDelete ($dao, &$context)
 	{
 		if(empty($context['id']))
 			trigger_error("ERROR: internal error in Classes::deleteAction", E_USER_ERROR);
@@ -336,7 +339,7 @@ class ClassesLogic extends Logic
 	 * Retourne la liste des champs publics
 	 * @access private
 	 */
-	protected function _publicfields() 
+	protected function _publicfields()
 	{
 		return array('class' => array('class', '+'),
 									'classtype' => array('text', '+'),
@@ -353,10 +356,10 @@ class ClassesLogic extends Logic
 	 * Retourne la liste des champs uniques
 	 * @access private
 	 */
-	protected function _uniqueFields() 
-	{ 
+	protected function _uniqueFields()
+	{
 		return array(array('class'), );
 	}
 	// end{uniquefields} automatic generation  //
 
-} // class 
+} // class

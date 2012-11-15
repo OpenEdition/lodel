@@ -868,7 +868,7 @@ class Entities_EditionLogic extends GenericLogic
 				if(!is_array($context['externalentries'][$entrytype]))
 					$context['externalentries'][$entrytype] = explode(',', $context['externalentries'][$entrytype]);
 				$entries =& $context['externalentries'][$entrytype];
-				$degree = $db->GetOne(lq("SELECT MAX(degree) FROM `".DATABASE.'_'.$m[1]."`.#_TP_relations_ext WHERE id2={$context['id']} AND nature='EE' AND site={$cursite}"));
+				$degree = $db->GetOne(lq("SELECT MAX(degree) FROM #_TP_relations_ext WHERE id2={$context['id']} AND nature='E' AND site=".$site));
 				$degree = $degree ? $degree+1 : 0;
 				foreach($entries as $entry)
 				{
@@ -877,12 +877,15 @@ class Entities_EditionLogic extends GenericLogic
 					$extentry = $daoe->find('BINARY(g_name)=BINARY('.$db->quote($entry).')', 'id');
 					if(!$extentry) continue;
 					$sql .= "({$context['id']}, {$extentry->id}, 'E', {$i}, {$site}),";
-					$extsql[] = lq("INSERT INTO `".DATABASE.'_'.$m[1]."`.#_TP_relations_ext (id1,id2,nature,degree,site)
+					if(!C::get('db_no_intrusion.'.$m[1], 'cfg'))
+					{
+                                            $extsql[] = lq("INSERT INTO `".DATABASE.'_'.$m[1]."`.#_TP_relations_ext (id1,id2,nature,degree,site)
 						VALUES ({$extentry->id}, {$context['id']}, 'EE', {$degree}, {$cursite})");
+                                        }
 					++$i;
 					++$degree;
 				}
-				$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id2='.$context['id'].' AND nature="EE"'))
+				$db->execute(lq('DELETE FROM #_TP_relations_ext WHERE id2='.$context['id'].' AND nature="EE" AND site='.$cursite))
 					 or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 

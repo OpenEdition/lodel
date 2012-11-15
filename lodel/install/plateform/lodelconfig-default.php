@@ -144,6 +144,11 @@ $cfg['authorizedFiles'] = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc'
 
 define("DONTUSELOCKTABLES",false);
 
+# liste des sites dans lesquels on n'écrit pas
+# utilisé pour les index externes
+# exemple d'utilisation : $cfg['db_no_intrusion'] = array('mon_site' => true);
+$cfg['db_no_intrusion'] = array();
+
 ############################################
 # config reserve au systeme de config automatique
 # la presence de ces variables est obligatoire pour la configuration
