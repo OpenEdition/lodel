@@ -238,17 +238,21 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	protected function _moveImages_rec (&$context, &$dir, &$count) 
 	{
 		$imglist = array();
+		if(isset($this->task['tei'])) $base = dirname($this->task['tei']);
+
 		foreach (array_keys ($context) as $k) {
 			if (is_array ($context[$k])) {
 				$this->_moveImages_rec ($context[$k], $dir, $count);
 				continue;
 			}
 			$text=&$context[$k];
-			preg_match_all ('/<img\b[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
+			preg_match_all ('/<img[^>]+src=\\\?"([^"]+\.([^"\.]+?))\\\?"([^>]*>)/i', $text, $results, PREG_SET_ORDER);
+
 			foreach ($results as $result) {
-				$imgfile=$result[1];	   $ext=$result[2];
+				$imgfile=$result[1];
+				$ext=$result[2];
+
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
-				// local.image so
 
 				if (isset($imglist[$imgfile])) { // is it in the cache ?
 					$text = str_replace ($result[0], "<img src=\"$imglist[$imgfile]\" />", $text);
@@ -258,10 +262,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 						$dir="docannexe/image/".$context['id'];
 						$this->_checkdir ($dir);
 					}
-					$imglist[$imgfile]=$newimgfile="$dir"."/img-".$count.".".$ext;
+					$imglist[$imgfile]= $newimgfile = "{$dir}/img-{$count}.{$ext}";
 
-					$ok = @copy ($imgfile, SITEROOT.$newimgfile);
-					@unlink ($imgfile);
+					$imgfile_path = (file_exists($imgfile)) ? $imgfile : $base . DIRECTORY_SEPARATOR . $imgfile;
+
+					$ok = @copy ($imgfile_path , SITEROOT.$newimgfile );
+					@unlink ( $base . DIRECTORY_SEPARATOR . $imgfile);
 					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
 						@chmod (SITEROOT.$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
