@@ -28,8 +28,8 @@
 <!--[ New macros added by Ghislain 12/2004 ]-->
 
 
-<!--[ --------------------------------------------------------- 
-      TR with alternating class             
+<!--[ ---------------------------------------------------------
+      TR with alternating class
 --------------------------------------------------------------- ]-->
 
 <DEFMACRO NAME="TR_LIST">
@@ -41,7 +41,7 @@
 </DEFMACRO>
 
 
-<!--[ --------------------------------------------------------- 
+<!--[ ---------------------------------------------------------
       Ok button to come back to index.php
 --------------------------------------------------------------- ]-->
 
@@ -52,7 +52,7 @@
 </DEFMACRO>
 
 
-<!--[ --------------------------------------------------------- 
+<!--[ ---------------------------------------------------------
       Submit / Cancel / Delete bar.
 --------------------------------------------------------------- ]-->
 
@@ -69,7 +69,7 @@
 </DEFMACRO>
 
 
-<!--[ --------------------------------------------------------- 
+<!--[ ---------------------------------------------------------
       Ok bouton to submit andgo from edit to list action
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="SUBMIT_CANCEL_BUTTON">
@@ -93,7 +93,7 @@
 				<a href="#[#LETTRE]">[#LETTRE]</a>
 			<ELSE />
 				[#LETTRE]&nbsp;
-			</IF>			
+			</IF>
 		<ELSE />
 			<IF COND="[#NBRESULTS] GT 0">
 				<a href="[#CURRENTURL|reg_replace('/[&?](amp;)?offset_\w+=[^&]+/', '')|reg_replace('/[&?](amp;)?letter=[^&]+/', '')|reg_replace('/[&?](amp;)?clearcache=[^&]+/', '')]&amp;letter=[#LETTRE|urlencode]">[#LETTRE]</a>
@@ -105,7 +105,7 @@
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_PERSONS" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall">
-	<IF COND="[#LISTALL]">	
+	<IF COND="[#LISTALL]">
 		<LET VAR="table">persons</LET>
 		<LET VAR="field">sortkey</LET>
 		<LOOP NAME="alphabetSpec">
@@ -176,7 +176,7 @@
 	<ELSE/><LET VAR="table">#_TP_entries</LET><LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
 	</IF>
 	<IF COND="[#SORT] EQ 'sortkey'">
-		<IF COND="[#LISTALL]">	
+		<IF COND="[#LISTALL]">
 		<LET VAR="field">[#SORT]</LET>
 		<LET VAR="curtable">[#TABLE]</LET>
 		<LET VAR="table">entries</LET>
@@ -200,7 +200,7 @@
 					<div class="document">
 						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
-						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
 						</IF>
 					</div>
@@ -238,7 +238,7 @@
 				<div class="document">
 					<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
-					<IF COND="[#TYPE.EXTERNALALLOWED]">
+					<IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
 					<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
 					</IF>
 				</div>
@@ -273,13 +273,13 @@
 					<div class="document">
 						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
-						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
 						</IF>
 					</div>
 					<div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
 					</li>
-				
+
 				</DO>
 				<AFTER>
 					</ul>
@@ -290,14 +290,11 @@
 				</ALTERNATIVE>
 			</LOOP>
 	<ELSEIF COND="[#SORT] EQ 'rank'" />
+                    <IF COND="![#FOLDER]">
 			<LOOP NAME="series_rank" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank" SPLIT="30">
 				<BEFORE>
-					<IF COND="[#FOLDER]">
-						<li class="unfoldedentities"><ul class="listEntities">
-					<ELSE />
-						<ul class="listEntities">
-					</IF>
-					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+                                    <ul class="listEntities">
+                                    <IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
 				</BEFORE>
 				<DO>
 				<IF COND="[#COUNT] % 2">
@@ -312,27 +309,53 @@
 					<div class="document">
 						<span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
-						<IF COND="[#TYPE.EXTERNALALLOWED]">
+						<IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
 						<span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
 						</IF>
 					</div>
 					<div class="action"><FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 					</li>
-				
+					<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
 				</DO>
 				<AFTER>
-					<IF COND="[#FOLDER]">
-						</ul></li>
-					<ELSE />
-						</ul>
-					</IF>
-					<IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+                                    <IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+                                    </ul>
 				</AFTER>
 				<ALTERNATIVE>
 					<MACRO NAME="AUCUNE_ENTITY_DISPONIBLE">
 				</ALTERNATIVE>
 			</LOOP>
+                    <ELSE/>
+                        <LOOP NAME="series_rank_wo_split" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'" ORDER="idparent, rank">
+                                <BEFORE>
+                                    <li class="unfoldedentities"><ul class="listEntities">
+                                </BEFORE>
+                                <DO>
+                                    <IF COND="[#COUNT] % 2">
+                                            <li class="line1">
+                                    <ELSE/>
+                                            <li class="line2">
+                                    </IF>
+                                    <div class="entityIcons">
+                                    <FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+                                    <FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+                                    </div>
+                                    <div class="document">
+                                        <span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
+                                        <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+                                        <IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
+                                        <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
+                                        </IF>
+                                    </div>
+                                    <div class="action"><FUNC NAME="CHANGE_RANK_BUTTON" LO="[#LO]"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+                                    </li>
+                                    <FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" FOLDER="yes">
+                                </DO>
+                                <AFTER>
+                                    </ul></li>
+                                </AFTER>
+                        </LOOP>
+                    </IF>
 	</IF>
 </DEFFUNC>
 
@@ -388,7 +411,7 @@
 <ELSEIF COND="![#EXTERNAL]">
 	 <span class="item inactif">[@COMMON.EDIT]</span>&nbsp;
 </IF>
-	
+
 </DEFFUNC>
 
 <DEFMACRO NAME="CHANGE_ENTRIES_STATUS">
@@ -397,7 +420,7 @@
 			<span class="item"><a href="index.php?do=publish&amp;id=[#ID]&amp;lo=[#LO]" onclick="return confirm_depublication('[@EDITION.CONFIRMATION_UNPUBLISH_ENTRIES] ?')">[@EDITION.UNPUBLISH]</a></span>
 		<ELSE/>
 			<span class="item inactif">[@EDITION.UNPUBLISH]</span>
-		</IF>	
+		</IF>
 	<ELSE/>
 		<IF COND="([#STATUS] EQ -1) OR ([#STATUS] EQ -21) OR ([#STATUS] EQ -32) ">
 	 		<IF COND="[#LODELUSER.EDITOR]">
@@ -449,7 +472,7 @@
 				</div>
 				<MACRO NAME="BOUTONS_ACTIONS_ENTITIES">
 			</li>
-	
+
 		</DO>
 		<AFTER></ul></AFTER>
 	</LOOP>
@@ -494,7 +517,7 @@
 --------------------------------------------------------------- ]-->
 <DEFMACRO NAME="JS_SELECT_URL">
 	<script type="text/javascript"><!--
-	
+
 		function select_url(obj) {
 			var index = obj.selectedIndex;
 			if (obj.options[index].value) window.location=obj.options[index].value;
@@ -546,7 +569,7 @@
 <!--[ --------------- MLTEXT, MLLONGTEXT -------------- ]-->
 <IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
   <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
-    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label> 
+    <div><label  style="display: block; margin: 10px 0 5px 0">[(#LANG|humanlang|ucfirst)] :</label>
 	<FUNC NAME="PRINT_EDIT_FIELD" TYPE="text" EDITION="[#EDITION]" VARNAME="[#VARNAME][[#LANG]]" VALUE="[#VALUE]" />
     </div>
   </LOOP>
@@ -554,7 +577,7 @@
     <select name="addlanginmltext[[#VARNAME]]"><?php makeSelect($context,"","","lang"); ?></select>
     <input class="form" type="submit" name="reload2" value="[@COMMON.ADD]">
   </div>
-	
+
 <ELSE/>
 <!--[ --------------- LANG,SELECT ------------- ]-->
 <IF COND="[#TYPE] eq 'lang' or [#TYPE] eq 'select'">
@@ -568,17 +591,17 @@
 		<?php  makeSelect($context,"value","",@$context['type']); ?>
 	    </select>
 <ELSE/>
-<!--[ --------------- DATE DATETIME TIME ------------- ]-->	    
+<!--[ --------------- DATE DATETIME TIME ------------- ]-->
 <IF COND="[#TYPE] eq 'date' or [#TYPE] eq 'datetime' or [#TYPE] eq 'time'">
 	<input size="30" type="text" name="[#VARNAME]" id="[#VARNAME]" [#EVENTATTR] value="[(#VALUE|humandate)]">
 
 <ELSE/>
-<!--[ --------------- IMAGE ------------- ]-->	    
+<!--[ --------------- IMAGE ------------- ]-->
 <IF COND="[#TYPE] eq 'image'">
-		
+
                    <table><tr>
 		<IF COND="[#VALUE]"><img src="[(#VALUE|vignette(100))]" border="1"></IF>
-                
+
 	        <IF COND="[#VALUE]">
 			<input type="radio" name="[#VARNAME][radio]" value="">Conserver l'image courante<br />
 			<input type="radio" name="[#VARNAME][radio]" value="delete">[@COMMON.DELETE] <br />
@@ -586,11 +609,11 @@
 		<input type="radio" id="[#VARNAME][radioserverfile]" name="[#VARNAME][radio]" value="serverfile">
 	           <a href="javascript:;" onclick="window.open('filebrowser.php?caller=[#VARNAME]','Upload','width=250,height=200,top=100,left=100');">Choisir un fichier sur le serveur</a>&nbsp;&nbsp;<span id="[#VARNAME][localfilename]">&nbsp;</span><input size="40" type="text" id="[#VARNAME][localfullfilename]"><br />
 		<input type="radio" id="[#VARNAME][radioupload]" name="[#VARNAME][radio]" value="upload">Choisir un fichier sur votre disque: <input size="40" type="file" name="[#VARNAME][upload]" onChange="document.getElementById('[#VARNAME][radioupload]').click();">
-		 
+
 	        </tr></table>
 	        <input  type="hidden" id="[#VARNAME][previousvalue]" VALUE="[#VALUE]">
 <ELSE/>
-<!--[ --------------- COLOR ------------- ]-->	    
+<!--[ --------------- COLOR ------------- ]-->
 <IF COND="[#TYPE] eq 'color'">
 <script language="Javascript" src="[#SHAREURL]/js/colorpicker.js"></script>
 <script language="Javascript">
@@ -643,7 +666,7 @@ cp_[#NAME].writeDiv();
 
 
 <!--[ -----------------------------------------------------------
-      Afficher les options d'un groupe  
+      Afficher les options d'un groupe
 --------------------------------------------------------------- ]-->
 
 
@@ -994,7 +1017,7 @@ cp_[#NAME].writeDiv();
 <DEFMACRO NAME="JS_ROLLOVER">
 	<!--[ exemple de Javascript pour un Rollover ]-->
 	<SCRIPT TYPE="text/javascript"><!--
-	
+
 	/* on prï¿½charge les image */
 	//img1=new Image(82,18); /* on dï¿½lare les images */
 	//img2=new Image(82,18);
