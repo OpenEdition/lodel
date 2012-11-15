@@ -217,7 +217,7 @@
 <DEFFUNC NAME="PRINT_EDIT_FIELD_XSLT" REQUIRED="varname,value,type,fullvarname" OPTIONAL="edition,editionparams,eventattr,confirm">
 <LET VAR="edition">display</LET>
 <!--[ Champ multilingue ]-->
-<IF COND="[#TYPE] eq 'mltext'">
+<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
   <br />
   <div id="mltext_[#VARNAME]" class="mltexteditionarea">
 	<div id="mltext_[#VARNAME]_for_copy" style="display: none;">
@@ -272,7 +272,7 @@
 <!--[ --------------- DISPLAY ONLY------------ -------------- ]-->
 
 <IF COND="[#EDITION] eq 'display'">
-	<IF COND="[#TYPE] eq 'mltext'"> <!--[ multi-lingue ]-->
+	<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'"> <!--[ multi-lingue ]-->
 	  <LOOP NAME="mltext"> <!--[ champ multilingue ]-->
 	    <div class="mlTitle">[(#LANG|humanlang|ucfirst)]</div><div class="displayfield">[#VALUE]</div>
 	  </LOOP>
@@ -389,8 +389,8 @@
 <IF COND="[#TYPE] eq 'int' or [#TYPE] eq 'number'">
     <input type="text" name="[#FULLVARNAME]" id="[#VARNAME]" value="[#VALUE]" />
 <ELSE/>
-<!--[ --------------- MLTEXT -------------- ]-->
-<IF COND="[#TYPE] eq 'mltext'">
+<!--[ --------------- MLTEXT, MLLONGTEXT -------------- ]-->
+<IF COND="[#TYPE] eq 'mltext' OR [#TYPE] eq 'mllongtext'">
   <FUNC NAME="EDIT_MLTEXT">
 <ELSE/>
 <!--[ --------------- LANG,SELECT ------------- ]-->
