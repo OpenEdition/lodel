@@ -329,6 +329,7 @@ class EntriesLogic extends GenericLogic
 					$new=false;
 					$dao->instantiateObject ($vo);
 					$vo->id=$id;
+					if ($status == 21) $vo->status = $status;
 				} else {
 					if (!$votype->newbyimportallowed && // entrytype does not allow entry creation
                                             (!isset($context['lo']) || ($context['lo']!="entries")) && // if we are not in entry creation page
@@ -861,7 +862,7 @@ class EntriesLogic extends GenericLogic
 				SELECT *
 					FROM #_TP_entries
 					WHERE idtype='".$context['idtype']."' AND id!='".$context['id']."' AND idparent ".sql_in_array ($ids). "
-					AND ABS(status) = 32 ORDER BY ". $context['type']['sort']))
+					AND ABS(status) >= 21 ORDER BY ". $context['type']['sort']))
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$ids=array();
 				$i=0;
