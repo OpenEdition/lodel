@@ -751,8 +751,11 @@ class C
 			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
 			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
 			$config->set('HTML.DefinitionRev', 1);
-			$config->set('HTML.SafeObject', true);
-			$config->set('HTML.SafeEmbed', true);
+			// L'option HTML.SafeObject est très très gourmande, on ne l'utilise que si c'est nécessaire (pareil pour HTML.SafeEmbed just in case)
+			if (stripos("<object", $data))
+				$config->set('HTML.SafeObject', true);
+			if (stripos("<embed", $data))
+				$config->set('HTML.SafeEmbed', true);
 			$config->set('CSS.AllowTricky',true);
 			$def = $config->getHTMLDefinition(true);
 			$r2r = $def->addElement(
