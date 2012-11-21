@@ -1451,6 +1451,8 @@ function thumbnail($path, $width = null, $height = null)
 	
 	$image_infos = pathinfo($path);
 
+	if(!file_exists($path)) return $path;
+
 	$tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
 	file_put_contents($tmp_path, file_get_contents($path));
 
