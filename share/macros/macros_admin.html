@@ -449,9 +449,11 @@
 </DEFFUNC>
 
 <DEFFUNC NAME="LISTE_ENTITES_LIEES" REQUIRED="id, nature">
-	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id" ORDER="identifier">
+	<LOOP NAME="getlinkedentities" TABLE="relations, entities, types" WHERE="id2 = '[#ID]' AND nature = '[#NATURE]' AND entities.id = relations.id1 AND idtype=types.id" ORDER="identifier" SPLIT="50">
 		<BEFORE>
-			<hr /><ul class="listEntities">
+			<hr />
+			<IF COND="[#NBRESULTS] GT 50"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+			<ul class="listEntities">
 		</BEFORE>
 		<DO>
 			<IF COND="[#COUNT] % 2">
