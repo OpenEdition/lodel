@@ -325,6 +325,7 @@ class EntriesLogic extends GenericLogic
 			}
 
 			if (!$vo) { // create or edit the entity
+
 				if ($id) {
 					$new=false;
 					$dao->instantiateObject ($vo);
@@ -334,8 +335,8 @@ class EntriesLogic extends GenericLogic
 					if (!$votype->newbyimportallowed && // entrytype does not allow entry creation
                                             (!isset($context['lo']) || ($context['lo']!="entries")) && // if we are not in entry creation page
                                             C::get('lo') != "entities_edition" && // but allow it in entity edit page
-                                            !C::get("identity") && // and from reloading page
-                                            (C::get('lo') != 'entities_import' && !C::get('reload'))
+                                            !C::get("identity") /*&& // and from reloading page
+                                            (C::get('lo') != 'entities_import' && !C::get('reload'))*/
                                             ) {
 						return "_error";
 					}
