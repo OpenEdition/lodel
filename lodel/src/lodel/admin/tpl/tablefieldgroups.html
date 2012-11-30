@@ -61,7 +61,7 @@
 		</li>
 	</ul>
 	<br />&nbsp;<br />
-
+<!--[
 	<table class="statistics fields">
 		<tr>
 			<th class="status">[@COMMON.TITLE]</th>
@@ -73,9 +73,9 @@
 		</tr>
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='[#CLASS]'">
 	</table>
-
+]-->
 	<!--[ Affichage des champs de la table liée à l'index de personnes : entities_nom_Index_de_personnes ]-->
-
+<!--[
 		<ul id="actionsOnEntitiesPath">
 			<li><span class="intit">[@ADMIN.DEFINITION_DATAFIELDS_RELATION_BETWEEN_ENTITIES_AND_PERSONS]</span></li>
 			<!--[<li>
@@ -88,9 +88,10 @@
 						</IF>
 					</li>
 				</ul>
-			</li>]-->
+			</li>
 		</ul>
-		<br />&nbsp;<br />
+		<br />&nbsp;<br />]-->
+		<!--[
 	<table class="statistics fields">
 		<tr>
 			<th class="status">[@COMMON.TITLE]</th>
@@ -101,7 +102,7 @@
 			<th class="status">[@COMMON.ACTIONS]</th>
 		</tr>
 		<FUNC NAME="AFFICHER_CHAMPS_DU_GROUPE" WHERE="idgroup=0 AND class='entities_[#CLASS]'">
-	</table>
+	</table>]-->
 
 	<LOOP NAME="fieldgroups" TABLE="tablefieldgroups" ORDER="rank,title" WHERE="status gt 0" WHERE="class='[#CLASS]'">
 
