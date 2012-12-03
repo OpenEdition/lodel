@@ -187,7 +187,7 @@ class Parser
 			$template['contents'] =
 <<<PHP
 <?php
-{$this->fct_txt}
+ {$this->fct_txt}
  ?>
 {$template['contents']}
 PHP;
@@ -643,14 +643,14 @@ PHP;
 					$contents =
 <<<PHP
 '<?php
-\$c = "'.\$c.'";
+ \$c = "'.\$c.'";
 echo View::getView()->getIncTpl(\$c, "{$attrs['TEMPLATEFILE']}", "{$this->cache_rep}", "{$path}", "{$attrs['BLOCKID']}");
 ?>'
 PHP;
             				$this->arr[$this->ind] =
 <<<PHP
 <?php
-\$c = base64_encode(serialize(\$context));
+ \$c = base64_encode(serialize(\$context));
 echo {$contents};
 unset(\$c);
 ?>
@@ -738,14 +738,14 @@ PHP;
 					$contents =
 <<<PHP
 '<?php
-\$c = "'.\$c.'";
+ \$c = "'.\$c.'";
 echo View::getView()->getIncTpl(\$c, "{$this->tpl}", "{$this->cache_rep}", "{$this->base_rep}", 0, "{$name}");
 ?>'
 PHP;
             				$this->arr[$this->ind] =
 <<<PHP
 <?php
-\$c = base64_encode(serialize(\$context));
+ \$c = base64_encode(serialize(\$context));
 echo {$contents};
 unset(\$c);
 ?>
@@ -1469,7 +1469,7 @@ PHP;
 			$contents =
 <<<PHP
 '<?php
-\$c = "'.\$c.'";
+ \$c = "'.\$c.'";
 echo View::getView()->getIncTpl(\$c, "{$this->tpl}", "{$this->cache_rep}", "{$this->base_rep}", "{$attrs['ID']}");
 unset(\$c);
 ?>'
@@ -1477,7 +1477,7 @@ PHP;
             		$this->arr[$this->ind] =
 <<<PHP
 <?php
-\$c = base64_encode(serialize(\$context));
+ \$c = base64_encode(serialize(\$context));
 echo {$contents};
 unset(\$c);
 ?>
