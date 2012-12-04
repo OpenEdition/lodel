@@ -1461,4 +1461,17 @@ function highlight_code($text, $language='xml', $lineNumbers=true)
 	$geshi->set_header_type(GESHI_HEADER_DIV);
 	return $geshi->parse_code();
 }
-?>
+
+function cleanHTML( $text ) {
+	$GLOBALS['textfunc_hasbeencleaned'] = true;
+
+	require_once 'htmLawed.php';
+	$config = array(
+		'valid_xhtml' => 1,
+		'make_tag_strict' => 0,
+		'unique_ids' => 0,
+		'scheme' => '*: *',
+	);
+	return htmLawed($text, $config);
+}
+
