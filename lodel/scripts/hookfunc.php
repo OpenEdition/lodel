@@ -11,9 +11,25 @@ if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
  * @param string $field le champ actuellement parsé
  */
 function updatedatepubli(&$context, $field){
-	if($context['do'] == "publish" && $context['publishstatus'] == 1){
-		$context['data']['datepubli'] = date("Y-m-d");
+	if(isset($context['do']) && $context['do'] == "publish" && $context['status'] == 1){
+		global $db;
+		$id = $context['id'];
+		$class = $context['class'];
+		$date = date("Y-m-d");
+		$db->execute(lq("UPDATE #_TP_$class SET $field = " . $db->quote($date) . " WHERE identity= " . $db->quote($id))) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+
+		if(!function_exists("update_childs")){
+			function update_childs( $field, $id, $date ){
+				global $db;
+				foreach( $db->getArray(lq("SELECT id, idtype FROM #_TP_entities WHERE idparent = " . $db->quote($id) )) as $entity){
+					$type = $db->getRow(lq("SELECT class FROM #_TP_types WHERE id = " . $db->quote($entity['idtype'])));
+					$db->execute(lq("UPDATE #_TP_{$type['class']} SET $field = " . $db->quote($date) . " WHERE identity = " . $db->quote($entity['id'])));
+
+					update_childs($field, $entity['id'], $date);
+				}
+			}
+		}
+
+		update_childs($field, $id, $date);
 	}
 }
-
-?>
