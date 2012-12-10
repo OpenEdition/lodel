@@ -1515,8 +1515,8 @@ PHP;
 		{
 			$cond = preg_replace(array( "/(\[(?:#|%)[\w'\[\]\.\|\$\\\]*?\]) like (\/.*\/)/i",
 					                    "/'([\w'\[\]\.\$\\\]*?)' like (\/.*\/)/i"),
-			                    array('preg_match_all("\\2is", \\1, $context[\'matches\'])',
-				                'preg_match_all("\\2is", "\\1", $context[\'matches\'])'), $attrs['COND']);
+			                    array('preg_match_all("\\2ius", \\1, $context[\'matches\'])',
+				                'preg_match_all("\\2ius", "\\1", $context[\'matches\'])'), $attrs['COND']);
 
 		}
 		else $cond = $attrs['COND'];
