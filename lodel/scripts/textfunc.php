@@ -1903,3 +1903,16 @@ function str_split_unicode($str, $l = 0) {
 	return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
 }
 
+/**
+ * Lodelisation de la fonction preg_split
+ * 
+ * @param string $str 
+ * @param string $pattern
+ * @param int $limit 
+ * @param number $flags
+ * @return multitype:
+ */
+function lreg_split($str, $pattern, $limit = -1, $flags = 0)
+{
+	return preg_split($pattern, $str, $limit, $flags);
+}
