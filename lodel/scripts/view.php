@@ -431,7 +431,10 @@ class View
 		{
 			$sum = crc32($context);
 			$context = unserialize(base64_decode($context));
-		}
+		}elseif( $blockId > 0 ){
+			$sum = crc32(base64_encode(serialize($context)));
+ 		}
+
 
 		if(!$base_rep) $base_rep = './tpl/';
 		if (!file_exists("tpl/{$tpl}.html") && file_exists($this->_home. "../tpl/{$tpl}.html")) {
