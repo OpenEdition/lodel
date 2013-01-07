@@ -470,7 +470,7 @@ function _buildPageUrl($offsetname, $offset)
 
 /**
  * @private
- * construct page listing by given nbresults and currentoffset in the results
+ * construct page listing by given numfound and currentoffset in the results
  * 
  */
 function _constructPages(& $context, $funcname, $arguments)
@@ -483,9 +483,9 @@ function _constructPages(& $context, $funcname, $arguments)
 	$offsetname = $context['offsetname'];
 	$currentoffset = (isset($_REQUEST[$offsetname]) ? $_REQUEST[$offsetname] : 0);
 
-	$context['nbresults'] = isset($context['nbresults']) ? $context['nbresults'] : 0;
+	$context['numfound'] = isset($context['numfound']) ? $context['numfound'] : (isset($context['nbresults']) ? $context['nbresults'] : 0);
 	//construct next url
-	if ($context['nbresults'] > ($currentoffset + $arguments['limit']))
+	if ($context['numfound'] > ($currentoffset + $arguments['limit']))
 		$context['nexturl'] = _buildPageUrl($offsetname, $currentoffset + $arguments['limit']);
 	else
 		$context['nexturl'] = "";
@@ -507,7 +507,7 @@ function _constructPages(& $context, $funcname, $arguments)
 	$pages[($currentoffset / $arguments['limit'] + 1)] = "";
 	//next pages 
 	$i = $currentoffset;
-	while ($i + $arguments['limit'] < $context['nbresults']) {
+	while ($i + $arguments['limit'] < $context['numfound']) {
 		$i += $arguments['limit'];
 		$urlpage = _buildPageUrl($offsetname, $i);
 		$pages[($i / $arguments['limit'] + 1)] = $urlpage;
