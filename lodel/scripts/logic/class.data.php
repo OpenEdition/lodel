@@ -44,7 +44,7 @@
 
 /**
  * Classe de logique permettant de gérer les backup et import de données et de ME
- * 
+ *
  * @package lodel/logic
  * @author Jean Lamy
  * @author Sophie Malafosse
@@ -86,7 +86,7 @@ class DataLogic
 	 * Tables correspondantes au ME
 	 * @var array
 	 */
-	private $_tables; 
+	private $_tables;
 
 	/**
 	 * Tables enregistrées lors du parsage du fichier XML
@@ -98,20 +98,20 @@ class DataLogic
 	 * Structure de la base XML
 	 * @var array
 	 */
-	private $_xmlStruct; 
+	private $_xmlStruct;
 
 	/**
 	 * Structure de la base SQL
 	 * @var array
 	 */
-	private $_sqlStruct; 
+	private $_sqlStruct;
 
 	/**
 	 * Liste des tables différentes entre SQL/XML
 	 * @var array
 	 */
-	private $_changedTables; 
-	
+	private $_changedTables;
+
 	/**
 	 * Liste des champs différents entre chaque table SQL/XML
 	 * @var array
@@ -133,13 +133,13 @@ class DataLogic
 	/**
 	 * Tableau des requêtes à effectuer
 	 * @var array
-	 */	
+	 */
 	private $_sql;
 
 	/**
 	 * Tableau des champs absent du XML mais présent dans la base
 	 * @var array
-	 */	
+	 */
 	private $_fieldsToKeep;
 
 	/**
@@ -158,7 +158,7 @@ class DataLogic
 	 * Tableau des noms des classes du ME XML
 	 */
 	private $_classes;
-	
+
 	/**
 	 * Tableau des types changés ayant une classe différente
 	 */
@@ -179,7 +179,7 @@ class DataLogic
                 || $do == 'importmodel'
                 || $do == 'importxmlmodel'
                 || $do == 'globalbackup')))
-                && !(C::get('redactor', 'lodeluser') && $do == 'import') 
+                && !(C::get('redactor', 'lodeluser') && $do == 'import')
                 ) {
                         trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
                 }
@@ -232,9 +232,9 @@ class DataLogic
 					$error['error_execute_dump'] = $err = $db->errormsg();
 				}
 				@unlink($sqlfile);
-		
+
 				clearcache();
-		
+
 				// verifie les .htaccess dans le cache
 				$this->_checkFiles($context);
 			} while(0);
@@ -262,7 +262,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 		#print_r($context);
 		if (isset($context['backup'])) { // si on a demandé le backup
-			set_time_limit(0); 
+			set_time_limit(0);
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
 
@@ -283,7 +283,7 @@ class DataLogic
 				$error['mysql'] = 'dump_failed';
 				return 'backup';
 			}
-		
+
 			// zip le site et ajoute la base
 			$archivetmp      = tempnam($tmpdir, 'lodeldump_'). '.zip';
 			$archivefilename = "site-$site-". date("dmy"). '.zip';
@@ -312,7 +312,7 @@ class DataLogic
 					}
 					// initialise $error pour affichage dans le template backup.html
 					if (!empty($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
-					
+
 					// conversion en chaîne pour ligne de commande
 					$dirs = implode(' ', $good_dirs);
 				}
@@ -342,7 +342,7 @@ class DataLogic
 				$archive = new PclZip($archivetmp);
 				if (empty($context['sqlonly'])) {
 					// function to exclude files and rename directories
-					function preadd($p_event, &$p_header) 
+					function preadd($p_event, &$p_header)
 					{
 						global $excludes, $tmpdir; // that's bad to depend on globals like that
 						$p_header['stored_filename'] = preg_replace("/^". preg_quote($tmpdir, "/"). "\//", "", $p_header['stored_filename']);
@@ -377,7 +377,7 @@ class DataLogic
 				trigger_error("ERROR: the zip command or library does not produce any output", E_USER_ERROR);
 			}
 			@unlink($tmpdir. '/'. $outfile); // delete the sql file
-			
+
 			if($error) { // Pour avoir accès aux erreurs dans les templates
 				$context['error'] = $error;
             		}
@@ -390,7 +390,7 @@ class DataLogic
 				$context['success'] = 1;
 				return 'backup';
 			}
-			
+
 			return 'backup';
 		}
 		else {
@@ -413,7 +413,7 @@ class DataLogic
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
 		global $db;
 		$context['importdir'] = C::get('importdir', 'cfg');
-		
+
 		if (isset($context['backup'])) {
 			if(empty($context['operation']))
 				trigger_error("ERROR: unknonw operation", E_USER_ERROR);
@@ -425,7 +425,7 @@ class DataLogic
 			@mkdir($dirlocked, 0700);
 			$outfile = 'lodel.sql';
 			$fh = @fopen($dirlocked. '/'. $outfile, 'w');
-			
+
 			if (!$fh) {
 				trigger_error("ERROR: unable to open a temporary file in write mode", E_USER_ERROR);
 			}
@@ -435,9 +435,9 @@ class DataLogic
 			}
 
 			$GLOBALS['currentprefix'] = '#_MTP_';
-			
+
 			mysql_dump(DATABASE, $GLOBALS['lodelbasetables'], '', $fh);
-			
+
 			// Trouve les sites a inclure au backup.
 			//$errors = array();
 			$result = $db->execute(lq('SELECT name, path FROM #_MTP_sites WHERE status > -32')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -449,7 +449,7 @@ class DataLogic
 					trigger_error("ERROR: unable to write in the temporary file", E_USER_ERROR);
 				}
 				$this->_dump($name, $outfile, $errors, $fh);
-				if (empty($context['sqlonly'])) { 
+				if (empty($context['sqlonly'])) {
 					chdir(LODELROOT);
 					if ($sitepath == '/') { $root = ''; } // site à la racine
 					else { $root = $name . '/'; }
@@ -481,7 +481,7 @@ class DataLogic
 				return 'backup';
 			}
 		}
-		
+
 		//$context['error'] = $errors;
 		return 'backup';
 	}
@@ -507,7 +507,7 @@ class DataLogic
 		$context['importdirs'] = $GLOBALS['importdirs'];
 		$this->fileExtension = 'zip';
 		$this->fileRegexp = $GLOBALS['fileregexp'] = '(model)-\w+(?:-\d+)?.'. $this->fileExtension; //restriction sur le nom du ZIP
-		
+
 		if (($context['error_table'] = $this->_isimportmodelallowed()) ) {
 			return 'importmodel';
 		}
@@ -521,13 +521,13 @@ class DataLogic
 			if (!importFromZip($file, $accepteddirs, $acceptedexts, $sqlfile)) {
 				$err = $context['error_extract'] = 1;
 			}
-			
+
 			// execute the dump
 			if (!$this->_execute_dump($sqlfile)) {
 				$context['error_execute_dump'] = $err->errormsg();
 			}
 			@unlink($sqlfile);
-			
+
 			// change the id in order there are minimal and unique
 			$this->_reinitobjetstable();
 
@@ -535,7 +535,7 @@ class DataLogic
 			if(!function_exists('clearcache'))
 				require 'cachefunc.php';
 			clearcache();
-			
+
 			if (!isset($err)) {
 				if (!empty($context['frominstall'])) { // si on vient de l'install redirige vers la page d'édition
 					header ('location: ../edition/index.php');
@@ -551,7 +551,7 @@ class DataLogic
 			$GLOBALS['nodesk'] = true;
 			return 'importmodel-frominstall';
 		} else {
-				
+
 				return 'importmodel';
 		}
 	}
@@ -608,9 +608,9 @@ class DataLogic
 			</modelversion>
 			</model>
 			';
-		
+
 			fputs($fh, '# '. str_replace("\n", "\n# ", $description). "\n#------------\n\n");
-			
+
 			$tables = array('#_TP_classes',
 				'#_TP_tablefields',
 				'#_TP_tablefieldgroups',
@@ -627,7 +627,7 @@ class DataLogic
 			$GLOBALS['showcolumns'] = true; // use by PMA to print the fields.
 			//fait un DUMP de ces tables
 			mysql_dump($GLOBALS['currentdb'], $tables, '', $fh, false, false, true); // get the content
-			
+
 			// select the optiongroups to export
 			$vos = DAO::getDAO('optiongroups')->findMany('exportpolicy > 0 AND status > 0', '', 'name, id');
 			$ids = array();
@@ -638,27 +638,44 @@ class DataLogic
 			mysql_dump($GLOBALS['currentdb'], array('#_TP_optiongroups'), '', $fh, false, false, true, '*', 'id '. sql_in_array($ids));
 			fputs($fh, "DELETE FROM #_TP_options;\n");
 			mysql_dump($GLOBALS['currentdb'],array('#_TP_options'), '', $fh, false, false, true, 'id, idgroup, name, title, type, defaultvalue, comment, userrights, rank, status, upd, edition, editionparams', 'idgroup '. sql_in_array($ids)); // select everything but not the value
-		
+
 			// Récupère la liste des tables de classe à sauver.
-			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'class,classtype');
+			$vos = DAO::getDAO('classes')->findMany('status > 0', '', 'id,class,classtype');
 			$tables = array();
 			foreach ($vos as $vo) {
 				$tables[] = lq('#_TP_'. $vo->class);
-				if ($vo->classtype == 'persons' || $vo->classtype == 'entries') {
+				if ($vo->classtype == 'persons') {
 					$tables[] = lq('#_TP_entities_'. $vo->class);
 				}
+				elseif($vo->classtype == 'entries')
+				{
+                    $external = DAO::getDAO('relations_ext')->find('nature="ET" AND id1='.$vo->id);
+                    if(!$external)
+                        $tables[] = lq('#_TP_entities_'. $vo->class);
+				}
 			}
-			if ($tables) {
-				mysql_dump($GLOBALS['currentdb'], $tables, '', $fh, true, true, false); // get the table create
-			}
-			// it may be better to recreate the field at the import rather 
+            if ($tables) {
+                mysql_dump($GLOBALS['currentdb'], $tables, '', $fh, true, true, false); // get the table create
+            }
+            // pour les types d'entrées externes
+            $vos = DAO::getDAO('relations_ext')->findMany('nature IN ("ET", "EET")', '', 'idrelation');
+            if($vos)
+            {
+                $ids = array();
+                foreach($vos as $vo)
+                {
+                    $ids[] = $vo->idrelation;
+                }
+                mysql_dump($GLOBALS['currentdb'],array('#_TP_relations_ext'), '', $fh, false, false, true, 'id1, id2, nature, degree, site ', 'idrelation '. sql_in_array($ids));
+            }
+			// it may be better to recreate the field at the import rather
 			// than using the created field. It may be more robust. Status quo at the moment.
 			fclose($fh);
-			
+
 			if (filesize($tmpfile) <= 0) {
 				trigger_error('ERROR: mysql_dump failed', E_USER_ERROR);
 			}
-		
+
 			$dirs = array();
 			$dirstest = array('tpl', 'css', 'images', 'js', 'lodel/icons');
 			foreach($dirstest as $dir) {
@@ -704,7 +721,7 @@ class DataLogic
 		}	else	{
 			$dbname = DATABASE;
 		}
-	
+
 		if (!$db->selectDB($dbname)) {
 			$error['database'] = 'error : '.$db->ErrorMsg().'<br />';
 			return ;
@@ -734,7 +751,7 @@ class DataLogic
 	 * @param string $url le fichier SQL
 	 * @param boolean $ignoreerrors. false par défaut
 	 * @return true si le dump a bien été executé	 */
-	protected function _execute_dump($url, $ignoreerrors = false) 
+	protected function _execute_dump($url, $ignoreerrors = false)
 	{
 		global $db;
 		$file_content = file($url);
@@ -799,7 +816,7 @@ class DataLogic
 		$acceptedexts = array ('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff');
 		$tmpdir = tmpdir();
 		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
-	
+
 		// Cherche si les répertoires à zipper contiennent bien des fichiers
 		$zipdirs = array ();
 		foreach ($dirs as $dir)	{
@@ -813,7 +830,7 @@ class DataLogic
 			closedir($dh);
 		}
 		//
-	
+
 		if ($zipcmd && $zipcmd != 'pclzip')	{ //commande ZIP
 			if ($zipdirs)	{
 				$files = '';
@@ -842,7 +859,7 @@ class DataLogic
 				{
 					global $user_vars;
 					$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
-	
+
 					#echo $p_header['stored_filename'],"<br>";
 					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
 				}
@@ -860,7 +877,7 @@ class DataLogic
 				$archive->create($sqlfile, PCLZIP_OPT_REMOVE_ALL_PATH);
 			}
 		} // end of pclzip option
-	
+
 		return $archivetmp;
 	}
 
@@ -873,7 +890,7 @@ class DataLogic
 	 * @access private
 	 * @return un booleen false si impossible, le nom de la table sinon
 	 */
-	private function _isimportmodelallowed() 
+	private function _isimportmodelallowed()
 	{
 		global $db;
 		// verifie qu'on peut importer le modele.
@@ -894,7 +911,7 @@ class DataLogic
 	/**
 	 * Extraction du fichier ZIP d'import du ME
 	 *
-	 * 
+	 *
 	 * @param string $footprint le prefix qui doit être contenu dans le nom du fichier
 	 * @param array $context le contexte passé par référence
 	 * @param string $ext l'extension du fichier, par défaut .zip
@@ -922,7 +939,7 @@ class DataLogic
 				$file = cache_get_path( null ) . DIRECTORY_SEPARATOR . $file;
 			}
 		} elseif (!empty($context['file'])) {
-			if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) && 
+			if (preg_match("/^(?:". str_replace("/", "\/", join("|", $context['importdirs'])). ")\/". $this->fileRegexp. "$/", $context['file'], $result) &&
 				file_exists($context['file']))	{ // fichier sur le disque
 				$file = $context['file'];
 				$prefix = $result[1];}
@@ -940,7 +957,7 @@ class DataLogic
 	{
 		global $db;
 		$db->execute(lq('DELETE FROM #_TP_objects')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	
+
 		// ajoute un grand nombre a tous les id.
 		$offset = 2000000000;
 		$tables = array(
@@ -955,10 +972,10 @@ class DataLogic
 				$db->execute(lq('UPDATE #_TP_'. $table. ' SET '. $idname. '='. $idname. '+'. $offset. ' WHERE '.$idname. '>0')) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
 		}
-	
+
 		$conv = array('types' => array('entitytypes_entitytypes' => array('identitytype', 'identitytype2'), ),
 									'persontypes' => array(), 'entrytypes' => array(), 'classes' => array());
-	
+
 		foreach ($conv as $maintable => $changes) {
 			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			while ( ($id=$result->fields['id']) ) {
@@ -975,7 +992,7 @@ class DataLogic
 				$result->MoveNext();
 			}
 		}
-	
+
 		// check all the id have been converted
 		$err = "";
 		foreach ($tables as $table => $idsname) {
@@ -1001,7 +1018,7 @@ class DataLogic
 	 * @param array $context le contexte passé par référence
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 */
-	public function backupxmlmodelAction(&$context, &$error) 
+	public function backupxmlmodelAction(&$context, &$error)
 	{
 		if (empty($context['backup'])) {
 			return 'backupmodel';
@@ -1052,7 +1069,7 @@ class DataLogic
 	 * @param array $error les éventuelles erreurs, passées par référence
 	 * @return string $tpl nom du template à afficher
 	 */
-	public function importxmlmodelAction(&$context, &$error) 
+	public function importxmlmodelAction(&$context, &$error)
 	{
 		$cache   = getCacheObject();
 		$cacheid = getCacheIdFromId('ME.obj');
@@ -1072,7 +1089,7 @@ class DataLogic
 		$this->fileRegexp = $GLOBALS['fileregexp'] = "({$this->filePrefix})-\w+(?:-\d+)?.{$this->fileExtension}"; //restriction sur le nom du ZIP
 		$context['delete'] = isset($context['delete']) ? $context['delete'] : false;
 		$file = $this->_extractImport($context);
-		
+
 		if ($file) {
 			$xmlfile = tempnam(tmpdir(), 'lodelimportxml_');
 			$accepteddirs = array('tpl', 'css', 'images', 'js', 'lodel/icons');
@@ -1083,7 +1100,7 @@ class DataLogic
 			}
 			$up = true;
 		}
-		
+
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
 			&& ($meObj = cache_get('ME.obj'))) { // on a déjà parsé le XML
 			$class = __CLASS__;
@@ -1117,7 +1134,7 @@ class DataLogic
 			}
 			// parse la base
 			$this->_parseSQL();
-			
+
 			$cache->set($cacheid, serialize($this));
 		}
 
@@ -1157,9 +1174,9 @@ class DataLogic
 					$context['typesclass']['new'] = array();
 					foreach($this->_typesClass as $old=>$new)
 					{
-						$context['typesclass']['old'][$i] = array('class'=>$old, 'fields'=>$this->_sqlStruct[$old], 'idtype'=>$new['idtype']); 
+						$context['typesclass']['old'][$i] = array('class'=>$old, 'fields'=>$this->_sqlStruct[$old], 'idtype'=>$new['idtype']);
 
-						$context['typesclass']['new'][$i] = array('class'=>$new['class'], 'fields'=>$this->_sqlStruct[$new['class']]); 
+						$context['typesclass']['new'][$i] = array('class'=>$new['class'], 'fields'=>$this->_sqlStruct[$new['class']]);
 						unset($context['typesclass']['old'][$i]['fields']['keys'], $context['typesclass']['old'][$i]['fields']['tableOptions'],
 						$context['typesclass']['new'][$i]['fields']['keys'], $context['typesclass']['new'][$i]['fields']['tableOptions']);
 						$i++;
@@ -1223,7 +1240,7 @@ class DataLogic
 					$context['modifiednewtypes'][$entrytypes] = $db->getArray("SELECT id, type FROM `{$entrytypes}` ORDER BY id");
 					$context['modifiednewtypes'][$persontypes] = $db->getArray("SELECT id, type FROM `{$persontypes}` ORDER BY id");
 					return 'importxml_checktypes';
-				} 
+				}
 				$this->_updateTypes(true, $error);
 				if($error) {
 					$context['error'] = $error;
@@ -1246,7 +1263,7 @@ class DataLogic
         }
 		return 'importxmlmodel';
 	}
-	
+
 	private function _updateTypeClass($datas, $error)
 	{
 		global $db;
@@ -1261,7 +1278,7 @@ class DataLogic
 			$newclass = $keys[1];
 			$oldclass = $keys[0];
 			unset($keys);
-			
+
 			$new = array_pop($table);
 			$old = array_pop($table);
 			$old = array_flip($old);
@@ -1270,7 +1287,7 @@ class DataLogic
 				if(isset($old[$val]))
 				{
 					$equiv[$key] = $old[$val];
-				}	
+				}
 			}
 
 			if(!empty($equiv))
@@ -1332,7 +1349,7 @@ class DataLogic
 							}
 						}
 					}
-				} else { 
+				} else {
 					if(in_array($this->_changedContent['oldcontent'][$table][$key][0], $ids)) { // id déjà présent
 						$oldId = $this->_changedContent['oldcontent'][$table][$key][0];
 						do { $maxId++; } while(in_array($maxId, $ids));
@@ -1371,7 +1388,7 @@ class DataLogic
 				}
 			}
 		}
-		
+
 		$cache = getCacheObject();
 		$cache->set(getCacheIdFromId('ME.obj'), serialize($this));
 	}
@@ -1391,7 +1408,7 @@ class DataLogic
 				$i=0;
 				while (!$result->EOF) {
 					foreach($result->fields as $value) {
-						$tmpSqlDatas[$i][] = $value; 
+						$tmpSqlDatas[$i][] = $value;
 					}
 					$i++;
 					$result->MoveNext();
@@ -1425,7 +1442,7 @@ class DataLogic
 			}
 		}
 	}
-	
+
 	/**
 	 * Récupération des tables du ME
 	 *
@@ -1444,6 +1461,12 @@ class DataLogic
 				$this->_tables[$GLOBALS['tableprefix'].'entities_'. $vo->class] = false;
 			}
 		}
+        // pour les types d'entrées externes
+        $vos = DAO::getDAO('relations_ext')->findMany('nature="ET" OR nature="EET"', '', 'idrelation');
+        if($vos)
+        {
+            $this->_tables[$GLOBALS['tableprefix'].'relations_ext'] = true;
+        }
 		// toutes les tables
 		$tables = $db->getArray('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = "'.$GLOBALS['currentdb'].'"');
 		foreach($tables as $k=>$tableName) {
@@ -1505,19 +1528,19 @@ class DataLogic
 						$error = "duplicated table `{$table}`";
 						return;
 					}
-						
+
 					$dataFields = array();
 					$this->_recordedTables[] = $table;
-					// nouvelle table 
+					// nouvelle table
 					if(!isset($tablefields[$table]))
 						$this->_changedTables['added'][] = $table;
 					break;
-		
+
 					case 'structure':
 					// début structure de la table
 					$j=0;
 					break;
-					
+
 					case 'field':
 					// champs de la structure d'une table
 					$localName = $reader->getAttribute('name');
@@ -1542,14 +1565,14 @@ class DataLogic
 					}
 					$this->_xmlStruct[$table][] = array($localName=>$reader->value);
 					break;
-					
+
 					case 'datas':
 					// début contenu de la table
 					$this->_xmlDatas[$table] = array();
 					$this->_xmlDatas[$table]['fields'] = array();
 					$i=-1;
 					break;
-					
+
 					case 'row':
 					$i++;
 					$this->_xmlDatas[$table][$i] = array();
@@ -1566,7 +1589,7 @@ class DataLogic
 						$value = $db->getOne(lq("SELECT value FROM #_TP_options WHERE name = '{$this->_xmlDatas[$table][$i][2]}'"));
 						$this->_xmlDatas[$table][$i][] = $value ? $value : '';
 						break;
-					} elseif(XMLReader::END_ELEMENT == $reader->nodeType) { 
+					} elseif(XMLReader::END_ELEMENT == $reader->nodeType) {
 						// http://fr2.php.net/manual/fr/class.xmlreader.php#xmlreader.props.hasvalue ?
 						/*
 							$reader->moveToElement();
@@ -1611,12 +1634,12 @@ class DataLogic
 				} else { // clé
 					$field = explode('KEY', $field);
 					$field[0] = trim($field[0]);
-					$field[1] = trim($field[1]);	
+					$field[1] = trim($field[1]);
 					if($field[0]) {
 						$this->_sqlStruct[$table]['keys'][$field[0].'_'.$kk] = $field[1];
 					} else {
 						$this->_sqlStruct[$table]['keys']['KEY_'.$kk] = $field[1];
-					}	
+					}
 				}
 				$i++;
 			}
@@ -1726,20 +1749,20 @@ class DataLogic
 	private function _executeSQL($differed=false) {
 		global $db;
 		if($differed) {
-			if(empty($this->_sql['differed'])) 
+			if(empty($this->_sql['differed']))
 				return false;
 			if(is_array($this->_sql['differed'])) {
-				foreach($this->_sql['differed'] as $sql) { 
+				foreach($this->_sql['differed'] as $sql) {
 					if(!$db->execute($sql)) return "SQL Error with query '{$sql}' : {$db->ErrorMsg()}";
 				}
 			} else {
 				if(!$db->execute($this->_sql['differed'])) return "SQL Error with query '{$this->_sql['differed']}' : {$db->ErrorMsg()}";;
-			}	
-			return false;	
+			}
+			return false;
 		}
 		if(empty($this->_sql)) return false;
 		if(is_array($this->_sql)) {
-			foreach($this->_sql as $k=>$sql) { 
+			foreach($this->_sql as $k=>$sql) {
 				if('differed' === $k) continue;
 				if(!$db->execute($sql)) return "SQL Error with query '{$sql}' : {$db->ErrorMsg()}";
 			}
@@ -1780,7 +1803,7 @@ class DataLogic
 		$flipped = !empty($context['data']['dropped']) && is_array($context['data']['dropped']) ? array_flip($context['data']['dropped']) : array();
 		foreach($context['data']['added'] as $table=>$equivalent) {
 			if(isset($flipped[$equivalent])) {
-				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'") 
+				$classType = $db->getOne("SELECT classtype FROM `{$classes}` WHERE class = '{$flipped[$equivalent]}'")
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				switch($classType) {
 					case 'entities': $typeTable = lq('#_TP_types'); break;
@@ -1819,12 +1842,12 @@ class DataLogic
 					} else { // clé
 						$field = explode('KEY', $field);
 						$field[0] = trim($field[0]);
-						$field[1] = trim($field[1]);	
+						$field[1] = trim($field[1]);
 						if($field[0]) {
 							$this->_sqlStruct[$table]['keys'][$field[0].'_'.$kk] = $field[1];
 						} else {
 							$this->_sqlStruct[$table]['keys']['KEY_'.$kk] = $field[1];
-						}	
+						}
 					}
 					$i++;
 				}
@@ -1833,7 +1856,7 @@ class DataLogic
 				// on compare
 				$this->_getModifiedStruct($table);
 				continue;
-			} 
+			}
 			// nouvelle table
 			if(!isset($this->_xmlStruct[$table])) {
 				$error = "Structure missing for new table `{$table}`";
@@ -1927,7 +1950,7 @@ class DataLogic
 				unset($f);
 			}
 			// clés
-			if((isset($this->_xmlStruct[$table]['keys']) && isset($this->_sqlStruct[$table]['keys']) && is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys'])) 
+			if((isset($this->_xmlStruct[$table]['keys']) && isset($this->_sqlStruct[$table]['keys']) && is_array($this->_xmlStruct[$table]['keys']) && is_array($this->_sqlStruct[$table]['keys']))
 			&& (array_values($this->_xmlStruct[$table]['keys']) != array_values($this->_sqlStruct[$table]['keys']))) {
 				// on efface toutes les clés présentes dans la table
 				if(is_array($this->_sqlStruct[$table]['keys'])) {
@@ -2301,7 +2324,7 @@ class DataLogic
 	 */
 	public function generateXML(&$context) {
 		global $db;
-		
+
 		// besoin des fonctions de bruno pour conversion entités
 		defined('INC_TEXTFUNC') || include 'textfunc.php';
 
@@ -2335,19 +2358,19 @@ class DataLogic
 		$descr = $document->createElement("modelversion");
 		$model->appendChild($descr);
 		$descr->nodeValue = myhtmlentities(stripslashes($context['modelversion']));
-		
+
 		foreach ($this->_tables as $table=>$content) {
 			$tableNode = $document->createElement("table");
 			$schemaNode->appendChild($tableNode);
 			$tableName = $GLOBALS['tableprefix'] ? ( str_replace($GLOBALS['tableprefix'], '#_TP_', $table) ) : '#_TP_'.$table;
 			$tableNode->setAttribute('name', $tableName);
 			$structNode = $document->createElement("structure");
-			$tableNode->appendChild($structNode);	
-		
+			$tableNode->appendChild($structNode);
+
 			$result = $db->getRow( "SHOW CREATE TABLE ".$table );
 			preg_match("/^CREATE TABLE `$table`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $result['Create Table'], $matches);
 			$fields = explode("\n", $matches[1]);
-		
+
 			foreach($fields as $kk=>$val) {
 				$field = trim($val);
 				if(!$field)
@@ -2356,7 +2379,7 @@ class DataLogic
 				$structNode->appendChild($fieldNode);
 				if(FALSE !== strpos($field, ',', strlen($field)-1))
 					$field = substr($field, 0, strlen($field)-1);
-		
+
 				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
 					$fieldNode->setAttribute('name', $m[1]);
 					$fieldNode->nodeValue = $m[2];
@@ -2375,14 +2398,24 @@ class DataLogic
 					$fieldNode->setAttribute('key', '1');
 				}
 			}
-		
+
 			$fieldNode = $document->createElement("field");
 			$structNode->appendChild($fieldNode);
 			$fieldNode->setAttribute('name', 'tableOptions');
 			$fieldNode->nodeValue = $matches[2];
-		
+
 			if($content) {
-				$result = $db->execute("SELECT * FROM ".$table);
+                if($table == lq('#_TP_relations_ext'))
+                { // sauvegarde des types d'entrées externes
+                    $where =  ' WHERE nature IN ("ET", "EET")';
+                    $select = 'id1,id2,nature,degree,site';
+                }
+                else
+                {
+                    $where =  '';
+                    $select = '*';
+                }
+				$result = $db->execute("SELECT {$select} FROM ".$table.$where);
 				if($result->fields) {
 					$datasNode = $document->createElement("datas");
 					$tableNode->appendChild($datasNode);
@@ -2397,7 +2430,7 @@ class DataLogic
 						$dataNode->nodeValue = strtr(HTML2XML($value), array('&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;'));
 					}
 					$result->MoveNext();
-				}				
+				}
 			}
 		}
 		// joli indentation
