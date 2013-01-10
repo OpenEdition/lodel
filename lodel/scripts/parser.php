@@ -1929,7 +1929,7 @@ PHP;
 			$block = $macros = '';
 			// get the possible macros
 			if(preg_match_all('/<DEF(FUNC|MACRO)\s+NAME\s*=\s*"[^"]+"[^>]*>.*?<\/DEF\\1>/s', $contents, $m))
-                		$block .= join('',$m[0]);
+                $macros .= join('',$m[0]);
 			// get the possible macrofiles
 			if(preg_match_all("/<USE\s+MACROFILE=\"([^\"]+)\"\s*\/?>/", $contents, $m))
 			{
