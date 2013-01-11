@@ -1460,7 +1460,7 @@ function thumbnail($path, $width = null, $height = null)
 
 	if(!file_exists(dirname($new_path))) mkdir(dirname($new_path));
 
-	if(file_exists($new_path)) return $new_path;
+	if(file_exists($new_path) && ( filemtime($newpath) > filemtime($path) )) return $new_path;
 
 	$image = new Zebra_Image();
 	$image->source_path = $tmp_path;
