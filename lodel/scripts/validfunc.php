@@ -474,7 +474,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 					trigger_error("ERROR: invalid filename of type $type", E_USER_ERROR);
 				}
 			} else {
-				if (!preg_match("/^docannexe\/(image|file|fichier)\/[^\.\/]+\/[^\/]+$/", $text)) {
+				if (!preg_match("/^docannexe\/(image|file|fichier)\/[^\.\/]+\/?[^\/]+$/", $text)) {
 					trigger_error("ERROR: invalid filename of type $type", E_USER_ERROR);
 				}
 			}
