@@ -92,10 +92,10 @@
 	</fieldset>
 	</IF>
 	<fieldset>
-	
+
 	<legend>[@COMMON.VALIDATION]</legend>
-		<input class="button" type="submit" name="soumettre" id="submitentity" value="[@EDITION.FINISH]" /><br /><br /> 
-		<input class="button" type="submit" name="visualiserdocument" id="actionentity" value="[@EDITION.FINISH_AND_VIEW]" /> - 
+		<input class="button" type="submit" name="soumettre" id="submitentity" value="[@EDITION.FINISH]" /><br /><br />
+		<input class="button" type="submit" name="visualiserdocument" id="actionentity" value="[@EDITION.FINISH_AND_VIEW]" /> -
 		<input class="button" type="button" name="cancel" value="[@COMMON.CANCEL]" id="actionentity" onclick="document.location.href='index.php?id=[#IDPARENT]'" />
 	</fieldset>
 
@@ -110,18 +110,18 @@
 		<LOOP NAME="sitename" TABLE="sites" WHERE="name='[#SITE]'" LIMIT="1" >[#URL]</LOOP>/[#ID|makeurlwithid]
 		</LET>
 		<dt><a href="#" title="[#PERMANENT_LINK]" onclick="prompt('[@EDITION.PERMANENT_LINK]','[#PERMANENT_LINK|trim]'); return false;">[@EDITION.PERMANENT_LINK]</a></dt>
-		
+
 		<dd>
 		<IF COND="[#ERROR.IDENTIFIER]">
-			
+
 			<span class="message_erreur">[@COMMON.THIS_IDENTIFIER_IS_ALREADY_USED]</span>
-			
+
 		</IF>&nbsp;
 		</dd>
 	</IF>
 	<dt>[@EDITION.ENTITY_TYPE]&nbsp;:&nbsp;</dt>
 	<dd>
-	
+
 	<LOOP NAME="compatible_types">
 		<BEFORE><select name="idtype"></BEFORE>
 			<IF COND="[#CURRENTIDTYPE] EQ [#ID]">
@@ -136,7 +136,7 @@
 	<dd>[#CREATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
 	<dt>[@EDITION.DOCUMENT_LAST_UPDATE]&nbsp;:&nbsp;</dt>
 	<dd>[#MODIFICATIONDATE|formateddate([@COMMON.DATEFORMAT])]</dd>
-	
+
 <IF COND="![#ID] or [#CREATIONMETHOD]=='form'">
 	<dt class="select"><label for="creationinfo">[@EDITION.SYNTAX]</label>&nbsp;:&nbsp;</dt>
 	<dd><select name="creationinfo"><?php makeSelect($context,"creationinfo","entities_edition"); ?></select></dd>
@@ -152,7 +152,7 @@
 <ul>
 	<li><MACRO NAME="BOUTONS_STATUS_ENTITIES"></li>
 	<li>
-		<IF COND="[#LODELUSER.EDITOR]">	
+		<IF COND="[#LODELUSER.EDITOR]">
 					<a onClick="preserveDatas();" href="index.php?do=preparemove&amp;id=[#ID]">[@EDITION.MOVE_ENTITY]</a>
 		<ELSE/>
 					<span class="texte_intitule">[@EDITION.MOVE_ENTITY]</span><br />
@@ -161,10 +161,10 @@
 	</li>
 	<!--[ Recharger le fichier ]-->
 	<LET VAR="iddocument">[#ID]</LET>
-	<LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'" SELECT="import"> 
+	<LOOP NAME="importOO" TABLE="types" WHERE="id='[#IDTYPE]'" SELECT="import">
 		<DO>
-		<IF COND="[#IMPORT] eq '1'"> 		
-			<IF COND="[#LODELUSER.REDACTOR]">	
+		<IF COND="[#IMPORT] eq '1'">
+			<IF COND="[#LODELUSER.REDACTOR]">
 				<li><a onClick="preserveDatas();" href="oochargement.php?identity=[#ID]&amp;idparent=[#IDPARENT]&amp;reload=1">[@EDITION.RELOAD_FILE]</a></li>
 			<ELSE/>
 				<li><span class="texte_intitule">[@EDITION.RELOAD_FILE]</span><br />
@@ -194,11 +194,11 @@
 
 	<div class="advancedFunc">
 	<h4>[@EDITION.SPECIAL_DOCUMENTS]</h4>
-	
+
 	<FUNC NAME="ADD_AN_ENTITY"  DISPLAYWHERE="display='advanced'">
 	<FUNC NAME="LIST_ENTITIES_EDIT" ID="[#ID]" DISPLAYWHERE="display='advanced'">
 	</div>
-	
+<!--[
 	<IF COND="[#LODELUSER.GUI_COMPLEXITY] GT 32">
 	<div class="advancedFunc">
 	<h4>[@EDITION.XML_MANAGEMENT]</h4>
@@ -210,7 +210,7 @@
 		</IF>
 	</ul>
 	</div>
-	</IF>
+	</IF>]-->
 
 </IF>
 
