@@ -61,7 +61,7 @@ function sendValues(){
 			--i;
 		}
 	}
-	
+
 	for(i=0; i<chkbox.length; i++){
 		if(chkbox[i].checked) {
 			var result = chkbox[i].value.match(pattern);
@@ -86,23 +86,23 @@ function sendValues(){
 <form  method="post" action="entitybrowser.php">
 <fieldset>
 	<legend>[@EDITION.BROWSE_AND_CHOOSE_ONE_OR_MANY_ENTITIES]</legend>
-	
+
 	<input type="hidden" name="caller" value="[#CALLER]" />
 	<LET VAR="iddocument">[#ID]</LET>
 	<LET VAR="id">0</LET>
 	<LOOP NAME="entities" TABLE="entities,types" WHERE="idparent='[#ID]' AND idtype=types.id" ORDER="entities.rank">
-		<BEFORE><ul class="listentities" style="list-style-type:none;"></BEFORE>
+		<BEFORE><ul class="listentities" style="list-style-type:none;" id="entities_[#ID]"></BEFORE>
 		<DO>
 			<li>
 			<IF COND="[#TPLEDITION]">
-			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='inline';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />
+			&nbsp;<img src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED]" title="[@ADMIN.GET_UNFOLDED]" onclick="if(document.getElementById('childContainer[#ID]').style.display == 'none') { document.getElementById('childContainer[#ID]').style.display='block';this.src='[#SHAREURL]/images/fleche_bas_gris.png';this.title='[@ADMIN.GET_FOLDED]';  } else { document.getElementById('childContainer[#ID]').style.display='none';this.src='[#SHAREURL]/images/fleche_droite_gris.png' }" />
 			<IF COND="[#SINGLE]">
 				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE|strip_tags] ([#TYPE])</a>
 			<ELSE/>
 				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE|strip_tags] ([#TYPE])
 			</IF>
 			<div style="display:none" id="childContainer[#ID]">
-				<LOOP NAME="entities"></LOOP>	
+				<LOOP NAME="entities"></LOOP>
 			</div>
 			<ELSE/>
 			<IF COND="[#SINGLE]">
@@ -130,7 +130,16 @@ function sendValues(){
 <ELSE/>
 	for(i=0; i<obj.length; i++) {
 		o=document.getElementById('entities'+obj.options[i].value);
-		if(o) o.checked=true;
+		if(o) {
+                    o.checked=true;
+                    do {
+                        var p = p ? p.parentNode : o.parentNode;
+                        console.log(p);
+                        if(-1 !== p.id.indexOf('childContainer')) {
+                            p.style.display = 'block';
+                        }
+                    } while(p.id != 'entities_0');
+                }
 	}
 </IF>
 </script>
