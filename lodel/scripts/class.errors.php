@@ -103,7 +103,7 @@ class LodelException extends Exception
 			header("Connection: Close");
 		}
 
-		if(C::get('contactbug', 'cfg') && (bool)C::get('debugMode', 'cfg'))
+		if(C::get('contactbug', 'cfg') && ((bool)C::get('debugMode', 'cfg') || (bool)C::get('sendErrorMsg', 'cfg')))
 		{
 			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
 			$contenu = "Erreur sur la page ";
