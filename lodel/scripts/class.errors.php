@@ -127,8 +127,8 @@ class LodelException extends Exception
 			$ret .= $this->message.'</p>';
 		} else {
 			$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
-            		if(C::get('contactbug', 'cfg'))
-                		$ret .= "(".C::get('contactbug', 'cfg').")";
+			if(C::get('contactbug', 'cfg'))
+				$ret .= "(".C::get('contactbug', 'cfg').")";
 		}
 		return $ret;
 	}
@@ -189,7 +189,10 @@ class LodelException extends Exception
 	public static function exception_handler($exception)
 	{
 		try {
-			throw new LodelException($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
+			if (get_class($exception) == 'LodelException')
+				throw $exception;
+			else 
+				throw new LodelException($exception->getMessage(), $exception->getCode(), $exception->getFile(), $exception->getLine());
 		} 
 		catch(LodelException $e)
 		{

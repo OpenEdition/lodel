@@ -684,22 +684,11 @@ class View
 			clearcache(true);
 		}
 		$err = "ERROR:\nFunction '".$func."' in file '".__FILE__."' ";
-        	$err .= "(requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ') :\n";
-        	$err .= $msg."\n";
+		$err .= "(requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ') :\n";
+		$err .= $msg."\n";
 		if(is_object($db) && $db->ErrorMsg())
 			$err .= "SQL ERROR ".$db->ErrorMsg()."\n";
 
-		if(!C::get('redactor', 'lodeluser')) 
-		{
-			if(C::get('contactbug', 'cfg') && (bool)C::get('debugMode', 'cfg'))
-			{
-				$sujet = "[BUG] LODEL - ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb']." / ".$this->_site;
-				@mail(C::get('contactbug', 'cfg'), $sujet, $err);
-			}
-			if(!(bool)C::get('debugMode', 'cfg'))
-				$err = '<code>Sorry, an error occured during the calcul of this page.</code>';
-		}
-		
 		trigger_error($err, E_USER_ERROR);
 	}
 
@@ -719,24 +708,11 @@ class View
 			while(@ob_end_clean());
 		// on efface le cache on a pu enregistre tout et n'importe quoi
 		clearcache(true);
-		if (C::get('redactor', 'lodeluser') || C::get('debugMode', 'cfg'))
-		{
-			if ($tablename) 
-			{
-				$tablename = "<br/>LOOP: $tablename;<br/>";
-			}
-			trigger_error("</body><br/>Internal error in file {$file} on line {$line};<br/> ".$tablename."<br/>QUERY: ". htmlentities($query)."<br /><br />MYSQL ERROR: ".$db->ErrorMsg(), E_USER_ERROR);
+
+		if ($tablename) {
+			$tablename = "<br/>LOOP: $tablename;<br/>";
 		}
-		else 
-		{
-			if (C::get('contactbug', 'cfg')) 
-			{
-				$sujet = "[BUG] LODEL - ".C::get('version', 'cfg')." - ".$GLOBALS['currentdb'];
-				$contenu = "Erreur de requete sur la page http://".$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI']." (' ".$_SERVER["REMOTE_ADDR"]." ')\n\nQuery : ". $query . "\n\nErreur : ".$db->ErrorMsg()."\n\nBacktrace :\n\n".print_r(debug_backtrace(), true);
-				@mail(C::get('contactbug', 'cfg'), $sujet, $contenu);
-			}
-			trigger_error("<code>An error has occured during the calcul of this page. We are sorry and we are going to check the problem</code>", E_USER_ERROR);
-		}
+		trigger_error("</body><br/>Internal error in file {$file} on line {$line};<br/> ".$tablename."<br/>QUERY: ". htmlentities($query)."<br /><br />MYSQL ERROR: ".$db->ErrorMsg(), E_USER_ERROR);
 	}
 } // end class
 
