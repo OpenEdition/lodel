@@ -305,14 +305,14 @@ class Controller
 							if(!$type)
 							{
 								header("HTTP/1.0 404 Not Found");
-	                                                        header("Status: 404 Not Found");
-        	                                                header("Connection: Close");
-                	                                        if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-                        	                                        include C::get('home', 'cfg')."../../missing.html";
-                                	                        } else {
-                                        	                        header('Location: not-found.html');
-                                                	        }
-                                                        	exit;
+								header("Status: 404 Not Found");
+								header("Connection: Close");
+								if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
+									include C::get('home', 'cfg')."../../missing.html";
+								} else {
+									header('Location: not-found.html');
+								}
+								exit;
 							}
 							$class = 'entries';
 						}
@@ -352,23 +352,22 @@ class Controller
 						if(C::get('site_ext', 'cfg'))
 						{
 							$result = $db->execute(lq("SELECT * FROM `".DATABASE.'_'.C::get('site_ext', 'cfg')."`.#_TP_{$class} WHERE id='{$context['id']}' AND status>0"))
-		                                                or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	                	                        $context['type'] = $result->fields;
-                        	                	$result->Close();
-                                		        View::getView()->renderCached($result->fields['tplindex']);
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+							$context['type'] = $result->fields;
+							$result->Close();
+							View::getView()->renderCached($result->fields['tplindex']);
 							break;
 						}
 					case 'persontypes':
-					$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0"))
-						or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-					$context['type'] = $result->fields;
-					$result->Close();
-					View::getView()->renderCached($result->fields['tplindex']);
-					exit;
-
+						$result = $db->execute(lq("SELECT * FROM #_TP_{$class} WHERE id='{$context['id']}' AND status>0"))
+							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+						$context['type'] = $result->fields;
+						$result->Close();
+						View::getView()->renderCached($result->fields['tplindex']);
+						exit;
 					case 'persons':
 					case 'entries':
-					$this->_printIndex($context['id'], $class, $context);
+						$this->_printIndex($context['id'], $class, $context);
 					break;
 				} // switch class
 			} while(0);
