@@ -161,47 +161,52 @@ function mois($m)
 	$m = strtolower($m);
 
 	switch (mb_substr($m, 0, 3, 'UTF-8'))	{
-		case "jan" :
+		case "jan" : // janeiro (pt), januar (de), janvier (fr), january (en)
 			return 1;
-		case "fev" :
 		case "fv" :
-		case "fév" :
-		case "feb":
+		case "fev" : // fevereiro (pt)
+		case "fév" : // février (fr)
+		case "feb" : // february (en), februar (de)
 			return 2;
-		case "mar" :
+		case "mar" : // março (pt), mars (fr), march (en)
+		case "mär" : // märz (de)
 			return 3;
-		case 'apr':
-		case "avr" :
+		case 'apr' : // april (en), april (de)
+		case "avr" : // avril (fr)
+		case "abr" : // abril (pt)
 			return 4;
-		case 'may':
-		case "mai" :
+		case 'may' : // may (en)
+		case "mai" : // maio (pt), mai (de), mai (fr)
 			return 5;
-		case "jun":
+		case "jun" : // junho (pt), juni (de), june (en)
 			return 6;
-		case "jul":
+		case "jul" : // julho (pt), juli (de), july (en)
 			return 7;
-		case "aug":
-		case "aou" :
 		case "ao" :
-		case "aoû" :
+		case "aug" : // august (en), august (de)
+		case "aou" :
+		case "aoû" : // août (fr)
+		case "ago" : // agosto (pt)
 			return 8;
-		case "sep" :
+		case "sep" : // september (de), septembre (fr), september (en)
+		case "set" : // setembro (pt)
 			return 9;
-		case "oct" :
+		case "oct" : // octobre (fr), october (en)
+		case "okt" : // oktober (de)
+		case "out" : // outubro (pt)
 			return 10;
-		case "nov" :
+		case "nov" : // novembro (pt), november (de), novembre (fr), november (en)
 			return 11;
-		case "dec" :
-			return 12;
-		case "déc" :
-			return 12;
 		case "dc" :
+		case "dez" : // dezembro (pt), dezember (de)
+		case "dec" : // december (en)
+		case "déc" : // décembre (fr)
 			return 12;
 	}
 	switch (substr($m, 0, 4)) {
-		case "juin" :
+		case "juin" : // juin (fr)
 			return 6;
-		case "juil" :
+		case "juil" : // juillet (fr)
 			return 7;
 	}
 	return 0;
