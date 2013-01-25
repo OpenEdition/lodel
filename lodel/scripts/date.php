@@ -162,45 +162,52 @@ function mois($m)
 
 	switch (mb_substr($m, 0, 3, 'UTF-8'))	{
 		case "jan" : // janeiro (pt), januar (de), janvier (fr), january (en)
+		case "ene" : // enero (es)
+		case "gen" : // gennaio (it)
 			return 1;
 		case "fv" :
 		case "fev" : // fevereiro (pt)
 		case "fév" : // février (fr)
-		case "feb" : // february (en), februar (de)
+		case "feb" : // february (en), februar (de), febrero (es), febbraio (it)
 			return 2;
-		case "mar" : // março (pt), mars (fr), march (en)
+		case "mar" : // março (pt), mars (fr), march (en), marzo (es), marzo (it)
 		case "mär" : // märz (de)
 			return 3;
-		case 'apr' : // april (en), april (de)
+		case 'apr' : // april (en), april (de), aprile (it)
 		case "avr" : // avril (fr)
-		case "abr" : // abril (pt)
+		case "abr" : // abril (pt), abril (es)
 			return 4;
-		case 'may' : // may (en)
+		case 'may' : // may (en), mayo (es)
 		case "mai" : // maio (pt), mai (de), mai (fr)
+		case "mag" : // maggio (it)
 			return 5;
-		case "jun" : // junho (pt), juni (de), june (en)
+		case "jun" : // junho (pt), juni (de), june (en), junio (es)
+		case "giu" : // giugno
 			return 6;
-		case "jul" : // julho (pt), juli (de), july (en)
+		case "jul" : // julho (pt), juli (de), july (en), julio (es)
+		case "lug" : // luglio (it)
 			return 7;
 		case "ao" :
 		case "aug" : // august (en), august (de)
 		case "aou" :
 		case "aoû" : // août (fr)
-		case "ago" : // agosto (pt)
+		case "ago" : // agosto (pt), agosto (es), agosto (it)
 			return 8;
-		case "sep" : // september (de), septembre (fr), september (en)
-		case "set" : // setembro (pt)
+		case "sep" : // september (de), septembre (fr), september (en), septiembre (es)
+		case "set" : // setembro (pt), settembre (it)
 			return 9;
-		case "oct" : // octobre (fr), october (en)
+		case "oct" : // octobre (fr), october (en), octubre (es)
 		case "okt" : // oktober (de)
 		case "out" : // outubro (pt)
+		case "ott" : // ottobre (it)
 			return 10;
-		case "nov" : // novembro (pt), november (de), novembre (fr), november (en)
+		case "nov" : // novembro (pt), november (de), novembre (fr), november (en), noviembre (es), novembre (it)
 			return 11;
 		case "dc" :
 		case "dez" : // dezembro (pt), dezember (de)
 		case "dec" : // december (en)
 		case "déc" : // décembre (fr)
+		case "dic" : // diciembre (es), dicembre (it)
 			return 12;
 	}
 	switch (substr($m, 0, 4)) {
