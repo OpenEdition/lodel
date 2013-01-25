@@ -572,7 +572,7 @@ CREATE TABLE IF NOT EXISTS #_TP_relations_ext (
   degree tinyint(4) default NULL,
   site varchar(64) NOT NULL,
   PRIMARY KEY  (idrelation),
-  UNIQUE KEY id1 (id1,id2,degree,nature),
+  UNIQUE KEY id1 (id1,id2,degree,nature,site),
   KEY index_id1 (id1),
   KEY index_id2 (id2),
   KEY index_nature (nature),
