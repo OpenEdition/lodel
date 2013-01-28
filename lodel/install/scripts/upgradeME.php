@@ -31,8 +31,9 @@ if (php_sapi_name() != "cli") {
 
 class upgradeME {
 
-	// 	FONCTIONS DE PREMIER ORDRE (sic)
+	// 	FONCTIONS DE HAUT NIVEAU (sic)
 
+	// Rajouter un hook au champ $field de la $class
 	public function add_editionhook($class, $field, $hook, $clobber=false) {
 		$tf = $this->getTableField($class, $field);
 		if ($tf) {
@@ -51,8 +52,54 @@ class upgradeME {
 		}
 	}
 
+	// Modifier les hooks du champ $field de la $class
 	public function change_editionhooks($class, $field, $hooks) {
 		$this->add_editionhook($class, $field, $hooks, true);
+	}
+
+	// Modifier les champs $changes du champ $field de la $class
+	public function change_tablefield($class, $fieldname, $changes) {
+		$field = $this->getTableField($class, $fieldname);
+		if (!$field) {
+			echo "ERREUR: modification du champ '$fieldname' de la classe '$class', le champ ou la classe sont inexistants"."<br>\n";
+			return false;
+		}
+		$field = array_merge($field, $changes);
+		$ok = $this->updateTableField($field);
+		if ($ok)
+			echo "Modification du champ '$fieldname' de la classe '$class' effectué."."<br>\n";
+		else {
+			echo "ERREUR: Modification du champ '$fieldname' de la classe '$class' non effectué."."<br>\n";
+			return false;
+		}
+		return true;
+	}
+
+	// Créer un champ $fieldname de type $type de la $class dans le groupe $groupname
+	public function add_tablefield($class, $groupname, $fieldname, $type, $infos) {
+		$group = $this->getObject('tablefieldgroups',"name='$groupname' AND class='$class'");
+		if (!$group) {
+			echo "ERREUR: Création du champ '$fieldname' de la classe '$class' non effectué. Le groupe '$groupname' n'existe pas'"."<br>\n";
+			return false;
+		}
+		$id_group = $group['id'];
+
+		$field = $this->getTableField($class, $fieldname);
+		if (!$field) {
+			$field = array ('id'=>'0', 'name'=>$fieldname, 'class'=>'publications', 'title'=>$fieldname, 'altertitle'=>'', 'gui_user_complexity'=>'64', 'idgroup'=>$id_group, 'type'=>$type, 'g_name'=>'', 'style'=>'', 'cond'=>'*', 'defaultvalue'=>'', 'processing'=>'', 'mask'=>'', 'allowedtags'=>'', 'edition'=>'editable', 'editionparams'=>'', 'editionhooks'=>'', 'weight'=>'0', 'filtering'=>'', 'comment'=>'', 'status'=>'1', 'rank'=>'', 'otx'=>'', );
+			$field = array_merge($field, $infos);
+			$ok = $this->updateTableField($field);
+			if ($ok)
+				echo "Création du champ '$fieldname' de la classe '$class' effectué."."<br>\n";
+			else {
+				echo "ERREUR: Création du champ '$fieldname' de la classe '$class' non effectué."."<br>\n";
+				return false;
+			}
+		} else {
+			echo "ERREUR: Création du champ '$fieldname' de la classe '$class' non effectué. Il existe déjà"."<br>\n";
+			return false;
+		}
+		return true;
 	}
 
 	// Le reste
