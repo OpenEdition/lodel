@@ -33,32 +33,8 @@ class upgradeME {
 
 	// 	FONCTIONS DE HAUT NIVEAU (sic)
 
-	// Rajouter un hook au champ $field de la $class
-	public function add_editionhook($class, $field, $hook, $clobber=false) {
-		$tf = $this->getTableField($class, $field);
-		if ($tf) {
-			if ($clobber) {
-				$tf['editionhooks'] = $hook;
-			} else {
-				$tf['editionhooks'] = $this->update_editionhooks($tf['editionhooks'], $hook);
-			}
-			$ok = $this->updateTableField($tf);
-			if ($ok)
-				echo "Ajout du hook '$hook' sur le champ '$field' de la classe '$class' effectué."."<br>\n";
-			else
-				echo "ERREUR: Ajout du hook '$hook' sur le champ '$field' de la classe '$class' non effectué."."<br>\n";
-		} else {
-			echo "ERREUR: Ajout du hook '$hook' : pas de champ '$field' ou pas de classe '$class'"."<br>\n";
-		}
-	}
-
-	// Modifier les hooks du champ $field de la $class
-	public function change_editionhooks($class, $field, $hooks) {
-		$this->add_editionhook($class, $field, $hooks, true);
-	}
-
 	// Modifier les champs $changes du champ $field de la $class
-	public function change_tablefield($class, $fieldname, $changes) {
+	public function tablefield_update($class, $fieldname, $changes) {
 		$field = $this->getTableField($class, $fieldname);
 		if (!$field) {
 			echo "ERREUR: modification du champ '$fieldname' de la classe '$class', le champ ou la classe sont inexistants"."<br>\n";
@@ -76,17 +52,17 @@ class upgradeME {
 	}
 
 	// Créer un champ $fieldname de type $type de la $class dans le groupe $groupname
-	public function add_tablefield($class, $groupname, $fieldname, $type, $infos) {
+	public function tablefield_create($class, $fieldname, $groupname, $type, $infos) {
 		$group = $this->getObject('tablefieldgroups',"name='$groupname' AND class='$class'");
 		if (!$group) {
 			echo "ERREUR: Création du champ '$fieldname' de la classe '$class' non effectué. Le groupe '$groupname' n'existe pas'"."<br>\n";
 			return false;
 		}
-		$id_group = $group['id'];
+		$idgroup = $group['id'];
 
 		$field = $this->getTableField($class, $fieldname);
 		if (!$field) {
-			$field = array ('id'=>'0', 'name'=>$fieldname, 'class'=>'publications', 'title'=>$fieldname, 'altertitle'=>'', 'gui_user_complexity'=>'64', 'idgroup'=>$id_group, 'type'=>$type, 'g_name'=>'', 'style'=>'', 'cond'=>'*', 'defaultvalue'=>'', 'processing'=>'', 'mask'=>'', 'allowedtags'=>'', 'edition'=>'editable', 'editionparams'=>'', 'editionhooks'=>'', 'weight'=>'0', 'filtering'=>'', 'comment'=>'', 'status'=>'1', 'rank'=>'', 'otx'=>'', );
+			$field = array ('id'=>'0', 'name'=>$fieldname, 'class'=>'publications', 'title'=>$fieldname, 'altertitle'=>'', 'gui_user_complexity'=>'64', 'idgroup'=>$idgroup, 'type'=>$type, 'g_name'=>'', 'style'=>'', 'cond'=>'*', 'defaultvalue'=>'', 'processing'=>'', 'mask'=>'', 'allowedtags'=>'', 'edition'=>'editable', 'editionparams'=>'', 'editionhooks'=>'', 'weight'=>'0', 'filtering'=>'', 'comment'=>'', 'status'=>'1', 'rank'=>'', 'otx'=>'', );
 			$field = array_merge($field, $infos);
 			$ok = $this->updateTableField($field);
 			if ($ok)
@@ -97,6 +73,51 @@ class upgradeME {
 			}
 		} else {
 			echo "ERREUR: Création du champ '$fieldname' de la classe '$class' non effectué. Il existe déjà"."<br>\n";
+			return false;
+		}
+		return true;
+	}
+
+	// Rajouter un hook au champ $fieldname de la $class
+	public function tablefield_hook_update($class, $fieldname, $hook, $clobber=false) {
+		$tf = $this->getTableField($class, $fieldname);
+		if ($tf) {
+			if ($clobber) {
+				$tf['editionhooks'] = $hook;
+			} else {
+				$tf['editionhooks'] = $this->update_editionhooks($tf['editionhooks'], $hook);
+			}
+			$ok = $this->updateTableField($tf);
+			if ($ok)
+				echo "Ajout du hook '$hook' sur le champ '$fieldname' de la classe '$class' effectué."."<br>\n";
+			else {
+				echo "ERREUR: Ajout du hook '$hook' sur le champ '$fieldname' de la classe '$class' non effectué."."<br>\n";
+				return false;
+			}
+		} else {
+			echo "ERREUR: Ajout du hook '$hook' : pas de champ '$fieldname' ou pas de classe '$class'"."<br>\n";
+			return false;
+		}
+		return true;
+	}
+
+	// Écraser les hooks du champ $fieldname de la $class
+	public function tablefield_hook_create($class, $fieldname, $hooks) {
+		return $this->editionhook_update($class, $fieldname, $hooks, true);
+	}
+
+	// modifier le $groupname d'un $fieldname
+	public function tablefield_group_update($class, $fieldname, $groupname) {
+		$group = $this->getObject('tablefieldgroups',"name='$groupname' AND class='$class'");
+		if (!$group) {
+			echo "ERREUR: Changement de groupe du champ '$fieldname' de la classe '$class' non effectué. Le groupe '$groupname' n'existe pas'"."<br>\n";
+			return false;
+		}
+		$ok = $this->tablefield_update($class, $fieldname, array('idgroup'=>$group['id']));
+		if ($ok)
+			echo "Changement de groupe du champ '$fieldname' de la classe '$class' vers '$groupname' effectué."."<br>\n";
+		else {
+			echo "ERREUR: Changement de groupe du champ '$fieldname' de la classe '$class' vers '$groupname' non effectué."."<br>\n";
 			return false;
 		}
 		return true;
