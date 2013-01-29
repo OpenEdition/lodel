@@ -280,9 +280,9 @@ class C
 			unset($_GET['login'], $_GET['passwd'], $_GET['passwd2'], $_GET['old_passwd']);
 
 			self::cleanRequest($_GET);
-			foreach($_GET as $k=>&$v)
+			foreach($_GET as $k=>$v)
 			{
-				self::$_context[$k] =& $v;
+				self::$_context[$k] = $v;
 			}
 
 			if (!empty($_POST)) 
