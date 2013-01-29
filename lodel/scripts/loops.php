@@ -728,7 +728,7 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
  * On considère que le tableau est passé par l'argument array
  * 
  */
-function loop_foreach(&$context, $funcname, $arguments)
+function loop_foreach($context, $funcname, $arguments)
 {
 	$localcontext = $context;
 
