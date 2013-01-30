@@ -728,7 +728,7 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
  * On considère que le tableau est passé par l'argument array
  * 
  */
-function loop_foreach($context, $funcname, $arguments)
+function loop_foreach(&$context, $funcname, $arguments)
 {
 	$localcontext = $context;
 
@@ -737,7 +737,7 @@ function loop_foreach($context, $funcname, $arguments)
 			call_user_func("code_alter_$funcname", $localcontext);
 		return;
 	}
-	$localcontext['nbresults'] = $context['nbresults'] = count($arguments['array']);
+	$localcontext['nbresults'] = count($arguments['array']);
 	$localcontext['count'] = 0;
 	//Le before
 	if (function_exists("code_before_$funcname")) {
