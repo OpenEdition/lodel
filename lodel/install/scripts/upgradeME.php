@@ -103,7 +103,7 @@ class upgradeME {
 
 	// Écraser les hooks du champ $fieldname de la $class
 	public function tablefield_hook_create($class, $fieldname, $hooks) {
-		return $this->editionhook_update($class, $fieldname, $hooks, true);
+		return $this->tablefield_hook_update($class, $fieldname, $hooks, true);
 	}
 
 	// modifier le $groupname d'un $fieldname
