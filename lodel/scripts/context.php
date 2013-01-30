@@ -305,7 +305,7 @@ class C
 				}
 				elseif(isset($_GET[$var]))
 				{
-					self::$_context[$var] =& $_GET[$var];
+					self::$_context[$var] = $_GET[$var];
 				}
 				else
 				{
@@ -327,9 +327,9 @@ class C
 		else
 		{
 			self::cleanRequest($request);
-			foreach($request as $k=>&$v)
+			foreach($request as $k=>$v)
 			{
-				self::$_context[$k] =& $v;
+				self::$_context[$k] = $v;
 			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
@@ -337,7 +337,7 @@ class C
 			{
 				if(isset($request[$var]))
 				{
-					self::$_context[$var] =& $request[$var];
+					self::$_context[$var] = $request[$var];
 				}
 				else
 				{
