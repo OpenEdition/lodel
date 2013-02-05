@@ -34,7 +34,7 @@ function updatedatepubli(&$context, $field){
 	}
 }
 
-function check_isbn($context, $field, &$errors)
+function check_isbn(&$context, $field, &$errors)
 {
 	if(isset($context['do']) && $context['do'] == "edit" && !empty($context['data'][$field]))
 	{
@@ -50,7 +50,7 @@ function check_isbn($context, $field, &$errors)
 	}
 }
 
-function check_issn($context, $field, &$errors)
+function check_issn(&$context, $field, &$errors)
 {
 	if(isset($context['do']) && $context['do'] == "edit" && !empty($context['data'][$field]))
 	{
