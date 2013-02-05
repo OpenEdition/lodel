@@ -106,7 +106,7 @@ class TablefieldgroupsLogic extends Logic {
 	 */
 	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
 	{
-		return parent::changeRankAction(&$context, &$error, 'class');
+		return parent::changeRankAction($context, $error, 'class');
 	}
 
 	// begin{publicfields} automatic generation  //

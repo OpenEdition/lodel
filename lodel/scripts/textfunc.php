@@ -982,7 +982,7 @@ function paranumber($texte, $styles='texte')
 	$dom->preserveWhiteSpace = true;
 	$dom->formatOutput       = false;
 
-	cleanIllegalTags(&$doc);
+	cleanIllegalTags($doc);
 
 	$res = $dom->query("//p[@class='$styles']");
 	$count = 0;
