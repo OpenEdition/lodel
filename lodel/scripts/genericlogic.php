@@ -124,37 +124,34 @@ class GenericLogic extends Logic
 				if (!empty($context['class'])) {
 					validfield($context['class'], 'class', '', '','data');
 					$class = $context['class'];
-				}	elseif (!empty($context['type']['class']))	{
+				} elseif (!empty($context['type']['class']))	{
 					validfield($context['type']['class'], 'class', '', '', 'data');
 					$class = $context['type']['class'];
-				}	else {
+				} else {
 					trigger_error("ERROR: internal error in loop_edition_fields", E_USER_ERROR);
 				}
-				if(!empty($context['classtype']))
-				{
+				if(!empty($context['classtype'])) {
 					if (in_array($context['classtype'], array("persons", "entries"))) {
 						$criteria = "class='".$class."'";
 						// degree is defined only when the persons is related to a document. Is it a hack ? A little no more...
 						// if (isset($context['identifier'])) {
 						$criteria .= " OR class='entities_".$class."'";
 						// }
-					}   elseif(empty($context['id'])) {
+					} elseif(empty($context['id'])) {
 						return;
-					}   else {
+					} else {
 						$criteria = "idgroup='". (int) $context['id']."'";
 						$context['idgroup'] = $context['id'];
 					}
-				}   elseif(empty($context['id'])) {
+				} elseif(empty($context['id'])) {
 					return;
-				}
-				else
-				{
+				} else {
 					$criteria = "idgroup='". (int) $context['id']."'";
 					$context['idgroup'] = $context['id'];
 				}
 
 				$result = $db->execute(lq("
-			SELECT * FROM #_TP_tablefields 
+				SELECT * FROM #_TP_tablefields 
 				WHERE ".$criteria." AND status>0 AND edition!='' AND edition!='none'
 				AND edition!='importable' ORDER BY rank")) 
 					or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -163,15 +160,15 @@ class GenericLogic extends Logic
 				if ($haveresult) {
 					call_user_func("code_before_$funcname", $context);
 				}
-				while (!$result->EOF)	{
+				while (!$result->EOF) {
 					postprocessing($result->fields);
 					$localcontext = array_merge($context, $result->fields);
 					$name = $result->fields['name'];
-					if(isset($context['data'][$name]))
-					{
+					if (isset($context['data'][$name])) {
 						$localcontext['value'] = ($result->fields['edition'] != "display" && is_string($context['data'][$name])) ?
                                             htmlspecialchars($context['data'][$name]) : $context['data'][$name];
-					} else $localcontext['value'] = '';
+					} else
+						$localcontext['value'] = '';
 
 					call_user_func("code_do_$funcname", $localcontext);
 					$result->MoveNext();
@@ -198,9 +195,9 @@ class GenericLogic extends Logic
 		if (!$votype) {
 			trigger_error("ERROR: idtype must be known in GenericLogic::viewAction", E_USER_ERROR);
 		}
-		
-        	$this->_populateContext($votype, $context['type']);
-        	$ret = false;
+
+		$this->_populateContext($votype, $context['type']);
+		$ret = false;
 		if ($id && !$error)	{
 			$gvo = DAO::getGenericDAO($votype->class, $this->_idfield)->getById($id);
 			if (!$gvo) {
@@ -233,10 +230,10 @@ class GenericLogic extends Logic
 		if (!empty($context['class'])) {
 			$ret = validfield($context['class'], 'class', '', '', 'data');
 			$class = $context['class'];
-		}	elseif (!empty($context['type']['class'])) {
+		} elseif (!empty($context['type']['class'])) {
 			$ret = validfield($context['type']['class'], "class", '', '', 'data');
 			$class = $context['type']['class'];
-		}	else {
+		} else {
 			trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 		}
 
@@ -267,12 +264,11 @@ class GenericLogic extends Logic
 
 			// is empty ?
 			$empty = $type != "boolean" && (// boolean are always true or false
-							!isset ($context['data'][$name]) || // not set
-							$context['data'][$name] === "" || (is_array($context['data'][$name]) && empty($context['data'][$name]))); // or empty
+					!isset ($context['data'][$name]) || // not set
+					$context['data'][$name] === "" || (is_array($context['data'][$name]) && empty($context['data'][$name]))); // or empty
 
-            		if ($context['do'] == "edit" && ($field->edition == "importable" || 
-					$field->edition == "none" || $field->edition == "display"))
-			{
+			if ($context['do'] == "edit" && ($field->edition == "importable" || 
+					$field->edition == "none" || $field->edition == "display")) {
 				// in edition interface and field is not editable in the interface
 				if ($field->cond != "+") { // the field is not required.
 					unset ($context['data'][$name]);
@@ -305,8 +301,7 @@ class GenericLogic extends Logic
 			if ($empty) {
 				$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
 			}
-			elseif(-1 === $value)
-			{
+			elseif(-1 === $value) {
 				$context['data'][$name] = isset($context['data'][$name]) ? $context['data'][$name] : '';
 				// check if the field is required or not, and rise an error if any problem.
 				$value = &$context['data'][$name];
@@ -315,15 +310,13 @@ class GenericLogic extends Logic
 					$value = trim($value);
 				}
 				if ($value) {
-					if(is_array($value))
-					{
+					if(is_array($value)) {
 						$keys = array_keys($value);
 						$j = count($value);
 						for($i=0;$i<$j;$i++) {
 							$value[$keys[$i]] = lodel_strip_tags($value[$keys[$i]], $field->allowedtags);
 						}
-					}
-					else {
+					} else {
 						$value = lodel_strip_tags($value, $field->allowedtags);
 					}
 				}
@@ -337,12 +330,12 @@ class GenericLogic extends Logic
 
 			// clean automatically the fields when required.
 			if (!is_array($value) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) 
-            			&& $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
+					&& $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
 				$value = trim(strip_tags($value));
 			}
 			
-            		$valid = validfield($value, $type, $field->defaultvalue, $name, 'data', '', $context);
-			if ($valid === true)	{
+			$valid = validfield($value, $type, $field->defaultvalue, $name, 'data', '', $context);
+			if ($valid === true) {
 				// good, nothing to do.
 				if ($type == "file" || $type == "image") {
 					// add this file to the file to move.
@@ -350,9 +343,9 @@ class GenericLogic extends Logic
 						$this->files_to_move[$name] = array ('filename' => $value, 'type' => $type, 'name' => $name);
 					}
 				}
-			}	elseif (is_string($valid))	{
+			} elseif (is_string($valid)) {
 				$error[$name] = $valid; // error
-			}	else	{
+			} else {
 
 				// not validated... let's try other type
 				switch ($type) {
@@ -362,7 +355,7 @@ class GenericLogic extends Logic
 					$isExternal = false;
 					if ($type == "persons") {
 						$dao = DAO::getDAO("persontypes");
-					}	else	{
+					} else {
 						$isExternal = preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $field->name, $res);
 						$dao = DAO::getDAO("entrytypes");
 						if($isExternal)
@@ -372,23 +365,20 @@ class GenericLogic extends Logic
 					usecurrentdb();
 					if(!$vo) break; // strange
 					$idtype = $vo->id;
-					if($isExternal)
-					{
+					if($isExternal) {
 						$context['externalentries'][$field->name] = isset($context['externalentries'][$field->name]) ? $context['externalentries'][$field->name] : null;
 						$localcontext = &$context['externalentries'][$field->name];
-					}
-					else
-					{
+					} else {
 						$context[$type][$idtype] = isset($context[$type][$idtype]) ? $context[$type][$idtype] : null;
 						$localcontext = &$context[$type][$idtype];
 					}
 					if (!$localcontext) {
 						break;
 					}
-					if ($type == "entries" && !is_array($localcontext))	{
+					if ($type == "entries" && !is_array($localcontext)) {
 						$keys = explode(",", $localcontext);
 						$localcontext = array ();
-						foreach ($keys as $key)	{
+						foreach ($keys as $key) {
 							$localcontext[] = array ("g_name" => $key);
 						}
 					}
@@ -397,7 +387,7 @@ class GenericLogic extends Logic
 						trigger_error("ERROR: internal error in GenericLogic::validateFields", E_USER_ERROR);
 					}
 
-					foreach (array_keys($localcontext) as $k)	{
+					foreach (array_keys($localcontext) as $k) {
 						if (!is_numeric($k) || !$localcontext[$k]) {
 							continue;
 						}
@@ -423,17 +413,14 @@ class GenericLogic extends Logic
 					}
 					$value = &$context['entities'][$name];
 					$ids = array ();
-					if(!is_array($value))
-					{
+					if(!is_array($value)) {
 						foreach (explode(",", $value) as $id) {
 							if ($id > 0) {
 								$ids[] = (int)$id;
 							}
 						}
 						$value = $ids;
-					}
-					else
-					{
+					} else {
 						foreach ($value as $v) {
 							foreach (explode(",", $v) as $id) {
 								if ($id > 0) {
@@ -471,8 +458,7 @@ class GenericLogic extends Logic
 	 */
 	protected function _moveFiles($id, $files_to_move, $vo)
 	{
-		foreach ($files_to_move as $file)
-		{
+		foreach ($files_to_move as $file) {
 			$src = realpath($file['filename']);
 			$dest = basename($file['filename']); // basename
 			if (!$dest) {
@@ -578,7 +564,7 @@ class GenericLogic extends Logic
 	// begin{uniquefields} automatic generation  //
 
 	// end{uniquefields} automatic generation  //
-	/**#@-*/
+	
 } // class 
 
 
@@ -615,7 +601,7 @@ if(!function_exists('lodel_strip_tags'))
 			return strip_tags($text);
 		}
 
-		if (!isset($accepted[$allowedtags]))	{ // not cached ?
+		if (!isset($accepted[$allowedtags])) { // not cached ?
 			$accepted[$allowedtags] = array ();
 
 			// split the groupe of balises
@@ -623,19 +609,19 @@ if(!function_exists('lodel_strip_tags'))
 			array_push($groups, ""); // balises speciales
 			// feed the accepted string with accepted tags.
 			foreach ($groups as $group) {
-		$group = trim($group);
-		if(!$group || !isset($xhtmlgroups[$group])) continue;
-				// xhtml groups
-		foreach ($xhtmlgroups[$group] as $k => $v) {
-			if (is_numeric($k))	{
-			$accepted[$allowedtags][$v] = true; // accept the tag with any attributs
-			}	else {
-			// accept the tag with attributs matching unless it is already fully accepted
-			if (!isset($accepted[$allowedtags][$k])) {
-				$accepted[$allowedtags][$k][] = $v; // add a regexp
-			}
-			}
-		}
+				$group = trim($group);
+				if(!$group || !isset($xhtmlgroups[$group])) continue;
+						// xhtml groups
+				foreach ($xhtmlgroups[$group] as $k => $v) {
+					if (is_numeric($k))	{
+					$accepted[$allowedtags][$v] = true; // accept the tag with any attributs
+					} else {
+						// accept the tag with attributs matching unless it is already fully accepted
+						if (!isset($accepted[$allowedtags][$k])) {
+							$accepted[$allowedtags][$k][] = $v; // add a regexp
+						}
+					}
+				}
 			} // foreach group
 		} // not cached.
 
@@ -651,21 +637,21 @@ if(!function_exists('lodel_strip_tags'))
 		$stack = array ();
 		$count = count($arr);
 		for ($i = 1; $i < $count; $i += 4) {
-			if ($arr[$i] == "</")	{ // closing tag
+			if ($arr[$i] == "</") { // closing tag
 				if (!array_pop($stack)) {
 					$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
 				}
-			}	else { // opening tag
+			} else { // opening tag
 				$tag = $arr[$i +1];
 				$keep = false;
-				if (isset ($acceptedtags[$tag]))	{
+				if (isset ($acceptedtags[$tag])) {
 					// simple case.
-					if ($acceptedtags[$tag] === true)	{ // simple
-						$keep = true;									
-					}	else	{ // must valid the regexp
+					if ($acceptedtags[$tag] === true) { // simple
+						$keep = true;
+					} else { // must valid the regexp
 						foreach ($acceptedtags[$tag] as $re)	{
 							#echo $re," ",$arr[$i+2]," ",preg_match("/(^|\s)$re(\s|>|$)/",$arr[$i+2]),"<br/>";
-							if (preg_match("/(^|\s)$re(\s|>|$)/", $arr[$i +2]))	{
+							if (preg_match("/(^|\s)$re(\s|>|$)/", $arr[$i +2])) {
 								$keep = true;
 								break;
 							}
@@ -677,7 +663,7 @@ if(!function_exists('lodel_strip_tags'))
 				if (substr($arr[$i +2], -2) != "/>") {// not an opening closing.
 					array_push($stack, $keep); // whether to keep the closing tag or not.
 				}
-				if (!$keep)	{
+				if (!$keep) {
 					$arr[$i] = $arr[$i +1] = $arr[$i +2] = "";
 				}
 			}
