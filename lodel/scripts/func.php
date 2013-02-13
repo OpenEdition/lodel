@@ -59,11 +59,11 @@ if (is_readable(C::get('home', 'cfg').'func_local.php'))
 function writefile ($filename,$text)
 {
 # echo "name de fichier : $filename";
-//    if (file_exists($filename)) { 
+//    if (file_exists($filename)) {
 //      if (! (unlink($filename)) ) trigger_error("Cannot delete file $filename.", E_USER_ERROR);
 //    }
 //   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
-   if(false === @file_put_contents($filename, $text)) 
+   if(false === @file_put_contents($filename, $text))
         trigger_error("Cannot write $filename.", E_USER_ERROR);
    @chmod ($filename,0666 & octdec(C::get('filemask', 'cfg')));
    return  true;
@@ -88,7 +88,7 @@ function postprocessing(&$context)
 
 
 /**
- *   Extrait toutes les variables passées par la méthode post puis les stocke dans 
+ *   Extrait toutes les variables passées par la méthode post puis les stocke dans
  *   le tableau $context
  */
 function extract_post(&$arr=null)
@@ -105,18 +105,18 @@ function clean_request_variable(&$var, $key='')
 	return;
 }
 
-function magic_addslashes($var) 
+function magic_addslashes($var)
 {
 	return addslashes(stripslashes($var));
 }
 
-function magic_stripslashes($var) 
+function magic_stripslashes($var)
 {
 	return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
 }
 
 
-function get_max_rank ($table,$where="") 
+function get_max_rank ($table,$where="")
 {
   if ($where) $where="WHERE ".$where;
 
@@ -155,7 +155,7 @@ function chrank($table,$id,$critere,$dir,$inverse="",$jointables="")
     $rank+=$dir;
   }
   $result->Close();
-} 
+}
 
 
 /**
@@ -232,7 +232,7 @@ function addmeta(&$arr,$meta="")
 
 
 
-function translate_xmldata($data) 
+function translate_xmldata($data)
 {
 	return strtr($data,array("&"=>"&amp;","<" => "&lt;", ">" => "&gt;"));
 }
@@ -315,7 +315,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 		if ($name[0]!='[' && $name[1]!='@') return array(0,$name);
 		$dotpos=strpos($name,".");
 		if ($dotpos) {
-			$group=substr($name,1,$dotpos); 
+			$group=substr($name,1,$dotpos);
 			$name=substr($name,$dotpos+1,-1);
 		} else {
 			trigger_error("ERROR: unknow group for getlodeltext", E_USER_ERROR);
@@ -331,11 +331,11 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 	} else {
 		$prefix=$GLOBALS['tableprefix'];
 	}
-	
+
 	$critere=C::get('visitor', 'lodeluser') ? "" : "AND status>0";
 	$logic=false;
-	$query = "SELECT id,contents,status 
-			FROM {$prefix}texts 
+	$query = "SELECT id,contents,status
+			FROM {$prefix}texts
 			WHERE name=".$db->quote($name)." AND textgroup=".$db->quote($group)." AND (lang=".$db->quote($lang)." OR lang='') {$critere}
 			ORDER BY lang DESC";
 	$text=false;
@@ -345,7 +345,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 		if ($arr===false) trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 		$text = $arr->fields;
-		if(!$text) 
+		if(!$text)
         	{
 			if($create || !C::get('admin', 'lodeluser'))
 			{
@@ -359,7 +359,7 @@ function getlodeltext($name,$group,&$id,&$contents,&$status,$lang=-1)
 		}
         	$arr->Close();
 	} while(!$text);
-	
+
 	$id=$text['id'];
 	$contents=$text['contents'];
 	$status=$text['status'];
@@ -380,7 +380,7 @@ function getlodeltextcontents($name,$group="",$lang=-1)
 
 function makeurlwithid ($id, $base = 'index')
 {
-	
+
 	if (is_numeric($base)) {
 		$t    = $id;
 		$id   = $base;
@@ -399,7 +399,7 @@ function makeurlwithid ($id, $base = 'index')
 
 	if(!preg_match('/^(\w+)\.(\d+)$/', $id, $m))
 		$id = (int)$id;
-	
+
 	/*$class = $GLOBALS['db']->getOne(lq("SELECT class FROM #_TP_objects WHERE id='$id'"));
 		if ($GLOBALS['db']->errorno()) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -408,19 +408,38 @@ function makeurlwithid ($id, $base = 'index')
 		$uri = '';*/
 	switch($uri) {
 	case 'leftid':
-		return $base. $id. '.'. C::get('extensionscripts', 'cfg');
+		$path = $base. $id. '.'. C::get('extensionscripts', 'cfg');
+		break;
 	case 'singleid':
-		return ('index' != $base ? $base. $id : $id);
+		$path = ('index' != $base ? $base. $id : $id);
+		break;
 	//fabrique des urls type index.php?/rubrique/mon-titre
 	case 'path':
 		$path = getPath($id,'path');
-		return $path;
+		break;
 	case 'querystring':
 		$path = getPath($id,'querystring');
-		return $path;
+		break;
 	default:
-		return $base. '.'. C::get('extensionscripts', 'cfg'). '?id='. $id;
+		$path = $base. '.'. C::get('extensionscripts', 'cfg'). '?id='. $id;
+		break;
 	}
+
+	if(C::get('mobile'))
+	{
+            $path .= (false !== strpos($path, '?') ? '&amp;mobile=1' : '?mobile=1' );
+	}
+	elseif(C::get('nomobile'))
+	{
+            $path .= (false !== strpos($path, '?') ? '&amp;nomobile=1' : '?nomobile=1' );
+	}
+
+        if(C::get('view.format') == 'embed')
+        {
+            $path .= (false !== strpos($path, '?') ? '&amp;format=embed' : '?format=embed' );
+        }
+
+	return $path;
 }
 
 function makeurlwithfile($id) {
@@ -431,7 +450,7 @@ function makeurlwithfile($id) {
 
 /**
  * retourne le chemin complet vers une entitée *
- * @param integer $id identifiant numérique de l'entitée * 
+ * @param integer $id identifiant numérique de l'entitée *
  * @param string $urltype le type d'url utilisée(path,querystring)
  * @return string le chemin
  * @since fonction ajoutée en 0.8
@@ -462,10 +481,10 @@ function getPath($id, $urltype,$base='index')
 
 /**
  * sent the header and the file for downloading
- * 
+ *
  * @param     string   name of the real file.
  * @param     string   name to send to the browser.
- * 
+ *
  */
 function download($filename,$originalname="",$contents="")
 {
@@ -474,7 +493,7 @@ function download($filename,$originalname="",$contents="")
 	$ext=substr($originalname,strrpos($originalname,".")+1);
 	$size = $filename ? filesize($filename) : strlen($contents);
 	$mime = getMimeType($ext);
-	get_PMA_define(); 
+	get_PMA_define();
 	$mimetype = array(
 		'application/msword',
 		'text/html',
@@ -508,19 +527,19 @@ function download($filename,$originalname="",$contents="")
 	header("Pragma: public");
 	header("Expires: 0"); // set expiration time
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-	
+
 	#  header("Cache-Control: ");// leave blank to avoid IE errors (from on uk.php.net)
 	#  header("Pragma: ");// leave blank to avoid IE errors (from on uk.php.net)
-	
+
 	header("Content-type: $mime\n");
 	header("Content-transfer-encoding: binary\n");
 	header("Content-length: ".$size."\n");
 	header("Content-disposition: $disposition; filename=\"$originalname\"\n");
 	//  sleep(1); // don't know why... (from on uk.php.net)
 	if ($filename) {
-		fpassthru($fp); 
-	} else { 
-		echo $contents; 
+		fpassthru($fp);
+	} else {
+		echo $contents;
 	}
 }
 
@@ -599,7 +618,7 @@ function get_PMA_define()
  * @param docAnnexe boolean = true if the file is saved in the directory "docannexe", else false
  *
  */
-function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $docAnnexe=true) 
+function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $docAnnexe=true)
 {
 	if ($type != 'file' && $type != 'image') {
 		trigger_error("ERROR: type is not a valid file type", E_USER_ERROR);
@@ -649,7 +668,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
 	}
 	if(defined("SITEROOT"))
 	{
-		$dest = SITEROOT . $dest;	
+		$dest = SITEROOT . $dest;
 	}
 	if (!copy($file, $dest)) {
 		trigger_error("ERROR: a problem occurs while moving the file.", E_USER_ERROR);
@@ -751,14 +770,14 @@ function myhtmlentities($text)
 }
 
 //
-// Main function to add/modify records 
+// Main function to add/modify records
 //
 function setrecord($table,$id,$set,$context=array())
 {
 	global $db;
 	$id = (int)$id;
 	$table=lq("#_TP_").$table;
-	
+
 	if ($id>0) { // update
 		$update = "";
 		foreach($set as $k=>$v) {
@@ -786,7 +805,7 @@ function setrecord($table,$id,$set,$context=array())
 			$insert.=$k;
 			$values.=$db->qstr($v);
 		}
-	
+
 		if ($insert) {
 			$db->execute("REPLACE INTO $table (".$insert.") VALUES (".$values.")") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			if (!$id) $id=$db->insert_id();
@@ -844,7 +863,7 @@ function makeSortKey($text)
 	//remplacement des caractères accentues en UTF8
 	$replacement = array(
 				chr(194).chr(165) => 'Y', chr(194).chr(181) => 'u',
-				
+
 				chr(195).chr(128) => 'A',
 				chr(195).chr(129) => 'A', chr(195).chr(130) => 'A',
 				chr(195).chr(131) => 'A', chr(195).chr(132) => 'A',
@@ -942,7 +961,7 @@ function makeSortKey($text)
 				chr(197).chr(186) => 'z', chr(197).chr(187) => 'Z',
 				chr(197).chr(188) => 'z', chr(197).chr(189) => 'Z',
 				chr(197).chr(190) => 'z', chr(197).chr(191) => 'z',
- 
+
 			);
 	return trim(strtolower(strtr($text,$replacement)));
 }
@@ -972,7 +991,7 @@ function rightonentity ($action, $context)
   		$groupright = in_array ($context['usergroup'], explode (',', C::get('groups', 'lodeluser')));
   		if (!$groupright) return false;
 	}
-	
+
 	// only admin can delete at the base.
 	$editorDelete = C::get('editor', 'lodeluser') && !empty($context['idparent']);
 	$editorok = C::get('editor', 'lodeluser');
@@ -1002,7 +1021,7 @@ function rightonentity ($action, $context)
 			return $editorok || $redactorok;
 		} else {
 			return $editorok;
-		} 
+		}
 	default:
 		if (C::get('visitor', 'lodeluser'))
 			trigger_error("ERROR: unknown action \"$action\" in the loop \"rightonentity\"", E_USER_ERROR);
@@ -1015,7 +1034,7 @@ function rightonentity ($action, $context)
  * generate the SQL criteria depending whether ids is an array or a number
  */
 
-function sql_in_array($ids) 
+function sql_in_array($ids)
 {
 	return is_array($ids) ? "IN ('".join("','",$ids)."')" : "='".$ids."'";
 }
@@ -1048,7 +1067,7 @@ function canContainTypes ($idtype)
 {
 	global $db;
 	$idtype = (int)$idtype;
-	//select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2) 
+	//select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2)
 	//but select only those who can be contains directly (not in advanced function)
 	$sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
 	$count = $db->getOne (lq($sql));
@@ -1093,7 +1112,7 @@ function get_dc_fields($id, $dcfield)
 			$id  = $row['id'];
 			$id_class_fields[$id]['class'] = $row['class'];
 			$id_class_fields[$id][$row['g_name']] = $row['name'];
-	
+
 			if (!empty($id_class_fields[$id][$dcfield]))
 			{
 				$class_table = "#_TP_".$id_class_fields[$id]['class'];
@@ -1104,7 +1123,7 @@ function get_dc_fields($id, $dcfield)
 				}
 			}
   			return $result;
-		} 
+		}
 		else return false;
 	}
 else return false;
@@ -1171,11 +1190,11 @@ function getgenericfields(&$context)
 	unset($generic);
 	#print_r($context['generic']);exit;
 
-	// -- Traitement des indexs -- 
+	// -- Traitement des indexs --
 	//Récupère maintenant les valeurs des champs génériques des entrées d'index associés et des personnes associées
-	$sql = "SELECT e.type,e.g_type, e.class 
-               FROM {$GLOBALS['tp']}entrytypes as e, 
-               {$GLOBALS['tp']}tablefields as t 
+	$sql = "SELECT e.type,e.g_type, e.class
+               FROM {$GLOBALS['tp']}entrytypes as e,
+               {$GLOBALS['tp']}tablefields as t
                WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";exit;
 	$row = $db->getArray($sql);
@@ -1186,11 +1205,11 @@ function getgenericfields(&$context)
 	}
 	//Retrouve les valeurs des entrées en utilisant le g_name de la table entries
 	if(!empty($fields)) {
-		$sql = "SELECT e.g_name, et.type 
-                  FROM {$GLOBALS['tp']}entries as e, 
-                  {$GLOBALS['tp']}relations as r, 
-                  {$GLOBALS['tp']}entrytypes as et 
-                  WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."' 
+		$sql = "SELECT e.g_name, et.type
+                  FROM {$GLOBALS['tp']}entries as e,
+                  {$GLOBALS['tp']}relations as r,
+                  {$GLOBALS['tp']}entrytypes as et
+                  WHERE et.id=e.idtype AND e.id=r.id2 AND r.id1='".$context['id']."'
                   AND et.type IN('".join("','",$fields)."')";
 		#echo "sql=$sql";
 		$array = $db->getArray($sql);
@@ -1201,14 +1220,14 @@ function getgenericfields(&$context)
 			}
 		}
 	}
-	
+
 	// -- Traitement des personnes --
 	unset($fields);
 	unset($generic);
 	//Récupère maintenant les valeurs des champs génériques des entrées d'index associées et des personnes associées
-	$sql = "SELECT e.type,e.g_type, e.class 
-               FROM {$GLOBALS['tp']}persontypes as e, 
-               {$GLOBALS['tp']}tablefields as t 
+	$sql = "SELECT e.type,e.g_type, e.class
+               FROM {$GLOBALS['tp']}persontypes as e,
+               {$GLOBALS['tp']}tablefields as t
                WHERE t.class='".$context['class']."' AND t.name = e.type AND e.g_type!=''";
 	#echo "sql=$sql";
 	$row = $db->getArray($sql);
@@ -1247,7 +1266,7 @@ function getgenericfields(&$context)
  * Analyse une url et retourne le chemin en local qu'elle contient éventuellement
  * Cf. parse_url : élément 'path' du tableau retourné
  *
- * @param string $url 
+ * @param string $url
  * @return le chemin contenu dans l'URL
  */
 function url_path($url)
@@ -1266,7 +1285,7 @@ function rewriteFilename($string) {
      	$string = preg_replace("/&(.)(acute|cedil|circ|ring|tilde|uml);/", "$1", $string);
      	$string = preg_replace("([^\w.-]+)/", "_", html_entity_decode($string));
      	$string = trim($string, "-");
-     	
+
      }
      return $string;
 }
@@ -1360,7 +1379,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 	// set headers
 	$message->setSubject($subject);
 	$message->setFrom( "$fromname <$fromaddress>");
-	
+
 	// body creation
 	$isHTML ? $message->setHTMLBody($body) : $message->setTxtBody($body);
 
@@ -1422,7 +1441,7 @@ function getMimeType($ext)
 		case 'mpg':
 		case 'mpeg': return 'video/mpeg';
 		case 'ogg': return 'application/ogg';
-		case 'bin': 
+		case 'bin':
 		default: return 'application/octet-stream';
 	}
 }
@@ -1483,6 +1502,42 @@ function thumbnail($path, $width = null, $height = null)
         {
                 return $new_path;
         }
+}
+
+if(!function_exists('detectlanguage')) {
+/**
+ * Détection de la langue du navigateur
+ *
+ * Cette fonction détecte la langue du navigateur, et définit la langue à afficher si elle existe.
+ * Si la langue du navigateur n'est pas présente dans les langues disponibles, alors on affiche
+ * la langue principale du site.
+ */
+function detectLanguage(){
+        defined('INC_CONNECT') || include 'connect.php';
+        global $db, $context;
+
+        if(!isset($_COOKIE['language'])){
+                $language = $context['options']['metadonneessite']['langueprincipale'];
+                $existinglangs = $db->GetCol( lq( "SELECT lang FROM #_TP_translations" ) );
+
+                if(isset( $_SERVER['HTTP_ACCEPT_LANGUAGE'] )){
+                        preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $acceptedlangs);
+
+                        foreach( $acceptedlangs[1] as $lang ) {
+                                $lang = substr($lang, 0, 2);
+                                if( in_array($lang, $existinglangs) ){
+                                        $language = $lang;
+                                        break;
+                                }
+                        }
+                }
+
+//              setcookie('language', $language, 0, C::get('urlroot', 'cfg'));
+                C::set('sitelang', $language);
+                C::set('lang', $language);
+        }
+
+}
 }
 
 define('INC_FUNC', 1);

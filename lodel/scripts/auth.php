@@ -299,8 +299,15 @@ function setLang($lang=null)
 		if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
 		{
 			// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-			$lang = C::get('options.metadonneessite.langueprincipale');
-			$lang = !$lang ? 'fr' : $lang;
+                        if(function_exists('detectLanguage'))
+                        {
+                             detectLanguage();
+                        }
+                        else
+                        {
+			    $lang = C::get('options.metadonneessite.langueprincipale');
+			    $lang = !$lang ? 'fr' : $lang;
+                        }
 		}
 		else
 		{
