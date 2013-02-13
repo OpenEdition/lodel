@@ -308,7 +308,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'boolean' :
-		if (empty($context['id'])) $text = $default; // un booléen ne peut valoir son défaut qu'à l'initialisation
+		if (isset($context['id']) && empty($context['id'])) $text = $default; // un booléen ne peut valoir son défaut qu'à l'initialisation
 		$text = (boolean) ( empty($text) ? 0 : 1 );
 		break;
 	case 'tplfile' :
