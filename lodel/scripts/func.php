@@ -1446,38 +1446,43 @@ function find_in_path($fichier) {
 
 function thumbnail($path, $width = null, $height = null)
 {
-	global $context;
-	class_exists('Zebra_Image') || require 'Zebra_Image.php';
-	
-	$image_infos = pathinfo($path);
+        global $context;
+        class_exists('Zebra_Image') || require 'Zebra_Image.php';
 
-	if(!file_exists($path) && strpos($path, 'http') !== 0) return $path;
+        $image_infos = pathinfo($path);
+        $cache_options = C::get('cacheOptions','cfg');
 
-	$tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
-	file_put_contents($tmp_path, file_get_contents($path));
+        if(!file_exists($path) && strpos($path, 'http') !== 0) return $path;
 
-	$new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
+        $tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
+        file_put_contents($tmp_path, file_get_contents($path));
 
-	if(!file_exists(dirname($new_path))) mkdir(dirname($new_path));
+        $new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
 
-	if(file_exists($new_path) && ( filemtime($new_path) > filemtime($path) )) return $new_path;
+        if(!file_exists(dirname($new_path))) mkdir(dirname($new_path));
 
-	$image = new Zebra_Image();
-	$image->source_path = $tmp_path;
-	$image->target_path = $new_path;
-	
-	$image->jpeg_quality = 100;
-	$image->preserve_aspect_ratio = true;
-	$image->enlarge_smaller_images = false;
-	$image->preserve_time = true;
-	
-	if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1)) {
-		return $path;
-	}
-	else
-	{ 
-		return $new_path;
-	}
+        if(file_exists($new_path)
+        && (
+                ( strpos( $path, "http://" ) !== 0 && ( filemtime($new_path) > filemtime($path) ) )
+                || ( file_exists($new_path) && filemtime($new_path) > time() - $cache_options['default_expire'] )
+        )) return $new_path;
+
+        $image = new Zebra_Image();
+        $image->source_path = $tmp_path;
+        $image->target_path = $new_path;
+
+        $image->jpeg_quality = 100;
+        $image->preserve_aspect_ratio = true;
+        $image->enlarge_smaller_images = false;
+        $image->preserve_time = true;
+
+        if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1)) {
+                return $path;
+        }
+        else
+        {
+                return $new_path;
+        }
 }
 
 define('INC_FUNC', 1);
