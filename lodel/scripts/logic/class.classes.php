@@ -231,7 +231,7 @@ class ClassesLogic extends Logic
 		} elseif ($this->oldvo->class!=$vo->class) {
 			// change table name
 			$db->execute (lq ("RENAME TABLE #_TP_". $this->oldvo->class. " TO #_TP_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			if ($vo->classtype=="persons") {
+			if ($vo->classtype=="persons" || $vo->classtype=="entries") {
 				$db->execute (lq ("RENAME TABLE #_TP_entities_". $this->oldvo->class. " TO #_TP_entities_". $vo->class)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				$db->execute (lq ("UPDATE #_TP_tablefields SET class='entities_". $vo->class. "' WHERE class='entities_". $this->oldvo->class."'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			}
