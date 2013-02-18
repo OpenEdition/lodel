@@ -724,7 +724,7 @@ PHP;
 			if ($attr['name'] == 'NAME')
             		{
 				if (!empty($name)) $this->_errmsg("name already defined in loop $name", $this->ind);
-				$name = $attr['value'];
+				$name = strtolower($attr['value']);
 			}
 			elseif ($attr['name'] == 'TABLE')
 			{
