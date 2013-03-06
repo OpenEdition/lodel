@@ -1517,7 +1517,7 @@ function detectLanguage(){
         global $db, $context;
 
         if(!isset($_COOKIE['language'])){
-		if(isset($context['options'])
+		if(isset($context['options']))
                     $language = $context['options']['metadonneessite']['langueprincipale'];
                 $existinglangs = $db->GetCol( lq( "SELECT lang FROM #_TP_translations" ) );
 
