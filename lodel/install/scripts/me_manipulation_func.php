@@ -10,6 +10,8 @@ Créer rapidement un script en cli:
 		// script de manipulation du ME du site
 	}
 
+Mettre le script à la racine du lodel et l'utiliser: php script.php nom_site | all (pour impacter tous les sites)
+
 Modifier le ME:
 
 TableField alias TF
@@ -200,10 +202,11 @@ class TableField extends MEobject {
 	// change le nom du champ
 	public function name($name, $title=false) {
 		if ($this->error) return $this;
+		$oldname = $this->fields['name'];
 		$this->fields['name'] = $name;
 		if ($title)
 			$this->fields['title'] = $title;
-		return $this->save("Changement de nom pour $name");
+		return $this->save("Changement de nom de '$oldname' pour $name");
 	}
 
 	// rajoute un hook au champ
@@ -567,10 +570,11 @@ class Type extends MEobject {
 	// change le nom du type
 	public function name($type, $title=false) {
 		if ($this->error) return $this;
+		$oldname = $this->fields['type'];
 		$this->fields['type'] = $type;
 		if ($title)
 			$this->fields['title'] = $title;
-		return $this->save("Changement de nom pour $type");
+		return $this->save("Changement de nom de '$oldname' pour '$type'");
 	}
 
 	private function set_relations() {
@@ -1418,9 +1422,15 @@ class ME_sites_iterator implements Iterator {
 			die("PHP-cli only !!!");
 		$this->position = 0;
 		$sites = $argv;
-		if(!( isset($sites[1])))
-			die("Il faut au moins le nom d'un site\n");
+		if(!(isset($sites[1]))) {
+			echo "USAGE:\n";
+			echo " php ".$argv[0]." site1 [site2] […]\n";
+			echo " Utiliser 'all' comme nom de site pour impacter tous les sites de l'installation.\n";
+			die();
+		}
 		array_shift($sites);
+		if ($sites[0] == 'all')
+			$sites = $this->findAllSites();
 		$this->sites = $sites;
 		$GLOBALS['ME_messages'] = $error_level;
 	}
@@ -1460,6 +1470,18 @@ class ME_sites_iterator implements Iterator {
 
 	function valid() {
 		return isset($this->sites[$this->position]);
+	}
+	
+	private function findAllSites() {
+		$base_lodel = c::Get('database','cfg');
+		$this->setdb($base_lodel);
+		global $db;
+		$les_sites = $db->execute(lq("SELECT name FROM #_MTP_sites"));
+		$sites = array();
+		while ($site = $les_sites->FetchRow()) {
+			$sites[] = $site['name'];
+		}
+		return $sites;
 	}
 
 	private function setdb($db_name) {
