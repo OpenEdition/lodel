@@ -67,7 +67,7 @@ Classe alias Cl
 	->field($key)
 
 Option alias O
-	::get($name, $group)
+	::get($group, $name)
 	::create($group, $name, $type, $title="", $infos=array())
 	->delete()
 	->field($key)
@@ -915,8 +915,8 @@ class Option extends MEobject {
 	protected $fields = array();
 	private $group="";
 
-	static function get($name, $group) {
-		return new Option($name, $group);
+	static function get($group, $name) {
+		return new Option($group, $name);
 	}
 
 	static function create($group, $name, $type, $title="", $infos=array()) {
@@ -944,13 +944,13 @@ class Option extends MEobject {
 			$errors[] =  "Création de l'Option: elle existe déjà.";
 		}
 
-		$o = new Option($name, $group);
+		$o = new Option($group, $name);
 		$o->messages = $messages;
 		$o->errors = $errors;
 		return $o;
 	}
 
-	function __construct($name, $group) {
+	function __construct($group, $name) {
 		$og = $this->OptionGroup_get($group);
 		if (!$og) {
 			$this->fields = array('name'=>$name);
