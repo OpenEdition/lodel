@@ -22,7 +22,7 @@ TableField alias TF
 	->hook($hook, $clobber=false) rajoute un hook au champ, true pour effacer les anciens
 	->group($groupname) Change le group du champ
 	->type($newtype) Change le type du champ
-	->set($fields) Change les propriétés du champ: $fields = array('fieldname'=>'value')
+	->set($fields, $value=null) Change les propriétés du champ: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->migrate($class, $fieldname, $overwrite = true) Copie les valeurs du champ dans un autre (niveau des entités)
 	->value($value='') Modifie la valeur d'un champ dans les entités
 	->copy($name, $title) Créer un champ identique
@@ -40,7 +40,7 @@ Type alias T
 	::get($class, $type)
 	::create($class, $type, $title, $infos=array())
 	->delete()
-	->set($fields) Change les propriétés du type: $fields = array('fieldname'=>'value')
+	->set($fields, $value=null) Change les propriétés du type: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->name($type, $title=false) change le nom du type
 	->relation($class, $type, $clobber=false) rajoute une relation, true pour effacer les autres relations
 	->relations($ids, $clobber=false) rajoute des relations selon un tableau d'id
@@ -254,14 +254,19 @@ class TableField extends MEobject {
 	}
 
 	// change les propriétés du champ
-	public function set($fields) {
+	public function set($fields, $value=null) {
 		if ($this->error) return $this;
 		$autorised_field = array ('title','altertitle','gui_user_complexity'=>'64','g_name','style','cond','defaultvalue','processing','mask'=>'', 'allowedtags','edition','editionparams','weight','filtering','comment','status','rank','otx',);
+		if ($value !== null)
+			$fields = array($fields=>$value);
+		$done = array();
 		foreach ($autorised_field as $f) {
-			if (isset($fields[$f]))
+			if (isset($fields[$f])) {
 				$this->fields[$f] = $fields[$f];
+				$done[] = "'$f' => '".$fields[$f]."'";
+			}
 		}
-		return $this->save("Changement de champ.");
+		return $this->save("Changements de propriétés: ".implode(", ",$done));
 	}
 
 	// Copie les valeurs du champ dans un autre
@@ -557,14 +562,19 @@ class Type extends MEobject {
 	}
 
 	// change les propriétés du type
-	public function set($fields) {
+	public function set($fields, $value=null) {
 		if ($this->error) return $this;
 		$autorised_field = array ('gui_user_complexity', 'tpledition', 'display', 'tplcreation', 'import', 'creationstatus', 'search', 'oaireferenced', 'public', 'tpl', 'rank', 'status',);
+		if ($value !== null)
+			$fields = array($fields=>$value);
+		$done = array();
 		foreach ($autorised_field as $f) {
-			if (isset($fields[$f]))
+			if (isset($fields[$f])) {
 				$this->fields[$f] = $fields[$f];
+				$done[] = "'$f' => '".$fields[$f]."'";
+			}
 		}
-		return $this->save("Changement de champ.");
+		return $this->save("Changements de propriétés: ".implode(", ",$done));
 	}
 
 	// change le nom du type
