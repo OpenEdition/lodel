@@ -1121,6 +1121,8 @@ class MEobject {
 */
 	protected function TableField_save($fields) {
 		$logic = (($fields['type'] == 'entries' || $fields['type'] == 'persons') ? "index" : "");
+		if (!empty($fields['allowedtags']) && is_string($fields['allowedtags'])) // grrrr, pourquoi lodel ne fait pas ça ???
+			$fields['allowedtags'] = explode(';', $fields['allowedtags']);
 		return $this->logic_save($logic . "tablefields", $fields);
 	}
 	protected function TableField_delete($fields) {
