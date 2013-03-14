@@ -143,7 +143,7 @@ class TableField extends MEobject {
 			if ($idgroup >= 0) {
 				$fields = $ME->TableField_get($class, $fieldname);
 				if (!$fields) {
-					$fields = array ('id'=>'0', 'name'=>$fieldname, 'class'=>$class, 'title'=>$fieldname, 'altertitle'=>'', 'gui_user_complexity'=>'64', 'idgroup'=>$idgroup, 'type'=>$type, 'g_name'=>'', 'style'=>'', 'cond'=>'*', 'defaultvalue'=>'', 'processing'=>'', 'mask'=>'', 'allowedtags'=>'', 'edition'=>'editable', 'editionparams'=>'', 'editionhooks'=>'', 'weight'=>'0', 'filtering'=>'', 'comment'=>'', 'status'=>'1', 'rank'=>'', 'otx'=>'', );
+					$fields = array ('id'=>'0', 'name'=>$fieldname, 'class'=>$class, 'title'=>$fieldname, 'altertitle'=>'', 'gui_user_complexity'=>'64', 'idgroup'=>$idgroup, 'type'=>$type, 'g_name'=>'', 'style'=>'', 'mask'=>'', 'cond'=>'*', 'defaultvalue'=>'', 'processing'=>'', 'allowedtags'=>'', 'edition'=>'editable', 'editionparams'=>'', 'editionhooks'=>'', 'weight'=>'0', 'filtering'=>'', 'comment'=>'', 'status'=>'1', 'rank'=>'', 'otx'=>'', );
 					$fields = array_merge($fields, $infos);
 					$ok = $ME->TableField_Save($fields);
 					if ($ok === true)
@@ -197,6 +197,17 @@ class TableField extends MEobject {
 
 		$this->error = true;
 		return $this;
+	}
+
+	// rajoute un mask
+	public function mask($mask) {
+		if ($this->error) return $this;
+		if (empty($mask) && isset($this->fields['mask']['user'])) {
+			unset($this->fields['mask']['user']);
+		} else {
+			$this->fields['mask']['user'] = $mask;
+		}
+		return $this->save("Changement du masque pour '$mask'");
 	}
 
 	// change le nom du champ
@@ -256,7 +267,7 @@ class TableField extends MEobject {
 	// change les propriétés du champ
 	public function set($fields, $value=null) {
 		if ($this->error) return $this;
-		$autorised_field = array ('title','altertitle','gui_user_complexity'=>'64','g_name','style','cond','defaultvalue','processing','mask'=>'', 'allowedtags','edition','editionparams','weight','filtering','comment','status','rank','otx',);
+		$autorised_field = array ('title','altertitle','gui_user_complexity'=>'64','g_name','style','cond','defaultvalue','processing', 'allowedtags','edition','editionparams','weight','filtering','comment','status','rank','otx',);
 		if ($value !== null)
 			$fields = array($fields=>$value);
 		$done = array();
@@ -1131,7 +1142,14 @@ class MEobject {
 	}
 	protected function TableField_get($class, $fieldname) {
 		global $db;
-		return $this->Object_get("tablefields", "class=".$db->Quote($class)." AND name=".$db->Quote($fieldname));
+		$tf = $this->Object_get("tablefields", "class=".$db->Quote($class)." AND name=".$db->Quote($fieldname));
+		if ($tf) {
+			if (!empty($tf['mask']))  // grrrr, pourquoi lodel ne fait pas ça ???
+				$tf['mask'] = @unserialize(html_entity_decode(stripslashes($tf['mask'])));
+			else
+				$tf['mask'] = array();
+		}
+		return $tf;
 	}
 
 /*
