@@ -110,8 +110,12 @@ if (php_sapi_name() != "cli") {
 
 // quick and dirty error handling, au cas où lodel plante
 function ME_errors($errno, $errstr='', $errfile='', $errline=0) {
-	echo "GRAVE ERREUR: $errno, $errstr, $errfile, $errline"."\n";
-	die();
+	if ($errno<E_STRICT) {
+		echo "GRAVE ERREUR: $errno, $errstr, $errfile, $errline"."\n";
+		die();
+	} else {
+		echo "ATTENTION ERREUR: $errno, $errstr, $errfile, $errline"."\n";
+	}
 }
 error_reporting(-1);
 set_error_handler('ME_errors'); // errors
