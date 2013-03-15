@@ -25,7 +25,7 @@ TableField alias TF
 	->set($fields, $value=null) Change les propriétés du champ: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->migrate($class, $fieldname, $overwrite = true) Copie les valeurs du champ dans un autre (niveau des entités)
 	->value($value='') Modifie la valeur d'un champ dans les entités
-	->copy($name, $title) Créer un champ identique
+	->copy($name, $title, $class=false) Créer un champ identique. $class pour copier dans une autre class (indexes)
 	->toEntry($type) transforme un champ texte en un index, l'index doit exister, le champ est effacé 
 	->toField($deleteEntry = false, $tablefield = false) transforme un champ index en champ texte, si on donne un $tablefield c'est celui-ci qui est utilisé pour la conversion
 	->field($key) Recevoir une propriété du champ
@@ -61,7 +61,7 @@ PersonType alias PT
 
 Classe alias Cl
 	::get($class)
-	::create($class, $classtype, $title, $infos=array())
+	::create($class, $classtype, $title, $infos=array()) $classtype = entities | entries | persons (ou entities_CLASSE)
 	->delete()
 	->external($ext, $clobber=false) Rajoute un lien à un index externe
 	->field($key)
@@ -318,15 +318,17 @@ class TableField extends MEobject {
 	}
 
 	// Créer un champ identique
-	public function copy($name, $title) {
+	public function copy($name, $title, $class=false) {
 		if ($this->error) return $this;
 		$fields = $this->fields;
-		$changes = array('id'=>0, 'name'=>$name, 'title'=>$title, 'altertitle'=> '', 'g_name'=>'', 'style'=>$name, 'rank'=>'');
+		if (!$class) // TODO: vérifier son existence: ce n'est possible directement que sur entries et person
+			$class = $this->fields['class'];
+		$changes = array('id'=>0, 'class'=>$class, 'name'=>$name, 'title'=>$title, 'altertitle'=> '', 'g_name'=>'', 'style'=>$name, 'rank'=>'');
 		$fields = array_merge($fields, $changes);
 
 		$ok = $this->TableField_save($fields);
 		if ($ok === true)
-			$this->messages[] = "Copie vers $name.";
+			$this->messages[] = "Copie vers $name ($class).";
 		else 
 			return $this->err("Copie non effectuée: ".$ok);
 
