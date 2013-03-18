@@ -52,6 +52,7 @@ EntryType alias ET
 	::create($class, $type, $title, $infos=array())
 	->delete()
 	->field($key)
+	->migrate($class) migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
 
 PersonType alias PT
 	::get($type)
@@ -221,7 +222,7 @@ class TableField extends MEobject {
 		$this->fields['name'] = $name;
 		if ($title)
 			$this->fields['title'] = $title;
-		return $this->save("Changement de nom de '$oldname' pour $name");
+		return $this->save("Changement de nom: de '$oldname' vers '$name'");
 	}
 
 	// rajoute un hook au champ
@@ -734,7 +735,7 @@ class EntryType extends MEobject {
 		return $this;
 	}
 
-	// migrer le type vers une autre classe (la classe doit exister et comporter les mêmes champs)
+	// migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
 	public function migrate($class) {
 		if ($this->error) return $this;
 
