@@ -733,6 +733,56 @@ class EntryType extends MEobject {
 		$this->error = true;
 		return $this;
 	}
+
+	// migrer le type vers une autre classe (la classe doit exister et comporter les mêmes champs)
+	public function migrate($class) {
+		if ($this->error) return $this;
+
+		// changer la classe
+		$oldclass = 'indexes';//$this->fields['class'];
+		$idtype = $this->fields['id'];
+		$this->fields['class'] = $class;
+		$this->save("Changement de classe de '$oldclass' vers '$class'");
+		if ($this->error) return $this;
+
+		global $db;
+		// migrer les données des tables classeA à classeB
+		$oldentries = lq("SELECT oldclass.* FROM #_TP_$oldclass as oldclass, #_TP_entries as e WHERE e.id = oldclass.identry AND e.idtype=$idtype");
+		$oldentries = $db->Execute($oldentries);
+		while ($row = $oldentries->FetchRow()) {
+			$keys = implode(',', array_keys($row));
+			$values = array();
+			foreach ($row as $v) {
+				$values[] = $db->Quote($v);
+			}
+			$values = implode(',', $values);
+			$migrate_entry = lq("INSERT INTO #_TP_$class ($keys) VALUES ($values)");
+			$db->Execute($migrate_entry);
+		}
+
+		// migrer les données de entities_classeA à entities_classeB
+		$oldrelations = lq("SELECT oldclass.* FROM #_TP_entities_$oldclass as oldclass, #_TP_entries as e, #_TP_relations as r WHERE oldclass.idrelation=r.idrelation AND e.id=r.id2 AND e.idtype=$idtype");
+		$oldrelations = $db->Execute($oldrelations);
+		while ($row = $oldrelations->FetchRow()) {
+			$keys = implode(',', array_keys($row));
+			$values = array();
+			foreach ($row as $v) {
+				$values[] = $db->Quote($v);
+			}
+			$values = implode(',', $values);
+			$migrate_relation = lq("INSERT INTO #_TP_entities_$class ($keys) VALUES ($values)");
+			$db->Execute($migrate_relation); // OK 
+		}
+
+		// efface les vieilles liaisons
+		$delete_oldentries = lq("DELETE FROM oldclass USING #_TP_$oldclass as oldclass, #_TP_entries as e WHERE e.id = oldclass.identry AND e.idtype=$idtype");
+		$db->Execute($delete_oldentries);
+		$delete_oldrelations = lq("DELETE FROM oldclass USING #_TP_entities_$oldclass as oldclass, #_TP_entries as e, #_TP_relations as r WHERE oldclass.idrelation=r.idrelation AND e.id=r.id2 AND e.idtype=$idtype");
+		$db->Execute($delete_oldrelations);
+		$this->messages[] = "Migration effectuée.";
+		return $this;
+	}
+
 }
 class ET extends EntryType { // alias
 }
