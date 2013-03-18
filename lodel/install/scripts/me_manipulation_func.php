@@ -321,14 +321,21 @@ class TableField extends MEobject {
 	public function copy($name, $title, $class=false) {
 		if ($this->error) return $this;
 		$fields = $this->fields;
-		if (!$class) // TODO: vérifier son existence: ce n'est possible directement que sur entries et person
+		if (!$class) {
+			$ME = new MEobject();
+			$new_classe = $ME->Class_get($class);
+			if (!$new_classe)
+				return $this->err("Copie non effectuée. La classe '$class' n'existe pas.");
+			if ($new_classe->fields['classtype'] == 'entities') // Pour entities il faudrait un tablefieldgroup
+				return $this->err("Copie non effectuée. La classe '$class' est de type 'entity'. Ce n'est pas supporté.");
 			$class = $this->fields['class'];
-		$changes = array('id'=>0, 'class'=>$class, 'name'=>$name, 'title'=>$title, 'altertitle'=> '', 'g_name'=>'', 'style'=>$name, 'rank'=>'');
+		}
+		$changes = array('id'=>0, 'class'=>$class, 'name'=>$name, 'title'=>$title);
 		$fields = array_merge($fields, $changes);
 
 		$ok = $this->TableField_save($fields);
 		if ($ok === true)
-			$this->messages[] = "Copie vers $name ($class).";
+			$this->messages[] = "Copie vers '$name' de la classe '$class'.";
 		else 
 			return $this->err("Copie non effectuée: ".$ok);
 
