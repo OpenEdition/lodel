@@ -33,7 +33,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package SimplePie
- * @version 1.3
+ * @version 1.4-dev
  * @copyright 2004-2012 Ryan Parman, Geoffrey Sneddon, Ryan McCue
  * @author Ryan Parman
  * @author Geoffrey Sneddon
@@ -95,10 +95,8 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 				'prefix' => 'simplepie_',
 			),
 		);
-		$parsed = SimplePie_Cache::parse_URL($location);
-		$this->options['host'] = empty($parsed['host']) ? $this->options['host'] : $parsed['host'];
-		$this->options['port'] = empty($parsed['port']) ? $this->options['port'] : $parsed['port'];
-		$this->options['extras'] = array_merge($this->options['extras'], $parsed['extras']);
+		$this->options = SimplePie_Misc::array_merge_recursive($this->options, SimplePie_Cache::parse_URL($location));
+
 		$this->name = $this->options['extras']['prefix'] . md5("$name:$type");
 
 		$this->cache = new Memcache();
@@ -147,7 +145,7 @@ class SimplePie_Cache_Memcache implements SimplePie_Cache_Base
 
 		if ($data !== false)
 		{
-			// essentially ignore the mtime because Memcache expires on it's own
+			// essentially ignore the mtime because Memcache expires on its own
 			return time();
 		}
 
