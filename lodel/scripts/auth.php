@@ -87,11 +87,11 @@ function authenticate($level = 0, $mode = "", $return = false)
 	$retour = "url_retour=". urlencode($_SERVER['REQUEST_URI']);
 	do { // block de control
 		if (!isset($_COOKIE[C::get('sessionname', 'cfg')]) && !defined('backoffice-lodeladmin') && !defined('backoffice'))
-        	{
-                	if(cache_get('no_restricted')) break;
-                	maintenance();
+		{
+			if(cache_get('no_restricted')) break;
+			maintenance();
             
-            		defined('INC_CONNECT') || include 'connect.php';
+			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
 			// check for restricted users by client IP address
 			$users = $db->GetArray(lq("SELECT id, ip FROM #_TP_restricted_users WHERE status > 0"));
@@ -156,15 +156,15 @@ function authenticate($level = 0, $mode = "", $return = false)
 		}
 		else break;
 
-        	defined('INC_CONNECT') || include 'connect.php';
+		defined('INC_CONNECT') || include 'connect.php';
 		global $db;
 
 		if (!($row = $db->getRow(lq("
-            SELECT id,iduser,site,context,expire,expire2,currenturl 
-                FROM #_MTP_session 
-                WHERE name='$name'")))) 
-        	{
-        		setcookie(C::get('sessionname', 'cfg'), "", time()-1,C::get('urlroot', 'cfg'));
+			SELECT id,iduser,site,context,expire,expire2,currenturl 
+			FROM #_MTP_session 
+			WHERE name='$name'")))) 
+		{
+			setcookie(C::get('sessionname', 'cfg'), "", time()-1,C::get('urlroot', 'cfg'));
 			break;
 		}
 		
@@ -299,15 +299,15 @@ function setLang($lang=null)
 		if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
 		{
 			// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-                        if(function_exists('detectLanguage'))
-                        {
-                             detectLanguage();
-                        }
-                        else
-                        {
-			    $lang = C::get('options.metadonneessite.langueprincipale');
-			    $lang = !$lang ? 'fr' : $lang;
-                        }
+			if(function_exists('detectLanguage'))
+			{
+				detectLanguage();
+			}
+			else
+			{
+				$lang = C::get('options.metadonneessite.langueprincipale');
+				$lang = !$lang ? 'fr' : $lang;
+			}
 		}
 		else
 		{
