@@ -339,7 +339,14 @@ class Entities_EditionLogic extends GenericLogic
 	public function editAction (&$context, &$error, $clean = false)
 	{
 		if (!rightonentity(!empty($context['id']) ? 'edit' : 'create', $context)) {
-			trigger_error("ERROR: you don't have the right to perform this operation", E_USER_ERROR);
+			$debug_dump = '';
+			if (!empty($context['siteinfos']) && strpos($context['siteinfos']['name'], 'calenda')!==false) {
+				$debug_dump = "\n__CALENDA editAction context__:\n".print_r($context, true);
+				$debug_dump .= "\n__CALENDA editAction SERVER__:\n".print_r($_SERVER, true);
+				$debug_dump .= "\n__CALENDA editAction REQUEST__:\n".print_r($_REQUEST, true);
+				$debug_dump .= "\n__CALENDA editAction FILES__:\n".print_r($_FILES, true);
+			}
+			trigger_error("ERROR: you don't have the right to perform this operation".$debug_dump, E_USER_ERROR);
 		}
 		if (isset($context['cancel'])) {
 			return '_back';
