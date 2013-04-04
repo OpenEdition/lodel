@@ -95,11 +95,13 @@ function cache_delete($name){
 }
 
 function getCacheIdFromId( $id ){
+	static $sessionsite = null;
 	$cache = getCacheObject();
 	$cache_config = cache_get_config();
 	$site  = C::get('site','cfg') ? C::get('site','cfg') : 'general';
 	$env   = defined('backoffice-lodelindex') ? 'lodelindex' : defined('backoffice-admin') ? 'admin' : defined('backoffice-edition') ? 'edition' : 'site' ;
-	$sessionsite = $cache->get( "session_{$site}", 0 );
+	if ($sessionsite === null)
+		$sessionsite = $cache->get( "session_{$site}", 0 );
 
 	return  ( isset($cache_config['prefix']) ? "{$cache_config['prefix']}_" : "" ) 
 			. "{$site}_{$env}_{$sessionsite}_{$id}" 
