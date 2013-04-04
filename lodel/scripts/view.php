@@ -354,9 +354,10 @@ class View
 
 		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
 		{
-			function_exists('show_html') || include 'showhtml.php';
 			// on affiche la source
-			self::$page = show_html(self::$page);
+			self::$page = "<html><head><style>ol {white-space: pre-wrap;}</style></head><body>"
+				."<ol><li>".implode("</li><li>",explode("\n",htmlspecialchars(self::$page, ENT_QUOTES | ENT_XHTML, 'UTF-8')))."</li></ol>"
+				."</body></html>";
 		}
 
 		switch($encoding)
