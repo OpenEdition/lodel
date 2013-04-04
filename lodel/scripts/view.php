@@ -365,7 +365,7 @@ class View
 		if ((C::get('showhtml') && C::get('visitor', 'lodeluser')) || $this->_showphp) {
 			// on affiche la source
 			self::$page = "<html><head><style>body {font-family:monospace;} ol {white-space: pre-wrap;}</style></head><body>"
-				."<ol><li>".implode("</li><li>",explode("\n",htmlspecialchars(self::$page, ENT_QUOTES | ENT_XHTML, 'UTF-8')))."</li></ol>"
+				."<ol><li>".implode("</li><li>",explode("\n",htmlspecialchars(self::$page, ENT_QUOTES, 'UTF-8')))."</li></ol>"
 				."</body></html>";
 		}
 
