@@ -89,7 +89,6 @@ function authenticate($level = 0, $mode = "", $return = false)
 		if (!isset($_COOKIE[C::get('sessionname', 'cfg')]) && !defined('backoffice-lodeladmin') && !defined('backoffice'))
 		{
 			if(cache_get('no_restricted')) break;
-			maintenance();
             
 			defined('INC_CONNECT') || include 'connect.php';
 			global $db;
@@ -146,6 +145,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			if(!$name || $name == 'error_opensession') break;
 			else
 			{
+				maintenance();
 				C::trigger('postauth');
 				return true;
 			}
@@ -247,7 +247,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 	}	while (0);
 
 // 	usecurrentdb();
-    	C::setUser();
+	C::setUser();
 	// on est pas loggé : pour éviter des attaques par DOS on désactive le clearcache
 	C::set('nocache', false);
 	$lodeluser = '';
@@ -425,7 +425,7 @@ function maintenance()
 		return false;
 	}
 	
-	if(defined('backoffice-lodeladmin') || !cache_get('lock')) return false;
+	if(defined('backoffice-lodeladmion') || !cache_get('lock')) return false;
 	
 	if(file_exists(C::get('home', 'cfg')."../../maintenance.html"))
 		die(include(C::get('home', 'cfg')."../../maintenance.html"));
