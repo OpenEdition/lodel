@@ -134,6 +134,12 @@ class View
 	private $_cache;
 
 	/**
+	* debugMode to show lodelparser result
+	* @var bool
+	*/
+	private $_showphp;
+
+	/**
 	 * page which will be displayed
 	 * cached for trigger postview
 	 * @var string
@@ -163,9 +169,10 @@ class View
 		$this->_cache = null;
 		$this->_site = C::get('site', 'cfg');
 		$this->_home = C::get('home', 'cfg');
+		$this->_showphp = (bool)C::get('showphp') && C::get('admin', 'lodeluser');
 		self::$time = time();
 		self::$microtime = microtime(true);
-		self::$nocache = (bool)(C::get('nocache') || C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
+		self::$nocache = (bool)(C::get('nocache') || $this->_showphp || C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
 		self::$noindent = (bool) C::get('nocache') ? true : false;
 	}
 
@@ -304,8 +311,11 @@ class View
 		}
 
 		// empty cache, let's calculate and display it
-		self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
-
+		if ($this->_showphp)
+			self::$page = $this->_calcul_page($context, $tpl); // no eval for debug
+		else
+			self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
+		
 		$this->_print($gzip);
 
 		return true;
@@ -352,10 +362,9 @@ class View
 			}
 		}
 
-		if (C::get('showhtml') && C::get('visitor', 'lodeluser')) 
-		{
+		if ((C::get('showhtml') && C::get('visitor', 'lodeluser')) || $this->_showphp) {
 			// on affiche la source
-			self::$page = "<html><head><style>ol {white-space: pre-wrap;}</style></head><body>"
+			self::$page = "<html><head><style>body {font-family:monospace;} ol {white-space: pre-wrap;}</style></head><body>"
 				."<ol><li>".implode("</li><li>",explode("\n",htmlspecialchars(self::$page, ENT_QUOTES | ENT_XHTML, 'UTF-8')))."</li></ol>"
 				."</body></html>";
 		}
@@ -650,7 +659,11 @@ class View
 
 		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
 
-		$template['contents'] = $this->_eval($template['contents'], $context);
+		if ($this->_showphp)
+			$template['contents'] = $template['contents']; // no eval for debug
+		else
+			$template['contents'] = $this->_eval($template['contents'], $context);
+		
 		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
 		if(!self::$nocache && 
