@@ -209,23 +209,19 @@ class Cache_Memcache extends Cache implements Cache_Arithmetic {
 	 * @param   integer  lifetime in seconds, maximum value 2592000
 	 * @return  boolean
 	 */
-	public function set($id, $data, $lifetime = 3600)
+	public function set($id, $data, $lifetime = NULL)
 	{
-		// If the lifetime is greater than the ceiling
-		if ($lifetime > Cache_Memcache::CACHE_CEILING)
-		{
-			// Set the lifetime to maximum cache time
+		// Set to the default expiry
+		if ($lifetime === NULL) 	{
+			$lifetime = isset($this->_config['default_expire']) ? $this->_config['default_expire'] : Cache::DEFAULT_EXPIRE;
+		}
+
+		// Lifetime must not be greater than the ceiling
+		if ($lifetime > Cache_Memcache::CACHE_CEILING) {
 			$lifetime = Cache_Memcache::CACHE_CEILING + time();
-		}
-		// Else if the lifetime is greater than zero
-		elseif ($lifetime > 0)
-		{
+		} elseif ($lifetime > 0) {
 			$lifetime += time();
-		}
-		// Else
-		else
-		{
-			// Normalise the lifetime
+		} else {
 			$lifetime = 0;
 		}
 
