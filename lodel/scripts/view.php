@@ -279,8 +279,7 @@ class View
 				$this->_cache = getCacheObject();
 			}
 
-			$contents = $this->_cache->get(getCacheIdFromId( $context['id'] ));
-
+			$contents = $this->_cache->get(getCacheIdFromId($this->page_cache_id()));
 			if($contents)
 			{
 				$pos = strpos($contents, "\n");
@@ -399,7 +398,7 @@ class View
 		{
 			$this->_cache = getCacheObject();
 		}
-		$contents = $this->_cache->get($this->_cachedfile);
+		$contents = $this->_cache->get(getCacheIdFromId($this->page_cache_id()));
 		if(!$contents) return false;
 		$pos = strpos($contents, "\n");
 		$timestamp = (int)substr($contents, 0, $pos);
@@ -461,8 +460,8 @@ class View
 					$loopName.$sum.'_'.C::get('qs', 'cfg');
 			}
 			else $template_cache = $tpl.'_'.$idcontext.'_'.C::get('sitelang') ."_". 
-				C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'.
-				C::get('qs', 'cfg');
+					C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'.
+					C::get('qs', 'cfg');
 
 			if(!isset($this->_cache))
 			{
@@ -507,6 +506,17 @@ class View
 			unset($template);
 		}
 		return $contents;
+	}
+
+	/**
+	 * Calcul de l'identifiant du cache de la page principale
+	 * 
+	 * @return string l'id du cache de ce template, utilisant: la langue, l'utilisateur et les paramètres
+	 */
+	private function page_cache_id() {
+		return basename($_SERVER['PHP_SELF']).'_'.C::get('sitelang') ."_". 
+			C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'. // ne pas risquer qu'un admin enregistre du cache visiteur
+			C::get('qs', 'cfg');
 	}
 
 	/**
@@ -590,9 +600,7 @@ class View
 			{
 				$template_cache = getCacheIdFromId("tpl_{$base}", $this->_cache);
 			}
-		
 
-			
 			$contents = $this->_cache->get($template_cache);
 		}
 
@@ -655,7 +663,7 @@ class View
 
 			$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
 
-			$this->_cache->set(getCacheIdFromId($base), $timestamp."\n".$template['contents']);
+			$this->_cache->set(getCacheIdFromId($this->page_cache_id()), $timestamp."\n".$template['contents']);
 		}
 
 		return $template['contents'];
