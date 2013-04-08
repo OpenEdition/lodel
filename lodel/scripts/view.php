@@ -524,7 +524,7 @@ class View
 	 * @return string l'id du cache de ce template, utilisant: la langue, l'utilisateur et les paramètres
 	 */
 	private function page_cache_id() {
-		return basename($_SERVER['PHP_SELF']).'_'.C::get('sitelang') ."_". 
+		return $_SERVER['PHP_SELF'].'_'.C::get('sitelang') ."_". 
 			C::get('name', 'lodeluser'). "_". C::get('rights', 'lodeluser').'_'. // ne pas risquer qu'un admin enregistre du cache visiteur
 			C::get('qs', 'cfg');
 	}
