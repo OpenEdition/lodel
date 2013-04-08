@@ -584,7 +584,8 @@ class View
 					header("Connection: Close");
 					flush();
 				}
-				$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, true);
+				cache_delete($this->page_cache_id());
+				$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__);
 			}
 		}
 
@@ -693,7 +694,7 @@ class View
 	 * @param bool $clearcache a-t-on besoin de nettoyer le cache ?
 	 * @see _eval()
 	 */
-	private function _error($msg, $func, $clearcache) 
+	private function _error($msg, $func, $clearcache = false) 
 	{
 		// we are maybe buffering, so clear it
 		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
