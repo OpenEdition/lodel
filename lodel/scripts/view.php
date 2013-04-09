@@ -314,7 +314,7 @@ class View
 		if ($this->_showphp)
 			self::$page = $this->_calcul_page($context, $tpl); // no eval for debug
 		else
-			self::$page = $this->_eval($this->_calcul_page($context, $tpl), $context);
+			self::$page = $this->_eval($this->_calcul_page($context, $tpl, $caching), $context);
 		
 		$this->_print($gzip);
 
@@ -641,12 +641,9 @@ class View
 	*
 	* @param array $context le context
 	* @param string $base le nom du fichier template
-	* @param string $cache_rep chemin vers repertoire cache si different du cache
-	* @param string $base_rep chemin vers repertoire tpl
-	* @param bool $include appel de la fonction par une inclusion de template (defaut a false)
-	* @param int $blockId (optionnel) 
+	* @param boolean $caching Si on doit utiliser le cache ou non (par défaut à true)
 	*/
-	private function _calcul_page(&$context, $base, $cache_rep = '', $base_rep = 'tpl/')
+	private function _calcul_page(&$context, $base, $caching = true)
 	{
 		$format = C::get('format');
 
@@ -658,7 +655,7 @@ class View
 
 		$template_cache = "tpl_{$base}";
 
-		$template = $this->_calcul_template($base, $cache_rep, $base_rep);
+		$template = $this->_calcul_template($base);
 
 		if ($this->_showphp)
 			$template['contents'] = $template['contents']; // no eval for debug
@@ -667,7 +664,7 @@ class View
 		
 		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
-		if(!self::$nocache && 
+		if($caching && !self::$nocache && 
 			(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
 		{
 
