@@ -100,7 +100,7 @@ function getCacheIdFromId( $id ){
 	$cache_config = cache_get_config();
 	$site  = C::get('site','cfg') ? C::get('site','cfg') : 'general';
 	$env   = defined('backoffice-lodelindex') ? 'lodelindex' : defined('backoffice-admin') ? 'admin' : defined('backoffice-edition') ? 'edition' : 'site' ;
-	if ($sessionsite === null)
+	if ($sessionsite === null || C::get('clearcache'))
 		$sessionsite = $cache->get( "session_{$site}", 0 );
 
 	return  ( isset($cache_config['prefix']) ? "{$cache_config['prefix']}_" : "" ) 
