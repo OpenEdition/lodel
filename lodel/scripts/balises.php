@@ -107,3 +107,5 @@ $GLOBALS['xhtmlgroups']['xhtml:special'] = array ("span", "img", "object", "br",
 $GLOBALS['xhtmlgroups']['Lien'] = array ("a");
 
 $GLOBALS['xhtmlgroups']['Appel de Note'] = array ("a" => "class=\"(foot|end)notecall\"");
+
+$GLOBALS['xhtmlgroups']['style:strict'] = array ();
