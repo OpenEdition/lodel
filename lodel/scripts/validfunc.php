@@ -292,7 +292,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		if (!$text && $default) {
 			$text = $default;
 		}
-		if ($text && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $text)) {
+		if ($text && !filter_var($text, FILTER_VALIDATE_EMAIL)) {
 			return 'email';
 		}
 		break;
