@@ -1717,7 +1717,7 @@ class TEIParser extends XMLReader
 		isset($this->_contents[$type]) || $this->_contents[$type] = array();
 		$first = false;
 
-		$text =& $this->_contents[$type][$attrs['n']];
+		$text =& $this->_contents[$type][$this->_nbNotes];
 
 		while($this->read())
 		{
