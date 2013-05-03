@@ -78,6 +78,13 @@ OptionGroup alias OG
 	::create($name, $title="", $infos=array())
 	->delete()
 	->field($key)
+
+InternalStyle alias IS
+	::get($name)
+	::create($style, $infos=array())
+	->set($fields, $value=null) Change les propriétés du type: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
+	->delete()
+	->field($key)
 */
 
 /* Pas en CLI on doit être adminlodel */
@@ -1148,6 +1155,95 @@ class OptionGroup extends MEobject {
 class OG extends OptionGroup { // alias
 }
 
+class InternalStyle extends MEobject {
+	protected $fields = array();
+
+	static function get($style) {
+		return new InternalStyle($style);
+	}
+
+	static function create($style, $infos=array()) {
+		$ME = new MEobject();
+		$messages = array();
+		$errors = array();
+
+		$fields = $ME->InternalStyle_get($style);
+		if (!$fields) {
+			$fields = array ( 'id' => '0', 'style' => $style, 'surrounding' => '-*', 'conversion' => '', 'greedy' => '1', 'rank' => '', 'otx' => '', 'status' => '1',);
+			$fields = array_merge($fields, $infos);
+			$ok = $ME->OptionGroup_save($fields);
+			if ($ok === true)
+				$messages[] = "Création de l'InternalStyle.";
+			else {
+				$errors[] = "Création de l'InternalStyle: problème avec la base de donnée: ".var_export($ok, true);
+			}
+		} else {
+			$errors[] =  "Création de l'InternalStyle: il existe déjà.";
+		}
+
+		$og = new InternalStyle($style);
+		$og->messages = $messages;
+		$og->errors = $errors;
+		return $og;
+	}
+
+	function __construct($style) {
+		$this->fields = $this->InternalStyle_get($style);
+		if (!is_array($this->fields)) {
+			$this->fields = array('style'=>$style);
+			$this->error = true;
+			$this->err("N'existe pas.");
+		}
+
+		return $this;
+	}
+
+	function __toString() {
+		return "InternalStyle, '".$this->fields['style']."";
+	}
+
+	// change les propriétés du champ
+	public function set($fields, $value=null) {
+		if ($this->error) return $this;
+		$autorised_field = array ('surrounding','conversion','greedy','rank','otx');
+		if ($value !== null)
+			$fields = array($fields=>$value);
+		$done = array();
+		foreach ($autorised_field as $f) {
+			if (isset($fields[$f])) {
+				$this->fields[$f] = $fields[$f];
+				$done[] = "'$f' => '".$fields[$f]."'";
+			}
+		}
+		return $this->save("Changements de propriétés: ".implode(", ",$done));
+	}
+
+	protected function save($message) {
+		if ($this->error) return $this;
+		$ok = $this->InternalStyle_save($this->fields);
+		if ($ok === true)
+			$this->messages[] = "$message.";
+		else 
+			$this->err("$message non effectué: ".$ok);
+		return $this;
+	}
+
+	// efface l'InternalStyle
+	public function delete() {
+		if ($this->error) return $this;
+		$ok = $this->InternalStyle_delete($this->fields);
+		if ($ok === true)
+			$this->messages[] = "Effacement.";
+		else
+			$this->errors[] = $ok;
+
+		$this->error = true;
+		return $this;
+	}
+}
+class IS extends InternalStyle { // alias
+}
+
 //
 // ME OBJECTS *****************************************************************************************************************************************
 //
@@ -1331,6 +1427,20 @@ class MEobject {
 	}
 
 /*
+	InternalStyle
+*/
+	protected function InternalStyle_save($fields) {
+		return $this->logic_save("internalstyles", $fields);
+	}
+	protected function InternalStyle_delete($fields) {
+		return $this->logic_delete("internalstyles", $fields);
+	}
+	protected function InternalStyle_get($name) {
+		global $db;
+		return $this->Object_get("internalstyles", "style=".$db->Quote($name));
+	}
+
+/*
 	Entries
 */
 	// effacer les entrées d'un index
@@ -1500,6 +1610,12 @@ class ME_options extends OptionsLogic {
 	}
 }
 class ME_optiongroups extends OptiongroupsLogic {
+	public function ME_object_get($vo) {
+		$this->_populateContext($vo, $fields);
+		return $fields;
+	}
+}
+class ME_internalstyles extends InternalstylesLogic {
 	public function ME_object_get($vo) {
 		$this->_populateContext($vo, $fields);
 		return $fields;
