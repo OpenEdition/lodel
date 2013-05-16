@@ -2,7 +2,7 @@
 
 if( php_sapi_name() != "cli") die();
 
-if(!( isset($argv[1]) || isset($argv[2]) || isset($argv[3]) ) ) die("Usage php backup_and_restore.php [action] [sitename] [file]");
+if(!( isset($argv[1]) && isset($argv[2]) && isset($argv[3]) ) ) die("Usage php backup_and_restore.php [backup|import] [sitename] [file.zip]"."\n");
 if(!preg_match("/^\w+$/", $argv[1])) die("Site name incorrect");
 
 $action = $argv[1];
@@ -48,6 +48,8 @@ class DataCLI extends DataLogic {
 			system("{$zipcmd} -q {$destination} -r $dirs " . join(" -x ", $excludes) . "\n");
 			system("{$zipcmd} -q -g $destination -j $tmpdir/$outfile");
 		}
+
+		echo "Fichier backup enregistré dans $site/$destination"."\n";
 	}
 	
 	public function importSite($site, $source){
