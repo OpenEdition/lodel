@@ -364,9 +364,11 @@ class View
 
 		if ((C::get('showhtml') && C::get('visitor', 'lodeluser')) || $this->_showphp) {
 			// on affiche la source
-			self::$page = "<html><head><style>body {font-family:monospace;} ol {white-space: pre-wrap;}</style></head><body>"
-				."<ol><li>".implode("</li><li>",explode("\n",htmlspecialchars(self::$page, ENT_QUOTES, 'UTF-8')))."</li></ol>"
-				."</body></html>";
+			include_once('debug_func.php');
+			if ($this->_showphp) {
+					self::$page = show_debug(self::$page);
+			} else
+					self::$page = show_html(self::$page);
 		}
 
 		switch($encoding)
@@ -498,7 +500,10 @@ class View
 		if($recalcul)
 		{
 			$template = $this->_calcul_template($tpl, $cache_rep, $base_rep, $blockId, $loopName);
-			$template['contents'] = $this->_eval($template['contents'], $context);
+			if ($this->_showphp)
+				$template['contents'] = $template['contents']; // no eval for debug
+			else
+				$template['contents'] = $this->_eval($template['contents'], $context);
 			if(!self::$noindent) $template['contents'] = _indent($template['contents']);
 
 			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60))
@@ -657,9 +662,13 @@ class View
 
 		$template = $this->_calcul_template($base);
 
-		if ($this->_showphp)
+		if ($this->_showphp) {
+			if (c::get('showphp') != 'oui') {
+				$base = basename(c::get('showphp'));
+				$template = $this->_calcul_template($base);
+			}
 			$template['contents'] = $template['contents']; // no eval for debug
-		else
+		} else
 			$template['contents'] = $this->_eval($template['contents'], $context);
 		
 		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
