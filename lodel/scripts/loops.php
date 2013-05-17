@@ -464,6 +464,10 @@ function _buildPageUrl($offsetname, $offset)
 	if(! array_key_exists('query', $parsed_url)) { $parsed_url['query'] = ''; }
 	parse_str($parsed_url['query'], $parsed_query);
 	$parsed_query[$offsetname] = $offset;
+	if (get_magic_quotes_gpc()) 
+		foreach ($parsed_query as &$v) 
+			$v = stripslashes($v);
+
 	$parsed_url['query'] = http_build_query($parsed_query, '', '&amp;');
 	return $parsed_url['path'].'?'.$parsed_url['query']; #TODO use pecl_http's http_build_url?
 }
