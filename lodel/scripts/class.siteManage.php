@@ -543,7 +543,7 @@ class siteManage {
 		global $db;
 		// creation de la DataBase si besoin
 		if (!C::get('id') && !C::get('name')) {
-			trigger_error('probleme interne 1', E_USER_ERROR);
+			trigger_error('probleme interne 1' . C::get('id') . " " . C::get('name'), E_USER_ERROR);
 		}
 		
 		do { // bloc de controle
