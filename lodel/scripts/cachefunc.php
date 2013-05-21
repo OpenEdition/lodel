@@ -69,6 +69,10 @@ function clearcache( $all = false )
 		$session = $cache->get("session_{$site}") + 1;
 		$cache->set("session_{$site}", $session);
 	}
+	if(defined('VARNISHED') && TRUE === VARNISHED){
+		function_exists('proxy_purge') || require_once('func.php');
+		proxy_purge();
+	}
 }
 
 /**
