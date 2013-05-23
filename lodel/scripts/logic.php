@@ -1,5 +1,3 @@
-Type:
-Descr:
 <?php
 /**
  * Fichier de la classe Logic
