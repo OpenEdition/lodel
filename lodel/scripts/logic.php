@@ -1,3 +1,5 @@
+Type:
+Descr:
 <?php
 /**
  * Fichier de la classe Logic
@@ -933,10 +935,9 @@ class Logic
 			$hooks = array_filter(explode(',', $field->editionhooks));
 			foreach($hooks as $hook){
 				$hook = str_replace("$prefix:",'',$hook, $count);
-				if (($count>0 || ($prefix=='pre' && preg_match("/[a-zA-Z09\-_]:[a-zA-Z09\-_]/", $hook) === 0))  // Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
-                                    && is_callable($hook) ) { // vérifie qu'on peut appeller la fonction, ie qu'elle existe
-					if(is_callable($hook))
-                                            call_user_func($hook, &$context, $field->name, &$error);
+				// Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
+				if (($count>0 || ($prefix=='pre' && preg_match("/[a-zA-Z09\-_]:[a-zA-Z09\-_]/", $hook) === 0)) && is_callable($hook)) {
+					$hook($context, $field->name, $error);
 				}
 			}
 		}
