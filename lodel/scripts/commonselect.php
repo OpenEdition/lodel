@@ -146,9 +146,7 @@ function makeSelectEdition($value)
 	$arr = array(
 		'OPTGROUP-1'=> getlodeltextcontents("edit_in_the_interface", "admin"),
 			"editable" => getlodeltextcontents("edit_in_form_field", "admin"),
-			"fckeditor" => getlodeltextcontents("edit_wysiwyg", "admin"),
-			"wysiwyg_fckeditor" => getlodeltextcontents("edit_wysiwyg_fckeditor", "admin"),
-			"wysiwyg_spaw" => getlodeltextcontents("edit_wysiwyg_spaw", "admin"),
+			"wysiwyg_ckeditor" => getlodeltextcontents("edit_wysiwyg_fckeditor", "admin"),
 		"ENDOPTGROUP-1"=> "",
 		"OPTGROUP-2"=> getlodeltextcontents("no_edit_in_interface_but_import", "admin"),
 			"importable" => getlodeltextcontents("no_show_in_interface", "admin"),

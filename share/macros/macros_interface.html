@@ -300,7 +300,7 @@
 			$context['value'] = html_entity_decode(stripslashes($context['value']));
 			$context['fckvarname'] = str_replace(array('[',']'),  array('_',''), $context['varname']);
 ?>
-	<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor'">
+	<IF COND="[#EDITION] EQ 'wysiwyg_fckeditor' OR [#EDITION] EQ 'fckeditor' OR [#EDITION] EQ 'wysiwyg_ckeditor'">
 <?php
 	if(!C::get('fckeditor_included')) {?>
 		<script type="text/javascript" src="[#SHAREURL]/plugins/ckeditor/ckeditor.js"></script>
