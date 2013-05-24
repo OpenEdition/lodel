@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V5.06 16 Oct 2008   (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
+  V5.18 3 Sep 2012   (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -519,7 +519,7 @@ class ADODB_DataDict {
 			// genfields can return FALSE at times
 			if ($lines == null) $lines = array();
 			list(,$first) = each($lines);
-			list(,$column_def) = split("[\t ]+",$first,2);
+			list(,$column_def) = preg_split("/[\t ]+/",$first,2);
 		}
 		return array(sprintf($this->renameColumn,$tabname,$this->NameQuote($oldcolumn),$this->NameQuote($newcolumn),$column_def));
 	}
@@ -589,6 +589,8 @@ class ADODB_DataDict {
 
 		return $sql;
 	}
+		
+	
 	
 	function _GenFields($flds,$widespacing=false)
 	{
@@ -814,7 +816,7 @@ class ADODB_DataDict {
 	
 	
 	// return string must begin with space
-	function _CreateSuffix($fname,$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
+	function _CreateSuffix($fname,&$ftype,$fnotnull,$fdefault,$fautoinc,$fconstraint,$funsigned)
 	{	
 		$suffix = '';
 		if (strlen($fdefault)) $suffix .= " DEFAULT $fdefault";
@@ -913,13 +915,28 @@ class ADODB_DataDict {
 		return $newopts;
 	}
 	
+	
+	function _getSizePrec($size)
+	{
+		$fsize = false;
+		$fprec = false;
+		$dotat = strpos($size,'.');
+		if ($dotat === false) $dotat = strpos($size,',');
+		if ($dotat === false) $fsize = $size;
+		else {
+			$fsize = substr($size,0,$dotat);
+			$fprec = substr($size,$dotat+1);
+		}
+		return array($fsize, $fprec);
+	}
+	
 	/**
 	"Florian Buzin [ easywe ]" <florian.buzin#easywe.de>
 	
 	This function changes/adds new fields to your table. You don't
 	have to know if the col is new or not. It will check on its own.
 	*/
-	function ChangeTableSQL($tablename, $flds, $tableoptions = false)
+	function ChangeTableSQL($tablename, $flds, $tableoptions = false, $dropOldFlds=false)
 	{
 	global $ADODB_FETCH_MODE;
 	
@@ -952,13 +969,22 @@ class ADODB_DataDict {
 					$obj = $cols[$k];
 					if (isset($obj->not_null) && $obj->not_null)
 						$v = str_replace('NOT NULL','',$v);
-
+					if (isset($obj->auto_increment) && $obj->auto_increment && empty($v['AUTOINCREMENT'])) 
+					    $v = str_replace('AUTOINCREMENT','',$v);
+					
 					$c = $cols[$k];
 					$ml = $c->max_length;
 					$mt = $this->MetaType($c->type,$ml);
+					
+					if (isset($c->scale)) $sc = $c->scale;
+					else $sc = 99; // always force change if scale not known.
+					
+					if ($sc == -1) $sc = false;
+					list($fsize, $fprec) = $this->_getSizePrec($v['SIZE']);
+
 					if ($ml == -1) $ml = '';
 					if ($mt == 'X') $ml = $v['SIZE'];
-					if (($mt != $v['TYPE']) ||  $ml != $v['SIZE']) {
+					if (($mt != $v['TYPE']) || ($ml != $fsize || $sc != $fprec) || (isset($v['AUTOINCREMENT']) && $v['AUTOINCREMENT'] != $obj->auto_increment)) {
 						$holdflds[$k] = $v;
 					}
 				} else {
@@ -995,6 +1021,11 @@ class ADODB_DataDict {
 			}
 		}
 		
+		if ($dropOldFlds) {
+			foreach ( $cols as $id => $v )
+			    if ( !isset($lines[$id]) ) 
+					$sql[] = $alter . $this->dropCol . ' ' . $v->name;
+		}
 		return $sql;
 	}
 } // class

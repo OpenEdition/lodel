@@ -14,7 +14,7 @@
 /**
 	\mainpage
 	
-	 @version V5.06 16 Oct 2008   (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
+	 @version V5.18 3 Sep 2012   (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
 
 	Released under both BSD license and Lesser GPL library license. You can choose which license
 	you prefer.
@@ -156,7 +156,7 @@
 		$ADODB_GETONE_EOF,
 		$ADODB_QUOTE_FIELDNAMES;
 		
-		$ADODB_CACHE_CLASS = 'ADODB_Cache_File';
+		if (empty($ADODB_CACHE_CLASS)) $ADODB_CACHE_CLASS =  'ADODB_Cache_File' ;
 		$ADODB_FETCH_MODE = ADODB_FETCH_DEFAULT;
 		$ADODB_FORCE_TYPE = ADODB_FORCE_VALUE;
 		$ADODB_GETONE_EOF = null;
@@ -177,7 +177,7 @@
 		/**
 		 * ADODB version as a string.
 		 */
-		$ADODB_vers = 'V5.06 16 Oct 2008  (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved. Released BSD & LGPL.';
+		$ADODB_vers = 'V5.18 3 Sep 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved. Released BSD & LGPL.';
 	
 		/**
 		 * Determines whether recordset->RecordCount() is used. 
@@ -216,6 +216,36 @@
 */
 	}
 	
+	
+	function _adodb_safedate($s)
+	{
+		return str_replace(array("'", '\\'), '', $s);
+	}
+
+	// parse date string to prevent injection attack
+	// date string will have one quote at beginning e.g. '3434343'
+	function _adodb_safedateq($s)
+	{
+		$len = strlen($s);
+		if ($s[0] !== "'") $s2 = "'".$s[0];
+		else $s2 = "'";
+		for($i=1; $i<$len; $i++) {
+			$ch = $s[$i];
+			if ($ch === '\\') {
+				$s2 .= "'";
+				break;
+			} elseif ($ch === "'") {
+				$s2 .= $ch;
+				break;
+			}
+			
+			$s2 .= $ch;
+		}
+		
+		return strlen($s2) == 0 ? 'null' : $s2;
+	}
+
+	
 	// for transaction handling
 	
 	function ADODB_TransMonitor($dbms, $fn, $errno, $errmsg, $p1, $p2, &$thisConnection)
@@ -237,7 +267,7 @@
 		function ADODB_Cache_File()
 		{
 		global $ADODB_INCLUDED_CSV;
-			if (empty($ADODB_INCLUDED_CSV)) include(ADODB_DIR.'/adodb-csvlib.inc.php');
+			if (empty($ADODB_INCLUDED_CSV)) include_once(ADODB_DIR.'/adodb-csvlib.inc.php');
 		}
 		
 		// write serialised recordset to cache item/file
@@ -262,7 +292,7 @@
 		
 			if (strlen($ADODB_CACHE_DIR) > 1) {
 				$rez = $this->_dirFlush($ADODB_CACHE_DIR);
-	         	if ($debug) DOConnection::outp( "flushall: $dir<br><pre>\n". $rez."</pre>");
+	         	if ($debug) ADOConnection::outp( "flushall: $dir<br><pre>\n". $rez."</pre>");
 	   		}
 			return $rez;
 		}
@@ -285,10 +315,12 @@
 		// create temp directories
 		function createdir($hash, $debug)
 		{
+		global $ADODB_CACHE_PERMS;
+		
 			$dir = $this->getdirname($hash);
 			if ($this->notSafeMode && !file_exists($dir)) {
 				$oldu = umask(0);
-				if (!@mkdir($dir,0771)) if(!is_dir($dir) && $debug) ADOConnection::outp("Cannot create $dir");
+				if (!@mkdir($dir, empty($ADODB_CACHE_PERMS) ? 0771 : $ADODB_CACHE_PERMS)) if(!is_dir($dir) && $debug) ADOConnection::outp("Cannot create $dir");
 				umask($oldu);
 			}
 		
@@ -377,6 +409,7 @@
 
 	var $sysDate = false; /// name of function that returns the current date
 	var $sysTimeStamp = false; /// name of function that returns the current timestamp
+	var $sysUTimeStamp = false; // name of function that returns the current timestamp accurate to the microsecond or nearest fraction
 	var $arrayClass = 'ADORecordSet_array'; /// name of class used to generate array recordsets, which are pre-downloaded recordsets
 	
 	var $noNullStrings = false; /// oracle specific stuff - if true ensures that '' is converted to ' '
@@ -402,6 +435,7 @@
 	var $fetchMode=false;
 	
 	var $null2null = 'null'; // in autoexecute/getinsertsql/getupdatesql, this value will be converted to a null
+	var $bulkBind = false; // enable 2D Execute array
 	 //
 	 // PRIVATE VARS
 	 //
@@ -434,7 +468,9 @@
 	{
 	global $ADODB_vers;
 	
-		return (float) substr($ADODB_vers,1);
+		$ok = preg_match( '/^[Vv]([0-9\.]+)/', $ADODB_vers, $matches );
+		if (!$ok) return (float) substr($ADODB_vers,1);
+		else return $matches[1];
 	}
 	
 	/**
@@ -510,18 +546,15 @@
 	{
 		if ($argHostname != "") $this->host = $argHostname;
 		if ($argUsername != "") $this->user = $argUsername;
-		if ($argPassword != "") $this->password = $argPassword; // not stored for security reasons
+		if ($argPassword != "") $this->password = 'not stored'; // not stored for security reasons
 		if ($argDatabaseName != "") $this->database = $argDatabaseName;		
 		
 		$this->_isPersistentConnection = false;	
 			
-		global $ADODB_CACHE;
-		if (empty($ADODB_CACHE)) $this->_CreateCache();
-		
 		if ($forceNew) {
-			if ($rez=$this->_nconnect($this->host, $this->user, $this->password, $this->database)) return true;
+			if ($rez=$this->_nconnect($this->host, $this->user, $argPassword, $this->database)) return true;
 		} else {
-			 if ($rez=$this->_connect($this->host, $this->user, $this->password, $this->database)) return true;
+			 if ($rez=$this->_connect($this->host, $this->user, $argPassword, $this->database)) return true;
 		}
 		if (isset($rez)) {
 			$err = $this->ErrorMsg();
@@ -579,15 +612,12 @@
 		
 		if ($argHostname != "") $this->host = $argHostname;
 		if ($argUsername != "") $this->user = $argUsername;
-		if ($argPassword != "") $this->password = $argPassword;
+		if ($argPassword != "") $this->password = 'not stored';
 		if ($argDatabaseName != "") $this->database = $argDatabaseName;		
 			
 		$this->_isPersistentConnection = true;	
 		
-		global $ADODB_CACHE;
-		if (empty($ADODB_CACHE)) $this->_CreateCache();
-		
-		if ($rez = $this->_pconnect($this->host, $this->user, $this->password, $this->database)) return true;
+		if ($rez = $this->_pconnect($this->host, $this->user, $argPassword, $this->database)) return true;
 		if (isset($rez)) {
 			$err = $this->ErrorMsg();
 			if (empty($err)) $err = "Connection error to server '$argHostname' with user '$argUsername'";
@@ -721,7 +751,7 @@
 	*  @param $table	name of table to lock
 	*  @param $where	where clause to use, eg: "WHERE row=12". If left empty, will escalate to table lock
 	*/
-	function RowLock($table,$where)
+	function RowLock($table,$where,$col='1 as adodbignore')
 	{
 		return false;
 	}
@@ -866,7 +896,7 @@
 	{
 		if ($this->transOff > 0) {
 			$this->transOff += 1;
-			return;
+			return true;
 		}
 		
 		$this->_oldRaiseFn = $this->raiseErrorFn;
@@ -874,8 +904,9 @@
 		$this->_transOK = true;
 		
 		if ($this->debug && $this->transCnt > 0) ADOConnection::outp("Bad Transaction: StartTrans called within BeginTrans");
-		$this->BeginTrans();
+		$ok = $this->BeginTrans();
 		$this->transOff = 1;
+		return $ok;
 	}
 	
 	
@@ -954,14 +985,16 @@
 			
 			$element0 = reset($inputarr);
 			# is_object check because oci8 descriptors can be passed in
-			$array_2d = is_array($element0) && !is_object(reset($element0));
+			$array_2d = $this->bulkBind && is_array($element0) && !is_object(reset($element0));
+		
 			//remove extra memory copy of input -mikefedyk
 			unset($element0);
 			
 			if (!is_array($sql) && !$this->_bindInputArray) {
 				$sqlarr = explode('?',$sql);
-					
+				$nparams = sizeof($sqlarr)-1;
 				if (!$array_2d) $inputarr = array($inputarr);
+	
 				foreach($inputarr as $arr) {
 					$sql = ''; $i = 0;
 					//Use each() instead of foreach to reduce memory usage -mikefedyk
@@ -985,7 +1018,9 @@
 						else
 							$sql .= $v;
 						$i += 1;
-					}
+						
+						if ($i == $nparams) break;
+					} // while
 					if (isset($sqlarr[$i])) {
 						$sql .= $sqlarr[$i];
 						if ($i+1 != sizeof($sqlarr)) $this->outp_throw( "Input Array does not match ?: ".htmlspecialchars($sql),'Execute');
@@ -1001,7 +1036,7 @@
 						$stmt = $this->Prepare($sql);
 					else
 						$stmt = $sql;
-						
+					
 					foreach($inputarr as $arr) {
 						$ret = $this->_Execute($stmt,$arr);
 						if (!$ret) return $ret;
@@ -1593,7 +1628,8 @@
 	}
 	
 	/**
-	* Return one row of sql statement. Recordset is disposed for you.
+	* Return one row of sql statement. Recordset is disposed for you. 
+	* Note that SelectLimit should not be called.
 	*
 	* @param sql			SQL statement
 	* @param [inputarr]		input bind array
@@ -1707,6 +1743,8 @@
 	{
 	global $ADODB_CACHE_DIR, $ADODB_CACHE;
 		
+		if (empty($ADODB_CACHE)) return false;
+		
 		if (!$sql) {
 			 $ADODB_CACHE->flushall($this->debug);
 	         return;
@@ -1763,6 +1801,8 @@
 	{
 	global $ADODB_CACHE;
 	
+		if (empty($ADODB_CACHE)) $this->_CreateCache();
+		
 		if (!is_numeric($secs2cache)) {
 			$inputarr = $sql;
 			$sql = $secs2cache;
@@ -1780,7 +1820,7 @@
 		$err = '';
 		
 		if ($secs2cache > 0){
-			$rs = &$ADODB_CACHE->readcache($md5file,$err,$secs2cache,$this->arrayClass);
+			$rs = $ADODB_CACHE->readcache($md5file,$err,$secs2cache,$this->arrayClass);
 			$this->numCacheHits += 1;
 		} else {
 			$err='Timeout 1';
@@ -1794,7 +1834,7 @@
 				if (get_magic_quotes_runtime() && !$this->memCache) {
 					ADOConnection::outp("Please disable magic_quotes_runtime - it corrupts cache files :(");
 				}
-				if ($this->debug !== -1) ADOConnection::outp( " $md5file cache failure: $err (see sql below)");
+				if ($this->debug !== -1) ADOConnection::outp( " $md5file cache failure: $err (this is a notice and not an error)");
 			}
 			
 			$rs = $this->Execute($sqlparam,$inputarr);
@@ -1875,6 +1915,7 @@
 		$rs = $this->SelectLimit($sql,1);
 		if (!$rs) return $false; // table does not exist
 		$rs->tableName = $table;
+		$rs->sql = $sql;
 		
 		switch((string) $mode) {
 		case 'UPDATE':
@@ -2241,6 +2282,29 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			return false;
 		}
 	
+	  /**
+      * List procedures or functions in an array.
+      * @param procedureNamePattern  a procedure name pattern; must match the procedure name as it is stored in the database
+      * @param catalog a catalog name; must match the catalog name as it is stored in the database;
+      * @param schemaPattern a schema name pattern;
+      *
+      * @return array of procedures on current database.
+	  
+		 Array (
+		    [name_of_procedure] => Array
+		      (
+		      [type] => PROCEDURE or FUNCTION
+		      [catalog] => Catalog_name
+		      [schema] => Schema_name
+		      [remarks] => explanatory comment on the procedure 
+		      )
+                 )		
+      */
+     function MetaProcedures($procedureNamePattern = null, $catalog  = null, $schemaPattern  = null)
+     {
+            return false;
+     }
+
 		
 	/**
 	 * @param ttype can either be 'VIEW' or 'TABLE' or false. 
@@ -2436,8 +2500,15 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		if (empty($d) && $d !== 0) return 'null';
 		if ($isfld) return $d;
 		
+		if (is_object($d)) return $d->format($this->fmtDate);
+		
+		
 		if (is_string($d) && !is_numeric($d)) {
-			if ($d === 'null' || strncmp($d,"'",1) === 0) return $d;
+			if ($d === 'null') return $d;
+			if (strncmp($d,"'",1) === 0) {
+				$d = _adodb_safedateq($d);
+				return $d;
+			}
 			if ($this->isoDates) return "'$d'";
 			$d = ADOConnection::UnixDate($d);
 		}
@@ -2473,14 +2544,17 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 	{
 		if (empty($ts) && $ts !== 0) return 'null';
 		if ($isfld) return $ts;
+		if (is_object($ts)) return $ts->format($this->fmtTimeStamp);
 		
 		# strlen(14) allows YYYYMMDDHHMMSS format
 		if (!is_string($ts) || (is_numeric($ts) && strlen($ts)<14)) 
 			return adodb_date($this->fmtTimeStamp,$ts);
 		
 		if ($ts === 'null') return $ts;
-		if ($this->isoDates && strlen($ts) !== 14) return "'$ts'";
-		
+		if ($this->isoDates && strlen($ts) !== 14) {
+			$ts = _adodb_safedate($ts);
+			return "'$ts'";
+		}
 		$ts = ADOConnection::UnixTimeStamp($ts);
 		return adodb_date($this->fmtTimeStamp,$ts);
 	}
@@ -2601,7 +2675,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		// undo magic quotes for "
 		$s = str_replace('\\"','"',$s);
 		
-		if ($this->replaceQuote == "\\'")  // ' already quoted, no need to change anything
+		if ($this->replaceQuote == "\\'" || ini_get('magic_quotes_sybase'))  // ' already quoted, no need to change anything
 			return $s;
 		else {// change \' to '' for sybase/mssql
 			$s = str_replace('\\\\','\\',$s);
@@ -2635,7 +2709,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		// undo magic quotes for "
 		$s = str_replace('\\"','"',$s);
 		
-		if ($this->replaceQuote == "\\'")  // ' already quoted, no need to change anything
+		if ($this->replaceQuote == "\\'" || ini_get('magic_quotes_sybase'))  // ' already quoted, no need to change anything
 			return "'$s'";
 		else {// change \' to '' for sybase/mssql
 			$s = str_replace('\\\\','\\',$s);
@@ -2647,7 +2721,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 	/**
 	* Will select the supplied $page number from a recordset, given that it is paginated in pages of 
 	* $nrows rows per page. It also saves two boolean values saying if the given page is the first 
-	* and/or last one of the recordset. Added by Ivï¿½n Oliva to provide recordset pagination.
+	* and/or last one of the recordset. Added by Iván Oliva to provide recordset pagination.
 	*
 	* See readme.htm#ex8 for an example of usage.
 	*
@@ -2674,7 +2748,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 	/**
 	* Will select the supplied $page number from a recordset, given that it is paginated in pages of 
 	* $nrows rows per page. It also saves two boolean values saying if the given page is the first 
-	* and/or last one of the recordset. Added by Ivï¿½n Oliva to provide recordset pagination.
+	* and/or last one of the recordset. Added by Iván Oliva to provide recordset pagination.
 	*
 	* @param secs2cache	seconds to cache data, set to 0 to force query
 	* @param sql
@@ -2776,6 +2850,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 		function FieldCount(){ return 0;}
 		function Init() {}
 		function getIterator() {return new ADODB_Iterator_empty($this);}
+		function GetAssoc() {return array();}
 	}
 	
 	//==============================================================================================	
@@ -2873,9 +2948,9 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 	var $_obj; 				/** Used by FetchObj */
 	var $_names;			/** Used by FetchObj */
 	
-	var $_currentPage = -1;	/** Added by Ivï¿½n Oliva to implement recordset pagination */
-	var $_atFirstPage = false;	/** Added by Ivï¿½n Oliva to implement recordset pagination */
-	var $_atLastPage = false;	/** Added by Ivï¿½n Oliva to implement recordset pagination */
+	var $_currentPage = -1;	/** Added by Iván Oliva to implement recordset pagination */
+	var $_atFirstPage = false;	/** Added by Iván Oliva to implement recordset pagination */
+	var $_atLastPage = false;	/** Added by Iván Oliva to implement recordset pagination */
 	var $_lastPageNo = -1; 
 	var $_maxRecordCount = 0;
 	var $datetime = false;
@@ -3086,7 +3161,7 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			$false = false;
 			return $false;
 		}
-		$numIndex = isset($this->fields[0]);
+		$numIndex = isset($this->fields[0]) && isset($this->fields[1]);
 		$results = array();
 		
 		if (!$first2cols && ($cols > 2 || $force_array)) {
@@ -3427,22 +3502,22 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
    *
    * $upper  0 = lowercase, 1 = uppercase, 2 = whatever is returned by FetchField
    */
-	function GetRowAssoc($upper=1)
+	function GetRowAssoc($upper=1) 
 	{
 		$record = array();
-	 //	if (!$this->fields) return $record;
-		
-	   	if (!$this->bind) {
+		if (!$this->bind) {
 			$this->GetAssocKeys($upper);
 		}
-		
 		foreach($this->bind as $k => $v) {
-			$record[$k] = $this->fields[$v];
+			if( isset( $this->fields[$v] ) ) {
+				$record[$k] = $this->fields[$v];
+			} else if (isset($this->fields[$k])) {
+				$record[$k] = $this->fields[$k];
+			} else
+				$record[$k] = $this->fields[$v];
 		}
-
 		return $record;
 	}
-	
 	
 	/**
 	 * Clean up recordset
@@ -4142,11 +4217,25 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 				// special handling of oracle, which might not have host
 				$fakedsn = str_replace('@/','@adodb-fakehost/',$fakedsn);
 			}
+			
+			 if ((strpos($origdsn, 'sqlite')) !== FALSE && stripos($origdsn, '%2F') === FALSE) {
+             // special handling for SQLite, it only might have the path to the database file.
+             // If you try to connect to a SQLite database using a dsn like 'sqlite:///path/to/database', the 'parse_url' php function
+             // will throw you an exception with a message such as "unable to parse url"
+                list($scheme, $path) = explode('://', $origdsn);
+                $dsna['scheme'] = $scheme;
+				if ($qmark = strpos($path,'?')) {
+					$dsn['query'] = substr($path,$qmark+1);
+					$path = substr($path,0,$qmark);
+				}
+            	$dsna['path'] = '/' . urlencode($path);
+			} else
 				$dsna = @parse_url($fakedsn);
+				
 			if (!$dsna) {
 				return $false;
 			}
-				$dsna['scheme'] = substr($origdsn,0,$at);
+			$dsna['scheme'] = substr($origdsn,0,$at);
 			if ($at2 !== FALSE) {
 				$dsna['host'] = '';
 			}
@@ -4154,8 +4243,12 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 			if (strncmp($origdsn,'pdo',3) == 0) {
 				$sch = explode('_',$dsna['scheme']);
 				if (sizeof($sch)>1) {
+				
 					$dsna['host'] = isset($dsna['host']) ? rawurldecode($dsna['host']) : '';
-					$dsna['host'] = rawurlencode($sch[1].':host='.rawurldecode($dsna['host']));
+					if ($sch[1] == 'sqlite')
+						$dsna['host'] = rawurlencode($sch[1].':'.rawurldecode($dsna['host']));
+					else
+						$dsna['host'] = rawurlencode($sch[1].':host='.rawurldecode($dsna['host']));
 					$dsna['scheme'] = 'pdo';
 				}
 			}
@@ -4247,6 +4340,18 @@ http://www.stanford.edu/dept/itss/docs/oracle/10g/server.101/b10759/statements_1
 					case 'socket': $obj->socket = $v; break;
 					#oci8
 					case 'nls_date_format': $obj->NLS_DATE_FORMAT = $v; break;
+					case 'cachesecs': $obj->cacheSecs = $v; break;
+					case 'memcache': 
+						$varr = explode(':',$v);
+						$vlen = sizeof($varr);
+						if ($vlen == 0) break;	
+						$obj->memCache = true;
+						$obj->memCacheHost = explode(',',$varr[0]);
+						if ($vlen == 1) break;	
+						$obj->memCachePort = $varr[1];
+						if ($vlen == 2) break;	
+						$obj->memCacheCompress = $varr[2] ?  true : false;
+						break;
 					}
 				}
 				if (empty($persist))

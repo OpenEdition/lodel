@@ -1,7 +1,7 @@
 <?php
 /*
 
-@version V5.06 29 Sept 2008   (c) 2000-2008 John Lim (jlim#natsoft.com). All rights reserved.
+@version V5.06 29 Sept 2008   (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
   Latest version is available at http://adodb.sourceforge.net
  
   Released under both BSD license and Lesser GPL library license. 
@@ -394,7 +394,7 @@ class ADODB_Active_Record {
 	function UpdateActiveTable($pkeys=false,$forceUpdate=false)
 	{
 	global $ADODB_ASSOC_CASE,$_ADODB_ACTIVE_DBS , $ADODB_CACHE_DIR, $ADODB_ACTIVE_CACHESECS;
-	global $ADODB_ACTIVE_DEFVALS;
+	global $ADODB_ACTIVE_DEFVALS, $ADODB_FETCH_MODE;
 
 		$activedb = $_ADODB_ACTIVE_DBS[$this->_dbat];
 
@@ -434,8 +434,15 @@ class ADODB_Active_Record {
 		$activetab = new ADODB_Active_Table();
 		$activetab->name = $table;
 		
+		$save = $ADODB_FETCH_MODE;
+		$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
+		if ($db->fetchMode !== false) $savem = $db->SetFetchMode(false);
 		
 		$cols = $db->MetaColumns($table);
+		
+		if (isset($savem)) $db->SetFetchMode($savem);
+		$ADODB_FETCH_MODE = $save;
+		
 		if (!$cols) {
 			$this->Error("Invalid table name: $table",'UpdateActiveTable'); 
 			return false;
@@ -708,7 +715,8 @@ class ADODB_Active_Record {
 		case 'X':
 			if (is_null($val)) return 'null';
 			
-			if (strncmp($val,"'",1) != 0 && substr($val,strlen($val)-1,1) != "'") { 
+			if (strlen($val)>0 && 
+				(strncmp($val,"'",1) != 0 || substr($val,strlen($val)-1,1) != "'")) { 
 				return $db->qstr($val);
 				break;
 			}

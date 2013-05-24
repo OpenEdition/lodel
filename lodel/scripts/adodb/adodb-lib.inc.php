@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 // security - hide paths
 if (!defined('ADODB_DIR')) die();
 
@@ -10,7 +6,7 @@ global $ADODB_INCLUDED_LIB;
 $ADODB_INCLUDED_LIB = 1;
 
 /* 
- @version V5.06 16 Oct 2008  (c) 2000-2008 John Lim (jlim\@natsoft.com.my). All rights reserved.
+  @version V5.18 3 Sep 2012  (c) 2000-2012 John Lim (jlim#natsoft.com). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence. See License.txt. 
@@ -147,7 +143,7 @@ function _adodb_replace(&$zthis, $table, $fieldArray, $keyCol, $autoQuote, $has_
 			if ($v === null) {
 				$v = 'NULL';
 				$fieldArray[$k] = $v;
-			} else if ($autoQuote && !is_numeric($v) /*and strncmp($v,"'",1) !== 0 -- sql injection risk*/ and strcasecmp($v,$zthis->null2null)!=0) {
+			} else if ($autoQuote && /*!is_numeric($v) /*and strncmp($v,"'",1) !== 0 -- sql injection risk*/ strcasecmp($v,$zthis->null2null)!=0) {
 				$v = $zthis->qstr($v);
 				$fieldArray[$k] = $v;
 			}
@@ -159,7 +155,7 @@ function _adodb_replace(&$zthis, $table, $fieldArray, $keyCol, $autoQuote, $has_
 			} else
 				$uSet .= ",$k=$v";
 		}
-		 
+		
 		$where = false;
 		foreach ($keyCol as $v) {
 			if (isset($fieldArray[$v])) {
@@ -455,9 +451,13 @@ function _adodb_getcount(&$zthis, $sql,$inputarr=false,$secs2cache=0)
 	
 	if (preg_match('/\sLIMIT\s+[0-9]+/i',$sql,$limitarr)) $rewritesql .= $limitarr[0];
 		
-	$rstest = $zthis->Execute($rewritesql,$inputarr);
-	if (!$rstest) $rstest = $zthis->Execute($sql,$inputarr);
-	
+	if ($secs2cache) {
+		$rstest = $zthis->CacheExecute($secs2cache,$rewritesql,$inputarr);
+		if (!$rstest) $rstest = $zthis->CacheExecute($secs2cache,$sql,$inputarr);
+	} else {
+		$rstest = $zthis->Execute($rewritesql,$inputarr);
+		if (!$rstest) $rstest = $zthis->Execute($sql,$inputarr);
+	}
 	if ($rstest) {
 	  		$qryRecs = $rstest->RecordCount();
 		if ($qryRecs == -1) { 
@@ -643,9 +643,17 @@ function _adodb_getupdatesql(&$zthis,&$rs, $arrFields,$forceUpdate=false,$magicq
 						$type = 'C';
 					}
 					
-					if ((strpos($upperfname,' ') !== false) || ($ADODB_QUOTE_FIELDNAMES))
-						$fnameq = $zthis->nameQuote.$upperfname.$zthis->nameQuote;
-					else
+					if ((strpos($upperfname,' ') !== false) || ($ADODB_QUOTE_FIELDNAMES)) {
+						switch (ADODB_QUOTE_FIELDNAMES) {
+						case 'LOWER':
+							$fnameq = $zthis->nameQuote.strtolower($field->name).$zthis->nameQuote;break;
+						case 'NATIVE':
+							$fnameq = $zthis->nameQuote.$field->name.$zthis->nameQuote;break;
+						case 'UPPER':
+						default:
+							$fnameq = $zthis->nameQuote.$upperfname.$zthis->nameQuote;break;
+						}
+					} else
 						$fnameq = $upperfname;
 					
 					
@@ -807,9 +815,17 @@ static $cacheCols;
 		$upperfname = strtoupper($field->name);
 		if (adodb_key_exists($upperfname,$arrFields,$force)) {
 			$bad = false;
-			if ((strpos($upperfname,' ') !== false) || ($ADODB_QUOTE_FIELDNAMES))
-				$fnameq = $zthis->nameQuote.$upperfname.$zthis->nameQuote;
-			else
+			if ((strpos($upperfname,' ') !== false) || ($ADODB_QUOTE_FIELDNAMES)) {
+				switch (ADODB_QUOTE_FIELDNAMES) {
+				case 'LOWER':
+					$fnameq = $zthis->nameQuote.strtolower($field->name).$zthis->nameQuote;break;
+				case 'NATIVE':
+					$fnameq = $zthis->nameQuote.$field->name.$zthis->nameQuote;break;
+				case 'UPPER':
+				default:
+					$fnameq = $zthis->nameQuote.$upperfname.$zthis->nameQuote;break;
+				}
+			} else
 				$fnameq = $upperfname;
 			
 			$type = $recordSet->MetaType($field->type);
@@ -1053,11 +1069,13 @@ function _adodb_debug_execute(&$zthis, $sql, $inputarr)
 			$ss = '<code>'.htmlspecialchars($ss).'</code>';
 		}
 		if ($zthis->debug === -1)
-			ADOConnection::outp( "<br />\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<br />\n",false);
-		else 
-			ADOConnection::outp( "<hr />\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<hr />\n",false);
+			ADOConnection::outp( "<br>\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<br>\n",false);
+		else if ($zthis->debug !== -99)
+			ADOConnection::outp( "<hr>\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<hr>\n",false);
 	} else {
-		ADOConnection::outp("-----\n($dbt): ".$sqlTxt."\n-----\n",false);
+		$ss = "\n   ".$ss;
+		if ($zthis->debug !== -99)
+			ADOConnection::outp("-----<hr>\n($dbt): ".$sqlTxt." $ss\n-----<hr>\n",false);
 	}
 
 	$qID = $zthis->_query($sql,$inputarr);
@@ -1068,10 +1086,21 @@ function _adodb_debug_execute(&$zthis, $sql, $inputarr)
 	*/
 	if ($zthis->databaseType == 'mssql') { 
 	// ErrorNo is a slow function call in mssql, and not reliable in PHP 4.0.6
+	
 		if($emsg = $zthis->ErrorMsg()) {
-			if ($err = $zthis->ErrorNo()) ADOConnection::outp($err.': '.$emsg);
+			if ($err = $zthis->ErrorNo()) {
+				if ($zthis->debug === -99) 
+					ADOConnection::outp( "<hr>\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<hr>\n",false);
+		
+				ADOConnection::outp($err.': '.$emsg);
+			}
 		}
 	} else if (!$qID) {
+	
+		if ($zthis->debug === -99) 
+				if ($inBrowser) ADOConnection::outp( "<hr>\n($dbt): ".htmlspecialchars($sqlTxt)." &nbsp; $ss\n<hr>\n",false);
+				else ADOConnection::outp("-----<hr>\n($dbt): ".$sqlTxt."$ss\n-----<hr>\n",false);
+				
 		ADOConnection::outp($zthis->ErrorNo() .': '. $zthis->ErrorMsg());
 	}
 	
@@ -1117,7 +1146,7 @@ function _adodb_backtrace($printOrArr=true,$levels=9999,$skippy=0,$ishtml=null)
 			else if (is_bool($v)) $args[] = $v ? 'true' : 'false';
 			else {
 				$v = (string) @$v;
-				$str = htmlspecialchars(substr($v,0,$MAXSTRLEN));
+				$str = htmlspecialchars(str_replace(array("\r","\n"),' ',substr($v,0,$MAXSTRLEN)));
 				if (strlen($v) > $MAXSTRLEN) $str .= '...';
 				$args[] = $str;
 			}
