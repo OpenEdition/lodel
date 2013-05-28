@@ -278,7 +278,7 @@ class EntriesLogic extends GenericLogic
 		if ($this->maintable == 'persons') {
 			die("ERROR in EntriesLogic:: function changeRankAction is not valid for persons logic");
 		}
-		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
+		return Logic::changeRankAction($context, $error, 'idparent', '');
 	}
 
 	/**
