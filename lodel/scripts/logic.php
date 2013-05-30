@@ -935,7 +935,12 @@ class Logic
 				$hook = str_replace("$prefix:",'',$hook, $count);
 				// Laisse passer les fonctions non préfixée en 'pre' pour compatibilité
 				if (($count>0 || ($prefix=='pre' && preg_match("/[a-zA-Z09\-_]:[a-zA-Z09\-_]/", $hook) === 0)) && is_callable($hook)) {
-					$hook($context, $field->name, $error);
+					if (strpos($hook,'::')) { // exception pour les méthodes static
+						list($func, $method) = explode('::', $hook);
+						$func::$method($context, $field->name, $error);
+					} else {
+						$hook($context, $field->name, $error);
+					}
 				}
 			}
 		}
