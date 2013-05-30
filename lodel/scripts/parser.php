@@ -767,7 +767,7 @@ PHP;
 					} while(isset($this->arr[$this->ind+1]) && $this->arr[$this->ind+1] != '/LOOP');
 					++$this->ind;
 
-					if(!isset($this->arr[$this->ind])) $this->errmsg('LOOP '.$name.' not closed', $this->ind);
+					if(!isset($this->arr[$this->ind])) $this->_errmsg('LOOP '.$name.' not closed', $this->ind);
 
 					$this->arr[$this->ind] = '';
 
@@ -1457,7 +1457,7 @@ PHP;
 			} while(isset($this->arr[$this->ind+1]) && $this->arr[$this->ind+1] != '/BLOCK');
 			++$this->ind;
 
-			if(!isset($this->arr[$this->ind])) $this->errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
+			if(!isset($this->arr[$this->ind])) $this->_errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
 
 			$this->arr[$this->ind] = '';
 			return;
@@ -1488,7 +1488,7 @@ PHP;
 			} while(isset($this->arr[$this->ind+1]) && $this->arr[$this->ind+1] != '/BLOCK');
 			++$this->ind;
 
-			if(!isset($this->arr[$this->ind])) $this->errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
+			if(!isset($this->arr[$this->ind])) $this->_errmsg('BLOCK '.$attrs['ID'].' not closed', $this->ind);
 
 			$this->arr[$this->ind] = '';
 		}
