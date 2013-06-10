@@ -599,6 +599,7 @@ function eq($str, $texte)
 function notes($texte, $type)
 {
 	// be cool... just select the paragraph or division.
+	$texte = str_replace("\n", "", $texte);
 	preg_match_all('/<(div|p)[^>]*>.*?<\/\\1>/', $texte, $results);
 	#  print_r($results);
 	$notere = '<a\b[^>]+class="(foot|end)note(definition|symbol)[^>]*>';
