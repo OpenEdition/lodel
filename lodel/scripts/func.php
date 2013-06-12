@@ -439,6 +439,11 @@ function makeurlwithid ($id, $base = 'index')
             $path .= (false !== strpos($path, '?') ? '&amp;format=embed' : '?format=embed' );
         }
 
+        if(C::get('view.format') == 'reader')
+        {
+            $path .= (false !== strpos($path, '?') ? '&amp;format=reader' : '?format=reader' );
+        }
+
 	return $path;
 }
 
