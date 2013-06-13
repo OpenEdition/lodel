@@ -511,7 +511,7 @@ class LodelParser extends Parser
 		$attr = $this->_decode_attributs($this->arr[$this->ind + 1]);
 
 		if (!$attr['NAME']) {
-			$this->errmsg("ERROR: The TEXT tag has no NAME attribute");
+			$this->_errmsg("ERROR: The TEXT tag has no NAME attribute");
 		}
 		$name = addslashes(stripslashes(trim($attr['NAME'])));
 		$group = '';
@@ -736,7 +736,7 @@ PHP;
 			else $arr[$ind] .= $c;
 		}
 		if ($inphp || $inquote) {
-			$this->errmsg("incorrect quoting");
+			$this->_errmsg("incorrect quoting");
 		}
 		return $arr;
 	}
