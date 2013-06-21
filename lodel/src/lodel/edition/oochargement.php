@@ -213,7 +213,7 @@ try
                     }
 
                     $fileconverted = $source. '.converted';
-                    $cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
+                    $cache->set($fileconverted, base64_encode(serialize($contents)));
 
                     $tei = $source. '.tei';
                     if(!writefile($tei, $teiContents))
@@ -348,7 +348,7 @@ try
 		}
 
 		$fileconverted = $source. '.converted';
-		$cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
+		$cache->set($fileconverted, base64_encode(serialize($contents)));
 
 		$tei = $source. '.tei';
 		if(!writefile($tei, $teiContents))
@@ -513,7 +513,7 @@ RDF;
 			}
 
 			$fileconverted = $source. '.converted';
-			$cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
+			$cache->set($fileconverted, base64_encode(serialize($contents)));
 
 			unset($contents);
 			$row = array();

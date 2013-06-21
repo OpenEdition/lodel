@@ -104,7 +104,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		gettypeandclassfromtask ($task, $context);
 		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
 		// restore the entity
-		$contents = cache_get($task['fichier']);
+		$contents = cache_get($task['fichier'], false);
 		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
 		$context['idtype'] = $task['idtype'];
 		$context['idparent'] = $task['idparent'];
