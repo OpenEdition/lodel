@@ -81,11 +81,13 @@ function clearcache( $all = false )
  * @param string $name
  * @return boolean or cache contents
  */
-function cache_get($name)
+function cache_get($name, $generate_cacheid = true)
 {
 	$cache = getCacheObject();
 
-	if($datas = $cache->get(getCacheIdFromId($name))){
+	$cachename = $generate_cacheid ? getCacheIdFromId($name) : $name;
+
+	if($datas = $cache->get($cachename)){
 		if($content = @unserialize(base64_decode($datas))) return $content;
 		else return $datas;
 	}else
