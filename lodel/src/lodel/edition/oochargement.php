@@ -109,6 +109,8 @@ try
 	$localfile = C::get('localfile');
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
 
+	$cache = getCacheObject();
+
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
 		$file = $_FILES['file1'];
 		if($file['error'] > 0)
@@ -211,10 +213,7 @@ try
                     }
 
                     $fileconverted = $source. '.converted';
-                    if (!writefile($fileconverted, base64_encode(serialize($contents))))
-                    {
-                        printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
-                    }
+                    $cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
 
                     $tei = $source. '.tei';
                     if(!writefile($tei, $teiContents))
@@ -349,10 +348,7 @@ try
 		}
 
 		$fileconverted = $source. '.converted';
-		if (!writefile($fileconverted, base64_encode(serialize($contents))))
-		{
-			printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
-		}
+		$cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
 
 		$tei = $source. '.tei';
 		if(!writefile($tei, $teiContents))
@@ -517,10 +513,7 @@ RDF;
 			}
 
 			$fileconverted = $source. '.converted';
-			if (!writefile($fileconverted, base64_encode(serialize($contents))))
-			{
-				printErrors('unable to write converted file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
-			}
+			$cache->set(getCacheIdFromId($fileconverted), base64_encode(serialize($contents)));
 
 			unset($contents);
 			$row = array();
