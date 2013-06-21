@@ -89,6 +89,15 @@ InternalStyle alias IS
 
 /* Pas en CLI on doit être adminlodel */
 if (php_sapi_name() != "cli") {
+	require_once 'lodelconfig.php';
+	define("SITEROOT","");
+	define('backoffice-lodeladmin', true);
+	ini_set('include_path', SITEROOT. $cfg['home'] . PATH_SEPARATOR . ini_get('include_path'));
+	require 'context.php';
+	C::setCfg($cfg);
+	$GLOBALS['nodesk'] = true;
+	C::set('nocache', true);
+	require_once 'auth.php';
 	authenticate(LEVEL_ADMINLODEL);
 } else {
 	// en CLI on s'authentifie comme adminlodel
@@ -1628,8 +1637,8 @@ class ME_sites_iterator implements Iterator {
 	private $sites = array();  
 
 	public function __construct($argv, $error_level = '') {
-		if( php_sapi_name() != "cli" )
-			die("PHP-cli only !!!");
+// 		if( php_sapi_name() != "cli" ) // Pas besoin car l'authentification est faite plus haut…
+// 			die("PHP-cli only !!!");
 		$this->position = 0;
 		$sites = $argv;
 		if(!(isset($sites[1]))) {
