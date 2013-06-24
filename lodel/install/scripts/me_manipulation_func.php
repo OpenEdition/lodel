@@ -5,8 +5,10 @@
 Créer rapidement un script en cli:
 <?php
 	require_once('lodel/install/scripts/me_manipulation_func.php');
-	$sites = new ME_sites_iterator($argv, 'errors');
-	while ($sites->fetch()) {
+// 	define('DO_NOT_DIE', true); // Ne mourir qu'en cas d'erreur grave
+// 	define('QUIET', true); // Pas de sortie du tout
+	$sites = new ME_sites_iterator($argv, 'errors'); // 'errors' ne montre que les erreurs de la fonction ->m()
+	while ($siteName = $sites->fetch()) {
 		// script de manipulation du ME du site
 	}
 
@@ -128,10 +130,13 @@ if (php_sapi_name() != "cli") {
 // quick and dirty error handling, au cas où lodel plante
 function ME_errors($errno, $errstr='', $errfile='', $errline=0) {
 	if ($errno<E_STRICT) {
-		echo "GRAVE ERREUR: $errno, $errstr, $errfile, $errline"."\n";
-		die();
+		if (!defined('QUIET'))
+			echo "GRAVE ERREUR: $errno, $errstr, $errfile, $errline"."\n";
+		if (!defined('DO_NOT_DIE'))
+			die();
 	} else {
-		echo "ATTENTION ERREUR: $errno, $errstr, $errfile, $errline"."\n";
+		if (!defined('QUIET'))
+			echo "ATTENTION ERREUR: $errno, $errstr, $errfile, $errline"."\n";
 	}
 }
 error_reporting(-1);
@@ -1633,13 +1638,13 @@ class ME_internalstyles extends InternalstylesLogic {
 
 // Itérateur pour tourner sur les sites en CLI
 class ME_sites_iterator implements Iterator {
-	private $position = 0;
+	private $position = -1;
 	private $sites = array();  
 
 	public function __construct($argv, $error_level = '') {
 // 		if( php_sapi_name() != "cli" ) // Pas besoin car l'authentification est faite plus haut…
 // 			die("PHP-cli only !!!");
-		$this->position = 0;
+		$this->position = -1;
 		$sites = $argv;
 		if(!(isset($sites[1]))) {
 			echo "USAGE:\n";
@@ -1655,20 +1660,21 @@ class ME_sites_iterator implements Iterator {
 	}
 
 	public function fetch() {
+		$this->next();
 		if (!$this->valid())
 			return false;
 		$site = $this->current();
 		if(!preg_match("/^\w+$/", $site) || !is_file($site."/siteconfig.php")) {
-			echo "*** Site name incorrect '$site' is not a lodel site ***\n";
-			$this->next();
+			if (!defined('QUIET'))
+				echo "*** Site name incorrect '$site' is not a lodel site ***\n";
 			return $this->fetch();
 		} else {
-			echo "*** Travail sur '$site' ***\n";
+			if (!defined('QUIET'))
+				echo "*** Travail sur '$site' ***\n";
 		}
 		$base = c::Get('database','cfg') . "_" . $site;
 		$this->setdb($base);
-		$this->next();
-		return true;
+		return $site;
 	}
 
 	function rewind() {
