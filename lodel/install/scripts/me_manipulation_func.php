@@ -1639,7 +1639,8 @@ class ME_internalstyles extends InternalstylesLogic {
 // Itérateur pour tourner sur les sites en CLI
 class ME_sites_iterator implements Iterator {
 	private $position = -1;
-	private $sites = array();  
+	private $sites = array();
+	private $current_db;
 
 	public function __construct($argv, $error_level = '') {
 // 		if( php_sapi_name() != "cli" ) // Pas besoin car l'authentification est faite plus haut…
@@ -1672,8 +1673,8 @@ class ME_sites_iterator implements Iterator {
 			if (!defined('QUIET'))
 				echo "*** Travail sur '$site' ***\n";
 		}
-		$base = c::Get('database','cfg') . "_" . $site;
-		$this->setdb($base);
+		$this->current_db = c::Get('database','cfg') . "_" . $site;
+		$this->connect();
 		return $site;
 	}
 
@@ -1695,6 +1696,10 @@ class ME_sites_iterator implements Iterator {
 
 	function valid() {
 		return isset($this->sites[$this->position]);
+	}
+
+	public function connect() {
+		$this->setdb($this->current_db);
 	}
 	
 	private function findAllSites() {
