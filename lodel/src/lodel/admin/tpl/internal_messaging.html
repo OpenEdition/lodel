@@ -133,7 +133,7 @@
 			<tr>
 			<td class="im_select_line<IF COND="[%INSIDE]%2">1<ELSE/>2</IF>"><input type="checkbox" name="im_select[[#ID]]" id="im_select_[#ID]"/></td>
 			<IF COND="[#DIRECTORY] NE 'sent'">
-			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
+			<IF COND="[#IDUSER] LIKE /(.+)\-(\d+)/">
 				<LET VAR="userdb">
 				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>
@@ -151,7 +151,7 @@
 				<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 				<LET VAR="tos" GLOBAL="1"></LET>
 				<LOOP NAME="foreach" ARRAY="[#USERS]">
-				<IF COND="[#VALUE] LIKE /(\w+)\-(\d+)/">
+				<IF COND="[#VALUE] LIKE /(.+)\-(\d+)/">
 					<LET VAR="userdb">
 					<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 					</LET>
@@ -280,7 +280,7 @@
 		<td class="im_select_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>"><input type="checkbox" name="im_select[[#ID]]" id="im_select_[#ID]"/></td>
 		<IF COND="[#DIRECTORY] NE 'sent'">
 			<td class="im_from_line<IF COND="[#COUNT]%2">2<ELSE/>1</IF>">
-			<IF COND="[#IDUSER] LIKE /(\w+)-(\d+)/">
+			<IF COND="[#IDUSER] LIKE /(.+)\-(\d+)/">
 				<LET VAR="userdb">
 				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>
@@ -297,7 +297,7 @@
 			<LET ARRAY="users">[#RECIPIENTS|lexplode(':')]</LET>
 			<LET VAR="tos" GLOBAL="1"></LET>
 			<LOOP NAME="foreach" ARRAY="[#USERS]">
-			<IF COND="[#VALUE] LIKE /(\w+)-(\d+)/">
+			<IF COND="[#VALUE] LIKE /(.+)\-(\d+)/">
 				<LET VAR="userdb">
 				<IF COND="'lodelmain' EQ [#MATCHES.1.0]"><?php echo DATABASE; ?><ELSE /><?php echo DATABASE.'_'.$context['matches'][1][0]; ?></IF>
 				</LET>

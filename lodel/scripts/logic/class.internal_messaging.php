@@ -86,7 +86,7 @@ class Internal_MessagingLogic extends Logic
 		if($context['idparent']) {
 			$idparent = (int)$context['idparent'];
 			$sender = $db->getRow(lq("SELECT iduser, subject, body, recipients FROM #_MTP_internal_messaging WHERE id='{$idparent}'"));
-			preg_match("/(\w+)-(\d+)/", $sender['iduser'], $m);
+			preg_match("/(.+)\-(\d+)/", $sender['iduser'], $m);
 			$idUser = (int)$m[2];
 			if('lodelmain' == $m[1]) {
 				$user = $db->getRow(lq("SELECT username, firstname, lastname, userrights from #_MTP_users WHERE id='{$idUser}'"));
@@ -97,7 +97,7 @@ class Internal_MessagingLogic extends Logic
 			$arr[':'.$sender['iduser'].':'] = $user['username'] . ( ($user['firstname'] || $user['lastname']) ? " ({$user['firstname']} {$user['lastname']})" : ''). ($user['userrights'] == LEVEL_ADMINLODEL ? '(LodelAdmin)' : ($user['userrights'] == LEVEL_ADMIN ? '(Admin)' : ''));
 			$recipients = explode(':', $sender['recipients']);
 			foreach($recipients as $addr) {
-				if($this->_iduser == $addr || preg_match("/(\w+)-(\d+)/", $addr, $m) != 1) continue;
+				if($this->_iduser == $addr || preg_match("/(.+)\-(\d+)/", $addr, $m) != 1) continue;
 				$idUser = (int)$m[2];
 				if('lodelmain' == $m[1]) {
 					$user = $db->getArray(lq("SELECT username, firstname, lastname, userrights from #_MTP_users WHERE id='{$idUser}'"));
@@ -398,7 +398,7 @@ class Internal_MessagingLogic extends Logic
 				$error = getlodeltextcontents('internal_messaging_no_message_found', 'admin');
 				return '_error';
 			}
-			preg_match("/(\w+)-(\d+)/", $datas['iduser'], $m);
+			preg_match("/(.+)\-(\d+)/", $datas['iduser'], $m);
 			$idUser = (int)$m[2];
 			if('lodelmain' == $m[1]) {
 				$sender = $db->getRow(lq("SELECT username, firstname, lastname from #_MTP_users WHERE id='{$idUser}'"));
@@ -406,7 +406,7 @@ class Internal_MessagingLogic extends Logic
 				$dbname = '`'.DATABASE.'_'.$m[1].'`.'.$GLOBALS['tableprefix'];
 				$sender = $db->getRow("SELECT username, firstname, lastname from {$dbname}users WHERE id='{$idUser}'");
 			}
-			preg_match("/(\w+)-(\d+)/", $datas['recipient'], $m);
+			preg_match("/(.+)\-(\d+)/", $datas['recipient'], $m);
 			$idUser = (int)$m[2];
 			if('lodelmain' == $m[1]) {
 				$recipient = $db->getRow(lq("SELECT username, firstname, lastname from #_MTP_users WHERE id='{$idUser}'"));
