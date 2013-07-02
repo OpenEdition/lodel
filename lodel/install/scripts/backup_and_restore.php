@@ -3,7 +3,7 @@
 if( php_sapi_name() != "cli") die();
 
 if(!( isset($argv[1]) && isset($argv[2]) && isset($argv[3]) ) ) die("Usage php backup_and_restore.php [backup|import] [sitename] [file.zip]"."\n");
-if(!preg_match("/^\w+$/", $argv[1])) die("Site name incorrect");
+if(!preg_match("/^[a-z0-9\-]+$/", $argv[1])) die("Site name incorrect");
 
 $action = $argv[1];
 $site   = $argv[2];

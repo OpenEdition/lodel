@@ -14,7 +14,7 @@ require_once 'lodel/scripts/auth.php';
 global $db;
 
 if(isset($argv[1])){
-	if(!preg_match("/^\w+$/", $argv[1])) die("Site name incorrect");
+	if(!preg_match("/^[a-z0-9\-]+$/", $argv[1])) die("Site name incorrect");
 	$sites = array($argv[1]);
 }else{
 	$site_array = $db->GetArray(lq('SELECT name FROM sites WHERE status > 0'));

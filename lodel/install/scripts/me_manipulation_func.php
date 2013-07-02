@@ -968,7 +968,7 @@ class Classe extends MEobject {
 			return $this->err("Pas d\'external sur une classe de type '".$this->fields['classtype']."'");
 
 		// le site externe existe-t-il ?
-		preg_match('/^([\w\-_]+)\.(\d+)$/', $ext, $result);
+		preg_match('/^([a-z0-9\-]+)\.(\d+)$/', $ext, $result);
 		if(!C::get('db_no_intrusion.'.$result[1], 'cfg')) {
 			global $db;
 			$ok = $db->SelectDB(DATABASE.'_'.$result[1]);
@@ -1665,7 +1665,7 @@ class ME_sites_iterator implements Iterator {
 		if (!$this->valid())
 			return false;
 		$site = $this->current();
-		if(!preg_match("/^\w+$/", $site) || !is_file($site."/siteconfig.php")) {
+		if(!preg_match("/^[a-z0-9\-]+$/", $site) || !is_file($site."/siteconfig.php")) {
 			if (!defined('QUIET'))
 				echo "*** Site name incorrect '$site' is not a lodel site ***\n";
 			return $this->fetch();
