@@ -167,7 +167,7 @@ $debugMode = false; // mettre à true pour afficher les erreurs générées pendant 
 
 setlocale (LC_ALL,"fr_FR.UTF8");
 
-set_magic_quotes_runtime(0);
+@set_magic_quotes_runtime(0);
 ignore_user_abort();
 
 
