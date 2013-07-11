@@ -677,24 +677,6 @@ class siteManage {
 	}
 
 	/**
-	 * Gestion des erreurs de création des tables
-	 *
-	 * Cette fonction gère les erreurs retournées lors de la création des tables
-	 *
-	 * @param var &$context contexte du site
-	 * @param var $funcname nom de la fonction à appeller (nom = code_do_$funcname)
-	 */	
-	function loop_errors_createtables(&$context, $funcname)
-	{
-		$error = $this->context['error_createtables'];
-		do {
-			$localcontext['command'] = array_shift($error);
-			$localcontext['error']   = array_shift($error);
-			call_user_func("code_do_$funcname", array_merge($this->context, $localcontext));
-		} while ($error);
-	}
-
-	/**
 	 * Création des tables
 	 *
 	 * Cette fonction crée les tables lors de l'installation
@@ -736,6 +718,7 @@ class siteManage {
 			}
 		}
 		
+		mysql_select_db($this->database);
 		if ($error) {
 			$this->context['error_createtables'] = $error;
 			require_once 'view.php';
@@ -743,7 +726,6 @@ class siteManage {
 			$view->render($this->context, 'site-createtables');
 			return false;
 			}
-		mysql_select_db($this->database);
 		return true;
 	}	
 
@@ -1002,4 +984,23 @@ class siteManage {
 			exit;
 		}
 	}
+}
+
+
+/**
+	* Gestion des erreurs de création des tables
+	*
+	* Cette fonction gère les erreurs retournées lors de la création des tables
+	*
+	* @param var &$context contexte du site
+	* @param var $funcname nom de la fonction à appeller (nom = code_do_$funcname)
+	*/	
+function loop_errors_createtables(&$context, $funcname)
+{
+	$error = $context['error_createtables'];
+	do {
+		$localcontext['command'] = array_shift($error);
+		$localcontext['error']   = array_shift($error);
+		call_user_func("code_do_$funcname", array_merge($context, $localcontext));
+	} while ($error);
 }
