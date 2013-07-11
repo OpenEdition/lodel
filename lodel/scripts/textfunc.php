@@ -1455,7 +1455,7 @@ function cleanCallNotes($text)
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
 	require_once SITEROOT . $GLOBALS['sharedir'] . "/plugins/geshi/geshi.php";
-	$geshi =& new GeSHi($text, $language);
+	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 	$geshi->set_header_type(GESHI_HEADER_DIV);
