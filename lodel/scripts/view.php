@@ -283,10 +283,11 @@ class View
 	*/
 	public function renderTemplateFile($context, $tpl, $cache_rep='', $base_rep='tpl/', $escRefresh, $refreshTime=0) {
 		global $site, $lodeluser, $home;
-
+		$lName = isset($lodeluser['name']) ? $lodeluser['name'] : '';
+		$lRights = isset($lodeluser['rights']) ? $lodeluser['rights'] : ''; 
 		$cachedTemplateFileName = str_replace('?id=0', '',
 					preg_replace(array("/#[^#]*$/", "/[\?&]clearcache=[^&]*/"), "", $_SERVER['REQUEST_URI'])
-					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lodeluser['name']. "//". $lodeluser['rights'];
+					). "//". $GLOBALS['lang'] ."//".$tpl. "//". $lName. "//". $lRights;
 		if(!in_array(realpath($home.'Cache/Lite.php'), get_included_files()))
 			require_once 'Cache/Lite.php';
 		$cache = new Cache_Lite($this->_cacheOptions);
