@@ -76,7 +76,12 @@ if ($_POST['fileorigin'] == 'upload' && $_FILES['file1'] && $_FILES['file1']['tm
 		die(utf8_encode("Le fichier n'est pas un fichier chargé"));
 	}
 	$sourceoriginale = $_FILES['file1']['name'];
-	$tmpdir = tmpdir(); // use here and later.
+
+    global $tmpoutdir;
+	$tmpdir = $tmpoutdir;
+    if(empty($tmpdir))
+		$tmpdir = tmpdir();
+
 	$source = $tmpdir. "/". basename($file1). '-source';
 	move_uploaded_file($file1, $source); // move first because some provider does not allow operation in the upload dir
 } elseif ($_POST['fileorigin'] == 'serverfile' && $_POST['localfile']) {
