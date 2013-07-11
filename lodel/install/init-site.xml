@@ -2047,7 +2047,7 @@
 		default="0"
 		required="true" />
 	<column name="expirationdatetime"
-		type="TIMESTAMP(14)"
+		type="TIMESTAMP"
 		default=""
 		required="true" />
 	<unique name="unique_token">
@@ -2070,7 +2070,7 @@
 		default=""
 		required="true" />
 	<column name="date"
-		type="TIMESTAMP(14)"
+		type="TIMESTAMP"
 		default=""
 		required="true" />
 	<column name="denied"

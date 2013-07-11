@@ -517,18 +517,18 @@ CREATE TABLE IF NOT EXISTS #_TP_oaitokens (
   query text NOT NULL,
   metadataprefix varchar(35) NOT NULL default '',
   deliveredrecords int(11) NOT NULL default '0',
-  expirationdatetime timestamp(14) NOT NULL,
+  expirationdatetime timestamp NOT NULL,
   UNIQUE KEY token (token)
-) TYPE=MyISAM _CHARSET_;
+) ENGINE=MyISAM _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_oailogs (
   id int(11) NOT NULL auto_increment,
   host tinytext NOT NULL,
-  date timestamp(14) NOT NULL,
+  date timestamp NOT NULL,
   denied tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id)
-) TYPE=MyISAM AUTO_INCREMENT=566  _CHARSET_;
+) ENGINE=MyISAM AUTO_INCREMENT=566  _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   id int(10) unsigned NOT NULL auto_increment,
