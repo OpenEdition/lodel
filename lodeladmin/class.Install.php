@@ -786,9 +786,8 @@ class Install {
 			if (@copy($this->lodelconfig,LODELROOT.$file)) { // let copy
 				@chmod(LODELROOT.$file,0666 & octdec($filemask));
 			} else { // error
-				$this->include_tpl("install-lodelconfig.html");
 				return "error";
-			}  
+			}
 		}
 		return true;
 	}
