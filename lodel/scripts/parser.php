@@ -584,6 +584,7 @@ PHP;
 			case 'CONTENT' :
 			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 			$this->charset = isset($attrs['CHARSET']) ? $attrs['CHARSET'] : "utf-8";
+			if (isset($attrs['NODESK']) && $attrs['NODESK']) $GLOBALS['nodesk'] = true;
 			// attribut refresh
 			$this->_checkforrefreshattribut($attrs);
 			$this->_clearposition();
