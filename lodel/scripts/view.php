@@ -279,28 +279,21 @@ class View
 		$context =& C::getC();
 
 		// we try to reach the cache only if asked and no POST datas
-		if($caching && !self::$nocache) 
-		{
-			if(!isset($this->_cache))
-			{
+		if($caching && !self::$nocache) {
+			if(!isset($this->_cache)) {
 				$this->_cache = getCacheObject();
 			}
-
 			$contents = $this->_cache->get(getCacheIdFromId($this->page_cache_id()));
-			if($contents)
-			{
-				$pos = strpos($contents, "\n");
-				$timestamp = (int)substr($contents, 0, $pos);
-				if(0 === $timestamp || $timestamp > self::$time)
-				{
-					self::$page = $this->_eval(substr($contents, $pos+1), $context);
+
+			if($contents) {
+				$template = $this->unzip_cached_template($contents);
+				if(0 === $template['refresh'] || $template['refresh'] > self::$time) {
+					self::$page = $this->_eval($template['contents'], C::getC());
 					$this->_print();
 					return true;
 				}
-				
-				unset($timestamp, $pos);
+				unset($template);
 			}
-
 			unset($contents);
 		}
 
@@ -412,11 +405,10 @@ class View
 		}
 		$contents = $this->_cache->get(getCacheIdFromId($this->page_cache_id()));
 		if(!$contents) return false;
-		$pos = strpos($contents, "\n");
-		$timestamp = (int)substr($contents, 0, $pos);
-		if(0 === $timestamp || $timestamp > self::$time)
-		{
-			self::$page = $this->_eval(substr($contents, $pos+1), C::getC());
+
+		$template = $this->unzip_cached_template($contents);
+		if(0 === $template['refresh'] || $template['refresh'] > self::$time) {
+			self::$page = $this->_eval($template['contents'], C::getC());
 			$this->_print();
 			return true;
 		}
@@ -484,15 +476,11 @@ class View
 
 			$recalcul = false;
 
-			if($contents = $this->_cache->get($template_cache))
-			{
-				$pos = strpos($contents, "\n");
-				$timestamp = (int)substr($contents, 0, $pos);
-				if(0 !== $timestamp && self::$time > $timestamp) $recalcul = true;
-				else $contents = substr($contents, $pos+1);
-			}
-			else
-			{
+			if($contents = $this->_cache->get($template_cache)) {
+				$template = $this->unzip_cached_template($contents);
+				if(0 !== $template['refresh'] && self::$time > $template['refresh'])
+					$recalcul = true;
+			} else {
 				$recalcul = true;
 			}
 		}
@@ -504,23 +492,53 @@ class View
 				$template['contents'] = $template['contents']; // no eval for debug
 			else
 				$template['contents'] = $this->_eval($template['contents'], $context);
-			if(!self::$noindent) $template['contents'] = _indent($template['contents']);
+			if(!self::$noindent && (!isset($template['noindent']) || !$template['noindent'])) $template['contents'] = _indent($template['contents']);
 
-			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60))
-			{
-				if(!isset($this->_cache))
-				{
-					$this->_cache = getCacheObject();
-				} 
-
-				$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
-				$this->_cache->set($template_cache, $timestamp."\n".$template['contents']);
-				unset($timestamp);
+			if(!self::$nocache && ($template['refresh'] === 0 || $template['refresh'] > 60)) {
+				$this->cache_template($template, $template_cache);
 			}
 			$contents = $template['contents'];
 			unset($template);
 		}
 		return $contents;
+	}
+
+	/**
+	 * Enregistre le résultat du parser dans le cache
+	 * 
+	 * @param array $template résultat du parser
+	 * @param string $cacheId nom du cache
+	 * @return void
+	 */
+	private function cache_template($template, $cacheId) {
+		if(!isset($this->_cache))
+			$this->_cache = getCacheObject();
+
+		$template_contents = $template['contents'];
+		unset($template['contents']);
+
+		$template['refresh'] = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
+		$template_options = serialize($template);
+
+		$this->_cache->set($cacheId, $template_options."\n".$template_contents);
+	}
+
+	/**
+	 * retourne toutes les options du template mis en cache
+	 * 
+	 * @param string $contents le contenu du template en cache
+	 * @return array $template résultat du parser
+	 */
+	private function unzip_cached_template($contents) {
+		$pos = strpos($contents, "\n");
+		$template_options = substr($contents, 0, $pos);
+		if (is_numeric($template_options)) // compatibilité: avant juste l'option refresh était enregistrée
+			$template['refresh'] = $template_options;
+		else
+			$template = unserialize($template_options);
+
+		$template['contents'] = substr($contents, $pos+1);
+		return $template;
 	}
 
 	/**
@@ -620,19 +638,14 @@ class View
 			$contents = $this->_cache->get($template_cache);
 		}
 
-		if($contents && !C::get('debugMode', 'cfg'))
-		{
-			$pos = strpos($contents, "\n");
-			$template['refresh'] = (int)substr($contents, 0, $pos);
-			$template['contents'] = substr($contents, $pos+1);
-		}
-		else
-		{
+		if($contents && !C::get('debugMode', 'cfg')) {
+			$template = $this->unzip_cached_template($contents);
+		} else {
 			// le tpl cache n'existe pas ou n'est pas a jour compare au fichier de maquette
 			class_exists('LodelParser') || include 'lodelparser.php';
 			$template = LodelParser::getParser()->parse($tpl, $blockId, $cache_rep, $loopName);
 			if(!self::$nocache)
-				$this->_cache->set($template_cache, $template['refresh']."\n".$template['contents']);
+				$this->cache_template($template, $template_cache);
 		}
 		unset($contents);
 
@@ -671,20 +684,10 @@ class View
 		} else
 			$template['contents'] = $this->_eval($template['contents'], $context);
 		
-		if(!self::$noindent) $template['contents'] = _indent($template['contents']);
+		if(!self::$noindent && (!isset($template['noindent']) || !$template['noindent'])) $template['contents'] = _indent($template['contents']);
 
-		if($caching && !self::$nocache && 
-			(0 === $template['refresh'] || $template['refresh'] > 60)) // if refresh < 60s we don't save
-		{
-
-			if(!isset($this->_cache))
-			{
-				$this->_cache = getCacheObject();
-			}
-
-			$timestamp = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
-
-			$this->_cache->set(getCacheIdFromId($this->page_cache_id()), $timestamp."\n".$template['contents']);
+		if($caching && !self::$nocache && (0 === $template['refresh'] || $template['refresh'] > 60)) { // if refresh < 60s we don't save
+			$this->cache_template($template, getCacheIdFromId($this->page_cache_id()));
 		}
 
 		return $template['contents'];

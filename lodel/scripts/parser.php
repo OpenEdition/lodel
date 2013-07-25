@@ -87,6 +87,7 @@ class Parser
 	protected $conditions;
 	protected $joinedconditions;
 	protected $_translationMode;
+	protected $noindent=false;
 
 	protected function _errmsg($msg, $ind = 0)
 	{
@@ -204,7 +205,8 @@ PHP;
 			convertHTMLtoUTF8($template['contents']);
 		}
 
-        	$template['refresh'] = $this->refresh;
+		$template['refresh'] = $this->refresh;
+		$template['noindent'] = $this->noindent;
 
 		if($this->_originalCachedVars != $this->_cachedVars){
 			$cache = getCacheObject();
@@ -585,6 +587,7 @@ PHP;
 			$attrs = $this->_decode_attributs($this->arr[$this->ind + 1]);
 			$this->charset = isset($attrs['CHARSET']) ? $attrs['CHARSET'] : "utf-8";
 			if (isset($attrs['NODESK']) && $attrs['NODESK']) $GLOBALS['nodesk'] = true;
+			if (isset($attrs['NOINDENT'])) $this->noindent = (bool) $attrs['NOINDENT'];
 			// attribut refresh
 			$this->_checkforrefreshattribut($attrs);
 			$this->_clearposition();
