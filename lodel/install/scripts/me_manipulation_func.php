@@ -1019,10 +1019,10 @@ class Option extends MEobject {
 		$ME = new MEobject();
 		$messages = array();
 		$errors = array();
+
 		$og = $ME->OptionGroup_get($group);
 		if (!$og) {
-			$this->errors["Création, l'optiongroup '$group' n'existe pas"];
-			$this->error = true;
+			return $ME->err("Création, l'optiongroup '$group' n'existe pas");
 		}
 		$idgroup = $og['id'];
 
@@ -1050,8 +1050,7 @@ class Option extends MEobject {
 		$og = $this->OptionGroup_get($group);
 		if (!$og) {
 			$this->fields = array('name'=>$name);
-			$this->errors["L'OptionGroup '$group' n'existe pas"];
-			$this->error = true;
+			$this->err("L'OptionGroup '$group' n'existe pas");
 		} else {
 			$idgroup = $og['id'];
 			$this->fields = $this->Option_get($name, $idgroup);
@@ -1132,7 +1131,6 @@ class OptionGroup extends MEobject {
 		$this->fields = $this->OptionGroup_get($name);
 		if (!is_array($this->fields)) {
 			$this->fields = array('name'=>$name);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 
@@ -1265,6 +1263,10 @@ class MEobject {
 	public $messages = array();
 	public $errors = array();
 	public $error = false;
+
+	function __toString() {
+		return "MEObject: ";
+	}
 
 	// recevoir la valeur d'un champ
 	public function field($key) {
