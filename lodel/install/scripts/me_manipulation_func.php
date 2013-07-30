@@ -156,7 +156,7 @@ class TableField extends MEobject {
 		$errors = array();
 		$classe = $ME->Class_get($class);
 		if (!$classe) {
-			$errors[] = "Création du champ. La classe '$classe' n'existe pas.";
+			$errors[] = "Création du champ. La classe '$class' n'existe pas.";
 		} else {
 			$idgroup = 0;
 			if ($classe['classtype'] == 'entities') { // le groupe ne vaut que pour les entitées
