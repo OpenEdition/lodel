@@ -24,6 +24,8 @@ TableField alias TF
 	->hook($hook, $clobber=false) rajoute un hook au champ, true pour effacer les anciens
 	->group($groupname) Change le group du champ
 	->type($newtype) Change le type du champ
+	->addStyle($style) rajout d'un style
+	->delStyle($style) enlever un style
 	->set($fields, $value=null) Change les propriétés du champ: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->migrate($class, $fieldname, $overwrite = true) Copie les valeurs du champ dans un autre (niveau des entités)
 	->value($value='') Modifie la valeur d'un champ dans les entités
@@ -55,12 +57,16 @@ EntryType alias ET
 	->delete()
 	->field($key)
 	->migrate($class) migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
+	->addStyle($style) rajout d'un style
+	->delStyle($style) enlever un style
 
 PersonType alias PT
 	::get($type)
 	::create($class, $type, $title, $infos=array())
 	->delete()
 	->field($key)
+	->addStyle($style) rajout d'un style
+	->delStyle($style) enlever un style
 
 Classe alias Cl
 	::get($class)
@@ -82,9 +88,11 @@ OptionGroup alias OG
 	->field($key)
 
 InternalStyle alias IS
-	::get($name)
+	::get($name) nom du style du début !
 	::create($style, $infos=array())
 	->set($fields, $value=null) Change les propriétés du type: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
+	->addStyle($style) rajout d'un style
+	->delStyle($style) enlever un style
 	->delete()
 	->field($key)
 */
@@ -1203,7 +1211,6 @@ class InternalStyle extends MEobject {
 		$this->fields = $this->InternalStyle_get($style);
 		if (!is_array($this->fields)) {
 			$this->fields = array('style'=>$style);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 
@@ -1211,7 +1218,7 @@ class InternalStyle extends MEobject {
 	}
 
 	function __toString() {
-		return "InternalStyle, '".$this->fields['style']."";
+		return "InternalStyle, '".$this->fields['style']."'";
 	}
 
 	// change les propriétés du champ
@@ -1300,6 +1307,42 @@ class MEobject {
 	protected function err($message, $invalidate=true) {
 		$this->errors[] = $message;
 		if ($invalidate) $this->error = true;
+		return $this;
+	}
+
+	// rajoute un style
+	public function addStyle($style) {
+		if ($this->error) return $this;
+		if (!isset($this->fields['style'])) {
+			$this->messages[] = "Cet élément ne supporte pas les styles !";
+			return $this;
+		}
+			
+		$styles = explode(",", $this->fields['style']);
+		if (!in_array($style, $styles)) {
+			$styles[] = $style;
+			$this->fields['style'] = implode(',', $styles);
+			return $this->save("Ajout du style: $style");
+		}
+		$this->messages[] = "Ajout du style: $style. Existe déjà !";
+		return $this;
+	}
+
+	// enleve un style
+	public function delStyle($style) {
+		if ($this->error) return $this;
+		if (!isset($this->fields['style'])) {
+			$this->messages[] = "Cet élément ne supporte pas les styles !";
+			return $this;
+		}
+			
+		$styles = explode(",", $this->fields['style']);
+		if (($key = array_search($style, $styles)) !== false) {
+			unset($styles[$key]);
+			$this->fields['style'] = implode(',', $styles);
+			return $this->save("Effacement du style: $style");
+		}
+		$this->messages[] = "Effacement du style: $style. N'existe pas !";
 		return $this;
 	}
 
@@ -1453,7 +1496,7 @@ class MEobject {
 	}
 	protected function InternalStyle_get($name) {
 		global $db;
-		return $this->Object_get("internalstyles", "style=".$db->Quote($name));
+		return $this->Object_get("internalstyles", "style like ".$db->Quote($name."%"));
 	}
 
 /*
