@@ -186,14 +186,16 @@ class TableField extends MEobject {
 						$errors[] = "Création du champ: problème avec la base de donnée: ".var_export($ok, true);
 					}
 				} else {
-					$errors[] =  "Création du champ: Il existe déjà.";
+					$messages[] =  "Création du champ: Il existe déjà.";
 				}
 			}
 		}
-		$tablefield = new TableField($class, $fieldname);
-		$tablefield->messages = $messages;
-		$tablefield->errors = $errors;
-		return $tablefield;
+
+		$obj = new TableField($class, $fieldname);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($class, $fieldname) {
@@ -495,20 +497,20 @@ class TableFieldGroup extends MEobject {
 				$errors[] = "Création du TableFieldGroup: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création du TableFieldGroup: Il existe déjà.";
+			$messages[] =  "Création du TableFieldGroup: Il existe déjà.";
 		}
 
-		$tfg = new TableFieldGroup($class, $name);
-		$tfg->messages = $messages;
-		$tfg->errors = $errors;
-		return $tfg;
+		$obj = new TableFieldGroup($class, $name);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($class, $name) {
 		$this->fields = $this->TableFieldGroup_get($class, $name);
 		if (!is_array($this->fields)) {
 			$this->fields = array('class'=>$class, 'name'=>$name);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 		return $this;
@@ -567,20 +569,20 @@ class Type extends MEobject {
 				$errors[] = "Création du type: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création du type: Il existe déjà.";
+			$messages[] =  "Création du type: Il existe déjà.";
 		}
 
-		$t = new Type($class, $type);
-		$t->messages = $messages;
-		$t->errors = $errors;
-		return $t;
+		$obj = new Type($class, $type);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($class, $type) {
 		$this->fields = $this->Type_get($class, $type);
 		if (!is_array($this->fields)) {
 			$this->fields = array('class'=>$class, 'type'=>$type);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 		if (!$this->error)
@@ -717,20 +719,20 @@ class EntryType extends MEobject {
 				$errors[] = "Création du entrytype: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création du entrytype: Il existe déjà.";
+			$messages[] =  "Pas de création du entrytype: Il existe déjà.";
 		}
 
-		$entrytype = new EntryType($type);
-		$entrytype->messages = $messages;
-		$entrytype->errors = $errors;
-		return $entrytype;
+		$obj = new EntryType($type);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($type) {
 		$this->fields = $this->EntryType_get($type);
 		if (!is_array($this->fields)) {
 			$this->fields = array('type'=>$type);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 		return $this;
@@ -840,20 +842,20 @@ class PersonType extends MEobject {
 				$errors[] = "Création du persontype: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création du persontype: Il existe déjà.";
+			$messages[] =  "Pas de création du persontype: Il existe déjà.";
 		}
 
-		$persontype = new PersonType($type);
-		$persontype->messages = $messages;
-		$persontype->errors = $errors;
-		return $persontype;
+		$obj = new PersonType($type);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($type) {
 		$this->fields = $this->PersonType_get($type);
 		if (!is_array($this->fields)) {
 			$this->fields = array('type'=>$type);
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 		return $this;
@@ -912,20 +914,20 @@ class Classe extends MEobject {
 				$errors[] = "Création de la class: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création de la class: Il existe déjà.";
+			$messages[] =  "Création de la class: Il existe déjà.";
 		}
 
-		$classe = new Classe($class);
-		$classe->messages = $messages;
-		$classe->errors = $errors;
-		return $classe;
+		$obj = new Classe($class);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($class) {
 		$this->fields = $this->Class_get($class);
 		if (!is_array($this->fields)) {
 			$this->fields = array('class'=>$class, 'classtype'=>'inconnu');
-			$this->error = true;
 			$this->err("N'existe pas.");
 		}
 		if ($this->fields['classtype'] == 'entries') {
@@ -1045,13 +1047,14 @@ class Option extends MEobject {
 				$errors[] = "Création de l'Option: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création de l'Option: elle existe déjà.";
+			$messages[] =  "Pas de création de l'Option: elle existe déjà.";
 		}
 
-		$o = new Option($group, $name);
-		$o->messages = $messages;
-		$o->errors = $errors;
-		return $o;
+		$obj = new Option($group, $name);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($group, $name) {
@@ -1065,7 +1068,6 @@ class Option extends MEobject {
 		
 			if (!is_array($this->fields)) {
 				$this->fields = array('name'=>$name);
-				$this->error = true;
 				$this->err("N'existe pas.");
 			}
 		}
@@ -1126,13 +1128,14 @@ class OptionGroup extends MEobject {
 				$errors[] = "Création de l'OptionGroup: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création de l'OptionGroup: il existe déjà.";
+			$messages[] =  "Pas de création de l'OptionGroup: il existe déjà.";
 		}
 
-		$og = new OptionGroup($name);
-		$og->messages = $messages;
-		$og->errors = $errors;
-		return $og;
+		$obj = new OptionGroup($name);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($name) {
@@ -1201,10 +1204,11 @@ class InternalStyle extends MEobject {
 			$messages[] =  "Pas de création de l'InternalStyle: il existe déjà.";
 		}
 
-		$og = new InternalStyle($style);
-		$og->messages = $messages;
-		$og->errors = $errors;
-		return $og;
+		$obj = new InternalStyle($style);
+		$obj->messages = $messages;
+		$obj->errors = $errors;
+		$obj->error = !empty($errors);
+		return $obj;
 	}
 
 	function __construct($style) {
@@ -1321,7 +1325,7 @@ class MEobject {
 		$styles = explode(",", $this->fields['style']);
 		if (!in_array($style, $styles)) {
 			$styles[] = $style;
-			$this->fields['style'] = implode(',', $styles);
+			$this->fields['style'] = implode(',', array_filter($styles));
 			return $this->save("Ajout du style: $style");
 		}
 		$this->messages[] = "Ajout du style: $style. Existe déjà !";
@@ -1339,7 +1343,7 @@ class MEobject {
 		$styles = explode(",", $this->fields['style']);
 		if (($key = array_search($style, $styles)) !== false) {
 			unset($styles[$key]);
-			$this->fields['style'] = implode(',', $styles);
+			$this->fields['style'] = implode(',', array_filter($styles));
 			return $this->save("Effacement du style: $style");
 		}
 		$this->messages[] = "Effacement du style: $style. N'existe pas !";
