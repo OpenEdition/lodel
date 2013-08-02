@@ -478,6 +478,7 @@ class View
 
 			if($contents = $this->_cache->get($template_cache)) {
 				$template = $this->unzip_cached_template($contents);
+				$contents = $template['contents'];
 				if(0 !== $template['refresh'] && self::$time > $template['refresh'])
 					$recalcul = true;
 			} else {
