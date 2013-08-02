@@ -387,7 +387,7 @@ class C
 			self::$_context['version'] = self::$_cfg['version'];
 			self::$_context['shareurl'] = self::$_cfg['shareurl'];
 			self::$_context['extensionscripts'] =self::$_cfg['extensionscripts'];
-			self::$_context['currenturl'] = 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'];
+			self::$_context['currenturl'] = isset($_SERVER['SERVER_NAME']) ? 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'] : '';
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['sharedir'] = self::$_cfg['sharedir'];
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::$_cfg['tableprefix'];
