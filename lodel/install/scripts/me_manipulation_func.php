@@ -1191,14 +1191,14 @@ class InternalStyle extends MEobject {
 		if (!$fields) {
 			$fields = array ( 'id' => '0', 'style' => $style, 'surrounding' => '-*', 'conversion' => '', 'greedy' => '1', 'rank' => '', 'otx' => '', 'status' => '1',);
 			$fields = array_merge($fields, $infos);
-			$ok = $ME->OptionGroup_save($fields);
+			$ok = $ME->InternalStyle_save($fields);
 			if ($ok === true)
 				$messages[] = "Création de l'InternalStyle.";
 			else {
 				$errors[] = "Création de l'InternalStyle: problème avec la base de donnée: ".var_export($ok, true);
 			}
 		} else {
-			$errors[] =  "Création de l'InternalStyle: il existe déjà.";
+			$messages[] =  "Pas de création de l'InternalStyle: il existe déjà.";
 		}
 
 		$og = new InternalStyle($style);
