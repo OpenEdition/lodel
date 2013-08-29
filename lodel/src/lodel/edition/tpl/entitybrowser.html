@@ -132,9 +132,10 @@ function sendValues(){
 		o=document.getElementById('entities'+obj.options[i].value);
 		if(o) {
                     o.checked=true;
+                    p = false;
                     do {
                         var p = p ? p.parentNode : o.parentNode;
-                        console.log(p);
+//                         console.log(p);
                         if(-1 !== p.id.indexOf('childContainer')) {
                             p.style.display = 'block';
                         }
