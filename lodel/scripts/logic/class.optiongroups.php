@@ -124,7 +124,7 @@ class OptiongroupsLogic extends Logic {
 	 */
 	function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'idparent', '');
+		return Logic::changeRankAction($context, $error, 'idparent', '');
 	}
 
 	/**

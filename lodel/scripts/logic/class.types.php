@@ -135,7 +135,7 @@ class TypesLogic extends Logic {
 	function changeRankAction(&$context, &$error)
 
 	{
-		return Logic::changeRankAction(&$context, &$error, 'class');
+		return Logic::changeRankAction($context, $error, 'class');
 	}
 
 

@@ -73,7 +73,7 @@ class OptionsLogic extends Logic {
 	function changeRankAction(&$context, &$error)
 
 	{
-		return Logic::changeRankAction(&$context, &$error, 'idgroup');
+		return Logic::changeRankAction($context, $error, 'idgroup');
 	}
 
 

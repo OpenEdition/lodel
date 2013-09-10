@@ -107,7 +107,7 @@ class TableFieldsLogic extends Logic
 	 */
 	function changeRankAction(&$context, &$error)
 	{
-		return Logic::changeRankAction(&$context, &$error, 'idgroup,class');
+		return Logic::changeRankAction($context, $error, 'idgroup,class');
 	}
 
 
