@@ -58,11 +58,6 @@ if (is_readable(C::get('home', 'cfg') . 'func_local.php'))
 
 function writefile($filename, $text)
 {
-# echo "name de fichier : $filename";
-//    if (file_exists($filename)) {
-//      if (! (unlink($filename)) ) trigger_error("Cannot delete file $filename.", E_USER_ERROR);
-//    }
-//   $ret=($f=fopen($filename,"w")) && (fputs($f,$text)!==false) && fclose($f);
     if (false === @file_put_contents($filename, $text))
         trigger_error("Cannot write $filename.", E_USER_ERROR);
     @chmod($filename, 0666 & octdec(C::get('filemask', 'cfg')));
@@ -85,19 +80,6 @@ function postprocessing(&$context)
     }
 }
 
-
-/**
- *   Extrait toutes les variables passées par la méthode post puis les stocke dans
- *   le tableau $context
- */
-function extract_post(&$arr = null)
-{
-    if (is_null($arr)) $arr =& $_POST;
-    C::setRequest($arr);
-    return;
-}
-
-
 function clean_request_variable(&$var, $key = '')
 {
     C::clean($var);
@@ -114,50 +96,6 @@ function magic_stripslashes($var)
     return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
 }
 
-
-function get_max_rank($table, $where = "")
-{
-    if ($where) $where = "WHERE " . $where;
-
-    #require_once ($GLOBALS[home]."connect.php");
-    $rank = $db->getone("SELECT MAX(rank) FROM #_TP_$table $where");
-    if ($db->errorno()) trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-
-    return $rank + 1;
-}
-
-function chrank($table, $id, $critere, $dir, $inverse = "", $jointables = "")
-{
-    global $db;
-
-    $table = "#_TP_$table";
-    $dir = $dir == "up" ? -1 : 1;
-    if ($inverse) $dir = -$dir;
-    $desc = $dir > 0 ? "" : "DESC";
-    if ($jointables) {
-        $jointables = ",#_TP_" .
-            trim(join(",#_TP_", preg_split("/,\s*/", $jointables)));
-    }
-    $result = $db->execute(lq("SELECT $table.id,$table.rank FROM $table $jointables WHERE $critere ORDER BY $table.rank $desc")) or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-
-    $rank = $dir > 0 ? 1 : $result->RecordCount();
-
-    while ($row = $result->fetchrow($result)) {
-        if ($row['id'] == $id) {
-            # intervertit avec le suivant s il existe
-            if (!($row2 = $result->fetchrow($result))) break;
-            $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row2[id]'")) or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            $rank += $dir;
-        }
-        if ($row['rank'] != $rank) {
-            $db->execute(lq("UPDATE $table SET rank='$rank' WHERE id='$row[id]'")) or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-        }
-        $rank += $dir;
-    }
-    $result->Close();
-}
-
-
 /**
  * function returning the closing tag corresponding to the opening tag in the sequence
  * this function could be smarter.
@@ -173,65 +111,11 @@ function closetags($text)
     return $ret;
 }
 
-
-function myaddslashes(&$var)
-{
-    if (is_array($var)) {
-        array_walk($var, "myaddslashes");
-        return $var;
-    } else {
-        return $var = addslashes($var);
-    }
-}
-
-
-/**
- * Fonction permettant de vérifier l'existence d'un fichier correctement !
- *
- * @param string $file fichier à tester
- */
-function myfileexists($file)
-{
-    // plus important : on supprime  le cache généré par les fonctions de stat de fichier !
-    // ça pompe des ressources mais ça évite les warnings PHP
-    clearstatcache();
-    return file_exists($file); // on retourne le test du fichier
-}
-
-/**
- * Retourne la dernière date de modif de $filename
- *
- * @param string $filename fichier à tester
- */
-function myfilemtime($filename)
-{
-    return myfileexists($filename) ? @filemtime($filename) : 0;
-}
-
-
 function update()
 {
     function_exists('clearcache') || include 'cachefunc.php';
     clearcache(false);
 }
-
-function addmeta(&$arr, $meta = "")
-{
-    foreach ($arr as $k => $v) {
-        if (strpos($k, "meta_") === 0) {
-            if (!isset($metaarr)) { // cree le hash des meta
-                $metaarr = $meta ? unserialize($meta) : array();
-            }
-            if ($v) {
-                $metaarr[$k] = $v;
-            } else {
-                unset($metaarr[$k]);
-            }
-        }
-    }
-    return $metaarr ? serialize($metaarr) : $meta;
-}
-
 
 function translate_xmldata($data)
 {
@@ -258,28 +142,6 @@ function lock_write()
     $list = func_get_args();
     if (!defined("DONTUSELOCKTABLES") || !DONTUSELOCKTABLES)
         $db->execute(lq("LOCK TABLES #_MTP_" . join(" WRITE ," . "#_MTP_", $list) . " WRITE")) or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-}
-
-function prefix_keys($prefix, $arr)
-{
-    if (!$arr) {
-        return $arr;
-    }
-    foreach ($arr as $k => $v) {
-        $outarr[$prefix . $k] = $v;
-    }
-    return $outarr;
-}
-
-function array_merge_withprefix($arr1, $prefix, $arr2)
-{
-    if (!$arr2) {
-        return $arr1;
-    }
-    foreach ($arr2 as $k => $v) {
-        $arr1[$prefix . $k] = $v;
-    }
-    return $arr1;
 }
 
 function getoption($name)
@@ -762,55 +624,6 @@ function myhtmlentities($text)
     return str_replace(array("&", "<", ">", "\""), array("&amp;", "&lt;", "&gt;", "&quot;"), $text);
 }
 
-//
-// Main function to add/modify records
-//
-function setrecord($table, $id, $set, $context = array())
-{
-    global $db;
-    $id = (int)$id;
-    $table = lq("#_TP_") . $table;
-
-    if ($id > 0) { // update
-        $update = "";
-        foreach ($set as $k => $v) {
-            if (is_numeric($k)) { // get it from context
-                $k = $v;
-                $v = $context[$k];
-            }
-            if ($update) $update .= ",";
-            $update .= "$k=" . $db->qstr($v);
-        }
-        if ($update)
-            $db->execute("UPDATE $table SET  $update WHERE id='$id'") or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-    } else {
-        $insert = "";
-        $values = "";
-        if (is_string($id) && $id == "unique") {
-            $id = uniqueid($table);
-            $insert = "id";
-            $values = "'" . $id . "'";
-        }
-        foreach ($set as $k => $v) {
-            if (is_numeric($k)) { // get it from context
-                $k = $v;
-                $v = $context[$k];
-            }
-            if ($insert) {
-                $insert .= ",";
-                $values .= ",";
-            }
-            $insert .= $k;
-            $values .= $db->qstr($v);
-        }
-
-        if ($insert) {
-            $db->execute("REPLACE INTO $table (" . $insert . ") VALUES (" . $values . ")") or trigger_error("SQL ERROR :<br />" . $GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-            if (!$id) $id = $db->insert_id();
-        }
-    }
-    return $id;
-}
 
 /**
  *
@@ -1058,24 +871,6 @@ function getGenericDAO($table, $idfield)
     return DAO::getGenericDao($table, $idfield);
 }
 
-/**
- * Return true if a type can contains other types.
- * (this function is used in edition, to make entities clicable or not)
- * @param idtype id of the type
- */
-function canContainTypes($idtype)
-{
-    global $db;
-    $idtype = (int)$idtype;
-    //select types in entitytypes_entitytypes which can be contains in idtype (identitytypes2)
-    //but select only those who can be contains directly (not in advanced function)
-    $sql = "SELECT COUNT(*) as count FROM #_TP_entitytypes_entitytypes , #_TP_types as t WHERE identitytype = t.id AND identitytype2='$idtype' AND t.display!='advanced'";
-    $count = $db->getOne(lq($sql));
-    if ($count === false) return false;
-    if ($count > 0) return true;
-    return false;
-}
-
 function mystripslashes(&$var)
 {
     if (is_array($var)) {
@@ -1253,20 +1048,6 @@ function getgenericfields(&$context)
 
 
     return $context; // pas nécessaire le context est passé par référence
-}
-
-
-/**
- * Analyse une url et retourne le chemin en local qu'elle contient éventuellement
- * Cf. parse_url : élément 'path' du tableau retourné
- *
- * @param string $url
- * @return le chemin contenu dans l'URL
- */
-function url_path($url)
-{
-    $url_parts = @parse_url($url);
-    return $url_parts ? $url_parts['path'] : '';
 }
 
 function rewriteFilename($string)
