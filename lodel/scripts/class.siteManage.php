@@ -309,7 +309,7 @@ class siteManage {
 			}
             
 			if (!C::get('url')) {
-				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin-?\d*(\.\d*)?\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
+				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
 			}
 			
 			if (C::get('reinstall')) {

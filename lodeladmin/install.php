@@ -46,12 +46,6 @@ if (!((bool) ini_get("register_globals"))) {
 $version = "1.0";
 /************************************ !! VERSION !! **************************************/
 
-if(false === strpos($_SERVER['REQUEST_URI'], 'lodeladmin-'.$version))
-{
-	header('Location: '. str_replace('lodeladmin', 'lodeladmin-'.$version, $_SERVER['REQUEST_URI']));
-	exit;
-}
-
 require "class.Install.php";
 
 $lodelconfig = "CACHE/lodelconfig-cfg.php";
@@ -116,12 +110,12 @@ if (!version_compare(PHP_VERSION,'5.0.0','>=')) {
 // Copie le fichier lodelconfig choisi dans le CACHE
 // Verifie qu'on peut ecrire dans le cache
 //
-$install->set('plateformdir', LODELROOT."lodel".$install->get('versionsuffix')."/install/plateform");
-$install->set('protecteddir', array("lodel".$install->get('versionsuffix'),
+$install->set('plateformdir', LODELROOT."lodel/install/plateform");
+$install->set('protecteddir', array("lodel",
 		    "CACHE",
 		    "tpl",
-		    "lodeladmin".$install->get('versionsuffix')."/CACHE",
-		    "lodeladmin".$install->get('versionsuffix')."/tpl"));
+		    "lodeladmin/CACHE",
+		    "lodeladmin/tpl"));
 
 if(!isset($tache)) $tache = false;
 

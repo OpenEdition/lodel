@@ -1485,7 +1485,7 @@ class DataLogic
 	private function _parseXML($file, &$error) {
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
-		$dtd = @copy(SITEROOT . '../share-'.C::get('version', 'cfg').'/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		$dtd = @copy(SITEROOT . '../share/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir. Aborted.';
 			return;

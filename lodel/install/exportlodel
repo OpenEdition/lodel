@@ -4,12 +4,12 @@
 #
 #  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 #  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-#  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-#  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-#  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+#  Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
+#  Copyright (c) 2008, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
+#  Copyright (c) 2009, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
 #
 #  Home page: http://www.lodel.org
 #
@@ -48,9 +48,9 @@ FILE="lodel-$1"
 # verifie existence des repertoires
 if [ -d lodel/lodel -a -d lodel/lodeladmin -a -d lodel/share ]; then
 	# renomme les repertoires du depot svn pour contenir le numero de version
-	mv lodel/lodel lodel/lodel-$1
-	mv lodel/lodeladmin lodel/lodeladmin-$1
-	mv lodel/share lodel/share-$1
+	mv lodel/lodel lodel/lodel
+	mv lodel/lodeladmin lodel/lodeladmin
+	mv lodel/share lodel/share
 else
 	echo " Tous les repertoires de Lodel ne sont pas presents "
 	exit
