@@ -86,7 +86,7 @@ class TranslationsLogic extends Logic {
 		if('site' === (string)$context['textgroups']) {
 			$tplDirs = SITEROOT.'tpl/';
 		} else { // interface
-			$tplDirs = array('./tpl/', '../tpl/', '../share-'.C::get('version', 'cfg').'/macros/', '../lodel-'.C::get('version', 'cfg').'/tpl/', '../lodel-'.C::get('version', 'cfg').'/src/lodel/edition/tpl/', '../lodel-'.C::get('version', 'cfg').'/src/lodel/admin/tpl/');
+			$tplDirs = array('./tpl/', '../tpl/', '../share/macros/', '../lodel/tpl/', '../lodel/src/lodel/edition/tpl/', '../lodel/src/lodel/admin/tpl/');
 		}
 		$lodelparser = LodelParser::getParser();
 		$vars = array();

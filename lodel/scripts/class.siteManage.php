@@ -136,8 +136,8 @@ class siteManage {
 	public function __construct()
 	{
 		$this->critere = "id='".C::get('id')."'";
-		$this->lodelhomere = "/^lodel(-[\w.]+)$/";
-        	$this->versiondir = 'lodel-'.C::get('version', 'cfg');
+		$this->lodelhomere = "/^lodel$/";
+        $this->versiondir = 'lodel';
 		defined('INC_FUNC') || include 'func.php';
 	}
 
@@ -225,9 +225,9 @@ class siteManage {
 			}
 			$root = str_replace('//', '/', LODELROOT. $row['path']). '/'; 
 			if ($row['path'] == '/') { // c'est un peu sale ca.
-				$this->install_file($root, "lodel-".C::get('version', 'cfg')."/src", '');
+				$this->install_file($root, "lodel/src", '');
 			} else {
-				$this->install_file($root, "../lodel-".C::get('version', 'cfg')."/src", LODELROOT);
+				$this->install_file($root, "../lodel/src", LODELROOT);
 			}
 	
 			// clear the CACHEs

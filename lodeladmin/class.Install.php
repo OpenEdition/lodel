@@ -200,7 +200,7 @@ class Install {
 			if (!@copy($this->lodelconfigplatform,$this->lodelconfig)) { trigger_error("probl&egrave;me de droits... &eacute;trange on a d&eacute;j&agrave; v&eacute;rifi&eacute;", E_USER_ERROR); }
 			if (file_exists(LODELROOT."lodelloader.php")) {
 				// the installer has been use, let's chmod safely
-				$chmod=fileperms(LODELROOT."lodel-".$this->versioninstall);
+				$chmod=fileperms(LODELROOT."lodel");
 			} else {
 				$chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
 			}

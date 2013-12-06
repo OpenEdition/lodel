@@ -63,7 +63,7 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php"))
 	if (!is_readable("lodelconfig.php")) $install->problem("reading_lodelconfig");
 	require("lodelconfig.php");
 	if(isset($_GET['installlang']) && $cfg['installlang'] != $_GET['installlang']) {
-		require_once '../lodel-'.$cfg['version'].'/scripts/lang.php';
+		require_once '../lodel/scripts/lang.php';
 		if(in_array(strtoupper($_GET['installlang']), array_keys($GLOBALS['installlanguages']))) {
 			$installlang = $_GET['installlang'];
 		}

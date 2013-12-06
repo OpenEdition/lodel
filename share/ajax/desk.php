@@ -46,7 +46,7 @@
  * @package lodel
  */
 if(!isset($_POST['site']) || ('principal' !== $_POST['site'] && (!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
-	in_array($_POST['site'], array('lodel-0.9', 'share-0.9', 'lodeladmin-0.9', 'lodel', 'share', 'lodeladmin')) || 
+	in_array($_POST['site'], array('lodel', 'share', 'lodeladmin')) ||
 	!is_dir('../../'.$_POST['site'])))) {
 	// tentative ?
 	echo 'error';

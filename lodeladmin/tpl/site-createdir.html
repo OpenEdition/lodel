@@ -96,11 +96,11 @@
 <IF COND="[#PATH]=='/'"> <!--[ a la racine ]-->
 <p>[@LODELADMIN.RUN_FOLLOWING_COMMAND_IN_SHELL_IN_LODEL_ROOT] :</p>
 <p><code>
-lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
+lodel/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 <ELSE/>
 <p>[@LODELADMIN.CREATE_DIRECTORY_IN_LODEL_ROOT_GIVE_READING_ACCESS_TO_SERVER_AND_IN_THIS_RUN_FOLLOWING_COMMAND_IN_SHELL|sprintf([#PATH])] :</p>
 <p><code>
-../lodel-[#VERSION]/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
+../lodel/install/install-site.pl [#VERSION] droits_lecture droits_ecriture
 </IF>
 
 </code></p>
