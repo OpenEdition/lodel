@@ -45,7 +45,7 @@ include 'tpl/install-openhtml.html';
 </label>&nbsp;:&nbsp;
 <select name="installlang" id="installlang" onchange="submit();">
 <?php
-require_once('lang.php');
+require_once('../lodel/scripts/lang.php');
 $langs = $GLOBALS['installlanguages'];
 foreach($langs as $la => $lang) {
 	$la = strtolower($la);
