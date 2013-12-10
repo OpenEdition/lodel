@@ -165,7 +165,7 @@ class Install {
 	public function testInstallDB()
 	{
 		@include($this->lodelconfig);
-		require "../lodel".$this->versionsuffix."/scripts/auth.php";
+		require "../lodel/scripts/auth.php";
 		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
 			@mysql_select_db(C::get('database','cfg'));
 			$this->set_mysql_charset();
@@ -193,32 +193,33 @@ class Install {
 	{
 		$this->plateform=preg_replace("/[^A-Za-z_-]/","",$this->plateform);
 		if (!$this->plateform) $this->plateform="default";
-		
+
 		$this->lodelconfigplatform=$this->plateformdir."/lodelconfig-".$this->plateform.".php";
+
 		if (file_exists($this->lodelconfigplatform)) {
 			// essai de copier ce fichier dans le CACHE
-			if (!@copy($this->lodelconfigplatform,$this->lodelconfig)) { trigger_error("probl&egrave;me de droits... &eacute;trange on a d&eacute;j&agrave; v&eacute;rifi&eacute;", E_USER_ERROR); }
+
+			if (!copy($this->lodelconfigplatform,$this->lodelconfig)) { trigger_error("probl&egrave;me de droits... &eacute;trange on a d&eacute;j&agrave; v&eacute;rifi&eacute;", E_USER_ERROR); }
 			if (file_exists(LODELROOT."lodelloader.php")) {
 				// the installer has been use, let's chmod safely
 				$chmod=fileperms(LODELROOT."lodel");
 			} else {
 				$chmod=0600;  // c'est plus sur, surtout a cause du mot de passe sur la DB qui apparaitra dans ce fichier.
 			}
-			@chmod($this->lodelconfig,$chmod);
-			@include($this->lodelconfig);
-			$this->maj_lodelconfig(array("home"=>$cfg['pathroot'].'/lodel'.$this->versionsuffix.'/scripts/'));
+			chmod($this->lodelconfig,$chmod);
+			include($this->lodelconfig);
+			$this->maj_lodelconfig(array("home"=>$cfg['pathroot'].'/lodel/scripts/'));
 		} else {
 			trigger_error("ERROR: ".$this->lodelconfigplatform." does not exist. Internal error, please report this bug.", E_USER_ERROR);
 		}
 		$arr=array();
 		$needoptions=false;
 		$arr['installoption']=$this->installoption;
-		
 		// guess the urlroot
 		$me=$_SERVER['PHP_SELF'];
 		if ($me) {
 			// enleve moi
-			$urlroot=preg_replace("/\/+lodeladmin".$this->versionsuffix."\/install.php$/","",$me);
+			$urlroot=preg_replace("/\/+lodeladmin\/install.php$/","",$me);
 			if ($urlroot==$me) trigger_error("ERROR: the install.php script is not at the right place, please report this bug.", E_USER_ERROR);
 			if (LODELROOT!="../") trigger_error("ERROR: the lodeladmin directory has been moved, please report this bug.", E_USER_ERROR);
 			
@@ -226,7 +227,7 @@ class Install {
 		}
 		
 		// is there a filemask ?
-		
+
 		if ($_REQUEST['filemask']) {
 			// passed via the URL
 			$arr['filemask']="0".$_REQUEST['filemask'];
@@ -236,9 +237,9 @@ class Install {
 		} else {
 			$arr['filemask']="0".decoct($this->guessfilemask($testfile));
 		}
-		
+
 		$arr['installlang']=$this->installlang;
-		
+
 		if ($this->installoption==1) {
 			// try to guess the options.
 			// use pclzip ?
@@ -250,7 +251,7 @@ class Install {
 			}
 			$arr['extensionscripts']="php";
 		}
-		
+
 		$arr['chooseoptions']=($needoptions && $this->installoption==1 ? "oui" : "non");
 		return $this->maj_lodelconfig($arr);
 	}
@@ -421,7 +422,7 @@ class Install {
 	 */
 	public function set_htaccess($verify, $write, $nohtaccess)
 	{	
-		$currentLodelDir = "lodel".$this->versionsuffix;
+		$currentLodelDir = "lodel";
 		
 		if ($verify || $write) $this->maj_lodelconfig("htaccess","on");
 		if ($nohtaccess) $this->maj_lodelconfig("htaccess","off");
@@ -490,14 +491,8 @@ class Install {
 	{
 		header("Content-type: application/force-download");
 		header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-		if (ereg('MSIE ([0-9].[0-9]{1,2})', $_SERVER['HTTP_USER_AGENT'], $log_version)) { // from phpMyAdmin
-			header('Content-Disposition: inline; filename="lodelconfig.php"');
-			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			header('Pragma: public');
-		} else {
-			header('Content-Disposition: attachment; filename="lodelconfig.php"');
-			header('Pragma: no-cache');
-		}
+        header('Content-Disposition: attachment; filename="lodelconfig.php"');
+        header('Pragma: no-cache');
 		readfile($this->lodelconfig);
 		return true;
 	}
@@ -551,17 +546,17 @@ class Install {
 	 */
 	public function testRights()
 	{
-		$dirs=array("CACHE"=>7,
-			"lodeladmin".$this->versionsuffix."/CACHE"=>7,
-			"lodeladmin".$this->versionsuffix."/tpl"=>5,
-			"lodel".$this->versionsuffix=>5,
-			"lodel".$this->versionsuffix."/install"=>5,
-			"lodel".$this->versionsuffix."/install/plateform"=>5,
-			"lodel".$this->versionsuffix."/scripts"=>5,
-			"lodel".$this->versionsuffix."/src"=>5,
-			"share".$this->versionsuffix."/css"=>5,
-			"share".$this->versionsuffix."/js"=>5,
-			"share".$this->versionsuffix."/macros"=>5);
+		$dirs=array(
+			"lodeladmin/tpl"=>5,
+			"lodel"=>5,
+			"lodel/install"=>5,
+			"lodel/install/plateform"=>5,
+			"lodel/scripts"=>5,
+			"lodel/src"=>5,
+			"share/css"=>5,
+			"share/js"=>5,
+			"share/macros"=>5
+        );
 		
 		if((int)$this->installoption === 1)
 		{
@@ -622,10 +617,10 @@ class Install {
 	 */
 	public function checkFunc()
 	{
-		require_once 'context.php';
+		require_once LODELROOT . 'lodel/scripts/context.php';
 		if(defined('INC_FUNC')) return;
-		if ((include(LODELROOT."lodel".$this->versionsuffix."/scripts/func.php"))!=568) { // on accede au fichier func.php
-			trigger_error("ERROR: unable to access the ../lodel".$this->versionsuffix."/scripts/func.php file. Check the file exists and the rights and/or report the bug.", E_USER_ERROR);
+		if ((include(LODELROOT."lodel/scripts/func.php"))!=568) { // on accede au fichier func.php
+			trigger_error("ERROR: unable to access the ../lodel/scripts/func.php file. Check the file exists and the rights and/or report the bug.", E_USER_ERROR);
 		}
 	}
 
@@ -684,11 +679,11 @@ class Install {
 			// il faudrait tester ici que les tables sur la database sont bien les memes que celles dans le fichier
 			// les IF NOT EXISTS sont necessaires dans le fichier init.sql sinon ca va produire une erreur.
 			
-			$erreur_createtables=$this->mysql_query_file(LODELROOT."lodel".$this->versionsuffix."/install/init.sql",$erasetables,$database);
+			$erreur_createtables=$this->mysql_query_file(LODELROOT."lodel/install/init.sql",$erasetables,$database);
 
 			// no error, let's add the translations of the interface.
 			if (!$erreur_createtables) 
-				$erreur_createtables=$this->mysql_query_file(LODELROOT."lodel".$this->versionsuffix."/install/init-translations.sql",$erasetables, $cfg['database']);
+				$erreur_createtables=$this->mysql_query_file(LODELROOT."lodel/install/init-translations.sql",$erasetables, $cfg['database']);
 
 			if ($erreur_createtables) {
 				// mince, ca marche pas... bon on detruit la table sites si elle existe pour pouvoir revenir ici
@@ -1205,9 +1200,9 @@ class Install {
 		$GLOBALS['dbusername'] = $cfg['dbusername'];
 		$GLOBALS['dbpasswd'] = $cfg['dbpasswd'];
 		$GLOBALS['dbhost'] = $cfg['dbhost'];
-		require_once("../lodel".$this->versionsuffix."/scripts/context.php");
+		require_once(LODELROOT . "lodel/scripts/context.php");
 		C::setCfg($cfg);
- 		require("../lodel".$this->versionsuffix."/scripts/connect.php");
+ 		require_once(LODELROOT . "lodel/scripts/connect.php");
 		global $db;
  		$result=$db->execute(lq("SELECT lang,title FROM #_MTP_translations WHERE status>0 AND textgroups='interface'")) 
 			or trigger_error("ERROR : error during selecting lang", E_USER_ERROR);

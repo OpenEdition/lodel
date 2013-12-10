@@ -48,7 +48,7 @@ $version = "1.0";
 
 require "class.Install.php";
 
-$lodelconfig = "CACHE/lodelconfig-cfg.php";
+$lodelconfig = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "lodelconfig-cfg.php";
 // securise l'entree
 if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
     $installing = true;
@@ -64,13 +64,11 @@ if (file_exists("lodelconfig.php") && file_exists("../lodelconfig.php")) {
     if (!isset($installlang)) $installlang = $cfg['installlang'];
     // Version of lodel to be installed.
     $install->set('versioninstall', $version);
-    $install->set('versionsuffix', "-" . $install->get('versioninstall')); # versioning
     $install->testInstallDB();
 } else {
     $install = new Install($lodelconfig, $have_chmod, $plateformdir);
     // Version of lodel to be installed.
     $install->set('versioninstall', $version);
-    $install->set('versionsuffix', "-" . $install->get('versioninstall')); # versioning
 }
 
 header("Content-type: text/html; charset=utf-8");
@@ -79,7 +77,7 @@ $install->set('installlang', $installlang);
 
 if (!defined("LODELROOT")) define("LODELROOT", "../"); // acces relatif vers la racine de LODEL. Il faut un / a la fin.
 
-ini_set('include_path', LODELROOT . "lodel" . $install->get('versionsuffix') . "/scripts" . PATH_SEPARATOR . LODELROOT . "share" . $install->get('versionsuffix') . PATH_SEPARATOR . ini_get("include_path"));
+ini_set('include_path', LODELROOT . "lodel/scripts" . PATH_SEPARATOR . LODELROOT . "share" . PATH_SEPARATOR . ini_get("include_path"));
 
 //
 // option
@@ -190,6 +188,7 @@ switch ($tache) {
         break;
     case 'downloadlodelconfig': // téléchargement du fichier de conf ?
         $install->downloadlodelconfig($log_version);
+        exit();
         break;
     case 'showlodelconfig': // affichage du contenu du fichier lodelconfig ?
         $install->showlodelconfig();
