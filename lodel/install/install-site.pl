@@ -4,12 +4,12 @@
 #
 #  Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
 #  Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-#  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-#  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-#  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
+#  Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cï¿½nou
+#  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cï¿½nou
+#  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cï¿½nou, Jean Lamy, Mikaï¿½l Cixous, Sophie Malafosse
+#  Copyright (c) 2007, Marin Dacos, Bruno Cï¿½nou, Sophie Malafosse, Pierre-Alain Mignot
+#  Copyright (c) 2008, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
+#  Copyright (c) 2009, Marin Dacos, Bruno Cï¿½nou, Pierre-Alain Mignot, Inï¿½s Secondat de Montesquieu, Jean-Franï¿½ois Riviï¿½re
 #
 #  Home page: http://www.lodel.org
 #
@@ -38,7 +38,7 @@ $droitlecture=shift @ARGV;
 $droitecriture=shift @ARGV;
 
 die('install-site.pl version droit_de_lecture droit_d_ecriture
-Les droits sont donnés sous la forme d\'une combinaison de u (user) g (group) et a (all)
+Les droits sont donnï¿½s sous la forme d\'une combinaison de u (user) g (group) et a (all)
 ex: install-site.pl 0.7 uga ug
 ') unless $droitlecture && $droitecriture;
 
@@ -58,10 +58,9 @@ unless ($version && ($version=="devel" || $version=~/^\d+\.\d+/)) {
   print STDERR "Veuillez preciser un numero de version ou devel\n";
   exit;
 }
-$versionsuffix=$version=="devel" ? "" : "-".$version;
 
-$homesite="../lodel$versionsuffix/src";
-$homesitetpl="../../lodel$versionsuffix/src";
+$homesite="../lodel/src";
+$homesitetpl="../../lodel/src";
 
 unless (-e $homesite) {
   print STDERR "La version '$version' n'existe pas sur le disque\n";
@@ -84,7 +83,7 @@ slink ("../lodelconfig.php","lodelconfig.php");
 if (-e "siteconfig.php") {
   $php=`php -v`;
   if ($php) {
-    $checkversion=`php -q -C ../lodel$versionsuffix/install/version.php`;
+    $checkversion=`php -q -C ../lodel/install/version.php`;
     if ($checkversion=~/error/) {
       print STDERR "Erreur lors du parsage du fichier siteconfig.php:\n\n$checkversion";
       exit;

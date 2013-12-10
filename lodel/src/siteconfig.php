@@ -57,16 +57,13 @@ $cfg['site'] = "";
 
 ##########################################
 
-$cfg['versionsuffix'] = "-".$cfg['version'];   # versioning
-
 if (!defined("SITEROOT")) {
     define("SITEROOT","");
 }
 
-$cfg['home'] = "../lodel{$cfg['versionsuffix']}/scripts/";
+$cfg['home'] = "../lodel/scripts/";
 $home = $cfg['home'];
-$cfg['sharedir'] = SITEROOT . "../".$cfg['sharedir'].$cfg['versionsuffix'];
-$cfg['shareurl'] .= $cfg['versionsuffix'];
+$cfg['sharedir'] = SITEROOT . "../".$cfg['sharedir'];
 
 # recaptcha pour la partie signaler
 # par défaut désactivé

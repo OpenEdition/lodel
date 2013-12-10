@@ -34,17 +34,13 @@ $cfg['version']="1.0";
 
 ##########################
 
-
-$cfg['versionsuffix']=$cfg['version'] ? "-{$cfg['version']}" : "";   # versioning
-
 define("LODELROOT","../");
 
 require(LODELROOT."lodelconfig.php");
-ini_set('include_path',LODELROOT. "lodel{$cfg['versionsuffix']}/scripts" .PATH_SEPARATOR . ini_get("include_path"));
+ini_set('include_path',LODELROOT. "lodel/scripts" .PATH_SEPARATOR . ini_get("include_path"));
 
 $cfg['home']=LODELROOT.$cfg['home'];
-$cfg['sharedir']=LODELROOT.$cfg['sharedir'].$cfg['versionsuffix'];
-$cfg['shareurl'].=$cfg['versionsuffix'];
+$cfg['sharedir']=LODELROOT.$cfg['sharedir'];
 
 $cfg['site']="";
 
