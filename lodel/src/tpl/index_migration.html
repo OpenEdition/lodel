@@ -82,12 +82,12 @@
 						<IF COND="[#ACTION] NE 2">
 						<input type="checkbox" name="save_and_dump" checked="checked"/>&nbsp;Sauvegarde et téléchargement de la base AVANT modifications des données (vivement conseillé !)<br /><br />
 						</IF>
-						<input type="checkbox" name="do_and_dump" />&nbsp;Téléchargement des requêtes SQL modifiant la base<br /><br />
-						<input type="checkbox" name="dump_after" />&nbsp;Téléchargement de la base après modifications<br /><br />
+						<input type="checkbox" name="do_and_dump" id="dump_modified" onclick="document.getElementById('dump_after').checked=0;"/>&nbsp;Téléchargement des requêtes SQL modifiant la base<br /><br />
+						<input type="checkbox" name="dump_after" id="dump_after" onclick="document.getElementById('dump_modified').checked=0;" />&nbsp;Téléchargement de la base après modifications<br /><br />
 						<input type="checkbox" name="update_me" />&nbsp;Mise à jour du ME Revues.org (uniquement)<br /><br />
 						<input type="text" name="defaultgtitle" value="titre"  size="15"/>&nbsp;g_title<br /><br />
 						<input type="text" name="defaultgname" value="dc.title"  size="15"/>&nbsp;g_name<br /><br />
-						<input type="text" name="new_dir" value="" size="15" />&nbsp;Chemin relatif de la nouvelle installation (exemple : vous avez installé Lodel 0.7 dans /var/www/lodel07/ et Lodel 0.8 dans /var/www/lodel08/, alors le chemin relatif sera : "../../lodel08")<br /><br />
+						<input type="text" name="new_dir" value="" size="15" />&nbsp;Chemin relatif de la nouvelle installation (exemple : vous avez installé Lodel 0.7 dans /var/www/lodel07/mon_site et Lodel 0.8 dans /var/www/lodel08/mon_site, alors le chemin relatif sera : "../lodel08/mon_site")<br /><br />
 						<input type="submit" name="valid" value="Valider" />
 					</FIELDSET>
 				</form>

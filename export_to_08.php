@@ -47,7 +47,7 @@ require_once ($home."calcul-page.php");
 
 $context['actions'] = &$_POST;
 $context['error'] = 0;
-
+set_time_limit(0);
 
 if($context['actions']['valid'] === "Valider" && !empty($context['actions']['defaultgtitle']) && !empty($context['actions']['defaultgname'])) {
 	$exportfor08 = new exportfor08($context['actions']['defaultgtitle'], $context['actions']['defaultgname']);
@@ -103,6 +103,7 @@ if($context['actions']['valid'] === "Valider" && !empty($context['actions']['def
 				$context['msg_error'] = $context['up_fields'];
 			}
 		}
+/*
 		if($context['actions']['update_me'] && !$context['error']) {
 			$context['up_me'] = $exportfor08->update_ME();
 			if($context['up_me'] != "Ok") {
@@ -110,14 +111,15 @@ if($context['actions']['valid'] === "Valider" && !empty($context['actions']['def
 				$context['msg_error'] = $context['up_me'];
 			}
 		}
+*/
 		if(!$context['error']) {
-			$context['cp_index'] = $exportfor08->insert_index_data();
+			$context['cp_index'] = $exportfor08->insert_index_data($context['actions']['update_me']);
 			if($context['cp_index'] != "Ok") {
 				$context['error'] = 9;
 				$context['msg_error'] = $context['cp_index'];
 			}
 		}
-		if(!$context['error']) {
+/*		if(!$context['error']) {
 			$context['cp_docannexes'] = $exportfor08->datas_copy("docannexe", $context['actions']['new_dir']."/docannexe");
 			if($context['cp_docannexes'] != "Ok") {
 				$context['error'] = 10;
@@ -151,7 +153,7 @@ if($context['actions']['valid'] === "Valider" && !empty($context['actions']['def
 				$context['error'] = 14;
 				$context['msg_error'] = $context['up_tpl'];
 			}
-		}
+		}/*
 		if($context['actions']['do_and_dump'] && !$context['error']) {
 			$context['dump_after'] = $exportfor08->dump_changes_to08();
 			if($context['dump_after'] != "Ok") {
@@ -165,7 +167,7 @@ if($context['actions']['valid'] === "Valider" && !empty($context['actions']['def
 				$context['error'] = 16;
 				$context['msg_error'] = $context['dump_after_changes'];
 			}
-		}
+		}*/
 } elseif($context['actions']['valid'] === "Valider") {
 	$context['error'] = 1;
 }

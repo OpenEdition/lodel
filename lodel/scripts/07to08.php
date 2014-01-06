@@ -234,7 +234,7 @@ class exportfor08
 		$result=mysql_list_tables($GLOBALS['currentdb']);
 		$tables=array();
 		while (list($table) = mysql_fetch_row($result)) {
-			$tables[] = $table;
+				$tables[] = $table;
 		}
 		if (!empty($tables)) {
 			return $tables;
@@ -369,7 +369,7 @@ class exportfor08
 				$newfields = trim($newfields);
 				$oldtable .= '__old';
 				
-				if ($err = $this->__mysql_query_cmds("INSERT INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;\n")) {
+				if ($err = $this->__mysql_query_cmds("INSERT IGNORE INTO _PREFIXTABLE_$newtable ($newfields) SELECT $oldfields FROM _PREFIXTABLE_$oldtable;\n")) {
 					return $err;
 				}
 			}

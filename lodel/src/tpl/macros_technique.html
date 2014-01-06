@@ -530,14 +530,3 @@ function RestoreImg()
 		Page précédente
 	</a>
 </DEFMACRO>
-<DEFMACRO NAME="LISTER_AUTEURS_DOCUMENT_ATOM">
-<!--[ ****************************************************************** ]-->
-<!--[ version 1.0                                                        ]-->
-<!--[ Affiche la liste des auteurs d'un document pour fil atom           ]-->
-<!--[ ****************************************************************** ]-->
-		<LOOP NAME="lister_auteurs_document" TABLE="personnes" WHERE="type='auteur'"  WHERE="iddocument='[#ID]'" ORDER="ordre">
-			<DO><author>
-			<name>[#PRENOM] [#NOMFAMILLE]</name>
-			</author></DO>
-		</LOOP>
-</DEFMACRO>
