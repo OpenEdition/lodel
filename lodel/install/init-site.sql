@@ -517,23 +517,23 @@ CREATE TABLE IF NOT EXISTS #_TP_oaitokens (
   query text NOT NULL,
   metadataprefix varchar(35) NOT NULL default '',
   deliveredrecords int(11) NOT NULL default '0',
-  expirationdatetime timestamp NOT NULL,
+  expirationdatetime timestamp(14) NOT NULL,
   UNIQUE KEY token (token)
-) ENGINE=MyISAM _CHARSET_;
+) _CHARSET_;
 
 
 CREATE TABLE IF NOT EXISTS #_TP_oailogs (
   id int(11) NOT NULL auto_increment,
   host tinytext NOT NULL,
-  date timestamp NOT NULL,
+  date timestamp(14) NOT NULL,
   denied tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (id)
-) ENGINE=MyISAM AUTO_INCREMENT=566  _CHARSET_;
+) _CHARSET_;
 
 CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   id int(10) unsigned NOT NULL auto_increment,
-  username varchar(64) character set utf8 collate utf8_bin NOT NULL,
-  passwd varchar(64) character set utf8 collate utf8_bin NOT NULL,
+  username varchar(64) NOT NULL,
+  passwd varchar(64) NOT NULL,
   lastname varchar(255) default NULL,
   firstname varchar(255) default NULL,
   email varchar(255) default NULL,
@@ -546,4 +546,4 @@ CREATE TABLE IF NOT EXISTS #_TP_restricted_users (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `index_username` (`username`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 
+) _CHARSET_;
