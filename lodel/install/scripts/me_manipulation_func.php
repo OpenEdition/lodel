@@ -55,7 +55,8 @@ EntryType alias ET
 	::get($type)
 	::create($class, $type, $title, $infos=array())
 	->delete()
-	->field($key)
+	->field($key) Recevoir une propriété de l'EntryType
+	->set($fields, $value=null) Change les propriétés du champ: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->migrate($class) migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
 	->addStyle($style) rajout d'un style
 	->delStyle($style) enlever un style
@@ -64,7 +65,8 @@ PersonType alias PT
 	::get($type)
 	::create($class, $type, $title, $infos=array())
 	->delete()
-	->field($key)
+	->field($key) Recevoir une propriété du PersonType
+	->set($fields, $value=null) Change les propriétés du champ: $fields = array('fieldname'=>'value') OU ('fieldname', 'value')
 	->addStyle($style) rajout d'un style
 	->delStyle($style) enlever un style
 
@@ -115,8 +117,10 @@ if (php_sapi_name() != "cli") {
 	require_once 'lodelconfig.php';
 
 	define("SITEROOT","");
-	$cfg['home'] = "lodel/scripts/";
-	$cfg['sharedir'] = SITEROOT . $cfg['sharedir'];
+	$cfg['versionsuffix'] = "-".$cfg['version'];   # versioning
+	$cfg['home'] = "lodel{$cfg['versionsuffix']}/scripts/";
+	$cfg['sharedir'] = SITEROOT . $cfg['sharedir'].$cfg['versionsuffix'];
+	$cfg['shareurl'] .= $cfg['versionsuffix'];
 	ini_set('include_path', SITEROOT. $cfg['home'] . PATH_SEPARATOR . ini_get('include_path'));
 	require 'context.php';
 	C::setCfg($cfg);
@@ -764,6 +768,22 @@ class EntryType extends MEobject {
 		return $this;
 	}
 
+	// change les propriétés du champ
+	public function set($fields, $value=null) {
+		if ($this->error) return $this;
+		$autorised_field = array ('title', 'altertitle', 'lang', 'icon', 'gui_user_complexity', 'edition', 'flat', 'g_type', 'newbyimportallowed', 'tpl', 'tplindex', 'sort', 'rank', 'status', 'upd','otx');
+		if ($value !== null)
+			$fields = array($fields=>$value);
+		$done = array();
+		foreach ($autorised_field as $f) {
+			if (isset($fields[$f])) {
+				$this->fields[$f] = $fields[$f];
+				$done[] = "'$f' => '".$fields[$f]."'";
+			}
+		}
+		return $this->save("Changements de propriétés: ".implode(", ",$done));
+	}
+
 	// migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
 	public function migrate($class) {
 		if ($this->error) return $this;
@@ -861,6 +881,22 @@ class PersonType extends MEobject {
 
 	function __toString() {
 		return "PersonType '".$this->fields['type']."'";
+	}
+
+	// change les propriétés du champ
+	public function set($fields, $value=null) {
+		if ($this->error) return $this;
+		$autorised_field = array ('title', 'altertitle', 'icon', 'gui_user_complexity', 'g_type', 'tpl', 'tplindex', 'rank', 'status', 'upd', 'otx');
+		if ($value !== null)
+			$fields = array($fields=>$value);
+		$done = array();
+		foreach ($autorised_field as $f) {
+			if (isset($fields[$f])) {
+				$this->fields[$f] = $fields[$f];
+				$done[] = "'$f' => '".$fields[$f]."'";
+			}
+		}
+		return $this->save("Changements de propriétés: ".implode(", ",$done));
 	}
 
 	protected function save($message) {
