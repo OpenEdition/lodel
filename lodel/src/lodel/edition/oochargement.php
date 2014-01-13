@@ -215,11 +215,9 @@ try
                     $fileconverted = $source. '.converted';
                     $cache->set($fileconverted, base64_encode(serialize($contents)));
 
-                    $tei = $source. '.tei';
-                    if(!writefile($tei, $teiContents))
-                    {
-                        printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
-                    }
+                    $cache->set($source, base64_encode(file_get_contents($source)));
+                    $cache->set($tei, base64_encode(file_get_contents($tei)));
+
                     unset($contents);
                     $row = array();
                     $row['fichier']         = $fileconverted;
@@ -350,11 +348,8 @@ try
 		$fileconverted = $source. '.converted';
 		$cache->set($fileconverted, base64_encode(serialize($contents)));
 
-		$tei = $source. '.tei';
-		if(!writefile($tei, $teiContents))
-		{
-			printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', true, $isFrame);
-		}
+        $cache->set($source, base64_encode(file_get_contents($source)));
+        $cache->set($tei, base64_encode(file_get_contents($tei)));
 
 		unset($contents);
 		$row = array();
@@ -515,6 +510,10 @@ RDF;
 			$fileconverted = $source. '.converted';
 			$cache->set($fileconverted, base64_encode(serialize($contents)));
 
+            $cache->set($source, base64_encode(file_get_contents($source)));
+            $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)));
+            $cache->set($tei, base64_encode(file_get_contents($tei)));
+
 			unset($contents);
 			$row = array();
 			$row['fichier']			= $fileconverted;
@@ -527,7 +526,7 @@ RDF;
 			$row['identity']		= $context['identity'];
 			$row['idparent']		= $context['idparent'];
 			$row['idtype']			= $context['idtype'];
-                        $row['reload']                  = $context['reload'];
+            $row['reload']          = $context['reload'];
 
 			function_exists('maketask') || include 'taskfunc.php';
 			if(empty($context['multiple']))

@@ -118,7 +118,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$context['creationinfo'] = $task['sourceoriginale'];
 		$source = isset($task['source']) ? $task['source'] : null;
 		$odt = isset($task['odt']) ? $task['odt'] : null;
-		$tei = $task['tei'];
+		$tei = base64_decode(cache_get($task['tei'], false));
 		unset($task, $contents);
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
@@ -126,22 +126,23 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		if($delete) @unlink ($sourcefile);
 		if(isset($source))
 		{
-			copy ($source, $sourcefile);
+			file_put_contents($sourcefile, base64_decode(cache_get($source, false)));
 			@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
 		if($delete) @unlink ($sourcefileodt);
 		if(isset($odt))
 		{
-			copy ($odt, $sourcefileodt);
+            file_put_contents($sourcefileodt, base64_decode(cache_get($odt, false)));
 			@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 
 		$this->_fixImagesPath($tei);
 
-		if($delete) @unlink (SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
-		copy($tei, SITEROOT."lodel/sources/entite-tei-".$this->id.".xml");
-		@chmod (SITEROOT."lodel/sources/entite-".$this->id.".tei", 0666 & octdec(C::get('filemask', 'cfg')));
+        $teifile = SITEROOT."lodel/sources/entite-tei-".$this->id.".xml";
+		if($delete) @unlink ($teifile);
+		file_put_contents($teifile, $tei);
+		@chmod ($teifile, 0666 & octdec(C::get('filemask', 'cfg')));
 // 		class_exists('XMLImportParser', false) || include "xmlimport.php";
 // 		$parser=new XMLImportParser();
 // 		$parser->init (@$context['class']);
@@ -203,12 +204,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	 * @access private
 	 * @param string the TEI file
 	 */
-	private function _fixImagesPath( $tei ){
+	private function _fixImagesPath( &$tei ){
 		$dom = new DOMDocument();
 		$dom->preserveWhiteSpace = true;
 		$dom->formatOutput       = false;
 
-		$dom->load($tei);
+		$dom->loadXML($tei);
 
 		$a = $dom->getElementsByTagName('graphic');
 		foreach($a as $image){
@@ -220,9 +221,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			}
 		}
 
-		@unlink($tei);
-		@file_put_contents($tei, $dom->saveXML());
-		@chmod($tei, 0664);
+		$tei = $dom->saveXML();
 	}
 	/**
 	 * method to move img link when the new id is known
