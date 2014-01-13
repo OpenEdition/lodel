@@ -2369,40 +2369,43 @@ class DataLogic
 
 			$result = $db->getRow( "SHOW CREATE TABLE ".$table );
 			preg_match("/^CREATE TABLE `$table`\s+\(\s*(.*)\s*\)\s*(.*)$/s", $result['Create Table'], $matches);
-			$fields = explode("\n", $matches[1]);
+			if($matches)
+            {
+                $fields = explode("\n", $matches[1]);
 
-			foreach($fields as $kk=>$val) {
-				$field = trim($val);
-				if(!$field)
-					continue;
-				$fieldNode = $document->createElement("field");
-				$structNode->appendChild($fieldNode);
-				if(FALSE !== strpos($field, ',', strlen($field)-1))
-					$field = substr($field, 0, strlen($field)-1);
+                foreach($fields as $kk=>$val) {
+                    $field = trim($val);
+                    if(!$field)
+                        continue;
+                    $fieldNode = $document->createElement("field");
+                    $structNode->appendChild($fieldNode);
+                    if(FALSE !== strpos($field, ',', strlen($field)-1))
+                        $field = substr($field, 0, strlen($field)-1);
 
-				if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
-					$fieldNode->setAttribute('name', $m[1]);
-					$fieldNode->nodeValue = $m[2];
-				} else { // clé
-					$field = explode('KEY', $field);
-					$field[0] = trim($field[0]);
-					$field[1] = trim($field[1]);
-					// on peut avoir plusieurs clé : on concatène $kk
-					if($field[0]) {
-						$fieldNode->setAttribute('name', $field[0].'_'.$kk);
-						$fieldNode->nodeValue = $field[1];
-					} else {
-						$fieldNode->setAttribute('name', 'KEY_'.$kk);
-						$fieldNode->nodeValue = $field[1];
-					}
-					$fieldNode->setAttribute('key', '1');
-				}
-			}
+                    if(preg_match("/^`([^`]+)`\s+(.*)$/", $field, $m)) { // champ
+                        $fieldNode->setAttribute('name', $m[1]);
+                        $fieldNode->nodeValue = $m[2];
+                    } else { // clé
+                        $field = explode('KEY', $field);
+                        $field[0] = trim($field[0]);
+                        $field[1] = trim($field[1]);
+                        // on peut avoir plusieurs clé : on concatène $kk
+                        if($field[0]) {
+                            $fieldNode->setAttribute('name', $field[0].'_'.$kk);
+                            $fieldNode->nodeValue = $field[1];
+                        } else {
+                            $fieldNode->setAttribute('name', 'KEY_'.$kk);
+                            $fieldNode->nodeValue = $field[1];
+                        }
+                        $fieldNode->setAttribute('key', '1');
+                    }
+                }
 
-			$fieldNode = $document->createElement("field");
-			$structNode->appendChild($fieldNode);
-			$fieldNode->setAttribute('name', 'tableOptions');
-			$fieldNode->nodeValue = $matches[2];
+                $fieldNode = $document->createElement("field");
+                $structNode->appendChild($fieldNode);
+                $fieldNode->setAttribute('name', 'tableOptions');
+                $fieldNode->nodeValue = $matches[2];
+            }
 
 			if($content) {
                 if($table == lq('#_TP_relations_ext'))
