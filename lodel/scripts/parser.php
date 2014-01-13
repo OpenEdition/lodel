@@ -1401,6 +1401,14 @@ PHP;
 					}
 				}
 			}
+			// define undefined optional parameter, so the ones in the context do not overwrite them
+			if (!empty($defattr['OPTIONAL'])) {
+				$optional = explode(',', strtoupper($defattr['OPTIONAL']));
+				foreach ($optional as $arg) {
+					if (!isset ($attrs[$arg]))
+						$attrs[$arg] = '';
+				}
+			}
 
 			// build the call
 			unset ($attrs['NAME']);
