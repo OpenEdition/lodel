@@ -470,8 +470,11 @@ class TEIParser extends XMLReader
 				if(!empty($images))
 				{
 					$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
-					mkdir($tmpdir);
-					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+                    if(!file_exists($tmpdir))
+                    {
+                        mkdir($tmpdir);
+                        chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
+                    }
 					foreach($images as $image=>$fullimage)
 					{
 						$this->_images[$image] = $tmpdir.$image;

@@ -1331,6 +1331,16 @@ if (!function_exists('detectlanguage')) {
     }
 }
 
+function myaddslashes(&$var)
+{
+    if (is_array($var)) {
+        array_walk($var, "myaddslashes");
+        return $var;
+    } else {
+        return $var = addslashes($var);
+    }
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
