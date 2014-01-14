@@ -45,9 +45,9 @@
  * @version CVS:$Id:
  * @package lodel
  */
-$site = filter_input(INPUT_POST, 'site', FILTER_SANITIZE_STRING);
+$site = filter_input(INPUT_POST, 'site', FILTER_VALIDATE_REGEXP, array("options" => array("regexp"=>"/^[a-z0-9\-]+$/")));
 
-if(empty($site) || in_array($site, array('lodel', 'share', 'lodeladmin')) || !is_dir("../../{$site}"))
+if(!$site || in_array($site, array('lodel', 'share', 'lodeladmin')) || !is_dir("../../{$site}"))
 {
     // tentative ?
     header("HTTP/1.0 404 Not Found");
