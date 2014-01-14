@@ -25,7 +25,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * -----------------------------------------------------------------------------
- * Adapatation PHP5 : Edouard Guérin <eguerin@icitrus.net>
+ * Adapatation PHP5 : Edouard GuÃ©rin <eguerin@icitrus.net>
  */
 
 class WikiRendererConfig {
@@ -46,7 +46,7 @@ class WikiRendererConfig {
     );
 
     /**
-     * liste des balises de type bloc autorisées.
+     * liste des balises de type bloc autorisÃ©es.
      * Attention, ordre important (p en dernier, car c'est le bloc par defaut..)
      */
 
@@ -80,14 +80,14 @@ class WikiRendererConfig {
     public $headerOrder=false;
     public $escapeSpecialChars=true;
     public $inlineTagSeparator='|';
-    public $blocAttributeTag='°°';
+    public $blocAttributeTag='Â°Â°';
 
     public $checkWikiWord = false;
     public $checkWikiWordFunction = null;
 
 }
 
-// ===================================== fonctions de générateur de code HTML spécifiques à certaines balises inlines
+// ===================================== fonctions de gÃ©nÃ©rateur de code HTML spÃ©cifiques Ã  certaines balises inlines
 
 function wikibuildlink($contents, $attr){
    $cnt=count($contents);
@@ -144,7 +144,7 @@ function wikibuildimage($contents, $attr){
 }
 
 
-// ===================================== déclaration des différents bloc wiki
+// ===================================== dÃ©claration des diffÃ©rents bloc wiki
 
 /**
  * traite les signes de types liste
@@ -193,7 +193,7 @@ class WRB_list extends WikiRendererBloc {
                 $str.=($t{$i-1}== '#'?"</li></ol>\n":"</li></ul>\n");
             }
             $str.="</li>\n<li>";
-            $this->_previousTag=substr($this->_previousTag,0,-$d); // pour être sur...
+            $this->_previousTag=substr($this->_previousTag,0,-$d); // pour Ãªtre sur...
 
         }
         elseif( $d < 0 ) { // un niveau de plus
@@ -379,7 +379,7 @@ class WRB_blockquote extends WikiRendererBloc {
 }
 
 /**
- * traite les signes de type définitions
+ * traite les signes de type dÃ©finitions
  */
 class WRB_definition extends WikiRendererBloc {
 

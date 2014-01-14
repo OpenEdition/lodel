@@ -26,14 +26,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * -----------------------------------------------------------------------------
  * Contributeurs :
- *    Edouard Guérin <eguerin@icitrus.net> (Adapatation PHP5)
+ *    Edouard GuÃ©rin <eguerin@icitrus.net> (Adapatation PHP5)
  */
 
 define('WIKIRENDERER_PATH', dirname(__FILE__).'/');
 define('WIKIRENDERER_VERSION', '2.0dev-php5');
 
 /**
- * Implémente les propriétés d'un tag inline wiki et le fonctionnement pour la génération
+ * ImplÃ©mente les propriÃ©tÃ©s d'un tag inline wiki et le fonctionnement pour la gÃ©nÃ©ration
  * du code html correspondant
  */
 
@@ -126,7 +126,7 @@ class WikiTag {
 }
 
 /**
- * Moteur permettant de transformer les tags wiki inline d'une chaine en équivalent HTML
+ * Moteur permettant de transformer les tags wiki inline d'une chaine en Ã©quivalent HTML
  */
 class WikiInlineParser {
 
@@ -145,7 +145,7 @@ class WikiInlineParser {
     /**
      * constructeur
      * @param   array    $inlinetags liste des tags permis
-     * @param   string   caractère séparateur des différents composants d'un tag wiki
+     * @param   string   caractÃ¨re sÃ©parateur des diffÃ©rents composants d'un tag wiki
      */
 
     function __construct(
@@ -178,7 +178,7 @@ class WikiInlineParser {
     /**
      * fonction principale du parser.
      * @param   string   $line avec des eventuels tag wiki
-     * @return  string   chaine $line avec les tags wiki transformé en HTML
+     * @return  string   chaine $line avec les tags wiki transformÃ© en HTML
      */
     public function parse($line) {
         $this->error=false;
@@ -208,7 +208,7 @@ class WikiInlineParser {
     }
 
     /**
-     * coeur du parseur. Appelé récursivement
+     * coeur du parseur. AppelÃ© rÃ©cursivement
      */
 
     private function _parse($tag, &$posstart) {
@@ -216,7 +216,7 @@ class WikiInlineParser {
         $checkNextTag=true;
         $checkBeginTag=true;
 
-        // on parcours la chaine,  morceau aprés morceau
+        // on parcours la chaine,  morceau aprÃ©s morceau
         for($i=$posstart+1; $i < $this->end; $i++) {
 
             $t=&$this->str[$i];
@@ -230,7 +230,7 @@ class WikiInlineParser {
                     $tag->addContent('\\',false);
                 }
 
-                // est-ce un séparateur ?
+                // est-ce un sÃ©parateur ?
             }
             elseif($t == $this->_separator) {
                 if($tag->isDummy() || !$checkNextTag)
@@ -266,7 +266,7 @@ class WikiInlineParser {
                         $tag->addContent($t,$this->escapeHtml);
                 }
 
-            // a-t-on un saut de ligne forcé ?
+            // a-t-on un saut de ligne forcÃ© ?
             }
             elseif($checkNextTag && $checkBeginTag && isset($this->simpletags[$t])) {
                 $tag->addContent($this->simpletags[$t],false);
@@ -284,7 +284,7 @@ class WikiInlineParser {
             }
         }
         if(!$tag->isDummy()) {
-            //--- on n'a pas trouvé le tag de fin
+            //--- on n'a pas trouvÃ© le tag de fin
             // on met en erreur
             $this->error=true;
             return false;
@@ -296,7 +296,7 @@ class WikiInlineParser {
     private function _doCheckWikiWord($string) {
         if(preg_match_all("/(?<=\b)[A-Z][a-z]+[A-Z0-9]\w*/", $string, $matches)){
             $fct=$this->checkWikiWordFunction;
-            $match = array_unique($matches[0]); // il faut avoir une liste sans doublon, à cause du str_replace plus loin...
+            $match = array_unique($matches[0]); // il faut avoir une liste sans doublon, Ã  cause du str_replace plus loin...
             $string=str_replace($match, $fct($match), $string);
         }
         return $string;
@@ -311,7 +311,7 @@ class WikiInlineParser {
 
 
 /**
- * classe de base pour la transformation des élements de type bloc
+ * classe de base pour la transformation des Ã©lements de type bloc
  * @abstract
  */
 class WikiRendererBloc {
@@ -335,31 +335,31 @@ class WikiRendererBloc {
     protected $_closeTag='';
 
     /**
-     * @var boolean indique si le bloc doit être immediatement fermé aprés détection
+     * @var boolean indique si le bloc doit Ãªtre immediatement fermÃ© aprÃ©s dÃ©tection
      * @access protected
      */
     protected $_closeNow=false;
 
     /**
-     * @var WikiRenderer      référence à la classe principale
+     * @var WikiRenderer      rÃ©fÃ©rence Ã  la classe principale
      * @access protected
      */
     protected $engine=null;
 
     /**
-     * @var array liste des élements trouvés par l'expression régulière regexp
+     * @var array liste des Ã©lements trouvÃ©s par l'expression rÃ©guliÃ¨re regexp
      * @access protected
      */
     protected $_detectMatch=null;
 
     /**
-     * @var string expression régulière permettant de reconnaitre le bloc
+     * @var string expression rÃ©guliÃ¨re permettant de reconnaitre le bloc
      * @access protected
      */
     protected $regexp='';
 
     /**
-     * constructeur à surcharger pour définir les valeurs des différentes proprietés
+     * constructeur Ã  surcharger pour dÃ©finir les valeurs des diffÃ©rentes proprietÃ©s
      * @param WikiRender $wr l'objet moteur wiki
      */
 
@@ -368,7 +368,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * renvoi une chaine correspondant à l'ouverture du bloc
+     * renvoi une chaine correspondant Ã  l'ouverture du bloc
      * @return string
      * @access public
      */
@@ -378,7 +378,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * renvoi une chaine correspondant à la fermeture du bloc
+     * renvoi une chaine correspondant Ã  la fermeture du bloc
      * @return string
      * @access public
      */
@@ -388,7 +388,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * indique si le bloc doit etre immédiatement fermé
+     * indique si le bloc doit etre immÃ©diatement fermÃ©
      * @return string
      * @access public
      */
@@ -409,7 +409,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * renvoi la ligne, traitée pour le bloc. A surcharger éventuellement.
+     * renvoi la ligne, traitÃ©e pour le bloc. A surcharger Ã©ventuellement.
      * @return string
      * @access public
      */
@@ -429,7 +429,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * définit la liste des élements trouvés par l'expression régulière regexp
+     * dÃ©finit la liste des Ã©lements trouvÃ©s par l'expression rÃ©guliÃ¨re regexp
      * @return array
      * @access public
      */
@@ -439,7 +439,7 @@ class WikiRendererBloc {
     }
 
     /**
-     * renvoi la liste des élements trouvés par l'expression régulière regexp
+     * renvoi la liste des Ã©lements trouvÃ©s par l'expression rÃ©guliÃ¨re regexp
      * @return array
      * @access public
      */
@@ -451,7 +451,7 @@ class WikiRendererBloc {
     /**
      * traite le rendu des signes de type inline (qui se trouvent necessairement dans des blocs
      * @param   string  $string une chaine contenant une ou plusieurs balises wiki
-     * @return  string  la chaine transformée en XHTML
+     * @return  string  la chaine transformÃ©e en XHTML
      * @access protected
      * @see WikiRendererInline
      */
@@ -461,8 +461,8 @@ class WikiRendererBloc {
     }
 
     /**
-     * détection d'attributs de bloc (ex:  >°°attr1|attr2|attr3°° la citation )
-     * @todo à terminer pour une version ulterieure
+     * dÃ©tection d'attributs de bloc (ex:  >Â°Â°attr1|attr2|attr3Â°Â° la citation )
+     * @todo Ã  terminer pour une version ulterieure
      * @access protected
      */
 
@@ -482,7 +482,7 @@ require(WIKIRENDERER_PATH . 'WikiRenderer.conf.php5');
 
 
 /**
- * Moteur de rendu. Classe principale à instancier pour transformer un texte wiki en texte XHTML.
+ * Moteur de rendu. Classe principale Ã  instancier pour transformer un texte wiki en texte XHTML.
  * utilisation :
  *      $ctr = new WikiRenderer();
  *      $monTexteXHTML = $ctr->render($montexte);
@@ -491,7 +491,7 @@ require(WIKIRENDERER_PATH . 'WikiRenderer.conf.php5');
 class WikiRenderer {
 
     /**
-     * @var string contient la version HTML du texte analysé
+     * @var string contient la version HTML du texte analysÃ©
      * @access private
      */
 
@@ -519,7 +519,7 @@ class WikiRenderer {
     private $_blocList= array();
 
     /**
-     * @var array liste de paramètres pour le moteur
+     * @var array liste de paramÃ¨tres pour le moteur
      * @access private
      */
 
@@ -533,7 +533,7 @@ class WikiRenderer {
     private $inlineParser=null;
 
     /**
-     * liste des lignes où il y a une erreur wiki
+     * liste des lignes oÃ¹ il y a une erreur wiki
      * @access private
      */
 
@@ -548,7 +548,7 @@ class WikiRenderer {
     private $config=null;
 
     /**
-     * instancie les différents objets pour le rendu des elements inline et bloc.
+     * instancie les diffÃ©rents objets pour le rendu des elements inline et bloc.
      */
 
     function __construct($config=null) {
@@ -575,13 +575,13 @@ class WikiRenderer {
 
     /**
      * Methode principale qui transforme les tags wiki en tag XHTML
-     * @param   string  $texte le texte à convertir
+     * @param   string  $texte le texte Ã  convertir
      * @return  string  le texte converti en XHTML
      * @access public
      */
     public function render($texte) {
 
-        // on remplace les \r (mac), les \n (unix) et les \r\n (windows) par un autre caractère pour découper proprement
+        // on remplace les \r (mac), les \n (unix) et les \r\n (windows) par un autre caractÃ¨re pour dÃ©couper proprement
         $lignes=preg_split("/\015\012|\015|\012/",$texte);
 
         $this->_newtext=array();
@@ -592,7 +592,7 @@ class WikiRenderer {
         // parcours de l'ensemble des lignes du texte
         foreach($lignes as $num=>$ligne){
 
-            if($ligne == '') { // pas de trim à cause des pre
+            if($ligne == '') { // pas de trim Ã  cause des pre
                 // ligne vide
                 $this->_closeBloc();
             }
@@ -645,7 +645,7 @@ class WikiRenderer {
     }
 
     /**
-     * Retourne l'objet inlineParser (WikiInlineParser) utilisé dans le moteur
+     * Retourne l'objet inlineParser (WikiInlineParser) utilisÃ© dans le moteur
      * @access public
      * @see WikiInlineParser
      * @return WikiInlineParser
@@ -656,7 +656,7 @@ class WikiRenderer {
     }
 
     /**
-     * renvoi la liste des erreurs detectées par le moteur
+     * renvoi la liste des erreurs detectÃ©es par le moteur
      * @access public
      * @return array
      */
