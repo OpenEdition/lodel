@@ -542,7 +542,7 @@ function _adodb_pageexecute_all_rows(&$zthis, $sql, $nrows, $page,
 	return $rsreturn;
 }
 
-// Iván Oliva version
+// IvÃ¡n Oliva version
 function _adodb_pageexecute_no_last_page(&$zthis, $sql, $nrows, $page, $inputarr=false, $secs2cache=0) 
 {
 
@@ -1205,5 +1205,3 @@ function _adodb_find_from($sql)
 	}
 }
 */
-
-?>
