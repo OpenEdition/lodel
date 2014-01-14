@@ -45,19 +45,27 @@
  * @version CVS:$Id:
  * @package lodel
  */
-if(!isset($_POST['site']) || ('principal' !== $_POST['site'] && (!preg_match("/^[a-z0-9\-]+$/", $_POST['site']) || 
-	in_array($_POST['site'], array('lodel', 'share', 'lodeladmin')) ||
-	!is_dir('../../'.$_POST['site'])))) {
-	// tentative ?
-	echo 'error';
-	exit();
+
+$site = filter_input(INPUT_POST, 'site', FILTER_SANITIZE_STRING);
+
+if(empty($site) || in_array($site, array('lodel', 'share', 'lodeladmin')) || !is_dir("../../{$site}"))
+{
+    // tentative ?
+    header("HTTP/1.0 404 Not Found");
+    echo 'error';
+    exit();
 }
+
 // chdir pour faciliter les include
-chdir('../../'.('principal' == $_POST['site'] ? '' : $_POST['site']).'/lodel/edition');
-if(!file_exists('siteconfig.php')) {
-	echo 'error';
-	exit();
+chdir('../../' . ('principal' == $site ? '' : $site) . '/lodel/edition');
+
+if(!file_exists('siteconfig.php'))
+{
+    header("HTTP/1.0 404 Not Found");
+    echo 'error';
+    exit();
 }
+
 require 'siteconfig.php';
 
 try
@@ -85,7 +93,7 @@ try
 }
 catch(Exception $e)
 {
-	echo 'error';
-	exit();
+    header("HTTP/1.0 404 Not Found");
+    echo 'error';
+    exit();
 }
-?>
