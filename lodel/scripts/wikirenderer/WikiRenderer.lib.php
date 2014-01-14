@@ -704,6 +704,3 @@ class WikiRenderer {
     }
 
 }
-
-
-?>

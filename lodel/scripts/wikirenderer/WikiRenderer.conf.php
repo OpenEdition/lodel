@@ -397,5 +397,3 @@ class WRB_definition extends WikiRendererBloc {
         return "<dt>$dt</dt>\n<dd>$dd</dd>\n";
     }
 }
-
-?>
