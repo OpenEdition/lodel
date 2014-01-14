@@ -1341,6 +1341,17 @@ function myaddslashes(&$var)
     }
 }
 
+function delete_files()
+{
+    foreach( func_get_args() as $file )
+    {
+        if ( strpos( dirname($file),  sys_get_temp_dir() ) === 0 )
+        {
+            unlink($file);
+        }
+    }
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts

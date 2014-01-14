@@ -219,6 +219,8 @@ try
                     $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
                     $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
+                    delete_files($fileconverted, $source, $tei);
+
                     unset($contents);
                     $row = array();
                     $row['fichier']         = $fileconverted;
@@ -352,7 +354,9 @@ try
         $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
         $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
-		unset($contents);
+        delete_files($fileconverted, $source, $tei);
+
+        unset($contents);
 		$row = array();
 		$row['fichier']         = $fileconverted;
 		$row['tei']		= $tei;
@@ -514,6 +518,8 @@ RDF;
             $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
             $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)), $file_cache_lifetime);
             $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
+
+            delete_files($fileconverted, $source, $tei, $odtconverted);
 
 			unset($contents);
 			$row = array();
