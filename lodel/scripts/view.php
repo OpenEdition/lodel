@@ -594,22 +594,27 @@ class View
 	*/
 	private function _calcul_template($base, $cache_rep = '', $base_rep = './tpl/', $blockId=0, $loopName=null) 
 	{
-		$tpl = $base_rep . DIRECTORY_SEPARATOR . $base. '.html';
-
+		$tplFormat = $tpl = $base_rep . DIRECTORY_SEPARATOR . $base. '.html';
+                $tplPage = $base_rep . DIRECTORY_SEPARATOR . C::get('view.tpl') . '.html';
+                
 		if (!file_exists($tpl)) 
 		{
 			$base_rep = C::get('view.base_rep.'.$base);
 			$plugin_base_rep = C::get('sharedir', 'cfg').'/plugins/custom/';
 			if(!$base_rep || !file_exists($tpl = $plugin_base_rep.$base_rep.'/tpl/'.$base.'.html'))
-			{
-				if (!headers_sent()) {
-					header("HTTP/1.0 400 Bad Request");
-					header("Status: 400 Bad Request");
-					header("Connection: Close");
-					flush();
-				}
-				cache_delete($this->page_cache_id());
-				$this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__);
+			{       
+                                /**
+                                 * Is it a 400 or 404 error
+                                 */
+				if(!file_exists($tplPage))
+                                {
+                                    cache_delete($this->page_cache_id());
+                                    $this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> template does not exist</code>", __FUNCTION__, E_USER_LODEL_NOT_FOUND);
+                                }else{
+                                    cache_delete($this->page_cache_id());
+                                    $this->_error("<code>The <span style=\"border-bottom : 1px dotted black\">$base</span> format does not exist</code>", __FUNCTION__, E_USER_LODEL_BAD_REQUEST);
+                                }
+				
 			}
 		}
 
@@ -704,7 +709,7 @@ class View
 	 * @param bool $clearcache a-t-on besoin de nettoyer le cache ?
 	 * @see _eval()
 	 */
-	private function _error($msg, $func, $clearcache = false) 
+	private function _error($msg, $func, $error_type, $clearcache = false) 
 	{
 		// we are maybe buffering, so clear it
 		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
@@ -721,8 +726,18 @@ class View
 		$err .= $msg."\n";
 		if(is_object($db) && $db->ErrorMsg())
 			$err .= "SQL ERROR ".$db->ErrorMsg()."\n";
-
-		trigger_error($err, E_USER_ERROR);
+                if($error_type === E_USER_LODEL_BAD_REQUEST)
+                {
+                    LodelException::exception_handler(new LodelException($msg, E_USER_LODEL_BAD_REQUEST, "view.php", 0, 400));
+                    //trigger_error($err, E_USER_LODEL_BAD_REQUEST);
+                }elseif($error_type === E_USER_LODEL_NOT_FOUND) 
+                {
+                    LodelException::exception_handler(new LodelException($msg, E_USER_LODEL_NOT_FOUND, "view.php", 0, 404));
+                    //trigger_error($err, E_USER_LODEL_NOT_FOUND);
+                }else
+                {
+                    trigger_error($err, E_USER_ERROR);
+                }
 	}
 
 	/**
