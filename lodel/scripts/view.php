@@ -992,7 +992,7 @@ function fix_newlines_for_clean_html($fixthistext)
 		}
 		
 		//Makes sure empty lines are ignores
-		else if (!preg_match("/^(\s)*$/", $unfixedtextvalue))
+		else if (!preg_match("/^(\s*)$/", $unfixedtextvalue))
 		{
 			$fixedtextvalue = preg_replace("/>(\s|\t)*</U", ">\n<", $unfixedtextvalue);
 			$fixedtext_array[$unfixedtextkey] = $fixedtextvalue;
