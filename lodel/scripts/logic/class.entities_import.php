@@ -159,37 +159,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 		// close the task
 		DAO::getDAO('tasks')->deleteObject ($idtask);
-		
-		if(!function_exists('removefilesfromimport'))
-		{
-			function removefilesfromimport($rep)
-			{
-				if(!file_exists($rep)) return;
-				$fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
-				while (($file = readdir($fd)) !== false) {
-					if('.' === $file{0}) continue;
-					$file = $rep. "/". $file;
-					if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
-						removefilesfromimport($file);
-						// puis on supprime le répertoire
-						@rmdir($file);
-					} else {@unlink($file);}
-				}
-				closedir($fd);
-				@rmdir($rep);
-			}
-		}
-		if($delete){
-			// remove files from import
-			$rep = dirname($tei);
-	
-			// first, contents of unzipped source
-			removefilesfromimport($rep);
-			$rep = array_filter(explode('/', $rep));
-			// then images
-			removefilesfromimport(SITEROOT.'/docannexe/image/'.end($rep));
-		}
-		
+
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
 		} elseif ($ret != '_error') {
