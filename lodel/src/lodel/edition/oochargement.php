@@ -110,6 +110,7 @@ try
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
 
 	$cache = getCacheObject();
+    $file_cache_lifetime = C::get('timeout', 'cfg') ? C::get('timeout', 'cfg') : 3600;
 
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
 		$file = $_FILES['file1'];
@@ -213,10 +214,10 @@ try
                     }
 
                     $fileconverted = $source. '.converted';
-                    $cache->set($fileconverted, base64_encode(serialize($contents)));
+                    $cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
 
-                    $cache->set($source, base64_encode(file_get_contents($source)));
-                    $cache->set($tei, base64_encode(file_get_contents($tei)));
+                    $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
+                    $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
                     unset($contents);
                     $row = array();
@@ -346,10 +347,10 @@ try
 		}
 
 		$fileconverted = $source. '.converted';
-		$cache->set($fileconverted, base64_encode(serialize($contents)));
+		$cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
 
-        $cache->set($source, base64_encode(file_get_contents($source)));
-        $cache->set($tei, base64_encode(file_get_contents($tei)));
+        $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
+        $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
 		unset($contents);
 		$row = array();
@@ -508,11 +509,11 @@ RDF;
 			}
 
 			$fileconverted = $source. '.converted';
-			$cache->set($fileconverted, base64_encode(serialize($contents)));
+			$cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
 
-            $cache->set($source, base64_encode(file_get_contents($source)));
-            $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)));
-            $cache->set($tei, base64_encode(file_get_contents($tei)));
+            $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
+            $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)), $file_cache_lifetime);
+            $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
 			unset($contents);
 			$row = array();
