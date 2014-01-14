@@ -117,10 +117,8 @@ if (php_sapi_name() != "cli") {
 	require_once 'lodelconfig.php';
 
 	define("SITEROOT","");
-	$cfg['versionsuffix'] = "-".$cfg['version'];   # versioning
-	$cfg['home'] = "lodel{$cfg['versionsuffix']}/scripts/";
-	$cfg['sharedir'] = SITEROOT . $cfg['sharedir'].$cfg['versionsuffix'];
-	$cfg['shareurl'] .= $cfg['versionsuffix'];
+	$cfg['home'] = "lodel/scripts/";
+	$cfg['sharedir'] = SITEROOT . $cfg['sharedir'];
 	ini_set('include_path', SITEROOT. $cfg['home'] . PATH_SEPARATOR . ini_get('include_path'));
 	require 'context.php';
 	C::setCfg($cfg);
