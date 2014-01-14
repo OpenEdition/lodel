@@ -48,6 +48,9 @@
  * @since Fichier ajouté depuis la version 0.9
  */
 
+// Lodel error code
+defined('E_USER_LODEL_BAD_REQUEST') || define('E_USER_LODEL_BAD_REQUEST', 65534);
+defined('E_USER_LODEL_NOT_FOUND') || define('E_USER_LODEL_NOT_FOUND', 131068);
 // 5.3
 defined('E_DEPRECATED') || define('E_DEPRECATED', 8192);
 defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', 16384);
@@ -71,7 +74,9 @@ class LodelException extends Exception
 				E_USER_NOTICE => 'User Notice',
 				E_STRICT => 'Strict Error',
 				E_RECOVERABLE_ERROR => 'Recoverable Error',
-				E_DEPRECATED => 'Deprecated'
+				E_DEPRECATED => 'Deprecated',
+                                E_USER_LODEL_BAD_REQUEST => 'Bad Request',
+                                E_USER_LODEL_NOT_FOUND => ' Page not Found'
 				);
 	/**
 	 * Constructor
@@ -82,7 +87,7 @@ class LodelException extends Exception
 	 * @param string $errfile the file where the error occured
 	 * @param int $errline the line where the error occured
 	 */
-	public function __construct($errstr, $errno, $errfile, $errline) 
+	public function __construct($errstr, $errno, $errfile, $errline, $http_code = 500) 
 	{
 		parent::__construct();
 		
@@ -98,8 +103,8 @@ class LodelException extends Exception
 
 		if(!headers_sent())
 		{
-			header("HTTP/1.0 500 Internal Error");
-			header("Status: 500 Internal Error");
+			header("HTTP/1.0 $http_code Internal Error");
+			header("Status: $http_code Internal Error");
 			header("Connection: Close");
 		}
 
@@ -153,7 +158,7 @@ class LodelException extends Exception
   		}
 
 		switch($errno) 
-		{
+                {       
             		case E_STRICT:
 			case E_NOTICE:
 			case E_DEPRECATED:
@@ -196,7 +201,8 @@ class LodelException extends Exception
 		} 
 		catch(LodelException $e)
 		{
-			die($e->getContent());
+                    //debug_print_backtrace();
+                    die($e->getContent());
 		}
 	}
 }
