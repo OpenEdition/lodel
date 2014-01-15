@@ -310,7 +310,7 @@ function setLang($lang=null)
     {
         // La langue doit être disponible dans les traductions
         if(in_array($lang, $available_languages)){
-            //setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
+            setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
             $choosed_language = $lang;
         }
     }
