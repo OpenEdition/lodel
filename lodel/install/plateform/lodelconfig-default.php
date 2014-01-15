@@ -117,6 +117,11 @@ $cfg['singledatabase']="on";
 # Nom de la session (cookie)
 $cfg['sessionname']="session{$cfg['database']}";
 
+# Détection automatique de la langue de navigation
+$cfg['detectlanguage'] = true;
+# Choix par défaut de la langue de navigation
+// $cfg['mainlanguageoption'] = 'options.metadonneessite.langueprincipale';
+
 
 # type d'URL
 $cfg['extensionscripts']="";      # extension .php ou .html pour les scripts accessibles par les internautes
