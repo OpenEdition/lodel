@@ -134,7 +134,7 @@ class OptionsLogic extends Logic {
 		switch($var) {
 		case "userrights":
 			function_exists('makeSelectUserRights') || include("commonselect.php");
-			$lodeladmin = ((!C::get('site', 'cfg') || SINGLESITE) && defined('backoffice-lodeladmin')) ? TRUE : FALSE;
+			$lodeladmin = (((!C::get('site', 'cfg') || SINGLESITE) && defined('backoffice-lodeladmin')) || C::get('adminlodel', 'lodeluser')) ? TRUE : FALSE;
 			makeSelectUserRights(isset($context['userrights']) ? $context['userrights'] : '', $lodeladmin);
 			break;
 		case "type" :
