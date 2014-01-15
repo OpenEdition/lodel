@@ -253,7 +253,6 @@ function authenticate($level = 0, $mode = "", $return = false)
 	$lodeluser = '';
    	maintenance();
 
-	setLang();
 	C::trigger('postauth');
 	// exception
 	if ($level == 0) {
@@ -271,6 +270,25 @@ function authenticate($level = 0, $mode = "", $return = false)
 }
 
 /**
+ * Retourne la liste des langues disponibles du site par ordre de priorité
+ *
+ * @return array liste des codes langues disponibles
+ */
+function get_available_languages()
+{
+    global $db;
+
+    $languages = array();
+
+    $result = $db->execute(lq("SELECT lang, rank from #_TP_translations WHERE status > 0 ORDER BY rank"));
+    foreach($result as $row)
+    {
+        $languages[$row['rank']] = $row['lang'];
+    }
+    return $languages;
+}
+
+/**
  * Gestion de la langue de l'utilisateur
  *
  * Cette fonction gère la langue de l'utilisateur, loggé ou non
@@ -279,60 +297,79 @@ function authenticate($level = 0, $mode = "", $return = false)
  */
 function setLang($lang=null)
 {
-	// Langue ?
-	if(!$lang) $lang = C::get('lang');
-	// récupère langue dans le cookie (s'il existe et si la langue n'est pas passée en GET ou en POST)
-	if(!empty($_COOKIE['language']) && !$lang) {
-		if (preg_match("/^\w{2}(-\w{2})?$/", $_COOKIE['language'])) 
-		{
-			$lang = $_COOKIE['language'];
-		}
-		else
-		{
-			$lang = 'fr';
-			setcookie('language', 'fr', 0, C::get('urlroot', 'cfg'));
-		}
-	}
-	// langue passée en GET ou POST : initialise le cookie
-	else 
-	{
-		if (!$lang || !preg_match("/^\w{2}(-\w{2})?$/", $lang)) 
-		{
-			// spécifique ME Revues.org : si langue du site renseigné, alors la langue par défaut prend cette valeur
-			if(function_exists('detectLanguage'))
-			{
-				detectLanguage();
-			}
-			else
-			{
-				$lang = C::get('options.metadonneessite.langueprincipale');
-				$lang = !$lang ? 'fr' : $lang;
-			}
-		}
-		else
-		{
-		setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
-		}
-	}
-	// do we have to set another locale ?
-	if('fr' !== substr($lang, 0, 2))
-	{
-		$l = strtolower(substr($lang, 0,2));
-		$lu = 'en' === $l ? 'US' : strtoupper($l);
-		if(!@setlocale(LC_ALL, $l.'_'.$lu.'.UTF8'))
-		{ // locale not found, reset it to default french
-			@setlocale(LC_ALL, 'fr_FR.UTF8');
-		}
-		if('tr' === $l)
-		{ // bug with locale tr_TR.UTF8
-		// http://bugs.php.net/bug.php?id=18556
-			@setlocale(LC_CTYPE, 'fr_FR.UTF8');
-		}
-		C::set('locale', $l.'_'.$lu.'.UTF8');
-		unset($l, $lu);
-	}
-	
-	C::set('sitelang', $lang);
+    $available_languages = get_available_languages();
+    $choosed_language = null;
+
+    if( $lang && in_array($lang, $available_languages))
+    {
+        $choosed_language = $lang;
+    }
+
+    // Choix de modification de la langue par l'utilisateur
+    if(!$choosed_language && !$lang && $lang = C::get('lang'))
+    {
+        // La langue doit être disponible dans les traductions
+        if(in_array($lang, $available_languages)){
+            //setcookie('language', $lang, 0, C::get('urlroot', 'cfg'));
+            $choosed_language = $lang;
+        }
+    }
+
+    // Si un cookie est présent, on conserve la langue
+    if( !$choosed_language && isset($_COOKIE['language']) && in_array($_COOKIE['language'], $available_languages) )
+    {
+        $choosed_language = $_COOKIE['language'];
+    }
+
+    /* On essaye de détecter la langue, si la détection de langue est activée */
+    if( !$choosed_language && isset( $_SERVER['HTTP_ACCEPT_LANGUAGE']) && C::get('detectlanguage','cfg')){
+        preg_match_all(
+            '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+            $_SERVER['HTTP_ACCEPT_LANGUAGE'],
+            $acceptedlangs
+        );
+        foreach( $acceptedlangs[1] as $lang ) {
+            $lang = substr($lang, 0, 2);
+            if( in_array($lang, $available_languages) ){
+                $choosed_language = $lang;
+                break;
+            }
+        }
+    }
+
+    /* si une option définissant la langue par défaut est définie dans lodelconfig on l'utilise
+     *
+     */
+    if( !$choosed_language && C::get('mainlanguageoption', 'cfg') )
+    {
+        $main_language = C::get(C::get('mainlanguageoption', 'cfg'));
+        if($main_language && in_array($main_language, $available_languages))
+        {
+            $choosed_language = $main_language;
+        }
+    }
+
+    if( !$choosed_language )
+    {
+        $choosed_language = array_shift($available_languages);
+    }
+
+    // Définition de la locale système
+    if( $choosed_language !== substr(setlocale(LC_ALL, 0), 0, 2) )
+    {
+        $l = strtolower(substr($choosed_language, 0,2));
+        $lu = 'en' === $l ? 'US' : strtoupper($l);
+        @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
+        if('tr' === $l)
+        { // bug with locale tr_TR.UTF8
+        // http://bugs.php.net/bug.php?id=18556
+            @setlocale(LC_CTYPE, 'fr_FR.UTF8');
+        }
+        C::set('locale', $l.'_'.$lu.'.UTF8');
+        unset($l, $lu);
+    }
+    C::set('lang', $choosed_language);
+    C::set('sitelang', $choosed_language);
 }
 
 /**
