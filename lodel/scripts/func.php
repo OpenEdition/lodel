@@ -1352,6 +1352,19 @@ function delete_files()
     }
 }
 
+/**
+ * Analyse une url et retourne le chemin en local qu'elle contient éventuellement
+ * Cf. parse_url : élément 'path' du tableau retourné
+ *
+ * @param string $url
+ * @return le chemin contenu dans l'URL
+ */
+function url_path($url)
+{
+    $url_parts = @parse_url($url);
+    return $url_parts ? $url_parts['path'] : '';
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
