@@ -71,27 +71,6 @@ include 'tpl/install-openhtml.html';
 			</dd>
 		</dl>
 	</fieldset>
-		
-	<fieldset class="install">
-		<legend>[@INSTALL.ZIP_ARCHIVE_FUNCTION]</legend>
-			<dl>
-				<dt>
-					[@INSTALL.TO_USE_OTX_IMPORT_OR_LODEL_BACKUP_SYSTEM_PLEASE_CHOOSE_ONE_OF_THESE_TWO_OPTIONS] :
-				</dt>
-				<dd>
-					<input type="radio" name="pclzip" value="pclzip" <?php if ($unzipcmd=='pclzip' && $zipcmd=='pclzip') { echo "checked";}?> >[@INSTALL.TO_USE_PCLZIP_CHECK_ZLIB_EXTENSION_IS_INSTALLED] <?php if (function_exists('gzopen')) { ?>,[@INSTALL.IT_SEEMS_SO]. <?php } else { ?>(<strong>[@INSTALL.IT_DOESNT_SEEM_SO]</strong>)<?php } ?>
-				</dd>
-				<dd>
-					<input type="radio" name="pclzip" value="cmd" <?php if ($unzipcmd!='pclzip' || $zipcmd!='pclzip') { echo "checked";}?> > 
-					[@INSTALL.TO_USE_UNIX_ZIP_UNZIP_COMMAND_SPECIFY_ACCESS_PATH_TO_COMMAND_WARNING_PHP_CONFIGURATION_MAY_FORBID_THIS_SOLUTION]
-					<br />&nbsp;<br />
-				</dd>
-			</dl>
-			<label for="newunzipcmd">unzip : </label>
-			<input type="text" size="60" name="newunzipcmd" id="newunzipcmd" value="<?php if ($unzipcmd!='pclzip') echo $unzipcmd; ?>" />
-			<label for="newzipcmd">zip : </label>
-			<input type="text" size="60" name="newzipcmd" id="newzipcmd" value="<?php if ($zipcmd!='pclzip') echo $zipcmd; ?>" />
-	</fieldset>
 
 	<fieldset class="install">
 		<legend>[@INSTALL.SCRIPTS_EXTENSIONS]</legend>

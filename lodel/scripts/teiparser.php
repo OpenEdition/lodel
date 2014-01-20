@@ -421,73 +421,16 @@ class TEIParser extends XMLReader
 	 */
 	private function _extractImages($odt, $tmpdir)
 	{
-		$unzipcmd = C::get('unzipcmd', 'cfg');
+        $images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/img-\d+/" );
 
-		if('pclzip' == $unzipcmd)
-		{// use PCLZIP library
-			$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-			class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
-			$archive = new PclZip($odt);
+        $destination = SITEROOT.'docannexe/image/tmp/';
+        foreach($images as $image)
+        {
+            $dest_file = $destination . DIRECTORY_SEPARATOR . basename($image);
+            rename($tmpdir . DIRECTORY_SEPARATOR . $image, $dest_file);
+            $this->_images[basename($image)] = $dest_file;
 
-			$images = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_OPT_BY_PREG, "/^Pictures\/img-\d+/");
-			error_reporting($err);
-			unset($archive);
-			if(!empty($images))
-			{
-				$tmpdir = array_filter(explode('/', $tmpdir));
-				$tmpdir = end($tmpdir);
-				$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
-				mkdir($tmpdir);
-				chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
-				foreach($images as $image)
-				{
-					$file = basename($image['filename']);
-					$this->_images[$file] = $tmpdir.$file;
-					rename($image['filename'], $this->_images[$file]);
-				}
-			}
-			unset($images, $archive);
-		}
-		else
-		{ // use unzip
-			exec("$unzipcmd -o -d $tmpdir ".escapeshellarg($odt), $line);
-			$tmpdir = array_filter(explode('/', $tmpdir));
-			$tmpdir = end($tmpdir);
-			if(count($line) > 1 && !empty($line[1]))
-			{
-				unset($line[0]);
-				$images = array();
-				foreach($line as $file)
-				{
-					$file = trim(substr($file, strpos($file, ':') + 1));
-					if(preg_match("/Pictures\/(img-\d+)/", $file))
-					{
-						$f = basename($file);
-						$images[$f] = $file;
-					}
-				}
-
-				if(!empty($images))
-				{
-					$tmpdir = SITEROOT.'docannexe/image/'.$tmpdir.'/';
-                    if(!file_exists($tmpdir))
-                    {
-                        mkdir($tmpdir);
-                        chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
-                    }
-					foreach($images as $image=>$fullimage)
-					{
-						$this->_images[$image] = $tmpdir.$image;
-						rename($fullimage, $this->_images[$image]);
-					}
-				}
-				unset($images);
-			}
-			else
-			{
-				throw new Exception('ERROR: No files were extracted from the archive');
-			}
-		}
+        }
 	}
 
 	/**

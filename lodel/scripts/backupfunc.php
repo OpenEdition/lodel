@@ -266,91 +266,59 @@ function PMA_convert_display_charset($text)
  */
 function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '', $xml=false)
 {
-	$unzipcmd = C::get('unzipcmd', 'cfg');
-	$tmpdir = tmpdir();
+    $tmpdir = tmpdir(uniqid('site_import'));
 
-	// use UNZIP command
-	if ($unzipcmd && $unzipcmd != 'pclzip')	{
-		// find files to unzip
-		$listfiles = `$unzipcmd -Z -1 $archive`;
-		$listfilesarray = preg_split("/\n/", `$unzipcmd -Z -1 $archive`);
-		if(!$acceptedexts) {
-			$acceptedexts = array('*');
-		}
-		if (!$listfiles)
-			return false;
-		$dirs = '';
-		foreach ($accepteddirs as $dir) {
-			if (preg_match("/^(\.\/)?".str_replace("/", '\/', $dir)."\//m", $listfiles)) {
-				if(!file_exists(SITEROOT.$dir)) {
-					if(!@mkdir(SITEROOT.$dir) || !@chmod(SITEROOT.$dir, 0770 & octdec(C::get('filemask', 'cfg')))) continue;
-				} elseif(!is_dir(SITEROOT.$dir)) continue;
-				if ($acceptedexts) {
-					foreach ($acceptedexts as $ext)	{
-						$dirs .= "\\".$dir."\/\*.$ext ".$dir."\/\*\/\*.$ext ";
-					}
-				}	else {
-					$dirs .= "\\".$dir."\/\* ".$dir."/\*/\* ";
-				}
-			}
-		}
-		system($unzipcmd." -oq $archive  $dirs -d ../..");
-		#if (!chdir("lodel/admin"))
-		#  trigger_error("ERROR: chdir 2 fails", E_USER_ERROR);
-		if ($sqlfile)	{
-			$ext = $xml ? 'xml' : 'sql';
-			system($unzipcmd." -qp $archive  \*.$ext > $sqlfile");
-			if (filesize($sqlfile) <= 0)
-				return false;
-		}
-	}	else {
-		$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-		// use PCLZIP library
-		class_exists('PclZip', false) || include 'pclzip/pclzip.lib.php';
-		$archivename = $archive;
-		//require_once "pclzip.lib.php";
-		$archive = new PclZip($archive);
+    // find files to unzip
+    $listfiles = get_zip_file_list($archive);
 
-		// functions callback
-		function preextract($p_event, &$p_header)
-		{ // choose the files to extract
-			//echo $p_header['filename'],"<br>";
-			global $user_vars;
+    if (empty($listfiles))
+        return false;
 
-			if (preg_match("/^(\.\/)*.*\.(sql|xml)$/", $p_header['filename']))	{ // extract the sql file
-				unlink($user_vars['sqlfile']); // remove the tmpfile if not it is not overwriten... 
-				//                   may cause problem if the file is recreated but it's so uncertain !
-				$p_header['filename'] = $user_vars['sqlfile'];
-				return 1;
-			}
-			$exts = $user_vars['acceptedexts'] ? ".*\.(".join("|", $user_vars['acceptedexts']).")$" : "";
-			if (preg_match("/^(\.\/)*(".str_replace("/", "\/", join("|", $user_vars['accepteddirs'])).")\/$exts/", str_replace('//', '/', $p_header['filename']))) {
-				$p_header['filename'] = SITEROOT.$p_header['filename'];
-				if (file_exists($p_header['filename']) && is_file($p_header['filename']))
-					unlink($p_header['filename']);
-				return 1;
-			}
-			return 0; // don't extract
-		}
+    $dirs = '';
 
-		function postextract($p_event, &$p_header)
-		{ // chmod
-			#if ($p_header['filename']!=$user_vars{'sqlfile'} && 
-			#    file_exists($p_header['filename'])) {
-			@ chmod($p_header['filename'], octdec(C::get('filemask', 'cfg')) & (substr($p_header['filename'], -1) == "/" ? 0777 : 0666));
-			#}
-			return 1;
-		}
-		$GLOBALS['user_vars'] = array ('sqlfile' => $sqlfile, 'accepteddirs' => $accepteddirs, 'acceptedexts' => $acceptedexts, 'tmpdir' => $tmpdir);
-		$res = $archive->extract(PCLZIP_CB_PRE_EXTRACT, 'preextract', PCLZIP_CB_POST_EXTRACT, 'postextract');
-		#echo "ici $res";
-		error_reporting($err);
-		if (!$res)
-			trigger_error("ERROR: unable to extract $archivename.<br />".$archive->error_string, E_USER_ERROR);
-		unset($archive);
-		if (filesize($sqlfile) <= 0)
-			return false;
-	}
+    $files_to_extract = array();
+
+    /* Vérification que les fichiers sont biens autorisés en matchant le nom du répertoire et des extensions
+     *
+     * */
+    foreach($listfiles as $file)
+    {
+        foreach($accepteddirs as $dir)
+        {
+            if(strpos($file, $dir) === 0){
+                if(!file_exists(SITEROOT . DIRECTORY_SEPARATOR . $dir)){
+                    mkdir(SITEROOT . DIRECTORY_SEPARATOR . $dir, 0770, true);
+                }
+                if($acceptedexts){
+                    foreach($acceptedexts as $ext)
+                    {
+                        if(strpos($file, $ext) === strlen($file) - strlen($ext))
+                        {
+                            $files_to_extract[] = $file;
+                            break;
+                        }
+                    }
+                }else{
+                    $files_to_extract[] = $file;
+                    break;
+                }
+
+            }
+        }
+        if($sqlfile && ( strpos($file, ".sql") === strlen($file) - strlen(".sql") ) ){
+            $sql_zip = $file ;
+        }
+    }
+
+    extract_files_from_zip($archive, realpath(SITEROOT), null, $files_to_extract);
+
+    /* Extraction du fichier sql */
+    extract_files_from_zip($archive, $tmpdir, null, $sql_zip);
+    rename($tmpdir . DIRECTORY_SEPARATOR . $sql_zip, $sqlfile);
+    rmdir($tmpdir);
+
+    if (filesize($sqlfile) <= 0)
+        return false;
 
 	return true;
 }

@@ -95,53 +95,12 @@ class XMLLogic extends Logic {
 
 		function_exists('calculateXML') || include 'xmlfunc.php';
 		$context['contents'] =  $contents = calculateXML ($context);
-		// !! BEWARE !!
-		// validation shall be implemented in ServOO first. The code here comes from the 0.7 and is not adapted to the lodel 0.8 and higher.
-		//
-	// validation needed
-//    if ($context['valid']) {
-//      $contents .= $contents;
-//      $tmpdir = tmpdir ();
-//      $tmpfile = tempnam ($tmpdir, "lodelxml_");
-//      writefile($tmpfile.".xml",$contents);
-//      $contents=calculateXMLSchema ($context);
-//      writefile ($tmpfile.".xsd", $contents);
-//      if ($zipcmd && $zipcmd!="pclzip") { // ZIP command
-//	$errfile=$tmpfile.".err";
-//	system($zipcmd." $tmpfile.zip $tmpfile.xsd $tmpfile.xml  1>&2 2>$errfile");
-//	if (filesize($errfile)>0) 
-//	  trigger_error("ERROR: $errormsg<br />".str_replace ("\n","<br>", htmlentities (@join ("", @file ($errfile)))), E_USER_ERROR);
-//	@unlink("$tmpfile.err");
-//      }	else {// PCLZIP library. 
-//	require ("pclzip.lib.php");
-//	$archive = new PclZip ($tmpfile.".zip");
-//	$v_list = $archive->create (array($tmpfile.".xsd", $tmpfile.".xml"));
-//	if ($v_list == 0) trigger_error("ERROR : ".$archive->errorInfo(true), E_USER_ERROR);
-//      }
-//      require ("servoofunc.php");
-//      $client = new ServOO ();
-//      if ($client->error_message) {
-//      	if ($context['url']) $error['url']='+';
-//      	if ($context['username'])$error['username']='+';
-//      	if ($context['passwd']) $error['passwd']='+';
-//      }
-//      $ret = $client->validateXML("","");
-//      echo "ret=$ret";
-//      if ($ret=="noservoo") 
-//	$ret="Aucun ServOO n'est configur&eacute; pour r&eacute;aliser la conversion. " .
-//	  "Vous pouvez faire la configuration dans les options du site (Administrer/Options)";
-//  
-//      @unlink ($tmpfile.".zip");
-//      $context['reponse'] = str_replace ("\n","<br />", htmlentities($ret));
-//      require_once ("calcul-page.php");
-//      calcul_page ($context,"xml-valid");
-//      exit (0);
-//    }	else 
+
 		if (isset($context['view']))	{
 			return "_ok";
 		} else  {// "download"
 			download ("", "$class-$id.xml", $contents);
-            		exit();
+            exit();
 		}
 	}
 	/**
@@ -163,6 +122,6 @@ class XMLLogic extends Logic {
 		$originalname = C::get('site', 'cfg'). '-'.$context['class']. '-schema-xml.xsd';
 		$ret = calculateXMLSchema ($context);
 		download ("", $originalname, $ret);
-        	exit();
+        exit();
 	}
 }

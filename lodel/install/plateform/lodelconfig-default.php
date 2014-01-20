@@ -100,13 +100,6 @@ $cfg['contactbug']="";
 # Repertoire contenant le binaire de mysql
 $cfg['mysqldir']="/usr/bin";
 
-# chemin pour la commande zip ou pclzip pour utiliser la librairie pclzip
-$cfg['zipcmd']="pclzip";
-
-# chemin pour la commande unzip ou pclzip pour utiliser la librairie pclzip
-$cfg['unzipcmd']="pclzip";
-
-
 # Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
 $cfg['tableprefix']="lodel_";
 
