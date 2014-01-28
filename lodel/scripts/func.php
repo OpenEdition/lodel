@@ -613,8 +613,12 @@ function tmpdir($name = '')
     $tmpdir = '';
     if (defined("TMPDIR") && '' !== (string)TMPDIR)
         $tmpdir = TMPDIR;
-    elseif (!($tmpdir = C::get('tmpoutdir', 'cfg')))
+    elseif ($tmpdir = C::get('tmpoutdir', 'cfg'))
+        $tmpdir .= DIRECTORY_SEPARATOR . $name;
+    else
         $tmpdir = cache_get_path('tmp' . DIRECTORY_SEPARATOR . $name);
+
+    @mkdir($tmpdir, 0750, true);
 
     return $tmpdir . DIRECTORY_SEPARATOR;
 }
@@ -1363,6 +1367,64 @@ function url_path($url)
 {
     $url_parts = @parse_url($url);
     return $url_parts ? $url_parts['path'] : '';
+}
+
+function extract_files_from_zip($file, $destination, $filter = null, $file_list = null) {
+    $zip = new ZipArchive();
+    $zip->open($file);
+
+    if(!$file_list){
+        $file_list = get_zip_file_list($file, $filter);
+    }
+
+    $zip->extractTo($destination, $file_list);
+
+    $zip->close();
+
+    return $file_list;
+
+}
+
+function get_zip_file_list($file, $filter = null)
+{
+    $file_list = array();
+
+    $zip = new ZipArchive();
+    $zip->open($file);
+
+    foreach(range(0, $zip->numFiles-1) as $i)
+    {
+        if(!$filter || preg_match($filter, $zip->getNameIndex($i)))
+            $file_list[] = $zip->getNameIndex($i);
+    }
+
+    $zip->close();
+
+    return $file_list;
+}
+
+function create_zip_from_file_list($zipfile, $filelist)
+{
+    $zip = new ZipArchive();
+    $zip->open($zipfile, ZipArchive::CREATE);
+
+    foreach($filelist as $path => $filename)
+    {
+        $zip->addFile($path, $filename);
+    }
+    $zip->close();
+}
+
+function glob_recursive($pattern, $flags = 0)
+{
+    $files = glob($pattern, $flags);
+
+    foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir)
+    {
+        $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
+    }
+
+    return $files;
 }
 
 define('INC_FUNC', 1);

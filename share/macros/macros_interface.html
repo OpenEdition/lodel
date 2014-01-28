@@ -134,7 +134,10 @@
                 <fieldset>
                         <legend>
                         <LOOP NAME="getGroupInfo" TABLE="tablefieldgroups" WHERE="id = [#IDGROUP]">
-                        <MACRO NAME="INTERTITLE" />
+                            <IF COND="[#ALTERTITLE]">
+                                <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
+                            </IF>
+                            <MACRO NAME="INTERTITLE" />
                         </LOOP>
                         </legend>
         </LOOP>

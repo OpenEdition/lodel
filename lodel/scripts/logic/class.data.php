@@ -258,129 +258,97 @@ class DataLogic
 	public function backupAction(&$context, &$error)
 	{
 		if(!C::get('adminlodel', 'lodeluser')) trigger_error("ERROR: you don't have the right to access this feature", E_USER_ERROR);
-		$zipcmd = C::get('zipcmd', 'cfg');
+
 		$context['importdir'] = C::get('importdir', 'cfg');
-		#print_r($context);
+
 		if (isset($context['backup'])) { // si on a demandé le backup
 			set_time_limit(0);
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
 
-			$GLOBALS['tmpdir'] = $tmpdir = tmpdir();
+			$GLOBALS['tmpdir'] = $tmpdir = tmpdir(uniqid('sitebackup'));
+
 			$errors = array();
-			$fh = fopen($tmpdir. '/'. $outfile, 'w');
-			if (!$fh) {
-				trigger_error("ERROR: unable to open a temporary file in write mode", E_USER_ERROR);
-			}
-			$this->_dump($site, $tmpdir. '/'. $outfile, $errors, $fh);
-			fclose($fh);
+
+            /* On fait le dump de la base de données */
+			$this->_dump($site, $tmpdir . DIRECTORY_SEPARATOR. $outfile, $errors);
+
 			if($errors) {
 				$error = $errors;
 				return 'backup';
 			}
+
 			// verifie que le fichier SQL n'est pas vide
-			if (filesize($tmpdir. '/'. $outfile) <= 0) {
+			if (!file_exists($tmpdir. DIRECTORY_SEPARATOR . $outfile) || filesize($tmpdir. DIRECTORY_SEPARATOR . $outfile) <= 0) {
 				$error['mysql'] = 'dump_failed';
 				return 'backup';
 			}
 
 			// zip le site et ajoute la base
-			$archivetmp      = tempnam($tmpdir, 'lodeldump_'). '.zip';
-			$archivefilename = "site-$site-". date("dmy"). '.zip';
+			$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
+            $archivefilename = "site-$site-". date("dmy"). '.zip';
+
 			// fichiers à exclure de l'archive
-			$GLOBALS['excludes'] = $excludes = array('lodel/sources/.htaccess',
-						'docannexe/fichier/.htaccess',
-						'docannexe/file/.htaccess',
-						'docannexe/image/index.html',
-						'docannexe/index.html',
-						'docannexe/image/tmpdir-\*',
-						'docannexe/tmp\*');
+			$GLOBALS['excludes'] = $excludes = array(
+                '#\.htaccess$#',
+                '#index.html$#',
+                '#^docannexe/image/tmpdir-.*$#',
+                '#^docannexe/tmp.*$#'
+            );
+
 			// répertoires à inclure
-			$sitedirs = array('lodel/icons', 'lodel/sources', 'docannexe');
+			$sitedirs = array(
+                'lodel/icons',
+                'lodel/sources',
+                'docannexe/fichier',
+                'docannexe/file',
+                'docannexe/image',
+            );
 
 			// si sauvegarde des répertoires demandée (en + de la base)
-			if (empty($context['sqlonly'])) { // undefined or equal to 0
-					$bad_dirs = array();
-					$good_dirs = array();
-					//verifie que les repertoires sont accessibles en lecture
-					foreach ($sitedirs as $sitedir) {
-						if(is_readable(SITEROOT . $sitedir)){
-							$good_dirs[] = $sitedir;
-						} else {
-							$bad_dirs[] = $sitedir;
-						}
-					}
-					// initialise $error pour affichage dans le template backup.html
-					if (!empty($bad_dirs)) { $error['files'] = implode(', ', $bad_dirs); }
 
-					// conversion en chaîne pour ligne de commande
-					$dirs = implode(' ', $good_dirs);
-				}
-			else    { $dirs = ''; }
+            $files_to_zip = array();
 
-			if ($zipcmd && $zipcmd != 'pclzip') { //Commande ZIP
+			if (empty($context['sqlonly'])) {
+                /* On créé la liste des fichiers à sauvegarder */
+                $siteroot = realpath(SITEROOT) . DIRECTORY_SEPARATOR;
 
-				if (empty($context['sqlonly'])) {
-					if (!chdir(SITEROOT)) {
-						trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
-					}
-					$prefixdir    = $archivetmp[0] == "/" ? '' : 'lodel/admin/';
-					$excludefiles = $excludes ? " -x ". join(" -x ", $excludes) : "";
+                foreach($sitedirs as $sitedir)
+                {
+                    $files_to_zip = array_merge(
+                        $files_to_zip,
+                        array_filter(glob_recursive( $siteroot . $sitedir . DIRECTORY_SEPARATOR . "*"), 'is_file')
+                    );
+                }
 
-					system($zipcmd. " -q $prefixdir$archivetmp -r $dirs $excludefiles");
-					if (!chdir("lodel/admin")) {
-						trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
-					}
-					system($zipcmd. " -q -g $archivetmp -j $tmpdir/$outfile");
-				} else {
-					system($zipcmd. " -q $archivetmp -j $tmpdir/$outfile");
-				}
-			} else { // Comande PCLZIP
-				$err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
-				if(!class_exists('PclZip', false))
-					include 'pclzip/pclzip.lib.php';
-				$archive = new PclZip($archivetmp);
-				if (empty($context['sqlonly'])) {
-					// function to exclude files and rename directories
-					function preadd($p_event, &$p_header)
-					{
-						global $excludes, $tmpdir; // that's bad to depend on globals like that
-						$p_header['stored_filename'] = preg_replace("/^". preg_quote($tmpdir, "/"). "\//", "", $p_header['stored_filename']);
-						foreach ($excludes as $exclude) {
-							if (preg_match ("/^". str_replace('\\\\\*', '.*', preg_quote($exclude, "/")). "$/", $p_header['stored_filename'])) {
-								return 0;
-							}
-						}
-						return 1;
-					}
-					// end of function to exclude files
+                /* Suppression des fichier à exclure */
+                foreach($excludes as $exclude)
+                {
+                    $files_to_zip = preg_grep($exclude, $files_to_zip, PREG_GREP_INVERT);
+                }
 
-					// ajout de la racine du site aux chemins des répertoires
-					foreach($good_dirs as $i=>$good_dir)
-					{
-						$good_dirs[$i] = SITEROOT. $good_dir;
-					}
-					// ajout du fichier sql issu du dump de la base du site
-					array_push($good_dirs, $tmpdir. '/'. $outfile);
-					// création de l'archive
-					$archive->create($good_dirs,
-							PCLZIP_OPT_REMOVE_PATH,SITEROOT,
-							PCLZIP_CB_PRE_ADD, 'preadd');
-				} else {
-					$archive->create($tmpdir. "/". $outfile, PCLZIP_OPT_REMOVE_ALL_PATH);
-				}
-				error_reporting($err);
-			} // end of pclzip option
+                /* On définit les chemin dans le zip et dans le filesystem */
+                $files_and_names = array(
+                    $tmpdir. DIRECTORY_SEPARATOR . $outfile => $outfile,
+                );
+                foreach($files_to_zip as $file)
+                {
+                    $files_and_names[$file] = str_replace($siteroot, '', $file);
+                }
+                unset($files_to_zip);
+            }
 
+			/* On créé le zip dans $archivetmp */
+            create_zip_from_file_list($archivetmp, $files_and_names);
+
+            @unlink($tmpdir. DIRECTORY_SEPARATOR . $outfile);
 			if (!file_exists($archivetmp)) {
-                		@unlink($tmpdir. '/'. $outfile); // delete the sql file
 				trigger_error("ERROR: the zip command or library does not produce any output", E_USER_ERROR);
 			}
-			@unlink($tmpdir. '/'. $outfile); // delete the sql file
 
 			if($error) { // Pour avoir accès aux erreurs dans les templates
 				$context['error'] = $error;
-            		}
+            }
 
 			if (operation($context['operation'], $archivetmp, $archivefilename, $context)) {
 				$context['success'] = 1;
@@ -709,7 +677,8 @@ class DataLogic
 	protected function _dump($site, $outfile, &$error, $fh = 0)
 	{
 		global $db;
-        	$closefh = false;
+        $closefh = false;
+
 		if ($site && C::get('singledatabase', 'cfg') != 'on') {
 			$dbname = DATABASE."_".$site;
 			if (!$fh)	{
@@ -718,6 +687,7 @@ class DataLogic
 			}
 			if (!$fh)
 				trigger_error("ERROR: unable to open file $outfile for writing", E_USER_ERROR);
+
 		}	else	{
 			$dbname = DATABASE;
 		}
@@ -812,71 +782,37 @@ class DataLogic
 	 */
 	private function _backupME($sqlfile, $dirs = array())
 	{
-		$zipcmd = C::get('zipcmd', 'cfg');
-		$acceptedexts = array ('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff');
-		$tmpdir = tmpdir();
+        $acceptedexts = array ('html', 'js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'tiff');
+		$tmpdir = tmpdir(uniqid('backupME'));
 		$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
 
-		// Cherche si les répertoires à zipper contiennent bien des fichiers
-		$zipdirs = array ();
+        $file_list = array();
+
 		foreach ($dirs as $dir)	{
-			if (!file_exists(SITEROOT. $dir))
+			if (!file_exists(SITEROOT . $dir))
 				continue;
-			$dh = opendir(SITEROOT. $dir);
-			while (($file = readdir($dh)) && !preg_match("/\.(".join("|", $acceptedexts).")$/", $file))	{
-			}
-			if ($file)
-				$zipdirs[] = $dir;
-			closedir($dh);
+
+            $file_list = array_merge(
+                $file_list,
+                array_filter(glob_recursive( SITEROOT . $dir . DIRECTORY_SEPARATOR . '*'), 'is_file')
+            );
 		}
-		//
 
-		if ($zipcmd && $zipcmd != 'pclzip')	{ //commande ZIP
-			if ($zipdirs)	{
-				$files = '';
-				foreach ($zipdirs as $dir) {
-					foreach ($acceptedexts as $ext)	{
-						$files .= " $dir/*.$ext";
-					}
-				}
-				if (!chdir(SITEROOT))
-					trigger_error("ERROR: can't chdir in SITEROOT", E_USER_ERROR);
-				$prefixdir = $archivetmp[0] == '/' ? '' : 'lodel/admin/';
-				system($zipcmd." -q $prefixdir$archivetmp $files");
-				if (!chdir("lodel/admin"))
-					trigger_error("ERROR: can't chdir in lodel/admin", E_USER_ERROR);
-				system($zipcmd." -q -g $archivetmp -j $sqlfile");
-			}	else {
-				system($zipcmd." -q $archivetmp -j $sqlfile");
-			}
-		}	else	{ // commande PCLZIP
-			if(!class_exists('PclZip', false))
-				include 'pclzip/pclzip.lib.php';
-			$archive = new PclZip($archivetmp);
-			if ($zipdirs)	{
-				// function to exclude files and rename directories
-				function preadd($p_event, & $p_header)
-				{
-					global $user_vars;
-					$p_header['stored_filename'] = preg_replace("/^".preg_quote($user_vars['tmpdir'], "/")."\//", "", $p_header['stored_filename']);
+        $files_to_zip = array(
+            $sqlfile => basename($sqlfile),
+        );
 
-					#echo $p_header['stored_filename'],"<br>";
-					return preg_match("/\.(".join("|", $user_vars['acceptedexts'])."|sql|xml)$/", $p_header['stored_filename']);
-				}
-				$files = array();
-				// end of function to exclude files
-				foreach ($zipdirs as $dir) {
-					$files[] = SITEROOT.$dir;
-				}
-				$files[] = $sqlfile;
-				$GLOBALS['user_vars'] = array ('tmpdir' => $tmpdir, 'acceptedexts' => $acceptedexts);
-				$res = $archive->create($files, PCLZIP_OPT_REMOVE_PATH, SITEROOT, PCLZIP_CB_PRE_ADD, 'preadd');
-				if (!$res)
-					trigger_error("ERROR: Error while creating zip archive: ".$archive->error_string, E_USER_ERROR);
-			}	else {
-				$archive->create($sqlfile, PCLZIP_OPT_REMOVE_ALL_PATH);
-			}
-		} // end of pclzip option
+        /* Filtrage des extentions de fichier autorisées */
+        foreach($acceptedexts as $ext)
+        {
+            foreach(preg_grep("/$ext$/", $file_list) as $file)
+            {
+                $files_to_zip[$file] = str_replace(SITEROOT, '', $file);
+            }
+        }
+        unset($file_list);
+
+        create_zip_from_file_list($archivetmp, $files_to_zip);
 
 		return $archivetmp;
 	}
@@ -2469,9 +2405,8 @@ function loop_files(&$context, $funcname)
 function loop_files_model(&$context, $funcname)
 {
 	global $fileregexp;
-	$unzipcmd = C::get('unzipcmd', 'cfg');
 	$model = !empty($context['xmlimport']) ? 'model.xml' : 'model.sql';
-	#print_r($context);
+
 	foreach ($context['importdirs'] as $dir) {
 		if ( $dh = @opendir($dir)) {
 			while (($file = readdir($dh)) !== FALSE) {
@@ -2480,18 +2415,15 @@ function loop_files_model(&$context, $funcname)
 				}
 				$localcontext = $context;
 				$localcontext['filename']     = $file;
-				$localcontext['fullfilename'] = "$dir/$file";
+				$localcontext['fullfilename'] = $dir . DIRECTORY_SEPARATOR . $file;
 
-				// open ZIP archive and extract model.(sql|xml)
-				if ($unzipcmd && $unzipcmd != "pclzip") {
-	  				$line = `$unzipcmd $dir/$file -c $model`;
-				} else {
-					class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
-					$archive = new PclZip("$dir/$file");
-					$arr = $archive->extract(PCLZIP_OPT_BY_NAME, $model,
-								PCLZIP_OPT_EXTRACT_AS_STRING);
-					$line = $arr[0]['content'];
-				}
+                $tmpdir = tmpdir(uniqid('me'));
+                extract_files_from_zip($localcontext['fullfilename'], $tmpdir, null, array($model) );
+
+				$line = file_get_contents($tmpdir . DIRECTORY_SEPARATOR . $model);
+                unlink($tmpdir . DIRECTORY_SEPARATOR . $model);
+                rmdir($tmpdir);
+
 				if (!$line) {
 					continue;
 				}

@@ -171,18 +171,12 @@ try
 	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
 	if($ext === 'zip')
 	{ // multiple
-		$unzipcmd = C::get('unzipcmd', 'cfg');
+
 		if(empty($context['multiple']))
 		{
 			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
 
-			if ($unzipcmd && $unzipcmd != "pclzip") {
-				exec( "$unzipcmd -o -d $tmpdir ".escapeshellarg($source) );
-			}else{
-				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
-				$archive = new PclZip($source);
-				$arr = $archive->extract(PCLZIP_OPT_PATH, $tmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
-			}
+            extract_files_from_zip($source, $tmpdir);
 
             $dir = opendir($tmpdir);
             while ($file = readdir($dir)) {
@@ -217,14 +211,13 @@ try
                     $cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
 
                     $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
-                    $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
-                    delete_files($fileconverted, $source, $tei);
+                    delete_files($source);
 
                     unset($contents);
                     $row = array();
                     $row['fichier']         = $fileconverted;
-                    $row['tei']             = $tei;
+                    $row['tei']             = $source;
                     $row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
                     $row['source']          = $source;
                     // build the import
@@ -243,57 +236,23 @@ try
 		{
 			$oldtmpdir = $tmpdir;
 			$tmpdir = array();
-			if ($unzipcmd && $unzipcmd != "pclzip") {
-				exec("$unzipcmd -o -d $oldtmpdir ".escapeshellarg($source), $line);
-				if(count($line) > 1 && !empty($line[1]))
-				{
-					unset($line[0]);
-					foreach($line as $file)
-					{
-						$file = trim(substr($file, strpos($file, ':') + 1));
-						$base = basename($file);
-						if(in_array(strtolower(pathinfo($base, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $base{0})
-						{
-							$tmp = tmpdir(uniqid('import_', true));
-							rename($file, $tmp.'/'.$base);
-							$sources[$base] = $tmp.'/'.$base;
-							$tmpdir[] = $tmp;
-						}
-					}
-				}
-				else
-				{
-					printErrors('No files were extracted from the archive '.$source, true, $isFrame);
-				}
-			} else {
-				function LodelOtxPostExtractCallBack($p_event, &$p_header)
-				{
-					// ----- look for valid extraction
-					if ($p_header['status'] == 'ok') {
-						rename($p_header['filename'], $p_header['filename'].'-source');
-						return 1;
-					}
-					return 0;
-				}
 
-				class_exists('PclZip', false) || include "pclzip/pclzip.lib.php";
-				$archive = new PclZip($source);
-				$arr = $archive->extract(PCLZIP_OPT_PATH, $oldtmpdir, PCLZIP_OPT_REMOVE_ALL_PATH, PCLZIP_CB_POST_EXTRACT, 'LodelOtxPostExtractCallBack');
-
-				if($arr)
-				{
-					foreach($arr as $file)
-					{
-						if(in_array(strtolower(pathinfo($file['stored_filename'], PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')) && '.' !== $file['stored_filename'])
-						{
-							$tmp = tmpdir(uniqid('import_', true));
-							rename($file['filename'], $tmp.'/'.$file['stored_filename']);
-							$tmpdir[] = $tmp;
-							$sources[$file['stored_filename']] = $tmp.'/'.$file['stored_filename'].'-source';
-						}
-					}
-				}
-			}
+            $extracted_files = extract_files_from_zip($source, $oldtmpdir);
+            if($extracted_files)
+            {
+                foreach($extracted_files as $file)
+                {
+                    if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')))
+                    {
+                        $tmp = tmpdir(uniqid('import_', true));
+                        rename($oldtmpdir . DIRECTORY_SEPARATOR . $file, $tmp . DIRECTORY_SEPARATOR . $file);
+                        $sources[$file] = $tmp . DIRECTORY_SEPARATOR . $file;
+                        $tmpdir[] = $tmp;
+                    }
+                }
+            }else{
+                printErrors('No files were extracted from the archive '.$source, true, $isFrame);
+            }
 
 			if(!function_exists('removefilesfromimport'))
 			{
@@ -354,7 +313,7 @@ try
         $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
         $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
-        delete_files($fileconverted, $source, $tei);
+        delete_files($source, $tei);
 
         unset($contents);
 		$row = array();
@@ -404,7 +363,7 @@ try
 
 		$client->instantiate($options);
 		if($client->error)
-			$errors[] = 'Connection failed for document <em>'.$sourceoriginale.'</em>: '.$client->status;
+			$errors[] = 'Connection failed for documentt <em>'.$sourceoriginale.'</em>: '.$client->status;
 		else break;
 	} while (1);
 
@@ -519,7 +478,7 @@ RDF;
             $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)), $file_cache_lifetime);
             $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
 
-            delete_files($fileconverted, $source, $tei, $odtconverted);
+            delete_files($source, $tei, $odtconverted);
 
 			unset($contents);
 			$row = array();

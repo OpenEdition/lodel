@@ -242,13 +242,6 @@ class Install {
 
 		if ($this->installoption==1) {
 			// try to guess the options.
-			// use pclzip ?
-			if (function_exists("gzopen")) {
-				$arr['unzipcmd']=$arr['zipcmd']="pclzip";
-			} else {
-				$arr['unzipcmd']=$arr['zipcmd']="";
-				$needoptions=true;
-			}
 			$arr['extensionscripts']="php";
 		}
 
@@ -455,18 +448,15 @@ class Install {
 	 * @param string $newextensionscripts extension du script à afficher (.php ou .html ?)
 	 * @param string $newusesymlink utilisation des liens symboliques ?
 	 * @param string $newcontactbug adresse mail à contacter en cas de bug
-	 * @param string $newunzipcmd commande unzip spécifiée par l'utilisateur
-	 * @param string $newzipcmd commande zip spécifiée par l'utilisateur
 	 * @param string $newuri type d'url affichée
 	 */
-	public function maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri)
+	public function maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newuri)
 	{
 		$newurlroot = $newurlroot."/"; // ensure their is a / at the end
 		$newurlroot = preg_replace("/\/\/+/","/",$newurlroot); // ensure there is no double slashes because it causes problem with the cookies
 		$filemask = "07" . (5*($permission['group']['read']!="")+2*($permission['group']['write']!="")) . (5*($permission['all']['read']!="")+2*($permission['all']['write']!=""));
 		
-		if ($pclzip=="pclzip") { $newunzipcmd=$newzipcmd="pclzip"; }
-		
+
 		$this->maj_lodelconfig(array("chooseoptions"=>"oui",
 					"urlroot"=>$newurlroot,
 					"importdir"=>$newimportdir,
@@ -474,8 +464,6 @@ class Install {
 					"usesymlink"=>$newusesymlink,
 					"filemask"=>$filemask,
 					"contactbug"=>$newcontactbug,
-					"unzipcmd"=>$newunzipcmd,
-					"zipcmd"=>$newzipcmd,
 					"URI"=>$newuri
 					));
 	}
