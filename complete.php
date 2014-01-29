@@ -16,6 +16,8 @@ $query[] = "update publications set prioritaire = 0 where prioritaire is null";
 $query[] = "update publications set integralite = 0 where integralite is null";
 $query[] = "update textes set documentcliquable = 1";
 $query[] = "update tablefields set type = 'file' where type = 'fichier'";
+$query[] = "ALTER TABLE `tablefields` ADD COLUMN `editionhooks` TEXT NOT NULL AFTER `editionparams`";
+
 foreach($query as $q)
 	mysql_query($q) or die(mysql_error());
 $req=mysql_query('select id, g_title from entities where identifier = ""');
