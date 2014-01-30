@@ -7,7 +7,7 @@ Créer rapidement un script en cli:
 	require_once('lodel/install/scripts/me_manipulation_func.php');
 // 	define('DO_NOT_DIE', true); // Ne mourir qu'en cas d'erreur grave
 // 	define('QUIET', true); // Pas de sortie du tout
-	$sites = new ME_sites_iterator($argv, 'errors'); // 'errors' ne montre que les erreurs de la fonction ->m()
+	$sites = new ME_sites_iterator($argv, 'errors', 0); // 'errors' ne montre que les erreurs de la fonction ->m(), 0 est le statut minimal du site
 	while ($siteName = $sites->fetch()) {
 		// script de manipulation du ME du site
 	}
@@ -1723,7 +1723,7 @@ class ME_sites_iterator implements Iterator {
 	private $sites = array();
 	private $current_db;
 
-	public function __construct($argv, $error_level = '') {
+	public function __construct($argv, $error_level = '', $status=0) {
 // 		if( php_sapi_name() != "cli" ) // Pas besoin car l'authentification est faite plus haut…
 // 			die("PHP-cli only !!!");
 		$this->position = -1;
@@ -1736,7 +1736,7 @@ class ME_sites_iterator implements Iterator {
 		}
 		array_shift($sites);
 		if ($sites[0] == 'all')
-			$sites = $this->findAllSites();
+			$sites = $this->findAllSites((int) $status);
 		$this->sites = $sites;
 		$GLOBALS['ME_messages'] = $error_level;
 	}
@@ -1783,11 +1783,11 @@ class ME_sites_iterator implements Iterator {
 		$this->setdb($this->current_db);
 	}
 	
-	private function findAllSites() {
+	private function findAllSites($status) {
 		$base_lodel = c::Get('database','cfg');
 		$this->setdb($base_lodel);
 		global $db;
-		$les_sites = $db->execute(lq("SELECT name FROM #_MTP_sites"));
+		$les_sites = $db->execute(lq("SELECT name FROM #_MTP_sites WHERE status>$status"));
 		$sites = array();
 		while ($site = $les_sites->FetchRow()) {
 			$sites[] = $site['name'];
@@ -1800,5 +1800,3 @@ class ME_sites_iterator implements Iterator {
 		usecurrentdb();
 	}
 }
-
-?>
