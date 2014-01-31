@@ -1427,6 +1427,24 @@ function glob_recursive($pattern, $flags = 0)
     return $files;
 }
 
+// effacer un répertoire et toute son arborescence
+function rmtree($rep)
+{
+    if(!file_exists($rep)) return;
+    $fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+    while (($file = readdir($fd)) !== false) {
+        if('.' === $file{0}) continue;
+        $file = $rep. "/". $file;
+        if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
+            rmtree($file);
+            // puis on supprime le répertoire
+            @rmdir($file);
+        } else {@unlink($file);}
+    }
+    closedir($fd);
+    @rmdir($rep);
+}
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts
