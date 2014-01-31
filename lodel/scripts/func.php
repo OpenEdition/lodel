@@ -1431,6 +1431,13 @@ function glob_recursive($pattern, $flags = 0)
 function rmtree($rep)
 {
     if(!file_exists($rep)) return;
+    $rep = realpath($rep);
+    $is_removable = false;
+    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg'))) as $removable)
+        if (0 === strpos($rep, $removable))
+            $is_removable = true;
+    if (!$is_removable)
+            trigger_error("Interdiction d'effacer le répertoire $rep", E_USER_ERROR);
     $fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
     while (($file = readdir($fd)) !== false) {
         if('.' === $file{0}) continue;
