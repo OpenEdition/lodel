@@ -423,7 +423,11 @@ class TEIParser extends XMLReader
 	{
         $images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/img-\d+/" );
 
-        $destination = SITEROOT.'docannexe/image/tmp/';
+        $destination = array_filter(explode('/', $tmpdir));
+        $destination = end($destination);
+        $destination = SITEROOT.'docannexe/image/'.$destination;
+        if (!is_dir($destination))
+            mkdir($destination);
         foreach($images as $image)
         {
             $dest_file = $destination . DIRECTORY_SEPARATOR . basename($image);

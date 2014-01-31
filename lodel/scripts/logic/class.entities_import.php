@@ -236,7 +236,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 					$imgfile_path = (file_exists($imgfile)) ? $imgfile : $base . DIRECTORY_SEPARATOR . $imgfile;
 
 					$ok = @copy ($imgfile_path , SITEROOT.$newimgfile );
-					@unlink ( $base . DIRECTORY_SEPARATOR . $imgfile);
+					@unlink ($imgfile_path);
 					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
 						@chmod (SITEROOT.$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
@@ -249,6 +249,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
 		}
+        if (isset($base))
+            rmtree($base);
+        if (isset($imgfile_path))
+            rmtree(dirname($imgfile_path));
 	}
  
 	protected function _checkdir ($dir) 
