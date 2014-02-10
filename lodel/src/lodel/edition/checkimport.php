@@ -68,7 +68,7 @@ try
 	$context['reload'] = (bool)C::get('reload');
 	$statistics        = array();
 	gettypeandclassfromtask($task, $context);
-	$context = array_merge($context, cache_get($task['fichier'], false));
+	$context = array_merge($context, $task['fichier']);
         if(!empty($task['identity']))
             $context['identity'] = $task['identity'];
         if(!empty($task['idparent']))

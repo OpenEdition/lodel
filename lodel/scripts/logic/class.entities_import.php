@@ -104,7 +104,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		gettypeandclassfromtask ($task, $context);
 		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
 		// restore the entity
-		$contents = cache_get($task['fichier'], false);
+		$contents = $task['fichier'];
 		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
 		$context['idtype'] = $task['idtype'];
 		$context['idparent'] = $task['idparent'];
@@ -118,7 +118,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$context['creationinfo'] = $task['sourceoriginale'];
 		$source = isset($task['source']) ? $task['source'] : null;
 		$odt = isset($task['odt']) ? $task['odt'] : null;
-		$tei = base64_decode(cache_get($task['tei'], false));
+		$tei = $task['tei'];
 		unset($task, $contents);
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
@@ -126,14 +126,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		if($delete) @unlink ($sourcefile);
 		if(isset($source))
 		{
-			file_put_contents($sourcefile, base64_decode(cache_get($source, false)));
+			file_put_contents($sourcefile, $source);
 			@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
 		if($delete) @unlink ($sourcefileodt);
 		if(isset($odt))
 		{
-            file_put_contents($sourcefileodt, base64_decode(cache_get($odt, false)));
+            file_put_contents($sourcefileodt, $odt);
 			@chmod ($sourcefileodt, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
 

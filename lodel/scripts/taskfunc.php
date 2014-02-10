@@ -64,7 +64,7 @@ function maketask($name, $etape, $context, $id = 0)
 {
 	global $db;
 	if (is_array($context))
-		$context = addslashes(serialize($context));
+		$context = base64_encode(serialize($context));
 	$id = (int)$id;
 	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	return $db->insert_ID();
@@ -87,7 +87,7 @@ function gettask(& $id)
 		View::getView()->back();
 		return;
 	}
-	$row = array_merge($row, unserialize($row['context']));
+	$row = array_merge($row, unserialize(base64_decode($row['context'])));
 	return $row;
 }
 

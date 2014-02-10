@@ -109,7 +109,6 @@ try
 	$localfile = C::get('localfile');
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
 
-	$cache = getCacheObject();
     $file_cache_lifetime = C::get('timeout', 'cfg') ? C::get('timeout', 'cfg') : 3600;
 
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
@@ -207,19 +206,11 @@ try
                         die();
                     }
 
-                    $fileconverted = $source. '.converted';
-                    $cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
-
-                    $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
-
-                    delete_files($source);
-
-                    unset($contents);
                     $row = array();
-                    $row['fichier']         = $fileconverted;
-                    $row['tei']             = $source;
-                    $row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
-                    $row['source']          = $source;
+                    $row['fichier']         = $contents;
+                    $row['tei']             = $teiContents;
+                    $row['sourceoriginale'] = $sourceoriginale;
+                    $row['source']          = file_get_contents($source);
                     // build the import
                     $row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
                     $row['identity']        = $context['identity'];
@@ -228,6 +219,9 @@ try
                     $row['reload']          = $context['reload'];
                     function_exists('maketask') || include 'taskfunc.php';
                     printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+
+                    delete_files($source);
+
                     die;
                 }
             }
@@ -307,25 +301,18 @@ try
 			die();
 		}
 
-		$fileconverted = $source. '.converted';
-		$cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
-
-        $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
-        $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
-
-        delete_files($source, $tei);
-
-        unset($contents);
 		$row = array();
-		$row['fichier']         = $fileconverted;
-		$row['tei']		= $tei;
-		$row['sourceoriginale'] = magic_stripslashes($sourceoriginale);
+		$row['fichier'] = $contents;
+		$row['tei'] = file_get_contents($tei);
+		$row['sourceoriginale'] = $sourceoriginale;
 		// build the import
 		$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
 		$row['identity']      = $context['identity'];
 		$row['idparent']      = $context['idparent'];
 		$row['idtype']        = $context['idtype'];
 		$row['reload']        = $context['reload'];
+
+        delete_files($source, $tei);
 
 		function_exists('maketask') || include 'taskfunc.php';
 		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
@@ -440,6 +427,7 @@ RDF;
 			{
 				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 			}
+//var_dump($source, $tei, $odtconverted);die();
 
 			$contents = array();
 
@@ -471,28 +459,20 @@ RDF;
 				die();
 			}
 
-			$fileconverted = $source. '.converted';
-			$cache->set($fileconverted, base64_encode(serialize($contents)), $file_cache_lifetime);
-
-            $cache->set($source, base64_encode(file_get_contents($source)), $file_cache_lifetime);
-            $cache->set($odtconverted, base64_encode(file_get_contents($odtconverted)), $file_cache_lifetime);
-            $cache->set($tei, base64_encode(file_get_contents($tei)), $file_cache_lifetime);
-
-            delete_files($source, $tei, $odtconverted);
-
-			unset($contents);
 			$row = array();
-			$row['fichier']			= $fileconverted;
-			$row['odt']				= $odtconverted;
-			$row['tei']				= $tei;
-			$row['source']			= $source;
-			$row['sourceoriginale']	= magic_stripslashes($sourceoriginale);
+			$row['fichier']			= $contents;
+			$row['odt']				= file_get_contents($odtconverted);
+			$row['tei']				= file_get_contents($tei);
+			$row['source']			= file_get_contents($source);
+			$row['sourceoriginale']	= $sourceoriginale;
 			// build the import
 			$row['importversion']	= "oochargement ".C::get('version', 'cfg').";";
 			$row['identity']		= $context['identity'];
 			$row['idparent']		= $context['idparent'];
 			$row['idtype']			= $context['idtype'];
             $row['reload']          = $context['reload'];
+
+            delete_files($source, $tei, $odtconverted);
 
 			function_exists('maketask') || include 'taskfunc.php';
 			if(empty($context['multiple']))
