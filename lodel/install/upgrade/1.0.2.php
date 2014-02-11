@@ -27,4 +27,5 @@ foreach($sites as $site){
 	$db->SelectDB(DATABASE . "_{$site['name']}");
 	$db->execute(lq ("ALTER TABLE #_TP_relations_ext DROP KEY `id1`;"));
 	$db->execute(lq ("ALTER TABLE #_TP_relations_ext ADD UNIQUE KEY `id1` (`id1`,`id2`,`degree`,`nature`, `site`);"));
+    $db->execute(lq ("ALTER TABLE #_TP_tasks CHANGE COLUMN `context`  `context` longtext;"));
 }
