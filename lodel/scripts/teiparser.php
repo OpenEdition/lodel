@@ -421,7 +421,7 @@ class TEIParser extends XMLReader
 	 */
 	private function _extractImages($odt, $tmpdir)
 	{
-        $images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/img-\d+/" );
+        $images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/.+/" );
 
         $destination = array_filter(explode('/', $tmpdir));
         $destination = end($destination);
