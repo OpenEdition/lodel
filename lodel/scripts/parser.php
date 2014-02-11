@@ -2069,7 +2069,7 @@ PHP;
 
 function stripcommentandcr(& $text)
 {
-	return preg_replace(array ("/[\r\t]+/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE|if lt IE|if gt IE).*?\]-->\s*\n?/s"), "", $text);
+	return preg_replace(array ("/[\r\t]+/", "/<!--\[\s*\]-->\s*\n?/s" ,"/<!--\[(?!if IE|if lte? IE|if gte? IE).*?\]-->\s*\n?/s"), "", $text);
 }
 
 function quote_code($text)
