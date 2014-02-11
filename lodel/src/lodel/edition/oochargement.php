@@ -376,6 +376,7 @@ try
 	{ // reload
 		$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
 	}
+
 	$parser = new TEIParser($context['idtype']);
 
 	foreach($sources as $sourceoriginale => $source)
@@ -390,15 +391,10 @@ try
 		}
 
 		$request = array('schema' => $schema);
-		$request['attachment'] = file_get_contents($source);
+		$request['attachment'] = $source;
 		$request['mode'] = 'lodel:'.$mode;
-		$request['request'] = <<<RDF
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:prism="http://prismstandard.org/namespaces/1.2/basic/">
-<dc:source>{$sourceoriginale}</dc:source>
-<prism:publicationName>{$site}</prism:publicationName>
-<dc:identifier>{$url}</dc:identifier>
-</rdf:RDF>
-RDF;
+        $request['site'] = $site;
+        $request['sourceoriginale'] = $sourceoriginale;
 
 		$client->request($request);
 
@@ -406,7 +402,7 @@ RDF;
 		{
 			if($isFrame)
 			{
-				printJavascript('window.parent.o.changeStep(2, "'.$client->status.'");');
+				printJavascript('window.parent.o.changeStep(2, "'.$sourceoriginale.'");');
 			}
 
 			if(empty($context['multiple']) && C::get('sortietei') && C::get('adminlodel', 'lodeluser'))

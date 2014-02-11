@@ -88,7 +88,7 @@ class OTXClient extends SoapClient
 	 * @var array liste des paramètres obligatoires pour l'envoi à OTX
 	 * @access private
 	 */
-	private $_neededRequest = array('request'=>true, 'attachment'=>true, 'mode'=>true, 'schema'=>true);
+	private $_neededRequest = array('sourceoriginale'=>true, 'site' => true, 'attachment'=>true, 'mode'=>true, 'schema'=>true);
 
 	/**
 	 * @var string status retourné par OTX
@@ -108,7 +108,13 @@ class OTXClient extends SoapClient
 	 */
 	private $_instanciated = false;
 
-	/**
+    /**
+     * @var array contient toutes les options de connexion
+     * @access pricate
+     */
+    private $_options = array();
+
+    /**
 	 * Constructeur
 	 *
 	 * @access public
@@ -128,56 +134,23 @@ class OTXClient extends SoapClient
 	{
 		$this->error = false;
 		$options = array();
-		$options['trace'] = TRUE;
-		$options['soap_version'] = SOAP_1_2;
-		$options['exceptions'] = TRUE;
-		$options['compression'] = SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | 5;
-		$options['encoding'] = SOAP_LITERAL;
-		$options['authentication'] = SOAP_AUTHENTICATION_BASIC;
+        if(isset($opts['otx.proxyhost']))
+        {
+            $options['proxy_host'] = $opts['otx.proxyhost'];
+            $options['proxy_port'] = (int)$opts['otx.proxyport'];
+            $options['proxy_login'] = $opts['otx.username'];
+            $options['proxy_password'] = $opts['otx.passwd'];
+        }
 
-		try {
-			$this->_checkParams($opts);
+        $this->_instanciated = true;
 
-			$options['location'] = $opts['otx.url'];
-			$options['login'] = $opts['otx.username'];
-			$options['password'] = $opts['otx.passwd'];
-			if(isset($opts['otx.proxyhost']))
-			{
-				$options['proxy_host'] = $opts['otx.proxyhost'];
-				$options['proxy_port'] = (int)$opts['otx.proxyport'];
-				$options['proxy_login'] = $opts['otx.username'];
-				$options['proxy_password'] = $opts['otx.passwd'];
-			}
+        foreach($opts as $o=>$v)
+        {
+            $options[$o] = $v;
+        }
 
-			$wsdl = $opts['otx.url'].'?wsdl';
-			$h = get_headers($wsdl, 1);
-			if($h[0] === 'HTTP/1.1 200 OK' && $h['Content-Type'] === 'application/xml; charset=UTF-8' && $h['Content-Length'] > 0)
-				parent::__construct($wsdl, $options);
-			else throw new SoapFault("Webotx FaultError", //faultcode
-						'Invalid url '.$wsdl.' return headers '.print_r($h, 1), //faultstring
-						'', // faultactor, TODO ?
-						"Soap Creation",  // detail
-						"UTF-8" // faultname
-						/*$headerfault // headerfault */ );
-
-			// get the token for this session
-			$sessionToken = $this->otxToken()->sessionToken;
-
-			// add the header for auth
-			$this->__setSoapHeaders(array(new SoapHeader('urn:otx', 'otxAuth', new SoapVar(array(
-				'login' => $opts['otx.username'],
-				'password' => md5(md5($opts['otx.username'] . ":" . $opts['otx.passwd']).$sessionToken),
-				'lodel_user' => $opts['lodel_user'],
-				'lodel_site' => $opts['lodel_site']), SOAP_ENC_OBJECT))));
-
-			unset($options, $opts, $passwd, $sessionToken); // cleaning memory
-
-			$this->_instanciated = true;
-		}
-		catch (SoapFault $fault) {
-			$this->error = $fault->faultcode;
-			$this->status = !empty($fault->detail) ? "On ".$fault->detail.': '.$fault->faultstring : $fault->faultstring;
-		}
+        $this->_options = $options;
+        unset($options);
 	}
 
 	/**
@@ -188,22 +161,51 @@ class OTXClient extends SoapClient
 	 */
 	public function request(&$request)
 	{
-		try {
+        try {
 			if(!$this->_instanciated)
-				throw new SoapFault("Webotx client FaultError", 'ERROR: client has not been instanciated');
+				throw new Exception("Webotx client FaultError", 'ERROR: client has not been instanciated');
 
 			$this->_checkRequest($request);
 			// make the request and get tei result
-			$req = $this->otxRequest(array('request'=>$request['request'], 'mode'=>$request['mode'], 'attachment'=>$request['attachment'], 'schema'=>$request['schema']));
-			if(empty($req))
-				throw new SoapFault("Webotx client FaultError", 'ERROR: empty return from OTX');
+			$data = array(
+                'request' => $request['request'],
+                'mode' => $request['mode'],
+                'schema'=> $request['schema'],
+                'site' => $request['site'],
+                'sourceoriginale' => $request['sourceoriginale'],
+            );
 
-			foreach($req as $k=>$v)
-				$this->$k = $v;
+            $data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
+
+            $request = curl_init($this->_options['otx.url']);
+            curl_setopt($request, CURLOPT_USERPWD, $this->_options['otx.username'].":".$this->_options['otx.passwd'] );
+            curl_setopt($request, CURLOPT_POST, 1);
+            curl_setopt($request ,CURLOPT_POSTFIELDS, $data);
+            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+
+            $req = curl_exec($request);
+
+            if(empty($req))
+				throw new Exception('ERROR: empty return from OTX');
+
+            if(curl_errno($request))
+                throw new Exception("ERROR: Unknow error happened: ". curl_error( $request ));
+
+            if(curl_getinfo( $request )['http_code'] != 200 )
+                throw new Exception("ERROR: $req");
+
+            curl_close($request);
+
+			foreach(json_decode($req, true) as $k=>$v)
+            {
+                if( ! ( $this->$k = base64_decode($v)) )
+                    $this->$k = $v;
+            }
+
 		}
-		catch (SoapFault $fault) {
+		catch (Exception $fault) {
 			$this->error = true;
-   			$this->status = !empty($fault->detail) ? "On ".$fault->detail.': '.$fault->faultstring : $fault->faultstring;
+   			$this->status = $fault->getMessage();
 		}
 	}
 
@@ -259,12 +261,7 @@ class OTXClient extends SoapClient
 			{
 				if($v)
 				{
-					throw new SoapFault("Webotx FaultError", //faultcode
-					'Missing parameter '.$k, //faultstring
-					'', // faultactor, TODO ?
-					"Soap authentification",  // detail
-					"UTF-8" // faultname
-					/*$headerfault // headerfault */ );
+					throw new Exception("Webotx FaultError: Missing parameter $k");
 				}
 			}
 			else $r[$k] = $opts[$k];
@@ -286,12 +283,7 @@ class OTXClient extends SoapClient
 		{
 			if(!isset($request[$k]))
 			{
-				throw new SoapFault("Webotx FaultError", //faultcode
-				'Missing parameter '.$k, //faultstring
-				'', // faultactor, TODO ?
-				"Soap request",  // detail
-				"UTF-8" // faultname
-				/*$headerfault // headerfault */ );
+				throw new Exception("Webotx FaultError: Missing parameter $k");
 			}
 			else $r[$k] = $request[$k];
 		}
