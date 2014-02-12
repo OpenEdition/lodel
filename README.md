@@ -21,7 +21,7 @@ Lodel est un logiciel libre sous licence GPL Version 2. Lisez la licence dans le
 COPYING.
 
 
-Lodel - Logiciel d'édition éLectronique
+Lodel - Logiciel d'édition Électronique
 ----------------------------------------
 
 Lodel est un logiciel d'édition électronique. Il est simple d'utilisation et
