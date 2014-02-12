@@ -168,7 +168,6 @@ class OTXClient extends SoapClient
 			$this->_checkRequest($request);
 			// make the request and get tei result
 			$data = array(
-                'request' => $request['request'],
                 'mode' => $request['mode'],
                 'schema'=> $request['schema'],
                 'site' => $request['site'],
