@@ -7,7 +7,7 @@ Home page: http://www.lodel.org
 
 E-Mail: lodel@lodel.org
 
-Résumé:
+Résumé
 -------
 
 Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des
