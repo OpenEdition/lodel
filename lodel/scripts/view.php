@@ -287,7 +287,7 @@ class View
 
 			if($contents) {
 				$template = $this->unzip_cached_template($contents);
-				if(0 === $template['refresh'] || $template['refresh'] > self::$time) {
+				if(0 === $template['expire'] || $template['expire'] > self::$time) {
 					self::$page = $this->_eval($template['contents'], C::getC());
 					$this->_print();
 					return true;
@@ -407,7 +407,7 @@ class View
 		if(!$contents) return false;
 
 		$template = $this->unzip_cached_template($contents);
-		if(0 === $template['refresh'] || $template['refresh'] > self::$time) {
+		if(0 === $template['refresh'] || $template['expire'] > self::$time) {
 			self::$page = $this->_eval($template['contents'], C::getC());
 			$this->_print();
 			return true;
@@ -479,7 +479,7 @@ class View
 			if($contents = $this->_cache->get($template_cache)) {
 				$template = $this->unzip_cached_template($contents);
 				$contents = $template['contents'];
-				if(0 !== $template['refresh'] && self::$time > $template['refresh'])
+				if(0 !== $template['refresh'] && self::$time > $template['expire'])
 					$recalcul = true;
 			} else {
 				$recalcul = true;
@@ -518,7 +518,8 @@ class View
 		$template_contents = $template['contents'];
 		unset($template['contents']);
 
-		$template['refresh'] = 0 !== $template['refresh'] ? (self::$time + $template['refresh']) : 0;
+		$template['refresh'] = 0 !== $template['refresh'] ? $template['refresh'] : 0;
+        $template['expire'] = self::$time + $template['refresh'];
 		$template_options = serialize($template);
 
 		$this->_cache->set($cacheId, $template_options."\n".$template_contents);
