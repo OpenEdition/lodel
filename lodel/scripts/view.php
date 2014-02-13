@@ -287,7 +287,7 @@ class View
 
 			if($contents) {
 				$template = $this->unzip_cached_template($contents);
-				if(0 === $template['expire'] || $template['expire'] > self::$time) {
+				if(0 === $template['refresh'] || $template['expire'] > self::$time) {
 					self::$page = $this->_eval($template['contents'], C::getC());
 					$this->_print();
 					return true;
