@@ -1767,8 +1767,13 @@ class TEIParser extends XMLReader
 
 	private function _parseSeg(array $attrs)
 	{
-	    $text = "<td>";
 	    $this->_tags[] = "td";
+
+        $localAttrs = '';
+        if ($inlineTag = $this->_addLocalStyle($attrs, false)) {
+            list($inlineTag, $localAttrs) = $this->_getAttributes($inlineTag, array('dir'));
+        }
+        $text = '<td' . $localAttrs . $this->_addAttributes($attrs) . '>';
 
 	    while($this->read()){
 	        if(parent::ELEMENT === $this->nodeType){
