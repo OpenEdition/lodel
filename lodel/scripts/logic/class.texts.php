@@ -144,7 +144,7 @@ class TextsLogic extends Logic
 				usecurrentdb();
 			}
 		}
-		clearcache(true);
+		clearcache();
 		return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest' ? '_ajax' : '_back';
 	}
 
