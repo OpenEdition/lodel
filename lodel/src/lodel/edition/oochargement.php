@@ -303,7 +303,7 @@ try
 
 		$row = array();
 		$row['fichier'] = $contents;
-		$row['tei'] = file_get_contents($tei);
+		$row['tei'] = $teiContents;
 		$row['sourceoriginale'] = $sourceoriginale;
 		// build the import
 		$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
@@ -312,7 +312,7 @@ try
 		$row['idtype']        = $context['idtype'];
 		$row['reload']        = $context['reload'];
 
-        delete_files($source, $tei);
+        delete_files($source);
 
 		function_exists('maketask') || include 'taskfunc.php';
 		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
@@ -423,7 +423,6 @@ try
 			{
 				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
 			}
-//var_dump($source, $tei, $odtconverted);die();
 
 			$contents = array();
 
