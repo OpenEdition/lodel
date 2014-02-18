@@ -239,7 +239,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 			
 		if(C::get('redactor', 'lodeluser') && isset($_REQUEST['clearcache']))
 		{
-			clearcache(true);
+			clearcache();
 		}
             
 		C::trigger('postauth');

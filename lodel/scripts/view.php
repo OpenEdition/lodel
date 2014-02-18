@@ -683,7 +683,7 @@ class View
 		// erreur on peut avoir enregistré n'importe quoi dans le cache, on efface les pages si demandé
 		if($clearcache)
 		{
-			clearcache(true);
+			clearcache();
 		}
 		$err = "ERROR:\nFunction '".$func."' in file '".__FILE__."' ";
         	$err .= "(requested page ' ".$_SERVER['REQUEST_URI']." ' by ip address ' ".$_SERVER["REMOTE_ADDR"]." ') :\n";
@@ -720,7 +720,7 @@ class View
 		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		// on efface le cache on a pu enregistre tout et n'importe quoi
-		clearcache(true);
+		clearcache();
 		if (C::get('redactor', 'lodeluser') || C::get('debugMode', 'cfg'))
 		{
 			if ($tablename) 
