@@ -252,7 +252,7 @@ class TranslationsLogic extends Logic {
 	{
 		function_exists('validfield') || include "validfunc.php";
 
-		$lang = isset($context['lang']) ? $context['lang'] : 'all';
+		$lang = isset($context['lang_trad']) ? $context['lang_trad'] : 'all';
 		
 		if ($lang != "all" && !validfield($lang, "lang"))
 			trigger_error("ERROR: invalid lang", E_USER_ERROR);
