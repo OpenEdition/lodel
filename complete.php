@@ -17,6 +17,7 @@ $query[] = "update publications set integralite = 0 where integralite is null";
 $query[] = "update textes set documentcliquable = 1";
 $query[] = "update tablefields set type = 'file' where type = 'fichier'";
 $query[] = "ALTER TABLE `tablefields` ADD COLUMN `editionhooks` TEXT NOT NULL AFTER `editionparams`";
+$query[] = "ALTER TABLE `restricted_users` ADD COLUMN `ip` longtext NOT NULL AFTER `userrights`";
 
 foreach($query as $q)
 	mysql_query($q) or die(mysql_error());
