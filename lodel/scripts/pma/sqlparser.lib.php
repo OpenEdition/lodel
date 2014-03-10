@@ -162,7 +162,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
             $debugstr .= 'USR OS, AGENT, VER: ' . PMA_USR_OS . ' ' . PMA_USR_BROWSER_AGENT . ' ' . PMA_USR_BROWSER_VER . "\n";
             $debugstr .= 'PMA: ' . PMA_VERSION . "\n";
             $debugstr .= 'PHP VER,OS: ' . PMA_PHP_STR_VERSION . ' ' . PHP_OS . "\n";
-            $debugstr .= 'LANG: ' . C::get('lang') . "\n";
+            $debugstr .= 'LANG: ' . C::get('sitelang') . "\n";
             $debugstr .= 'SQL: ' . htmlspecialchars($sql);
 
             $encodedstr     = $debugstr;

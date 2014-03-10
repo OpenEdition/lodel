@@ -111,7 +111,7 @@ function getCacheIdFromId( $id ){
 
 	return  ( isset($cache_config['prefix']) ? "{$cache_config['prefix']}_" : "" ) 
 			. "{$site}_{$env}_{$sessionsite}_{$id}" 
-			. ( C::get('lang') ? "_" . C::get('lang') : null );
+			. ( C::get('sitelang') ? "_" . C::get('sitelang') : null );
 }
 
 function getCacheObject(){

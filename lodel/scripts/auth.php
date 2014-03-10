@@ -368,7 +368,6 @@ function setLang($lang=null)
         C::set('locale', $l.'_'.$lu.'.UTF8');
         unset($l, $lu);
     }
-    C::set('lang', $choosed_language);
     C::set('sitelang', $choosed_language);
 }
 
