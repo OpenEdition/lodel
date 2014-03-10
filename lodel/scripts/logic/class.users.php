@@ -211,11 +211,11 @@ class UsersLogic extends Logic
 			$list=DAO::getDAO("translations")->findMany("status>0 AND textgroups='interface'","rank,lang","lang,title");
 			usecurrentdb();
 			$arr=array();
-			foreach($list as $lang) {
-				$arr[$lang->lang]=$lang->title;
+            foreach($list as $lang) {
+                $arr[$lang->lang]=$lang->title;
 			}
 			if (!$arr) $arr['fr']="Français";
-			renderOptions($arr,isset($context['sitelang']) ? $context['sitelang'] : '');
+			renderOptions($arr,isset($context['lang']) ? $context['lang'] : $context['sitelang']);
 		}
 	}
 
