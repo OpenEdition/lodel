@@ -1290,11 +1290,11 @@ function thumbnail($path, $width = null, $height = null)
     $image->enlarge_smaller_images = false;
     $image->preserve_time = true;
 
-    if (!$image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1)) {
-        return $path;
-    } else {
-        return $new_path;
-    }
+    $final_path = $path;
+    if($image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1))
+        $final_path = $new_path;
+    unlink($tmp_path);
+    return $final_path;
 }
 
 if (!function_exists('detectlanguage')) {
