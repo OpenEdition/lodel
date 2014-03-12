@@ -197,7 +197,7 @@ class OTXClient extends SoapClient
 
 			foreach(json_decode($req, true) as $k=>$v)
             {
-                if( ! ( $this->$k = base64_decode($v)) )
+                if( ! ( $this->$k = base64_decode($v, true)) )
                     $this->$k = $v;
             }
 
