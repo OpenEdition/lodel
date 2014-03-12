@@ -207,7 +207,6 @@ class Entities_ImportLogic extends Entities_EditionLogic
 	protected function _moveImages_rec (&$context, &$dir, &$count) 
 	{
 		$imglist = array();
-		if(isset($this->task['tei'])) $base = dirname($this->task['tei']);
 
 		foreach (array_keys ($context) as $k) {
 			if (is_array ($context[$k])) {
@@ -249,8 +248,6 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
 		}
-        if (isset($base))
-            rmtree($base);
         if (isset($imgfile_path))
             rmtree(dirname($imgfile_path));
 	}
