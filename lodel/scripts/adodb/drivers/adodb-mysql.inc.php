@@ -310,16 +310,18 @@ class ADODB_mysql extends ADOConnection {
 	
   	function MetaDatabases()
 	{
-		$qid = mysql_list_dbs($this->_connectionID);
-		$arr = array();
-		$i = 0;
-		$max = mysql_num_rows($qid);
-		while ($i < $max) {
-			$db = mysql_tablename($qid,$i);
-			if ($db != 'mysql') $arr[] = $db;
-			$i += 1;
-		}
-		return $arr;
+        $query = "SHOW DATABASES";
+        $ret = $this->Execute($query);
+        if ($ret && is_object($ret)){
+            $arr = array();
+            while (!$ret->EOF){
+                $db = $ret->Fields('Database');
+                if ($db != 'mysql') $arr[] = $db;
+                $ret->MoveNext();
+            }
+            return $arr;
+        }
+        return $ret;
 	}
 	
 		
