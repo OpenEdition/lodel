@@ -290,9 +290,10 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
                     mkdir(SITEROOT . DIRECTORY_SEPARATOR . $dir, 0770, true);
                 }
                 if($acceptedexts){
+                    $pathinfos = pathinfo($file);
                     foreach($acceptedexts as $ext)
                     {
-                        if(strpos($file, $ext) === strlen($file) - strlen($ext))
+                        if($pathinfos['extension'] == $ext)
                         {
                             $files_to_extract[] = $file;
                             break;
