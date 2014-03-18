@@ -5,6 +5,8 @@ Logiciel d'édition Électronique
 
 Home page: http://www.lodel.org
 
+Download: http://openedition.github.io/lodel/
+
 E-Mail: lodel@lodel.org
 
 Résumé
