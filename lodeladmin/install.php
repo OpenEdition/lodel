@@ -184,7 +184,7 @@ switch ($tache) {
         }
         break;
     case 'options': // maj des options lodel
-        $install->maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newunzipcmd, $newzipcmd, $newuri);
+        $install->maj_options($newurlroot, $permission, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newuri);
         break;
     case 'downloadlodelconfig': // téléchargement du fichier de conf ?
         $install->downloadlodelconfig($log_version);

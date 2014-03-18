@@ -450,7 +450,7 @@ class Install {
 	 * @param string $newcontactbug adresse mail à contacter en cas de bug
 	 * @param string $newuri type d'url affichée
 	 */
-	public function maj_options($newurlroot, $permission, $pclzip, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newuri)
+	public function maj_options($newurlroot, $permission, $newimportdir, $newextensionscripts, $newusesymlink, $newcontactbug, $newuri)
 	{
 		$newurlroot = $newurlroot."/"; // ensure their is a / at the end
 		$newurlroot = preg_replace("/\/\/+/","/",$newurlroot); // ensure there is no double slashes because it causes problem with the cookies
