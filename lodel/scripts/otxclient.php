@@ -163,7 +163,7 @@ class OTXClient extends SoapClient
 	{
         try {
 			if(!$this->_instanciated)
-				throw new Exception("Webotx client FaultError", 'ERROR: client has not been instanciated');
+				throw new Exception("Webotx client FaultError: client has not been instanciated");
 
 			$this->_checkRequest($request);
 			// make the request and get tei result
