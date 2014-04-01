@@ -142,11 +142,12 @@ class SitesLogic extends Logic
 			lock_write ('session', 'sites');
 			// cherche le nom du site
 			$dao = DAO::getDAO('sites');
-			$vo = $dao->find($critere, 'path');
+			$vo = $dao->find($critere, 'path, name');
 			if (!$vo->path) {
 				$context['error'] = getlodeltextcontent('error_during_lock_site_the_site_may_have_been_deleted', 'lodeladmin');
 				return '_error';
 			}
+			$site = $vo->name;
 			// delogue tout le monde sauf l'utilisateur courant
 			$db->execute(lq("DELETE FROM #_MTP_session WHERE site='$site' AND iduser!='$iduser'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			// change le statut du site
