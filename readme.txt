@@ -20,7 +20,7 @@ L’archive zip contient 3 fichiers :
 
 # Restrictions connues
 
-La touche “alt” n’est disponible dans les raccrourcis clavier d’LibreOffice que depuis la version 3.2. Pour les versions antérieures, la plupart des raccourcis clavier ne sont pas disponibles.
+La touche “alt” n’est disponible dans les raccrourcis clavier de LibreOffice que depuis la version 3.2. Pour les versions antérieures, la plupart des raccourcis clavier ne sont pas disponibles.
 
 Importation des documents dans Lodel 0.8 ou 0.9 (ServOO) :
 * Les listes à puces sont interprétées par Servoo (Lodel 0.8 et 0.9) comme des listes ordonnées : les listes à puces seront affichées dans Lodel comme des listes numérotées. Les listes à puces sont correctement interprétées par OTX (Lodel 1.x)
@@ -49,7 +49,7 @@ Les listes doivent être stylées avec le style de paragraphe "puces" disponible
 
 ### Importation des documents dans Lodel 1.x (OTX)
 
-Dans Lodel 1.0, il ne faut plus utiliser le style "puces". Il faut utiliser les outils de liste (à puces et numérotées) "natifs" d'LibreOffice.
+Dans Lodel 1.0, il ne faut plus utiliser le style "puces". Il faut utiliser les outils de liste (à puces et numérotées) "natifs" de LibreOffice.
 
 # Personnalisation du modèle
 Il est bien-sûr possible d’ajouter d’autres styles correspondant à un autre modèle éditorial.
@@ -68,7 +68,7 @@ Pour ajouter un style pour un autre modèle éditorial au menu Lodel :
 
 Si vous souhaitez associer un raccourci clavier à une macro, vous pouvez suivre ce guide très explicite : <http://wiki.services.openoffice.org/wiki/FR/Documentation/Writer_Guide/Assignation_raccourcis>
 
-La sauvegarde des raccourcis semble ne pas fonctionner sans LibreOffice 3.2 (le fichier produit était vide). Elle fonctionne très bien dans LibreOffice 3.2.
+La sauvegarde des raccourcis semble ne pas fonctionner dans OpenOffice 3.2 (le fichier produit était vide). Elle fonctionne très bien dans LibreOffice 3.2.
 
 
 # Licence
