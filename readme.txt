@@ -1,59 +1,76 @@
-Ce modËle remplace líextension ìLodel stylistî pour OpenOffice qui ne fonctionne pas dans la version 3 díOpenOffice. Il permet díappliquer les styles dÈclarÈs dans le modËle Èditorial distribuÈ avec la version 0.8, 0.9 et 1.0 de Lodel. Il fonctionne sous OpenOffice 3.3 et LibreOffice 3.3.
+# Introduction
+Le mod√®le de document pour OpenOffice ou LibreOffice est disponible sur le d√©p√¥t GitHub dans la branche suivante : <https://github.com/OpenEdition/lodel/tree/model-libreoffice> 
+Des versions tagu√©es sont √©galement disponible dans le d√©p√¥t GitHub : model-libreoffice-vXX
 
-Il est distribuÈ en licence GPL sur SourceSup : https://sourcesup.cru.fr/frs/?group_id=193 (modele_revuesorg_OO.zip)
-Les Èvolutions de ce modËle seront annoncÈes sur le blog de Lodel : http://blog.lodel.org/tag/modele
+Ce mod√®le permet d‚Äôappliquer les styles d√©clar√©s dans le mod√®le √©ditorial distribu√© avec la version 0.8, 0.9 et 1.0 de Lodel. Il fonctionne sous OpenOffice 3.x et LibreOffice 3.x.
 
-Líarchive zip contient 3 fichiers :
+Les √©volutions de ce mod√®le seront annonc√©es sur le blog de Lodel : <http://blog.lodel.org>
 
-    modele_revuesorg_fr.ott : le modËle de document
-    raccourcis_modele_revorg_fr.cfg : le fichier de configuration des raccourcis claviers permettant díappliquer les styles de documents.
-	readme.txt : ce fichier
+L‚Äôarchive zip contient 3 fichiers :
+* modele_revuesorg_fr.ott : le mod√®le de document
+* raccourcis_modele_revorg_fr.cfg : le fichier de configuration des raccourcis claviers permettant d‚Äôappliquer les styles au document.
+* readme.txt
 
-Comment líutiliser
+# Installation
 
-    Dans OpenOffice writter, vÈrifier le niveau de sÈcuritÈ pour líexecution des macros :  menu Outils > Options > Openoffice.org > SÈcuritÈ > SÈcuritÈ des macros > choisir ìNiveau de sÈcuritÈ moyenî.
-    Un double clic sur modele_revuesorg_fr.ott ouvre un nouveau document basÈ sur le modËle (autoriser líexÈcution des macros, bien-s˚r).
-    Le menu  îLodelî disponible dans la barre des menus permet díappliquer les styles dÈclarÈs dans Lodel.
-    Pour attacher les raccourcis claviers permettant díappliquer les styles : menu Outils > Personnaliser > Clavier > Charger : choisir le fichier ìraccourcis_modele_revorg_fr.cfgî et valider. Les raccourcis clavier sont alors actifs. Ils sont affichÈs dans le menu ìLodelî en face des styles correspondants.
+* Dans LibreOffice writter, v√©rifier le niveau de s√©curit√© pour l‚Äôex√©cution des macros :  menu Outils > Options > Libreoffice.org > S√©curit√© > S√©curit√© des macros > choisir ‚ÄúNiveau de s√©curit√© moyen‚Äù.
+* Un double clic sur modele_revuesorg_fr.ott ouvre un nouveau document bas√© sur le mod√®le (autoriser l‚Äôex√©cution des macros, bien-s√ªr).
+* Le menu ‚ÄùLodel‚Äù disponible dans la barre des menus permet d‚Äôappliquer les styles d√©clar√©s dans Lodel.
+* Pour attacher les raccourcis claviers permettant d‚Äôappliquer les styles : menu Outils > Personnaliser > Clavier > Charger : choisir le fichier ‚Äúraccourcis_modele_revorg_fr.cfg‚Äù et valider. Les raccourcis clavier sont alors actifs. Ils sont affich√©s dans le menu ‚ÄúLodel‚Äù en face des styles correspondants.
 
-Restrictions connues
+# Restrictions connues
 
-    La touche ìaltî níest disponible dans les raccrourcis clavier díOpenOffice que depuis la version 3.2. Pour les versions antÈrieures, la plupart des raccourcis clavier ne sont pas disponibles.
-    Dans OpenOffice, les images ne sont pas nÈcessairement contenues dans un paragraphe distinct. Il faut veiller ‡ insÈrer un paragraphe stylÈ en ìStandardî ou en ìAnnexeî et contenant líancre de líimage et ancrer l'image comme caractËre : options de l'image (double-clic sur l'image) : onglet type : ancrer comme caractËre.
+La touche ‚Äúalt‚Äù n‚Äôest disponible dans les raccrourcis clavier d‚ÄôLibreOffice que depuis la version 3.2. Pour les versions ant√©rieures, la plupart des raccourcis clavier ne sont pas disponibles.
 
-    Importation des documents dans Lodel 0.8 ou 0.9 (ServOO) :
-	- Les listes ‡ puces sont interprÈtÈes par Servoo (Lodel 0.8 et 0.9) comme des listes ordonnÈes : les listes ‡ puces seront affichÈes dans Lodel comme des listes numÈrotÈes. Les listes ‡ puces sont correctement interprÈtÈes par OpenText (Lodel 1.x)
-	- Il faut enregistrer le document au format sxw
+Importation des documents dans Lodel 0.8 ou 0.9 (ServOO) :
+* Les listes √† puces sont interpr√©t√©es par Servoo (Lodel 0.8 et 0.9) comme des listes ordonn√©es : les listes √† puces seront affich√©es dans Lodel comme des listes num√©rot√©es. Les listes √† puces sont correctement interpr√©t√©es par OTX (Lodel 1.x)
+* Il faut enregistrer le document au format sxw
 
-	Importation des documents dans Lodel 1.x (OpenText) :
-    - Les listes ‡ puces sont correctement interprÈtÈes par OpenText (Lodel 1.x).
-    - Tous les formats de fichiers compatibles avec OpenOffice 3 sont reconnus. Il est cependant prÈfÈrable d'utiliser le format odt.
+Importation des documents dans Lodel 1.x (OTX) :
+* Les listes √† puces sont correctement interpr√©t√©es par OTX (Lodel 1.x).
+* Tous les formats de fichiers compatibles avec LibreOffice 3 sont reconnus par OTX √† l'exception de rtf. Il est cependant pr√©f√©rable d'utiliser le format odt.
 
-CrÈdits
-Matthieu HeuzÈ, Jean-FranÁois RiviËre
+# Recommandations pour le stylage
+## Mises en formes locales
 
-Ce modËle est distribuÈ en licence GPL. Merci de faire Ètat de vos essais, quíils soient fructueux ou non, sur la liste lodel-users (https://listes.cru.fr/sympa/info/lodel-users).
+Les mises en formes locales peuvent g√©n√©rer des mises en forme non souhait√©es dans le document html produit dans Lodel. Pour les supprimer, utilisez la fonction "Formatage par d√©faut" (accessible depuis le menu Format, ou Ctrl+M). Elle supprime les mises en forme locales (ou formatage direct)et les styles de caract√®re mais conserve les styles de paragraphe. Les styles utilis√©s dans le mod√®le de document sont presque tous des styles de paragraphe.
 
-Personnalisation du modËle
-Il est bien-s˚r possible díajouter díautres styles correspondant ‡ un autre modËle Èditorial.
+Le formatage direct est un formatage que vous appliquez sans utiliser les styles, par exemple :
+* lorsque vous sp√©cifiez le style gras en cliquant sur l'ic√¥ne Gras ;
+* lorsque vous modifier la Police en la choisissant dans le cadre Nom de police de la barre de formatage.
 
-Le principe de ce modËle de document est le suivant :
+## Stylage des images
+Dans LibreOffice, les images ne sont pas n√©cessairement contenues dans un paragraphe distinct. Il faut veiller √† ins√©rer un paragraphe styl√© en ‚ÄúStandard‚Äù ou en ‚ÄúAnnexe‚Äù et contenant l‚Äôancre de l‚Äôimage et ancrer l'image comme caract√®re : options de l'image (double-clic sur l'image) : onglet type : ancrer comme caract√®re.
 
-    le modËle de document contient des styles de paragraphes dont les noms sont dÈclarÈs dans le modËle Èditorial de Lodel ;
-    le modËle contient des macros qui appliquent ces styles (un macro, trËs simple, par style) ;
-    le modËle contient enfin un menu personnalisÈ qui permet díexÈcuter ces macros.
+## Stylage des listes
+### Importation des documents dans Lodel 0.8 ou 0.9 (ServOO)
 
-Les raccourcis clavier permettant díexÈcuter les macros ne peuvent Ítre enregistrÈes dans le modËle. Cíest pour cette raison quíil faut les charger depuis un fichier diffÈrent.
+Les listes doivent √™tre styl√©es avec le style de paragraphe "puces" disponible dans le mod√®le de document.
 
-Pour ajouter un style pour un autre modËle Èditorial au menu Lodel :
+### Importation des documents dans Lodel 1.x (OTX)
 
-    Ouvrez le modËle de document dans OpenOffice 3.2 (veillez ‡ ouvrir le modËle de document, pas un nouveau document basÈ sur le modËle).
-    Ajoutez un style dans le modËle de document (dans la fenÍtre ìStyles et formatageî).
-    Enregistrez une nouvelle macro qui applique ce style : ìOutilsî > ìMacrosî > ìEnregistrez un macroî puis appliquer le style et cliquez sur ìTerminer líenregistrementî et enregistrez cette macro dans le modËle : modele_revuesorg_fr.ott > Lodel > Module1 en lui donnant si possible un nom explicite.
-    Pour ajouter cette macro au menu Lodel : Outils > Personnaliser > Menus. Choisissez le menu ìLodelî ou un de ses sous-menus. Cliquez sur ìAjouterî et sÈlectionnez la macro que vous venez de crÈer puis ìFermerî et Validez.
-    Enregistrez votre modËle. Cíest fait.
+Dans Lodel 1.0, il ne faut plus utiliser le style "puces". Il faut utiliser les outils de liste (√† puces et num√©rot√©es) "natifs" d'LibreOffice.
 
-Si vous souhaitez associer un raccourci clavier ‡ une macro, vous pouvez suivre ce guide trËs explicite : http://wiki.services.openoffice.org/wiki/FR/Documentation/Writer_Guide/Assignation_raccourcis
+# Personnalisation du mod√®le
+Il est bien-s√ªr possible d‚Äôajouter d‚Äôautres styles correspondant √† un autre mod√®le √©ditorial.
 
-La sauvegarde des raccourcis semble ne pas fonctionner sans OpenOffice 3.2 (le fichier produit Ètait vide). Elle fontcionne trËs bien dans LibreOffice 3.2.
+Le principe de ce mod√®le de document est le suivant :
+* le mod√®le de document contient des styles de paragraphes dont les noms sont d√©clar√©s dans le mod√®le √©ditorial de Lodel ;
+* le mod√®le contient des macros qui appliquent ces styles (un macro, tr√®s simple, par style) ;
+* le mod√®le contient enfin un menu personnalis√© qui permet d‚Äôex√©cuter ces macros.
+Les raccourcis clavier permettant d‚Äôex√©cuter les macros ne peuvent √™tre enregistr√©es dans le mod√®le. C‚Äôest pour cette raison qu‚Äôil faut les charger depuis un fichier diff√©rent.
+Pour ajouter un style pour un autre mod√®le √©ditorial au menu Lodel :
+* Ouvrez le mod√®le de document dans LibreOffice 3.2 (veillez √† ouvrir le mod√®le de document, pas un nouveau document bas√© sur le mod√®le).
+* Ajoutez un style dans le mod√®le de document (dans la fen√™tre ‚ÄúStyles et formatage‚Äù).
+* Enregistrez une nouvelle macro qui applique ce style : ‚ÄúOutils‚Äù > ‚ÄúMacros‚Äù > ‚ÄúEnregistrez un macro‚Äù puis appliquer le style et cliquez sur ‚ÄúTerminer l‚Äôenregistrement‚Äù et enregistrez cette macro dans le mod√®le : modele_revuesorg_fr.ott > Lodel > Module1 en lui donnant si possible un nom explicite.
+* Pour ajouter cette macro au menu Lodel : Outils > Personnaliser > Menus. Choisissez le menu ‚ÄúLodel‚Äù ou un de ses sous-menus. Cliquez sur ‚ÄúAjouter‚Äù et s√©lectionnez la macro que vous venez de cr√©er puis ‚ÄúFermer‚Äù et Validez.
+* Enregistrez votre mod√®le. C‚Äôest fait.
 
+Si vous souhaitez associer un raccourci clavier √† une macro, vous pouvez suivre ce guide tr√®s explicite : <http://wiki.services.openoffice.org/wiki/FR/Documentation/Writer_Guide/Assignation_raccourcis>
+
+La sauvegarde des raccourcis semble ne pas fonctionner sans LibreOffice 3.2 (le fichier produit √©tait vide). Elle fonctionne tr√®s bien dans LibreOffice 3.2.
+
+
+# Licence
+Ce mod√®le est distribu√© en licence GPL 2. Merci de faire √©tat de vos essais, qu‚Äôils soient fructueux ou non, sur la liste lodel-users <https://listes.cru.fr/sympa/info/lodel-users>.
+Cr√©dits : Matthieu Heuz√©, Jean-Fran√ßois Rivi√®re
