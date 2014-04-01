@@ -4,3 +4,17 @@ changelog 3.1.3
 Version Mac du modèle de macros 
 --------------------------------
 Correction d'un bug lors de l'utilisation des raccourcis "pomme-Z" "pomme-Y". Suppression des fonctions startUndosaver, Endundosaver, EditUndo, EditRedo et BookMarkExists, et de tous les appels à ces fonctions.
+
+changelog 3.1.2
+2012-09-13
+==========================================
+- Correction du style "Parole chiavi" en "Parole chiave" (revuesorg_fr.dot ; revuesorg_complet.dot)
+- Ajout du style "Parole chiave" au modèle de document en anglais (revuesorg_en.dot)
+
+changelog 3.1.1
+2012-06-01
+==========================================
+- Ajout du fichier changelog.txt
+- revuesorg_complet.dot : correction des codes de langue el et ja ; correction mots-clés et résumé grecs qui étaient inversés dans la barre des styles complémentaires. 
+
+
