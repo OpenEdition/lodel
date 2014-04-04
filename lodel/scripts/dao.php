@@ -394,9 +394,9 @@ class DAO
 			$order = "ORDER BY ".$order;
 		}
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-		# echo "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
-		$result = $db->execute("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order) 
-			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$sql = "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
+		$result = $db->execute($sql) 
+			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg()."<br/>$sql<br/>Base: ".$db->database, E_USER_ERROR);
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
 		$i = 0;
