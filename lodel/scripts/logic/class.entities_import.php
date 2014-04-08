@@ -248,8 +248,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
 		}
-        if (isset($imgfile_path))
-            rmtree(dirname($imgfile_path));
+		// Effacer le dossier d'import — 'import_' défini dans oochargement l241 …
+		if (isset($imgfile_path)) {
+			$rep = is_dir($imgfile_path) ? $imgfile_path : dirname($imgfile_path);
+			if (!preg_match('/docannexe\/image$/',$rep) && (false !== strpos($rep, 'import_')))
+				rmtree($rep);
+		}
 	}
  
 	protected function _checkdir ($dir) 
