@@ -1612,7 +1612,7 @@ class TEIParser extends XMLReader
 				$id    = "";
 				$source = realpath($this->_tmpdir) . DIRECTORY_SEPARATOR;
 
-				if(isset($attrs['url']) && is_readable($source . $attrs['url'] )){
+				if(isset($attrs['url']) && is_readable($source . $attrs['url'])){
 					/* Creation of import folder */
 					$array  = array_filter(explode('/', $this->_tmpdir));
 					$tmpdir = SITEROOT . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
@@ -1620,7 +1620,10 @@ class TEIParser extends XMLReader
 					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
 
 					/* Getting file name */
-					copy($source . $attrs['url'], $tmpdir . basename($attrs['url']) );
+					if (is_file($source . $attrs['url']))
+						copy($source . $attrs['url'], $tmpdir . basename($attrs['url']) );
+					else
+						$this->_log(sprintf(getlodeltextcontents('TEIPARSER_INVALID_FIELD', 'edition'), htmlspecialchars($this->readOuterXML())));
 
 					$attrs['url'] = $tmpdir . basename($attrs['url']);
 				}else{
