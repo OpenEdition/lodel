@@ -1438,18 +1438,17 @@ function rmtree($rep)
             $is_removable = true;
     if (!$is_removable)
             trigger_error("Interdiction d'effacer le répertoire $rep", E_USER_ERROR);
-    $fd = @opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+    $fd = opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
     while (($file = readdir($fd)) !== false) {
         if('.' === $file{0}) continue;
         $file = $rep. "/". $file;
         if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
             rmtree($file);
-            // puis on supprime le répertoire
-            @rmdir($file);
-        } else {@unlink($file);}
+        } else {unlink($file);}
     }
     closedir($fd);
-    @rmdir($rep);
+
+    rmdir($rep);
 }
 
 define('INC_FUNC', 1);
