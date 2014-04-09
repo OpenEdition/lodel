@@ -1410,9 +1410,17 @@ function create_zip_from_file_list($zipfile, $filelist)
 
     foreach($filelist as $path => $filename)
     {
-        $zip->addFile($path, $filename);
+        if (is_readable($path))
+            $ok = $zip->addFile($path, $filename);
+        else {
+            $zip->close();
+            return "$path is not readable";
+        }
     }
-    $zip->close();
+    $ok = $zip->close();
+    if (!$ok)
+        return $zip->getStatusString();
+    return true;
 }
 
 function glob_recursive($pattern, $flags = 0)
