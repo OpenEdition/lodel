@@ -339,11 +339,11 @@ class DataLogic
             }
 
 			/* On créé le zip dans $archivetmp */
-            create_zip_from_file_list($archivetmp, $files_and_names);
+			$ok = create_zip_from_file_list($archivetmp, $files_and_names);
 
-            @unlink($tmpdir. DIRECTORY_SEPARATOR . $outfile);
-			if (!file_exists($archivetmp)) {
-				trigger_error("ERROR: the zip command or library does not produce any output", E_USER_ERROR);
+			@unlink($tmpdir. DIRECTORY_SEPARATOR . $outfile);
+			if (!file_exists($archivetmp) || true !== $ok) {
+				trigger_error("ERROR: the zip command reported an error: «{$ok}».\nArchive: $archivetmp", E_USER_ERROR);
 			}
 
 			if($error) { // Pour avoir accès aux erreurs dans les templates
