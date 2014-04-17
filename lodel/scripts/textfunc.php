@@ -399,7 +399,8 @@ function tocable($text, $level = 10)
 			$level = (int)$result[5];
             		if(!isset($tocid[$level])) $tocid[$level] = 0;
 			$sig = $level."n". (++ $tocid[$level]);
-			$aopen = '<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
+			$aopenfirst = '<a href="#tocfrom'.$sig.'" id="tocto'.$sig.'">';
+			$aopennext = '<a href="#tocfrom'.$sig.'">';
 			$aclose = '</a>';
 			// split the result in order not to contains any a tag
 			$arr = preg_split("/(<a\b[^>]*>.*?<\/a>)/", $result[6], -1, PREG_SPLIT_DELIM_CAPTURE); // split with the <a...> </a>
@@ -407,8 +408,13 @@ function tocable($text, $level = 10)
 
 			$c = count($arr);
 			for ($i = 0; $i < $c; $i += 2) {
-				if ($arr[$i])
-					$ret .= $aopen.$arr[$i].$aclose;
+				if ($arr[$i]) {                    
+					if ($i == 0) {
+						$ret .= $aopenfirst.$arr[$i].$aclose;
+					} else {
+						$ret .= $aopennext.$arr[$i].$aclose;
+					}
+				}
 				if ($i +1 < $c)
 					$ret .= $arr[$i +1];
 			}
