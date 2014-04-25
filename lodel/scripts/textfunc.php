@@ -879,15 +879,7 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 
 function cleanHTML( $text ) {
 	$GLOBALS['textfunc_hasbeencleaned'] = true;
-
-	require_once 'htmLawed.php';
-	$config = array(
-		'valid_xhtml' => 1,
-		'make_tag_strict' => 0,
-		'unique_ids' => 0,
-		'scheme' => '*: *',
-	);
-	return htmLawed($text, $config);
+	return C::clean($text);
 }
 
 /**
