@@ -370,21 +370,7 @@ class TEIParser extends XMLReader
 
 		$this->_parseBlocks($simplexml);
 		unset($simplexml);
-        
-        ob_start();
-            var_dump($this->_contents['texte']);
-            $result = ob_get_clean();
-            
-            error_log("/////////////////////// \n"."START PARSE"."/////////////////////// \n".
-                $result."/////////////////////// \n"."END PARSE"."/////////////////////// \n");
 		$this->_parseAfter();
-        
-        ob_start();
-            var_dump($this->_contents['texte']);
-            $result = ob_get_clean();
-            
-            error_log("/////////////////////// \n"."START PARSEAFTER"."/////////////////////// \n".
-                $this->_contents['texte']."/////////////////////// \n"."END PARSEAFTER"."/////////////////////// \n");
 
 		if(count($this->_tags)) throw new Exception('ERROR: The number of opening/closing tag does not match : '.var_export($this->_tags, true));
 
@@ -1079,12 +1065,21 @@ class TEIParser extends XMLReader
             
 			if(parent::ELEMENT === $this->nodeType)
 			{
-                if ('formula' === $this->localName)
-                {
-                    $text .= "<![CDATA[".$this->readInnerXml()."]]>";
-                    $this->next();
-                    continue;
-                }
+				if ('formula' === $this->localName)
+				{
+					$attrs = $this->_parseAttributes();
+					if (isset($attrs['notation'])) {
+						if ($attrs['notation'] == 'mathml') {
+							$math = $this->readInnerXml();
+						} elseif ($attrs['notation'] == 'latex') {
+							$math = "<![CDATA[" . $this->readInnerXml() . "]]>";
+						} else
+							break;
+						$text .= $math.$this->_closeTag();
+						$this->next();
+						continue;
+					}
+				}
 				if('div' === $this->localName) continue; // container, not used
 
 				$attrs = $this->_parseAttributes();
@@ -1123,7 +1118,7 @@ class TEIParser extends XMLReader
 				$text .= $this->_getText($this->value);
 			}
 		}
-        error_log("$text/n");
+
 		$this->close();
 		return $text;
 	}
