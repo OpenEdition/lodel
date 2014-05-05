@@ -877,6 +877,8 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 	return $repl;
 }
 
+// fonction pour réparer le HTML invalide
+// TODO: utilisait htmLawed, il faudra effacer cette bibliothèque de Lodel
 function cleanHTML( $text ) {
 	$GLOBALS['textfunc_hasbeencleaned'] = true;
 	return C::clean($text);
