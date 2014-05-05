@@ -1008,19 +1008,13 @@ class TEIParser extends XMLReader
 
 		while($this->read())
 		{
-            
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if ('formula' === $this->localName)
 				{
 					$attrs = $this->_parseAttributes();
 					if (isset($attrs['notation'])) {
-						if ($attrs['notation'] == 'mathml') {
-							$math = $this->readInnerXml();
-						} elseif ($attrs['notation'] == 'latex') {
-							$math = "<![CDATA[" . $this->readInnerXml() . "]]>";
-						} else
-							break;
+						$math = $this->readInnerXml();
 						$text .= $math.$this->_closeTag();
 						$this->next();
 						continue;
