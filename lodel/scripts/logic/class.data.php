@@ -1038,7 +1038,8 @@ class DataLogic
 		}
 
 		if((isset($context['checktypes']) || isset($context['checkcontent']) || isset($context['checktables']) || isset($context['checkfields']) || isset($context['checktypesclass']))
-			&& ($meObj = cache_get('ME.obj'))) { // on a déjà parsé le XML
+			&& ($meObj = $cache->get($cacheid))) { // on a déjà parsé le XML
+			$meObj = unserialize($meObj);
 			$class = __CLASS__;
 			if(!is_object($meObj) || !($meObj instanceof $class)) {
 				$context['error'] = $error = 'Content in file "ME.obj" is not an object. Aborted.';
