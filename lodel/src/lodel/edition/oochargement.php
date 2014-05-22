@@ -93,18 +93,17 @@ try
 
 	$context =& C::getC();
 	header('content-type: text/html; charset=utf8');
-	foreach(array('idtask', 'lodeltags', 'reload', 'iddocument') as $var)
+	foreach(array('lodeltags', 'reload', 'iddocument') as $var)
 	{
 		if(isset($context[$var])) $context[$var] = (int)$context[$var];
 		else $context[$var] = 0;
 	}
 
-	if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
+	if (!$context['identity'] && !$context['idtype']) {
 		header("location: index.php?id=". $context['idparent']);
 		return;
 	}
 	$context['id'] = $context['identity'];
-	$task = $context['idtask'];
 	$fileorigin = C::get('fileorigin');
 	$localfile = C::get('localfile');
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
