@@ -99,14 +99,16 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			View::getView()->back();
 
 		$idtask = $context['idtask'];
-		function_exists('gettask') || include ("taskfunc.php");
-		$this->task = $task = gettask ($idtask);
-		gettypeandclassfromtask ($task, $context);
+		$taskLogic = Logic::getLogic('tasks');
+		$this->task = $task = $taskLogic->getTask($idtask);
+		if (!$task)
+			View::getView()->back();
+
+		$taskLogic->populateContext($task, $context);
 		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
 		// restore the entity
 		$contents = $task['fichier'];
 		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
-		$context['idtype'] = $task['idtype'];
 		$context['idparent'] = $task['idparent'];
 		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
 		$context['externalentries'] = !empty($contents['contents']['externalentries']) ? $contents['contents']['externalentries'] : array();

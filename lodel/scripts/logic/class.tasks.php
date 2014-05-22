@@ -104,6 +104,58 @@ class TasksLogic extends Logic {
 	}
 
 	/**
+	* Retrouve une tâche suivant son identifiant
+	*
+	* @param integer &$id l'identifiant de la tâche
+	* @param array retourne les informations concernant la tâche
+	*/
+	public function getTask(& $id)
+	{
+		global $db;
+		$id = (int)$id;
+		$row = $db->getRow(lq("SELECT * FROM #_TP_tasks WHERE id='$id' AND status>0"));
+		if ($row === false)
+			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		if (!$row)
+			return false;
+
+		$row = array_merge($row, unserialize(base64_decode($row['context'])));
+		return $row;
+	}
+
+	/**
+	* Suivant que le document est importé ou réimporté, les informations dans la tâche sont
+	* différentes. Cette fonction uniformise ces informations dans le context ($context).
+	*
+	* Depending the document is imported or re-imported, the information in task are different.
+	* This function uniformize the information in the context
+	*
+	* @param array $task un tableau contenant les infos d'une tâche
+	* @param array &$context le context dans lequel seront mis à jour les informations
+	*/
+	public function populateContext($task, & $context)
+	{
+		global $db;
+		if (isset($task['identity']) && $task['identity']) {
+			$row = $db->getRow(lq("SELECT class,idtype,idparent FROM #_entitiestypesjoin_ WHERE #_TP_entities.id='".$task['identity']."'"));
+			if ($db->errorno())
+				trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+			$context['class'] = $row['class'];
+			$context['idtype'] = $row['idtype'];
+			$context['idparent'] = $row['idparent'];
+			if (!$context['class'])
+				trigger_error("ERROR: can't find entity ".$task['identity']." in populateContext", E_USER_ERROR);
+		} else {
+			if (!isset($task['idtype']) || !($idtype = $task['idtype']))
+				trigger_error("ERROR: idtype must be given by task in populateContext", E_USER_ERROR);
+			// get the type 
+			$votype = DAO::getDAO("types")->getById($idtype, "class");
+			$context['idtype'] = $task['idtype'];
+			$context['class'] = $votype->class;
+		}
+	}
+
+	/**
 	 * Changement du rang d'un objet
 	 *
 	 * @param array &$context le contexte passé par référence
