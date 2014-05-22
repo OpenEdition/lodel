@@ -107,6 +107,7 @@ try
 	$fileorigin = C::get('fileorigin');
 	$localfile = C::get('localfile');
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
+	$task = Logic::getLogic('tasks');
 
     $file_cache_lifetime = C::get('timeout', 'cfg') ? C::get('timeout', 'cfg') : 3600;
 
@@ -216,8 +217,8 @@ try
                     $row['idparent']        = $context['idparent'];
                     $row['idtype']          = $context['idtype'];
                     $row['reload']          = $context['reload'];
-                    function_exists('maketask') || include 'taskfunc.php';
-                    printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+					$idtask = $task->createAction("Import $file1", 3, $row);
+					printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
 
                     delete_files($source);
 
@@ -311,10 +312,10 @@ try
 		$row['idtype']        = $context['idtype'];
 		$row['reload']        = $context['reload'];
 
-        delete_files($source);
+		delete_files($source);
 
-		function_exists('maketask') || include 'taskfunc.php';
-		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+		$idtask = $task->createAction("Import $file1", 3, $row);
+		printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
 		die;
 	}
 	elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
@@ -466,16 +467,16 @@ try
 			$row['idtype']			= $context['idtype'];
             $row['reload']          = $context['reload'];
 
-            delete_files($source, $tei, $odtconverted);
+			delete_files($source, $tei, $odtconverted);
+			$idtask = $task->createAction("Import $file1", 3, $row);
 
-			function_exists('maketask') || include 'taskfunc.php';
 			if(empty($context['multiple']))
 			{
-				printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+				printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
 			}
 			else
 			{
-				$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
+				$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.$idtask.'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
 
 				printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
 			}

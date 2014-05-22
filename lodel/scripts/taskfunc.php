@@ -50,26 +50,6 @@
  * @package lodel
  */
 
-// $context est soit un tableau qui sera serialise soit une chaine deja serialise
-/**
- * Ajoute une tâche dans la table
- *
- * @param string $name le nom de la tâche
- * @param string $etape l'étape courante
- * @param array (ou string) $context le context courant pour l'étape
- * @param integer $id par défaut 0. l'id de la tâche
- * @return integer l'identifiant inséré (si c'est le cas)
- */
-function maketask($name, $etape, $context, $id = 0)
-{
-	global $db;
-	if (is_array($context))
-		$context = base64_encode(serialize($context));
-	$id = (int)$id;
-	$db->execute(lq("REPLACE INTO #_TP_tasks (id,name,step,user,context) VALUES ('$id','$name','$etape','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	return $db->insert_ID();
-}
-
 /**
  * Retrouve une tâche suivant son identifiant
  *

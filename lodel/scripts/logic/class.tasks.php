@@ -86,6 +86,22 @@ class TasksLogic extends Logic {
 		trigger_error("TasksLogic::viewAction", E_USER_ERROR);
 	}
 
+	/**
+	* Ajoute une tâche dans la table
+	*
+	* @param string $name le nom de la tâche
+	* @param string $etape l'étape courante
+	* @param array (ou string) $context le context courant pour l'étape: soit un tableau qui sera serialise soit une chaine deja serialise
+	* @return integer l'identifiant inséré (si c'est le cas)
+	*/
+	public function createAction($name, $step, $context)
+	{
+		global $db;
+		if (is_array($context))
+			$context = base64_encode(serialize($context));
+		$db->execute(lq("INSERT INTO #_TP_tasks (name,step,user,context) VALUES ('$name','$step','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		return $db->insert_ID();
+	}
 
 	/**
 	 * Changement du rang d'un objet
