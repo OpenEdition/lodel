@@ -122,7 +122,9 @@ class TasksLogic extends Logic {
 		if (!$row)
 			return false;
 
-		$row = array_merge($row, unserialize(base64_decode($row['context'])));
+		$context = @unserialize(base64_decode($row['context']));
+		if (is_array($context))
+			$row = array_merge($row, $context);
 		return $row;
 	}
 
