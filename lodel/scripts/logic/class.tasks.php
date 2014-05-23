@@ -89,6 +89,8 @@ class TasksLogic extends Logic {
 	/**
 	* Ajoute une tâche dans la table
 	*
+	* On profite de la création de la tâche, pour effacer les anciennes, une tâche prenant énormemment de place en base
+	*
 	* @param string $name le nom de la tâche
 	* @param string $etape l'étape courante
 	* @param array (ou string) $context le context courant pour l'étape: soit un tableau qui sera serialise soit une chaine deja serialise
@@ -96,6 +98,7 @@ class TasksLogic extends Logic {
 	*/
 	public function createAction($name, $step, $context)
 	{
+		$this->deleteOldTasks();
 		global $db;
 		if (is_array($context))
 			$context = base64_encode(serialize($context));
@@ -172,7 +175,28 @@ class TasksLogic extends Logic {
 
 	// date à laquelle une tâche est considérée comme obsolete
 	private function getOldDate() {
-		return date("Y-m-d H:i:s", time() - 60);
+		return date("Y-m-d H:i:s", time() - 60 * 60 * 4);
+	}
+
+	/**
+	* Éliminer les vieilles tâches en se limitant dans le temps
+	*
+	*/
+	public function deleteOldTasks() {
+		$time = time();
+		$limit = $time + 4;
+		$yesterday = $this->getOldDate();
+
+		$dao = $this->_getMainTableDAO();
+		while ($time < $limit) {
+			$vos = $dao->findMany("upd < '$yesterday'",'upd','id,upd',1);
+			if (empty($vos)) break;
+
+			$taskContext = array('id'=>$vos[0]->id);
+			$this->deleteAction($taskContext, $error);
+
+			$time = time();
+		}
 	}
 
 	/**
