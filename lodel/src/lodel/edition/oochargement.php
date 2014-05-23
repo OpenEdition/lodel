@@ -216,6 +216,7 @@ try
 					$row['idparent']        = $context['idparent'];
 					$row['idtype']          = $context['idtype'];
 					$row['reload']          = $context['reload'];
+					$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
 					delete_files($source);
 
@@ -284,7 +285,7 @@ try
 		try
 		{
 			$parser = new TEIParser($context['idtype']);
-			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir[0], $sourceoriginale);
+			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
 		}
 		catch(Exception $e)
 		{
@@ -311,6 +312,7 @@ try
 		$row['idparent']        = $context['idparent'];
 		$row['idtype']          = $context['idtype'];
 		$row['reload']          = $context['reload'];
+		$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
 		delete_files($source);
 
@@ -467,6 +469,7 @@ try
 			$row['idparent']        = $context['idparent'];
 			$row['idtype']          = $context['idtype'];
 			$row['reload']          = $context['reload'];
+			$row['tmpdirs']         = array($tmpdir[$i - 1], realpath(SITEROOT.'docannexe/image/'.basename($tmpdir[$i - 1]))); // TEIParser.php l429
 
 			delete_files($source, $tei, $odtconverted);
 

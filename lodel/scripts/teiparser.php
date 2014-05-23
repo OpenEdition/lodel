@@ -344,7 +344,7 @@ class TEIParser extends XMLReader
 
 		$odt = (string) $odt;
 		$this->_docTitle = (string) $filename;
-                $this->_tmpdir   = (string) $tmpdir;
+		$this->_tmpdir   = (string) $tmpdir;
 		if(!empty($odt))
 		{
 			$this->_extractImages($odt, $tmpdir);
