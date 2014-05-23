@@ -155,6 +155,26 @@ class TasksLogic extends Logic {
 		}
 	}
 
+	protected function _prepareDelete($dao, &$context) {
+		$task = $this->getTask($context['id']);
+
+		error_log("EFFACE: ".var_export($context['id'],true));
+		if (isset($task['tmpdirs']))
+			error_log("EFFACE: ".var_export($task['tmpdirs'],true));
+
+		if (!empty($task['tmpdirs'])) {
+			foreach($task['tmpdirs'] as $dir) {
+				error_log("EFFACE: ".var_export($dir,true));
+				rmtree($dir);
+			}
+		}
+	}
+
+	// date à laquelle une tâche est considérée comme obsolete
+	private function getOldDate() {
+		return date("Y-m-d H:i:s", time() - 60);
+	}
+
 	/**
 	 * Changement du rang d'un objet
 	 *
@@ -195,10 +215,11 @@ class TasksLogic extends Logic {
 	public function isdeletelocked($id,$status=0)
 	{
 		$id = (int)$id;
-		// basic check. Should be more advanced because of the potential conflict between 
-		// adminlodel adn othe rusers
-		$vo=$this->_getMainTableDAO()->find("id='".$id."' AND user='".C::get('id', 'lodeluser')."'","id");
-		return $vo->id ? false : true ;
+		// basic check. Should be more advanced because of the potential conflict between adminlodel and other users
+		// everyone can delete old tasks
+		$tooOld = $this->getOldDate();
+		$vo=$this->_getMainTableDAO()->find("id='".$id."' AND (user='".C::get('id', 'lodeluser')."' OR upd<'$tooOld')","id");
+		return ($vo && $vo->id) ? false : true ;
 	}
 
 

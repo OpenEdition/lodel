@@ -160,7 +160,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 // 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 
 		// close the task
-		DAO::getDAO('tasks')->deleteObject ($idtask);
+		$taskContext = array('id'=>$idtask);
+		$taskLogic->deleteAction($taskContext, $error);
 
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
@@ -249,12 +250,6 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				
 				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
-		}
-		// Effacer le dossier d'import — 'import_' défini dans oochargement l241 …
-		if (isset($imgfile_path)) {
-			$rep = is_dir($imgfile_path) ? $imgfile_path : dirname($imgfile_path);
-			if (!preg_match('/docannexe\/image$/',$rep) && (false !== strpos($rep, 'import_')))
-				rmtree($rep);
 		}
 	}
  
