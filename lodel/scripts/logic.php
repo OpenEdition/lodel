@@ -305,7 +305,6 @@ class Logic
 		$this->_prepareDelete($dao, $context);
 		$dao->deleteObject($id);
 
-
 		$ret=$this->_deleteRelatedTables($id);
 		update();
 		return $ret ? $ret : '_back';
