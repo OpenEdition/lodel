@@ -384,7 +384,7 @@ class Entities_EditionLogic extends GenericLogic
 		$context['iduser'] = !SINGLESITE && C::get('adminlodel', 'lodeluser') ? 0 : C::get('id', 'lodeluser');
 		function_exists('checkTypesCompatibility') || include 'entitiesfunc.php';
 		if (!checkTypesCompatibility($id, $idparent, $idtype)) {
-			$error['idtype'] = 'types_compatibility';
+			$error['idtype'] = "types_compatibility entity $id of type $idtype cannot be child of $idparent";
 			return '_error';
 		}
 
