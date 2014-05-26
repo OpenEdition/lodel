@@ -60,8 +60,6 @@ try
     C::set('env', 'edition');
 	authenticate(LEVEL_REDACTOR);
 
-	include 'xmlimport.php';
-	include 'class.checkImportHandler.php';
 	$idtask            = (int)C::get('idtask');
 	$taskLogic         = Logic::getLogic('tasks');
 	$task              = $taskLogic->getTask($idtask);
