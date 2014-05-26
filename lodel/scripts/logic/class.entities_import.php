@@ -95,33 +95,42 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		global $db;
 		$this->context=&$context;
 		$this->error =& $error;
-		if(empty($context['idtask']))
+
+		// accepter l'import depuis une tache ou depuis le context
+		if(empty($context['idtask']) && empty($context['task']))
 			View::getView()->back();
 
-		$idtask = $context['idtask'];
 		$taskLogic = Logic::getLogic('tasks');
-		$this->task = $task = $taskLogic->getTask($idtask);
+		if (!empty($context['idtask'])) {
+			$idtask = $context['idtask'];
+			$this->task = $task = $taskLogic->getTask($idtask);
+		} else {
+			$this->task = $task = $context['task'];
+			unset($context['task']);
+		}
 		if (!$task)
 			View::getView()->back();
-
 		$taskLogic->populateContext($task, $context);
+
 		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
-		// restore the entity
-		$contents = $task['fichier'];
-		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
+		$source = isset($task['source']) ? $task['source'] : null;
+		$context['creationinfo'] = $task['sourceoriginale'];
 		$context['idparent'] = $task['idparent'];
+		$odt = isset($task['odt']) ? $task['odt'] : null;
+		$tei = $task['tei'];
+		$contents = $task['fichier'];
+		unset($task);
+
+		// restore the entity
+		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
 		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
 		$context['externalentries'] = !empty($contents['contents']['externalentries']) ? $contents['contents']['externalentries'] : array();
 		$context['persons'] = !empty($contents['contents']['persons']) ? $contents['contents']['persons'] : array();
 		$context['entities'] = !empty($contents['contents']['entities']) ? $contents['contents']['entities'] : array();
-		unset($contents['contents']['entities'], $contents['contents']['persons'], $contents['contents']['entries']);
 		$context['data'] = $contents['contents'];
 		$context['creationmethod'] = "otx";
-		$context['creationinfo'] = $task['sourceoriginale'];
-		$source = isset($task['source']) ? $task['source'] : null;
-		$odt = isset($task['odt']) ? $task['odt'] : null;
-		$tei = $task['tei'];
-		unset($task, $contents);
+		unset($contents);
+
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
 		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
@@ -160,8 +169,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 // 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 
 		// close the task
-		$taskContext = array('id'=>$idtask);
-		$taskLogic->deleteAction($taskContext, $error);
+		if (isset($idtask)) {
+			$taskContext = array('id'=>$idtask);
+			$taskLogic->deleteAction($taskContext, $error);
+		}
 
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
