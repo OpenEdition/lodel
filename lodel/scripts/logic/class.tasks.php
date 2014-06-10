@@ -163,35 +163,41 @@ class TasksLogic extends Logic {
 	protected function _prepareDelete($dao, &$context) {
 		$task = $this->getTask($context['id']);
 
-		error_log("EFFACE: ".var_export($context['id'],true));
 		if (isset($task['tmpdirs']))
 			error_log("EFFACE: ".var_export($task['tmpdirs'],true));
 
 		if (!empty($task['tmpdirs'])) {
 			foreach($task['tmpdirs'] as $dir) {
-				error_log("EFFACE: ".var_export($dir,true));
 				rmtree($dir);
 			}
 		}
 	}
 
-	// date à laquelle une tâche est considérée comme obsolete
-	private function getOldDate() {
-		return date("Y-m-d H:i:s", time() - 60 * 60 * 4);
+	/**
+	* Dertemine la date à laquelle une tâche est considérée comme obsolete
+	*
+	* @param int $age age en seconde des tâches à effacer
+	*/
+	private function getOldDate($age = false) {
+		$age = $age!==false ? (int) $age : (60 * 60 * 4);
+		return date("Y-m-d H:i:s", time() - $age);
 	}
 
 	/**
 	* Éliminer les vieilles tâches en se limitant dans le temps
+	* Fonction publique pour pouvoir scripter l'effacement
 	*
+	* @param int $age age en seconde des tâches à effacer
+	* @param int $duration durée maximale de l'effacement des tâches
 	*/
-	public function deleteOldTasks() {
+	public function deleteOldTasks($age=false, $duration=3) {
 		$time = time();
-		$limit = $time + 4;
-		$yesterday = $this->getOldDate();
+		$limit = $time + $duration;
+		$since = $this->getOldDate($age);
 
 		$dao = $this->_getMainTableDAO();
 		while ($time < $limit) {
-			$vos = $dao->findMany("upd < '$yesterday'",'upd','id,upd',1);
+			$vos = $dao->findMany("upd < '$since'", 'upd', 'id,upd', 1);
 			if (empty($vos)) break;
 
 			$taskContext = array('id'=>$vos[0]->id);
