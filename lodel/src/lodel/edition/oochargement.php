@@ -219,6 +219,7 @@ try
 					$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
 					delete_files($source);
+					unset($contents);
 
 					$idtask = $task->createAction("Import $file1", 3, $row);
 					printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
@@ -315,6 +316,7 @@ try
 		$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
 		delete_files($source);
+		unset($contents);
 
 		$idtask = $task->createAction("Import $file1", 3, $row);
 		printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
@@ -472,6 +474,7 @@ try
 			$row['tmpdirs']         = array($tmpdir[$i - 1], realpath(SITEROOT.'docannexe/image/'.basename($tmpdir[$i - 1]))); // TEIParser.php l429
 
 			delete_files($source, $tei, $odtconverted);
+			unset($contents);
 
 			$idtask = $task->createAction("Import $file1", 3, $row);
 			if(empty($context['multiple']))

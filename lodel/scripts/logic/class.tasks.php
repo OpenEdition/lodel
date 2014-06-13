@@ -96,7 +96,7 @@ class TasksLogic extends Logic {
 	* @param array (ou string) $context le context courant pour l'étape: soit un tableau qui sera serialise soit une chaine deja serialise
 	* @return integer l'identifiant inséré (si c'est le cas)
 	*/
-	public function createAction($name, $step, $context)
+	public function createAction($name, $step, &$context)
 	{
 		$this->deleteOldTasks();
 		global $db;
