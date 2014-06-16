@@ -21,6 +21,7 @@ TableField alias TF
 	::create($class, $fieldname, $groupname, $type, $infos=array())
 	->delete()
 	->name($name, $title=false) change le nom du champ
+	->mask($mask, $type=false) rajoute un masque de saisie, $type possible: 'reasonable' ou 'regexp'
 	->hook($hook, $clobber=false) rajoute un hook au champ, true pour effacer les anciens
 	->group($groupname) Change le group du champ
 	->type($newtype) Change le type du champ
@@ -236,14 +237,18 @@ class TableField extends MEobject {
 	}
 
 	// rajoute un mask
-	public function mask($mask) {
+	public function mask($mask, $type=false) {
 		if ($this->error) return $this;
 		if (empty($mask) && isset($this->fields['mask']['user'])) {
 			unset($this->fields['mask']['user']);
 		} else {
 			$this->fields['mask']['user'] = $mask;
+			if ($type && in_array($type, array('reasonable', 'regexp')))
+				$this->fields['mask_'.$type] = true;
+			else
+				$type = false;
 		}
-		return $this->save("Changement du masque pour '$mask'");
+		return $this->save("Changement du masque pour '$mask'".($type?", type:'$type'":""));
 	}
 
 	// change le nom du champ
@@ -1616,7 +1621,7 @@ class MEobject {
 		$list_two  = explode($sep, $list_two);
 		if ($list_two[0] === "") $list_two = array();
 
-		$newlist = array_merge($list_one, $list_two);
+		$newlist = array_unique(array_merge($list_one, $list_two));
 		$newlist = implode($newlist, $sep);
 		return $newlist;
 	}
