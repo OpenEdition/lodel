@@ -163,9 +163,6 @@ class TasksLogic extends Logic {
 	protected function _prepareDelete($dao, &$context) {
 		$task = $this->getTask($context['id']);
 
-		if (isset($task['tmpdirs']))
-			error_log("EFFACE: ".var_export($task['tmpdirs'],true));
-
 		if (!empty($task['tmpdirs'])) {
 			foreach($task['tmpdirs'] as $dir) {
 				rmtree($dir);
