@@ -1441,7 +1441,7 @@ function rmtree($rep)
     if(!file_exists($rep)) return;
     $rep = realpath($rep);
     $is_removable = false;
-    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg'))) as $removable)
+    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg')), realpath(C::get('tmpoutdir', 'cfg'))) as $removable)
         if (0 === strpos($rep, $removable))
             $is_removable = true;
     if (!$is_removable)
