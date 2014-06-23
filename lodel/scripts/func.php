@@ -1444,9 +1444,15 @@ function rmtree($rep)
     foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg')), realpath(C::get('tmpoutdir', 'cfg'))) as $removable)
         if (0 === strpos($rep, $removable))
             $is_removable = true;
-    if (!$is_removable)
-            trigger_error("Interdiction d'effacer le répertoire $rep", E_USER_ERROR);
-    $fd = opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+    if (!$is_removable) {
+        error_log("Interdiction d'effacer le répertoire $rep");
+        return;
+    }
+    $fd = @opendir($rep);
+    if (false === $fd) {
+        error_log("Impossible d'ouvrir $rep");
+        return;
+    }
     while (($file = readdir($fd)) !== false) {
         if('.' === $file{0}) continue;
         $file = $rep. "/". $file;
