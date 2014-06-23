@@ -384,17 +384,18 @@ class DAO
 	 * @param string $select les champs à sélectionner. (par défaut *).
 	 * @return array Un tableau de VO correspondant aux résultats de la requête
 	 */
-	public function findMany($criteria, $order = '', $select = '*')
+	public function findMany($criteria, $order = '', $select = '*', $limit='')
 	{
 		global $db;
 
 		//execute select statement
 		$morecriteria = $this->rightscriteria("read");
-		if ($order) {
-			$order = "ORDER BY ".$order;
-		}
+		if ($order)
+			$order = " ORDER BY ".$order;
+		if ($limit)
+			$limit = " LIMIT ".$limit;
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
-		$sql = "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria." ".$order;
+		$sql = "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria.$order.$limit;
 		$result = $db->execute($sql) 
 			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg()."<br/>$sql<br/>Base: ".$db->database, E_USER_ERROR);
 		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;

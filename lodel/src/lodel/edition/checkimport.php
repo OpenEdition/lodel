@@ -60,40 +60,32 @@ try
     C::set('env', 'edition');
 	authenticate(LEVEL_REDACTOR);
 
-	include 'taskfunc.php';
-	include 'xmlimport.php';
-	include 'class.checkImportHandler.php';
 	$idtask            = (int)C::get('idtask');
-	$task              = gettask($idtask);
+	$taskLogic         = Logic::getLogic('tasks');
+	$task              = $taskLogic->getTask($idtask);
 	$context['reload'] = (bool)C::get('reload');
 	$statistics        = array();
-	gettypeandclassfromtask($task, $context);
-	$context = array_merge($context, $task['fichier']);
-        if(!empty($task['identity']))
-            $context['identity'] = $task['identity'];
-        if(!empty($task['idparent']))
-            $context['idparent'] = $task['idparent'];
-	$context['idtype'] = $task['idtype'];
-	if(!empty($context['contents']['entries']))
-		$context['entries'] = $context['contents']['entries'];
-	if(!empty($context['contents']['persons']))
-		$context['persons'] = $context['contents']['persons'];
-	if(!empty($context['contents']['entities']))
-		$context['entities'] = $context['contents']['entities'];
-	if(!empty($context['contents']['error']))
-		$context['error'] = $context['contents']['error'];
 
-	unset($context['contents']['persons'], $context['contents']['entries'], $context['contents']['entities'], $context['contents']['errors']);
+	if (!$task)
+		View::getView()->back();
+	$taskLogic->populateContext($task, $context);
+	$context = array_merge($context, $task['fichier']);
+	if(!empty($task['identity']))
+		$context['identity'] = $task['identity'];
+	if(!empty($task['idparent']))
+		$context['idparent'] = $task['idparent'];
+
+	foreach (array('entries', 'persons', 'entities', 'errors') as $content) {
+		if(!empty($context['contents'][$content]))
+			$context[$content] = $context['contents'][$content];
+		unset($context['contents'][$content]);
+	}
 
 	if(!empty($context['otxreport']['meta-soffice']))
-	{
 		$statistics['docstats'] = $context['otxreport']['meta-soffice'];
-	}
 
 	if(!empty($context['otxreport']['warning']))
-	{
 		$context['otxwarnings'] = $context['otxreport']['warning'];
-	}
 
 	unset($context['otxreport']);
 

@@ -95,31 +95,42 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		global $db;
 		$this->context=&$context;
 		$this->error =& $error;
-		if(empty($context['idtask']))
+
+		// accepter l'import depuis une tache ou depuis le context
+		if(empty($context['idtask']) && empty($context['task']))
 			View::getView()->back();
 
-		$idtask = $context['idtask'];
-		function_exists('gettask') || include ("taskfunc.php");
-		$this->task = $task = gettask ($idtask);
-		gettypeandclassfromtask ($task, $context);
+		$taskLogic = Logic::getLogic('tasks');
+		if (!empty($context['idtask'])) {
+			$idtask = $context['idtask'];
+			$this->task = $task = $taskLogic->getTask($idtask);
+		} else {
+			$this->task = $task = $context['task'];
+			unset($context['task']);
+		}
+		if (!$task)
+			View::getView()->back();
+		$taskLogic->populateContext($task, $context);
+
 		$context['id'] = !empty($task['identity']) ? $task['identity'] : 0;
-		// restore the entity
-		$contents = $task['fichier'];
-		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
-		$context['idtype'] = $task['idtype'];
+		$source = isset($task['source']) ? $task['source'] : null;
+		$context['creationinfo'] = $task['sourceoriginale'];
 		$context['idparent'] = $task['idparent'];
+		$odt = isset($task['odt']) ? $task['odt'] : null;
+		$tei = $task['tei'];
+		$contents = $task['fichier'];
+		unset($task);
+
+		// restore the entity
+		if(!$contents) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);
 		$context['entries'] = !empty($contents['contents']['entries']) ? $contents['contents']['entries'] : array();
 		$context['externalentries'] = !empty($contents['contents']['externalentries']) ? $contents['contents']['externalentries'] : array();
 		$context['persons'] = !empty($contents['contents']['persons']) ? $contents['contents']['persons'] : array();
 		$context['entities'] = !empty($contents['contents']['entities']) ? $contents['contents']['entities'] : array();
-		unset($contents['contents']['entities'], $contents['contents']['persons'], $contents['contents']['entries']);
 		$context['data'] = $contents['contents'];
 		$context['creationmethod'] = "otx";
-		$context['creationinfo'] = $task['sourceoriginale'];
-		$source = isset($task['source']) ? $task['source'] : null;
-		$odt = isset($task['odt']) ? $task['odt'] : null;
-		$tei = $task['tei'];
-		unset($task, $contents);
+		unset($contents);
+
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
 		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
@@ -143,22 +154,12 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		if($delete) @unlink ($teifile);
 		file_put_contents($teifile, $tei);
 		@chmod ($teifile, 0666 & octdec(C::get('filemask', 'cfg')));
-// 		class_exists('XMLImportParser', false) || include "xmlimport.php";
-// 		$parser=new XMLImportParser();
-// 		$parser->init (@$context['class']);
-// 		$parser->parse (file_get_contents (@$task['fichier']), $this);
-// 		if (!$this->id) trigger_error("ERROR: internal error in Entities_ImportLogic::importAction", E_USER_ERROR);		
-// 		if (isset($this->nbdocuments) && $this->nbdocuments>1) { // save the file
-// 			$sourcefile=SITEROOT."lodel/sources/entite-multidoc-".@$task['idparent'].".source";
-// 		} else {
-// 			$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
-// 		}
-// 		@unlink ($sourcefile);
-// 		copy (@$task['source'], $sourcefile);
-// 		@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 
 		// close the task
-		DAO::getDAO('tasks')->deleteObject ($idtask);
+		if (isset($idtask)) {
+			$taskContext = array('id'=>$idtask);
+			$taskLogic->deleteAction($taskContext, $error);
+		}
 
 		if ($ret != '_error' && isset($context['finish'])) {
 			return $ret;
@@ -248,14 +249,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				$this->_moved_images[basename($imgfile)] = $imglist[$imgfile];
 			}
 		}
-		// Effacer le dossier d'import — 'import_' défini dans oochargement l241 …
-		if (isset($imgfile_path)) {
-			$rep = is_dir($imgfile_path) ? $imgfile_path : dirname($imgfile_path);
-			if (!preg_match('/docannexe\/image$/',$rep) && (false !== strpos($rep, 'import_')))
-				rmtree($rep);
-		}
 	}
- 
+
 	protected function _checkdir ($dir) 
 	{
 		if (!is_dir (SITEROOT.$dir)) {
@@ -271,212 +266,6 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			}
 			closedir($fd);
 		}
-	}
-
-
-
-	public function openClass ($class, $obj=null, $multidoc=false) 
-	{
-		switch ($class[1]) { // classtype
-			case 'entries':
-				break;
-			case 'persons':
-				break;
-			case 'entities':
-				$this->_localcontext=array();
-				$this->_currentcontext=&$this->_localcontext;
-				break;
-		}
-	}
-
-	public function closeClass ($class, $multidoc=false) 
-	{
-		global $db;
-		switch ($class[1]) { // classtype
-		case 'entries':
-			break;
-		case 'persons': // come back to the main context
-			$this->_currentcontext=&$this->_localcontext;
-			break;
-		case 'entities':    // let's import now.
-			$localcontext=array_merge ($this->context, $this->_localcontext);
-			$localcontext['idparent']=@$this->task['idparent'];
-			$localcontext['idtype']=@$this->task['idtype'];
-			if ($multidoc) { // try to find the id
-				$result=$db->execute (lq ("SELECT id FROM #_TP_entities WHERE idparent='".$localcontext['idparent']."' AND creationmethod='servoo;multidoc' ORDER BY id LIMIT ".(int)$this->nbdocuments.",1")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-				if (!$result->EOF) $localcontext['id']=$result->fields['id'];
-				$this->nbdocuments++;
-			} else if (!empty($this->task['identity'])) $localcontext['id']=$this->task['identity'];
-			$localcontext['creationmethod']=$multidoc ? "servoo;multidoc" : "servoo";
-			$localcontext['creationinfo']=@$this->task['sourceoriginale'];
-
-			if ($multidoc) $this->context['finish']="oui";
-			if (empty($this->context['finish'])) $localcontext['status']=-64;
-
-			$error=array ();
-			$this->ret=parent::editAction ($localcontext, $this->error, 'FORCE');
-			#echo "ret1=".$this->ret."<br />";
-			#print_r($error);
-			if (!isset($this->id)) $this->id=$localcontext['id']; // record the first one only
-			// move the source file and the files
-		}
-	}
-
-	public function processData($data) 
-	{
-		return $data;
-	}
-
-	public function processTableFields ($obj, $data) 
-	{
-		global $db;
-		static $styles_string;
-		if (!$styles_string) { // record all the internal into a string to use it in the following regexp
-			$styles = array();
-			if (is_array ($this->commonstyles)) {
-				foreach ($this->commonstyles as $key => $val) {
-					$class = strtolower (get_class ($val));
-					if ($class == "internalstylesvo") //if internalstyle add it to the array $styles
-						$styles[] = $key;
-				}
-				if (count ($styles) > 0)	$styles_string = implode ('|',$styles);
-				unset($styles);
-			}
-		}
-		if(!function_exists('myfunction')) {
-			function myfunction ($arg0, $arg1, $arg2, $arg3, $styles,$style) {
-				//si on trouve pas $arg(2) dans les styles on remplace le style par le style de l'objet
-				if (strstr ($styles, $arg2)===false) {
-					return '<p class="'.$style.'"';
-				}
-				else {
-					return '<p class="'.$arg2.'"';
-				}
-			}
-		}
-		
-		// replace all the paragraph containing classes added by Oo except paragraph with internal style
-		$data = preg_replace ('/(<p\b[^>]+class=")([^"]*)(")/e', "myfunction('\\0', '\\1','\\2','\\3','". $styles_string."','".$obj->style."')", $data);
-		if ($obj->type=="file" || $obj->type=="image") {
-			// nothing...
-		} elseif ($obj->type=="mltext" || $obj->type=="mllongtext") {
-			$lang=!empty($obj->lang) ? $obj->lang : C::get('lang', 'lodeluser');
-			//$this->_currentcontext['data'][$obj->name][$lang].=addslashes ($data);
-			if(!isset($this->_currentcontext['data']))
-				$this->_currentcontext['data'] = array();
-			if(!isset($this->_currentcontext['data'][$obj->name]))
-				$this->_currentcontext['data'][$obj->name] = array();
-			if(!isset($this->_currentcontext['data'][$obj->name][$lang]))
-				$this->_currentcontext['data'][$obj->name][$lang] = '';
-			$this->_currentcontext['data'][$obj->name][$lang].=$data;
-		} elseif ($obj->style[0]!=".") {
-			if(!isset($this->_currentcontext['data']))
-				$this->_currentcontext['data'] = array();
-			if(!isset($this->_currentcontext['data'][$obj->name]))
-				$this->_currentcontext['data'][$obj->name] = '';
-			//$this->_currentcontext['data'][$obj->name].=addslashes ($data);
-			$this->_currentcontext['data'][$obj->name].=$data;
-		}
-		return $data;
-	}
-
-	public function processEntryTypes ($obj, $data) 
-	{
-		$data = preg_split ("/<\/p>/", $data);
-		foreach ($data as $data2) {
-			$data2 = explode (",", strip_tags ($data2));
-			foreach ($data2 as $entry) {
-				//$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim (addslashes ($entry)));
-			
-				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)
-				$this->_localcontext['entries'][$obj->id][]=array ("g_name"=>trim($entry,"\xC2\xA0\x00\x1F\x20"));
- 			}
-		}
-	}
-
-	public function processPersonTypes ($obj, $data) 
-	{
-		static $g_name_cache;
-		if (!isset($g_name_cache[$obj->class])) {  // get the generic type     
-			$vos=DAO::getDAO("tablefields")->findMany ("class='".$obj->class."' or class='entites_".$obj->class."' and g_name IN ('familyname','firstname','prefix')", "", "name,g_name");
-			foreach ($vos as $vo) {
-				$g_name_cache[$obj->class][$vo->g_name]=$vo->name;
-			}
-		}
-		$g_name=$g_name_cache[$obj->class];
-		// ok, we have the generic type
-		// let's split the paragraph and the comma
-		$data = preg_split ("/<\/p>/", $data);
-		foreach ($data as $data2) { 
-			$data2 = explode (",", strip_tags ($data2));
-			foreach ($data2 as $person) {
-				if (!trim ($person)) continue;
-				$this->_localcontext['persons'][$obj->id][]=array(); // add a person
-				$this->_currentcontext=&$this->_localcontext['persons'][$obj->id][count ($this->_localcontext['persons'][$obj->id])-1];
-				if (preg_match("/^\s*(".$this->prefixregexp.")\s/",$person,$result)) {
-					$this->_currentcontext[$g_name['prefix']]=$result[1];
-					$person=str_replace($result[0],"",$person);
-				}
-				// ok, we have the prefix
-				// try to guess
-				// ok, on cherche maintenant a separer le name et le firstname
-				$person = trim($person, "\xC2\xA0\x00\x1F\x20");
-				$name=$person;
-				while ($name && strtoupper($name)!=$name) { $name=substr(strstr($name," "),1);}
-				if ($name) {
-					$firstname=str_replace ($name, "", $person);
-				} else { // sinon coupe apres le premiere espace
-					if (preg_match ("/^(.*?)\s+([^\s]+)$/i",$person, $result)) {
-						$firstname=$result[1]; $name=$result[2];
-					} else {$name = $person;}
-				}
-				//$this->_currentcontext['data'][$g_name['firstname']]=addslashes(trim($firstname));
-				//$this->_currentcontext['data'][$g_name['familyname']]=addslashes(trim($name));
-				
-				// le 2 ème argument de trim liste les caractères correspondant aux espaces dans le fichier source (utilisé pour supprimer TOUS les espaces avant et après l'entrée)
-				if(isset($g_name['firstname']) && !empty($firstname))
-					$this->_currentcontext['data'][$g_name['firstname']]=trim($firstname,"\xC2\xA0\x00\x1F\x20");
-				if(isset($g_name['familyname']) && !empty($name))
-					$this->_currentcontext['data'][$g_name['familyname']]=trim($name,"\xC2\xA0\x00\x1F\x20");
-			} // for each person
-		}
-  	}
-
-	public function processCharacterStyles ($obj, $data) 
-	{
-		return $obj->conversion.$data.closetags ($obj->conversion);
-	}
-
-	public function processInternalStyles ($obj, $data) 
-	{
-		if (strpos ($obj->conversion, '<li>') !== false) {
-			$conversion = str_replace ('<li>', '', $obj->conversion);
-			$data = preg_replace (array ("/(<p\b)/", "/(<\/p>)/"), array ("<li>\\1", "\\1</li>"), $data);
-		}
-		elseif (preg_match ("/<hr\s*\/?>/", $obj->conversion)) {
-			switch (trim (strip_tags ($data))) {
-				case '*' : return "<hr width=\"30%\" \ >";
-				case '**' : return "<hr width=\"50%\" \ >";
-				case '***' : return "<hr width=\"80%\" \ >";
-				case '****' : return "<hr \ >";
-				default: return "<hr width=\"10%\" \ >";
-			}
-		} 
-		else  {
-			$conversion = $obj->conversion;
-		}
-		return $conversion.$data.closetags ($conversion);
-	}
-
-	public function unknownParagraphStyle ($style, $data) 
-	{
-		// nothing to do ?
-	}
-
-	public function unknownCharacterStyle ($style, $data) 
-	{
-		// nothing... let's clean it.
-		return preg_replace(array("/^<span\b[^>]*>/","/<\/span>$/"),"",$data);
 	}
 
    // begin{publicfields} automatic generation  //
