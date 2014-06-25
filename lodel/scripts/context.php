@@ -737,7 +737,10 @@ class C
 		{
 			$cache = cache_get_path('htmlpurifier');
 
-			class_exists('HTMLPurifier', false) || include 'htmlpurifier/HTMLPurifier.auto.php';
+			if (!class_exists('HTMLPurifier', false)) {
+				include 'htmlpurifier/HTMLPurifier/Bootstrap.php';
+				spl_autoload_register(array('HTMLPurifier_Bootstrap', 'autoload'));
+			}
 			$config = HTMLPurifier_Config::createDefault();
 		
 			$filters = array();
