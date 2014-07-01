@@ -404,11 +404,14 @@ function loop_rssitem($context, $funcname, $arguments)
     foreach($items as $item){
         $localcontext = $context;
         $localcontext['count'] = ++$count;
-        foreach (array ("title", "link", "description", "author", "category", "comments", "enclosure", "guid", "source") as $v){
+        foreach (array ("title", "link", "description", "authors", "author", "category", "comments", "enclosure", "guid", "source") as $v){
             $function_name = "get_{$v}";
             $localcontext[$v] = method_exists($item, $function_name ) ? $item->$function_name() : '';
         }
-        $localcontext['pubdate'] = $item->get_date(); 
+        if ($localcontext['authors']) {
+            $localcontext['authors'] = array_map(function($i) {return $i->get_name();}, $localcontext['authors']);
+        }
+        $localcontext['pubdate'] = $item->get_date();
         call_user_func("code_do_$funcname", $localcontext);
     }
     if (function_exists("code_after_$funcname"))
