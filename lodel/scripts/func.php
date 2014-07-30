@@ -1084,7 +1084,7 @@ function rewriteFilename($string)
  * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
  */
-function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false)
+function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
 {
     $replace = array(
         "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
@@ -1165,10 +1165,19 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     $body =& $message->get($aParam);
 
     if ($toBcc) {
+        if (is_array($to))
+            $to = implode(', ', $to);
         $headers = array('Bcc' => $to);
         $to = '';
         $headers =& $message->headers($headers, true);
     } else $headers =& $message->headers();
+
+    if ($cc) {
+        if (is_array($cc))
+            $cc = implode(', ', $cc);
+        $ccs = array('Cc' => $cc);
+        $headers =& $message->headers($ccs, true);
+    }
 
     unset($message);
     // send the mail
