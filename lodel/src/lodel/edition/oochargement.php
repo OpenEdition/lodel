@@ -424,6 +424,11 @@ try
 			}
 
 			$tei = $source. '.tei';
+			if($client->xml == NULL)
+			{
+				printErrors('Generated XML is empty !', empty($context['multiple']), $isFrame);
+			}
+
 			if(!writefile($tei, $client->xml))
 			{
 				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
