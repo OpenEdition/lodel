@@ -18,7 +18,7 @@ class LodelSql
     public $_errorMsg;
 
 
-    public function __construct(String $dbDriver) {
+    public function __construct($dbDriver) {
         
         $this->connectionObject = ADONewConnection($dbDriver);
         
@@ -52,8 +52,8 @@ class LodelSql
         return $this->connectionObject->CacheExecute($secs2cache,$sql,$inputarr);
     }
     
-    public function CacheFlush($sql,$inputarr) {
-        return $this->connectionObject->cacheflush($sql=false,$inputarr=false);
+    public function CacheFlush($sql=false,$inputarr=false) {
+        return $this->connectionObject->cacheflush($sql,$inputarr);
     }
     
     public function cachegetone($secs2cache,$sql=false,$inputarr=false) {
@@ -143,7 +143,7 @@ class LodelSql
     }
     
     public function Parameter(&$stmt,&$var,$name,$isOutput=false,$maxLen=4000,$type=false){
-        return $this->connectionObject->Parameter(&$stmt,&$var,$name,$isOutput,$maxLen,$type);
+        return $this->connectionObject->Parameter($stmt,$var,$name,$isOutput,$maxLen,$type);
     }
     
     public function qstr($s,$magic_quotes=false) {
