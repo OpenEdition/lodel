@@ -2,34 +2,24 @@
 
 class LodelSql
 {
-	public $debug = false;
+	private $connectionObject;
+
 	public $database;
-	public $memcachecompress = false;
+	public $debug;
+	public $memcachecompress;
 	public $memcachehost;
 	public $memcacheport;
 	public $memcache;
-	public $connectionObject;
-	public $_connectionID;
-	public $databaseType;
-	public $fetchMode;
-	public $hasInsertID;
-	public $nameQuote;
-	public $_errorMsg;
 
 	public function __construct($dbDriver) {
 		$this->connectionObject = ADONewConnection($dbDriver);
 
+		$this->database = &$this->connectionObject->database;
+		$this->debug = &$this->connectionObject->debug;
 		$this->memcachecompress = &$this->connectionObject->memcachecompress;
 		$this->memcachehost = &$this->connectionObject->memcachehost;
 		$this->memcacheport = &$this->connectionObject->memcacheport;
 		$this->memcache = &$this->connectionObject->memcache;
-		$this->_connectionID = &$this->connectionObject->_connectionID;
-		$this->fetchMode = &$this->connectionObject->fetchMode;
-		$this->hasInsertID = &$this->connectionObject->hasInsertID;
-		$this->nameQuote = &$this->connectionObject->nameQuote;
-		$this->_errorMsg = &$this->connectionObject->_errorMsg;
-		$this->database = &$this->connectionObject->database;
-		$this->debug = &$this->connectionObject->debug;
 	}
 
 	public function Affected_Rows() {
