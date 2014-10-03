@@ -27,7 +27,7 @@ class LodelSql
 		$this->_connectionID = &$this->connectionObject->_connectionID;
 		$this->fetchMode = &$this->connectionObject->fetchMode;
 		$this->hasInsertID = &$this->connectionObject->hasInsertID;
-		$this->insertid = &$this->connectionObject->inserti;
+		$this->insertid = &$this->connectionObject->insertid;
 		$this->nameQuote = &$this->connectionObject->nameQuote;
 		$this->_errorMsg = &$this->connectionObject->_errorMsg;
 		$this->database = &$this->connectionObject->database;
@@ -39,11 +39,11 @@ class LodelSql
 	}
 
 	public function CacheExecute($secs2cache, $sql=false, $inputarr=false){
-		return $this->connectionObject->CacheExecute($secs2cache,$sql,$inputarr);
+		return $this->connectionObject->CacheExecute($secs2cache, $sql, $inputarr);
 	}
 
 	public function CacheFlush($sql=false, $inputarr=false) {
-		return $this->connectionObject->cacheflush($sql,$inputarr);
+		return $this->connectionObject->cacheflush($sql, $inputarr);
 	}
 
 	public function cachegetone($secs2cache, $sql=false, $inputarr=false) {
@@ -82,7 +82,7 @@ class LodelSql
 	}
 
 	public function GetActiveRecords($table, $where=false, $bindarr=false, $primkeyArr=false){
-		$this->connectionObject->GetActiveRecords($table, $where, $bindarr, $primkeyArr);
+		return $this->connectionObject->GetActiveRecords($table, $where, $bindarr, $primkeyArr);
 	}
 
 	public function GetAll($sql, $inputarr=false){
@@ -110,7 +110,7 @@ class LodelSql
 	}
 
 	public function MetaColumns($table, $normalize=true) {
-		return $this->connectionObject->MetaColumns($table, $normalize=true);
+		return $this->connectionObject->MetaColumns($table, $normalize);
 	}
 
 	public function MetaDatabases() {
@@ -126,7 +126,7 @@ class LodelSql
 	}
 
 	public function MetaType($t,$len=-1, $fieldobj=false){
-		return $this->connectionObject->MetaType($t, $len=-1, $fieldobj);
+		return $this->connectionObject->MetaType($t, $len, $fieldobj);
 	}
 
 	public function outp_throw($msg, $src='WARN', $sql=''){
@@ -146,7 +146,7 @@ class LodelSql
 	}
 
 	public function qstr($s, $magic_quotes=false) {
-		return $this->connectionObject->qstr($s, $magic_quotes=false);
+		return $this->connectionObject->qstr($s, $magic_quotes);
 	}
 
 	public function Query($sql, $inputarr=false){
