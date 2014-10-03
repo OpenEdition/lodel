@@ -61,7 +61,7 @@ if ($GLOBALS['version_mysql'] > 40) {
 	}
 	if('utf8' !== $GLOBALS['db_charset']) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
 	$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
-    	C::set('db_charset', $GLOBALS['db_charset']);
+	C::set('db_charset', $GLOBALS['db_charset']);
 }
 
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
@@ -102,8 +102,8 @@ function usecurrentdb()
 	if ($GLOBALS['db']->database == $GLOBALS['currentdb']) {
 		return false; // nothing to do
 	}
-    	$GLOBALS['db']->SelectDB($GLOBALS['currentdb']);
-    	return true;
+	$GLOBALS['db']->SelectDB($GLOBALS['currentdb']);
+	return true;
 }
 
 /**
@@ -171,10 +171,10 @@ function deleteuniqueid($id)
 
 	if(!$id) return false;
 
-	if (is_array($id))	{
+	if (is_array($id)) {
 		$id = array_map('intval', $id);
 		$db->execute("DELETE FROM {$GLOBALS['tp']}objects WHERE id IN (". join(",", $id). ")");
-	}	else {
+	} else {
 		$id = (int)$id;
 		$db->execute("DELETE FROM {$GLOBALS['tp']}objects WHERE id='{$id}'");
 	}
@@ -190,11 +190,10 @@ function deleteuniqueid($id)
 function mysql_find_db_variable ($database_name, $var = 'character_set_database') 
 {
 	global $db;
-	if($db->database != $database_name)
-    	{
+	if($db->database != $database_name) {
 		$dbname = $db->database;
 	    	$db->SelectDB($database_name) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-    	}
+	}
 	$value = $db->GetRow("SHOW VARIABLES LIKE '$var'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	if(isset($dbname)) $db->SelectDB($dbname);
 
