@@ -13,7 +13,6 @@ class LodelSql
 	public $databaseType;
 	public $fetchMode;
 	public $hasInsertID;
-	public $insertid;
 	public $nameQuote;
 	public $_errorMsg;
 
@@ -27,7 +26,6 @@ class LodelSql
 		$this->_connectionID = &$this->connectionObject->_connectionID;
 		$this->fetchMode = &$this->connectionObject->fetchMode;
 		$this->hasInsertID = &$this->connectionObject->hasInsertID;
-		$this->insertid = &$this->connectionObject->insertid;
 		$this->nameQuote = &$this->connectionObject->nameQuote;
 		$this->_errorMsg = &$this->connectionObject->_errorMsg;
 		$this->database = &$this->connectionObject->database;
