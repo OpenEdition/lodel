@@ -23,7 +23,7 @@ include "adodb/adodb.inc.php";
 error_reporting($err);
 
 // connect to the database server
-error_log("DBDRIVER ".DBDRIVER);
+// error_log("DBDRIVER ".DBDRIVER);
 $GLOBALS['db'] = new LodelSql(DBDRIVER);
 $GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
 $single = C::get('singledatabase', 'cfg') != "on";
