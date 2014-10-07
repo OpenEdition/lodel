@@ -72,6 +72,9 @@ img.unfolder {
 	position:absolute;
 	z-index:2;
 }
+img.move_fold{
+	margin-right:.5em
+}
 ul.listEntities div.entityIconsEdition{
 	z-index:1;
 	position: absolute;

@@ -458,9 +458,10 @@ function confirm_depublication(msg)
 	return(confirm(msg));
 }
 
-function confirmation()
+function confirmation(msg)
 {
-	if(confirm("[@COMMON.CONFIRMATION]")) {
+	if (typeof(msg) === "undefined") { msg="Please, confirm your action"; } 
+	if(confirm(msg)) {
 		return true;
 	}
 	else {
