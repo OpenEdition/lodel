@@ -55,22 +55,6 @@ class LodelSql
 	}
 
 	/**
-	 * return the last error message associated with the last operation on the database handle
-	 * @return string error message
-	 */
-	public function errorMsg() {
-		return $this->connectionObject->ErrorMsg();
-	}
-
-	/**
-	 * return the last error number associated with the last operation on the database handle
-	 * @return int error number
-	 */
-	public function errorNo() {
-		return $this->connectionObject->errorno();
-	}
-
-	/**
 	 * Returns an array of containing two elements 'description' and 'version'.
 	 * @return int error number
 	 */
@@ -96,13 +80,75 @@ class LodelSql
 	 * @return boolean True on success, False on failure
 	 */
 	// used once lodel/scripts/connect.php:108, et avec des globals lodel/scripts/dao.php:361 …
-	// TODO should not be used, or we should provide a getFetchMode()
+	// TODO: one day put that in LodelSqlStatement object
 	public function setFetchMode($mode) {
 		return $this->connectionObject->SetFetchMode($mode);
 	}
 
+	/**
+	 * return the last error message associated with the last operation on the database handle
+	 * @return string error message
+	 */
+	// TODO: one day put that in LodelSqlStatement object
+	public function errorMsg() {
+		return $this->connectionObject->ErrorMsg();
+	}
+
+	/**
+	 * return the last error number associated with the last operation on the database handle
+	 * @return int error number
+	 */
+	// TODO: one day put that in LodelSqlStatement object
+	public function errorNo() {
+		return $this->connectionObject->errorno();
+	}
+
+	/**
+	 * Returns the number of rows affected by the last SQL statement
+	 * @return int number of rows affected by the last SQL statement
+	 */
+	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
+// lodel/scripts/dao.php:525:
+// lodel/scripts/dao.php:574:
+// lodel/scripts/logic/class.entities_advanced.php:254:
+	public function Affected_Rows() {
+		return $this->connectionObject->Affected_Rows();
+	}
+
+	/**
+	 * Returns the ID of the last inserted row
+	 * @return int ID of the last inserted row
+	 */
+	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
+// lodel/scripts/class.siteManage.php:335:
+// lodel/scripts/connect.php:198:
+// lodel/scripts/dao.php:294:
+// lodel/scripts/logic/class.entities_edition.php:807:
+// lodel/scripts/logic/class.entities_edition.php:843:
+// lodel/scripts/logic/class.entries.php:832:
+// lodel/scripts/logic/class.tasks.php:106:
+	public function Insert_ID($table='', $column='') {
+		return $this->connectionObject->Insert_ID($table, $column);
+	}
+
+	/**
+	 * Quotes the string $s, escaping the database specific quote character as appropriate
+	 * @param string $s string to be quoted
+	 * @return string quoted string
+	 */
+	public function quote($s) {
+		return $this->connectionObject->quote($s);
+	}
+
+	// used only once scripts/loginfunc.php:88
+	// must be DELETED and use quote() instead
+	public function qstr($s, $magic_quotes=false) {
+		return $this->connectionObject->qstr($s, $magic_quotes);
+	}
+
 	/*
 	SQL functions
+	should return a LodelSqlStatement
 	*/
 
 	/**
@@ -122,7 +168,7 @@ class LodelSql
 	 * @return object RecordSet
 	 */
 	// TODO: in lodel execute is used using a string $sql query !!!
-	// TODO: create a recordSet object ->moveNext(), ->EOF, ->fields, ->fetchRow(), ->Close() and should be iterable … see dao.php
+	// TODO: MUST return a LodelSqlStatement
 	public function execute($sql, $inputarr=false) {
 		return $this->connectionObject->execute($sql, $inputarr);
 	}
@@ -146,10 +192,15 @@ class LodelSql
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
 	 * @return object RecordSet
 	 */
-	// TODO: used only once scripts/view.php:224, should be deleted
+	// TODO: used only once scripts/view.php:224, to DELETE
 	public function selectlimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
 		return $this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr);
 	}
+
+	/*
+	SQL functions
+	return an array
+	*/
 
 	/**
 	 * Executes an SQL query and returns an array of result set
@@ -212,49 +263,6 @@ class LodelSql
 		return $this->connectionObject->GetRow($sql,$inputarr);
 	}
 
-	/**
-	 * Returns the number of rows affected by the last SQL statement
-	 * @return int number of rows affected by the last SQL statement
-	 */
-	// TODO: should be renamed to fit other method naming
-// lodel/scripts/dao.php:525:
-// lodel/scripts/dao.php:574:
-// lodel/scripts/logic/class.entities_advanced.php:254:
-	public function Affected_Rows() {
-		return $this->connectionObject->Affected_Rows();
-	}
-
-	/**
-	 * Returns the ID of the last inserted row
-	 * @return int ID of the last inserted row
-	 */
-	// TODO: should be renamed to fit other method naming
-// lodel/scripts/class.siteManage.php:335:
-// lodel/scripts/connect.php:198:
-// lodel/scripts/dao.php:294:
-// lodel/scripts/logic/class.entities_edition.php:807:
-// lodel/scripts/logic/class.entities_edition.php:843:
-// lodel/scripts/logic/class.entries.php:832:
-// lodel/scripts/logic/class.tasks.php:106:
-	public function Insert_ID($table='', $column='') {
-		return $this->connectionObject->Insert_ID($table, $column);
-	}
-
-	/**
-	 * Quotes the string $s, escaping the database specific quote character as appropriate
-	 * @param string $s string to be quoted
-	 * @return string quoted string
-	 */
-	public function quote($s) {
-		return $this->connectionObject->quote($s);
-	}
-
-	// used only once scripts/loginfunc.php:88
-	// should be deleted and use quote() instead
-	public function qstr($s, $magic_quotes=false) {
-		return $this->connectionObject->qstr($s, $magic_quotes);
-	}
-
 	/*
 	Schema
 	*/
@@ -269,7 +277,6 @@ class LodelSql
 	}
 
 	// used only once lodel/scripts/tablefields.php:77
-	// Returns an array of tables and views for the current database
 	/**
 	 * Returns an array of tables for the current database as an array
 	 * @return string[] names of tables avalaible on the current database
@@ -279,8 +286,7 @@ class LodelSql
 	}
 
 	// used only once scripts/tablefields.php:79
-	// return objects of description of a table
-	// TODO: should not send back an object but an array
+	// TODO: should not return an object but an array('name'=>, 'type'=>, 'max_length'=>)
 	/**
 	 * Returns an array of ADOFieldObject's, one field object for every column
 	 * @param string $table name of the table
@@ -290,18 +296,18 @@ class LodelSql
 		return $this->connectionObject->MetaColumns($table, true);
 	}
 
-	// not used, should be deleted
+	// not used, to DELETE
 	public function metaPrimaryKeys($table, $owner=false) {
 		return $this->connectionObject->MetaPrimaryKeys($table, $owner);
 	}
 
-	// not used, should be deleted
+	// not used, to DELETE
 	public function metaType($t,$len=-1, $fieldobj=false) {
 		return $this->connectionObject->MetaType($t, $len, $fieldobj);
 	}
 
 	/*
-	memcache functions
+	memcache functions, to DELETE
 	*/
 	// TODO: delete all use of these functions
 	// It is not proprely used, there is no cacheExecute() calls
@@ -319,4 +325,34 @@ class LodelSql
 	public function cacheGetOne($secs2cache, $sql=false, $inputarr=false) {
 	}
 
+}
+
+// TODO !!
+class LodelSqlStatement {
+	public $EOF = true;
+	public $fields = array();
+
+	/**
+	 * Set the cursor to the next row of result
+	 * @return boolean True on success, False on failure
+	 */
+	public function moveNext() {
+		
+	}
+	
+	/**
+	 * get the array of result, and move the cursor to the next row of result
+	 * @return mixed[]
+	 */
+	public function fetchRow() {
+		
+	}
+	
+	/**
+	 * close the current statement
+	 * @return boolean True on success, False on failure
+	 */
+	public function Close() {
+		
+	}
 }
