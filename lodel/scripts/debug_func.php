@@ -14,6 +14,7 @@ function php_debug($php) {
 	defined('INC_FUNC') || include 'func.php';
 	ob_start();
 		try {
+			$context =& C::getC();
 			include($tmpfile);
 		}
 		catch (Exception $e) {
@@ -35,6 +36,9 @@ function php_debug_errors($errno, $errstr='', $errfile='', $errline=0) {
 function php_shutdown() {
 	global $php_errors, $texte;
 	$php_errors[] = error_get_last();
+	if (ob_get_contents() !== False) {
+		ob_end_clean();
+	}
 	echo show_html($texte);
 }
 
