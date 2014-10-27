@@ -1,20 +1,25 @@
+Ôªøchangelog 3.1.4
+2014-10-27
+==========================================
+- Ajout des mod√®les revuesorg_complet_en.dot et revuesorg_complet_es.dot pour les versions linguistiques en et es de Word.
+- revuesorg_complet.dot renomm√© en revuesorg_complet_fr.dot
+
 changelog 3.1.3
 2013-02-04
---------------------------------
-Version Mac du modËle de macros 
---------------------------------
-Correction d'un bug lors de l'utilisation des raccourcis "pomme-Z" "pomme-Y". Suppression des fonctions startUndosaver, Endundosaver, EditUndo, EditRedo et BookMarkExists, et de tous les appels ‡ ces fonctions.
+==========================================
+- Version Mac du mod√®le de macros 
+- Correction d'un bug lors de l'utilisation des raccourcis "pomme-Z" "pomme-Y". Suppression des fonctions startUndosaver, Endundosaver, EditUndo, EditRedo et BookMarkExists, et de tous les appels √† ces fonctions.
 
 changelog 3.1.2
 2012-09-13
 ==========================================
 - Correction du style "Parole chiavi" en "Parole chiave" (revuesorg_fr.dot ; revuesorg_complet.dot)
-- Ajout du style "Parole chiave" au modËle de document en anglais (revuesorg_en.dot)
+- Ajout du style "Parole chiave" au mod√®le de document en anglais (revuesorg_en.dot)
 
 changelog 3.1.1
 2012-06-01
 ==========================================
 - Ajout du fichier changelog.txt
-- revuesorg_complet.dot : correction des codes de langue el et ja ; correction mots-clÈs et rÈsumÈ grecs qui Ètaient inversÈs dans la barre des styles complÈmentaires. 
+- revuesorg_complet.dot : correction des codes de langue el et ja ; correction mots-cl√©s et r√©sum√© grecs qui √©taient invers√©s dans la barre des styles compl√©mentaires. 
 
 
