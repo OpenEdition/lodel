@@ -170,7 +170,7 @@ class LodelSql
 	// TODO: in lodel execute is used using a string $sql query !!!
 	// TODO: MUST return a LodelSqlStatement
 	public function execute($sql, $inputarr=false) {
-		return $this->connectionObject->execute($sql, $inputarr);
+		return new LodelSqlStatement($this->connectionObject->execute($sql, $inputarr));
 	}
 
 	/**
@@ -181,7 +181,7 @@ class LodelSql
 	 */
 	// TODO: not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
-		return $this->connectionObject->Query($sql, $inputarr);
+		return new LodelSqlStatement($this->connectionObject->Query($sql, $inputarr));
 	}
 
 	/**
@@ -194,7 +194,7 @@ class LodelSql
 	 */
 	// TODO: used only once scripts/view.php:224, to DELETE
 	public function selectlimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
-		return $this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr);
+		return new LodelSqlStatement($this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr));
 	}
 
 	/*
@@ -305,7 +305,7 @@ class LodelSql
 	public function metaType($t,$len=-1, $fieldobj=false) {
 		return $this->connectionObject->MetaType($t, $len, $fieldobj);
 	}
-
+ 
 	/*
 	memcache functions, to DELETE
 	*/
@@ -323,36 +323,78 @@ class LodelSql
 	// TODO: test it
 	// scripts/loginfunc.php:409
 	public function cacheGetOne($secs2cache, $sql=false, $inputarr=false) {
+		return $this->connectionObject->cacheGetOne($secs2cache, $sql, $inputarr);
 	}
 
 }
 
-// TODO !!
+//TODO !!  <- DONE =P
 class LodelSqlStatement {
 	public $EOF = true;
 	public $fields = array();
 
-	/**
-	 * Set the cursor to the next row of result
-	 * @return boolean True on success, False on failure
-	 */
-	public function moveNext() {
-		
-	}
-	
-	/**
-	 * get the array of result, and move the cursor to the next row of result
-	 * @return mixed[]
-	 */
-	public function fetchRow() {
-		
-	}
-	
-	/**
-	 * close the current statement
-	 * @return boolean True on success, False on failure
-	 */
-	public function Close() {
-		
-	}
+		//instance of a ADORecordSet
+		private $rs;
+
+		public function __construct(IteratorAggregate $recordSet) {
+			$this->rs = $recordSet;
+			$this->EOF = &$this->rs->EOF;
+			$this->fields = &$this->rs->fields;
+		}
+
+		/**
+		 * Set the cursor to the next row of result
+		 * @return boolean True on success, False on failure
+		 */
+		public function moveNext() {
+				return $this->rs->MoveNext();
+		}
+
+		/**
+		 * get the array of result, and move the cursor to the next row of result
+		 * @return mixed[]
+		 */
+		public function fetchRow() {
+				return $this->rs->FetchRow();
+		}
+
+		/**
+		 * close the current statement
+		 * @return boolean True on success, False on failure
+		 */
+		public function Close() {
+				return $this->rs->Close();
+		}
+
+		/**
+		 * Return the number of columns in the recordset. Some databases will set this to 0
+		 * if no records are returned, others will return the number of columns in the query.
+		 * @return int
+		 */
+		public function fieldCount(){
+			return $this->rs->FieldCount();
+		}
+
+		/**
+		* Get the FieldObject of a specific column.
+		*
+		* @param fieldoffset is the column position to access(0-based).
+		*
+		* @return FieldObject for that column, or false.
+		*/
+		function fetchField($fieldOffset = -1){ 
+			return $this->rs->FetchField($fieldOffset);
+		}
+
+		public function RecordCount(){
+			return $this->rs->RecordCount();
+		}
+
+		public function rowCount(){
+			return $this->rs->RowCount();
+		}
+
+		public function numRows(){
+			return $this->rs->numRows();
+		}
 }
