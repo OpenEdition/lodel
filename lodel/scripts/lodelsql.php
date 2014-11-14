@@ -329,8 +329,21 @@ class LodelSql
 }
 
 //TODO !!  <- DONE =P
+/**
+ *  
+ */
 class LodelSqlStatement {
+	
+	/**
+	 * True when no more row
+	 * @var boolean 
+	 */
 	public $EOF = true;
+	
+	/**
+	 * An array containing the results
+	 * @var array 
+	 */
 	public $fields = array();
 
 		//instance of a ADORecordSet
@@ -386,14 +399,26 @@ class LodelSqlStatement {
 			return $this->rs->FetchField($fieldOffset);
 		}
 
+		/**
+		 * 
+		 * @return type
+		 */
 		public function RecordCount(){
 			return $this->rs->RecordCount();
 		}
 
+		/**
+		 * 
+		 * @return type
+		 */
 		public function rowCount(){
 			return $this->rs->RowCount();
 		}
 
+		/**
+		 * 
+		 * @return type
+		 */
 		public function numRows(){
 			return $this->rs->numRows();
 		}
