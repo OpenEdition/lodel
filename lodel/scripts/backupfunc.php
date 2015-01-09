@@ -259,12 +259,12 @@ function PMA_convert_display_charset($text)
  * Importation d'un ME ou de données depuis son archive ZIP
  *
  * @param string $archive le chemin vers le fichier ZIP
- * @param array $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
- * @param array $acceptedexts la liste des types de fichiers acceptés
- * @param string $sqlfile le nom du fichier SQL à traiter. Vide par défaut
- * @param bool $xml si on utilise l'import XML
+ * @param array  $accepteddirs la liste des répertoires acceptés dans l'archive ZIP
+ * @param array  $acceptedexts la liste des types de fichiers acceptés
+ * @param string $modelfile le nom du fichier model à traiter. Vide par défaut
+ * @param bool   $xml si on utilise l'import XML
  */
-function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfile = '', $xml=false)
+function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $modelfile = '', $xml=false)
 {
     $tmpdir = tmpdir(uniqid('site_import'));
 
@@ -275,7 +275,8 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
         return false;
 
     $dirs = '';
-    $sql_zip = null;
+    $model_zip = null;
+    $model_ext = $xml ? '.xml' : '.sql';
     $files_to_extract = array();
 
     /* Vérification que les fichiers sont biens autorisés en matchant le nom du répertoire et des extensions
@@ -306,19 +307,19 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $sqlfi
 
             }
         }
-        if($sqlfile && ( strpos($file, ".sql") === strlen($file) - strlen(".sql") ) ){
-            $sql_zip = $file ;
+        if($modelfile && ( strpos($file, $model_ext) === strlen($file) - strlen($model_ext) ) ){
+            $model_zip = $file ;
         }
     }
 
     extract_files_from_zip($archive, realpath(SITEROOT), null, $files_to_extract);
 
     /* Extraction du fichier sql */
-    extract_files_from_zip($archive, $tmpdir, null, $sql_zip);
-    rename($tmpdir . DIRECTORY_SEPARATOR . $sql_zip, $sqlfile);
+    extract_files_from_zip($archive, $tmpdir, null, $model_zip);
+    rename($tmpdir . DIRECTORY_SEPARATOR . $model_zip, $modelfile);
     rmdir($tmpdir);
 
-    if (filesize($sqlfile) <= 0)
+    if (filesize($modelfile) <= 0)
         return false;
 
 	return true;
