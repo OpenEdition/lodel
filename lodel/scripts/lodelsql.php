@@ -177,7 +177,7 @@ class LodelSql
 	 * Executes an SQL query
 	 * @param string $sql SQL query to be executed
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
-	 * @return object RecordSet
+	 * @return object LodelSqlStatement
 	 */
 	// TODO: not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
