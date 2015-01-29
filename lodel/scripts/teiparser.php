@@ -1808,6 +1808,8 @@ class TEIParser extends XMLReader
         $text = "<pre><code class=\"brush: {$attrs['lang']};\">";
         while($this->read()){
             if( parent::END_ELEMENT === $this->nodeType ){
+                if ('code' === $this->localName) // ne pas prendre l'élément précedent quand on tombe sur </code>
+                    break;
                 $text .= $this->_closeTag();
                 break;
             }elseif( parent::TEXT === $this->nodeType ){
