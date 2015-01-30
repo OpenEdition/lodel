@@ -1,6 +1,12 @@
 <?php
-/*
-*************  API de manipulation du ME  **************************
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
+
+/**
+ *  API de manipulation du ME
 
 Créer rapidement un script en cli:
 <?php

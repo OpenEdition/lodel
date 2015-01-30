@@ -1,7 +1,9 @@
 <?php
-
-/* $Id$ */
-// vim: expandtab sw=4 ts=4 sts=4:
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
 
 /**
  * DEFINES VARIABLES & CONSTANTS

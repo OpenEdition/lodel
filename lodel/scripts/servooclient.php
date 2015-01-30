@@ -1,28 +1,9 @@
 <?php
-/*
- *
- *  ServOO CLient Library
- *
- *  Copyright (c) 2004, Ghislain Picard, Gautier Poupeau, Luc Santeramo
- *  Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy
- *  Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- *  Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- *  Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *  Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *
- *  Home page: http://www.servoo.net
- *
- *  E-Mail: servoo@servoo.net
- *
- *
- *  This library is released under the LGPL License.
- *  Please see COPYING file in this directory.
- *
- *
- *
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
  */
-
-
 
   /** 
    * @access private
@@ -45,18 +26,6 @@ if(!class_exists('soapclientmime', false))
  * provided by this library. 
  * If finer control is required, lower-level methods are available. Listed by decreasing order
  * of processing: convertToXHTML, convertUnpack, convertToFile, convertToString.
- *
- * @package servooclient
- * @author Ghislain Picard, Gautier Poupeau, Luc Santeramo
- * @copyright 2001-2002, Ghislain Picard, Marin Dacos
- * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *
  */
 
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
 
 if (is_readable(C::get('home', 'cfg').'hookfunc_local.php'))
 	include 'hookfunc_local.php';
@@ -52,9 +57,8 @@ function check_isbn(&$context, $field, &$errors)
 
 function check_issn(&$context, $field, &$errors)
 {
-	if(isset($context['do']) && $context['do'] == "edit" && !empty($context['data'][$field]))
-	{
-		$value = preg_replace('/[ -]/', '', $context['data'][$field]);
+    if (isset($context['do']) && $context['do'] == "edit" && !empty($context['data'][$field])) {
+        $value = preg_replace('/[ -]/', '', $context['data'][$field]);
         $checksum = substr($value, -1, 1);
         $values   = str_split(substr($value, 0, -1));
         $check    = 0;
@@ -72,14 +76,14 @@ function check_issn(&$context, $field, &$errors)
         $check  = 11 - $check;
 
         if ($check == $checksum || (($check == 10) && ($checksum == 'X'))) {
-        	$context['data'][$field] = wordwrap($value,4,'-', true);
+            $context['data'][$field] = wordwrap($value,4,'-', true);
             return;
         }else{
-        	$errors[$field] = 'tablefield';
-        	return;
+            $errors[$field] = 'tablefield';
+            return;
         }
 
-	}
+    }
 }
 
 /**
@@ -106,8 +110,8 @@ class Lodel_Filter_File_Type
         $errors =& $args[2];
 
         if(empty($context['data'][$field]) || !is_array($context['data'][$field]) || empty($context['data'][$field]['radio'])) return;
-        
-	switch($context['data'][$field]['radio'])
+
+    switch($context['data'][$field]['radio'])
         {
             case 'upload':
                 $file = $_FILES['data']['name'][$field]['upload'];

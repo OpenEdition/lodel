@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
 htmLawed 1.1.9.5, 6 July 2011
 Copyright Santosh Patnaik
 LGPL v3 license
