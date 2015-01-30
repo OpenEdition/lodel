@@ -1,55 +1,12 @@
 <?php
 /**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
+
+/**
  * Fichier utilitaire proposant des fonctions souvent utilisées dans Lodel
- *
- * PHP versions 4 et 5
- *
- * LODEL - Logiciel d'Edition ELectronique.
- *
- * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *
- * Home page: http://www.lodel.org
- *
- * E-Mail: lodel@lodel.org
- *
- * All Rights Reserved
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- * @author Ghislain Picard
- * @author Jean Lamy
- * @author Sophie Malafosse
- * @author Pierre-Alain Mignot
- * @copyright 2001-2002, Ghislain Picard, Marin Dacos
- * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @licence http://www.gnu.org/copyleft/gpl.html
- * @version CVS:$Id:
- * @package lodel
  */
 
 if (is_readable(C::get('home', 'cfg') . 'func_local.php'))
@@ -1084,7 +1041,7 @@ function rewriteFilename($string)
  * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
  */
-function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false)
+function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
 {
     $replace = array(
         "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
@@ -1165,10 +1122,19 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     $body =& $message->get($aParam);
 
     if ($toBcc) {
+        if (is_array($to))
+            $to = implode(', ', $to);
         $headers = array('Bcc' => $to);
         $to = '';
         $headers =& $message->headers($headers, true);
     } else $headers =& $message->headers();
+
+    if ($cc) {
+        if (is_array($cc))
+            $cc = implode(', ', $cc);
+        $ccs = array('Cc' => $cc);
+        $headers =& $message->headers($ccs, true);
+    }
 
     unset($message);
     // send the mail
@@ -1441,12 +1407,18 @@ function rmtree($rep)
     if(!file_exists($rep)) return;
     $rep = realpath($rep);
     $is_removable = false;
-    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg'))) as $removable)
+    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg')), realpath(C::get('tmpoutdir', 'cfg'))) as $removable)
         if (0 === strpos($rep, $removable))
             $is_removable = true;
-    if (!$is_removable)
-            trigger_error("Interdiction d'effacer le répertoire $rep", E_USER_ERROR);
-    $fd = opendir($rep) or trigger_error("Impossible d'ouvrir $rep", E_USER_ERROR);
+    if (!$is_removable) {
+        error_log("Interdiction d'effacer le répertoire $rep");
+        return;
+    }
+    $fd = @opendir($rep);
+    if (false === $fd) {
+        error_log("Impossible d'ouvrir $rep");
+        return;
+    }
     while (($file = readdir($fd)) !== false) {
         if('.' === $file{0}) continue;
         $file = $rep. "/". $file;

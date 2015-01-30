@@ -1,4 +1,13 @@
 <?php
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
+
+/**
+ * Fonctions pour le mode debug du lodelscript
+ */
 
 function php_debug($php) {
 	global $tmpfile;
@@ -14,6 +23,7 @@ function php_debug($php) {
 	defined('INC_FUNC') || include 'func.php';
 	ob_start();
 		try {
+			$context =& C::getC();
 			include($tmpfile);
 		}
 		catch (Exception $e) {
@@ -35,6 +45,9 @@ function php_debug_errors($errno, $errstr='', $errfile='', $errline=0) {
 function php_shutdown() {
 	global $php_errors, $texte;
 	$php_errors[] = error_get_last();
+	if (ob_get_contents() !== False) {
+		ob_end_clean();
+	}
 	echo show_html($texte);
 }
 

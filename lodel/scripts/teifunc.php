@@ -1,11 +1,14 @@
 <?php
+/**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
 
 /**
  * Parse une DTD afin d'extraire les éléments de définition
- *
- * @param string $file le fichier DTD à parser
- * @return array l'arbre des éléments de la DTD
  */
+
 function parseDTD($file)
 {
 	class_exists('XML_DTD_Parser', false) || include 'PEAR/XML/XML_DTD/DTD.php';

@@ -45,7 +45,7 @@ class HTMLPurifier_AttrDef_URI_Host extends HTMLPurifier_AttrDef
         // The productions describing this are:
         $a   = '[a-z]';     // alpha
         $an  = '[a-z0-9]';  // alphanum
-        $and = '[a-z0-9-]'; // alphanum | "-"
+        $and = '[a-z0-9-_]'; // alphanum | "-"
         // domainlabel = alphanum | alphanum *( alphanum | "-" ) alphanum
         $domainlabel   = "$an($and*$an)?";
         // toplabel    = alpha | alpha *( alphanum | "-" ) alphanum

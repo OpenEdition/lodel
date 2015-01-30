@@ -1,30 +1,9 @@
 <CONTENT VERSION="1.0" LANG="fr" CHARSET="utf-8"/>
 <!--[
-
-   LODEL - Logiciel d'Edition ELectronique.
-   Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
-   Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
-   Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
-   Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
-   Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
-   Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
-   Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
-   Home page: http://www.lodel.org
-   E-Mail: lodel@lodel.org
-                             All Rights Reserved
-      This program is free software; you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation; either version 2 of the License, or
-      (at your option) any later version.
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License
-      along with this program; if not, write to the Free Software
-      Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.]-->
-
+ LODEL - Logiciel d'Édition ÉLectronique.
+ @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ @authors See COPYRIGHT file
+]-->
 
 <USE MACROFILE="macros.html">
 <USE MACROFILE="macros_interface.html">
@@ -38,10 +17,15 @@
 </ul>
 			<div id="move">
 				<LET VAR="iddocument">[#ID]</LET>
+				<LET ARRAY="idparents" GLOBAL="1"></LET>
+				<IF COND="[#UNFOLD|isset] SEQ NULL"><LET VAR="unfold">[#IDDOCUMENT]</LET></IF>
+				<LOOP NAME="get_idparents" SELECT="id1" TABLE="relations" WHERE="id2=[#UNFOLD] AND nature='p'" ORDER="degree">
+					<IF COND="[#COUNT] LT [#NBRESULTS]"><LET ARRAY="idparents[]" GLOBAL="1">[#ID1]</LET></IF><!--[on exclut le niveau 0]-->
+				</LOOP>
 				<LET VAR="id">0</LET>
 				<LOOP NAME="move_right">
 				<DO>
-					<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
+					<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation('[@COMMON.CONFIRMATION]');">
 						<strong><em>[@EDITION.BASE]</em></strong>
 					</a><br />
 				</DO>
@@ -57,8 +41,19 @@
 					<DO>
 					<!--[ on a le droit de la deplacer ici ]-->
 					<li>
+						<LOOP NAME="have_children" SELECT="upd" TABLE="entities" WHERE="idparent = [#ID]" LIMIT="1"><!--[Si l'entité a des enfants]-->
+							<IF COND="[%IDPARENTS|lin_array([#ID])] OR [#ID] EQ [#UNFOLD]">
+								<a href="index.php?do=preparemove&amp;id=[#IDDOCUMENT]&amp;unfold=[#IDPARENT]">
+									<img class="move_fold" src="[#SHAREURL]/images/fleche_bas_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_FOLDED]" />
+								</a>
+							<ELSE/>
+								<a href="index.php?do=preparemove&amp;id=[#IDDOCUMENT]&amp;unfold=[#ID]">
+									<img class="move_fold" src="[#SHAREURL]/images/fleche_droite_gris.png" alt="[@ADMIN.GET_UNFOLDED] - [@ADMIN.GET_FOLDED]" title="[@ADMIN.GET_UNFOLDED]" />
+								</a>
+							</IF>
+						</LOOP>
 						<IF COND="[#ID] NE [#IDDOCUMENT]">
-						<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation();">
+						<a href="index.php?do=move&amp;id=[#IDDOCUMENT]&amp;idparent=[#ID]" onclick="return confirmation('[@COMMON.CONFIRMATION]');">
 							[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF>
 						</a>
 						<ELSE/>
@@ -67,12 +62,15 @@
 						<em>&nbsp;([#TYPE])</em>
 					</DO>
 					<ALTERNATIVE>
-		                        <!--[ on n'a pas le droit de la deplacer ici ]-->
+					<!--[ on n'a pas le droit de la deplacer ici ]-->
 					<li>
+						<LOOP NAME="have_children"></LOOP>
 						[#G_TITLE|textebrut|nbsp|couper(50)]<IF COND="[#G_TITLE|hasbeencut]">...</IF><em>&nbsp;([#TYPE])</em>
 					</ALTERNATIVE>
 					</LOOP>
-					<LOOP NAME="Deplace_document"></LOOP>
+					<IF COND="[%IDPARENTS|lin_array([#ID])] OR [#ID] EQ [#UNFOLD]">
+						<LOOP NAME="Deplace_document"></LOOP>
+					</IF>
 					</li>
 				</DO>
 				<AFTER></ul></AFTER>

@@ -1,54 +1,12 @@
 <?php
 /**
+ * LODEL - Logiciel d'Édition ÉLectronique.
+ * @license GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
+ * @authors See COPYRIGHT file
+ */
+
+/**
  * Chargement d'un document OpenOffice (via OTX)
- *
- * PHP versions 4 et 5
- *
- * LODEL - Logiciel d'Edition ELectronique.
- *
- * Copyright (c) 2001-2002, Ghislain Picard, Marin Dacos
- * Copyright (c) 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * Copyright (c) 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * Copyright (c) 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * Copyright (c) 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * Copyright (c) 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * Copyright (c) 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * Copyright (c) 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- *
- * Home page: http://www.lodel.org
- *
- * E-Mail: lodel@lodel.org
- *
- * All Rights Reserved
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- *
- * @author Ghislain Picard
- * @author Jean Lamy
- * @author Pierre-Alain Mignot
- * @copyright 2001-2002, Ghislain Picard, Marin Dacos
- * @copyright 2003, Ghislain Picard, Marin Dacos, Luc Santeramo, Nicolas Nutten, Anne Gentil-Beccot
- * @copyright 2004, Ghislain Picard, Marin Dacos, Luc Santeramo, Anne Gentil-Beccot, Bruno Cénou
- * @copyright 2005, Ghislain Picard, Marin Dacos, Luc Santeramo, Gautier Poupeau, Jean Lamy, Bruno Cénou
- * @copyright 2006, Marin Dacos, Luc Santeramo, Bruno Cénou, Jean Lamy, Mikaël Cixous, Sophie Malafosse
- * @copyright 2007, Marin Dacos, Bruno Cénou, Sophie Malafosse, Pierre-Alain Mignot
- * @copyright 2008, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @copyright 2009, Marin Dacos, Bruno Cénou, Pierre-Alain Mignot, Inès Secondat de Montesquieu, Jean-François Rivière
- * @licence http://www.gnu.org/copyleft/gpl.html
- * @version CVS:$Id:
- * @package lodel/source/lodel/edition
  */
 
 define('backoffice', true);
@@ -93,23 +51,23 @@ try
 
 	$context =& C::getC();
 	header('content-type: text/html; charset=utf8');
-	foreach(array('idtask', 'lodeltags', 'reload', 'iddocument') as $var)
+	foreach(array('lodeltags', 'reload', 'iddocument') as $var)
 	{
 		if(isset($context[$var])) $context[$var] = (int)$context[$var];
 		else $context[$var] = 0;
 	}
 
-	if (!$context['idtask'] && !$context['identity'] && !$context['idtype']) {
+	if (!$context['identity'] && !$context['idtype']) {
 		header("location: index.php?id=". $context['idparent']);
 		return;
 	}
 	$context['id'] = $context['identity'];
-	$task = $context['idtask'];
 	$fileorigin = C::get('fileorigin');
 	$localfile = C::get('localfile');
 	$isFrame = ! (C::get('sortietei') || C::get('sortie')) && C::get('adminlodel', 'lodeluser');
+	$task = Logic::getLogic('tasks');
 
-    $file_cache_lifetime = C::get('timeout', 'cfg') ? C::get('timeout', 'cfg') : 3600;
+	$file_cache_lifetime = C::get('timeout', 'cfg') ? C::get('timeout', 'cfg') : 3600;
 
 	if($fileorigin == 'upload' && !empty($_FILES['file1'])) {
 		$file = $_FILES['file1'];
@@ -175,78 +133,80 @@ try
 		{
 			if($isFrame) printJavascript('window.parent.o.changeStep(2);');
 
-            extract_files_from_zip($source, $tmpdir);
+			extract_files_from_zip($source, $tmpdir);
 
-            $dir = opendir($tmpdir);
-            while ($file = readdir($dir)) {
-                if(is_file( $tmpdir . DIRECTORY_SEPARATOR . $file ) && preg_match( "/\.xml$/",$file) ){
-                    $contents = array();
-                    $teiContents = file_get_contents($tmpdir . DIRECTORY_SEPARATOR . $file);
-                    if(empty($context['idtype']))
-                    { // reload
-                        $context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
-                    }
-                    try
-                    {
-                        $parser = new TEIParser($context['idtype']);
-                        $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
-                    }
-                    catch(Exception $e)
-                    {
-            //          printErrors($parser->getLogs(), false);
-                        printErrors($e->getMessage(), true, $isFrame);
-                    }
+			$dir = opendir($tmpdir);
+			while ($file = readdir($dir)) {
+				if(is_file( $tmpdir . DIRECTORY_SEPARATOR . $file ) && preg_match( "/\.xml$/",$file) ){
+					$contents = array();
+					$teiContents = file_get_contents($tmpdir . DIRECTORY_SEPARATOR . $file);
+					if(empty($context['idtype']))
+					{ // reload
+						$context['idtype'] = $GLOBALS['db']->GetOne(lq('SELECT idtype FROM #_TP_entities WHERE id='.(int)$context['identity']));
+					}
+					try
+					{
+						$parser = new TEIParser($context['idtype']);
+						$contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
+					}
+					catch(Exception $e)
+					{
+						printErrors($e->getMessage(), true, $isFrame);
+					}
 
-                    $contents['parserreport'] = $parser->getLogs();
+					$contents['parserreport'] = $parser->getLogs();
 
-                    if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
-                    {
-                        array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
-                        echo '<pre>'. print_r($contents, 1) . '</pre>';
-                        die();
-                    }
+					if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
+					{
+						array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+						echo '<pre>'. print_r($contents, 1) . '</pre>';
+						die();
+					}
 
-                    $row = array();
-                    $row['fichier']         = $contents;
-                    $row['tei']             = $teiContents;
-                    $row['sourceoriginale'] = $sourceoriginale;
-                    $row['source']          = file_get_contents($source);
-                    // build the import
-                    $row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
-                    $row['identity']        = $context['identity'];
-                    $row['idparent']        = $context['idparent'];
-                    $row['idtype']          = $context['idtype'];
-                    $row['reload']          = $context['reload'];
-                    function_exists('maketask') || include 'taskfunc.php';
-                    printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+					$row = array();
+					$row['fichier']         = $contents;
+					$row['tei']             = $teiContents;
+					$row['sourceoriginale'] = $sourceoriginale;
+					$row['source']          = file_get_contents($source);
+					// build the import
+					$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
+					$row['identity']        = $context['identity'];
+					$row['idparent']        = $context['idparent'];
+					$row['idtype']          = $context['idtype'];
+					$row['reload']          = $context['reload'];
+					$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
-                    delete_files($source);
+					delete_files($source);
+					unset($contents);
 
-                    die;
-                }
-            }
+					$idtask = $task->createAction("Import $file1", 3, $row);
+					printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
+
+					die;
+				}
+			}
 		}
 		else
 		{
 			$oldtmpdir = $tmpdir;
 			$tmpdir = array();
 
-            $extracted_files = extract_files_from_zip($source, $oldtmpdir);
-            if($extracted_files)
-            {
-                foreach($extracted_files as $file)
-                {
-                    if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')))
-                    {
-                        $tmp = tmpdir(uniqid('import_', true));
-                        rename($oldtmpdir . DIRECTORY_SEPARATOR . $file, $tmp . DIRECTORY_SEPARATOR . $file);
-                        $sources[$file] = $tmp . DIRECTORY_SEPARATOR . $file;
-                        $tmpdir[] = $tmp;
-                    }
-                }
-            }else{
-                printErrors('No files were extracted from the archive '.$source, true, $isFrame);
-            }
+			$extracted_files = extract_files_from_zip($source, $oldtmpdir);
+			if($extracted_files)
+			{
+				foreach($extracted_files as $file)
+				{
+					if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')))
+					{
+						$tmp = tmpdir(uniqid('import_', true));
+						rename($oldtmpdir . DIRECTORY_SEPARATOR . $file, $tmp . DIRECTORY_SEPARATOR . $file);
+						$sources[$file] = $tmp . DIRECTORY_SEPARATOR . $file;
+						$tmpdir[] = $tmp;
+					}
+				}
+			}else{
+				printErrors('No files were extracted from the archive '.$source, true, $isFrame);
+			}
 
 			if(!function_exists('removefilesfromimport'))
 			{
@@ -284,7 +244,7 @@ try
 		try
 		{
 			$parser = new TEIParser($context['idtype']);
-			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir[0], $sourceoriginale);
+			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
 		}
 		catch(Exception $e)
 		{
@@ -302,20 +262,23 @@ try
 		}
 
 		$row = array();
-		$row['fichier'] = $contents;
-		$row['tei'] = $teiContents;
+		$row['fichier']         = $contents;
+		$row['tei']             = $teiContents;
 		$row['sourceoriginale'] = $sourceoriginale;
 		// build the import
 		$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
-		$row['identity']      = $context['identity'];
-		$row['idparent']      = $context['idparent'];
-		$row['idtype']        = $context['idtype'];
-		$row['reload']        = $context['reload'];
+		$row['identity']        = $context['identity'];
+		$row['idparent']        = $context['idparent'];
+		$row['idtype']          = $context['idtype'];
+		$row['reload']          = $context['reload'];
+		$row['tmpdirs']         = array($tmpdir, realpath(SITEROOT.'docannexe/image/'.basename($tmpdir))); // TEIParser.php l429
 
-        delete_files($source);
+		delete_files($source);
+		unset($contents);
 
-		function_exists('maketask') || include 'taskfunc.php';
-		printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+		$idtask = $task->createAction("Import $file1", 3, $row);
+		printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
+
 		die;
 	}
 	elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
@@ -393,8 +356,8 @@ try
 		$request = array('schema' => $schema);
 		$request['attachment'] = $source;
 		$request['mode'] = 'lodel:'.$mode;
-        $request['site'] = $site;
-        $request['sourceoriginale'] = $sourceoriginale;
+		$request['site'] = $site;
+		$request['sourceoriginale'] = $sourceoriginale;
 
 		$client->request($request);
 
@@ -419,6 +382,11 @@ try
 			}
 
 			$tei = $source. '.tei';
+			if($client->xml == NULL)
+			{
+				printErrors('Generated XML is empty !', empty($context['multiple']), $isFrame);
+			}
+
 			if(!writefile($tei, $client->xml))
 			{
 				printErrors('unable to write tei file for document <em>'.$sourceoriginale.'</em>', empty($context['multiple']), $isFrame);
@@ -455,28 +423,30 @@ try
 			}
 
 			$row = array();
-			$row['fichier']			= $contents;
-			$row['odt']				= file_get_contents($odtconverted);
-			$row['tei']				= file_get_contents($tei);
-			$row['source']			= file_get_contents($source);
-			$row['sourceoriginale']	= $sourceoriginale;
+			$row['fichier']         = $contents;
+			$row['odt']             = file_get_contents($odtconverted);
+			$row['tei']             = file_get_contents($tei);
+			$row['source']          = file_get_contents($source);
+			$row['sourceoriginale'] = $sourceoriginale;
 			// build the import
-			$row['importversion']	= "oochargement ".C::get('version', 'cfg').";";
-			$row['identity']		= $context['identity'];
-			$row['idparent']		= $context['idparent'];
-			$row['idtype']			= $context['idtype'];
-            $row['reload']          = $context['reload'];
+			$row['importversion']   = "oochargement ".C::get('version', 'cfg').";";
+			$row['identity']        = $context['identity'];
+			$row['idparent']        = $context['idparent'];
+			$row['idtype']          = $context['idtype'];
+			$row['reload']          = $context['reload'];
+			$row['tmpdirs']         = array($tmpdir[$i - 1], realpath(SITEROOT.'docannexe/image/'.basename($tmpdir[$i - 1]))); // TEIParser.php l429
 
-            delete_files($source, $tei, $odtconverted);
+			delete_files($source, $tei, $odtconverted);
+			unset($contents);
 
-			function_exists('maketask') || include 'taskfunc.php';
+			$idtask = $task->createAction("Import $file1", 3, $row);
 			if(empty($context['multiple']))
 			{
-				printJavascript('window.parent.o.changeStep(3, "'.maketask("Import $file1", 3, $row).'");');
+				printJavascript('window.parent.o.changeStep(3, "'.$idtask.'");');
 			}
 			else
 			{
-				$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.maketask("Import $file1", 3, $row).'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
+				$html = '<div class="otxfile"><input type="button" class="styled styled_green right" value="'.getlodeltextcontents('continue', 'edition').'" onclick="window.open(\'checkimport.php?idtask='.$idtask.'\');"/><p class="filename">'.$sourceoriginale.'</p><p class="doctitle">'.strip_tags($parser->getDocTitle(), '<em><sup><sub><span><strong><a>').'</p></div>';
 
 				printJavascript('window.parent.o.changeStep(3, "'.addcslashes($html, '"').'");');
 			}

@@ -3,8 +3,6 @@
 /* Modified by Ghislain Picard 01/10/04 */
 
 /*
-$Id$
-
 NuSOAP - Web Services Toolkit for PHP
 
 Copyright (c) 2002 NuSphere Corporation
