@@ -68,6 +68,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 					$ip = trim($ip);
 					if(!$ip) continue 2;
 					$octs = explode('.', $ip);
+					if (count($octs) != 4) continue;
 					foreach($octs as $k=>$octet) {
 						if(!$octet) continue;
 						if(false !== strpos($octet, '[')) 
