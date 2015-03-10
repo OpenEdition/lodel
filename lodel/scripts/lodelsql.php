@@ -170,7 +170,10 @@ class LodelSql
 	// TODO: in lodel execute is used using a string $sql query !!!
 	// TODO: MUST return a LodelSqlStatement
 	public function execute($sql, $inputarr=false) {
-		return new LodelSqlStatement($this->connectionObject->execute($sql, $inputarr));
+		$res = $this->connectionObject->execute($sql, $inputarr);
+		if($res!== false)
+			return new LodelSqlStatement($res);
+		return false;
 	}
 
 	/**
@@ -181,7 +184,10 @@ class LodelSql
 	 */
 	// TODO: not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
-		return new LodelSqlStatement($this->connectionObject->Query($sql, $inputarr));
+		$res = $this->connectionObject->Query($sql, $inputarr);
+		if($res!== false)
+			return new LodelSqlStatement($res);
+		return false;
 	}
 
 	/**
@@ -194,7 +200,10 @@ class LodelSql
 	 */
 	// TODO: used only once scripts/view.php:224, to DELETE
 	public function selectlimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
-		return new LodelSqlStatement($this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr));
+		$res = $this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr);
+		if($res!== false)
+			return new LodelSqlStatement($res);
+		return false;
 	}
 
 	/*
@@ -349,7 +358,7 @@ class LodelSqlStatement {
 		//instance of a ADORecordSet
 		private $rs;
 
-		public function __construct(IteratorAggregate $recordSet) {
+		public function __construct($recordSet) {
 			$this->rs = $recordSet;
 			$this->EOF = &$this->rs->EOF;
 			$this->fields = &$this->rs->fields;
@@ -404,6 +413,12 @@ class LodelSqlStatement {
 		 * @return type
 		 */
 		public function RecordCount(){
+			error_log('--RC--', 3, '/home/chatelain/log/php.log');
+			ob_start();
+			var_dump($this->rs);
+			$result = ob_get_clean();
+			error_log($result, 3, '/home/chatelain/log/php.log');
+			
 			return $this->rs->RecordCount();
 		}
 
