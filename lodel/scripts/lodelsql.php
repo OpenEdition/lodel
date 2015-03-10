@@ -413,11 +413,7 @@ class LodelSqlStatement {
 		 * @return type
 		 */
 		public function RecordCount(){
-			error_log('--RC--', 3, '/home/chatelain/log/php.log');
-			ob_start();
-			var_dump($this->rs);
 			$result = ob_get_clean();
-			error_log($result, 3, '/home/chatelain/log/php.log');
 			
 			return $this->rs->RecordCount();
 		}
