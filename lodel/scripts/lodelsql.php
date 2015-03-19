@@ -135,7 +135,7 @@ class LodelSql
 	}
 
 	// used only once scripts/loginfunc.php:88
-	// must be DELETED and use quote() instead
+	// TODO: must be DELETED and use quote() instead
 	public function qstr($s, $magic_quotes=false) {
 		return $this->connectionObject->qstr($s, $magic_quotes);
 	}
@@ -150,7 +150,7 @@ class LodelSql
 	 * @param string $sql SQL query to be prepared
 	 * @return object statement object
 	 */
-	// TODO: not used in Lodel, but we should
+	// not used in Lodel, but we should
 	public function prepare($sql) {
 			return $this->connectionObject->Prepare($sql);
 	}
@@ -161,7 +161,7 @@ class LodelSql
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
 	 * @return object RecordSet
 	 */
-	// TODO: in lodel execute is used using a string $sql query !!!
+	// in lodel execute is used using a string $sql query !!!
 	public function execute($sql, $inputarr=false) {
 		$res = $this->connectionObject->execute($sql, $inputarr);
 		if($res!== false)
@@ -175,7 +175,7 @@ class LodelSql
 	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
 	 * @return object LodelSqlStatement
 	 */
-	// TODO: not used in Lodel, since execute does the same job
+	// not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
 		$res = $this->connectionObject->Query($sql, $inputarr);
 		if($res!== false)
@@ -262,11 +262,11 @@ class LodelSql
 		return $this->connectionObject->MetaDatabases();
 	}
 
-	// used only once lodel/scripts/tablefields.php:77
 	/**
 	 * Returns an array of tables for the current database as an array
 	 * @return string[] names of tables avalaible on the current database
 	 */
+	// used only once lodel/scripts/tablefields.php:77
 	public function metaTables() {
 		return $this->connectionObject->MetaTables('TABLES');
 	}
@@ -280,16 +280,6 @@ class LodelSql
 	 */
 	public function metaColumns($table) {
 		return $this->connectionObject->MetaColumns($table, true);
-	}
-
-	// not used, to DELETE
-	public function metaPrimaryKeys($table, $owner=false) {
-		return $this->connectionObject->MetaPrimaryKeys($table, $owner);
-	}
-
-	// not used, to DELETE
-	public function metaType($t,$len=-1, $fieldobj=false) {
-		return $this->connectionObject->MetaType($t, $len, $fieldobj);
 	}
 
 }
