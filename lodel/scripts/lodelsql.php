@@ -117,16 +117,12 @@ class LodelSql
 	 * Returns the ID of the last inserted row
 	 * @return int ID of the last inserted row
 	 */
-	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
-// lodel/scripts/class.siteManage.php:335:
-// lodel/scripts/connect.php:198:
-// lodel/scripts/dao.php:294:
-// lodel/scripts/logic/class.entities_edition.php:807:
-// lodel/scripts/logic/class.entities_edition.php:843:
-// lodel/scripts/logic/class.entries.php:832:
-// lodel/scripts/logic/class.tasks.php:106:
-	public function Insert_ID($table='', $column='') {
+	public function insertId($table='', $column='') {
 		return $this->connectionObject->Insert_ID($table, $column);
+	}
+	// here for compatibility
+	public function Insert_ID($table='', $column='') {
+		return $this->insertId($table, $column);
 	}
 
 	/**

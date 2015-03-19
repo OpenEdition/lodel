@@ -777,7 +777,7 @@ class EntriesLogic extends GenericLogic
 				$db->Execute(lq('INSERT INTO #_TP_history SET nature="A", context='.$db->quote(serialize(array('identities' => $context['idsentities'], 'identries' => $context['idsentries'])))))
 					or trigger_error('SQL ERROR: '.$db->ErrorMsg(), E_USER_ERROR);
 
-				$id = (int)$db->Insert_ID();
+				$id = (int)$db->insertId();
 				$localcontext = array_merge($context, $db->GetRow(lq("SELECT * FROM #_TP_history WHERE id=".$id)));
 				echo View::getView()->getIncTpl($localcontext, 'entries_massassoc', '', 'tpl/', 5);
 			}

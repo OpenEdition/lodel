@@ -290,7 +290,7 @@ class siteManage {
 			}
 	
 			if (!C::get('id')) {
-                		C::set('id', (int)$db->insert_id()); 
+                		C::set('id', (int)$db->insertId()); 
 			}
 			return true;
 		} while (0);

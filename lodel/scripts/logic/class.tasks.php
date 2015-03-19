@@ -55,7 +55,7 @@ class TasksLogic extends Logic {
 		if (is_array($context))
 			$context = base64_encode(serialize($context));
 		$db->execute(lq("INSERT INTO #_TP_tasks (name,step,user,context) VALUES ('$name','$step','".C::get('id', 'lodeluser')."','$context')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		return $db->insert_ID();
+		return $db->insertId();
 	}
 
 	/**

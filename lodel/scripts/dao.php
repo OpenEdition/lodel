@@ -230,7 +230,7 @@ class DAO
 			if ($insert) {
 				$db->execute('REPLACE INTO '.$this->sqltable.' ('. $insert. ') VALUES ('. $values. ')') or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				if (!isset($vo->$idfield)) {
-					$vo->$idfield = $db->insert_id();
+					$vo->$idfield = $db->insertId();
 				}
 			}
 		}

@@ -753,7 +753,7 @@ class Entities_EditionLogic extends GenericLogic
 					$degree = 1;
 					foreach ($ids[$idtype] as $id) {
 						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id."','". $nature."','". ($degree++). "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						$active_relations[] = $db->insert_id();
+						$active_relations[] = $db->insertId();
 					}
 				} else {
 					$active_relations = array_merge($active_relations, $relations);
@@ -789,7 +789,7 @@ class Entities_EditionLogic extends GenericLogic
 						if(!$id) continue;
 						$db->execute (lq ("REPLACE INTO #_TP_relations (id2,id1,nature,degree) VALUES ('". $id. "','". $vo->id. "','". $name. "',".$i.")"))
 							or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-						$idrelations[] = $db->insert_id();
+						$idrelations[] = $db->insertId();
 						++$i;
 					}
 				}
