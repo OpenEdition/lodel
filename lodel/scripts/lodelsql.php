@@ -79,8 +79,6 @@ class LodelSql
 	 * @param string $mode name of the encoding
 	 * @return boolean True on success, False on failure
 	 */
-	// used once lodel/scripts/connect.php:108, et avec des globals lodel/scripts/dao.php:361 …
-	// TODO: one day put that in LodelSqlStatement object
 	public function setFetchMode($mode) {
 		return $this->connectionObject->SetFetchMode($mode);
 	}
@@ -107,12 +105,12 @@ class LodelSql
 	 * Returns the number of rows affected by the last SQL statement
 	 * @return int number of rows affected by the last SQL statement
 	 */
-	// TODO: must be RENAMED to fit other method naming, but keep it for compatibility
-// lodel/scripts/dao.php:525:
-// lodel/scripts/dao.php:574:
-// lodel/scripts/logic/class.entities_advanced.php:254:
-	public function Affected_Rows() {
+	public function affectedRows() {
 		return $this->connectionObject->Affected_Rows();
+	}
+	// here for compatibility
+	public function Affected_Rows() {
+		return $this->affectedRows();
 	}
 
 	/**

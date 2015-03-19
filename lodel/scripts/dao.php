@@ -457,7 +457,7 @@ class DAO
 		//execute delete statement
 		$db->execute('DELETE FROM '. $this->sqltable. " WHERE ($criteria) ". $this->rightscriteria("write")) 
 			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		if (($db->affected_Rows() < $nbid) && $this->rightscriteria("write")) {
+		if (($db->affectedRows() < $nbid) && $this->rightscriteria("write")) {
 			trigger_error("ERROR: you don't have the right to delete some objects in table ". $this->table, E_USER_ERROR);
 		}
 		// in theory, this is bad if the $mixed is an array because 
@@ -506,7 +506,7 @@ class DAO
 	
 		//execute delete statement
 		$db->execute("DELETE FROM ". $this->sqltable. $where) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-		if ($db->Affected_Rows() <= 0) {
+		if ($db->affectedRows() <= 0) {
 			return false; // not the rights
 		}
 		return true;

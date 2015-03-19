@@ -200,7 +200,7 @@ class Entities_AdvancedLogic extends Logic
 		$vo->idparent = $idparent;
 		$dao->save($vo);
 
-		if ($db->affected_Rows()>0) { // effective change
+		if ($db->affectedRows()>0) { // effective change
 			// get the new parent hierarchy
 			$result=$db->execute(lq("SELECT id1,degree FROM #_TP_relations WHERE id2='$idparent' AND nature='P'")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 			$parents = array();
