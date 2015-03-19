@@ -240,12 +240,6 @@ class View
 			unset($contents);
 		}
 
-		/* Si c'est de la re-génération, on vide le cache SQL */
-		if(!$caching || self::$nocache){
-			global $db;
-			if(isset($db)) $db->CacheFlush();
-		}
-
 		// empty cache, let's calculate and display it
 		if ($this->_showphp)
 			self::$page = $this->_calcul_page($context, $tpl); // no eval for debug

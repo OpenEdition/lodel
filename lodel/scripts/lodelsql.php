@@ -291,30 +291,9 @@ class LodelSql
 	public function metaType($t,$len=-1, $fieldobj=false) {
 		return $this->connectionObject->MetaType($t, $len, $fieldobj);
 	}
- 
-	/*
-	memcache functions, to DELETE
-	*/
-	// TODO: delete all use of these functions
-	// It is not proprely used, there is no cacheExecute() calls
-	public function cacheExecute($secs2cache, $sql=false, $inputarr=false) {
-		return $this->connectionObject->CacheExecute($secs2cache, $sql, $inputarr);
-	}
-
-	//lodel/scripts/view.php:303:
-	public function cacheFlush($sql=false, $inputarr=false) {
-		return $this->connectionObject->cacheflush($sql, $inputarr);
-	}
-
-	// TODO: test it
-	// scripts/loginfunc.php:409
-	public function cacheGetOne($secs2cache, $sql=false, $inputarr=false) {
-		return $this->connectionObject->cacheGetOne($secs2cache, $sql, $inputarr);
-	}
 
 }
 
-//TODO !!  <- DONE =P
 /**
  *  
  */

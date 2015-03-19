@@ -258,7 +258,7 @@ class Controller
 					}
 					else
 					{
-						$class = $db->CacheGetOne(lq("SELECT class FROM #_TP_objects WHERE id='{$context['id']}'"));
+						$class = $db->getOne(lq("SELECT class FROM #_TP_objects WHERE id='{$context['id']}'"));
 						if ($db->errorno() && C::get('rights', 'lodeluser') > LEVEL_VISITOR) {
 							trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						}

@@ -360,23 +360,21 @@ function check_expiration()
 function check_internal_messaging()
 {
 	global $db;
-	
-    	$url_retour = 'Location: ';
-    
-	if(defined('backoffice')) {
-        	$url_retour .= $db->CacheGetOne(lq('
-            SELECT url
-                FROM #_MTP_sites
-                WHERE name="'.C::get('site', 'cfg').'"')) or trigger_error($db->errormsg(), E_USER_ERROR);
+	$url_retour = 'Location: ';
 
+	if(defined('backoffice')) {
+		$url_retour .= $db->getOne(lq('
+			SELECT url
+			FROM #_MTP_sites
+			WHERE name="'.C::get('site', 'cfg').'"')) or trigger_error($db->errormsg(), E_USER_ERROR);
 		$url_retour .= '/lodel/admin/index.php?do=list&lo=internal_messaging';
-	} elseif(defined('backoffice-lodeladmin')) {
+	} elseif (defined('backoffice-lodeladmin')) {
 		$url_retour .= 'index.php?do=list&lo=internal_messaging';
 	} else {
 		// où sommes-nous ??
 		return false;
 	}
-    
+
 	$lodeluserid = (int)C::get('rights', 'lodeluser') !== 128 ? 
 			C::get('site','cfg').'-'.C::get('id', 'lodeluser') : 
 			'lodelmain-'.C::get('id', 'lodeluser');
