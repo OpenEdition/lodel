@@ -43,7 +43,7 @@ function open_session($login, $name = null)
 	if (get_magic_quotes_gpc()) {
 		$url = stripslashes($url);
 	}
-	$myurl = C::get('norecordurl') ? "''" : $db->qstr($url);
+	$myurl = C::get('norecordurl') ? "''" : $db->quote($url);
 
 	if(is_null($name))
 	{

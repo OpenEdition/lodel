@@ -134,12 +134,6 @@ class LodelSql
 		return $this->connectionObject->quote($s);
 	}
 
-	// used only once scripts/loginfunc.php:88
-	// TODO: must be DELETED and use quote() instead
-	public function qstr($s, $magic_quotes=false) {
-		return $this->connectionObject->qstr($s, $magic_quotes);
-	}
-
 	/*
 	SQL functions
 	should return a LodelSqlStatement
