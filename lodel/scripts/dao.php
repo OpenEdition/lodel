@@ -297,9 +297,7 @@ class DAO
 		global $db;
 
 		//execute select statement
-		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
 		$row = $db->getRow("SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$this->rightscriteria("read"));
-		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 		if ($row === false) {
 			trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		}
@@ -333,11 +331,9 @@ class DAO
 			$order = " ORDER BY ".$order;
 		if ($limit)
 			$limit = " LIMIT ".$limit;
-		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
 		$sql = "SELECT ".$select." FROM ".$this->sqltable." WHERE ($criteria) ".$morecriteria.$order.$limit;
 		$result = $db->execute($sql) 
 			or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg()."<br/>$sql<br/>Base: ".$db->database, E_USER_ERROR);
-		$GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_DEFAULT;
 
 		$i = 0;
 		$vos = array ();

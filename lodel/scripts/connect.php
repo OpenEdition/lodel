@@ -64,7 +64,7 @@ if ($GLOBALS['version_mysql'] > 40) {
 	C::set('db_charset', $GLOBALS['db_charset']);
 }
 
-$GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
+$GLOBALS['db']->SetFetchMode(LodelSql::FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'] = C::get('tableprefix', 'cfg');
 
 C::set('siteinfos', $GLOBALS['db']->GetRow(lq('SELECT * FROM #_MTP_sites WHERE name='.$GLOBALS['db']->quote(C::get('site', 'cfg')))));

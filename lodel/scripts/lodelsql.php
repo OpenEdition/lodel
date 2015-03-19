@@ -11,8 +11,8 @@ class LodelSql
 	public $memcacheport;
 	public $memcache;
 
-// TODO: search for these constants and change to use setFetchMode instead
-// $GLOBALS['ADODB_FETCH_MODE'] = ADODB_FETCH_ASSOC;
+	const FETCH_ASSOC = ADODB_FETCH_ASSOC;
+	const FETCH_NUM = ADODB_FETCH_NUM;
 
 	/**
 	 * Create a connection object to a database
