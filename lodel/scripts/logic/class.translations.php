@@ -352,7 +352,7 @@ class TranslationsLogic extends Logic {
 							#if (in_array($lang,$langs)) continue; // the text already exists in the correct lang
 							#echo $row['name']," ";
 				
-				$inserts[]="('".$row['name']."','".$row['textgroup']."','".mysql_escape_string($row['contents'])."','-1','".$context['lang']."')";
+				$inserts[]="('".$row['name']."','".$row['textgroup']."',".$db->quote($row['contents']).",'-1','".$context['lang']."')";
 				$count++;
 				$result->MoveNext();
 			}

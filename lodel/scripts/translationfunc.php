@@ -42,18 +42,6 @@ function mkeditlodeltext($name, $textgroup, $lang = -1)
 		echo '>&nbsp;&nbsp;</option>';
 	}
 	echo '</select></dd>';
-	##### reserve ce bout de code - ne pas supprimer
-	//
-	// Translated texte
-	//
-	#       $translatedtext='<'.'?php $result=mysql_query("SELECT texte,lang FROM $GLOBALS[tp]texts WHERE name=\''.$name.'\' AND textgroup=\''.$textgroup.'\' AND lang IN ('.$this->translationlanglist.')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	# $divs=""; 
-	# while (list($text,$lang)=mysql_fetch_row($result)) { 
-	#    echo \'<a href="">[\'.$lang.\']</a> \'; 
-	#    $divs.=\'<div id="lodeltexttranslation_$lang">\'.$text.\'</div>\';
-	# }
-	# echo $divs; 
-	# ?'.'>';
 }
 
 /**

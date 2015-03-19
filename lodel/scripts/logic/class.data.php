@@ -683,9 +683,7 @@ class DataLogic
 				$query .= $sql_line;
 				if(preg_match("/;\s*$/", $sql_line)) {
 					$query = preg_replace("/;\s*$/", '', $query);
-					//echo "query : ".lq($query)."";
 					$result = $db->execute(lq($query));
-					//$result = mysql_query(lq($query));
 					if (!$result && !$ignoreerrors) trigger_error($query.' - '.$db->ErrorMsg(), E_USER_ERROR);
 					$query = '';
 				}
