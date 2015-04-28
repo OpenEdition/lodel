@@ -1019,7 +1019,7 @@ class TEIParser extends XMLReader
 						//on converties les delimiteurs ici
 						if($math[0] == '$' && $math[1] == '$')
 						{
-							$math = '\\['.substr($math, 2,-2).'\\[';
+							$math = '\\['.substr($math, 2,-2).'\\]';
 						}else if($math[0] == '$')
 						{
 							$math = '\\('.substr($math, 1,-1).'\\)';
