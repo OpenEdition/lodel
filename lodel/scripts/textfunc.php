@@ -973,6 +973,84 @@ function paranumber($texte, $styles='texte')
 }
 
 
+/**
+ * Filtre qui place dans la marge les débuts des notes de bas de page.
+ *
+ * Ajoute, avant chaque paragraphe contenant un appel de note, un <ul
+ * class="notes-marge"></ul> qui contient le ou les amorces de notes.
+ *
+ * Dans lodelscript, on l'appelle ainsi: 
+ *
+ * [#TEXTE|margenote([#NOTESBASPAGE])]
+ *
+ * (La structure de la fonction est inspirée par celle de paranumber().)
+ * 
+ * @param string $texte le texte de l'article
+ * @param string $notes le texte de la section "note de bas de page"
+ */
+function margenote ($texte, $notes) {
+    
+    /* construire les notes */
+    $notes_paragraphes = preg_split('/(?=<p\s+class="notesbaspage")/', $notes);
+
+    /* because of look ahead matches, there is an empty string at the
+     * beginning that we have to shift away */
+    array_shift($notes_paragraphes);
+
+    $note_nodes = array();
+    foreach ($notes_paragraphes as $n) {
+        $ndoc = new DOMDocument();
+        $ndoc->loadXML($n);
+        $aNode = $ndoc->getElementsByTagName("a")->item(0);
+
+        $note_nodes[$aNode->getAttribute("id")] = array(
+            'href' => $aNode->getAttribute("href"),
+            'note_texte_elem' => $ndoc->getElementsByTagName("p")->item(0)->cloneNode(true)
+        );
+    }
+
+    /* le texte */
+    $tDoc = new DOMDocument();
+    $tDoc->loadXML('<body>' . $texte . '</body>');
+
+    /* prenant exemple sur paranumber() */
+    $tDom = new DOMXPath($tDoc);
+    $tDom->preserveWhiteSpace = true;
+    $tDom->formatOutput = false;
+
+    foreach ($tDom->query(
+        "//p[@class='texte' and sup[a[@class='footnotecall']]]"
+    ) as $p) {
+        $ul = $tDoc->createElement("ul");
+        $ul->setAttribute("class", "notes-marge");
+
+        // boucle sur les <a> dans le paragraphe. $p devient le context node
+        foreach($tDom->query("descendant::a[@class='footnotecall']", $p) as $aFn) {
+            $li = $tDoc->createElement("li");
+            $appelHref = substr($aFn->getAttribute("href"), 1); // supprimer '#'
+
+            // retrouver la note correspondante, 
+            if (array_key_exists($appelHref,$note_nodes)) {
+                $noteNode = $tDoc->importNode(
+                    $note_nodes[$appelHref]['note_texte_elem'],
+                    TRUE // deep copy
+                );
+                $li->appendChild($noteNode);
+            }
+            $ul->appendChild($li);
+        }
+        $p->insertBefore($ul, $p->firstChild);
+    }
+
+    $retTexte = '';
+    foreach ($tDom->query('/body/*') as $elem) {
+        $retTexte .= $tDoc->saveXML($elem, LIBXML_NOEMPTYTAG);
+    }
+    
+    return cleanHTML($retTexte);
+}
+
+
 /** renvoie le type mime d'un fichier par le système (a+ windows)
 * @author Bruno Cénou
 * @param  string $filename le nom du fichier
