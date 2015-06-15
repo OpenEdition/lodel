@@ -1618,7 +1618,14 @@ function HTML2XML($str, $reverse=false)
 			"diams" => "&#9830;"
 		);
 	}
-	return preg_replace("/&(\w+);/e", 'isset($replace[\'\\1\']) ? $replace[\'\\1\'] : "\\0"', $str);
+	$ret = preg_replace_callback("/&(\w+);/",
+			function ($matches) use ($replace) {
+				if (isset($replace[$matches[1]]))
+					return $replace[$matches[1]];
+				return strtolower($matches[0]);
+			}, $str
+		);
+	return $ret;
 }
 
 
