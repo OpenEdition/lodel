@@ -124,7 +124,11 @@ class OTXClient extends SoapClient
                 'sourceoriginale' => $request['sourceoriginale'],
             );
 
-            $data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
+            if(function_exists(curl_file_create)){
+                $data['attachment'] = file_exists($request['attachment']) ? curl_file_create($request['attachment']) : $request['attachment'];
+            }else{
+                $data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
+            }
 
             $request = curl_init($this->_options['otx.url']);
             curl_setopt($request, CURLOPT_USERPWD, $this->_options['otx.username'].":".$this->_options['otx.passwd'] );
