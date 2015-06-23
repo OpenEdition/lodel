@@ -124,7 +124,7 @@ class OTXClient extends SoapClient
                 'sourceoriginale' => $request['sourceoriginale'],
             );
 
-            if(function_exists(curl_file_create)){
+            if(function_exists('curl_file_create')){
                 $data['attachment'] = file_exists($request['attachment']) ? curl_file_create($request['attachment']) : $request['attachment'];
             }else{
                 $data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
