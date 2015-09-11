@@ -1,4 +1,9 @@
-﻿changelog 3.1.4
+﻿changelog 3.1.5
+2015-09-11
+==========================================
+- Ajout des styles catalans au modele complet fr.
+
+changelog 3.1.4
 2014-10-27
 ==========================================
 - Ajout des modèles revuesorg_complet_en.dot et revuesorg_complet_es.dot pour les versions linguistiques en et es de Word.
