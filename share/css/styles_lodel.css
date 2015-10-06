@@ -564,6 +564,14 @@ div.advancedFunc #addEntity select{
 	padding-bottom: 8ex;
 }
 
+#listEntities li:first-child > .action .move a:first-child {
+	visibility: hidden;
+}
+
+#listEntities li:last-child > .action .move a:last-child {
+	visibility: hidden;
+}
+
 #entries{
 	margin-top: 4em;
 }

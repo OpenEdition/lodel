@@ -110,7 +110,7 @@
         <ELSE />
                 <LET VAR="lodeluser_gui_complexity">64</LET>
         </IF>
-        <LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER_GUI_COMPLEXITY]" LIMIT="0,1">
+        <LOOP NAME="getDisplayBool" TABLE="tablefields" WHERE="idgroup = [#ID] AND gui_user_complexity LE [#LODELUSER_GUI_COMPLEXITY] AND edition NOT IN ('none','importable')" LIMIT="0,1">
                 <fieldset>
                         <legend>
                         <LOOP NAME="getGroupInfo" TABLE="tablefieldgroups" WHERE="id = [#IDGROUP]">

@@ -1085,6 +1085,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
     if (!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
+    $pear = new PEAR();
 
     $message = new Mail_mime("\n");
 
@@ -1092,7 +1093,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
         foreach ($m[1] as $img) {
             if (false !== strpos($img, 'http://')) continue;
             $r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
-            if (PEAR::isError($r)) {
+            if ($pear->isError($r)) {
                 return $r->getMessage();
             }
         }
@@ -1101,7 +1102,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     if (!empty($docs)) {
         foreach ($docs as $doc) {
             $r = $message->addAttachment($doc, getMimeType(substr(strrchr($doc, '.'), 1)), basename($doc), true, 'base64');
-            if (PEAR::isError($r)) {
+            if ($pear->isError($r)) {
                 return $r->getMessage();
             }
         }
@@ -1140,7 +1141,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     // send the mail
     $r = Mail::factory('mail')->send($to, $headers, $body);
     $ret = true;
-    if (PEAR::isError($r)) {
+    if ($pear->isError($r)) {
         $ret = $r->getMessage();
     }
     error_reporting($err);
