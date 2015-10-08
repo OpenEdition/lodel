@@ -97,3 +97,34 @@ if(defined('backoffice'))
 	}
 	$filters[] = new HTMLPurifier_Filter_LodelTEI();
 }
+
+class HTMLPurifier_Filter_MathML extends HTMLPurifier_Filter {
+	public $name = 'MathML';
+	
+	public function preFilter($html, $config, $context) {
+		if(empty($html) || is_numeric($html)) return $html;
+		$pre_regex = '#(<math[^>]*MathML[^>]*>.+?</math>)#si';
+		$ret = preg_replace_callback($pre_regex, array($this, 'preFilterCallback'), $html);
+		if(empty($ret) && preg_last_error() === PREG_BACKTRACK_LIMIT_ERROR) {
+			trigger_error('ERROR: can not recover MathML, PCRE error: '.preg_last_error(), E_USER_WARNING);
+		}
+		return $ret;
+	}
+	protected function preFilterCallback($matches) {
+		return '<span class="mathml">' . htmlspecialchars($matches[1], ENT_QUOTES, 'UTF-8') . '</span>';
+	}
+	public function postFilter($html, $config, $context) {
+		if(empty($html) || is_numeric($html)) return $html;
+		$post_regex = '#<span class="mathml">(.+?)</span>#si';
+		$ret = preg_replace_callback($post_regex, array($this, 'postFilterCallback'), $html);
+		if(empty($ret) && preg_last_error() === PREG_BACKTRACK_LIMIT_ERROR) {
+				trigger_error('ERROR: can not recover TEI, PCRE error: '.preg_last_error(), E_USER_WARNING);
+		}
+		return $ret;
+	}
+	protected function postFilterCallback($matches) {
+		return html_entity_decode($matches[1], ENT_QUOTES, 'UTF-8');
+	}
+}
+
+$filters[] = new HTMLPurifier_Filter_MathML();
