@@ -1015,16 +1015,6 @@ class TEIParser extends XMLReader
 					$attrs = $this->_parseAttributes();
 					if (isset($attrs['notation'])) {
 						$math = $this->readInnerXml();
-						
-						//on converties les delimiteurs ici
-						if($math[0] == '$' && $math[1] == '$')
-						{
-							$math = '\\['.substr($math, 2,-2).'\\]';
-						}else if($math[0] == '$')
-						{
-							$math = '\\('.substr($math, 1,-1).'\\)';
-						}
-						
 						$text .= $math.$this->_closeTag();
 						$this->next();
 						continue;
