@@ -1010,11 +1010,11 @@ class TEIParser extends XMLReader
 		{
 			if(parent::ELEMENT === $this->nodeType)
 			{
-                                if ('formula' === $this->localName)
+				if ('formula' === $this->localName)
 				{
 					$attrs = $this->_parseAttributes();
 					if (isset($attrs['notation'])) {
-                                                $math = $this->readInnerXml();
+						$math = $this->readInnerXml();
 						$text .= $math.$this->_closeTag();
 						$this->next();
 						continue;
@@ -1426,13 +1426,7 @@ class TEIParser extends XMLReader
                                         $tags = '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'li';
 				}elseif('formula' === $this->localName){
-					/*$attrs = $this->_parseAttributes();
-					if (isset($attrs['notation'])) {
-                                                $math = $this->readInnerXml();
-						$text .= $math.$this->_closeTag();
-						$this->next();*/
-						continue;
-					//}
+					continue;
 				}else{
                                     $tags .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
                                 }
@@ -1644,13 +1638,7 @@ class TEIParser extends XMLReader
 					$text .= '<a class="'.ucfirst($attrs['place']).'noteSymbol" href="#bodyftn'.$this->_nbNotes.'" id="ftn'.$this->_nbNotes.'">'.$attrs['n'].'</a> ';
 					$first = true;
 				}elseif('formula' === $this->localName){
-					/*$attrs = $this->_parseAttributes();
-					if (isset($attrs['notation'])) {
-                                                $math = $this->readInnerXml();
-						$text .= $math.$this->_closeTag();
-						$this->next();*/
-						continue;
-					//}
+					continue;
 				}
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
