@@ -34,9 +34,13 @@ function nbsp($texte)
 /**
  * Uppercase the first letter of Texte
  */
-function majuscule($texte)
-{
-	return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/se", '"\\1".strtoupper("\\2")', $texte);
+function majuscule($texte) {
+	return preg_replace_callback("/^(\s*(?:<[^>]+>)*\s*)(\w)/s",
+		function($matches) {
+			return $matches[1] . strtoupper($matches[2]);
+		},
+		$texte
+	);
 }
 
 function textebrut($letexte)
