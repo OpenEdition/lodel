@@ -54,13 +54,8 @@ ini_set('include_path', LODELROOT . "lodel/scripts" . PATH_SEPARATOR . LODELROOT
 //
 // option
 //
-if (!empty($option1)) {
-    $installoption = 1;
-} elseif (!empty($option2)) {
+if (!empty($option2)) {
     $installoption = 2;
-} elseif (!empty($erase_and_option1)) {
-    $installoption = 1;
-    unlink($install->get('lodelconfig'));
 } elseif (!empty($erase_and_option2)) {
     $installoption = 2;
     unlink($install->get('lodelconfig'));
