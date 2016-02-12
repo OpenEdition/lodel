@@ -61,7 +61,7 @@ $cfg['dbpasswd']="";
 # Hote de la BD
 $cfg['dbhost']="";
 # driver mysql
-$cfg['dbDriver'] = 'mysql';
+$cfg['dbDriver'] = 'mysqli';
 
 # contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
 $cfg['contactbug']="";
