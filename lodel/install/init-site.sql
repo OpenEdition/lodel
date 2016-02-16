@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS #_TP_classes (
 	icon VARCHAR(255) NOT NULL DEFAULT '',
 	class		VARCHAR(64) NOT NULL UNIQUE,
 	title		TINYTEXT NOT NULL,
-	altertitle TEXT NOT NULL,
+	altertitle TEXT NOT NULL DEFAULT '',
 	classtype	VARCHAR(64) NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur la class
 
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	altertitle	TEXT NOT NULL,		# titre multilingue
+	altertitle	TEXT NOT NULL DEFAULT '',		# titre multilingue
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	type		TINYTEXT NOT NULL,		# type du champ
 	g_name		VARCHAR(255) NOT NULL,		# equivalent generic du champ
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefields (
 	editionhooks   TEXT NOT NULL,      # hooks pour l'edition
 	weight		TINYINT NOT NULL,
 	comment		TEXT NOT NULL,			# commentaire sur le champs
-	mask 		TEXT NOT NULL,	# masque � appliquer sur le champs pour validation
+	mask 		TEXT NOT NULL DEFAULT '',	# masque � appliquer sur le champs pour validation
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
 	rank		INT UNSIGNED DEFAULT '0' NOT NULL,
 	otx tinytext NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS #_TP_tablefieldgroups (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	altertitle	TEXT NOT NULL,		# titre multilingue
+	altertitle	TEXT NOT NULL DEFAULT '',		# titre multilingue
 	comment		TEXT NOT NULL,			# commentaire sur le groupe de champs
 
 	status		TINYINT DEFAULT '1' NOT NULL,	# determine qui a les droits de le modifier
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS #_TP_types (
 	icon VARCHAR(255) NOT NULL DEFAULT '',
 	type		VARCHAR(64) NOT NULL,
 	title		TINYTEXT NOT NULL,
-	altertitle	TEXT NOT NULL,		# titre multilingue
+	altertitle	TEXT NOT NULL DEFAULT '',		# titre multilingue
 	class		VARCHAR(64) NOT NULL,   # name de la table complementaire
 
 	tpl		TINYTEXT NOT NULL,			# name du fichier template utilise dans la zone de revue
@@ -293,7 +293,7 @@ CREATE TABLE IF NOT EXISTS #_TP_persontypes (
 	icon VARCHAR(255) NOT NULL DEFAULT '',
 	type		VARCHAR(64) NOT NULL UNIQUE,	# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	altertitle	TEXT NOT NULL,		# titre multilingue
+	altertitle	TEXT NOT NULL DEFAULT '',		# titre multilingue
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	style		TINYTEXT NOT NULL,		# style qui conduit a ce type
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entrytypes (
 	class		VARCHAR(64) NOT NULL,   	# name de la table complementaire
 
 	title		TINYTEXT NOT NULL,		# name en clair, utiliser dans l'interface
-	altertitle	TEXT NOT NULL,		# titre multilingue
+	altertitle	TEXT NOT NULL DEFAULT '',		# titre multilingue
 	style		TINYTEXT NOT NULL,		# style qui conduit a cette balises
 	g_type		VARCHAR(255) NOT NULL,		# equivalent generic du type
 
