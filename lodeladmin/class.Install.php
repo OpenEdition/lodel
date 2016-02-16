@@ -125,6 +125,7 @@ class Install {
 		require "../lodel/scripts/auth.php";
 		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
 			@mysql_select_db(C::get('database','cfg'));
+			mysql_query("SET SESSION sql_mode = '';");
 			$this->set_mysql_charset();
 		
 			// test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
