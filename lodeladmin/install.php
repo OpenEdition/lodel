@@ -100,7 +100,7 @@ switch ($tache) {
         if ($continue) {
             $tache = "continue";
             // nothing to do
-        } elseif (!$install->manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase)) {
+        } elseif (!$install->manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, '', $createdatabase, $existingdatabase)) {
             $GLOBALS['erreur_createdatabase'] = 1;
             $install->include_tpl("install-database.html");
         }
