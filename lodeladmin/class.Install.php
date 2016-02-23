@@ -125,6 +125,7 @@ class Install {
 		require "../lodel/scripts/auth.php";
 		if (@mysql_connect(C::get('dbhost','cfg'),C::get('dbusername','cfg'),C::get('dbpasswd','cfg'))) {
 			@mysql_select_db(C::get('database','cfg'));
+			mysql_query("SET SESSION sql_mode = '';");
 			$this->set_mysql_charset();
 		
 			// test whether we access to a DB and whether the table users exists or not and whether it is empty or not.
@@ -229,11 +230,11 @@ class Install {
 	 * @param string $singledatabase est-on en mode base de données unique ?
 	 * @param string $newdatabase nom de la base de données
 	 * @param string $newsingledatabase
-	 * @param string $newtableprefix prefixe des tables pour installation multi site
+	 * @param string $newtableprefix prefixe des tables pour installation multi site // Deprecated
 	 * @param string $createdatabase on crée la base de données ou pas ?
 	 * @param string $existingdatabase on utilise une base existante ?
 	 */
-	public function manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix, $createdatabase, $existingdatabase)
+	public function manageDB($erasetables, $singledatabase, $newdatabase, $newsingledatabase, $newtableprefix='', $createdatabase, $existingdatabase)
 	{
 		@include($this->lodelconfig);    // insert the lodelconfig. Should not be a problem.
 		if($erasetables)
@@ -276,7 +277,7 @@ class Install {
 
 			if ($cfg['installoption'] > 1) {
 				$set['singledatabase']=$newsingledatabase ? "on" : "";
-				$set['tableprefix']=$newtableprefix;
+				$set['tableprefix']='';
 			}
 
 			if ($newdatabase==-1) $newdatabase=$existingdatabase;

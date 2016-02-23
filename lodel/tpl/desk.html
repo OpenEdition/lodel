@@ -173,7 +173,7 @@
 			[#SITE]-[#LODELUSER.ID]
 		</IF>
 		</LET>
-		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
+		<LOOP NAME="nbInternalAdminMsgs" DATABASE="lodelmain" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#LO] EQ 'internal_messaging'">
@@ -192,7 +192,7 @@
 		</li>
 		<li>
 		<LET VAR="lodeluserid">lodelmain-[#LODELUSER.ID]</LET>
-		<LOOP NAME="nbInternalAdminMsgs" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
+		<LOOP NAME="nbInternalAdminMsgs" DATABASE="lodelmain" SELECT="count(id) as nbmsgs" TABLE="internal_messaging" WHERE="recipient EQ '[#LODELUSERID|trim]' AND status EQ 1">
 			<LET VAR="nbmsgs" GLOBAL="1">[#NBMSGS]</LET>
 		</LOOP>	
 		<IF COND="[#LO] EQ 'internal_messaging'">

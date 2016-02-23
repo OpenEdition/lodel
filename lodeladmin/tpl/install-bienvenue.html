@@ -34,13 +34,6 @@ unset($langs);
 
 <h4>[@INSTALL.CHOOSE_INSTALLATION_TYPE]</h4>
 <dl>
-	<dt><strong>[@INSTALL.EASY_INSTALLATION]</strong></dt>
-	<dd>
-		<p>[@INSTALL.EASY_INSTALLATION_FOR_WEBSITE_PROVIDER]</p>
-		<p>[@INSTALL.ADVANTAGE] :&nbsp;[@INSTALL.EASY_AND_FAST_OPTION_FOR_PROVIDER_CONTROLLING_FILERIGHTS_SECURITY]</p>
-		<p>[@INSTALL.INCONVENIENCE_LOW_SECURITY_LEVEL]</p>
-	</dd>
-
 	<dt><strong>[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]</strong></dt>
 	<dd>
 		<p>[@INSTALL.ADVANCED_INSTALLATION_FOR_SYSTEM_ADMIN_WORKING_ON_OWN_SERVER]</p>
@@ -62,13 +55,9 @@ unset($langs);
 		<p>[@INSTALL.INSTALLATION_BEGUN_WHAT_TO_DO] :</p>
 			<p><input type="submit" class="button" name="continue" value="[@INSTALL.CONTINUE_BEGUN_INSTALLATION]" /></p>
 
-			<p><input type="submit" class="button" name="erase_and_option1" value="[@INSTALL.DO_AGAIN_EASY_INSTALLATION]" /></p>
-
 			<p><input type="submit" class="button" name="erase_and_option2" value="[@INSTALL.DO_AGAIN_ADVANCED_INSTALLATION_FOR_SPECIALISTS]" />
 
 		<?php } else { ?>
-
-			<p><input type="submit" class="button" name="option1" value="[@INSTALL.EASY_INSTALLATION]" /></p>
 
 			<p><input type="submit" class="button" name="option2" value="[@INSTALL.ADVANCED_INSTALLATION_FOR_SPECIALISTS]" /></p>
 	

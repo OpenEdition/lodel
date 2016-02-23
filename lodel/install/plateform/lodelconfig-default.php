@@ -61,7 +61,7 @@ $cfg['dbpasswd']="";
 # Hote de la BD
 $cfg['dbhost']="";
 # driver mysql
-$cfg['dbDriver'] = 'mysql';
+$cfg['dbDriver'] = 'mysqli';
 
 # contact bug. Adresse mail de la personne contactee automatiquement en cas de bug
 $cfg['contactbug']="";
@@ -73,7 +73,7 @@ $cfg['mysqldir']="/usr/bin";
 $cfg['tableprefix']="lodel_";
 
 # LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
-$cfg['singledatabase']="on";
+$cfg['singledatabase']="off";
 
 
 # Nom de la session (cookie)

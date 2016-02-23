@@ -117,18 +117,6 @@ GRANT ALL ON <?php if ($createdatabase) { echo "$createdatabase"; } else { echo 
 	</ul>
 </fieldset>
 
-<?php if ($installoption>1) { ?>
-<h4>[@INSTALL.TABLE_PREFIX]</h4>
-<p>
-[@INSTALL.WHY_TABLE_PREFIX]
-</p>
-<fieldset class="install">
-<legend>[@INSTALL.TABLE_PREFIX]</legend>
-<label for="newtableprefix">[@INSTALL.TABLE_PREFIX] : </label>
-<input type="text" size="20" name="newtableprefix" id="newtableprefix" value="lodel_" />
-</fieldset>
-<?php } ?>
-
 <fieldset class="install">
 	<input type="submit" class="button" value="[@INSTALL.CONTINUE]" />
 </fieldset>
