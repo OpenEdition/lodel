@@ -162,7 +162,6 @@ class LodelSql
 	 * @return object RecordSet
 	 */
 	// TODO: in lodel execute is used using a string $sql query !!!
-	// TODO: MUST return a LodelSqlStatement
 	public function execute($sql, $inputarr=false) {
 		$res = $this->connectionObject->execute($sql, $inputarr);
 		if($res!== false)
@@ -179,22 +178,6 @@ class LodelSql
 	// TODO: not used in Lodel, since execute does the same job
 	public function query($sql, $inputarr=false) {
 		$res = $this->connectionObject->Query($sql, $inputarr);
-		if($res!== false)
-			return new LodelSqlStatement($res);
-		return false;
-	}
-
-	/**
-	 * Executes an SQL query, simulating  LIMIT and OFFSET statement
-	 * @param string $sql SQL query to be executed
-	 * @param int $nrows limit
-	 * @param int $offset offset
-	 * @param mixed[] $inputarr array of insert values, placeholders or named parameters
-	 * @return object RecordSet
-	 */
-	// TODO: used only once scripts/view.php:224, to DELETE
-	public function selectlimit($sql, $nrows=-1, $offset=-1, $inputarr=false) {
-		$res = $this->connectionObject->SelectLimit($sql, $nrows, $offset, $inputarr);
 		if($res!== false)
 			return new LodelSqlStatement($res);
 		return false;

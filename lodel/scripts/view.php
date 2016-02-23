@@ -164,11 +164,11 @@ class View
 		usemaindb();
 		// selectionne les urls dans la pile grâce à l'idsession et suivant la
 		// la profondeur indiquée (offset)
-		$result = $db->selectLimit(lq("
+		$result = $db->execute(lq("
               SELECT id, url 
                 FROM #_MTP_urlstack 
                 WHERE url!='' AND idsession='{$idsession}' AND site='".$this->_site."' 
-                ORDER BY id DESC"), 1, $offset) 
+                ORDER BY id DESC LIMIT 1 OFFSET $offset")) 
             		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
         	$result->Close();
