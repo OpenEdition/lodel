@@ -154,7 +154,22 @@ class TEIParser extends XMLReader
 
 		$personsClassTypes = $entriesClassTypes = array();
 
-		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$GLOBALS['db']->quote($class), 'id', 'name,title,style,type,otx,class,defaultvalue,g_name');
+		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$GLOBALS['db']->quote($class), 'id', 'name,title,style,type,otx,class,defaultvalue,g_name, idgroup, rank');
+		//Sorting fields using fieldgroups
+		$fieldgroups = DAO::getDAO('tablefieldgroups')->findMany('1=1','rank', 'id,rank');
+		$fgs = array();
+		foreach($fieldgroups as $fieldgroup) {
+			$fgs[intval($fieldgroup->id)] = intval($fieldgroup->rank);
+		}
+		$fieldgroups = $fgs;
+		usort($fields,
+			function($a, $b) use($fieldgroups){
+				$fgra = $fieldgroups[$a->idgroup];
+				$fgrb = $fieldgroups[$b->idgroup];
+				return $fgra == $fgrb ? $a->rank - $b->rank : $fgra - $fgrb;
+			}
+		);
+
 		if($fields)
 		{
 			foreach($fields as $field)
