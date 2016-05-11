@@ -1,0 +1,8 @@
+{
+    "autoload":{
+       "classmap": ["lodel","lodeladmin"]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    }
+}
