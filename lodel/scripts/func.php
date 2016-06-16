@@ -1234,9 +1234,6 @@ function thumbnail($path, $width = null, $height = null)
 
     if (!file_exists($path) && strpos($path, 'http') !== 0) return $path;
 
-    $tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
-    file_put_contents($tmp_path, file_get_contents($path));
-
     $new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
 
     if (!file_exists(dirname($new_path))) mkdir(dirname($new_path));
@@ -1249,7 +1246,7 @@ function thumbnail($path, $width = null, $height = null)
     ) return $new_path;
 
     $image = new Zebra_Image();
-    $image->source_path = $tmp_path;
+    $image->source_path = $path;
     $image->target_path = $new_path;
 
     $image->jpeg_quality = 100;
@@ -1260,7 +1257,6 @@ function thumbnail($path, $width = null, $height = null)
     $final_path = $path;
     if($image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1))
         $final_path = $new_path;
-    unlink($tmp_path);
     return $final_path;
 }
 
