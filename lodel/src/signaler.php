@@ -21,10 +21,15 @@ try
         recordurl();
     }
     $context =& C::getC();
-    $context['signaler_recaptcha'] = C::get('signaler_recaptcha', 'cfg');
-    $context['recaptcha_publickey'] = C::get('recaptcha_publickey', 'cfg');
-    include 'recaptchalib.php';
-    
+    $context['signaler_recaptcha']    = C::get('signaler_recaptcha', 'cfg');
+    $context['signaler_recaptcha_v2'] = C::get('signaler_recaptcha_v2', 'cfg');
+    $context['recaptcha_publickey']   = C::get('recaptcha_publickey', 'cfg');
+    $context['recaptcha_privatekey']  = C::get('recaptcha_privatekey', 'cfg');
+    // recaptcha v1
+    if (!$context['signaler_recaptcha_v2'] === true && $context['signaler_recaptcha']===true) {
+        include 'recaptchalib.php';
+    }
+ 
     // identifié ? accès à tous les documents
     $critere = C::get('rights', 'lodeluser') > LEVEL_VISITOR ? '' : "AND #_TP_entities.status>0 AND #_TP_types.status>0";
     function_exists("filtered_mysql_fetch_assoc") || include_once 'filterfunc.php';
@@ -50,14 +55,23 @@ try
     $result->Close();
     // send
     if (isset($context['envoi'])) {
-        if($context['signaler_recaptcha'] === true) {
-            // recaptcha
-            $resp = recaptcha_check_answer (C::get('recaptcha_privatekey', 'cfg'),
+        if ($context['signaler_recaptcha_v2'] === true || $context['signaler_recaptcha'] === true) {
+            if ($context['signaler_recaptcha_v2'] === true) {
+                // repaptcha v2
+                if(is_recaptcha_v2_valid($_POST['g-recaptcha-response'],$context['recaptcha_privatekey'],$_SERVER["REMOTE_ADDR"])) { 
+                    $recaptcha_is_valid=true;
+                }
+            } else {
+                // recaptcha v1
+                $resp = recaptcha_check_answer (C::get('recaptcha_privatekey', 'cfg'),
                             $_SERVER["REMOTE_ADDR"],
                             $_POST["recaptcha_challenge_field"],
                             $_POST["recaptcha_response_field"]);
-            
-            if (!$resp->is_valid) {
+                if ($resp->is_valid) {
+                    $recaptcha_is_valid=true;
+                }
+            }
+            if (!$recaptcha_is_valid===true) {
                 $context['recaptcha_error'] = $resp->error;
                 C::set('nocache', true);
                 View::getView()->render('signaler');

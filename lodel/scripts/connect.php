@@ -47,6 +47,7 @@ if( $cache_config['driver'] == "memcache") {
 }
 
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+$GLOBALS['db']->execute("SET SESSION sql_mode = ''");
 
 $info_mysql = $GLOBALS['db']->ServerInfo();
 $vs_mysql = explode(".", substr($info_mysql['version'], 0, 3));

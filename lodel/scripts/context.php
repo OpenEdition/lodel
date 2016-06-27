@@ -704,6 +704,7 @@ class C
 				$config->set('HTML.SafeEmbed', true);
 			$config->set('CSS.AllowTricky',true);
 			$def = $config->getHTMLDefinition(true);
+			$def->addAttribute('a', 'rel', 'CDATA'); // allow any rel attribute
 			$r2r = $def->addElement(
 				'r2r',   // name
 				'Block',  // content set

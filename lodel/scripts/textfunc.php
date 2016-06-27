@@ -34,9 +34,13 @@ function nbsp($texte)
 /**
  * Uppercase the first letter of Texte
  */
-function majuscule($texte)
-{
-	return preg_replace("/^(\s*(?:<[^>]+>)*\s*)(\w)/se", '"\\1".strtoupper("\\2")', $texte);
+function majuscule($texte) {
+	return preg_replace_callback("/^(\s*(?:<[^>]+>)*\s*)(\w)/s",
+		function($matches) {
+			return $matches[1] . strtoupper($matches[2]);
+		},
+		$texte
+	);
 }
 
 function textebrut($letexte)
@@ -877,17 +881,11 @@ function replacement($arg0, $arg1, $arg2, $arg3)
 	return $repl;
 }
 
+// fonction pour réparer le HTML invalide
+// TODO: utilisait htmLawed, il faudra effacer cette bibliothèque de Lodel
 function cleanHTML( $text ) {
 	$GLOBALS['textfunc_hasbeencleaned'] = true;
-
-	require_once 'htmLawed.php';
-	$config = array(
-		'valid_xhtml' => 1,
-		'make_tag_strict' => 0,
-		'unique_ids' => 0,
-		'scheme' => '*: *',
-	);
-	return htmLawed($text, $config);
+	return C::clean($text);
 }
 
 /**
@@ -967,7 +965,7 @@ function paranumber($texte, $styles='texte')
 
 	$texte = "";
 	foreach($dom->query('/body/*') as $elem ) {
-		$texte .= $doc->saveXML($elem, LIBXML_NOEMPTYTAG);
+		$texte .= $doc->saveXML($elem);
 	}
 	return cleanHTML($texte);
 }
@@ -1696,7 +1694,14 @@ function HTML2XML($str, $reverse=false)
 			"diams" => "&#9830;"
 		);
 	}
-	return preg_replace("/&(\w+);/e", 'isset($replace[\'\\1\']) ? $replace[\'\\1\'] : "\\0"', $str);
+	$ret = preg_replace_callback("/&(\w+);/",
+			function ($matches) use ($replace) {
+				if (isset($replace[$matches[1]]))
+					return $replace[$matches[1]];
+				return strtolower($matches[0]);
+			}, $str
+		);
+	return $ret;
 }
 
 

@@ -82,6 +82,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				if(0 === $ret) return 'mask: '.getlodeltextcontents('field_doesnt_match_mask', 'common').' ("'.htmlentities($masks[$context['class']][$name]['user']).'")';
 			}
 		}
+		$text = unicode_to_numeric_entity($text); // mysql utf8 encoding workaround
 
 		return true; // always true
 		break;
@@ -315,6 +316,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			}
 			$text = $str;
 		}
+		$text = unicode_to_numeric_entity($text); // mysql utf8 encoding workaround
 		return true;
 	case 'list' :
 		return true;
@@ -449,4 +451,35 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	}
 
 	return true; // validated
+}
+
+// Les fonctions dessous sont appliqués sur tous les textes avant d'être enregistrés dans la base mysql
+// mysql n'encode pas (de base) en utf-8 sur plus de trois bytes…
+// Alors on convertit ces carcatères dans leur équivalent numérique
+
+/**
+ * Convertir les caractères utf-8 codés sur 4 bytes dans leur équivalent numerique => &#10000;
+ */
+function unicode_to_numeric_entity($text) {
+	// detect 4-byte UTF-8 characters : trouvé sur http://www.w3.org/International/questions/qa-forms-utf-8.en.php
+	$regex = '/(?:\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/xs';
+	              # planes 1-3                  # planes 4-15             # plane 16
+	$text = preg_replace_callback($regex,'unicode_to_numeric_entity_callback', $text);
+	return $text;
+}
+
+// used by unicode_to_numeric_entity() to do the real job
+function unicode_to_numeric_entity_callback($matches) {
+	// Convertir l'utf-8 en UCS-4LE : four byte direct encodings of ISO-10646 (unicode)
+	$char = iconv('UTF-8', 'UCS-4LE', $matches[0]);
+
+	if ($char) {
+		// convertir en unsigned long pour avoir la représentation décimal
+		$char = unpack('V', $char);
+		if (isset($char[1]))
+			return '&#' . $char[1] . ';';
+	}
+
+	// on retourne un caractère qui ne cassera pas mysql…
+	return '�';
 }

@@ -1085,6 +1085,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
     if (!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
+    $pear = new PEAR();
 
     $message = new Mail_mime("\n");
 
@@ -1092,7 +1093,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
         foreach ($m[1] as $img) {
             if (false !== strpos($img, 'http://')) continue;
             $r = $message->addHTMLImage($img, getMimeType(substr(strrchr($img, '.'), 1)));
-            if (PEAR::isError($r)) {
+            if ($pear->isError($r)) {
                 return $r->getMessage();
             }
         }
@@ -1101,7 +1102,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     if (!empty($docs)) {
         foreach ($docs as $doc) {
             $r = $message->addAttachment($doc, getMimeType(substr(strrchr($doc, '.'), 1)), basename($doc), true, 'base64');
-            if (PEAR::isError($r)) {
+            if ($pear->isError($r)) {
                 return $r->getMessage();
             }
         }
@@ -1140,7 +1141,7 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     // send the mail
     $r = Mail::factory('mail')->send($to, $headers, $body);
     $ret = true;
-    if (PEAR::isError($r)) {
+    if ($pear->isError($r)) {
         $ret = $r->getMessage();
     }
     error_reporting($err);
@@ -1233,9 +1234,6 @@ function thumbnail($path, $width = null, $height = null)
 
     if (!file_exists($path) && strpos($path, 'http') !== 0) return $path;
 
-    $tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
-    file_put_contents($tmp_path, file_get_contents($path));
-
     $new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
 
     if (!file_exists(dirname($new_path))) mkdir(dirname($new_path));
@@ -1248,7 +1246,7 @@ function thumbnail($path, $width = null, $height = null)
     ) return $new_path;
 
     $image = new Zebra_Image();
-    $image->source_path = $tmp_path;
+    $image->source_path = $path;
     $image->target_path = $new_path;
 
     $image->jpeg_quality = 100;
@@ -1259,7 +1257,6 @@ function thumbnail($path, $width = null, $height = null)
     $final_path = $path;
     if($image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1))
         $final_path = $new_path;
-    unlink($tmp_path);
     return $final_path;
 }
 
@@ -1429,6 +1426,38 @@ function rmtree($rep)
     closedir($fd);
 
     rmdir($rep);
+}
+
+function is_recaptcha_v2_valid($code, $recaptche_privatekey, $ip = null) {
+        if (empty($code)) {
+                return false; // Si aucun code n'est entré, on ne cherche pas plus loin
+        }
+        $params = [
+                'secret'    => $recaptche_privatekey,
+                'response'  => $code
+        ];
+        if( $ip ){
+                $params['remoteip'] = $ip;
+        }
+        $url = "https://www.google.com/recaptcha/api/siteverify?" . http_build_query($params);
+        if (function_exists('curl_version')) {
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_HEADER, false);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+                $response = curl_exec($curl);
+        } else {
+                // Si curl n'est pas dispo, file_get_contents
+                $response = file_get_contents($url);
+        }
+
+        if (empty($response) || is_null($response)) {
+                return false;
+        }
+
+        $json = json_decode($response);
+        return $json->success;
 }
 
 define('INC_FUNC', 1);
