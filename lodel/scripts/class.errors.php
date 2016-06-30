@@ -162,8 +162,24 @@ class LodelException extends Exception
 		} 
 		catch(LodelException $e)
 		{
-                    //debug_print_backtrace();
-                    die($e->getContent());
+		    echo '<pre style="border: 1px red solid; padding: .5em; font: normal bold 1.2em monospace; color: red; background: yellow; white-space: pre-wrap;">';
+		    switch(C::get('debugMode', 'cfg')){
+		    	case 1:
+		    		print_r($e->getContent());
+			break;
+			case 2:
+				ob_start('htmlentities');
+                    		debug_print_backtrace();
+                    		ob_end_flush();
+				break;
+			case 3:
+                                ob_start('htmlentities');
+                                debug_print_backtrace();
+                                ob_end_flush();
+				die();
+			default:
+		    }
+		    echo '</pre>';
 		}
 	}
 }
