@@ -9,7 +9,7 @@
  * Fichier de la classe permettant de communiquer avec OTX via le protole SOAP
  */
 
-if(C::get('debugMode', 'cfg'))
+if(0 < C::get('debugMode', 'cfg'))
 { // pas de cache WSDL si en mode débug
 	ini_set('soap.wsdl_cache_enabled', false);
 	ini_set('soap.wsdl_cache_enabled', '0');

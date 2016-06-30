@@ -115,7 +115,7 @@ class View
 		$this->_showphp = (bool)C::get('showphp') && C::get('admin', 'lodeluser');
 		self::$time = time();
 		self::$microtime = microtime(true);
-		self::$nocache = (bool)(C::get('nocache') || $this->_showphp || C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
+		self::$nocache = (bool)(C::get('nocache') || $this->_showphp || 0 < C::get('debugMode', 'cfg') || C::get('isPost', 'cfg') || C::get('translationmode', 'lodeluser')=="interface" || (!defined('backoffice') && !defined('backoffice-lodeladmin') && C::get('translationmode', 'lodeluser')=="site"));
 		self::$noindent = (bool) C::get('nocache') ? true : false;
 	}
 
@@ -588,7 +588,7 @@ class View
 			$contents = $this->_cache->get($template_cache);
 		}
 
-		if($contents && !C::get('debugMode', 'cfg')) {
+		if($contents && 1 > C::get('debugMode', 'cfg')) {
 			$template = $this->unzip_cached_template($contents);
 		} else {
 			// le tpl cache n'existe pas ou n'est pas a jour compare au fichier de maquette
@@ -656,7 +656,7 @@ class View
 	private function _error($msg, $func, $error_type, $clearcache = false) 
 	{
 		// we are maybe buffering, so clear it
-		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || 1 > C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		
 		global $db;
@@ -696,7 +696,7 @@ class View
 	{
 		global $db;
 		// we are maybe buffering, so clear it
-		if(!C::get('redactor', 'lodeluser') || !C::get('debugMode', 'cfg'))
+		if(!C::get('redactor', 'lodeluser') || 1 > C::get('debugMode', 'cfg'))
 			while(@ob_end_clean());
 		// on efface le cache on a pu enregistre tout et n'importe quoi
 		clearcache();

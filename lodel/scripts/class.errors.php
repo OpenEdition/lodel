@@ -52,14 +52,14 @@ class LodelException extends Exception
 	{
 		parent::__construct();
 		
-		$this->debug = (bool)C::get('debugMode', 'cfg');
+		$this->debug = (int)C::get('debugMode', 'cfg');
 		$this->message = nl2br($errstr);
 		$this->code = $errno;
 		$this->file = $errfile;
 		$this->line = $errline;
 
 		// we are maybe buffering, so clear it
-		if(!C::get('redactor', 'lodeluser') || !$this->debug)
+		if(!C::get('redactor', 'lodeluser') || 1 > $this->debug)
 			while(@ob_end_clean());
 
 		if(!headers_sent())
@@ -69,7 +69,7 @@ class LodelException extends Exception
 			header("Connection: Close");
 		}
 
-		if(C::get('contactbug', 'cfg') && ((bool)C::get('debugMode', 'cfg') || (bool)C::get('sendErrorMsg', 'cfg')))
+		if(C::get('contactbug', 'cfg') && ((int)C::get('debugMode', 'cfg') || (bool)C::get('sendErrorMsg', 'cfg')))
 		{
 			$sujet = "[BUG] LODEL ".C::get('version', 'cfg')." - ".C::get('site', 'cfg');
 			$contenu = "Erreur sur la page ";
@@ -86,7 +86,7 @@ class LodelException extends Exception
 	 */
 	public function getContent()
 	{
-		if($this->debug || C::get('redactor', 'lodeluser')) {
+		if(0 < $this->debug || C::get('redactor', 'lodeluser')) {
 			$ret = '</body><p class="error">';
 			$ret .= (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code ? '' : 'PHP ');
 			$ret .= "Error ".(isset(self::$type[$this->code]) ? "(".self::$type[$this->code].")" : '')." in file '".$this->file."' on line ".$this->line." : <br />";
@@ -164,20 +164,20 @@ class LodelException extends Exception
 		{
 		    echo '<pre style="border: 1px red solid; padding: .5em; font: normal bold 1.2em monospace; color: red; background: yellow; white-space: pre-wrap;">';
 		    switch(C::get('debugMode', 'cfg')){
-		    	case 1:
-		    		print_r($e->getContent());
-			break;
 			case 2:
 				ob_start('htmlentities');
                     		debug_print_backtrace();
                     		ob_end_flush();
-				break;
+			break;
 			case 3:
                                 ob_start('htmlentities');
                                 debug_print_backtrace();
                                 ob_end_flush();
 				die();
+			break;
+			case 1:
 			default:
+				print_r($e->getContent());
 		    }
 		    echo '</pre>';
 		}
