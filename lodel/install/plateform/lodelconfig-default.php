@@ -138,7 +138,12 @@ $cfg['cacheOptions'] = array(
 );
 ##################
 $GLOBALS['cacheOptions'] = $cfg['cacheOptions'];
-$cfg['debugMode']=false; // mettre à true pour afficher les erreurs générées pendant le calcul d'une page
+// debugMode : 0 = off, 1 = affichage simple des erreurs, 2 = affichage du debug backtrace, 3 = affichage du debug backtrace + arrêt du script
+$cfg['debugMode']=0; 
+// showPubErrMsg : affichage d'un message générique en cas d'erreur pour utilisateur non identifié 
+$cfg['showPubErrMsg'] = false;
+// dieOnErr : arrêt du script en cas d'erreur, indépendamment du debugMode
+$cfg['dieOnErr'] = false;
 $cfg['locale']="fr_FR.UTF8";
 setlocale (LC_ALL,$cfg['locale']);
 date_default_timezone_set('Europe/Paris');
