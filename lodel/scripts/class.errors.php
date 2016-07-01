@@ -37,7 +37,7 @@ class LodelException extends Exception
 				E_RECOVERABLE_ERROR => 'Recoverable Error',
 				E_DEPRECATED => 'Deprecated',
                                 E_USER_LODEL_BAD_REQUEST => 'Bad Request',
-                                E_USER_LODEL_NOT_FOUND => ' Page not Found'
+                                E_USER_LODEL_NOT_FOUND => 'Page not Found'
 				);
 	/**
 	 * Constructor
@@ -86,15 +86,18 @@ class LodelException extends Exception
 	 */
 	public function getContent()
 	{
+		$ret = '';
 		if(0 < $this->debug || C::get('redactor', 'lodeluser')) {
-			$ret = '</body><p class="error">';
-			$ret .= (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code ? '' : 'PHP ');
+//			$ret = '</body><p class="error">';
+			$ret = (E_USER_ERROR == $this->code || E_USER_NOTICE == $this->code || E_USER_WARNING == $this->code ? '' : 'PHP ');
 			$ret .= "Error ".(isset(self::$type[$this->code]) ? "(".self::$type[$this->code].")" : '')." in file '".$this->file."' on line ".$this->line." : <br />";
 			$ret .= $this->message.'</p>';
 		} else {
-			$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
-			if(C::get('contactbug', 'cfg'))
+			if(C::get('showPubErrMsg', 'cfg')){
+				$ret = "Sorry! Internal error. Please contact the webmaster and try reloading the page. ";
+				if(C::get('contactbug', 'cfg'))
 				$ret .= "(".C::get('contactbug', 'cfg').")";
+			}
 		}
 		return $ret;
 	}
@@ -130,7 +133,7 @@ class LodelException extends Exception
 			case E_WARNING:
 			case E_USER_WARNING:
 			case E_COMPILE_WARNING:
-				if(!C::get('debugMode', 'cfg'))
+				if(1 > C::get('debugMode', 'cfg'))
 				{
 					error_log('['.(isset(self::$type[$errno]) ? self::$type[$errno] : 'unknown').' - '.C::get('site','cfg').'] '.$errstr.' in file '.$errfile.' on line '.$errline, 0);
 					break;
@@ -169,7 +172,6 @@ class LodelException extends Exception
                     		debug_print_backtrace();
                     		ob_end_flush();
 			break;
-			case 3:
                                 ob_start('htmlentities');
                                 debug_print_backtrace();
                                 ob_end_flush();
@@ -180,6 +182,7 @@ class LodelException extends Exception
 				print_r($e->getContent());
 		    }
 		    echo '</pre>';
+		    if(C::get('dieOnErr', 'cfg')) die();
 		}
 	}
 }
