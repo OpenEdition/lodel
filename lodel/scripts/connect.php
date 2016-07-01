@@ -25,7 +25,7 @@ error_reporting($err);
 // connect to the database server
 $GLOBALS['db'] = ADONewConnection(DBDRIVER);
 $GLOBALS['db']->debug = false; // mettre à true pour activer le mode debug
-$single = C::get('singledatabase', 'cfg') != "on";
+$single = C::get('singledatabase', 'cfg') == "on";
 $GLOBALS['currentdb'] = (C::get('site', 'cfg') && $single) ? DATABASE. "_".C::get('site', 'cfg') : DATABASE;
 
 defined("SINGLESITE") || define("SINGLESITE", !$single); // synonyme currently but may change in the future
