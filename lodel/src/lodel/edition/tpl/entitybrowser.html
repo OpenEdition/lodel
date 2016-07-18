@@ -88,7 +88,7 @@ function sendValues(){
 			<IF COND="[#SINGLE]">
 				<a href="#" id="entities[#ID]" onClick="sendValue('[#ID]','[#G_TITLE|addslashes|htmlspecialchars]');">[#G_TITLE|strip_tags] ([#TYPE])</a>
 			<ELSE/>
-				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]">[#G_TITLE|strip_tags] ([#TYPE])
+				<input type="checkbox" id="entities[#ID]" name="entities" value="[#ID]:[#G_TITLE|htmlspecialchars]:[#TYPE]" />[#G_TITLE|strip_tags] ([#TYPE])
 			</IF>
 			</IF>
 			</li>
