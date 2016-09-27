@@ -710,6 +710,9 @@ class Entities_EditionLogic extends GenericLogic
 				continue;
 			}
 			
+			//table name for types
+			$table_types = ($table == 'entries'?'entry':'person').'types';
+
 			$ctx_idtypes = array_keys ($context[$table]);
 			
 			$logic = Logic::getLogic($table);
@@ -761,16 +764,15 @@ class Entities_EditionLogic extends GenericLogic
 				}
 			}
 			// delete relation not used
-			$criteria = $active_relations ? "AND idrelation NOT IN ('". join ("','", $active_relations). "')" : "";
-			
+			$criteria = "";
+			if(count($active_relations) > 0) {
+				$criteria = "AND idrelation NOT IN ('". join ("','", $active_relations). "')";
+			}
 			// We have to append another constraint telling that we want to delete only relations with a type we are aware of (present in $context)
-			$table_types = ($table == 'entries'?'entry':'person').'types';
-			$ttdao = DAO::getDAO($table_types);
-			$result = $ttdao->findMany("type IN ('".join("','", $ctx_idtypes).")')");
-			$idtypes_in_ctx = array();
-			foreach($result as $r) { $idtypes_in_ctx[] = $r->id; }
-			$criteria .= " AND id2 IN (SELECT id FROM ".$table." WHERE idtype IN ('".join("','", $idtypes_in_ctx)."'))";
-
+			if(count($ctx_idtypes) > 0) {
+				$ttdao = DAO::getDAO($table_types);
+				$criteria .= " AND id2 IN (SELECT id FROM ".$table." WHERE idtype IN ('".join("','", $ctx_idtypes)."'))";
+			}
 
 			$entitiesLogic->_deleteSoftRelation ("id1='". $vo->id. "' ". $criteria, $nature);
 		} // foreach entries and persons
