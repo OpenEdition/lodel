@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.tei-c.org/ns/1.0 http://www.lodel.org/ns/tei.openedition.1.0.xsd">
+	<teiHeader xml:lang="en">
+		<fileDesc>
+			<titleStmt>
+				<title type="sup">Dolor sit amet</title>
+				<title type="main">Lorem ipsum pour Lodel 1.0</title>
+				<title type="sub">Basé sur le modèle éditorial pour Lodel de Revues.org</title>
+				<title type="alt" xml:lang="en">Other travelling salesmen live a life of luxury</title>
+				<title type="alt" xml:lang="es">Las preocupaciones son mucho mayores</title>
+				<author>
+					<name>Marin Dacos</name>
+					<affiliation>
+						<s>Directeur du Cléo (Centre pour l'édition électronique ouverte)</s>
+					</affiliation>
+					<roleName>
+						<s>Directeur</s>
+					</roleName>
+					<orgName>
+						<s>Cléo</s>
+					</orgName>
+					<email>
+						<s>contact@revues.org</s>
+					</email>
+					<ref target="http://www.revues.org" type="website">http://www.revues.org</ref>
+					<roleName type="honorific">
+						<s>M.</s>
+					</roleName>
+				</author>
+				<editor role="translator">
+					<name>Jean-François Rivière</name>
+					<affiliation>Chargé d'édition au Cléo</affiliation>
+				</editor>
+				<editor>
+					<name>Nahuel Angelinetti</name>
+					<affiliation>Développeur au Cléo</affiliation>
+				</editor>
+			</titleStmt>
+			<publicationStmt>
+				<date when="">01/07/2010</date>
+				<availability>
+					<p>Creative Commons Attribution-NoDerivs 3.0 Unported License</p>
+				</availability>
+				<idno type="documentnumber">25</idno>
+			</publicationStmt>
+			<sourceDesc>
+ 				<biblFull>
+ 					<titleStmt><title>Lorem ipsum pour Lodel 1.0</title></titleStmt>
+					<publicationStmt>
+						<date when="">01/07/2008</date>
+						<idno type="pp">10-27</idno>
+					</publicationStmt>
+					<notesStmt>
+						<note type="bibl">Référence bibliographique de l'édition papier de cet article.</note>
+					</notesStmt>
+				</biblFull>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<projectDesc>
+				<p>Revues.org -centre for open electronic publishing- is the platform for journals in the humanities and social sciences, open to quality periodicals looking to publish full-text articles online.</p>
+			</projectDesc>
+			<appInfo>
+				<application version="2.32" ident="OTX">
+					<label>Opentext - CLEO / Revues.org</label>
+					<desc>
+						<ref target="http://www.tei-c.org/">We use TEI</ref>
+					</desc>
+				</application>
+			</appInfo>
+			<tagsDecl>
+				<rendition xml:id="P4" scheme="css">text-align:center</rendition>
+				<rendition xml:id="T3" scheme="css">font-style:italic</rendition>
+				<rendition xml:id="T4" scheme="css">font-style:italic</rendition>
+				<rendition xml:id="T5" scheme="css">font-style:italic;font-weight:bold</rendition>
+				<rendition xml:id="T6" scheme="css">font-style:italic;text-decoration:underline</rendition>
+				<rendition xml:id="T7" scheme="css">font-style:italic;text-decoration:underline;font-weight:bold</rendition>
+				<rendition xml:id="T8" scheme="css">font-weight:bold</rendition>
+				<rendition xml:id="T9" scheme="css">text-decoration:underline</rendition>
+				<rendition xml:id="T10" scheme="css">text-decoration:underline;font-weight:bold</rendition>
+				<rendition xml:id="T11" scheme="css">font-variant:small-caps</rendition>
+				<rendition xml:id="T12" scheme="css">vertical-align:super</rendition>
+				<rendition xml:id="T13" scheme="css">vertical-align:sub</rendition>
+				<rendition xml:id="td1a1" scheme="css">border-left:1px solid #000000;border-right:none;border-top:1px solid #000000;border-bottom:1px solid #000000;direction:ltr</rendition>
+				<rendition xml:id="td1d1" scheme="css">direction:ltr</rendition>
+			</tagsDecl>
+		</encodingDesc>
+		<profileDesc>
+			<langUsage>
+				<language ident="fr">fr</language>
+			</langUsage>
+			<textClass>
+				<keywords scheme="keyword" xml:lang="fr">
+					<list>
+						<item>aenean</item>
+						<item>commodo</item>
+						<item>ligula</item>
+						<item>eget</item>
+						<item>dolor</item>
+					</list>
+				</keywords>
+				<keywords scheme="chronological">
+					<list>
+						<item>XXIe siecle</item>
+					</list>
+				</keywords>
+				<keywords scheme="geographical">
+					<list>
+						<item>France</item>
+						<item>Ile de France</item>
+						<item>Paris</item>
+					</list>
+				</keywords>
+			</textClass>
+		</profileDesc>
+	</teiHeader>
+	<text>
+		<front>
+			<div type="abstract" xml:lang="fr">
+				<p>Il était sur le dos, un dos aussi dur qu’une carapace, et, en relevant un peu la tête, il vit, bombé, brun, cloisonné par des arceaux plus rigides, son abdomen sur le haut duquel la couverture, prête à glisser tout à fait, ne tenait plus qu’à peine. Ses nombreuses pattes, lamentablement grêles par comparaison avec la corpulence qu’il avait par ailleurs, grouillaient désespérément sous ses yeux. « Qu’est-ce qui m’est arrivé ? » pensa-t-il. Ce n’était pas un rêve. Sa chambre, une vraie chambre humaine, juste un peu trop petite, était là tranquille entre les quatre murs qu’il connaissait bien. Au-dessus de la table où était déballée une collection d’échantillons de tissus - Samsa était représentant de commerce - on voyait accrochée l’image qu’il avait récemment découpée dans un magazine et mise dans un joli cadre doré. Elle représentait une dame munie d’une toque et d’un boa tous les deux en fourrure et qui, assise bien droite, tendait vers le spectateur un lourd manchon de
+					fourrure où tout son avant-bras avait disparu. Le regard de Gregor se tourna ensuite vers la fenêtre, et le temps maussade - on entendait les gouttes de pluie frapper le rebord en zinc - le rendit tout mélancolique. « Et si je redormais un peu et oubliais toutes ces sottises ? » se dit-il ; mais c’était absolument irréalisable, car il avait l’habitude de dormir sur le côté droit et, dans l’état où il était à présent, il était incapable de se mettre dans cette position. En se réveillant un matin après des rêves agités, Gregor Samsa se retrouva, dans son lit, métamorphosé en un monstrueux insecte. Il était sur le dos, un dos aussi dur qu’une carapace, et, en relevant un peu la tête, il vit, bombé, brun, cloisonné par des arceaux plus rigides, son abdomen sur le haut duquel la couverture, prête à glisser tout à fait, ne tenait plus qu’à peine.</p>
+			</div>
+			<div type="abstract" xml:lang="en">
+				<p>
+					<hi xml:lang="en">"Oh, God", he thought, "what a strenuous career it is that I've chosen! Travelling day in and day out. </hi>
+					<hi xml:lang="en">Doing business like this takes much more effort than doing your own business at home, and on top of that there's the curse of travelling, worries about making train connections, bad and irregular food, contact with different people all the time so that you can never get to know anyone or become friendly with them. It can all go to Hell! "He felt a slight itch up on his belly; pushed himself slowly up on his back towards the headboard so that he could lift his head better; found where the itch was, and saw that it was covered with lots of little white spots which he didn't know what to make of; and when he tried to feel the place with one of his legs he drew it quickly back because as soon as he touched it he was overcome by a cold shudder. He slid back into his former position. "Getting up early all the time", he thought, "it makes you stupid. You've got to get enough sleep. Other travelling salesmen live a life of luxury. For instance, whenever I go back to the
+						guest house during the morning to copy out the contract, these gentlemen are always still sitting there eating their breakfasts. I ought to just try that with my boss; I'd get kicked out on the spot. But who knows, maybe that would be the best thing for me. If I didn't have my parents to think about I'd have given in my notice a long time ago, I'd have gone up to the boss and told him just what I think, tell him everything I would, let him know just what I feel. He'd fall right off his desk! And it's a funny sort of business to be sitting up there at your desk, talking down at your subordinates from up there, especially when you have to go right up close because the boss is hard of hearing. Well, there's still some hope; once I've got the money together to pay off my parents' debt to him - another five or six years I suppose - that's definitely what I'll do. That's when I'll make the big change.</hi>
+				</p>
+			</div>
+			<div type="abstract" xml:lang="es">
+				<p xml:lang="es">Las preocupaciones son mucho mayores cuando se trabaja fuera, por no hablar de las molestias propias de los viajes: estar pendiente de los enlaces de los trenes; la comida mala, irregular; relaciones que cambian constantemente, que nunca llegan a ser verdaderamente cordiales, y en las que no tienen cabida los sentimientos. ¡Al diablo con todo! Sintió en el vientre una ligera picazón. Lentamente, se estiró sobre la espalda en dirección a la cabecera de la cama, para poder alzar mejor la cabeza. Vio que el sitio que le picaba estaba cubierto de extraños untitos blancos. Intentó rascarse con una pata; pero tuvo que retirarla inmediatamente, pues el roce le producía escalofríos. Una mañana, tras un sueño intranquilo, Gregorio Samsa se despertó convertido en un monstruoso insecto. Estaba echado de espaldas sobre un duro caparazón y, al alzar la cabeza, vio su vientre convexo y oscuro, surcado por curvadas callosidades, sobre el que casi no se aguantaba la colcha, que
+					estaba a punto de escurrirse hasta el suelo. Numerosas patas, penosamente delgadas en comparación con el grosor normal de sus piernas, se agitaban sin concierto. - ¿Qué me ha ocurrido? No estaba soñando. Su habitación, una habitación normal, aunque muy pequeña, tenía el aspecto habitual. Sobre la mesa había desparramado un muestrario de paños - Samsa era viajante de comercio-, y de la pared colgaba una estampa recientemente recortada de una revista ilustrada y puesta en un marco dorado.</p>
+			</div>
+			<div type="ack">
+				<p>Je remercie le site Blind Text Generator qui a fourni tout le faux-texte de ce document.</p>
+			</div>
+			<div type="correction">
+				<p>L'erratum permet de signaler les modifications apportées au texte après sa publication.</p>
+			</div>
+			<div type="review">
+				<p rend="review-title">La métamorphose</p>
+				<p rend="review-author">Franz Kafka</p>
+				<p rend="review-bibliography">Franz Kafka, <hi rend="italic">La métaporphose</hi> [1938] , trad. de l'allemand par Alexandre Vialatte, 224 pages, 140 x 205 mm. Collection Du monde entier, Gallimard-nouv. ISBN 2070235157.</p>
+				<p rend="review-date">1938</p>
+			</div>
+			<note resp="editor">
+				<p>
+					Le texte de ce document a été généré sur le site <ref target="http://www.blindtextgenerator.com/">http://www.blindtextgenerator.com</ref>
+					.
+				</p>
+			</note>
+			<note resp="author">
+				<p>
+					Les résumés français, anglais et espagnol sont des extraits de <hi rendition="#T4">La Métamorphose</hi>
+					de Franz Kafka.
+				</p>
+			</note>
+			<div>
+				<p rend="epigraph">
+					<hi rendition="#T4">En se réveillant un matin après des rêves agités, Gregor Samsa se retrouva, dans son lit, métamorphosé en un monstrueux insecte.</hi>
+					<lb />
+					Franz Kafka <hi rendition="#T4">La métamorphose</hi>
+				</p>
+			</div>
+		</front>
+		<body>
+			<p>
+				<hi xml:lang="en">Aenean commodo ligula eget dolor. </hi> Aenean massa. <hi rendition="#T4">Cum sociis</hi> natoque <hi rendition="#T8">penatibus et magnis</hi> dis <hi rendition="#T9">parturient montes</hi>
+				, nascetur <hi rendition="#T5">ridiculus mus</hi>. Donec
+				<hi rendition="#T6">quam felis</hi>
+				, ultricies nec, <hi rendition="#T10">pellentesque eu</hi>
+				, pretium quis, sem. <hi rendition="#T7">Nulla consequat massa quis enim</hi>
+				. Donec pede justo <hi rendition="#T11">xx</hi><hi rendition="#T12">e</hi> siècle, fringilla vel, aliquet nec, vulputate eget (SO
+				<hi rendition="#T13">4</hi>
+				<hi rendition="#T12">2-</hi>
+				), arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus : <ref target="http://www.lodel.org/">http://www.lodel.org</ref>
+				. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.
+			</p>
+			<p>
+				Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi
+					<note place="foot" n="1">
+						<p>
+							Nulla consequat massa quis enim.
+						</p>
+					</note>
+				. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero.
+			</p>
+			<q rend="quotation">Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero. Cras id dui. Aenean ut eros et nisl sagittis vestibulum.Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut non enim eleifend felis pretium feugiat. Vivamus quis mi. Phasellus a est.
+				Phasellus magna. In hac habitasse platea dictumst. Curabitur at lacus ac velit ornare lobortis. Curabitur a felis in nunc fringilla tristique. Morbi mattis ullamcorper velit. Phasellus gravida semper nisi. Nullam vel sem. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Sed hendrerit. Morbi ac felis.</q>
+			<p rend="noindent">
+				Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci. Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Curabitur
+					<note place="end" n="ii">
+						<p rend="endnote">Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut non enim eleifend felis pretium feugiat. Vivamus quis mi. Phasellus a est. Phasellus magna. In hac habitasse platea dictumst. Curabitur at lacus ac velit ornare lobortis. Curabitur a felis in nunc fringilla tristique. Morbi mattis ullamcorper velit. Phasellus gravida semper nisi. Nullam vel sem. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Sed hendrerit. Morbi ac felis.</p>
+					</note>
+				ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada. Praesent congue erat at massa. Sed cursus turpis vitae tortor. Donec posuere <!-- <pb/> -->
+				vulputate arcu. Phasellus accumsan cursus velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci.
+			</p>
+			<q rend="quotation2">Phasellus consectetuer vestibulum elit. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Vestibulum fringilla pede sit amet augue. In turpis. Pellentesque posuere. Praesent turpis. Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. Nullam sagittis. Suspendisse pulvinar, augue ac venenatis condimentum, sem libero volutpat nibh, nec pellentesque velit pede quis nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce id purus. Ut varius tincidunt libero. Phasellus dolor. Maecenas vestibulum mollis diam.</q>
+			<p rend="noindent">Pellentesque ut neque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. In ac felis quis tortor malesuada pretium. Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Aenean viverra rhoncus pede. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut non enim eleifend felis pretium feugiat. Vivamus quis mi. Phasellus a est. Phasellus magna. In hac habitasse platea dictumst. Curabitur at lacus ac velit ornare lobortis. Curabitur a felis in nunc fringilla tristique. Morbi mattis ullamcorper velit.</p>
+			<q rend="quotation3">Phasellus gravida semper nisi. Nullam vel sem. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Sed hendrerit. Morbi ac felis. Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede. Donec interdum, metus et hendrerit aliquet, dolor diam sagittis ligula, eget egestas libero turpis vel mi. Nunc nulla. Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Donec venenatis vulputate lorem. Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis.</q>
+			<div type="div1">
+				<head subtype="level1">Sed lectus</head>
+				<p>In auctor lobortis lacus. Quisque libero metus, condimentum nec, tempor a, commodo mollis, magna. Vestibulum ullamcorper mauris at ligula. </p>
+				<list xml:id="list2094761347" type="unordered">
+					<item>
+						<p>Fusce fermentum. </p>
+						<list type="unordered">
+							<item>
+								<p>Nullam cursus lacinia erat. </p>
+							</item>
+							<item>
+								<p>Praesent blandit laoreet nibh. </p>
+							</item>
+						</list>
+					</item>
+					<item>
+						<p>Fusce convallis metus id felis luctus adipiscing. </p>
+						<list type="unordered">
+							<item>
+								<p>Pellentesque egestas, </p>
+							</item>
+							<item>
+								<p>neque sit amet convallis pulvinar, </p>
+							</item>
+							<item>
+								<p>justo nulla eleifend augue, </p>
+							</item>
+							<item>
+								<p>ac auctor orci leo non est. </p>
+							</item>
+						</list>
+					</item>
+				</list>
+				<p>
+					Quisque id mi. Ut tincidunt tincidunt erat. Etiam feugiat lorem non metus. Vestibulum dapibus nunc ac augue. Curabitur vestibulum aliquam leo. Praesent egestas neque eu enim. In <!-- <pb/> -->
+					hac habitasse platea dictumst. Fusce a quam. Etiam ut purus mattis mauris sodales aliquam. Curabitur nisi. Quisque malesuada placerat nisl.
+				</p>
+				<list xml:id="list155459215" type="ordered">
+					<item>
+						<p>Fusce fermentum. </p>
+						<list type="ordered">
+							<item>
+								<p>Nullam cursus lacinia erat. </p>
+							</item>
+							<item>
+								<p>Praesent blandit laoreet nibh. </p>
+							</item>
+						</list>
+					</item>
+					<item>
+						<p>Fusce convallis metus id felis luctus adipiscing. </p>
+						<list type="ordered">
+							<item>
+								<p>Pellentesque egestas, </p>
+							</item>
+							<item>
+								<p>neque sit amet convallis pulvinar, </p>
+							</item>
+							<item>
+								<p>justo nulla eleifend augue, </p>
+							</item>
+							<item>
+								<p>ac auctor orci leo non est. </p>
+							</item>
+						</list>
+					</item>
+				</list>
+				<p>
+					Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Sed augue ipsum, egestas nec, vestibulum et, malesuada adipiscing, dui. Vestibulum facilisis, purus nec pulvinar iaculis, ligula mi congue nunc, vitae euismod ligula urna in dolor. Mauris sollicitudin fermentum libero
+						<note place="foot" n="2">
+							<p rend="footnote">Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada. Praesent congue erat at massa. Sed cursus turpis vitae tortor. Donec posuere vulputate arcu. Phasellus accumsan cursus velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Phasellus consectetuer vestibulum elit. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Vestibulum fringilla pede sit amet augue. In turpis. Pellentesque posuere. Praesent turpis.</p>
+						</note>
+
+					.
+					<hi xml:lang="en">Praesent nonummy mi in odio. Nunc interdum lacus sit amet orci. Vestibulum rutrum, mi nec elementum vehicula, eros quam gravida nisl, id fringilla neque ante vel mi. Morbi mollis tellus ac sapien. </hi>
+					Phasellus volutpat, metus eget egestas mollis, lacus lacus blandit dui, id egestas quam mauris ut lacus. Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante.
+				</p>
+				<p rend="figure-title">Fonctionnement d'Opentext</p>
+				<p>
+					<figure>
+						<graphic url="relative/path/to/image/img-1.jpg" />
+					</figure>
+				</p>
+				<p rend="figure-legend">Schéma réalisé en septembre 2009</p>
+				<p rend="figure-license">Surletoit - licence Creative Commons by-nc-sa</p>
+				<div type="div2">
+					<head subtype="level2">In consectetuer turpis ut velit</head>
+					<p>Nulla sit amet est. Praesent metus tellus, elementum eu, semper a, adipiscing nec, purus. Cras risus ipsum, faucibus ut, ullamcorper id, varius ac, leo. Suspendisse feugiat. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent nec nisl a purus blandit viverra. Praesent ac massa at ligula laoreet iaculis. Nulla neque dolor, sagittis eget, iaculis quis, molestie non, velit. Mauris turpis nunc, blandit et, volutpat molestie, porta ut, ligula. Fusce pharetra convallis urna. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Suspendisse non nisl sit amet velit hendrerit rutrum. Ut leo.</p>
+					<p rend="figure-title">Filtre Lodel <hi rend="italic">cuttext</hi></p>
+					<p rend="noindent">
+					<code>
+<![CDATA[
+/**
+ * Cut text keeping whole words
+ */
+function cuttext($text, $length, $dots=false)
+{
+	$GLOBALS['textfunc_hasbeencut'] = false;
+	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$open = mb_strpos($text, "<", 0, $encoding);
+	if ($open === false || $open > $length){
+		return cut_without_tags($text, $length, $dots);}
+	$length -= $open;
+	$stack = array ();
+	while ($open !== FALSE) {
+		$close = mb_strpos($text, ">", $open, $encoding);
+		if (mb_substr($text, $open+1, 1, $encoding) == "/") {
+			array_pop($stack); // fermante
+		}	elseif (mb_substr($text, $close-1, 1, $encoding) != "/") {
+			$tag = mb_substr($text, $open +1, $close -1 - $open, $encoding);
+			if('br /' == $tag || 'br/' == $tag || 'br' == $tag) array_push($stack, '<br/>');
+			else array_push($stack, "</".preg_replace("/\s.*/", "", $tag).">"); // ouvrante
+		}
+		$open = mb_strpos($text, "<", $close, $encoding);
+		$piecelen = $open -1 - $close;
+		if ($open === FALSE || $piecelen > $length)
+		{
+			if($dots) array_push($stack, ' (...)');
+			return mb_substr($text, 0, $close +1, $encoding).cut_without_tags(mb_substr($text, $close +1, $length +2, $encoding), $length).// 2 pour laisser de la marge
+			join("", array_reverse($stack));
+		}
+		$length -= $piecelen;
+	}
+	return $text;
+}
+]]>
+
+					</code>
+					</p>
+				
+					<p>
+						<hi xml:lang="en">Ut a nisl id ante tempus hendrerit. </hi>
+						Proin pretium, leo ac pellentesque mollis, felis nunc ultrices eros, sed gravida augue augue mollis justo. Suspendisse eu ligula.
+					</p>
+				</div>
+				<div type="div2">
+					<head subtype="level2">Nulla facilisi</head>
+					<p>Donec id justo. Praesent porttitor, nulla vitae posuere iaculis, arcu nisl dignissim dolor, a pretium mi sem ut ipsum. Curabitur suscipit suscipit tellus. Praesent vestibulum dapibus nibh. Etiam iaculis nunc ac metus. Ut id nisl quis enim dignissim sagittis. Etiam sollicitudin, ipsum eu pulvinar rutrum, tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. Proin magna. Duis vel nibh at velit scelerisque suscipit. Curabitur turpis. Vestibulum suscipit nulla quis orci.</p>
+					<p rend="figure-title">Fusce ac felis sit amet ligula pharetra condimentum</p>
+					<p rend="box">
+						Fusce ac felis sit amet ligula pharetra condimentum. Maecenas egestas arcu quis ligula mattis placerat. Duis lobortis massa imperdiet quam. Suspendisse potenti. Pellentesque commodo eros a enim. Vestibulum turpis sem, aliquet eget, lobortis pellentesque, rutrum eu, nisl.
+						<hi xml:lang="en">Sed libero. Aliquam erat volutpat. Etiam vitae tortor. Morbi vestibulum volutpat enim. </hi>
+						Aliquam eu nunc. Nunc sed turpis. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Nulla porta dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Pellentesque dapibus hendrerit tortor. Praesent egestas tristique nibh. Sed a libero. Cras varius.
+					</p>
+				</div>
+			</div>
+			<div type="div1">
+				<head subtype="level1">Donec vitae orci sed dolor rutrum auctor</head>
+				<p>
+					Fusce egestas elit eget lorem.
+					<hi xml:lang="en">Suspendisse nisl elit, rhoncus eget, elementum ac, condimentum eget, diam. Nam at tortor in tellus interdum sagittis. </hi>
+					Aliquam lobortis. Donec orci lectus, aliquam ut, faucibus non, euismod id, nulla. Curabitur blandit mollis lacus. Nam adipiscing. Vestibulum eu odio. Vivamus laoreet. Nullam tincidunt adipiscing enim. Phasellus tempus. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. Fusce neque. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Vivamus aliquet elit ac nisl.
+				</p>
+				<p rend="figure-title">Tableau 1</p>
+				<table>
+					<row>
+						<cell rows="2">
+							<s>Lots</s>
+						</cell>
+						<cell rows="2">
+							<s>Données 1</s>
+						</cell>
+						<cell rows="2">
+							<s>Données 2</s>
+						</cell>
+						<cell cols="2">
+							<s>Total</s>
+						</cell>
+					</row>
+					<row>
+						<cell>
+							<s>
+								Total 1<hi rendition="#T12">ère</hi> partie
+							</s>
+						</cell>
+						<cell>
+							<s>
+								Total 2<hi rendition="#T12">e</hi> partie
+							</s>
+						</cell>
+					</row>
+					<!-- <pb/> -->
+					<row>
+						<cell rows="2">
+							<s>
+								 1<hi rendition="#T12">er</hi> lot
+							</s>
+						</cell>
+						<cell>
+							<s>12 %</s>
+						</cell>
+						<cell>
+							<s>27 %</s>
+						</cell>
+						<cell>
+							<s>91 %</s>
+						</cell>
+						<cell>
+							<s>98 %</s>
+						</cell>
+					</row>
+					<row>
+						<cell>
+							<s>26 %</s>
+						</cell>
+						<cell>
+							<s>45 %</s>
+						</cell>
+						<cell>
+							<s>97 %</s>
+						</cell>
+						<cell>
+							<s>92 %</s>
+						</cell>
+					</row>
+					<row>
+						<cell rows="2">
+							<s>
+								2<hi rendition="#T12">nd</hi> lot
+							</s>
+						</cell>
+						<cell>
+							<s>24 %</s>
+						</cell>
+						<cell>
+							<s>85 %</s>
+						</cell>
+						<cell>
+							<s>91 %</s>
+						</cell>
+						<cell>
+							<s>94 %</s>
+						</cell>
+					</row>
+					<row>
+						<cell>
+							<s>54 %</s>
+						</cell>
+						<cell>
+							<s>54 %</s>
+						</cell>
+						<cell>
+							<s>92 %</s>
+						</cell>
+						<cell>
+							<s>92 %</s>
+						</cell>
+					</row>
+				</table>
+				<p rend="figure-license">Source  JFR</p>
+				<p>Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla.</p>
+				<p rend="question">Fusce fermentum odio nec arcu ?</p>
+				<p rend="answer">Vivamus euismod mauris. In ut quam vitae odio lacinia tincidunt. Praesent ut ligula non mi varius sagittis. Cras sagittis. Praesent ac sem eget est egestas volutpat. Vivamus consectetuer hendrerit lacus. Cras non dolor. </p>
+				<p rend="question">Vivamus in erat ut urna cursus vestibulum ?</p>
+				<p rend="answer">
+					<hi xml:lang="en">Fusce commodo aliquam arcu. Nam commodo suscipit quam. Quisque id odio. Praesent venenatis metus at tortor pulvinar varius. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. </hi>
+					Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.
+				</p>
+				<p>Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla.</p>
+			</div>
+			<div type="div1">
+				<head subtype="level1">Maecenas nec odio</head>
+				<p>
+					Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris.
+					<hi xml:lang="en">Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. </hi>
+					Vestibulum volutpat pretium libero. Cras id dui. Aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci.
+				</p>
+				<div type="div2">
+					<head subtype="level2">Fusce id purus</head>
+					<div type="div3">
+						<head subtype="level3">Donec venenatis vulputate lorem</head>
+						<p>
+							Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. Nullam sagittis. Suspendisse pulvinar, augue ac venenatis condimentum, sem libero volutpat nibh, nec pellentesque velit pede quis nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Fusce id purus.
+							<hi xml:lang="en">Ut varius tincidunt libero. Phasellus dolor. </hi><!-- <pb/> -->
+							<hi xml:lang="en">Maecenas vestibulum mollis diam. </hi>
+							Pellentesque ut neque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. In ac felis quis tortor malesuada pretium.
+						</p>
+						<div type="div4">
+							<head subtype="level4">Nunc nulla</head>
+							<p>Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede. Donec interdum, metus et hendrerit aliquet, dolor diam sagittis ligula, eget egestas libero turpis vel mi. Nunc nulla. Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Donec venenatis vulputate lorem. Morbi nec metus. Phasellus blandit leo ut odio. Maecenas ullamcorper, dui et placerat feugiat, eros pede varius nisi, condimentum viverra felis nunc et lorem. Sed magna purus, fermentum eu, tincidunt eu, varius ut, felis. In auctor lobortis lacus. Quisque libero metus, condimentum nec, tempor a, commodo mollis, magna. Vestibulum ullamcorper mauris at ligula. Fusce fermentum. Nullam cursus lacinia erat.</p>
+							<div type="div5">
+								<head subtype="level5">Praesent blandit laoreet nibh</head>
+								<p>Fusce convallis metus id felis luctus adipiscing. Pellentesque egestas, neque sit amet convallis pulvinar, justo nulla eleifend augue, ac auctor orci leo non est. Quisque id mi. Ut tincidunt tincidunt erat. Etiam feugiat lorem non metus. Vestibulum dapibus nunc ac augue. Curabitur vestibulum aliquam leo. Praesent egestas neque eu enim. In hac habitasse platea dictumst. Fusce a quam. Etiam ut purus mattis mauris sodales aliquam. Curabitur nisi. Quisque malesuada placerat nisl. Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Sed augue ipsum, egestas nec, vestibulum et, malesuada adipiscing, dui.</p>
+							</div>
+							<div type="div5">
+								<head subtype="level5">Vestibulum facilisis</head>
+								<p>Vestibulum facilisis, purus nec pulvinar iaculis, ligula mi congue nunc, vitae euismod ligula urna in dolor. Mauris sollicitudin fermentum libero. Praesent nonummy mi in odio. Nunc interdum lacus sit amet orci. Vestibulum rutrum, mi nec elementum vehicula, eros quam gravida nisl, id fringilla neque ante vel mi. Morbi mollis tellus ac sapien. Phasellus volutpat, metus eget egestas mollis, lacus lacus blandit dui, id egestas quam mauris ut lacus. Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante. In consectetuer turpis ut velit. Nulla sit amet est. Praesent metus tellus, elementum eu, semper a, adipiscing nec, purus. Cras risus ipsum, faucibus ut, ullamcorper id, varius ac, leo.</p>
+							</div>
+						</div>
+						<div type="div4">
+							<head subtype="level4">Suspendisse feugiat</head>
+							<p>Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi. Praesent nec nisl a purus blandit viverra. Praesent ac massa at ligula laoreet iaculis. Nulla neque dolor, sagittis eget, iaculis quis, molestie non, velit. Mauris turpis nunc, blandit et, volutpat molestie, porta ut, ligula. Fusce pharetra convallis urna. Quisque ut nisi. Donec mi odio, faucibus at, scelerisque quis, convallis in, nisi. Suspendisse non nisl sit amet velit hendrerit rutrum. Ut leo. Ut a nisl id ante tempus hendrerit. Proin pretium, leo ac pellentesque mollis, felis nunc ultrices eros, sed gravida augue augue mollis justo. Suspendisse eu ligula. Nulla facilisi. Donec id justo.</p>
+						</div>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Praesent porttitor</head>
+						<p>
+							Praesent porttitor, nulla vitae posuere iaculis, arcu nisl dignissim dolor, a pretium mi sem ut ipsum. Curabitur suscipit suscipit tellus. Praesent vestibulum dapibus nibh. Etiam iaculis nunc ac metus. Ut id nisl quis enim dignissim sagittis. Etiam sollicitudin, ipsum eu pulvinar rutrum, tellus ipsum laoreet sapien, quis venenatis ante odio sit amet eros. Proin magna. Duis vel nibh at velit scelerisque suscipit. Curabitur turpis. Vestibulum suscipit nulla quis orci. <!-- <pb/> -->
+							Fusce ac felis sit amet ligula pharetra condimentum. Maecenas egestas arcu quis ligula mattis placerat. Duis lobortis massa imperdiet quam. Suspendisse potenti. Pellentesque commodo eros a enim. Vestibulum turpis sem, aliquet eget, lobortis pellentesque, rutrum eu, nisl.
+						</p>
+					</div>
+				</div>
+				<div type="div2">
+					<head subtype="level2">Sed libero</head>
+					<p>
+						<hi xml:lang="en">Aliquam erat volutpat. Etiam vitae tortor. Morbi vestibulum volutpat enim. Aliquam eu nunc. Nunc sed turpis. Sed mollis, eros et ultrices tempus, mauris ipsum aliquam libero, non adipiscing dolor urna a orci. Nulla porta dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Pellentesque dapibus hendrerit tortor. Praesent egestas tristique nibh. Sed a libero. Cras varius. Donec vitae orci sed dolor rutrum auctor. Fusce egestas elit eget lorem. Suspendisse nisl elit, rhoncus eget, elementum ac, condimentum eget, diam. Nam at tortor in tellus interdum sagittis. </hi>
+						Aliquam lobortis. Donec orci lectus, aliquam ut, faucibus non, euismod id, nulla.
+						<hi xml:lang="en">Curabitur blandit mollis lacus.</hi>
+					</p>
+				</div>
+			</div>
+		</body>
+		<back>
+			<div type="bibliography">
+				<listBibl>
+					 <head subtype="level1">Partie 1</head>
+					 <listBibl>
+					 <head subtype="level2">Partie 1.1</head>
+					 
+					<bibl>
+						<hi xml:lang="en">Bennett, Francis et Michael Holdsworth. </hi>
+						<hi rendition="#T3" xml:lang="en">Embracing the Digital Age. An Opportunity for Booksellers and the Book Trade</hi>
+						<hi xml:lang="en">. Londres : The Booksellers Association of the United Kingdom &amp; Ireland, 2007.</hi>
+					</bibl>
+					<bibl>
+						Carrérot, Olivier, éd.
+						<hi rendition="#T4">Qu’est-ce qu’un livre aujourd’hui ? Pages, marges, écrans</hi>
+						. Les Cahiers de la Librairie. Paris : La Découverte, 2009.
+					</bibl>
+					</listBibl>
+					<listBibl>
+					 <head subtype="level2">Partie 1.2</head>
+					<bibl>
+						Chartier, Roger. « La mort du livre ? »,
+						<hi rendition="#T4">Communication &amp; Langages,</hi>
+						159 (mars 2009) : 57-66.
+					</bibl>
+					<bibl>
+						Clémente, Hélène, et Caroline C. Tachon.
+						<hi rendition="#T4">Accueillir le numérique ? Une mutation pour la librairie et le commerce du livre.</hi> 
+						<ref target="http://www.accueillirlenumerique.com/">
+							<hi xml:lang="en">http://www.accueillirlenumerique.com/</hi>
+						</ref>
+						<hi xml:lang="en">. </hi>
+					</bibl>
+				      </listBibl>
+				    </listBibl>
+				    <listBibl>
+					 <head subtype="level1">Partie 2</head>
+					<bibl>
+						<hi xml:lang="en">Darnton, Robert. « The New Age of the Book », </hi>
+						<hi rendition="#T3" xml:lang="en">The New York Review of Books,</hi>
+						<hi xml:lang="en"> 46, no. 5 (mars 18, 1999).  </hi>
+					</bibl>
+					<bibl>
+						Fogel, Jean-François.
+						<hi rendition="#T4">Une presse sans Gutenberg. Pourquoi Internet a bouleversé le journalisme</hi>
+						.
+						<hi xml:lang="en">Paris : Points, 2007. </hi>
+					</bibl>
+					<bibl>
+						<hi xml:lang="en">Gomez, Jeff. </hi>
+						<hi rendition="#T3" xml:lang="en">Print is Dead. Books in our Digital Age</hi>
+						<hi xml:lang="en">. London ; New York : Macmillan, 2008.  </hi>
+					</bibl>
+					<bibl>
+						<hi xml:lang="en">Grimmelmann, James. « Principles and Recommendations for the Google Book Search Settlement », </hi>
+						<hi rendition="#T3" xml:lang="en">The laboratorium</hi>
+						<hi xml:lang="en">. </hi>
+						<ref target="http://laboratorium.net/archive/2008/11/08/principles_and_recommendations_for_the_google_book">http://laboratorium.net/archive/2008/11/08/principles_and_recommendations_for_the_google/book</ref>
+						.
+					</bibl>
+					<bibl>
+						Lardellier, Pascal.
+						<hi rendition="#T4">Demain, le livre</hi>
+						. Paris : L’Harmattan, 2007.
+					</bibl>
+					<bibl>
+						Le Ray, Éric, et Jean-Paul Lafrance.
+						<hi rendition="#T4">La bataille de l’imprimé à l’ère du papier électronique</hi>
+						. Montréal : Presses de l’Université de Montréal, 2008.
+					</bibl>
+					<bibl>
+						Lebert, Marie.
+						<hi rendition="#T4">Les mutations du livre à l’heure de l’internet</hi>
+						. NEF (Net des études françaises), 2007. 
+						<ref target="http://www.etudes-francaises.net/dossiers/mutations.htm">http://www.etudes-francaises.net/dossiers/mutations.htm</ref>
+						.  
+					</bibl>
+					<bibl>
+						Patino, Bruno.
+						<hi rendition="#T4">Le devenir numérique de l’édition. Du livre objet au livre droit. Rapport au ministre de la Culture et de la Communication</hi>
+						. Paris : Documentation française, 2008.
+					</bibl>
+					<bibl>
+						Pédauque, Roger T.
+						<hi rendition="#T4">Le document à la lumière du numérique</hi>.
+						Caen : C&amp;F éditions, 2006.
+					</bibl>
+					<bibl>
+						Poulet, Bernard.
+						<hi rendition="#T4">La fin des journaux et l’avenir de l’information</hi>
+						. Paris : Gallimard, 2009.
+					</bibl>
+					<bibl>
+						Ringoot, Roselyne.
+						<hi rendition="#T4">Le journalisme en invention. Nouvelles pratiques, nouveaux acteurs</hi>
+						. Rennes, Presses universitaires de Rennes, 2006.
+					</bibl>
+					<bibl>
+						Soccavo, Lorenzo.
+						<hi rendition="#T4">Gutenberg 2.0. Le futur du livre six siècles après Gutenberg une nouvelle révolution va changer votre façon de lire ...</hi>
+						2
+						<hi rendition="#T12">e</hi>
+						éd., Paris : M21, 2008.
+					</bibl>
+					<bibl>
+						Steiner, George.
+						<hi rendition="#T4">Le silence des livres. </hi>
+						Suivi de
+						<hi rendition="#T4"> Ce vice encore impuni, </hi>
+						par Michel Crépu. Paris : Arléa, 2007.
+					</bibl>
+				</listBibl>
+			</div>
+			<div type="appendix">
+				<div type="div1">
+					<head subtype="level1">Vivamus laoreet</head>
+					<p>
+						Nullam tincidunt adipiscing enim. Phasellus tempus. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. Fusce neque. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae iaculis lacus elit id tortor. Vivamus aliquet elit ac nisl. Fusce fermentum odio nec arcu. Vivamus euismod mauris. In ut quam vitae odio lacinia tincidunt. Praesent ut ligula non mi varius sagittis. Cras sagittis. Praesent ac sem eget est egestas volutpat. Vivamus consectetuer hendrerit lacus. Cras non dolor. Vivamus in erat ut urna cursus vestibulum.
+						<hi xml:lang="en">Fusce commodo aliquam arcu. Nam commodo suscipit quam. Quisque id odio.</hi>
+					</p>
+					<div type="div2">
+						<head subtype="level2">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</head>
+						<p>
+							Aenean commodo ligula eget dolor. 
+							Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus.
+						</p>
+						<p rend="figure-title">Fonctionnement d'Opentext</p>
+<p>
+	<figure>
+		<graphic url="relative/path/to/image/img-1.jpg" />
+	</figure>
+</p>
+<p rend="figure-legend">Schéma réalisé en septembre 2009</p>
+<p rend="figure-license">Surletoit - licence Creative Commons by-nc-sa</p>
+						<p>Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien.</p>
+						<q rend="quotation">Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui. Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget, imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. </q>
+						<p>
+							<hi xml:lang="en">Nunc nonummy metus. </hi>
+							Vestibulum volutpat pretium libero. Cras id dui. Aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci. Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi.
+						</p>
+						
+					</div>
+				</div>
+			</div>
+		</back>
+	</text>
+</TEI>
