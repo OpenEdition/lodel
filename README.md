@@ -5,21 +5,20 @@ Logiciel d'édition Électronique
 
 Home page: http://www.lodel.org
 
-
+English readers: for a presentation in English, see https://lodel.org/666 . The rest of the documentation and the wiki are currentlyon in French. If you are interested in Lodel, [please contact us](lodel@lodel.org) !  
+    
 E-Mail: lodel@lodel.org
 
 Résumé
 -------
 
-Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des
-articles issus d'un traitement de texte.
+Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des articles issus d'un traitement de texte.
 
 
 Licence
 -------
 
-Lodel est un logiciel libre sous licence GPL Version 2. Lisez la licence dans le fichier
-COPYING.
+Lodel est un logiciel libre sous licence GPL Version 2. Lisez la licence dans [le fichier COPYING](https://github.com/OpenEdition/lodel/blob/master/COPYING).
 
 
 Lodel - Logiciel d'édition Électronique
@@ -39,7 +38,7 @@ Installation
 Pré-requis:
   - Utiliser son propre serveur linux, Lodel n'est pas utilisable sur hébergement dédié.
   - Serveur HTTP (nginx, apache) avec PHP
-  - Serveur MYSQL
+  - Serveur MySQL
     - pour être utilisé avec OTX, il faut une valeur de max_allowed_packet et key_buffer très grande (16 M)
 
 
