@@ -3,7 +3,9 @@ Lodel
 
 Logiciel d'édition Électronique
 
-Home page: http://www.lodel.org
+Home page (doc générale): http://www.lodel.org
+
+Documentation technique: https://github.com/OpenEdition/lodel/wiki
 
 English readers: for a presentation in English, see https://lodel.org/666 . The rest of the documentation and the wiki are currentlyon in French. If you are interested in Lodel, [please contact us](lodel@lodel.org) !  
     
