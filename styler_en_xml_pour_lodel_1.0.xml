@@ -1,0 +1,1763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.tei-c.org/ns/1.0 http://lodel.org/ns/tei.openedition.1.3.1/tei.openedition.1.3.1.xsd">
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+				<title type="main" xml:lang="fr">Composer un document en TEI pour Lodel 1.0</title>
+				<author>
+					<name>Jean-François Rivière</name>
+				</author>
+				<author>
+					<name>Nahuel Angelinetti</name>
+				</author>
+			</titleStmt>
+			<publicationStmt>
+				<publisher>Cléo</publisher>
+				<date>29-04-2015</date>
+			</publicationStmt>
+			<sourceDesc>
+				<p>Born digital</p>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<projectDesc>
+				<p/>
+			</projectDesc>
+
+			<tagsDecl>
+				<rendition xml:id="T5" scheme="css">font-style:italic;font-weight:bold</rendition>
+				<rendition xml:id="T6" scheme="css">font-style:italic;text-decoration:underline</rendition>
+				<rendition xml:id="T7" scheme="css">font-style:italic;text-decoration:underline;font-weight:bold</rendition>
+				<rendition xml:id="T10" scheme="css">text-decoration:underline;font-weight:bold</rendition>
+				<rendition xml:id="T12" scheme="css">vertical-align:super</rendition>
+				<rendition xml:id="XML" scheme="css">color:#000096 </rendition>
+				<rendition xml:id="warning" scheme="css">color:red;font-size:2em</rendition>
+				<rendition xml:id="XMLattribut" scheme="css">color:#F5844C</rendition>
+				
+			</tagsDecl>
+
+		</encodingDesc>
+		<profileDesc>
+			<langUsage>
+				<language ident="fr"/>
+			</langUsage>
+			<textClass/>
+		</profileDesc>
+	</teiHeader>
+	<text>
+		<front>
+			<div type="abstract" xml:lang="fr">
+				<p>Ce document présente les spécifications pour le balisage
+					XML de documents en vue de leur importation dans Lodel 1.0. Les
+					Xpath proposés ici sont définis dans le modèle éditorial de
+					OpenEdition.
+				</p>
+			</div>
+			<div type="abstract" xml:lang="en">
+				<p>These instructions look at XML markup for documents due to be imported into Lodel
+					1.0. The Xpaths suggested here feature in OpenEdition’s editorial model. See in english : <ref target="http://www.lodel.org/719">Creating a TEI document in Lodel 1.0</ref>.</p>
+			</div>
+      <div type="correction">
+				<p>Révision 27/04/2015 : correction de la documentation pour les épigraphes. Contrairement à ce qui était indiqué jusqu'à cette date les épigraphes doivent figurer dans le &lt;body&gt;, pas dans le &lt;front&gt;.</p>
+				<p>Révision 28/04/2015 : ajout des spécifications pour les exemples de linguistiques.</p>
+				<p>Révision 23/10/2015 : ajout des spécifications pour l'utilisation de <hi rendition="#XML">&lt;persName&gt;</hi></p>
+			</div>
+		</front>
+		<body>
+		<p>Ce document présente les spécifications pour le balisage XML de documents en vue de leur importation dans Lodel 1.0. Les Xpath proposés ici sont définis dans le modèle éditorial de OpenEdition. Un document TEI d'exemple est disponible en annexe : <hi rend="italic">Lorem-ipsum-Lodel1.0.xml</hi>. Vous trouverez aussi cette documentation dans sa version TEI : <hi rend="italic">Styler-en-XML-pour-lodel-1.0.xml</hi></p>
+			<p>Le schéma XML W3C pour l'encodage TEI Openedition est disponible à l'adresse <ref target="http://www.lodel.org/ns/">http://www.lodel.org/ns/</ref>.
+				La documentation technique du schéma est consultatble à l'adresse <ref target="http://www.lodel.org/715">http://www.lodel.org/715</ref></p>
+			<div type="div1">
+				<head subtype="level1">teiHeader</head>
+				<div type="div2">
+					<head subtype="level2">Titre, sous-titre, surtitre, titres traduits</head>
+					<p>Veiller à ce que chaque titre :</p>
+					<list type="unordered">
+						<item>
+							<p>constitue
+								un seul paragraphe, sans saut de ligne (<hi rendition="#XML">&lt;lb /&gt;</hi>) ;
+							</p>
+						</item>
+						<item>
+							<p>soit affiché en minuscules sauf initiale ;
+							</p>
+						</item>
+						<item>
+							<p>ne soit pas terminé par un point.
+							</p>
+						</item>
+					</list>
+					<p>
+						<hi rend="bold">Xpath :</hi>
+					</p>
+					<list type="unordered">
+						<item>
+							<p>
+								Titre
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type='main']
+							</p>
+						</item>
+						<item>
+							<p>
+								Sous-titre
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type='sub']
+							</p>
+						</item>
+						<item>
+							<p>
+								Surtitre
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type='sup']
+							</p>
+						</item>
+						<item>
+							<p>
+								Titres traduits
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:title[@type='alt' and @xml:lang]
+								<lb/>
+								Pout les titres traduits, l'attribut "xml:lang" est obligatoire avec un valeur au format ISO 639-1.
+							</p>
+						</item>
+					</list>
+					<p>
+						<hi rend="bold">Exemple : </hi>
+					</p>
+					<p rend="noindent">
+						<code lang="xml">
+<![CDATA[
+[...]
+<teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title type="sup">Dolor sit amet</title>
+        <title type="main">Lorem ipsum pour Opentext</title>
+        <title type="sub">Basé sur le modèle éditorial pour Lodel de OpenEdition</title>
+        <title type="alt" xml:lang="en">Other travelling salesmen live a life of luxury</title>
+        <title type="alt" xml:lang="es">Las preocupaciones son mucho mayores</title>
+[...]
+]]>
+						</code>
+					</p>
+
+				</div>
+				<div type="div2">
+					<head subtype="level2">Auteurs, traducteurs, éditeurs scientifiques et leur description</head>
+					<p>Il est bien-sûr possible d'indiquer plusieurs auteurs, traducteurs et éditeurs scientifiques pour le document.</p>
+					<p>2 possibilités d'encodage pour les noms de personnes : <hi rendition="#XML">&lt;name&gt;</hi> ou <hi rendition="#XML">&lt;persName&gt;</hi></p>
+					<div type="div3">
+						<head subtype="level3">Utilisation de <hi rendition="#XML">&lt;name&gt;</hi></head>
+						<p>Veillez à ce que les prénoms et noms soient affichés dans cet ordre et en minuscule sauf initiale. Cet ordre est important car Lodel va en déduire le prénom (premier mot) et le nom (deuxième mot) au moment de l’importation. En cas de nom composé, il faut utiliser des espaces insécables (<ref target="http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable">http://fr.wikipedia.org/wiki/Espace_ins%C3%A9cable</ref>) entre les différentes parties du nom composé. De cette manière Lodel distinguera correctement prénoms et noms. Cette recommandation n'est pas nécessaire pour les prénoms composés.
+						</p>
+						<p>
+							Il est indispensable d’utiliser toujours la même forme pour les noms d’auteurs. En particulier, prêter attention à la casse, et à l’orthographe des prénoms. Ex : Si deux documents d’un même auteur sont importés dans Lodel , l’auteur étant orthographié
+							 <hi rend="italic">Jean-Paul Durand</hi> 
+					    	  dans le premier document, et 
+							 <hi rend="italic">Jean Paul Durand</hi> 
+							 (sans tiret) dans le second, Lodel les considérera comme deux auteurs différents, et créera deux entrées distinctes dans l’index des auteurs.
+						</p>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list>
+							<item>
+								<p>
+									Auteur
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:name
+								</p>
+							</item>
+	
+							<item>
+								<p>
+									Traducteur
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[@role='translator']/tei:name
+								</p>
+							</item>
+	
+							<item>
+								<p>
+									Éditeur scientifique
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[not(@role)]/tei:name
+								</p>
+							</item>
+						</list>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Utilisation de <hi rendition="#XML">&lt;persName&gt;</hi></head>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list>
+							<item>
+								<p>
+									Auteur (prénom et nom)
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:persName/tei:forename
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:persName/tei:surname
+								</p>
+							</item>
+	
+							<item>
+								<p>
+									Traducteur (prénom et nom)
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[@role='translator']/tei:persName/tei:forename
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[@role='translator']/tei:persName/tei:surname
+								</p>
+							</item>
+	
+							<item>
+								<p>
+									Éditeur scientifique (prénom et nom)
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[not(@role)]/tei:persName/tei:forename
+									<lb/>
+									/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor[not(@role)]/tei:persName/tei:surname
+								</p>
+							</item>
+						</list>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Description des contributeurs</head>
+					<p>Pour chacun de ces contributeurs, il est possible de donner une description. La description générale du contributeur est donnée dans la balise <hi rendition="#XML">&lt;affiliation&gt;</hi>. Il est également possible d'utiliser d'autres balises pour préciser l'affiliation, la fonction, le courriel, le préfixe et le site web.</p>
+					<p>
+						<hi rend="bold">Xpath :</hi>
+					</p>
+					<list>
+						<item>
+							<p>
+								Description d'auteur
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:affiliation/tei:s | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:affiliation/tei:s
+							</p>
+						</item>
+						<item>
+							<p>
+								Affiliation
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:orgName/tei:s | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:orgName/tei:s
+							</p>
+						</item>
+						<item>
+							<p>
+								Fonction
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:roleName[@type='function']/tei:s | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:roleName[@type='function']/tei:s
+							</p>
+						</item>
+						<item>
+							<p>
+								Préfixe
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:roleName[@type='honorific']/tei:s | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:roleName[@type='honorific']/tei:s
+							</p>
+						</item>
+						<item>
+							<p>
+								Courriel
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:email/tei:s | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:email/tei:s
+							</p>
+						</item>
+						<item>
+							<p>
+								Site web
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:author/tei:ref | /tei:TEI/tei:teiHeader/tei:fileDesc/tei:titleStmt/tei:editor/tei:ref
+							</p>
+						</item>
+
+					</list>
+					<p>
+						<hi rend="bold">Exemple :</hi>
+					</p>
+					<p rend="noindent">
+						<code lang="xml">
+<![CDATA[
+[...]
+<titleStmt>
+[...]
+	<author>
+		<name>Marin Dacos</name>
+		<affiliation>
+			Directeur du Cléo (Centre pour l'édition électronique ouverte)
+		</affiliation>
+		<roleName type="function">
+			<s>Directeur</s>
+		</roleName>
+		<orgName>
+			<s>Cléo</s>
+		</orgName>
+		<email>
+			<s>contact@openedition.org</s>
+		</email>
+		<ref target="http://www.openedition.org" type="website">http://www.openedition.org</ref>
+		<roleName type="honorific">
+			<s>M.</s>
+		</roleName>
+	</author>
+	<editor role="translator">
+		<persName>
+			<forename>Jean-François</forename>
+			<surname>Rivière</surname>
+		</persName>
+		<affiliation>Chargé d'édition au Cléo</affiliation>
+	</editor>
+	<editor>
+		<persName>
+			<forename>Nahuel</forename>
+			<surname>Angelinetti</surname>
+		</persName>
+		<affiliation>Développeur au Cléo</affiliation>
+	</editor>
+</titleStmt>
+[...]
+]]>
+						</code>
+					</p>
+					</div>
+				</div>
+				<div type="div2">
+					<head subtype="level2">Index : Mots-clés, keywords... ; géographie ; chronologie ; thèmes</head>
+					<p>Comme pour les noms d’auteurs, l’orthographe et la casse des entrées d’index doivent toujours être les mêmes afin d’éviter les doublons dans les index.</p>
+					<p>
+						<hi rend="bold">Xpath :</hi>
+					</p>
+					<list type="unordered">
+						<item>
+							<p>
+								Mots-clés, keywords, palabras claves...
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='keyword' and xml:lang]/tei:list/tei:item
+								<lb/>
+								Pour les keywords, l'attribut "xml:lang" est obligatoire avec un valeur au format ISO 639-1.
+							</p>
+						</item>
+						<item>
+							<p>
+								Index géographique
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='geographical']/tei:list/tei:item
+							</p>
+						</item>
+						<item>
+							<p>
+								Index chronologique
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='chronological']/tei:list/tei:item
+							</p>
+						</item>
+						<item>
+							<p>
+								Index thématique
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:profileDesc/tei:textClass/tei:keywords[@scheme='subject']/tei:list/tei:item
+							</p>
+						</item>
+					</list>
+					<p>
+						<hi rend="bold">Exemple :</hi>
+					</p>
+					<p rend="noindent">
+						<code lang="xml">
+<![CDATA[
+<profileDesc>
+[...]
+	<textClass>
+		<keywords scheme="keyword" xml:lang="fr">
+			<list>
+				<item>aenean</item>
+				<item>commodo</item>
+				<item>ligula</item>
+				<item>eget</item>
+				<item>dolor</item>
+			</list>
+		</keywords>
+		<keywords scheme="chronological">
+			<list>
+				<item>XXIe siecle</item>
+			</list>
+		</keywords>
+		<keywords scheme="geographical">
+			<list>
+				<item>France</item>
+				<item>Ile de France</item>
+				<item>Paris</item>
+			</list>
+		</keywords>
+[...]
+]]>
+						</code>
+					</p>
+
+				</div>
+				<div type="div2">
+					<head subtype="level2">Dates de publication papier et électronique</head>
+					<p>On distingue la date de publication papier et la date de publication électronique d’un document.</p>
+					<p>Si la date de publication électronique n’est pas indiquée dans le document, elle sera automatiquement renseignée par Lodel lors de l’importation du document et fixée au jour de l’importation du document. En cas de rechargement du document dans Lodel, si la date de publication électronique n’est pas indiquée dans le document elle sera fixée automatiquement au jour du rechargement du document.
+						Afin de conserver une date de publication électronique stable, même en cas de rechargement du document, il est donc nécessaire de l’indiquer dans le document importé dans Lodel.</p>
+					<p>
+						<hi rend="bold">Xpath  :</hi>
+					</p>
+					<list type="unordered">
+						<item>
+							<p>
+								Date de publication électronique
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:date
+								<lb/>
+								avec une date au format : JJ/MM/AAAA
+							</p>
+						</item>
+						<item>
+							<p>
+								Date de publication papier
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:date
+								<lb/>
+								avec une date au format : JJ/MM/AAAA
+							</p>
+						</item>
+					</list>
+					<p>
+						<hi rend="bold">Exemple : </hi>
+					</p>
+					<p rend="noindent">
+						<code lang="xml">
+<![CDATA[
+<fileDesc>
+[...]
+	<publicationStmt>
+		<date>01/07/2010</date> <!--date de publication électronique-->
+[...]
+	</publicationStmt>
+	<sourceDesc>
+		<biblFull>
+			<publicationStmt>
+				<date>01/07/2008</date> <!--date de publication papier-->
+			</publicationStmt>
+[...]
+		</biblFull>
+	</sourceDesc>
+[...]
+]]>
+						</code>
+					</p>
+					<div type="div3">
+						<head subtype="level3">Date de publication électronique et « barrière mobile »</head>
+						<p>Pour les revues adhérant à Revues.org et utilisant la fonction de « barrière mobile », la date de publication électronique sera utilisée par Lodel pour gérer l’affichage de l’article sous forme de résumé ou en texte intégral.
+							Pour les articles ayant une date de publication électronique postérieure à la date de consultation de l’article, seules les métadonnées seront affichées (titre, auteur, résumés, abstract…) ;
+							pour les articles ayant une date de publication électronique antérieure à la date de consultation de l’article seront affichés en texte intégral.
+							Pour une « barrière mobile » de deux ans, la date de publication électronique devra être fixée deux ans après la date de publication papier. L’article sera ainsi accessible en texte intégral deux ans après sa parution dans la revue papier.
+						</p>
+					</div>
+				</div>
+				<div type="div2">
+					<head subtype="level2">Autres métadonnées</head>
+					<p>
+						<hi rend="bold">Xpath :</hi>
+					</p>
+					<list type="unordered">
+						<item>
+							<p>
+								Langue
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:profileDesc/tei:langUsage/tei:language
+								<lb/>
+								avec une valeur au format ISO 639-1
+							</p>
+						</item>
+						<item>
+							<p>
+								Pagination
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:publicationStmt/tei:idno[@type='pp']
+								<lb/>
+								La pagination papier d’un document peut être renseignée de différentes façons : en chiffres romains et petites capitales (V-XXV), en chiffres arabes (5-25).
+								<lb/>
+								Toutes les valeurs sont valides. On indique la pagination sans les mentions p. ou pp., celles-ci étant généralement pris en charge par la maquette.
+							</p>
+						</item>
+						<item>
+							<p>
+								Numéro du document
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:idno[@type='documentnumber']
+								<lb/>
+								Il s’agit d’une information éditoriale qui peut être affichée dans la maquette dans la référence électronique du document. Le numéro de document peut être utilisé, par exemple, pour faciliter la citation des documents électroniques.
+							</p>
+						</item>
+						<item>
+							<p>
+								Licence
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:publicationStmt/tei:availability
+							</p>
+						</item>
+						<item>
+							<p>
+								Notice bibliographique du document
+								<lb/>
+								/tei:TEI/tei:teiHeader/tei:fileDesc/tei:sourceDesc/tei:biblFull/tei:notesStmt/tei:note[@type='bibl']
+								<lb/>
+								Il est possible d'indiquer ici la référence bibliographique de l'édition papier de ce document.
+							</p>
+						</item>
+					</list>
+					<p>
+						<hi rend="bold">Exemple : </hi>
+					</p>
+					<p rend="noindent">
+						<code lang="xml">
+<![CDATA[
+<fileDesc>
+[...]
+	<publicationStmt>
+		<date>01/07/2010</date>
+		<availability>
+			Creative Commons Attribution-NoDerivs 3.0 Unported License
+		</availability>
+		<idno type="documentnumber">25</idno>
+	</publicationStmt>
+	<sourceDesc>
+		<biblFull>
+			<publicationStmt>
+				<date>01/07/2008</date>
+				<idno type="pp">10-27</idno>
+			</publicationStmt>
+			<notesStmt>
+				<note type="bibl">Référence bibliographique de l'édition papier de cet article.</note>
+			</notesStmt>
+		</biblFull>
+	</sourceDesc>
+</fileDesc>
+[...]
+<profileDesc>
+	<langUsage>
+		<language>fr</language>
+	</langUsage>
+[...]
+]]>
+						</code>
+					</p>
+
+				</div>
+			</div>
+			<div type="div1">
+				<head subtype="level1">text</head>
+				<div type="div2">
+					<head subtype="level2">front</head>
+					<div type="div3">
+						<head subtype="level3">Résumés</head>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Résumés
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='abstract' and @xml:lang]
+									<lb/>
+									Comme pour les titres traduits, l'attribut "xml:lang" est obligatoire avec un valeur au format ISO 639-1.
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<text>
+	<front>
+[...]
+		<div type="abstract" xml:lang="fr">
+			<p>Il était sur le dos, un dos aussi dur qu’une carapace, et, en relevant un peu la tête, il vit, bombé, brun, cloisonné par des arceaux plus rigides, son abdomen sur le haut duquel la couverture, prête à glisser tout à fait, ne tenait plus qu’à peine. Ses nombreuses pattes, lamentablement grêles par comparaison avec la corpulence qu’il avait par ailleurs, grouillaient désespérément sous ses yeux. « Qu’est-ce qui m’est arrivé ? » pensa-t-il.</p>
+			<p>Ce n’était pas un rêve. [...]</p>
+		</div>
+		<div type="abstract" xml:lang="en">
+			<p>"Oh, God", he thought, "what a strenuous career it is that I've chosen! Travelling day in and day out. Doing business like this takes much more effort than doing your own business at home, and on top of that there's the curse of travelling, worries about making train connections, bad and irregular food, contact with different people all the time so that you can never get to know anyone or become friendly with them. It can all go to Hell! "He felt a slight itch up on his belly; pushed himself slowly up on his back towards the headboard so that he could lift his head better; found where the itch was, and saw that it was covered with lots of little white spots which he didn't know what to make of; and when he tried to feel the place with one of his legs he drew it quickly back because as soon as he touched it he was overcome by a cold shudder. He slid back into his former position. "Getting up early all the time", he thought, "it makes you stupid. You've got to get enough sleep. Other travelling salesmen live a life of luxury. For instance, whenever I go back to the guest house during the morning to copy out the contract, these gentlemen are always still sitting there eating their breakfasts. I ought to just try that with my boss; I'd get kicked out on the spot. But who knows, maybe that would be the best thing for me. If I didn't have my parents to think about I'd have given in my notice a long time ago, I'd have gone up to the boss and told him just what I think, tell him everything I would, let him know just what I feel. He'd fall right off his desk! And it's a funny sort of business to be sitting up there at your desk, talking down at your subordinates from up there, especially when you have to go right up close because the boss is hard of hearing. Well, there's still some hope; once I've got the money together to pay off my parents' debt to him - another five or six years I suppose - that's definitely what I'll do. That's when I'll make the big change.</p>
+		</div>
+		<div type="abstract" xml:lang="es">
+			<p>Las preocupaciones son mucho mayores cuando se trabaja fuera, por no hablar de las molestias propias de los viajes: estar pendiente de los enlaces de los trenes; la comida mala, irregular; relaciones que cambian constantemente, que nunca llegan a ser verdaderamente cordiales, y en las que no tienen cabida los sentimientos. amsa era viajante de comercio-, y de la pared colgaba una estampa recientemente recortada de una revista ilustrada y puesta en un marco dorado.</p>
+		</div>
+[...]
+]]>
+							</code>
+						</p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Notes de lecture et comptes rendus d’ouvrages</head>
+						<p>
+							Les notes de lecture et comptes rendus d’ouvrages sont à styler séparément en autant de fichiers. Ne pas intituler ce type de document « Note de lecture ».</p>
+						<p>Si la recension n’a pas de titre propre, il est d’usage d’appliquer le style « Titre » à l’auteur et au titre de l’ouvrage recensé. Il est aussi possible de styler les éléments bibliographiques (éditeur, lieu et année d’édition…) en « Sous-titre » : ceci permet d’afficher la notice bibliographique dans le sommaire.</p>
+						<p>Les titre, nom d’auteur, notice bibliographique et date de publication des œuvres commentées peuvent aussi être stylés en tant qu’élément descriptif du document.</p>
+						<p>Ces informations permettront un meilleur référencement et donneront la possibilité de créer des index spécifiques (index des auteurs des œuvres commentées par exemple). L’affichage de ces informations dans la maquette peut aussi être prévu.</p>
+						<p>Ces indications ne remplacent pas le titre du document. Il est nécessaire d’indiquer ce dernier, même s’il reprend les éléments indiqués par les styles « œuvre commentée ».</p>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Titre de l’œuvre commentée
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='review']/tei:p[@rend='review-title']
+								</p>
+							</item>
+							<item>
+								<p>
+									Auteur de l’œuvre commentée
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='review']/tei:p[@rend='review-author']
+								</p>
+							</item>
+							<item>
+								<p>
+									Notice bibliographique de l’œuvre commentée
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='review']/tei:p[@rend='review-bibliography']
+								</p>
+							</item>
+							<item>
+								<p>
+									Date de publication de l’œuvre commentée
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='review']/tei:p[@rend='review-date']
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<text>
+	<front>
+[...]
+		<div type="review">
+			<p rend="review-title">La métamorphose</p>
+			<p rend="review-author">Franz Kafka</p>
+			<p rend="review-bibliography">Franz Kafka, <hi rend="italic">La métaporphose</hi> [1938] , trad. de l'allemand par Alexandre Vialatte, 224 pages, 140 x 205 mm. Collection Du monde entier, Gallimard-nouv. ISBN 2070235157.</p>
+			<p rend="review-date">1938</p>
+		</div>
+[...]
+]]>
+							</code>
+						</p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Note de l’auteur, note de la rédaction, erratum, remerciements</head>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Note de l’auteur
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:note[@resp='author']/tei:p
+								</p>
+							</item>
+							<item>
+								<p>
+									Note de la rédaction
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:note[@resp='editor']/tei:p
+								</p>
+							</item>
+							<item>
+								<p>
+									Erratum
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='correction']/tei:p
+								</p>
+							</item>
+							<item>
+								<p>
+									Dédicace
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='dedication']/tei:p
+								</p>
+							</item>
+							<item>
+								<p>
+									Remerciements
+									<lb/>
+									/tei:TEI/tei:text/tei:front/tei:div[@type='ack']/tei:p
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<text>
+	<front>
+[...]
+		<div type="ack">
+			<p>Je remercie le site Blind Text Generator qui a fourni tout le faux-texte de ce document.</p>
+		</div>
+		<div type="correction">
+			<p>L'erratum permet de signaler les modifications apportées au texte après sa publication.</p>
+		</div>
+		<note resp="editor">
+			<p>
+				Le texte de ce document a été généré sur le site <ref target="http://www.blindtextgenerator.com/">http://www.blindtextgenerator.com</ref>.
+			</p>
+		</note>
+		<note resp="author">
+			<p>
+				Les résumés français, anglais et espagnol sont des extraits de <hi rend="italic">La Métamorphose</hi> de Franz Kafka.
+			</p>
+		</note>
+	</front>
+[...]
+]]>
+							</code>
+						</p>
+					</div>
+				</div>
+				<div type="div2">
+					<head subtype="level2">body</head>
+					<div type="div3">
+						<head subtype="level3">Structure du texte et intertitres</head>
+						<p>Le texte du document doit être structuré par des sections (balises <hi rendition="#XML">&lt;div&gt;</hi>).</p>
+						<p>Les intertitres doivent être indiqués comme premier élément de la section dans une balise <hi rendition="#XML">&lt;head&gt;</hi>avec un attribut de la forme subtype="level1"</p>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+	<text>
+		<div>
+			<head subtype="level1">1. ...</head>
+			<div>
+				<head subtype="level2">1.1. ...</head>
+				<p>...</p>
+				<div>
+					<head subtype="level3">1.1.1. ...</head>
+					<p>...</p>
+				</div>
+				<div>
+					<head subtype="level3">1.1.2. ...</head>
+					<p>...</p>
+				</div>
+			</div>
+			<div>
+				<head  subtype="level2">1.2. ...</head>
+				<p>...</p>
+			</div>
+		</div>
+		<div>
+			<head subtype="level1">2. ...</head>
+			<p>...</p>
+		</div>
+[...]
+]]>
+							</code>
+						</p>
+						
+					</div>
+					
+					<div type="div3">
+						<head subtype="level3">Notes de bas de page et notes de fin</head>
+						<p>
+							Elles doivent être insérées dans le texte, dans des balises <hi rendition="#XML">&lt;note&gt;</hi> avec un attribut <hi rendition="#XMLattribut">place</hi> pour indiquer le type de note et un attribut <hi rendition="#XMLattribut">n</hi> pour indiquer le numéro de la note. Le contenu de la note doit impérativment être placé dans un ou plusieurs paragraphes.
+						</p>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Note de bas de page
+									<lb/>
+									//tei:note[@place='foot' and @n]/tei:p
+								</p>
+							</item>
+							<item>
+								<p>
+									Note de fin
+									<lb/>
+									//tei:note[@place='end'and @n]/tei:p
+								</p>
+							</item>
+							
+						</list>
+						
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...] 
+Curabitur ullamcorper ultricies nisi<note place="foot" n="4">
+	<p>Nulla consequat massa quis enim.</p>
+</note>. Nam eget dui.<note place="end" n="i">
+	<p>Etiam rhoncus.</p>
+</note>
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+						<p rend="noindent">Curabitur ullamcorper ultricies nisi<note place="foot" n="4">
+	<p>Nulla consequat massa quis enim.</p>
+</note>. Nam eget dui.<note place="end" n="i">
+	<p>Etiam rhoncus.</p>
+</note>
+						</p>
+					</div>
+					
+					<div type="div3">
+						<head subtype="level3">Mises en forme du texte : balises <hi rendition="#XML">&lt;hi&gt;</hi>, attributs 
+							<hi rend="italic">rend</hi> 
+							et 
+							<hi rend="italic">rendition</hi>
+						</head>
+						<p>Pour appliquer des mises en forme du texte, il est possible d’utiliser la balise <hi rendition="#XML">&lt;hi&gt;</hi> avec un attribut rend ayant pour valeur : italic, bold, sup, sub, uppercase, smallcaps, underline 
+							
+						</p>
+						<p>Il est également possible d’utiliser la balise <hi rendition="#XML">&lt;hi&gt;</hi> avec un attribut rendition faisant référence à un style défini au format css dans la header (/tei:TEI/tei:teiHeader/tei:encodingDesc/tei:tagsDecl) 
+						
+						</p>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+<teiHeader>
+[...]
+	<fileDesc>
+[...]
+		<encodingDesc>
+[...]
+			<tagsDecl>
+				<rendition xml:id="T5" scheme="css">font-style:italic;font-weight:bold</rendition>
+				<rendition xml:id="T6" scheme="css">font-style:italic;text-decoration:underline</rendition>
+				<rendition xml:id="T7" scheme="css">font-style:italic;text-decoration:underline;font-weight:bold</rendition>
+				<rendition xml:id="T10" scheme="css">text-decoration:underline;font-weight:bold</rendition>
+			</tagsDecl>
+		</encodingDesc>
+[...]
+</teiHeader>
+<body>
+	<text>
+		<div>
+			<p>
+				<hi rend="italic">Aenean <hi rend="sup">commodo</hi></hi> ligula eget dolor. Aenean massa. 
+				<hi rendition="#T5">Cum sociis</hi> 
+				natoque 
+				<hi rendition="#T6">penatibus et magnis</hi> 
+				dis 
+				<hi rendition="#T7">parturient montes</hi>, nascetur 
+				<hi rendition="#T10">ridiculus mus</hi>.
+			</p>
+		</div>
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+						<p rend="noindent">
+							<hi rend="italic">Aenean <hi rend="sup">commodo</hi></hi> ligula eget dolor. Aenean massa. 
+							<hi rendition="#T5">Cum sociis</hi> 
+							natoque 
+							<hi rendition="#T6">penatibus et magnis</hi> 
+							dis 
+							<hi rendition="#T7">parturient montes</hi>, nascetur 
+							<hi rendition="#T10">ridiculus mus</hi>.
+						</p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Citations et styles de paragraphe (question, réponse, paragraphe sans retrait, encadré, épigraphe)</head>
+						<p>Les styles internes suivants sont déclarés dans le modèle éditorial</p>
+						<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Citation
+									<lb/>
+									//tei:q[@rend='quotation']
+								</p>
+							</item>
+							<item>
+								<p>
+									Citation bis
+									<lb/>
+									//tei:q[@rend='quotation2']
+								</p>
+							</item>
+							<item>
+								<p>
+									Citation ter
+									<lb/>
+									//tei:q[@rend='quotation3']
+								</p>
+							</item>
+							<item>
+								<p>
+									Question
+									<lb/>
+									//tei:p[@rend='question']
+								</p>
+							</item>
+							<item>
+								<p>
+									Réponse
+									<lb/>
+									//tei:p[@rend='answer']
+								</p>
+							</item>
+							<item>
+								<p>
+									Paragraphe sans retrait
+									<lb/>
+									//tei:p[@rend='noindent']
+								</p>
+							</item>
+							<item>
+								<p>
+									Encadré
+									<lb/>
+									//tei:p[@rend='box']
+								</p>
+							</item>
+							<item>
+								<p>
+									Epigraphe
+									<lb/>
+									//tei:p[@rend='epigraph']
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+
+<q rend="quotation">
+	Citation : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+</q>
+<q rend="quotation2">
+	Citation bis : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+</q>
+<q rend="quotation3">
+	Citation ter : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.
+</q>
+<p rend="question">
+	Question : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.
+</p>
+<p rend="answer">
+	Réponse : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.  
+</p>
+<p rend="noindent">
+	Paragraphe sans retrait : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+</p>
+<p rend="box">
+	Encadré : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+</p>
+<p rend="epigraph">
+  <hi rend="italic">En se réveillant un matin après des rêves agités, Gregor Samsa se retrouva, dans son lit, métamorphosé en un monstrueux insecte.</hi>
+   <lb />
+   Franz Kafka,
+	<hi rend="italic">La métamorphose</hi>
+  </p>
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+						<q rend="quotation">
+							Citation : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+						</q>
+						<q rend="quotation2">
+							Citation bis : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+						</q>
+						<q rend="quotation3">
+							Citation ter : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.
+						</q>
+						<p rend="question">
+							Question : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.
+						</p>
+						<p rend="answer">
+							Réponse : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel.  
+						</p>
+						<p rend="noindent">
+							Paragraphe sans retrait : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+						</p>
+						<p rend="box">
+							Encadré : Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus condimentum accumsan quam, non hendrerit lacus posuere vel. 
+						</p>
+						<p rend="epigraph">
+              <hi rend="italic">En se réveillant un matin après des rêves agités, Gregor Samsa se retrouva, dans son lit, métamorphosé en un monstrueux insecte.</hi>
+               <lb/>
+               Franz Kafka,
+              <hi rend="italic">La métamorphose</hi>
+            </p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Listes</head>
+						<p>Il est possible d'utiliser des listes ordonnées ou non ordonées et bien-sûr de les imbriquer.</p>
+						<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Éléments de liste non-ordonnée
+									<lb/>
+									//tei:list[@type='unordered']/tei:item
+								</p>
+							</item>
+							<item>
+								<p>
+									Éléments de liste ordonnée
+									<lb/>
+									//tei:list[@type='ordered']/tei:item
+								</p>
+							</item>
+						</list>
+							<p>
+								<hi rend="bold">Exemple :</hi>
+							</p>
+							<p rend="noindent">
+								<code lang="xml">
+<![CDATA[
+[...]
+<list xml:id="list2094761347" type="unordered">
+	<item>
+		Fusce fermentum.
+		<list type="unordered">
+			<item>
+				Nullam cursus lacinia erat.
+			</item>
+			<item>
+				Praesent blandit laoreet nibh. 
+			</item>
+		</list>
+	</item>
+	<item>
+		Fusce convallis metus id felis luctus adipiscing.
+		<list type="ordered">
+			<item>
+				Pellentesque egestas, 
+			</item>
+			<item>
+				neque sit amet convallis pulvinar,
+			</item>
+			<item>
+				justo nulla eleifend augue, 
+			</item>
+			<item>
+				ac auctor orci leo non est. 
+			</item>
+		</list>
+	</item>
+</list>
+[...]
+]]>
+								</code>
+							</p>
+							<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+							<list xml:id="list2094761347" type="unordered">
+								<item>
+									Fusce fermentum.
+									<list type="unordered">
+										<item>
+											Nullam cursus lacinia erat.
+										</item>
+										<item>
+											Praesent blandit laoreet nibh. 
+										</item>
+									</list>
+								</item>
+								<item>
+									Fusce convallis metus id felis luctus adipiscing.
+									<list type="ordered">
+										<item>
+											Pellentesque egestas, 
+										</item>
+										<item>
+											neque sit amet convallis pulvinar,
+										</item>
+										<item>
+											justo nulla eleifend augue, 
+										</item>
+										<item>
+											ac auctor orci leo non est. 
+										</item>
+									</list>
+								</item>
+							</list>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Tableaux</head>
+						<p>Les tableaux doivent être décrit à l'aide des balises <hi rendition="#XML">&lt;table&gt;</hi>, <hi rendition="#XML">&lt;row&gt;</hi> et <hi rendition="#XML">&lt;cell&gt;</hi>. 
+						Les attributs <hi rendition="#XMLattribut">rows</hi> et <hi rendition="#XMLattribut">cols</hi> permettent la fusion de cellules.</p>
+						<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									//tei:table
+								</p>
+							</item>
+							<item>
+								<p>
+									//tei:row
+								</p>
+							</item>
+							<item>
+								<p>
+									//tei:cell[@rows and @cols]
+								</p>
+							</item>
+						</list>
+							<p>
+								<hi rend="bold">Exemple :</hi>
+							</p>
+							<p rend="noindent">
+								<code lang="xml">
+<![CDATA[
+[...]
+<table>
+	<row>
+		<cell rows="2">
+			<s>Lots</s>
+		</cell>
+		<cell rows="2">
+			<s>Données 1</s>
+		</cell>
+		<cell rows="2">
+			<s>Données 2</s>
+		</cell>
+		<cell cols="2">
+			<s>Total</s>
+		</cell>
+	</row>
+	<row>
+		<cell>
+			<s>
+				Total 1<hi rendition="#T12">ère</hi> partie
+			</s>
+		</cell>
+		<cell>
+			<s>
+				Total 2<hi rendition="#T12">e</hi> partie
+			</s>
+		</cell>
+	</row>
+	<!-- <pb/> -->
+	<row>
+		<cell rows="2">
+			<s>
+				 1<hi rendition="#T12">er</hi> lot
+			</s>
+		</cell>
+		<cell>
+			<s>12 %</s>
+		</cell>
+		<cell>
+			<s>27 %</s>
+		</cell>
+		<cell>
+			<s>91 %</s>
+		</cell>
+		<cell>
+			<s>98 %</s>
+		</cell>
+	</row>
+	<row>
+		<cell>
+			<s>26 %</s>
+		</cell>
+		<cell>
+			<s>45 %</s>
+		</cell>
+		<cell>
+			<s>97 %</s>
+		</cell>
+		<cell>
+			<s>92 %</s>
+		</cell>
+	</row>
+	<row>
+		<cell rows="2">
+			<s>
+				2<hi rendition="#T12">nd</hi> lot
+			</s>
+		</cell>
+		<cell>
+			<s>24 %</s>
+		</cell>
+		<cell>
+			<s>85 %</s>
+		</cell>
+		<cell>
+			<s>91 %</s>
+		</cell>
+		<cell>
+			<s>94 %</s>
+		</cell>
+	</row>
+	<row>
+		<cell>
+			<s>54 %</s>
+		</cell>
+		<cell>
+			<s>54 %</s>
+		</cell>
+		<cell>
+			<s>92 %</s>
+		</cell>
+		<cell>
+			<s>92 %</s>
+		</cell>
+	</row>
+</table>
+[...]
+]]>
+								</code>
+							</p>
+							<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+							<table>
+								<row>
+									<cell rows="2">
+										<s>Lots</s>
+									</cell>
+									<cell rows="2">
+										<s>Données 1</s>
+									</cell>
+									<cell rows="2">
+										<s>Données 2</s>
+									</cell>
+									<cell cols="2">
+										<s>Total</s>
+									</cell>
+								</row>
+								<row>
+									<cell>
+										<s>
+											Total 1<hi rendition="#T12">ère</hi> partie
+										</s>
+									</cell>
+									<cell>
+										<s>
+											Total 2<hi rendition="#T12">e</hi> partie
+										</s>
+									</cell>
+								</row>
+								<!-- <pb/> -->
+								<row>
+									<cell rows="2">
+										<s>
+											 1<hi rendition="#T12">er</hi> lot
+										</s>
+									</cell>
+									<cell>
+										<s>12 %</s>
+									</cell>
+									<cell>
+										<s>27 %</s>
+									</cell>
+									<cell>
+										<s>91 %</s>
+									</cell>
+									<cell>
+										<s>98 %</s>
+									</cell>
+								</row>
+								<row>
+									<cell>
+										<s>26 %</s>
+									</cell>
+									<cell>
+										<s>45 %</s>
+									</cell>
+									<cell>
+										<s>97 %</s>
+									</cell>
+									<cell>
+										<s>92 %</s>
+									</cell>
+								</row>
+								<row>
+									<cell rows="2">
+										<s>
+											2<hi rendition="#T12">nd</hi> lot
+										</s>
+									</cell>
+									<cell>
+										<s>24 %</s>
+									</cell>
+									<cell>
+										<s>85 %</s>
+									</cell>
+									<cell>
+										<s>91 %</s>
+									</cell>
+									<cell>
+										<s>94 %</s>
+									</cell>
+								</row>
+								<row>
+									<cell>
+										<s>54 %</s>
+									</cell>
+									<cell>
+										<s>54 %</s>
+									</cell>
+									<cell>
+										<s>92 %</s>
+									</cell>
+									<cell>
+										<s>92 %</s>
+									</cell>
+								</row>
+							</table>
+					</div>
+					
+					
+					<div type="div3">
+						<head subtype="level3">Liens hypertextes</head>
+						<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									//tei:ref[@target]
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<ref target="http://www.openedition.org/">
+	OpenEdition : portail de ressources électroniques en sciences humaines et sociales
+</ref>
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+						<p rend="noindent">
+							<ref target="http://www.openedition.org/">
+								OpenEdition : portail de ressources électroniques en sciences humaines et sociales
+							</ref>
+						</p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Illustrations</head>
+						<p>Pour insérer des images dans un document, il faut créer un archive zip contenant le fichier TEI de l’article à la racine de cette archive et les illustrations (au format png, jpg ou gif) qui peuvent être placées dans une arborescence de répertoire dans l’archive zip.</p>
+						<p>Pour insérer une illustration dans le document, il faut utiliser la balise <hi rendition="#XML">&lt;graphic&gt;</hi> en renseignant dans l’attribut <hi rendition="#XMLattribut">url</hi> le chemin relatif vers l’image.</p>
+						<p>Les titres, légendes et crédits de l’illustration doivent être stylés dans des paragraphes ayant un attribut <hi rendition="#XMLattribut">rend="figure-title"</hi>, <hi rendition="#XMLattribut">rend="figure-legend"</hi>, <hi rendition="#XMLattribut">rend="figure-license"</hi>.</p>
+						<p>En cas d’utilisation du filtre de vignettisation développé par OpenEdition, il est impératif de respecter l’ordre des paragraphes suivant :</p>
+						<list>
+						<item><p>Titre de l’illustration</p></item>
+						<item><p>Illustration</p></item>
+						<item><p>Légende de l’illustration</p></item>
+						<item><p>Crédits de l’illustration</p></item>
+						</list>
+						<p rend="noindent">Aucun des ces élements descriptifs (titre, légende, crédit) n’est obligatoire.</p>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<p rend="figure-title">Fonctionnement d'Opentext</p>
+<p>
+	<figure>
+		<graphic url="relative/path/to/image/img-1.jpg" />
+	</figure>
+</p>
+<p rend="figure-legend">Schéma réalisé en septembre 2009</p>
+<p rend="figure-license">Surletoit - licence Creative Commons by-nc-sa</p>
+[...]
+]]>
+							</code>
+						</p>
+
+					</div>
+					<div type="div3">
+						<head subtype="level3">Code</head>
+						<p>La balise <hi rendition="#XML">&lt;code&gt;</hi> peut contenir des instructions de langages de programmation. Ce code doit être inclut dans un CDATA. </p>
+							<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									//tei:p/tei:code
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+
+&lt;p rend="noindent"&gt;
+	&lt;code lang="xml"&gt;
+&lt;]]&gt;&lt;![CDATA[![CDATA[
+[...]
+&lt;ref target="http://www.openedition.org/"&gt;
+	OpenEdition : portail de ressources électroniques en sciences humaines et sociales
+&lt;/ref&gt;
+[...]
+]]]]&gt;&lt;![CDATA[&gt;
+	&lt;/code&gt;
+&lt;/p&gt;
+
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<ref target="http://www.openedition.org/">
+	OpenEdition : portail de ressources électroniques en sciences humaines et sociales
+</ref>
+[...]
+]]>
+							</code>
+						</p>
+					</div>
+
+						<div type="div3">
+						<head subtype="level3">Exemples de linguistique</head>
+						<p>Des spécifications particulières ont été définies pour permettre la publications d'exemples de linguistiques qui présentent les caractéristiques suivantes :</p>
+						<list>
+            <item>définition d'un type d'exemple</item>
+						<item>numérotation de l'exemple</item>
+						<item>possibilité de définir plusieurs lignes pour un exemple</item>
+						<item>possibilité d'aligner verticalement des segments des lignes de l'exemple</item>
+						<item>définition d'une référence bibliographique pour l'exemple</item>
+						<item>définition d'une glose, d'une définition pour l'exemple</item>
+				  	<item>possibilité d'imbriquer des exemples (définition de sous-exemples)</item>
+						</list>
+						<p>
+							<hi rend="bold">Xpath  :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Exemple avec type (attribut 'type') et numéro (attribut 'n'). La valeur de l'attribut 'type' n'est pas imposée mais la recommandation est d'utiliser <hi rendition="#XML">type="example"</hi>.
+									<lb/>
+									//tei:quote[@type][@n]
+								</p>
+							</item>
+							<item>
+								<p>
+									Les lignes sont définies dans des éléments <hi rendition="#XML">&lt;quote&gt;</hi>
+									<lb/>
+									//tei:quote[@type][@n]/tei:quote
+								</p>
+							</item>
+							<item>
+								<p>
+									 Les segments de chaque ligne à aligner verticalement sont définis dans des éléments <hi rendition="#XML">&lt;seg&gt;</hi>
+									<lb/>
+									//tei:quote[@type][@n]/tei:quote/tei:seg
+								</p>
+							</item>
+							<item>
+								<p>
+									La référence bibliographique de l'exemple est définie dans un élément <hi rendition="#XML">&lt;bibl&gt; </hi>
+									<lb/>
+									//tei:quote[@type][@n]/tei:bibl
+								</p>
+							</item>
+							<item>
+								<p>
+									La glose ou définition associée à l'exemple est définie dans un élément <hi rendition="#XML">&lt;gloss&gt; </hi>
+									<lb/>
+									//tei:quote[@type][@n]/tei:gloss
+								</p>
+							</item>
+						</list>
+
+						<p>
+							<hi rend="bold">Exemple simple :</hi>
+						</p>
+											<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<quote n="01" type="example">
+  <quote>
+    <seg>vous dites vous êtes allé donner un cours (H4 / I++)</seg>
+    <seg>en fait (H3 / I=)</seg>
+  </quote>
+  <quote>
+    <seg>you say you went to give a class</seg>
+    <seg>in fact</seg>
+  </quote>
+   <bibl>My bibliographic reference</bibl>
+   <gloss>My definition (cf &lt;gloss&gt; dans la documentation de référence de la TEI)</gloss>
+</quote> 
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+            <quote n="01" type="example">
+              <quote>
+                <seg>quand vous dites vous êtes allé donner un cours (H4 / I++)</seg>
+                <seg>en fait (H3 / I=)</seg>
+              </quote>
+              <quote>
+                <seg>when you say you went to give a class</seg>
+                <seg>in fact</seg>
+              </quote>
+               <bibl>My bibliographic reference</bibl>
+               <gloss>My definition (cf &lt;gloss&gt; dans la documentation de référence de la TEI)</gloss>
+            </quote> 
+            
+	<p>
+							<hi rend="bold">Exemples imbriqués (sous-exemples) :</hi>
+						</p>
+											<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<quote n="1" type="example">
+  <quote n="a" type="example">
+    <quote>
+      <seg>quand vous dites vous êtes allé donner un cours (H4 / I++)</seg>
+      <seg>en fait (H3 / I=)</seg>
+    </quote>
+    <quote>
+      <seg>when you say you went to give a class</seg>
+      <seg>in fact</seg>
+    </quote>
+    <bibl>bibliographic reference for example 1a</bibl>
+    <gloss>definition for example 1a</gloss>
+  </quote> 
+  <quote n="b" type="example">
+    <quote>
+      <seg>c’est e vous avez voulu (H3 / I=)</seg>
+      <seg>savoir comment on pouvait se</seg>
+    </quote>
+    <quote>
+      <seg>it’s er you wanted</seg>
+      <seg>to know how one could</seg>
+    </quote>
+    <bibl>bibliographic reference for example 1b</bibl>
+    <gloss>definition for example 1b</gloss>
+  </quote>
+</quote>
+[...]
+]]>
+							</code>
+						</p>
+						<p>
+							<hi rend="bold">Résultat :</hi>
+						</p>
+           <quote n="1" type="example">
+              <quote n="a" type="example">
+                <quote>
+                  <seg>quand vous dites vous êtes allé donner un cours (H4 / I++)</seg>
+                  <seg>en fait (H3 / I=)</seg>
+                </quote>
+                <quote>
+                  <seg>when you say you went to give a class</seg>
+                  <seg>in fact</seg>
+                </quote>
+                <bibl>bibliographic reference for example 1a</bibl>
+                <gloss>definition for example 1a</gloss>
+              </quote> 
+              <quote n="b" type="example">
+                <quote>
+                  <seg>c’est e vous avez voulu (H3 / I=)</seg>
+                  <seg>savoir comment on pouvait se</seg>
+                </quote>
+                <quote>
+                  <seg>it’s er you wanted</seg>
+                  <seg>to know how one could</seg>
+                </quote>
+                <bibl>bibliographic reference for example 1b</bibl>
+                <gloss>definition for example 1b</gloss>
+              </quote>
+            </quote>
+					</div>
+				</div><div type="div2">
+					<head subtype="level2">back</head>
+					<div type="div3">
+						<head subtype="level3">Bibliographie</head>
+						<p>La bibliographie se compose avec les balises <hi rendition="#XML">&lt;listBibl&gt;</hi> et <hi rendition="#XML">&lt;bibl&gt;</hi>. La bibliographie ne peut pas contenir de section <hi rendition="#XML">&lt;div&gt;</hi>, à la place on utilise des balises <hi rendition="#XML">&lt;listBibl&gt;</hi> et <hi rendition="#XML">&lt;head&gt;</hi> pour placer des intertitres (voir le
+							Xpath). Les balises <hi rendition="#XML">&lt;listBibl&gt;</hi> peuvent donc être imbriquées en
+							fonction de la structuration des niveaux de titres dans la bibliographie.</p>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									Section bibliographie
+									<lb/>
+									/tei:TEI/tei:text/tei:back/tei:div[@type='bibliography']/tei:listBibl
+								</p>
+							</item>
+							<item>
+								<p>
+									Référence bibliographique
+									<lb/>
+									/tei:TEI/tei:text/tei:back/tei:div[@type='bibliography']//tei:listBibl/tei:bibl
+								</p>
+							</item>
+							<item>
+								<p>
+									Intertitres
+									<lb/>
+									/tei:TEI/tei:text/tei:back/tei:div[@type='bibliography']//tei:listBibl/tei:head[@subtype='leveln']<lb/>
+									où 'leveln' peut prendre toutes les valeurs comprises entre 'level1' et 'level6'.
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+[...]
+<back>
+<div type="bibliography">
+	<listBibl>
+		<bibl>
+			Bennett, Francis et Michael Holdsworth.
+			<hi rend="italic" xml:lang="en">Embracing the Digital Age. An Opportunity for Booksellers and the Book Trade</hi>
+			. Londres : The Booksellers Association of the United Kingdom &amp; Ireland, 2007.
+		</bibl>
+		<listBibl>
+			<head subtype="level1">Partie 1</bibl>
+			<bibl>
+				Carrérot, Olivier, éd.
+				hi rend="italic">Qu’est-ce qu’un livre aujourd’hui ? Pages, marges, écrans</hi>
+				. Les Cahiers de la Librairie. Paris : La Découverte, 2009.
+			</bibl>
+		</listBibl>
+[...]
+	</listBibl>
+</div
+[...]
+]]>
+							</code>
+						</p>
+					</div>
+					<div type="div3">
+						<head subtype="level3">Annexes</head>
+						<p>Les annexes doivent être placées dans une section de type « appendix ». Cette section peut contenir tous les éléments utilisables dans le <hi rendition="#XML">&lt;body&gt;</hi> : citation, illustrations...</p>
+						<p>
+							<hi rend="bold">Xpath :</hi>
+						</p>
+						<list type="unordered">
+							<item>
+								<p>
+									/tei:TEI/tei:text/tei:back/tei:div[@type='appendix']
+								</p>
+							</item>
+						</list>
+						<p>
+							<hi rend="bold">Exemple :</hi>
+						</p>
+						<p rend="noindent">
+							<code lang="xml">
+<![CDATA[
+<back>
+[...]
+	<div type="appendix">
+		<div type="div1">
+			<head subtype="level1">Vivamus laoreet</head>
+			<p>
+				Nullam tincidunt adipiscing enim. 
+			</p>
+			<div type="div2">
+				<head subtype="level2">Lorem ipsum</head>
+				<p>
+					Aenean commodo ligula eget dolor. 
+				</p>
+				<p rend="figure-title">Fonctionnement d'Opentext</p>
+				<p>
+					<figure>
+						<graphic url="relative/path/to/image/img-1.jpg" />
+					</figure>
+				</p>
+				<p rend="figure-legend">Schéma réalisé en septembre 2009</p>
+				<p rend="figure-license">Surletoit - licence Creative Commons by-nc-sa</p>
+				<p>
+					Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. 
+				</p>
+				<q rend="quotation">
+					Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. 
+				</q>
+				<p>
+					<hi xml:lang="en">Nunc nonummy metus. </hi>
+					Vestibulum volutpat pretium libero.
+				</p>
+				
+			</div>
+		</div>
+	</div>
+[...]
+</back>
+]]>
+							</code>
+						</p>
+					</div>
+				</div>
+			</div>
+		</body>
+		<back/>
+	</text>
+</TEI>
