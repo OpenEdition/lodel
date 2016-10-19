@@ -7,7 +7,7 @@ Home page (doc générale): http://www.lodel.org
 
 Documentation technique: https://github.com/OpenEdition/lodel/wiki
 
-English readers: for a presentation in English, see https://lodel.org/666 . The rest of the documentation and the wiki are currentlyon in French. If you are interested in Lodel, [please contact us](lodel@lodel.org) !  
+English readers: for a presentation in English, see https://lodel.org/666 . The rest of the documentation and the wiki are currently only in French. If you are interested in Lodel, [please contact us](lodel@lodel.org) !  
     
 E-Mail: lodel@lodel.org
 
@@ -36,6 +36,7 @@ Le design du site est défini par des gabarits écrits dans le langage Lodelscri
 
 Installation
 ------------
+Notez qu'une version pré-installée de Lodel (et OTX, l’application de conversion Word/Office vers XML/TEI) en tant qu’image de machine virtuelle linux Debian est téléchargeable à l’adresse : http://lodel.org/downloads/vms/
 
 Pré-requis:
   - Utiliser son propre serveur linux, Lodel n'est pas utilisable sur hébergement dédié.
