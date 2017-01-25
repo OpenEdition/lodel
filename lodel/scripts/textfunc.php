@@ -417,6 +417,19 @@ function vignette($text, $width)
 	function_exists('resize_image') || include("images.php");
 	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
+
+    // remove all embedded profiles and reduce image compression quality
+    try {
+        $vignettefile_handler = new Imagick($vignettefile);
+        $vignettefile_handler->stripImage();
+        $vignettefile_handler->setImageCompressionQuality(80);
+        $vignettefile_handler->writeImage($vignettefile);
+        $vignettefile_handler->clear();
+        $vignettefile_handler->destroy();
+    } catch(Exception $exception) {
+        echo 'Exception caught: ', $exception->getMessage(), "\n";
+    }
+
 	return $vignettefile;
 }
 
