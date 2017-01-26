@@ -418,6 +418,9 @@ function vignette($text, $width)
 	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
 
+	if(!class_exists('Imagick'))
+	    return $vignettefile;
+
     // remove all embedded profiles and reduce image compression quality
     try {
         $vignettefile_handler = new Imagick($vignettefile);
