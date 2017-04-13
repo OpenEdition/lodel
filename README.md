@@ -1,4 +1,4 @@
-Lodel
+Lodel <img src="github.com/OpenEdition/lodel/blob/master/share/images/lodel_coiuleur.png" width="148">
 =====
 
 Logiciel d'édition Électronique
