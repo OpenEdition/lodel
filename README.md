@@ -1,4 +1,4 @@
-Lodel <img src="https://github.com/OpenEdition/lodel/blob/master/share/images/lodel_couleur.png" width="150">
+Lodel <img src="https://github.com/OpenEdition/lodel/blob/master/share/images/lodel_couleur.png" width="100">
 =====
 
 Logiciel d'édition Électronique
