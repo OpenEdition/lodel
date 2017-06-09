@@ -243,7 +243,7 @@ class GenericLogic extends Logic
 			if ($empty) {
 				$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
 			}
-			elseif(-1 === $value) {
+			elseif(isset($value) && -1 === $value) {
 				$context['data'][$name] = isset($context['data'][$name]) ? $context['data'][$name] : '';
 				// check if the field is required or not, and rise an error if any problem.
 				$value = &$context['data'][$name];
