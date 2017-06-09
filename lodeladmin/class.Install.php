@@ -240,10 +240,6 @@ class Install {
 		if($erasetables)
 		{
 			@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
-			
-			/*$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
-			if ($version_mysql_num[0].$version_mysql_num[1] > 40)
-					{ mysql_query('SET NAMES UTF8'); }*/
 			@mysql_select_db($cfg['database']); // selectionne la database
 
 			$this->set_mysql_charset();
@@ -293,15 +289,6 @@ class Install {
 				@mysql_connect($cfg['dbhost'],$cfg['dbusername'],$cfg['dbpasswd']); // connect
 				$this->set_mysql_charset();
 				$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
-/*
-				$version_mysql_num = explode(".", substr(mysql_get_server_info(), 0, 3));
-				if ($version_mysql_num[0].$version_mysql_num[1] > 40) {
-					mysql_query('SET NAMES UTF8');
-					$db_charset = 'CHARACTER SET utf8 COLLATE utf8_general_ci';
-				} else { 
-					$db_charset = '';
-				}
-*/
 				if (!@mysql_query("CREATE DATABASE `$createdatabase` $db_charset")) {
 					return false;
 				}
@@ -1092,19 +1079,6 @@ class Install {
 	private function set_mysql_charset() 
 	{
 		return @mysql_query('SET NAMES utf8');
-/*
-		$version_mysql = explode(".", substr(mysql_get_server_info(), 0, 3));
-		$version_mysql_num = $version_mysql[0] . $version_mysql[1];
-	
-		if ($version_mysql_num > 40) {
-			$result = mysql_query("SHOW VARIABLES LIKE 'character_set_database'");
-			if ($db_charset = mysql_fetch_row($result)) {
-				mysql_query('SET NAMES '. $db_charset[1]);
-			} else {
-				mysql_query('SET NAMES UTF8'); 
-			}
-		}
-*/
 	}
 	
 	/**
