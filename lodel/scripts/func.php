@@ -210,7 +210,9 @@ function makeurlwithid($id, $base = 'index')
         // compat 0.7
         if (C::get('idagauche', 'cfg')) {
             $uri = 'leftid';
-        }
+        } else {
+	    $uri = '';
+	}
     }
 
     $id = trim($id);
