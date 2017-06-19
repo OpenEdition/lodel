@@ -20,6 +20,7 @@
 <MACRO NAME="HEADER_LOGO"> 
 <IF COND="[#LODELUSER.EDITOR]">
 <LET VAR="drag">true</LET>
+
 <script type="text/javascript">
 // iMouseDown represents the current mouse button state: up or down
 /*
@@ -406,7 +407,7 @@ function autoScroll(e){
 		<ul class="listEntities" id="ul_listEntities">
 	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-	<IF COND="[#ID]"><LET VAR="coupe">10000</LET><ELSE /><LET VAR="coupe">50</LET></IF>
+	<LET VAR="coupe">50</LET>
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
@@ -612,4 +613,63 @@ function changeIcon(id, statut)
 
 </IF>
 </script>
+
+<script type="text/javascript">
+var observeDOM = (function(){
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
+        eventListenerSupported = window.addEventListener;
+
+    return function(obj, callback){
+        if( MutationObserver ){
+            // define a new observer
+            var obs = new MutationObserver(function(mutations, observer){
+                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
+                    callback();
+            });
+            // have the observer observe foo for changes in children
+            obs.observe( obj, { childList:true, subtree:true });
+        }
+        else if( eventListenerSupported ){
+            obj.addEventListener('DOMNodeInserted', callback, false);
+            obj.addEventListener('DOMNodeRemoved', callback, false);
+        }
+    };
+})();
+
+
+function fixPaginationLinks() {  
+  var links = document.getElementsByClassName("linkpage");
+  for(var i = 0; i < links.length; i++) {
+    link = links[i];
+    link.addEventListener("click", function (event) {
+      var container = this.parentNode.parentNode.parentNode.parentNode.parentNode;      
+      var className = container.firstChild.nextSibling.classList[0];
+      if(className !== "unfoldedentities") return;
+      
+      event.preventDefault();
+      
+      var id = container.getAttribute("id").split("childContainer")[1];
+      var http = new XMLHttpRequest();
+      var relativeUrl = this.getAttribute("href");
+
+      http.open("POST", relativeUrl, true);
+      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+      http.onreadystatechange = function () {
+        if(http.readyState == 4 && http.status == 200) {
+          var wrapper = document.createElement("div");
+          wrapper.innerHTML = http.responseText
+          container.parentNode.replaceChild(wrapper.firstChild, container);
+        } 
+      }
+
+      http.send('site=[#SITE]&id='+id);
+    });
+  }
+}
+
+observeDOM(document.body, fixPaginationLinks);
+
+</script>
+
 <MACRO NAME="CLOSE_HTML">
