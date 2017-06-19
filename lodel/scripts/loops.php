@@ -485,6 +485,12 @@ function _constructPages(& $context, $funcname, $arguments)
 				unset ($pages[$key]);
 		}
 	}
+	// add last url if not already present
+        $lastPageIndex = (int)ceil($context['nbresults'] / $arguments['limit']);
+        $lastIndex = (int)$context['nbresults'] - 2;
+        if(!array_key_exists($lastPageIndex, $pages)) {
+           $pages[$lastPageIndex] = _buildPageUrl($offsetname, $lastIndex);
+        }
 	return array('pages' => $pages, 'nexturl' => $context['nexturl'], 'previousurl' => $context['previousurl']);
 }
 /**
