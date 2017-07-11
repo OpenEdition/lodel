@@ -416,7 +416,30 @@ function autoScroll(e){
 		<ul class="listEntities" id="ul_listEntities">
 	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-	<LET VAR="coupe">50</LET>
+	<LET VAR="COUPE">50</LET>
+	<?php 
+          if(isset($_GET["displayAll"])) {
+            $context["coupe"] = PHP_INT_MAX; 
+          }
+	?>
+        <style>
+          #paginationDisplayAll, #paginationPaginate {
+            color: #ed8400;
+            font-weight: bold;
+          }
+
+          #paginationDisplayAll:hover, #paginationPaginate:hover {
+            color: #995400;
+          }
+        </style>
+	<IF COND="[#COUPE] EQ 50">
+          <a href="#" id="paginationDisplayAll">[@COMMON.DISPLAY_ALL_SITEMAP]</a>
+          <ELSE />
+          <a href="#" id="paginationPaginate">[@COMMON.HIDE_ALL_SITEMAP]</a>
+	  <br />
+	  <br />
+        </IF>
+
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
@@ -678,7 +701,46 @@ function fixPaginationLinks() {
 }
 
 observeDOM(document.body, fixPaginationLinks);
-
 </script>
+<script>
+    initializePaginationActions();
 
+    function initializePaginationActions() {
+        var displayAllElement = document.getElementById("paginationDisplayAll");
+
+        if(displayAllElement) {
+            displayAllElement.addEventListener("click", function(event) {
+                event.preventDefault();
+                displayAll();
+            });
+        }
+
+        var paginateElement = document.getElementById("paginationPaginate");
+        if(paginateElement) {
+            paginateElement.addEventListener("click", function(event) {
+                event.preventDefault();
+                paginate();
+            });
+        }
+
+    }
+
+    function displayAll() {
+        window.location.replace(window.location.href + "&displayAll");
+    }
+
+    function paginate() {
+        var newLocation =
+            window.location.href
+                .split("&")
+                .filter(function(element) {
+                    return element !== "displayAll"
+                })
+                .join("&");
+
+        window.location.replace(newLocation);
+    }
+</script>
 <MACRO NAME="CLOSE_HTML">
+
+
