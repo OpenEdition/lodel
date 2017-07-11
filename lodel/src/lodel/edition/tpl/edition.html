@@ -41,7 +41,7 @@ var rootParent  = null;
 var rootSibling = null;
 var interval	= [];
 
-Number.prototype.NaN0=function(){return isNaN(this)?0:this;}
+Number.prototype.NaN0=function(){return isNaN(this)?0:this;};
 
 function CreateDragContainer(){
 	/*
@@ -256,70 +256,79 @@ function mouseMove(ev){
 	return false;
 }
 function mouseUp(ev){
-	iMouseDown = false;
-	document.documentElement.style.cursor = "default";
-	if(curTarget){
-		if(interval['up'] != null) {
-			clearInterval(interval['up']);
-			interval['up'] = null;	
-		}
-		if(interval['down'] != null) {
-			clearInterval(interval['down']);
-			interval['down'] = null;
-		}
-		if(curTarget.style.display == 'none'){
-			if(rootSibling){
-				rootParent.insertBefore(curTarget, rootSibling);
-			} else {
-				rootParent.appendChild(curTarget);
-			}
-		}
-		curTarget.style.display    = 'block';
-		curTarget.style.visibility = 'visible';
-		curTarget.style.background = "transparent";
-		curTarget  = null;
-		var tabDiffIds = [];
-		var j=0;
-		for(var i=0; i<rootParent.childNodes.length; i++){
-			with(rootParent.childNodes[i]) {
-				if(nodeName=='#text' || id == null) continue;
-				tabDiffIds[j] = id;
-				j++;
-			}
-		}
-		var xhr = getXMLHttpRequest();
-		if(xhr) {
-			xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', true);
-			xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-			xhr.onreadystatechange = function() {
-				if(xhr.readyState == 4 && xhr.status == 200)
-				{
-					if (xhr.responseText == 'error') 
-					{
-						document.getElementById('warner').style.display = "none";
-						alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
-						return false;
-					}
-					else 
-					{
-						if (xhr.responseText == 'auth') 
-						{
-							window.location = "login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
-							return false;
-						}
-					}
-				}
-			}
-			xhr.send('tabids='+tabDiffIds+"&site=[#SITE]");
-		} else {
-			alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
-		}
-	}
+    iMouseDown = false;
+    document.documentElement.style.cursor = "default";
+    if(curTarget){
+        if(interval['up'] != null) {
+            clearInterval(interval['up']);
+            interval['up'] = null;
+        }
+        if(interval['down'] != null) {
+            clearInterval(interval['down']);
+            interval['down'] = null;
+        }
+        if(curTarget.style.display == 'none'){
+            if(rootSibling){
+                rootParent.insertBefore(curTarget, rootSibling);
+            } else {
+                rootParent.appendChild(curTarget);
+            }
+        }
+        curTarget.style.display    = 'block';
+        curTarget.style.visibility = 'visible';
+        curTarget.style.background = "transparent";
+
+        function getLodelId(e) {
+            var id = e.getAttribute("id");
+            if(id.indexOf("container_") === -1) {
+                return id;
+            }
+            return id.split("_")[1];
+        }
+
+        var fromId = getLodelId(curTarget);
+        var toId = -1;
+
+        if(curTarget.previousElementSibling !== null) {
+            toId = getLodelId(curTarget.previousElementSibling);
+        }
+
+        updateRanks([fromId, toId]);
+
+        curTarget = null;
+
+        function updateRanks(tabDiffIds) {
+            var xhr = getXMLHttpRequest();
+            if(xhr) {
+                xhr.open("POST", '[#SHAREURL]/ajax/dragndrop.php', true);
+                xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if(xhr.readyState == 4 && xhr.status == 200) {
+                        if (xhr.responseText == 'error') {
+                            document.getElementById('warner').style.display = "none";
+                            alert("[@ADMIN.ERROR_CHANGERANK_ENTITY]");
+                            return false;
+                        } else {
+                            if (xhr.responseText == 'auth') {
+                                window.location = "login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
+                                return false;
+                            }
+                        }
+                    }
+                };
+                xhr.send('tabids='+tabDiffIds.join(",")+"&site=[#SITE]");
+            } else {
+                alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
+            }
+
+        }
+    }
 }
+
 function mouseDown(ev){
 	ev         = ev || window.event;
 	var target = ev.target || ev.srcElement;
-	
+
 	if(target.className == "dragger") {
 		target = target.parentNode.parentNode.parentNode;
 		if(target.getAttribute('DragObj') != null) {
