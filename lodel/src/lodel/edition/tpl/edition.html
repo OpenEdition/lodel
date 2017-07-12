@@ -286,6 +286,9 @@ function mouseUp(ev){
             }
 
             if(id.indexOf("container_") === -1) {
+                if(isNaN(id)) {
+                    return -1;
+                }
                 return id;
             }
 
