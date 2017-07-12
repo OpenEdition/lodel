@@ -425,10 +425,6 @@ function autoScroll(e){
           }
 	?>
         <style>
-          #offset-v-small {
-            margin-top: 5px;
-          }
-
           #paginationDisplayAll {
             position: relative;
             top: -15px;
@@ -481,10 +477,23 @@ function autoScroll(e){
 			<IF COND="[#NBRESULTS] GT [#COUPE]">
 				<MACRO NAME="BOTTOM_RESULTS_PAGES">
 			<IF COND="[#DEFAULT_MODE]">
-            			<IF COND="[#NBRESULTS] GT [#COUPE]">
-              			  <a href="[#CURRENTURL]&displayAll" id="paginationDisplayAll">&darr; [@COMMON.DISPLAY_ALL_SITEMAP]</a>
+				<IF COND="[#NBRESULTS] GT [#COUPE]">
+					<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
+					<?php
+						function removeOffsetFromUrl($url) {
+							$arr = parse_url($url);
+							$nquery = array_filter(explode("&", $arr["query"]), function($pair) {
+    						return strpos($pair, "offset_") === false;
+							});
+
+							return $arr["scheme"] . "://" . $arr["host"] . $arr["path"] . "?" . implode("&", $nquery);
+						}
+
+						$context["display_all_url"] = removeOffsetFromUrl($context["currenturl"]);
+					?>
+					<a href="[#DISPLAY_ALL_URL]" id="paginationDisplayAll">&darr; [@COMMON.DISPLAY_ALL_SITEMAP]</a>
 				</IF>
-          		</IF>
+			</IF>
 			</IF>
 		</BEFORE>
 		<DO>
@@ -771,4 +780,5 @@ observeDOM(document.body, fixPaginationLinks);
     }
 </script>
 <MACRO NAME="CLOSE_HTML">
+
 
