@@ -702,45 +702,53 @@ function fixPaginationLinks() {
 
 observeDOM(document.body, fixPaginationLinks);
 </script>
-<script>
-    initializePaginationActions();
+	<script>
+        initializePaginationActions();
 
-    function initializePaginationActions() {
-        var displayAllElement = document.getElementById("paginationDisplayAll");
+        function initializePaginationActions() {
+            var displayAllElement = document.getElementById("paginationDisplayAll");
 
-        if(displayAllElement) {
-            displayAllElement.addEventListener("click", function(event) {
-                event.preventDefault();
-                displayAll();
-            });
+            if(displayAllElement) {
+                displayAllElement.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    displayAllDocuments();
+                });
+            }
+
+            var paginateElement = document.getElementById("paginationPaginate");
+            if(paginateElement) {
+                paginateElement.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    paginateDocuments();
+                });
+            }
+
         }
 
-        var paginateElement = document.getElementById("paginationPaginate");
-        if(paginateElement) {
-            paginateElement.addEventListener("click", function(event) {
-                event.preventDefault();
-                paginate();
-            });
+        function displayAllDocuments() {
+            function addAttribute(url, value) {
+                var parsedUrl = url.split("?");
+                if(parsedUrl.length === 1) {
+                    return url;
+                }
+
+                return url + "&" + value;
+            }
+
+            var url = addAttribute(window.location.href, "displayAll");
+            window.location.replace(url);
         }
 
-    }
+        function paginateDocuments() {
+            var newLocation =
+                window.location.href
+                    .split("&")
+                    .filter(function(element) {
+                        return element !== "displayAll"
+                    })
+                    .join("&");
 
-    function displayAll() {
-        window.location.replace(window.location.href + "&displayAll");
-    }
-
-    function paginate() {
-        var newLocation =
-            window.location.href
-                .split("&")
-                .filter(function(element) {
-                    return element !== "displayAll"
-                })
-                .join("&");
-
-        window.location.replace(newLocation);
-    }
-</script>
+            window.location.replace(newLocation);
+        }
+	</script>
 <MACRO NAME="CLOSE_HTML">
-
-
