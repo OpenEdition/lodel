@@ -416,11 +416,76 @@ function autoScroll(e){
 		<ul class="listEntities" id="ul_listEntities">
 	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
-	<LET VAR="coupe">50</LET>
+	<LET VAR="COUPE">50</LET>
+        <LET VAR="DISPLAY_ALL_MODE">0</LET>
+	<?php 
+          if(isset($_GET["displayAll"])) {
+            $context["coupe"] = PHP_INT_MAX;
+            $context["display_all_mode"] = 1; 
+          }
+	?>
+        <style>
+          #offset-v-small {
+            margin-top: 5px;
+          }
+
+          #paginationDisplayAll {
+            position: relative;
+            top: -15px;
+            left: 5px;
+            color: #ed8400;
+            font-weight: bold;
+          }
+
+	  #paginationPaginate {
+            background-color: #ed8400;
+            color: white;
+            font-weight: bold;
+            border-radius: 3px;
+            padding: 4px;
+          }
+
+          #paginationPaginate:hover {
+           background-color: white;
+           color: #ed8400;
+           border: 2px solid #ed8400;
+           padding: 2px;
+          }
+
+          #paginationDisplayAll:hover {
+            color: #995400;
+          }
+
+          .positive-offset-5 {
+            height: 30px;
+          }
+        </style>
+
+        <LET VAR="DEFAULT_MODE">1</LET>
+	<?php
+          if(isset($_GET["ajax_mode"])) {
+            $context["default_mode"] = 0;
+          }
+        ?>
+
+	<IF COND="[#DEFAULT_MODE]">
+	  <IF COND="[#DISPLAY_ALL_MODE]">
+	    <a href="#" id="paginationPaginate">&uarr; [@COMMON.HIDE_ALL_SITEMAP]</a>
+            <div class="positive-offset-5"></div>
+	  </IF>
+	</IF>
+
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
-			<IF COND="[#NBRESULTS] GT [#COUPE]"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
+			<IF COND="[#NBRESULTS] GT [#COUPE]">
+				<MACRO NAME="BOTTOM_RESULTS_PAGES">
+			<IF COND="[#DEFAULT_MODE]">
+            			<IF COND="[#NBRESULTS] GT [#COUPE]">
+              			  <a href="[#CURRENTURL]&displayAll" id="paginationDisplayAll">&darr; [@COMMON.DISPLAY_ALL_SITEMAP]</a>
+				</IF>
+          		</IF>
+			</IF>
 		</BEFORE>
 		<DO>
 			<IF COND="[#COUNT] % 2">
@@ -525,7 +590,7 @@ function loadTemplate(id, displayWarner, recursive)
 				}
 			}
 		}
-		xhrs[l].send('site=[#SITE]&id='+id);
+		xhrs[l].send('site=[#SITE]&id='+id+'&ajax_mode');
 	} else {
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
@@ -678,7 +743,32 @@ function fixPaginationLinks() {
 }
 
 observeDOM(document.body, fixPaginationLinks);
-
 </script>
+<script>
+    initializePaginationActions();
 
+    function initializePaginationActions() {
+        var paginateElement = document.getElementById("paginationPaginate");
+        if(paginateElement) {
+            paginateElement.addEventListener("click", function(event) {
+                event.preventDefault();
+                paginateDocuments();
+            });
+        }
+    }
+
+    function paginateDocuments() {
+        var newLocation =
+            window.location.href
+		.split("#")[0]
+                .split("&")
+                .filter(function(element) {
+                    return element !== "displayAll"
+                })
+                .join("&");
+
+        window.location.replace(newLocation);
+    }
+</script>
 <MACRO NAME="CLOSE_HTML">
+
