@@ -498,7 +498,7 @@ function autoScroll(e){
 							return $arr["scheme"] . "://" . $arr["host"] . $arr["path"] . "?" . implode("&", $nquery);
 						}
 
-						$context["display_all_url"] = removeOffsetFromUrl($context["currenturl"]);
+						$context["display_all_url"] = removeOffsetFromUrl($context["currenturl"]) . "&displayAll";
 					?>
 					<a href="[#DISPLAY_ALL_URL]" id="paginationDisplayAll">&darr; [@COMMON.DISPLAY_ALL_SITEMAP]</a>
 				</IF>
