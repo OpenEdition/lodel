@@ -432,12 +432,15 @@ function autoScroll(e){
             color: #995400;
           }
         </style>
-	<IF COND="[#COUPE] EQ 50">
-          <a href="#" id="paginationDisplayAll">[@COMMON.DISPLAY_ALL_SITEMAP]</a>
-          <ELSE />
-          <a href="#" id="paginationPaginate">[@COMMON.HIDE_ALL_SITEMAP]</a>
-	  <br />
-	  <br />
+
+        <IF COND="[#ID]">
+          <IF COND="[#NBRESULTS] GT [#COUPE]">
+            <a href="#" id="paginationDisplayAll">[@COMMON.DISPLAY_ALL_SITEMAP]</a>
+            <ELSE />
+            <a href="#" id="paginationPaginate">[@COMMON.HIDE_ALL_SITEMAP]</a>
+            <br />
+            <br />
+          </IF>
         </IF>
 
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
