@@ -280,9 +280,15 @@ function mouseUp(ev){
 
         function getLodelId(e) {
             var id = e.getAttribute("id");
+
+            if(id === null) {
+              return -1;
+            }
+
             if(id.indexOf("container_") === -1) {
                 return id;
             }
+
             return id.split("_")[1];
         }
 
@@ -780,5 +786,4 @@ observeDOM(document.body, fixPaginationLinks);
     }
 </script>
 <MACRO NAME="CLOSE_HTML">
-
 
