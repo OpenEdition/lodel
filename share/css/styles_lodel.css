@@ -2432,3 +2432,37 @@ div.overflowed
 	width:100%;
 	overflow:auto;
 }
+
+/**
+	Pagination styles
+ */
+#paginationDisplayAll {
+	position: relative;
+	top: -15px;
+	left: 5px;
+	color: #ed8400;
+	font-weight: bold;
+}
+
+#paginationPaginate {
+	background-color: #ed8400;
+	color: white;
+	font-weight: bold;
+	border-radius: 3px;
+	padding: 4px;
+}
+
+#paginationPaginate:hover {
+	background-color: white;
+	color: #ed8400;
+	border: 2px solid #ed8400;
+	padding: 2px;
+}
+
+#paginationDisplayAll:hover {
+	color: #995400;
+}
+
+.positive-offset-small {
+	height: 30px;
+}

@@ -1462,6 +1462,22 @@ function is_recaptcha_v2_valid($code, $recaptche_privatekey, $ip = null) {
         return $json->success;
 }
 
+/**
+ * Returns a new url without offset_* GET params
+ *
+ * @param $url
+ * @return string
+ */
+function remove_offset_param_from_url($url) {
+    $arr = parse_url($url);
+    $nquery = array_filter(explode("&", $arr["query"]), function($pair) {
+        return strpos($pair, "offset_") === false;
+    });
+
+    return $arr["scheme"] . "://" . $arr["host"] . $arr["path"] . "?" . implode("&", $nquery);
+}
+
+
 define('INC_FUNC', 1);
 // valeur de retour identifiant ce script
 // utilisé dans l'installation pour vérifier l'accès aux scripts

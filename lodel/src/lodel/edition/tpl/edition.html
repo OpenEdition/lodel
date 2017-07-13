@@ -17,7 +17,7 @@
 <MACRO NAME="JS_FONCTIONS_ARBORESCENCE">
 <MACRO NAME="JS_AFFICHE_IMAGE">
 <MACRO NAME="HEADER_HEAD_CLOSE">
-<MACRO NAME="HEADER_LOGO"> 
+<MACRO NAME="HEADER_LOGO">
 <IF COND="[#LODELUSER.EDITOR]">
 <LET VAR="drag">true</LET>
 
@@ -106,7 +106,7 @@ function mouseMove(ev){
 	Firefox uses event.target here, MSIE uses event.srcElement
 	*/
 	var target   = ev.target || ev.srcElement;
-	
+
 	if(target.className == "dragger") {
 		target = target.parentNode.parentNode.parentNode;
 	}
@@ -115,7 +115,7 @@ function mouseMove(ev){
 	if(lastTarget && (target!==lastTarget)){
 		// reset the classname for the target element
 		var origClass;
-		if(lastTarget.getAttribute && (origClass = lastTarget.getAttribute('origClass'))!=null) 
+		if(lastTarget.getAttribute && (origClass = lastTarget.getAttribute('origClass'))!=null)
 			lastTarget.className = origClass;
 	}
 	/*
@@ -369,7 +369,7 @@ function mouseDown(ev){
 		curTarget = null;
 		return true;
 	}
-	
+
 }
 function autoScroll(e){
 	var h = document.documentElement.innerHeight || document.documentElement.clientHeight;
@@ -411,7 +411,7 @@ function autoScroll(e){
 </script>
 <ELSE/>
 <LET VAR="drag">false</LET>
-</IF>	
+</IF>
 <MACRO NAME="CURRENT_PATH">
 <MACRO NAME="ACTIONS_ON_CURRENT_PATH">
 
@@ -419,64 +419,30 @@ function autoScroll(e){
 <div id="warner" class="warner fullshadow"><img src="[#SHAREURL]/images/patienter.png" title="[@COMMON.PLEASE_WAIT_WHILE_LOADING]" alt="[@COMMON.PLEASE_WAIT_WHILE_LOADING]"/>&nbsp;[@COMMON.PLEASE_WAIT_WHILE_LOADING]</div>
 <div id="listEntities">
 <BLOCK ID="1">
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
+	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
 		<ul class="listEntities" id="DragContainer[#ID]">
 	<ELSE/>
 		<ul class="listEntities" id="ul_listEntities">
 	</IF>
 	<IF COND="![#DISPLAYWHERE]"><LET VAR="displaywhere">display!='advanced'</LET></IF>
 	<LET VAR="COUPE">50</LET>
-        <LET VAR="DISPLAY_ALL_MODE">0</LET>
-	<?php 
+	<LET VAR="DISPLAY_ALL_MODE">0</LET>
+	<?php
           if(isset($_GET["displayAll"])) {
             $context["coupe"] = PHP_INT_MAX;
-            $context["display_all_mode"] = 1; 
+            $context["display_all_mode"] = 1;
           }
 	?>
-        <style>
-          #paginationDisplayAll {
-            position: relative;
-            top: -15px;
-            left: 5px;
-            color: #ed8400;
-            font-weight: bold;
-          }
-
-	  #paginationPaginate {
-            background-color: #ed8400;
-            color: white;
-            font-weight: bold;
-            border-radius: 3px;
-            padding: 4px;
-          }
-
-          #paginationPaginate:hover {
-           background-color: white;
-           color: #ed8400;
-           border: 2px solid #ed8400;
-           padding: 2px;
-          }
-
-          #paginationDisplayAll:hover {
-            color: #995400;
-          }
-
-          .positive-offset-5 {
-            height: 30px;
-          }
-        </style>
-
-        <LET VAR="DEFAULT_MODE">1</LET>
+	<LET VAR="DEFAULT_MODE">1</LET>
 	<?php
           if(isset($_GET["ajax_mode"])) {
             $context["default_mode"] = 0;
           }
         ?>
-
 	<IF COND="[#DEFAULT_MODE]">
 	  <IF COND="[#DISPLAY_ALL_MODE]">
-	    <a href="#" id="paginationPaginate">&uarr; [@COMMON.HIDE_ALL_SITEMAP]</a>
-            <div class="positive-offset-5"></div>
+	    <a href="#" id="paginationPaginate">&uarr; [@ADMIN.TOGGLE_PAGINATION_PAGINATE]</a>
+            <div class="positive-offset-small"></div>
 	  </IF>
 	</IF>
 
@@ -489,18 +455,10 @@ function autoScroll(e){
 				<IF COND="[#NBRESULTS] GT [#COUPE]">
 					<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
 					<?php
-						function removeOffsetFromUrl($url) {
-							$arr = parse_url($url);
-							$nquery = array_filter(explode("&", $arr["query"]), function($pair) {
-    						return strpos($pair, "offset_") === false;
-							});
-
-							return $arr["scheme"] . "://" . $arr["host"] . $arr["path"] . "?" . implode("&", $nquery);
-						}
-
-						$context["display_all_url"] = removeOffsetFromUrl($context["currenturl"]) . "&displayAll";
+						$context["display_all_url"] =
+							remove_offset_param_from_url($context["currenturl"]) . "&displayAll";
 					?>
-					<a href="[#DISPLAY_ALL_URL]" id="paginationDisplayAll">&darr; [@COMMON.DISPLAY_ALL_SITEMAP]</a>
+					<a href="[#DISPLAY_ALL_URL]" id="paginationDisplayAll">&darr; [@ADMIN.TOGGLE_PAGINATION_DISPLAYALL]</a>
 				</IF>
 			</IF>
 			</IF>
@@ -555,13 +513,13 @@ function autoScroll(e){
 		</ALTERNATIVE>
 	</LOOP>
 	</ul>
-	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'"> 
+	<IF COND="![#FOLDER] AND [#DRAG] EQ 'true'">
 		<script type="text/javascript">
 			CreateDragContainer(document.getElementById('DragContainer[#ID]'));
 		</script>
 	</IF>
 </BLOCK>
-	<FUNC NAME="GET_ALIASES" ID="[#ID]" />	
+	<FUNC NAME="GET_ALIASES" ID="[#ID]" />
 </div>
 <script type="text/javascript">
 var xhrs = [];
@@ -583,7 +541,7 @@ function loadTemplate(id, displayWarner, recursive)
 		xhrs[l].onreadystatechange = function() {
 			if(xhrs[l].readyState == 4 && xhrs[l].status == 200)
 			{
-				if (xhrs[l].responseText == 'error') 
+				if (xhrs[l].responseText == 'error')
 				{
                     			document.getElementById('warner').style.display = "none";
 					alert("[@INSTALL.ERROR]");
@@ -593,7 +551,7 @@ function loadTemplate(id, displayWarner, recursive)
 					window.location = "login.php?error_timeout=1&url_retour=" + location.pathname + location.search;
 					return false;
 				}
-				else 
+				else
 				{
 					if(xhrs[l].responseText == '') {
 						xhrs[l].container.innerHTML = '&nbsp;';
@@ -644,7 +602,7 @@ function finish(statut)
 	}
 }
 
-function displayAll(obj, statut, recursive, id) 
+function displayAll(obj, statut, recursive, id)
 {
 	document.getElementById('warner').style.display = "block";
 	if (!recursive) {
@@ -664,7 +622,7 @@ function displayAll(obj, statut, recursive, id)
 	lis = document.getElementsByTagName('li');
 	for (i = 0; i < lis.length; i++) {
 		if (lis[i].id.indexOf('container_') != -1) id = lis[i].id.substr(10);
-		if(ids[id] != true) { 
+		if(ids[id] != true) {
 			tabIds[c++] = id;
 			ids[id] = true;
 			if (statut && !loadTemplate(id, false, true, obj)) {
@@ -677,10 +635,10 @@ function displayAll(obj, statut, recursive, id)
 	finish(statut);
 }
 
-function changeIcon(id, statut) 
+function changeIcon(id, statut)
 {
 	var img = document.getElementById('img'+id);
-	if(statut == true) { 
+	if(statut == true) {
 		var childcontainer = document.getElementById('childContainer'+id);
 		if(childcontainer) childcontainer.style.display='block';
 		img.src='[#SHAREURL]/images/fleche_bas_gris.png';
@@ -729,17 +687,17 @@ var observeDOM = (function(){
 })();
 
 
-function fixPaginationLinks() {  
+function fixPaginationLinks() {
   var links = document.getElementsByClassName("linkpage");
   for(var i = 0; i < links.length; i++) {
     link = links[i];
     link.addEventListener("click", function (event) {
-      var container = this.parentNode.parentNode.parentNode.parentNode.parentNode;      
+      var container = this.parentNode.parentNode.parentNode.parentNode.parentNode;
       var className = container.firstChild.nextSibling.classList[0];
       if(className !== "unfoldedentities") return;
-      
+
       event.preventDefault();
-      
+
       var id = container.getAttribute("id").split("childContainer")[1];
       var http = new XMLHttpRequest();
       var relativeUrl = this.getAttribute("href");
@@ -752,7 +710,7 @@ function fixPaginationLinks() {
           var wrapper = document.createElement("div");
           wrapper.innerHTML = http.responseText
           container.parentNode.replaceChild(wrapper.firstChild, container);
-        } 
+        }
       }
 
       http.send('site=[#SITE]&id='+id);
