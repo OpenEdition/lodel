@@ -428,40 +428,33 @@ function autoScroll(e){
 	<LET VAR="COUPE">50</LET>
 	<LET VAR="DISPLAY_ALL_MODE">0</LET>
 	<?php
-          if(isset($_GET["displayAll"])) {
-            $context["coupe"] = PHP_INT_MAX;
-            $context["display_all_mode"] = 1;
-          }
+		if(isset($_GET["displayAll"])) {
+			$context["coupe"] = PHP_INT_MAX;
+			$context["display_all_mode"] = 1;
+		}
 	?>
-	<LET VAR="DEFAULT_MODE">1</LET>
-	<?php
-          if(isset($_GET["ajax_mode"])) {
-            $context["default_mode"] = 0;
-          }
-        ?>
-	<IF COND="[#DEFAULT_MODE]">
-	  <IF COND="[#DISPLAY_ALL_MODE]">
-	    <a href="#" id="paginationPaginate">&uarr; [@ADMIN.TOGGLE_PAGINATION_PAGINATE]</a>
-            <div class="positive-offset-small"></div>
-	  </IF>
-	</IF>
-
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
-			<IF COND="[#NBRESULTS] GT [#COUPE]">
-				<MACRO NAME="BOTTOM_RESULTS_PAGES">
-			<IF COND="[#DEFAULT_MODE]">
-				<IF COND="[#NBRESULTS] GT [#COUPE]">
-					<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
-					<?php
+			<div id="paginationContainer" style="opacity: 0">
+				<IF COND="[#ID] AND [#NBRESULTS] GT [#COUPE]">
+					<MACRO NAME="BOTTOM_RESULTS_PAGES">
+				</IF>
+				<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
+				<?php
 						$context["display_all_url"] =
 							remove_offset_param_from_url($context["currenturl"]) . "&displayAll";
 					?>
-					<a href="[#DISPLAY_ALL_URL]" id="paginationDisplayAll">&darr; [@ADMIN.TOGGLE_PAGINATION_DISPLAYALL]</a>
+				<IF COND="[#NBRESULTS] GT [#COUPE]">
+					<a href="[#DISPLAY_ALL_URL]" class="paginationDisplayAll">&darr; [@ADMIN.TOGGLE_PAGINATION_DISPLAYALL]</a>
+					<ELSE/>
+					<IF COND="[#DISPLAY_ALL_MODE]">
+						<MACRO NAME="BOTTOM_RESULTS_PAGES">
+						<a href="#" class="paginationPaginate">&uarr; [@ADMIN.TOGGLE_PAGINATION_PAGINATE]</a>
+						<div class="positive-offset-small"></div>
+					</IF>
 				</IF>
-			</IF>
-			</IF>
+			</div>
 		</BEFORE>
 		<DO>
 			<IF COND="[#COUNT] % 2">
@@ -524,6 +517,18 @@ function autoScroll(e){
 <script type="text/javascript">
 var xhrs = [];
 var ids = [];
+
+function removePaginationToggle(container) {
+    var linkPaginate = container.querySelector(".paginationPaginate");
+    if(linkPaginate) {
+        linkPaginate.parentNode.removeChild(linkPaginate);
+    }
+    var linkDisplayAll = container.querySelector(".paginationDisplayAll");
+    if(linkDisplayAll) {
+        linkDisplayAll.parentNode.removeChild(linkDisplayAll);
+    }
+}
+
 function loadTemplate(id, displayWarner, recursive)
 {
 	var container = document.getElementById('container'+id);
@@ -543,7 +548,7 @@ function loadTemplate(id, displayWarner, recursive)
 			{
 				if (xhrs[l].responseText == 'error')
 				{
-                    			document.getElementById('warner').style.display = "none";
+					document.getElementById('warner').style.display = "none";
 					alert("[@INSTALL.ERROR]");
 					return false;
 				}
@@ -559,14 +564,15 @@ function loadTemplate(id, displayWarner, recursive)
 						return true;
 					}
 					xhrs[l].container.innerHTML = xhrs[l].responseText;
-					xhrs[l].container.style.display = 'block';
+					removePaginationToggle(xhrs[l].container);
+                    xhrs[l].container.style.display = 'block';
 					if (xhrs[l].displayWarner) document.getElementById('warner').style.display = "none";
 					if (xhrs[l].recursive) displayAll(document.getElementById('displayButton'), true, true, xhrs[l].currentId);
 					return true;
 				}
 			}
 		}
-		xhrs[l].send('site=[#SITE]&id='+id+'&ajax_mode');
+		xhrs[l].send('site=[#SITE]&id='+id);
 	} else {
 		if(displayWarner) document.getElementById('warner').style.display = "none";
 		alert("[@ADMIN.NAVIGATOR_NOT_AJAX]");
@@ -708,10 +714,11 @@ function fixPaginationLinks() {
       http.onreadystatechange = function () {
         if(http.readyState == 4 && http.status == 200) {
           var wrapper = document.createElement("div");
-          wrapper.innerHTML = http.responseText
+          wrapper.innerHTML = http.responseText;
+          removePaginationToggle(wrapper);
           container.parentNode.replaceChild(wrapper.firstChild, container);
         }
-      }
+      };
 
       http.send('site=[#SITE]&id='+id);
     });
@@ -721,15 +728,47 @@ function fixPaginationLinks() {
 observeDOM(document.body, fixPaginationLinks);
 </script>
 <script>
-    initializePaginationActions();
+	initialize();
+
+	function initialize() {
+	    var nav = document.getElementById("paginationContainer");
+	    clearPagination();
+        initializePaginationActions();
+		initializePaginationTogglePosition();
+    	nav.style.opacity = 1;
+	}
 
     function initializePaginationActions() {
-        var paginateElement = document.getElementById("paginationPaginate");
+        var elements = document.getElementsByClassName("paginationPaginate");
+        var paginateElement = elements && elements[0];
         if(paginateElement) {
             paginateElement.addEventListener("click", function(event) {
                 event.preventDefault();
                 paginateDocuments();
             });
+        }
+    }
+
+    function initializeSingleTogglePosition(className) {
+        var elements = document.getElementsByClassName(className);
+        var displayAllElement = elements && elements[0];
+        if(displayAllElement) {
+            displayAllElement.parentNode.removeChild(displayAllElement);
+            var numbersList = document.getElementById("navResults");
+            numbersList.appendChild(displayAllElement);
+        }
+	}
+
+    function initializePaginationTogglePosition() {
+        initializeSingleTogglePosition("paginationDisplayAll");
+        initializeSingleTogglePosition("paginationPaginate");
+	}
+
+    function clearPagination() {
+        var nav = document.getElementById("navResults");
+        var li = nav.querySelectorAll("li");
+        if(li.length === 1) {
+            nav.removeChild(li[0]);
         }
     }
 
