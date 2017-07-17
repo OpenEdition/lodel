@@ -1142,7 +1142,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
     unset($message);
     // send the mail
-    $r = @Mail::factory('mail')->send($to, $headers, $body);
+    $Mail = new Mail;
+    $r = $Mail->factory('mail')->send($to, $headers, $body);
     $ret = true;
     if ($pear->isError($r)) {
         $ret = $r->getMessage();
