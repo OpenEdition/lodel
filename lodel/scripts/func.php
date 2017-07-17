@@ -1470,6 +1470,11 @@ function is_recaptcha_v2_valid($code, $recaptche_privatekey, $ip = null) {
  */
 function remove_offset_param_from_url($url) {
     $arr = parse_url($url);
+
+    if(!isset($arr["query"])) {
+        return $url;
+    }
+
     $nquery = array_filter(explode("&", $arr["query"]), function($pair) {
         return strpos($pair, "offset_") === false;
     });
