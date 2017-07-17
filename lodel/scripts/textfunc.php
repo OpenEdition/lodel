@@ -998,16 +998,6 @@ function getFileType($filename){
 
 /** Transforme une date MySql en timestamp UNIX 
 * @author Bruno Cénou
-* @param string $date 
-*/
-
-function mysql2TS($date){
-	$date = str_replace(array(' ', '-', ':'), '', $date);
-	return mktime(substr($date, 8, 2), substr($date, 10, 2), substr($date, 12, 2), substr($date, 4, 2), substr($date, 6, 2), substr($date, 0, 4));
-}
-
-/** Transforme une date MySql en timestamp UNIX 
-* @author Bruno Cénou
 * @param string $time 
 */
 
