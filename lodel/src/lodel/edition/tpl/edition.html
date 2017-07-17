@@ -436,7 +436,6 @@ function autoScroll(e){
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
-			<div id="paginationContainer" style="opacity: 0">
 				<IF COND="[#ID] AND [#NBRESULTS] GT [#COUPE]">
 					<MACRO NAME="BOTTOM_RESULTS_PAGES">
 				</IF>
@@ -446,15 +445,14 @@ function autoScroll(e){
 							remove_offset_param_from_url($context["currenturl"]) . "&displayAll";
 					?>
 				<IF COND="[#NBRESULTS] GT [#COUPE]">
-					<a href="[#DISPLAY_ALL_URL]" class="paginationDisplayAll">&darr; [@ADMIN.TOGGLE_PAGINATION_DISPLAYALL]</a>
+					<a href="[#DISPLAY_ALL_URL]" class="paginationDisplayAll">[@ADMIN.TOGGLE_PAGINATION_DISPLAYALL]</a>
 					<ELSE/>
 					<IF COND="[#DISPLAY_ALL_MODE]">
 						<MACRO NAME="BOTTOM_RESULTS_PAGES">
-						<a href="#" class="paginationPaginate">&uarr; [@ADMIN.TOGGLE_PAGINATION_PAGINATE]</a>
+						<a href="#" class="paginationPaginate">[@ADMIN.TOGGLE_PAGINATION_PAGINATE]</a>
 						<div class="positive-offset-small"></div>
 					</IF>
 				</IF>
-			</div>
 		</BEFORE>
 		<DO>
 			<IF COND="[#COUNT] % 2">
@@ -731,11 +729,12 @@ observeDOM(document.body, fixPaginationLinks);
 	initialize();
 
 	function initialize() {
-	    var nav = document.getElementById("paginationContainer");
-	    clearPagination();
+	    var nav = document.getElementsByClassName("paginationContainer");
         initializePaginationActions();
 		initializePaginationTogglePosition();
-    	nav.style.opacity = 1;
+		for(var i = 0; i < nav.length; i++) {
+            nav[i].style.opacity = 1;
+		}
 	}
 
     function initializePaginationActions() {
@@ -763,14 +762,6 @@ observeDOM(document.body, fixPaginationLinks);
         initializeSingleTogglePosition("paginationDisplayAll");
         initializeSingleTogglePosition("paginationPaginate");
 	}
-
-    function clearPagination() {
-        var nav = document.getElementById("navResults");
-        var li = nav.querySelectorAll("li");
-        if(li.length === 1) {
-            nav.removeChild(li[0]);
-        }
-    }
 
     function paginateDocuments() {
         var newLocation =
