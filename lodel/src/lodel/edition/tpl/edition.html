@@ -736,9 +736,10 @@ observeDOM(document.body, fixPaginationLinks);
 
     function clearPagination() {
         var list = document.getElementById("navResults");
-		list.querySelectorAll("li").forEach(function(li) {
-		    li.parentNode.removeChild(li);
-		});
+        var elements = list.querySelectorAll("li");
+        if(elements.length === 1) {
+            elements[0].parentNode.removeChild(elements[0]);
+        }
     }
 
     function initializePaginationActions() {
