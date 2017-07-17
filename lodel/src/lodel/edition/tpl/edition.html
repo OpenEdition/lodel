@@ -436,7 +436,7 @@ function autoScroll(e){
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
-				<IF COND="[#ID] AND [#NBRESULTS] GT [#COUPE]">
+				<IF COND="[#NBRESULTS] GT [#COUPE]">
 					<MACRO NAME="BOTTOM_RESULTS_PAGES">
 				</IF>
 				<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
