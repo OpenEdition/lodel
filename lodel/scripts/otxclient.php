@@ -5,21 +5,12 @@
  * @authors See COPYRIGHT file
  */
 
-/**
- * Fichier de la classe permettant de communiquer avec OTX via le protole SOAP
- */
 
-if(0 < C::get('debugMode', 'cfg'))
-{ // pas de cache WSDL si en mode débug
-	ini_set('soap.wsdl_cache_enabled', false);
-	ini_set('soap.wsdl_cache_enabled', '0');
-	ini_set('soap.wsdl_cache_ttl', '60');
-}
 
 /**
  * Classe permettant de communiquer avec OTX
  */
-class OTXClient extends SoapClient
+class OTXClient
 {
 	/**
 	 * @var array liste des paramètres autorisés à l'envoi à OTX
