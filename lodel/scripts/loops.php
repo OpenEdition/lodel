@@ -256,7 +256,7 @@ function loop_next($context, $funcname, $arguments)
 function loop_rss($context, $funcname, $arguments)
 {
     defined('DIRECTORY_SEPARATOR') || define("DIRECTORY_SEPARATOR", "/");
-    require_once 'SimplePieAutoloader.php';
+    require_once 'vendor/autoload.php';
     if (!isset ($arguments['url'])) {
         if (C::get('visitor', 'lodeluser'))
             trigger_error("ERROR: the loop \"rss\" requires a URL attribut", E_USER_ERROR);

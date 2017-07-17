@@ -1,0 +1,6 @@
+{
+    "require": {
+        "simplepie/simplepie": "^1.5",
+        "adodb/adodb-php": "^5.20"
+    }
+}

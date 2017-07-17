@@ -19,7 +19,7 @@ defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
 defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
 $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-include "adodb/adodb.inc.php";
+include "vendor/adodb/adodb-php/adodb.inc.php";
 error_reporting($err);
 
 // connect to the database server
