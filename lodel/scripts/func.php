@@ -1083,7 +1083,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
     $body = wordwrap(strtr($body, $replace), 70);
     $subject = wordwrap(strtr($subject, $replace), 70);
-
+    
+    // @TODO Arrêter d'utiliser PEAR !!
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
     if (!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
