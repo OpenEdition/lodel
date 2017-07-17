@@ -271,7 +271,7 @@ class GenericLogic extends Logic
 			}
 
 			// clean automatically the fields when required.
-			if (!is_array($value) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) 
+			if ((isset($value) && !is_array($value)) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) 
 					&& $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
 				$value = trim(strip_tags($value));
 			}
