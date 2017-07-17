@@ -995,6 +995,14 @@ function getFileType($filename){
 	return (!isset($tmp[1]) || !($tmp[1] = trim($tmp[1]))) ? 'unknown' : $tmp[1];
 }
 
+/** Convertit date texte en timestamp
+* @author Bruno Cénou
+* @param string $date
+*/
+
+function mysql2TS($date){
+	return strtotime($date);
+}
 
 /** Transforme une date MySql en timestamp UNIX 
 * @author Bruno Cénou
