@@ -1087,7 +1087,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     // @TODO Arrêter d'utiliser PEAR !!
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
-    if (!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
+    if (!class_exists('Mail', false)) include 'Mail.php';
+    if (!class_exists('Mail_mime', false)) include 'Mail/mime.php';
     $pear = new PEAR();
 
     $message = new Mail_mime("\n");
