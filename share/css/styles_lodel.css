@@ -2435,6 +2435,8 @@ div.overflowed
 
 /* Pagination toggle */
 
-.paginationDisplayAll {
+a.paginationDisplayAll, a.paginationPaginate {
 	margin-left: 20px;
+	color: #f87b39;
+	font-weight: bold;
 }
