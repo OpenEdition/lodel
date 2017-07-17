@@ -729,13 +729,17 @@ observeDOM(document.body, fixPaginationLinks);
 	initialize();
 
 	function initialize() {
-	    var nav = document.getElementsByClassName("paginationContainer");
         initializePaginationActions();
 		initializePaginationTogglePosition();
-		for(var i = 0; i < nav.length; i++) {
-            nav[i].style.opacity = 1;
-		}
+        clearPagination();
 	}
+
+    function clearPagination() {
+        var list = document.getElementById("navResults");
+		list.querySelectorAll("li").forEach(function(li) {
+		    li.parentNode.removeChild(li);
+		});
+    }
 
     function initializePaginationActions() {
         var elements = document.getElementsByClassName("paginationPaginate");
