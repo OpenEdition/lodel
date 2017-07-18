@@ -4,6 +4,7 @@
         "simplepie/simplepie": "^1.5",
         "jelix/wikirenderer": "^3.1",
         "pear/mail": "^1.4",
-        "pear/mail_mime": "^1.10"
+        "pear/mail_mime": "^1.10",
+        "ezyang/htmlpurifier": "^4.9"
     }
 }

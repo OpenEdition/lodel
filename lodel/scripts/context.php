@@ -676,8 +676,7 @@ class C
 			$cache = cache_get_path('htmlpurifier');
 
 			if (!class_exists('HTMLPurifier', false)) {
-				include 'htmlpurifier/HTMLPurifier/Bootstrap.php';
-				spl_autoload_register(array('HTMLPurifier_Bootstrap', 'autoload'));
+				include 'vendor/autoload.php';
 			}
 			$config = HTMLPurifier_Config::createDefault();
 		
@@ -695,25 +694,27 @@ class C
 			$config->set('Attr.EnableID', true);
 			$config->set('Cache.SerializerPath', $cache );
 			$config->set('HTML.Doctype', 'XHTML 1.0 Strict'); // replace with your doctype
-			$config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
-			$config->set('HTML.DefinitionRev', 1);
+                        $config->set('HTML.DefinitionID', 'r2r:ml no namespaces allowed');
+                        $config->set('HTML.DefinitionRev', 1);
+
 			// L'option HTML.SafeObject est très très gourmande, on ne l'utilise que si c'est nécessaire (pareil pour HTML.SafeEmbed just in case)
 			if (stripos("<object", $data))
 				$config->set('HTML.SafeObject', true);
 			if (stripos("<embed", $data))
 				$config->set('HTML.SafeEmbed', true);
 			$config->set('CSS.AllowTricky',true);
-			$def = $config->getHTMLDefinition(true);
-			$def->addAttribute('a', 'rel', 'CDATA'); // allow any rel attribute
-			$r2r = $def->addElement(
-				'r2r',   // name
-				'Block',  // content set
-				'Flow', // allowed children
-				'IL8N', // attribute collection
-				array( // attributes
-				'lang' => 'CDATA')
-			);
-			$r2r->excludes = array('r2r' => true);
+			if ($def = $config->maybeGetRawHTMLDefinition()){
+				$def->addAttribute('a', 'rel', 'CDATA'); // allow any rel attribute
+				$r2r = $def->addElement(
+					'r2r',   // name
+					'Block',  // content set
+					'Flow', // allowed children
+					'IL8N', // attribute collection
+					array( // attributes
+					'lang' => 'CDATA')
+				);
+				$r2r->excludes = array('r2r' => true);
+			}
 			self::$filter = new HTMLPurifier($config);
 		}
 	

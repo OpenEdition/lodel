@@ -8,6 +8,7 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
 {
     public static $files = array (
         'bf9f5270ae66ac6fa0290b4bf47867b7' => __DIR__ . '/..' . '/adodb/adodb-php/adodb.inc.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
     );
 
     public static $prefixesPsr0 = array (
@@ -31,6 +32,13 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
             array (
                 0 => __DIR__ . '/..' . '/pear/mail',
                 1 => __DIR__ . '/..' . '/pear/mail_mime',
+            ),
+        ),
+        'H' => 
+        array (
+            'HTMLPurifier' => 
+            array (
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
         'C' => 
