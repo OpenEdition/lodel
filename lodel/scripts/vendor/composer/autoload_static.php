@@ -18,6 +18,32 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
                 0 => __DIR__ . '/..' . '/simplepie/simplepie/library',
             ),
         ),
+        'P' => 
+        array (
+            'PEAR' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/pear_exception',
+            ),
+        ),
+        'M' => 
+        array (
+            'Mail' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/mail',
+                1 => __DIR__ . '/..' . '/pear/mail_mime',
+            ),
+        ),
+        'C' => 
+        array (
+            'Console' => 
+            array (
+                0 => __DIR__ . '/..' . '/pear/console_getopt',
+            ),
+        ),
+    );
+
+    public static $fallbackDirsPsr0 = array (
+        0 => __DIR__ . '/..' . '/pear/pear-core-minimal/src',
     );
 
     public static $classMap = array (
@@ -277,6 +303,7 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixesPsr0 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$classMap;
 
         }, null, ClassLoader::class);

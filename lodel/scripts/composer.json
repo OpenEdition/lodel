@@ -2,6 +2,8 @@
     "require": {
         "adodb/adodb-php": "^5.20",
         "simplepie/simplepie": "^1.5",
-        "jelix/wikirenderer": "^3.1"
+        "jelix/wikirenderer": "^3.1",
+        "pear/mail": "^1.4",
+        "pear/mail_mime": "^1.10"
     }
 }

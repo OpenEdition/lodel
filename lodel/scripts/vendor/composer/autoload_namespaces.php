@@ -7,4 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'SimplePie' => array($vendorDir . '/simplepie/simplepie/library'),
+    'PEAR' => array($vendorDir . '/pear/pear_exception'),
+    'Mail' => array($vendorDir . '/pear/mail', $vendorDir . '/pear/mail_mime'),
+    'Console' => array($vendorDir . '/pear/console_getopt'),
+    '' => array($vendorDir . '/pear/pear-core-minimal/src'),
 );
