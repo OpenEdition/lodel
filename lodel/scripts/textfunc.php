@@ -805,13 +805,7 @@ function nicefilesize($lien)
 
 function wiki($text)
 {
-	/* Fonction pour mediawiki : A TESTER !!!
-	require_once('mediawiki/Parser.php');
-	$parser = new ParserMediawiki;
-	$parserOutput = $parser->internalParse($text);
-	print_r($parserOutput);
-	*/
-	class_exists('WikiRenderer', false) || include ('wikirenderer/WikiRenderer.lib.php');
+	class_exists('WikiRenderer', false) || include ('vendor/autoload.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }

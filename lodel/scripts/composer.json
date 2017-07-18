@@ -1,6 +1,7 @@
 {
     "require": {
+        "adodb/adodb-php": "^5.20",
         "simplepie/simplepie": "^1.5",
-        "adodb/adodb-php": "^5.20"
+        "jelix/wikirenderer": "^3.1"
     }
 }
