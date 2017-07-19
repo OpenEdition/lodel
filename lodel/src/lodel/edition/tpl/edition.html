@@ -438,6 +438,8 @@ function autoScroll(e){
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
 				<IF COND="[#NBRESULTS] GT [#COUPE]">
 					<MACRO NAME="BOTTOM_RESULTS_PAGES">
+				<ELSE />
+					<div id="display-all-hint" style="display:none;"></div>
 				</IF>
 				<LET VAR="DISPLAY_ALL_URL">[#CURRENTURL]</LET>
 				<?php
@@ -736,9 +738,11 @@ observeDOM(document.body, fixPaginationLinks);
 
     function clearPagination() {
         var list = document.getElementById("navResults");
-        var elements = list.querySelectorAll("li");
-        if(elements.length === 1) {
-            elements[0].parentNode.removeChild(elements[0]);
+        if(list) {
+            var elements = list.querySelectorAll("li");
+            if (elements.length === 1) {
+                elements[0].parentNode.removeChild(elements[0]);
+            }
         }
     }
 
