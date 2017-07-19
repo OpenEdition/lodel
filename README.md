@@ -41,9 +41,8 @@ Installation
 Notez qu'une version pré-installée de Lodel (et OTX, l’application de conversion Word/Office vers XML/TEI) en tant qu’image de machine virtuelle linux Debian est téléchargeable à l’adresse : http://lodel.org/downloads/vms/
 
 Pré-requis:
-  - Utiliser son propre serveur linux, Lodel n'est pas utilisable sur hébergement dédié.
   - Serveur HTTP (nginx, apache) avec PHP
-  - Serveur MySQL
+  - Serveur MySQL/MariaDb
     - pour être utilisé avec OTX, il faut une valeur de max_allowed_packet et key_buffer très grande (16 M)
 
 
