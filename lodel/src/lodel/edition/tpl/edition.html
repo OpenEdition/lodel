@@ -107,7 +107,13 @@ function mouseMove(ev){
 	*/
 	var target   = ev.target || ev.srcElement;
 
-	if(target.className == "dragger") {
+    // Prevents from dragging element above pagination container
+    var paginationContainer = document.getElementById("navResults");
+    if(paginationContainer && ev.clientY < paginationContainer.offsetTop + 25) {
+        return;
+    }
+
+    if(target.className == "dragger") {
 		target = target.parentNode.parentNode.parentNode;
 	}
 
