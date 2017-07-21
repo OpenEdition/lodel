@@ -107,9 +107,23 @@ function mouseMove(ev){
 	*/
 	var target   = ev.target || ev.srcElement;
 
+    var cumulativeOffset = function(element) {
+        var top = 0, left = 0;
+        do {
+            top += element.offsetTop  || 0;
+            left += element.offsetLeft || 0;
+            element = element.offsetParent;
+        } while(element);
+
+        return {
+            top: top,
+            left: left
+        };
+    };
+
     // Prevents from dragging element above pagination container
     var paginationContainer = document.getElementById("navResults");
-    if(paginationContainer && ev.clientY < paginationContainer.offsetTop + 25) {
+    if(paginationContainer && cumulativeOffset(target).top < cumulativeOffset(paginationContainer).top + 25) {
         return;
     }
 
