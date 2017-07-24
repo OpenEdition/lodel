@@ -84,7 +84,7 @@ class XMLDB
 	 * @param string $documentroot l'élement racine
 	 * @param string $tableprefix le prefix des tables
 	 */
-	function XMLDB($documentroot = '', $tableprefix = '')
+	function __construct($documentroot = '', $tableprefix = '')
 	{
 		$this->documentroot = $documentroot;
 		$this->tp = $tableprefix;
