@@ -142,8 +142,8 @@ $cfg['detectlanguage'] = true;
 
 // type d'URL
 $cfg['extensionscripts']="";      // extension .php ou .html pour les scripts accessibles par les internautes
-define("URI","id");        // position de l'id dans l'URL, a gauche signifie du genre documentXXX.php
-
+define("URI","id");               // /index.php?id=ID 
+//define("URI","singleid");       // /ID (nécessite un rewrite dans la conf du serveur web)
 
 // configuration d'OTX
 $cfg['otxurl']="";
