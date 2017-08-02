@@ -716,7 +716,7 @@ var observeDOM = (function(){
 function fixPaginationLinks() {
   var links = document.getElementsByClassName("linkpage");
   for(var i = 0; i < links.length; i++) {
-    link = links[i];
+    var link = links[i];
     link.addEventListener("click", function (event) {
       var container = this.parentNode.parentNode.parentNode.parentNode.parentNode;
       var className = container.firstChild.nextSibling.classList[0];
@@ -732,7 +732,7 @@ function fixPaginationLinks() {
       http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
       http.onreadystatechange = function () {
-        if(http.readyState == 4 && http.status == 200) {
+        if(http.readyState === 4 && http.status === 200) {
           var wrapper = document.createElement("div");
           wrapper.innerHTML = http.responseText;
           removePaginationToggle(wrapper);
