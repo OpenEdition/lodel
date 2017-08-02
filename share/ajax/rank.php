@@ -31,21 +31,20 @@ if(!file_exists('siteconfig.php'))
 
 require 'siteconfig.php';
 
-function move($db, $table, $tabIds) {
+function moveToRank($db, $table, $tabIds) {
     $fromId = (int)$tabIds[0];
-    $toId = (int)$tabIds[1];
+    $toRank = (int)$tabIds[1];
 
     include_once __DIR__ . "/../../lodel/scripts/Ranks.php";
     $from = Ranks::getRank($db, $table, $fromId);
-    $to = -1;
-    if($toId > -1) {
-        $to = Ranks::getRank($db, $table, $toId);
-    }
+    $to = $toRank;
     $parentId = Ranks::getParentId($db, $table, $fromId);
 
     include_once __DIR__ . "/../../lodel/scripts/RankShifter.php";
     $manager = new RankShifter($db, $table, $parentId);
     $manager->move($fromId, $from, $to);
+    error_log($from);
+    error_log($to);
 }
 
 try

@@ -456,7 +456,7 @@ function autoScroll(e){
 	<LOOP NAME="seriesEdit" TABLE="entities,types" WHERE="idparent='[#ID]' AND types.id=idtype AND [#DISPLAYWHERE]" ORDER="entities.rank" SPLIT="[#COUPE]">
 		<BEFORE>
 			<IF COND="[#FOLDER]"><div id="childContainer[#ID]"><li class="unfoldedentities"><ul></IF>
-				<IF COND="[#NBRESULTS] GT [#COUPE]">
+				<IF COND="[#NBRESULTS] GT [#COUPE] AND ![#FOLDER]">
 					<MACRO NAME="BOTTOM_RESULTS_PAGES">
 				<ELSE />
 					<div id="display-all-hint" style="display:none;"></div>
@@ -591,7 +591,7 @@ function loadTemplate(id, displayWarner, recursive)
 					return true;
 				}
 			}
-		}
+		};
 		xhrs[l].send('site=[#SITE]&id='+id);
 	} else {
 		if(displayWarner) document.getElementById('warner').style.display = "none";
@@ -663,147 +663,118 @@ function displayAll(obj, statut, recursive, id)
 
 function changeIcon(id, statut)
 {
-	var img = document.getElementById('img'+id);
-	if(statut == true) {
-		var childcontainer = document.getElementById('childContainer'+id);
-		if(childcontainer) childcontainer.style.display='block';
-		img.src='[#SHAREURL]/images/fleche_bas_gris.png';
-		img.title='[@ADMIN.GET_FOLDED]';
-		var container = document.getElementById('container'+id);
-		if(container) container.style.display='block';
-	} else {
-		var childcontainer = document.getElementById('childContainer'+id);
-		if(childcontainer) childcontainer.style.display='none';
-		img.src='[#SHAREURL]/images/fleche_droite_gris.png';
-		img.title='[@ADMIN.GET_UNFOLDED]';
-		var container = document.getElementById('container'+id);
-		if(container) container.style.display='none';
-	}
-	img.onclick = function(){loadTemplate(id, true, false);changeIcon(id, !statut);}
+    var img = document.getElementById('img'+id);
+    if(statut == true) {
+        var childcontainer = document.getElementById('childContainer'+id);
+        if(childcontainer) childcontainer.style.display='block';
+        img.src='[#SHAREURL]/images/fleche_bas_gris.png';
+        img.title='[@ADMIN.GET_FOLDED]';
+        var container = document.getElementById('container'+id);
+        if(container) container.style.display='block';
+    } else {
+        var childcontainer = document.getElementById('childContainer'+id);
+        if(childcontainer) childcontainer.style.display='none';
+        img.src='[#SHAREURL]/images/fleche_droite_gris.png';
+        img.title='[@ADMIN.GET_UNFOLDED]';
+        var container = document.getElementById('container'+id);
+        if(container) container.style.display='none';
+    }
+    img.onclick = function(){loadTemplate(id, true, false);changeIcon(id, !statut);}
 }
 <IF COND="[#LODELUSER.EDITOR]">
 
-	document.onmousemove = mouseMove;
-	document.onmousedown = mouseDown;
-	document.onmouseup   = mouseUp;
+document.onmousemove = mouseMove;
+document.onmousedown = mouseDown;
+document.onmouseup   = mouseUp;
 
 </IF>
 </script>
+	<script>
+        initialize();
 
-<script type="text/javascript">
-var observeDOM = (function(){
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver,
-        eventListenerSupported = window.addEventListener;
-
-    return function(obj, callback){
-        if( MutationObserver ){
-            // define a new observer
-            var obs = new MutationObserver(function(mutations, observer){
-                if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )
-                    callback();
-            });
-            // have the observer observe foo for changes in children
-            obs.observe( obj, { childList:true, subtree:true });
+        function initialize() {
+            initializePaginationActions();
+            initializePaginationTogglePosition();
+            clearPagination();
+            initializeRankForms();
         }
-        else if( eventListenerSupported ){
-            obj.addEventListener('DOMNodeInserted', callback, false);
-            obj.addEventListener('DOMNodeRemoved', callback, false);
-        }
-    };
-})();
 
-
-function fixPaginationLinks() {
-  var links = document.getElementsByClassName("linkpage");
-  for(var i = 0; i < links.length; i++) {
-    var link = links[i];
-    link.addEventListener("click", function (event) {
-      var container = this.parentNode.parentNode.parentNode.parentNode.parentNode;
-      var className = container.firstChild.nextSibling.classList[0];
-      if(className !== "unfoldedentities") return;
-
-      event.preventDefault();
-
-      var id = container.getAttribute("id").split("childContainer")[1];
-      var http = new XMLHttpRequest();
-      var relativeUrl = this.getAttribute("href");
-
-      http.open("POST", relativeUrl, true);
-      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-      http.onreadystatechange = function () {
-        if(http.readyState === 4 && http.status === 200) {
-          var wrapper = document.createElement("div");
-          wrapper.innerHTML = http.responseText;
-          removePaginationToggle(wrapper);
-          container.parentNode.replaceChild(wrapper.firstChild, container);
-        }
-      };
-
-      http.send('site=[#SITE]&id='+id);
-    });
-  }
-}
-
-observeDOM(document.body, fixPaginationLinks);
-</script>
-<script>
-	initialize();
-
-	function initialize() {
-        initializePaginationActions();
-		initializePaginationTogglePosition();
-        clearPagination();
-	}
-
-    function clearPagination() {
-        var list = document.getElementById("navResults");
-        if(list) {
-            var elements = list.querySelectorAll("li");
-            if (elements.length === 1) {
-                elements[0].parentNode.removeChild(elements[0]);
+        function clearPagination() {
+            var list = document.getElementById("navResults");
+            if(list) {
+                var elements = list.querySelectorAll("li");
+                if (elements.length === 1) {
+                    elements[0].parentNode.removeChild(elements[0]);
+                }
             }
         }
-    }
 
-    function initializePaginationActions() {
-        var elements = document.getElementsByClassName("paginationPaginate");
-        var paginateElement = elements && elements[0];
-        if(paginateElement) {
-            paginateElement.addEventListener("click", function(event) {
-                event.preventDefault();
-                paginateDocuments();
+        function initializePaginationActions() {
+            var elements = document.getElementsByClassName("paginationPaginate");
+            var paginateElement = elements && elements[0];
+            if(paginateElement) {
+                paginateElement.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    paginateDocuments();
+                });
+            }
+        }
+
+        function initializeSingleTogglePosition(className) {
+            var elements = document.getElementsByClassName(className);
+            var displayAllElement = elements && elements[0];
+            if(displayAllElement) {
+                displayAllElement.parentNode.removeChild(displayAllElement);
+                var numbersList = document.getElementById("navResults");
+                numbersList.appendChild(displayAllElement);
+            }
+        }
+
+        function initializePaginationTogglePosition() {
+            initializeSingleTogglePosition("paginationDisplayAll");
+            initializeSingleTogglePosition("paginationPaginate");
+        }
+
+        function paginateDocuments() {
+            var newLocation =
+                window.location.href
+                    .split("#")[0]
+                    .split("&")
+                    .filter(function(element) {
+                        return element !== "displayAll"
+                    })
+                    .join("&");
+
+            window.location.replace(newLocation);
+        }
+
+        function initializeRankForms() {
+            var forms = document.querySelectorAll(".rank-form");
+            forms.forEach(function(form) {
+                var id = form.getAttribute("data-id");
+                form.addEventListener("submit", function(event) {
+                    event.preventDefault();
+                    var http = new XMLHttpRequest();
+                    var url = "[#SHAREURL]/ajax/rank.php";
+                    var rank = document.getElementById("input-rank-" + id).value;
+
+                    if(isNaN(parseInt(rank))) {
+                        return;
+                    }
+
+                    http.open("POST", url, true);
+                    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                    http.onreadystatechange = function () {
+                        if(http.readyState === 4 && http.status === 200) {
+                            window.location.href = window.location.href;
+                        }
+                    };
+
+                    http.send('site=[#SITE]&tabids='+[id, rank].join(","));
+                });
             });
         }
-    }
-
-    function initializeSingleTogglePosition(className) {
-        var elements = document.getElementsByClassName(className);
-        var displayAllElement = elements && elements[0];
-        if(displayAllElement) {
-            displayAllElement.parentNode.removeChild(displayAllElement);
-            var numbersList = document.getElementById("navResults");
-            numbersList.appendChild(displayAllElement);
-        }
-	}
-
-    function initializePaginationTogglePosition() {
-        initializeSingleTogglePosition("paginationDisplayAll");
-        initializeSingleTogglePosition("paginationPaginate");
-	}
-
-    function paginateDocuments() {
-        var newLocation =
-            window.location.href
-		.split("#")[0]
-                .split("&")
-                .filter(function(element) {
-                    return element !== "displayAll"
-                })
-                .join("&");
-
-        window.location.replace(newLocation);
-    }
-</script>
+	</script>
 <MACRO NAME="CLOSE_HTML">
 

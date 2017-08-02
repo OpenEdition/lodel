@@ -564,12 +564,8 @@ div.advancedFunc #addEntity select{
 	padding-bottom: 8ex;
 }
 
-.listEntities > li:first-of-type > .action > .move a:first-of-type {
+.listEntities .action .move a {
 	display: none;
-}
-
-.listEntities > li:last-of-type > .action > .move a:last-of-type {
-	display: block;
 }
 
 #display-all-hint ~ li:last-of-type .action > .move a:last-of-type {
@@ -2456,4 +2452,20 @@ a.paginationDisplayAll, a.paginationPaginate {
 	margin-left: 20px;
 	color: #f87b39;
 	font-weight: bold;
+}
+
+.rank-modifier {
+	margin-left: 10px;
+	margin-right: 5px;
+	display: inline-block;
+	background-color: grey;
+	background-color: rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 3px;
+}
+
+.rank-modifier input {
+	width: 32px;
 }
