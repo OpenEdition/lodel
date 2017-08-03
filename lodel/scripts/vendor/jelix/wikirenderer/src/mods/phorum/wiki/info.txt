@@ -1,3 +1,0 @@
-hook:  format|phorum_wikirenderer
-title: Wiki syntax transformer
-desc:  This module transform wiki text in messages
