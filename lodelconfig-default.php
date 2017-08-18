@@ -25,6 +25,8 @@ $cfg['dbDriver'] = 'mysqli';
 
 // Prefixe des tables. Utile quand on utilise qu'une seule database pour plusieurs applications, peut être vide
 $cfg['tableprefix']="";
+// Fuseaux horaires supportés : http://php.net/manual/fr/timezones.php
+$cfg['timezone'] = 'Europe/Paris';
 
 /*
  Fin des paramètres de base à renseigner lors de l'installation
@@ -195,7 +197,7 @@ $cfg['showPubErrMsg'] = false;
 $cfg['dieOnErr'] = false;
 $cfg['locale']="fr_FR.UTF8";
 setlocale (LC_ALL,$cfg['locale']);
-date_default_timezone_set('Europe/Paris');
+date_default_timezone_set($cfg['timezone']);
 ignore_user_abort();
 
 
