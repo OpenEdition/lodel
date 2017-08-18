@@ -147,7 +147,6 @@ echo "<pre>";
 
 Install::checkPHPExts();
 Install::includeCfg();
-$cfg['debugMode']=1;
 Install::checkDB();
 Install::createTables();
 Install::insertTexts();
