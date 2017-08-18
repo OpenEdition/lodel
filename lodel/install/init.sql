@@ -155,6 +155,3 @@ CREATE TABLE IF NOT EXISTS #_MTP_mainplugins (
   UNIQUE KEY `name` (`name`)
 ) _CHARSET_;
 
-# suppression de l'administrateur par defaut... c'est geré par l'interface d'installation.
-# Administrateur par defaut. mot de passe : admintmp
-#REPLACE INTO #_MTP_users (username,passwd,nom,courriel,privilege) VALUES ('admintmp','f2a69cdb6e81c0cb25bd4fada535cccd','administrateur temporaire','',128);
