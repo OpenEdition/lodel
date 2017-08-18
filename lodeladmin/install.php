@@ -2,6 +2,8 @@
 
 class Install {
 
+        const CRITICAL = 'CRITICAL';
+        const LODELROOT = '../';
 	static private $php_exts = array(
 				'mbstring',
 				'xml',
@@ -12,8 +14,6 @@ class Install {
 				);
 	static private $lodelCfgLoc = '../lodelconfig.php';	
 	static private $error = NULL;
-	const CRITICAL = 'CRITICAL';
-	const LODELROOT = '../';
 	static private $initFile = 'lodel/install/init.sql';
 	static private $initTranslationsFile = 'lodel/install/init-translations.sql';
 
@@ -54,11 +54,11 @@ class Install {
 		if(TRUE === self::checkLodelCfgExists()) {
 			require 'lodelconfig.php';
 		} else {
-			trigger_error('Fail include lodelconfig', E_USER_ERROR);
+			echo "Fail include lodelconfig\n";
 			self::$error = self::CRITICAL;
 		}
 		if(FALSE === self::checkLodelCfgLoaded()) {
-                        trigger_error('Fail load lodelconfig', E_USER_ERROR);
+                        echo "Fail load lodelconfig\n";
                         self::$error = self::CRITICAL;
 		}
 		self::checkError();
@@ -69,7 +69,7 @@ class Install {
 		$db = ADONewConnection(C::get('dbDriver', 'cfg'));
 		$conn = $db->connect(C::get('dbhost', 'cfg'), C::get('dbusername', 'cfg'), C::get('dbpasswd', 'cfg'), C::get('database', 'cfg'));
 		if(TRUE !== $conn){
-			trigger_error("SQL ERROR :\n".$db->ErrorMsg(), E_USER_ERROR);
+			echo "SQL ERROR :\n".$db->ErrorMsg()."\n";
 			self::$error = self::CRITICAL;
 		}
 		self::checkError();
