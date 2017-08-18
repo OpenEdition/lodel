@@ -421,10 +421,10 @@ function maintenance()
 	
 	if(defined('backoffice-lodeladmion') || !cache_get('lock')) return false;
 	
-	if(file_exists(C::get('home', 'cfg')."../../maintenance.html"))
-		die(include(C::get('home', 'cfg')."../../maintenance.html"));
-	elseif(file_exists("maintenance.html"))
-		die(include("maintenance.html"));
+	if(file_exists(C::get('home', 'cfg')."../../maintenance.php"))
+		die(include(C::get('home', 'cfg')."../../maintenance.php"));
+	elseif(file_exists("maintenance.php"))
+		die(include("maintenance.php"));
 	else
 		die('Sorry, the site is under maintenance. Please come back later.');
 }
