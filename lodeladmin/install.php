@@ -77,7 +77,7 @@ class Install {
 	}
 
 	static public function createTables(){
-		self::mysql_query_file(LODELROOT.self::$initFile);
+		self::mysql_query_file(LODELROOT.self::$initFile, TRUE);
 		echo "Tables creation: <strong>OK</strong>\n";
 	}
 
@@ -90,14 +90,13 @@ class Install {
 		defined('INC_CONNECT') || include 'connect.php';
 	}
 
-	static private function mysql_query_file($file) {
+	static private function mysql_query_file($file, $droptables = FALSE) {
 		self::includeConnect();
 		global $db;
                 $sqlfile = preg_replace('/#_M?TP_/', C::get('tableprefix', 'cfg'), file_get_contents($file));
                 $sqlfile = str_replace('_CHARSET_', ' CHARACTER SET utf8 COLLATE utf8_general_ci' , $sqlfile);
                 if (!$sqlfile) return;
 		$err = '';
-		$droptables = FALSE;
                 $len=strlen($sqlfile);
 		$ilast = 0;
                 for ($i=0; $i<$len; $i++) {
@@ -120,15 +119,15 @@ class Install {
                                 //echo $cmd,"\n";
                                 if ($cmd) {
                                         // should we drop tables before create them ?
-                                        if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.$cfg['tableprefix'].'(\w+)/',$cmd,$result)) {
+                                        if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.C::get('tableprefix', 'cfg').'(\w+)/',$cmd,$result)) {
                                                 if (!$db->query('DROP TABLE IF EXISTS '.$result[1])) {
-				                        trigger_error("SQL ERROR :\n".$db->ErrorMsg(), E_USER_ERROR);
+				                        echo "SQL ERROR :\n".$db->ErrorMsg()."\n";
                         				self::$error = self::CRITICAL;
                                                 }
                                         }
                                         // execute the command
                                         if (!$db->query($cmd)) {
-			                        trigger_error("SQL ERROR :\n".$db->ErrorMsg(), E_USER_ERROR);
+			                        echo "SQL ERROR :\n".$db->ErrorMsg()."\n";
                         			self::$error = self::CRITICAL;
                                         }
                                 }
