@@ -9,6 +9,9 @@
  Paramètres de base à renseigner lors de l'installation
 */
 
+// Doit être commenté lors de la copie de ce fichier en lodelconfig.php
+exit();
+
 // Nom de la base de données
 $cfg['database']="";
 // Nom d'utilisateur
