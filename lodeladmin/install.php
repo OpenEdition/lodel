@@ -16,20 +16,7 @@ class Install {
 	static private $lodelCfgLoc = self::LODELROOT.'lodelconfig.php';	
 	static private $initFile = self::LODELROOT.'lodel/install/init.sql';
 	static private $initTranslationsFile = self::LODELROOT.'lodel/install/init-translations.sql';
-
-	static public function checkPHPExts() { 
-		$msg = '';
-		foreach(self::$php_exts as $ext) {
-			if(TRUE ===  extension_loaded($ext)) {
-				$msg .= "{$ext}: <strong class=\"ok\">OK</strong>\n";
-			} else {
-				$msg .= "{$ext}: <strong class=\"error\">Missing<strong>\n";
-				self::$error = self::CRITICAL;
-			}	
-		}
-		echo $msg;	
-		self::checkError();
-	}
+	static private $username = 'admin';
 
 	static private function checkError() {	
 		if( self::CRITICAL === self::$error ) {
@@ -52,6 +39,70 @@ class Install {
 	static private function checkLodelCfg() {
 		return self::checkLodelCfgExists() && self::checkLodelCfgLoaded();
 	}
+
+        static private function includeConnect() {
+                defined('INC_CONNECT') || include 'connect.php';
+        }
+
+        static private function mysql_query_file($file, $droptables = FALSE) {
+                self::includeConnect();
+                global $db;
+                $sqlfile = preg_replace('/#_M?TP_/', C::get('tableprefix', 'cfg'), file_get_contents($file));
+                $sqlfile = str_replace('_CHARSET_', ' CHARACTER SET utf8 COLLATE utf8_general_ci' , $sqlfile);
+                if (!$sqlfile) return;
+                $len = strlen($sqlfile);
+                $ilast = 0;
+                for ($i = 0; $i < $len; $i++) {
+                        $c = $sqlfile{$i};
+                        if ($c == '\\') { $i++; continue; } // quoted char
+                        if ($c == '#') {
+                                for (; $i < $len; $i++) {
+                                        if ($sqlfile{$i} == "\n") break;
+                                        $sqlfile{$i} = " ";
+                                }
+                        } elseif ($c == "'") {
+                                $i++;
+                                for (; $i < $len; $i++) {
+                                        $c = $sqlfile{$i};
+                                        if ($c == '\\') { $i++; continue; } // quoted char
+                                        if ($c == "'") break;
+                                }
+                        } elseif ($c == ";") { // end of SQL statment
+                                $cmd = trim(substr($sqlfile, $ilast, $i - $ilast));
+                               // echo $cmd,"\n";
+                                if ($cmd) {
+                                        // should we drop tables before create them ?
+                                        if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.C::get('tableprefix', 'cfg').'(\w+)/', $cmd, $result)) {
+                                                if (!$db->query('DROP TABLE IF EXISTS '.$result[1])) {
+                                                        echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
+                                                        self::$error = self::CRITICAL;
+                                                }
+                                        }
+                                        // execute the command
+                                        if (!$db->query($cmd)) {
+                                                echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
+                                                self::$error = self::CRITICAL;
+                                        }
+                                }
+                                $ilast = $i+1;
+                        }
+                }
+                self::checkError();
+        }
+
+        static public function checkPHPExts() {
+                $msg = '';
+                foreach(self::$php_exts as $ext) {
+                        if(TRUE ===  extension_loaded($ext)) {
+                                $msg .= "{$ext}: <strong class=\"ok\">OK</strong>\n";
+                        } else {
+                                $msg .= "{$ext}: <strong class=\"error\">Missing<strong>\n";
+                                self::$error = self::CRITICAL;
+                        }
+                }
+                echo $msg;
+                self::checkError();
+        }
 
 	static public function includeCfg() {
 		if(self::checkLodelCfgLoaded()) return;
@@ -86,57 +137,6 @@ class Install {
 
         static public function insertTexts(){
                 self::mysql_query_file(self::$initTranslationsFile);
-        }
-
-	static private function includeConnect() {
-		defined('INC_CONNECT') || include 'connect.php';
-	}
-
-	static private function mysql_query_file($file, $droptables = FALSE) {
-		self::includeConnect();
-		global $db;
-                $sqlfile = preg_replace('/#_M?TP_/', C::get('tableprefix', 'cfg'), file_get_contents($file));
-                $sqlfile = str_replace('_CHARSET_', ' CHARACTER SET utf8 COLLATE utf8_general_ci' , $sqlfile);
-                if (!$sqlfile) return;
-		$err = '';
-                $len=strlen($sqlfile);
-		$ilast = 0;
-                for ($i=0; $i<$len; $i++) {
-                        $c=$sqlfile{$i};
-                        if ($c=='\\') { $i++; continue; } // quoted char
-                        if ($c=='#') { 
-                                for (; $i<$len; $i++) {
-                                        if ($sqlfile{$i}=="\n") break;
-                                        $sqlfile{$i}=" ";
-                                }      
-                        } elseif ($c=="'") {
-                                $i++;
-                                for (; $i<$len; $i++) {
-                                        $c=$sqlfile{$i};
-                                        if ($c=='\\') { $i++; continue; } // quoted char
-                                        if ($c=="'") break;
-                                }
-                        } elseif ($c==";") { // end of SQL statment
-                                $cmd=trim(substr($sqlfile,$ilast,$i-$ilast));
-                               // echo $cmd,"\n";
-                                if ($cmd) {
-                                        // should we drop tables before create them ?
-                                        if ($droptables && preg_match('/^\s*CREATE\s+(?:TABLE\s+IF\s+NOT\s+EXISTS\s+)?'.C::get('tableprefix', 'cfg').'(\w+)/',$cmd,$result)) {
-                                                if (!$db->query('DROP TABLE IF EXISTS '.$result[1])) {
-				                        echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
-                        				self::$error = self::CRITICAL;
-                                                }
-                                        }
-                                        // execute the command
-                                        if (!$db->query($cmd)) {
-			                        echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
-                        			self::$error = self::CRITICAL;
-                                        }
-                                }
-                                $ilast=$i+1;
-                        }
-                }
-                self::checkError();
         }
 
 	static public function openHtml(){
@@ -195,4 +195,7 @@ echo <<<EOD
 <h2>Texts Insertion</h2>
 EOD;
 Install::insertTexts();
+echo <<<EOD
+<h2>SuperAdmin Creation</h2>
+EOD;
 Install::closeHtml();	
