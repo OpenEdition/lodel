@@ -9,6 +9,7 @@ class Install {
 
         const CRITICAL = 'CRITICAL';
         const LODELROOT = '../';
+	const MIN_VERSION = '5.4.0';
 	static private $php_exts = array(
 				'mbstring',
 				'xml',
@@ -97,6 +98,12 @@ class Install {
 
         static public function checkPHPExts() {
                 $msg = '';
+		if(version_compare(PHP_VERSION, self::MIN_VERSION) >= 0) {
+			$msg .= "PHP Version ".PHP_VERSION.": <strong class=\"ok\">OK</strong>\n";
+		} else {
+			$msg .= "PHP Version ".PHP_VERSION.": <strong class=\"error\">Too low, you need at least ".self::MIN_VERSION."</strong>\n";
+			self::$error = self::CRITICAL;
+		}
                 foreach(self::$php_exts as $ext) {
                         if(TRUE ===  extension_loaded($ext)) {
                                 $msg .= "{$ext}: <strong class=\"ok\">OK</strong>\n";
