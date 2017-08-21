@@ -153,7 +153,7 @@ $cfg['detectlanguage'] = true;
 
 
 // type d'URL
-$cfg['extensionscripts']="";      // extension .php ou .html pour les scripts accessibles par les internautes
+$cfg['extensionscripts']="php";      // extension .php ou .html pour les scripts accessibles par les internautes
 define("URI","id");               // /index.php?id=ID 
 //define("URI","singleid");       // /ID (nécessite un rewrite dans la conf du serveur web)
 
