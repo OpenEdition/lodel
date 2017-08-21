@@ -98,7 +98,7 @@ class Install {
 
 	static private function createPass() {
 		class_exists('PWGen') || include 'vendor/autoload.php';
-		$pwgen = new PWGen();
+		$pwgen = new PWGen(15);
 		return $pwgen->generate();
 	}
 
@@ -181,6 +181,16 @@ class Install {
 		echo "Password: <strong>{$clearPasswd}</strong>\n";
         }
 
+	static public function finish(){
+		$msg = '<p class="finish">Lodel is now installed, copy the SuperAdmin account parameters above somewhere and log here: <a target="_blank" href="index.php?do=view&lo=users">User Creation</a> to create a permanent Lodel Admin.</p>';
+		$msg .= "<p class=\"finish\">After that you should:\n
+		1. Log in with your new account and delete the automatically created one;\n
+		2. delete the key file in order to prevent this installation script to be run;\n
+		3. create your first site via the general admin interface.\n
+		</p>";
+		echo $msg;
+	}
+
 	static public function openHtml(){
 		$open = <<<EOD
 <!DOCTYPE html>
@@ -191,6 +201,7 @@ class Install {
 <style>
 .ok{color:green}
 .error{color:red}
+.finish{font-size:120%;font-weight:bold}
 </style>
 </head>
 <body>
@@ -245,4 +256,5 @@ echo <<<EOD
 <h2>SuperAdmin Creation</h2>
 EOD;
 Install::createAdmin();
+Install::finish();
 Install::closeHtml();	
