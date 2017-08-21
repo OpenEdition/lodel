@@ -21,6 +21,10 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
         ),
         'P' => 
         array (
+            'PWGen' => 
+            array (
+                0 => __DIR__ . '/..' . '/roderik/pwgen-php',
+            ),
             'PEAR' => 
             array (
                 0 => __DIR__ . '/..' . '/pear/pear_exception',

@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'SimplePie' => array($vendorDir . '/simplepie/simplepie/library'),
+    'PWGen' => array($vendorDir . '/roderik/pwgen-php'),
     'PEAR' => array($vendorDir . '/pear/pear_exception'),
     'Mail' => array($vendorDir . '/pear/mail', $vendorDir . '/pear/mail_mime'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
