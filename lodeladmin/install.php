@@ -96,6 +96,12 @@ class Install {
                 self::checkError();
         }
 
+	static private function createPass() {
+		class_exists('PWGen') || include 'vendor/autoload.php';
+		$pwgen = new PWGen();
+		return $pwgen->generate();
+	}
+
         static public function checkPHPExts() {
                 $msg = '';
 		if(version_compare(PHP_VERSION, self::MIN_VERSION) >= 0) {
@@ -146,11 +152,10 @@ class Install {
 		$db = ADONewConnection(C::get('dbDriver', 'cfg'));
 		$conn = $db->connect(C::get('dbhost', 'cfg'), C::get('dbusername', 'cfg'), C::get('dbpasswd', 'cfg'), C::get('database', 'cfg'));
 		if(TRUE !== $conn){
-			echo "SQL ERROR: ".$db->ErrorMsg()."\n";
+			echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
 			self::$error = self::CRITICAL;
 		}
 		self::checkError();
-		return $conn;
 	}
 
 	static public function createTables(){
@@ -159,6 +164,21 @@ class Install {
 
         static public function insertTexts(){
                 self::mysql_query_file(self::$initTranslationsFile);
+        }
+
+	static public function createAdmin(){
+		self::includeConnect();
+		global $db;
+		$clearPasswd = self::createPass();
+		$passwd = md5($clearPasswd.self::$username);
+		$q = lq("INSERT INTO #_MTP_users (username, passwd, userrights, gui_user_complexity) VALUES ('".self::$username."','{$passwd}', 128, 64)");
+		if(!$db->query($q)){
+			echo "<strong>SQL ERROR: ".$db->ErrorMsg()."</strong>\n";
+			self::$error = self::CRITICAL;
+		}
+		self::checkError();
+		echo "Username: <strong>".self::$username."</strong>\n";
+		echo "Password: <strong>{$clearPasswd}</strong>\n";
         }
 
 	static public function openHtml(){
@@ -224,4 +244,5 @@ Install::insertTexts();
 echo <<<EOD
 <h2>SuperAdmin Creation</h2>
 EOD;
+Install::createAdmin();
 Install::closeHtml();	
