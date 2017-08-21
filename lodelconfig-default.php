@@ -12,6 +12,13 @@
 // Doit être commenté lors de la copie de ce fichier en lodelconfig.php
 exit();
 
+// Cette clé n'est utilisée que lors de la phase d'installation
+// Elle est générée par la commande suivante : cat /proc/sys/kernel/random/uuid
+// Pour que l'installation soit possible il faut créer un fichier à la racine nommé d'après cette clé
+// ex: cd /data/www/lodel && touch 03dde1bd-c6b6-4424-8618-c4488e30484a
+// Une fois l'installation terminée il faut supprimer ce fichier afin de rendre l'exécution de l'installation impossible
+$cfg['install_key'] = '03dde1bd-c6b6-4424-8618-c4488e30484a';
+
 // Nom de la base de données
 $cfg['database']="";
 // Nom d'utilisateur

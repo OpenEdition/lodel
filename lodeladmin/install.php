@@ -112,12 +112,22 @@ class Install {
 			echo "<strong class=\"error\">Fail include lodelconfig</strong>\n";
 			self::$error = self::CRITICAL;
 		}
-		if(FALSE === self::checkLodelCfgLoaded()) {
+		if(TRUE !== self::checkLodelCfgLoaded()) {
                         echo "<strong class=\"error\">Fail load lodelconfig</strong>\n";
                         self::$error = self::CRITICAL;
 		}
 		self::checkError();
 	}
+
+	static public function checkInstallKey() {
+		$ok = C::get('install_key', 'cfg') && file_exists(self::LODELROOT.C::get('install_key', 'cfg'));
+		if(TRUE !== $ok) {
+			echo "<strong class=\"error\">Key file doesn't exist</strong>\n";
+			self::$error = self::CRITICAL;
+		}
+		self::checkError();
+        }
+
 
 	static public function checkDB(){
 		function_exists('ADONewConnection') || require "vendor/autoload.php";
@@ -183,6 +193,10 @@ echo <<<EOD
 <h2>Config File</h2>
 EOD;
 Install::includeCfg();
+echo <<<EOD
+<h2>Install key file</h2>
+EOD;
+Install::checkInstallKey();
 echo <<<EOD
 <h2>DB Connection</h2>
 EOD;
