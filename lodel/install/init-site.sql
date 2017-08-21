@@ -414,10 +414,10 @@ CREATE TABLE IF NOT EXISTS #_TP_entitytypes_entitytypes (
 CREATE TABLE IF NOT EXISTS #_TP_options (
 	id		INT UNSIGNED NOT NULL auto_increment,
 	idgroup		INT UNSIGNED DEFAULT '0' NOT NULL,
-	name		VARCHAR(255) NOT NULL,		# name/identifiant unique
+	name		VARCHAR(128) NOT NULL,		# name/identifiant unique
 	title		TINYTEXT NOT NULL,		# title
 	altertitle	TEXT NOT NULL,		# titre multilingue
-	type		VARCHAR(255) NOT NULL,		# type du champ
+	type		VARCHAR(128) NOT NULL,		# type du champ
 	edition		TINYTEXT NOT NULL,		# input pour l'edition
 	editionparams	TINYTEXT NOT NULL,		# input pour l'edition
 
@@ -462,7 +462,7 @@ CREATE TABLE IF NOT EXISTS #_TP_translations (
 	id			INT UNSIGNED NOT NULL auto_increment,
 	lang			CHAR(5) NOT NULL,		# code of the lang
 	title			TINYTEXT,
-	textgroups		VARCHAR(255),
+	textgroups		VARCHAR(128),
 
 	translators		TEXT,
 	modificationdate	DATE,
