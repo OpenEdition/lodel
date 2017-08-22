@@ -185,12 +185,12 @@ $cfg['db_no_intrusion'] = array();
 ////////////////////////////////////////////////////////////////////////////////////////
 // config reserve au systeme de config automatique
 // la presence de ces variables est obligatoire pour la configuration
-$cfg['chooseoptions']="";
+$cfg['chooseoptions']="oui";
 $cfg['includepath']=""; // pour les sites qui ont un include automatique (defini par php.ini)
 $cfg['htaccess']="on";    //
 $cfg['filemask']="0700";
-$cfg['usesymlink']="";
-$cfg['installoption']="";
+$cfg['usesymlink']="oui";
+$cfg['installoption']="2";
 $cfg['installlang']="fr";
 ////////////////////////////////////////////////////////////////////////////////////////
 
