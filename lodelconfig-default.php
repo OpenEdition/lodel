@@ -20,20 +20,19 @@ exit();
 $cfg['install_key'] = '03dde1bd-c6b6-4424-8618-c4488e30484a';
 
 // Nom de la base de données
-$cfg['database']="";
+$cfg['database'] = '';
 // Nom d'utilisateur
-$cfg['dbusername']="";
+$cfg['dbusername'] = '';
 // Mot de passe
-$cfg['dbpasswd']="";
+$cfg['dbpasswd'] = '';
 // Hote de la base de données
-$cfg['dbhost']="";
+$cfg['dbhost'] = '';
 // driver mysql
 $cfg['dbDriver'] = 'mysqli';
 
-// Prefixe des tables. Utile quand on utilise qu'une seule database pour plusieurs applications, peut être vide
-$cfg['tableprefix']="";
 // Fuseaux horaires supportés : http://php.net/manual/fr/timezones.php
 $cfg['timezone'] = 'Europe/Paris';
+$cfg['locale'] = 'fr_FR.UTF8';
 
 /*
  Fin des paramètres de base à renseigner lors de l'installation
@@ -44,25 +43,25 @@ $cfg['timezone'] = 'Europe/Paris';
 */
 
 // Racine de lodel sur le systeme
-$cfg['pathroot']=".";
+$cfg['pathroot'] = '.';
 
 
 // Base du site
 // ATTENTION : $urlroot doit toujours se terminer par /, il ne peut etre vide
-$cfg['urlroot']="/";
+$cfg['urlroot'] = '/';
 
 
 // Emplacement des scripts essentiels à Lodel,cette variable doit se terminer par / obligatoirement.
-$cfg['home']="./lodel/scripts/";
+$cfg['home'] = './lodel/scripts/';
 
 // Localisation des fichiers archive pour l'import de donnees
-$cfg['importdir']="";
+$cfg['importdir'] = '';
 
 // Timeout pour les sessions en secondes
-$cfg['timeout']=120*60;
+$cfg['timeout'] = 120*60;
 
 // Timeout pour les cookies en secondes
-$cfg['cookietimeout']=4*3600;
+$cfg['cookietimeout'] = 4*3600;
 
 
 /*
