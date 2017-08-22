@@ -1,0 +1,20 @@
+Dependencies:
+
+* A linux box (it may work elsewhere, we haven't tested, we won't)
+* PHP >= 5.4
+* MariaDb or MySql
+* PHP extensions:
+  + xml
+  + mbstring
+  + gd
+  + curl
+  + mysqlnd
+  + zip
+
+Steps:
+
+1. Copy lodelconfig-default.php to lodelconfig.php in the root path of your installation;
+2. comment the exit(); statement at the top of your lodelconfig.php file;
+3. create a file named from the $cfg['install_key'] variable in the root path;
+4. fill at least the DB parameters in your lodelconfig.php file;
+5. go to lodeladmin/install.php, follow the final instructions.
