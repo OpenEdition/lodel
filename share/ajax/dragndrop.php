@@ -31,77 +31,6 @@ if(!file_exists('siteconfig.php'))
 
 require 'siteconfig.php';
 
-function shiftRanks($db, $table, $parentId, $doNotShiftId, $from, $to, $offset) {
-    $intervalSubQuery = "rank <= {$to} AND rank >= {$from}";
-    if($from === $to) {
-        $intervalSubQuery = "rank = {$from}";
-    }
-
-    $sqlQuery =
-        "UPDATE {$table} " .
-        "SET rank = (rank + ({$offset})) " .
-        "WHERE " . $intervalSubQuery . " " .
-        "AND idparent = {$parentId} " .
-        "AND id != {$doNotShiftId}";
-
-    $db->execute($sqlQuery);
-}
-
-function setRank($db, $table, $parentId, $oldRank, $newRank) {
-    $sqlQuery =
-        "UPDATE {$table} " .
-        "SET rank = {$newRank} " .
-        "WHERE rank = {$oldRank} " .
-        "AND idparent = {$parentId} ";
-
-    $db->execute($sqlQuery);
-}
-
-function getParentId($db, $table, $id) {
-    $sqlQuery =
-        "SELECT idparent " .
-        "FROM {$table} " .
-        "WHERE id = {$id} ";
-
-    return (int) $db->GetOne($sqlQuery);
-}
-
-function getRank($db, $table, $id) {
-    $sqlQuery =
-        "SELECT rank " .
-        "FROM {$table} " .
-        "WHERE id = {$id} ";
-
-    return (int) $db->GetOne($sqlQuery);
-}
-
-function getMaxRank($db, $table, $parentId) {
-    $sqlQuery =
-        "SELECT MAX(rank) " .
-        "FROM {$table} " .
-        "WHERE idparent = {$parentId} ";
-
-    return (int) $db->GetOne($sqlQuery);
-}
-
-function move($db, $table, $parentId, $doNotShiftId, $from, $to) {
-    if($from === $to) {
-        return;
-    }
-
-    if($from < $to) {
-        setRank($db, $table, $parentId, $from, $to);
-        shiftRanks($db, $table, $parentId, $doNotShiftId, $from + 1, $to, -1);
-        return;
-    }
-
-    if($from > $to) {
-        setRank($db, $table, $parentId, $from, $to + 1);
-        shiftRanks($db, $table, $parentId, $doNotShiftId, $to + 1, $from - 1, 1);
-        return;
-    }
-}
-
 try
 {
     include 'auth.php';
@@ -117,16 +46,15 @@ try
     $table = lq("#_TP_entities");
     $i=1;
     $tabIds = explode(',',C::get('tabids'));
-
-    $fromId = (int)$tabIds[0];
-    $toId = (int)$tabIds[1];
-    $from = getRank($db, $table, $fromId);
-    $to = -1;
-    if($toId > -1) {
-      $to = getRank($db, $table, $toId);
+    foreach($tabIds as $v)
+    {
+        $id = (int)str_replace('container_','',$v);
+        if($id>0)
+        {
+            $db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or trigger_error('error', E_USER_ERROR);
+        }
+        $i++;
     }
-    $parentId = getParentId($db, $table, $fromId);
-    move($db, $table, $parentId, $fromId, $from, $to);
 
     clearcache();
     echo 'ok';
@@ -137,4 +65,3 @@ catch(Exception $e)
     echo 'error';
     exit();
 }
-

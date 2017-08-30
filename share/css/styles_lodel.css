@@ -5,7 +5,7 @@
  */
 
 body{
-	/* 	background: #fff; */
+/* 	background: #fff; */
 	font: normal 80% verdana, sans-serif;
 	margin: 0;
 	padding: 0;
@@ -59,7 +59,7 @@ ul.listEntities div.entityIconsEdition img.statusIcon, ul.listEntities div.entit
 	float: left;
 	margin: 1.5ex 0 0 10px;
 	width: 11px;
-	/* 	top: 1ex; */
+/* 	top: 1ex; */
 }
 
 ul.listEntities div.entityIconsEdition img.associatedIcon{
@@ -67,7 +67,7 @@ ul.listEntities div.entityIconsEdition img.associatedIcon{
 	margin: .5ex 0 0 0;
 	width: auto;
 	max-width: 22px;
-	/* 	top: .5ex; */
+/* 	top: .5ex; */
 }
 
 a:link, a:visited{
@@ -237,7 +237,7 @@ h2.formHead{
 /* Container general au dessous du desk */
 
 #lodel-container{
-	/* 	position: relative; */
+/* 	position: relative; */
 	clear: both;
 	padding: 0;
 	margin: 0;
@@ -564,18 +564,13 @@ div.advancedFunc #addEntity select{
 	padding-bottom: 8ex;
 }
 
-.listEntities > li:first-of-type > .action > .move a:first-of-type {
-	display: none;
+#listEntities li:first-child > .action .move a:first-child {
+	visibility: hidden;
 }
 
-.listEntities > li:last-of-type > .action > .move a:last-of-type {
-	display: block;
+#listEntities li:last-child > .action .move a:last-child {
+	visibility: hidden;
 }
-
-#display-all-hint ~ li:last-of-type .action > .move a:last-of-type {
-	display: none;
-}
-
 
 #entries{
 	margin-top: 4em;
@@ -583,14 +578,14 @@ div.advancedFunc #addEntity select{
 
 #entries #alphabet a{
 	font-weight: bold;
-	padding:  .2ex .5em;
-	margin: 0 .5em 0 0;
-	background: #9D9D9D;
-	color: #fff;
+        padding:  .2ex .5em;
+        margin: 0 .5em 0 0;
+        background: #9D9D9D;
+        color: #fff;
 }
 
 #entries #alphabet a:hover{
-	color: #000;
+        color: #000;
 }
 
 
@@ -610,7 +605,7 @@ ul.listEntities li{
 	padding: .5ex 0 0 25px;
 	position: relative;
 	height: 48px;
-	/* 	background: #e9e9e9; */
+/* 	background: #e9e9e9; */
 	border-bottom: 1px solid #dadbdc;
 }
 
@@ -665,7 +660,7 @@ ul.listEntities div.entityIcons img.statusIcon, ul.listEntities div.entityIcons 
 	float: left;
 	margin: 1.5ex 0 0 25px;
 	width: 11px;
-	/* 	top: 1ex; */
+/* 	top: 1ex; */
 }
 
 ul.listEntities div.entityIcons img.associatedIcon{
@@ -673,7 +668,7 @@ ul.listEntities div.entityIcons img.associatedIcon{
 	margin: .5ex 0 0 0;
 	width: auto;
 	max-width: 22px;
-	/* 	top: .5ex; */
+/* 	top: .5ex; */
 }
 
 div.action{
@@ -2295,12 +2290,12 @@ div#checkimport a
 
 div.actions_top
 {
-	margin:1.5em 0 -1.5em 2em;
+    margin:1.5em 0 -1.5em 2em;
 }
 
 div.actions_bottom
 {
-	margin:1.5em 0 2em 2em;
+    margin:1.5em 0 2em 2em;
 }
 
 .mestyles
@@ -2436,24 +2431,4 @@ div.overflowed
 {
 	width:100%;
 	overflow:auto;
-}
-
-
-
-.paginationContainer {
-	opacity: 0;
-
-	-webkit-transition: all 0.2s ease-in-out;
-	-moz-transition: all 0.2s ease-in-out;
-	-ms-transition: all 0.2s ease-in-out;
-	-o-transition: all 0.2s ease-in-out;
-	transition: all 0.2s ease-in-out;
-}
-
-/* Pagination toggle */
-
-a.paginationDisplayAll, a.paginationPaginate {
-	margin-left: 20px;
-	color: #f87b39;
-	font-weight: bold;
 }
