@@ -1,0 +1,23 @@
+{
+    "name": "roderik/pwgen-php",
+    "type": "library",
+    "description": "pwgen-php is a simple PHP class which aims to clone the GNU pwgen functionality.",
+    "keywords": ["password", "generator"],
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Theodore Ts'o",
+            "email": "tytso@alum.mit.edu"
+        },
+        {
+            "name": "Superwayne",
+            "email": "superwayne@superwayne.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": { "PWGen": "" }
+    }
+}

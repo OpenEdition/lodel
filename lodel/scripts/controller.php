@@ -245,8 +245,8 @@ class Controller
 								header("HTTP/1.0 404 Not Found");
 								header("Status: 404 Not Found");
 								header("Connection: Close");
-								if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-									include C::get('home', 'cfg')."../../missing.html";
+								if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+									include C::get('home', 'cfg')."../../missing.php";
 								} else {
 									header('Location: not-found.html');
 								}
@@ -266,8 +266,8 @@ class Controller
 							header("HTTP/1.0 404 Not Found");
 							header("Status: 404 Not Found");
 							header("Connection: Close");
-							if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-								include C::get('home', 'cfg')."../../missing.html";
+							if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+								include C::get('home', 'cfg')."../../missing.php";
 							} else {
 								header('Location: not-found.html');
 							}
@@ -588,8 +588,8 @@ class Controller
 				header("HTTP/1.0 404 Not Found");
 				header("Status: 404 Not Found");
 				header("Connection: Close");
-				if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-					include C::get('home', 'cfg')."../../missing.html";
+				if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+					include C::get('home', 'cfg')."../../missing.php";
 				} else {
 					header('Location: not-found.html');
 				}
@@ -615,8 +615,8 @@ class Controller
 			header("HTTP/1.0 404 Not Found");
 			header("Status: 404 Not Found");
 			header("Connection: Close");
-			if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-				include C::get('home', 'cfg')."../../missing.html";
+			if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+				include C::get('home', 'cfg')."../../missing.php";
 			} else {
 				header('Location: not-found.html');
 			}
@@ -674,8 +674,8 @@ class Controller
 			header("HTTP/1.0 404 Not Found");
 			header("Status: 404 Not Found");
 			header("Connection: Close");
-			if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-				include C::get('home', 'cfg')."../../missing.html";
+			if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+				include C::get('home', 'cfg')."../../missing.php";
 			} else {
 				header('Location: not-found.html');
 			}
@@ -691,8 +691,8 @@ class Controller
 			header("HTTP/1.0 404 Not Found");
 			header("Status: 404 Not Found");
 			header("Connection: Close");
-			if(file_exists(C::get('home', 'cfg')."../../missing.html")) {
-				include C::get('home', 'cfg')."../../missing.html";
+			if(file_exists(C::get('home', 'cfg')."../../missing.php")) {
+				include C::get('home', 'cfg')."../../missing.php";
 			} else {
 				header('Location: not-found.html');
 			}
