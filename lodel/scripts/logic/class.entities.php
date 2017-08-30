@@ -38,6 +38,28 @@ class EntitiesLogic extends Logic
 		trigger_error("EntitiesLogic::viewAction", E_USER_ERROR);
 	}
 
+
+	/**
+	 * Changement du rang d'un objet
+	 *
+	 * @param array &$context le contexte passé par référence
+	 * @param array &$error le tableau des erreurs éventuelles passé par référence
+	 */
+	public function changeRankAction(&$context, &$error, $groupfields = "", $status = "status>0")
+	{
+		global $db;
+		if(empty($context['id']))
+			trigger_error('ERROR: missing id in EntitiesLogic::changeRankAction', E_USER_ERROR);
+
+		$id  = $context['id'];
+		$vo  = $this->_getMainTableDAO()->getById($id,"idparent");
+		if(!$vo)
+			trigger_error('ERROR: invalid id', E_USER_ERROR);
+		$this->_changeRank($id, isset($context['dir']) ? $context['dir'] : '', "status<64 AND idparent='". $vo->idparent. "'");
+		update();
+		return '_back';
+	}
+
 	/**
 	 * Ajout d'un nouvel objet ou Edition d'un objet existant
 	 *
@@ -51,6 +73,7 @@ class EntitiesLogic extends Logic
 	{
 		trigger_error("EntitiesLogic::editAction", E_USER_ERROR);
 	}
+
 
 	/**
 	 * Opérations de masse : suppression massive, publication ou dépublication massive
@@ -87,7 +110,6 @@ class EntitiesLogic extends Logic
 	 *
 	 * @param array &$context le contexte passé par référence
 	 * @param array &$error le tableau des erreurs éventuelles passé par référence
-     * @return string
 	 */
 	public function deleteAction(&$context, &$error)
 	{

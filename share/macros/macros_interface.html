@@ -1052,7 +1052,7 @@ cp_[#VARNAME].writeDiv();
 		<ul id="navResults">
 		<IF COND="[#PREVIOUSURL]">
 			<li>
-			<a href="[#PREVIOUSURL]" title="[@COMMON.PREVIOUS_PAGE]" data-folder="[#FOLDER]">&nbsp;&lt;&lt;&nbsp;</a>
+			<a href="[#PREVIOUSURL]" title="[@COMMON.PREVIOUS_PAGE]">&nbsp;&lt;&lt;&nbsp;</a>
 			</li>
 		</IF>
 	</BEFORE>
@@ -1061,7 +1061,7 @@ cp_[#VARNAME].writeDiv();
 			<li>&nbsp;...&nbsp;</li>
 		</IF>
 		<IF COND="[#URLPAGE] NE ''">
-			<li><a class="linkpage" href="[#URLPAGE]" title="[#PAGENUMBER]" data-folder="[#FOLDER]">
+			<li><a class="linkpage" href="[#URLPAGE]" title="[#PAGENUMBER]">
 		<ELSE/>
 			<li><span class="currentpage">
 		</IF>
@@ -1078,7 +1078,7 @@ cp_[#VARNAME].writeDiv();
 	<AFTER>
 		<IF COND="[#NEXTURL]">
 		<li>
-			<a class="linkpage" href="[#NEXTURL]" title="[@COMMON.NEXT_PAGE]" data-folder="[#FOLDER]">&nbsp;&gt;&gt;&nbsp;</a>
+			<a class="linkpage" href="[#NEXTURL]" title="[@COMMON.NEXT_PAGE]">&nbsp;&gt;&gt;&nbsp;</a>
 		</li>
 		</IF>
 	</ul>
@@ -2114,9 +2114,7 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 			<MACRO NAME="TITRE_AUTEURS_TYPE_DOCUMENT">
 			<LOOP NAME="parententities" TABLE="entities, relations" WHERE="entities.id=relations.id1 AND id2='[#ID]' AND nature='P'" ORDER="idrelation">
 				<DOFIRST><a href="<MACRO NAME="SITE_ROOT">/lodel/edition/index.php">[@EDITION.BASE]</a> &gt; <a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp]</a></DOFIRST>
-				<DO>&nbsp;&gt;&nbsp;
-					<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a>
-				</DO>
+				<DO>&nbsp;&gt;&nbsp;<a href="[#SITEROOT]lodel/edition/index.php?id=[#ID]">[#G_TITLE|nbsp|couper(30)]<IF  COND="[#G_TITLE|hasbeencut]">...</IF></a></DO>
 				<ALTERNATIVE>[@EDITION.BASE] &gt;</ALTERNATIVE>
 			</LOOP>
 			<AFTER></div></AFTER>
@@ -2131,15 +2129,6 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	<div class="document_alias">
 	</IF>
 	<span class="titre_document">
-		<IF COND="![#FOLDER]">
-			<div class="rank-modifier">
-			<form action="#" class="rank-form" data-id="[#ID]">
-				<span href="#" class="rank-link" data-rank="[#RANK]" data-id="[#ID]">[#RANK] &rarr; </span>
-				<input id="input-rank-[#ID]" type="text" value="">
-				<button type="submit">&check;</button>
-			</form>
-			</div>
-		</IF>
 	<IF COND="[#TPLEDITION]">
 		" <a href="index.php?id=[#ID]">[#G_TITLE|textebrut|nbsp]</a> "
 	<ELSE/>
@@ -2149,7 +2138,6 @@ Macros rapatriées de lodel/src/lodel/edition/tpl
 	&nbsp;
 	<span class="auteurs_document"><MACRO NAME="AUTEURS"></span>&nbsp;
 	<span class="type_document">([#TYPE])</span>
-
 	<LOOP NAME="getcomments" TABLE="entities, types" WHERE="idparent = '[#ID]' AND types.id=idtype AND display = 'advanced' AND public = 1" ORDER="type, entities.rank">
 		<AFTER><span class="comment" title="[#NBRESULTS] [@COMMON.COMMENTS]"><MACRO NAME="PNG_COMMENT" /> <sup>([#NBRESULTS])</sup></span></AFTER>
 	</LOOP>

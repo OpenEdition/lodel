@@ -31,23 +31,6 @@ if(!file_exists('siteconfig.php'))
 
 require 'siteconfig.php';
 
-function move($db, $table, $tabIds) {
-    $fromId = (int)$tabIds[0];
-    $toId = (int)$tabIds[1];
-
-    include_once __DIR__ . "/../../lodel/scripts/Ranks.php";
-    $from = Ranks::getRank($db, $table, $fromId);
-    $to = -1;
-    if($toId > -1) {
-        $to = Ranks::getRank($db, $table, $toId);
-    }
-    $parentId = Ranks::getParentId($db, $table, $fromId);
-
-    include_once __DIR__ . "/../../lodel/scripts/RankShifter.php";
-    $manager = new RankShifter($db, $table, $parentId);
-    $manager->move($fromId, $from, $to);
-}
-
 try
 {
     include 'auth.php';
@@ -63,8 +46,15 @@ try
     $table = lq("#_TP_entities");
     $i=1;
     $tabIds = explode(',',C::get('tabids'));
-
-    moveToRank($db, $table, $tabIds);
+    foreach($tabIds as $v)
+    {
+        $id = (int)str_replace('container_','',$v);
+        if($id>0)
+        {
+            $db->execute("UPDATE {$table} SET rank = '{$i}' WHERE id='{$id}'") or trigger_error('error', E_USER_ERROR);
+        }
+        $i++;
+    }
 
     clearcache();
     echo 'ok';
@@ -75,4 +65,3 @@ catch(Exception $e)
     echo 'error';
     exit();
 }
-
