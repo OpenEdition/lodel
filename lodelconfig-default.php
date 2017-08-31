@@ -141,6 +141,10 @@ $cfg['mysqldir']="/usr/bin";
 // LODEL n'utilise qu'une seule DB. Sinon, il utilise une DB principale plus une DB par site. "on" ou "" (ou "off")
 $cfg['singledatabase']="off";
 
+// Prefix pour les tables. Utile quand on utilise qu'une seule database pour plusieurs applications.
+// Laisser un chaîne vide, la feature est cassée
+// TODO la feature est cassée, à fixer ou à supprimer.
+$cfg['tableprefix'] = "";
 
 // Nom de la session (cookie)
 $cfg['sessionname']="session{$cfg['database']}";
