@@ -35,22 +35,22 @@
 		private static $pw_vowels;
 
 		/**
-		 * @param length	Length of the generated password. Default: 8
-		 * @param secure	Generate completely random, hard-to-memorize passwords. These should only
+		 * @param int $length	Length of the generated password. Default: 8
+		 * @param bool $secure	Generate completely random, hard-to-memorize passwords. These should only
 		 * 			be used for machine passwords, since otherwise it's almost guaranteed that
 		 * 			users will simply write the password on a piece of paper taped to the monitor...
-		 * @param numerals	Include at least one number in the password. This is the default.
-		 * @param capitalize	Include at least one capital letter in the password. This is the default.
-		 * @param ambiguous	Don't use characters that could be confused by the user when printed,
+		 * @param bool $numerals	Include at least one number in the password. This is the default.
+		 * @param bool $capitalize	Include at least one capital letter in the password. This is the default.
+		 * @param bool $ambiguous	Don't use characters that could be confused by the user when printed,
 		 * 			such as 'l' and '1', or '0' or 'O'. This reduces the number of possible
 		 *			passwords significantly, and as such reduces the quality of the passwords.
 		 *			It may be useful for users who have bad vision, but in general use of this
 		 *			option is not recommended.
-		 * @param no-vowels	Generate random passwords that do not contain vowels or numbers that might be
+		 * @param bool $no_vowels	Generate random passwords that do not contain vowels or numbers that might be
 		 * 			mistaken for vowels. It provides less secure passwords to allow system
 		 * 			administrators to not have to worry with random passwords accidentally contain
 		 * 			offensive substrings.
-		 * @param symbols	Include at least one special character in the password.
+		 * @param bool $symbols	Include at least one special character in the password.
 		 */
 		public function __construct($length=8, $secure=false, $numerals=true, $capitalize=true,
 			$ambiguous=false, $no_vovels=false, $symbols=false) {
@@ -327,24 +327,37 @@
 
 		/**
 		 * Generate a random number n, where $min <= n < $max
-		 * mcrypt's RNG is used if the mcrypt extension has been installed.
-		 * Mersenne Twister is used as a cryptographically insecure fallback algorithm.
+		 * The prefered order of RNGs is:
+		 *  - php7's random_int
+		 *  - OpenSSL's openssl_random_pseudo_bytes
+		 *  - mcrypt's mcrypt_create_iv (deprecated in PHP 7.1.0)
+		 *  - php's mt_rand (not actually cryptographically secure at all)
 		 */
 		public static function my_rand($min=0, $max=0) {
 			if ($min > $max) {
 				return false;
 			}
-			if (function_exists('mcrypt_create_iv')) {
-				$rnd = unpack('L',mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
-				// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
-				// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
-				// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
-				// supported range.
-				$rnd = $rnd[1] & 0x7FFFFFFF;
-				return $rnd % (1 + $max - $min) + $min;
+
+			if (function_exists('random_int')) {
+				return random_int($min, $max);
 			} else {
-				// fall back on cryptographically insecure rng
-				return mt_rand($min, $max);
+				// mcrypt was deprecated in PHP 7.1.0, prefer OpenSSL
+				$use_openssl = function_exists('openssl_random_pseudo_bytes');
+				$use_mcrypt = function_exists('mcrypt_create_iv');
+				if ($use_openssl || $use_mcrypt) {
+					$rnd = unpack('L', $use_openssl
+						? openssl_random_pseudo_bytes(4)
+						: mcrypt_create_iv(4,MCRYPT_DEV_URANDOM));
+					// Because you can't unpack an unsigned long on a 32bit system (or rather, you can,
+					// but it won't be unsigned), we need to clear the sign bit. mt_getrandmax() seems to
+					// be 2147483647 (0x7FFFFFFF) on all platforms I've tested, so this doesn't change the
+					// supported range.
+					$rnd = $rnd[1] & 0x7FFFFFFF;
+					return $rnd % (1 + $max - $min) + $min;
+				} else {
+					// fall back on cryptographically insecure rng
+					return mt_rand($min, $max);
+				}
 			}
 		}
 
