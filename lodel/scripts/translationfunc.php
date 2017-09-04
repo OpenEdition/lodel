@@ -115,7 +115,7 @@ class XMLDB_Translations extends XMLDB
 		$this->textgroups = $textgroups;
 		$this->lang = $lang;
 
-		$this->XMLDB("lodeltranslations", $GLOBALS['tp']);
+		parent::__construct("lodeltranslations", $GLOBALS['tp']);
 		$this->addTable("translations", "texts");
 		$this->addElement("translations", "lang", "title", "textgroups", "translators", "modificationdate", "creationdate");
 		$this->addWhere("translations", "lang='$lang'");
