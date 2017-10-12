@@ -978,8 +978,7 @@ class TEIParser extends XMLReader
 
 				if(!isset($this->_contents[$obj->name]))
 					$this->_contents[$obj->name] = array();
-				$blocks = fopen('/home/helene/lodel/tmp/blocks.txt', 'a+');
-				fputs($blocks, 'Test');
+
 				foreach($block as $k => $v)
 				{
 					$this->_updateNameSpaces($v);
