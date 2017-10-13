@@ -436,7 +436,7 @@ class C
 				case 'class':
 					if(!method_exists($trigger, $name))
 						trigger_error('Invalid trigger : '.$trigger.'::'.$name, E_USER_ERROR);
-					Plugins::get($trigger)->$name(self::$_context);
+					Plugins::get($trigger)->{$name}(self::$_context);
 					break;
 				
 				case 'func':
