@@ -411,7 +411,7 @@ class GenericLogic extends Logic
 			checkdocannexedir($dirdest);
 			$dest = $dirdest. "/". $dest;
 
-			$vo->$file['name'] = addslashes($dest);
+			$vo->{$file['name']} = addslashes($dest);
 			if ($src == SITEROOT. $dest) {
 				continue;
 			}
