@@ -27,7 +27,7 @@ class entitytypes_entitytypesVO
 
 class entitytypes_entitytypesDAO extends DAO 
 {
-	function entitytypes_entitytypesDAO() 
+    function __construct() 
 	{
 		parent::__construct("entitytypes_entitytypes", false);
 		$this->rights = array();

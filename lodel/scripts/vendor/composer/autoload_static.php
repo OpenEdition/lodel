@@ -11,9 +11,27 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
     );
 
+    public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Component\\EventDispatcher\\' => 34,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Symfony\\Component\\EventDispatcher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+        ),
+    );
+
     public static $prefixesPsr0 = array (
         'S' => 
         array (
+            'Solarium\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/solarium/solarium/library',
+            ),
             'SimplePie' => 
             array (
                 0 => __DIR__ . '/..' . '/simplepie/simplepie/library',
@@ -314,6 +332,8 @@ class ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$prefixesPsr0;
             $loader->fallbackDirsPsr0 = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInit25c3c92e525c1b84a149c1759e5cc50c::$classMap;

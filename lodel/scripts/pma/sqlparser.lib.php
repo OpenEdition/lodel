@@ -1993,7 +1993,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
         function PMA_SQP_formatNone($arr)
         {
             $formatted_sql = htmlspecialchars($arr['raw']);
-            $formatted_sql = ereg_replace("((\015\012)|(\015)|(\012)){3,}", "\n\n", $formatted_sql);
+            $formatted_sql = preg_replace("((\015\012)|(\015)|(\012)){3,}", "\n\n", $formatted_sql);
 
             return $formatted_sql;
         } // end of the "PMA_SQP_formatNone()" function

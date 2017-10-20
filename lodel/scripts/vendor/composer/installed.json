@@ -23,7 +23,7 @@
         "suggest": {
             "mf2/mf2": "Microformat module that allows for parsing HTML for microformats"
         },
-        "time": "2017-04-17T07:29:31+00:00",
+        "time": "2017-04-17 07:29:31",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -79,7 +79,7 @@
         "require": {
             "php": ">=5.3.2"
         },
-        "time": "2016-12-21T17:19:42+00:00",
+        "time": "2016-12-21 17:19:42",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -138,7 +138,7 @@
         "require-dev": {
             "phpunit/phpunit": "4.3.*"
         },
-        "time": "2016-05-28T13:01:37+00:00",
+        "time": "2016-05-28 13:01:37",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -185,7 +185,7 @@
         "require-dev": {
             "phpunit/phpunit": "*"
         },
-        "time": "2015-02-10T20:07:52+00:00",
+        "time": "2015-02-10 20:07:52",
         "type": "class",
         "extra": {
             "branch-alias": {
@@ -236,7 +236,7 @@
             "reference": "82f05cd1aa3edf34e19aa7c8ca312ce13a6a577f",
             "shasum": ""
         },
-        "time": "2015-07-20T20:28:12+00:00",
+        "time": "2015-07-20 20:28:12",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -292,7 +292,7 @@
         "replace": {
             "rsky/pear-core-min": "self.version"
         },
-        "time": "2017-02-28T16:46:11+00:00",
+        "time": "2017-02-28 16:46:11",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -341,7 +341,7 @@
         "suggest": {
             "pear/net_smtp": "Install optionally via your project's composer.json"
         },
-        "time": "2017-04-11T17:27:29+00:00",
+        "time": "2017-04-11 17:27:29",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -394,7 +394,7 @@
         "require": {
             "pear/pear-core-minimal": "*"
         },
-        "time": "2017-05-21T10:43:06+00:00",
+        "time": "2017-05-21 10:43:06",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -445,7 +445,7 @@
         "require-dev": {
             "simpletest/simpletest": "^1.1"
         },
-        "time": "2017-06-03T02:28:16+00:00",
+        "time": "2017-06-03 02:28:16",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -491,7 +491,7 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2017-08-15T07:59:33+00:00",
+        "time": "2017-08-15 07:59:33",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -517,6 +517,131 @@
         "keywords": [
             "generator",
             "password"
+        ]
+    },
+    {
+        "name": "symfony/event-dispatcher",
+        "version": "v3.3.10",
+        "version_normalized": "3.3.10.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/event-dispatcher.git",
+            "reference": "d7ba037e4b8221956ab1e221c73c9e27e05dd423"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/d7ba037e4b8221956ab1e221c73c9e27e05dd423",
+            "reference": "d7ba037e4b8221956ab1e221c73c9e27e05dd423",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5.9|>=7.0.8"
+        },
+        "conflict": {
+            "symfony/dependency-injection": "<3.3"
+        },
+        "require-dev": {
+            "psr/log": "~1.0",
+            "symfony/config": "~2.8|~3.0",
+            "symfony/dependency-injection": "~3.3",
+            "symfony/expression-language": "~2.8|~3.0",
+            "symfony/stopwatch": "~2.8|~3.0"
+        },
+        "suggest": {
+            "symfony/dependency-injection": "",
+            "symfony/http-kernel": ""
+        },
+        "time": "2017-10-02 06:42:24",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\EventDispatcher\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony EventDispatcher Component",
+        "homepage": "https://symfony.com"
+    },
+    {
+        "name": "solarium/solarium",
+        "version": "3.8.1",
+        "version_normalized": "3.8.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/solariumphp/solarium.git",
+            "reference": "c353babec89fdbe8c64054bfec8e77bcb5da6705"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/solariumphp/solarium/zipball/c353babec89fdbe8c64054bfec8e77bcb5da6705",
+            "reference": "c353babec89fdbe8c64054bfec8e77bcb5da6705",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.2",
+            "symfony/event-dispatcher": "~2.3|~3.0"
+        },
+        "require-dev": {
+            "guzzlehttp/guzzle": "^3.8 || ^6.2",
+            "phpunit/phpunit": "~3.7",
+            "satooshi/php-coveralls": "~1.0",
+            "squizlabs/php_codesniffer": "~1.4",
+            "zendframework/zendframework1": "~1.12"
+        },
+        "suggest": {
+            "minimalcode/search": "Query builder compatible with Solarium, allows simplified solr-query handling"
+        },
+        "time": "2017-02-02 13:32:22",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-develop": "3.3.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Solarium\\": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "See GitHub contributors",
+                "homepage": "https://github.com/basdenooijer/solarium/contributors"
+            }
+        ],
+        "description": "PHP Solr client",
+        "homepage": "http://www.solarium-project.org",
+        "keywords": [
+            "php",
+            "search",
+            "solr"
         ]
     }
 ]
