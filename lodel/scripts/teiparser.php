@@ -1580,7 +1580,7 @@ class TEIParser extends XMLReader
 					}
 					$text .= $this->_getTagEquiv($localname, $this->_parseAttributes());
 				}
-				if( $this->isEmptyElement && in_array($this->localname, array('table', 'row', 'cell')) ){
+				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
 					$text .= $this->_closeTag();
 				}
 
@@ -1588,7 +1588,6 @@ class TEIParser extends XMLReader
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
 				$text .= $this->_closeTag();
-
 				if('table' === $this->localName) break;
 			}
 			elseif(parent::TEXT === $this->nodeType || parent::WHITESPACE === $this->nodeType || parent::SIGNIFICANT_WHITESPACE === $this->nodeType){
