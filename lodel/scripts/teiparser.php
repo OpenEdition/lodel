@@ -1580,7 +1580,7 @@ class TEIParser extends XMLReader
 					}
 					$text .= $this->_getTagEquiv($localname, $this->_parseAttributes());
 				}
-				if( $this->isEmptyElement && in_array($this->localname, array('table', 'row', 'cell')) ){
+				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
 					$text .= $this->_closeTag();
 				}
 
