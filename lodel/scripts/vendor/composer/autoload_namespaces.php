@@ -6,7 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Solarium\\' => array($vendorDir . '/solarium/solarium/library'),
     'SimplePie' => array($vendorDir . '/simplepie/simplepie/library'),
     'PWGen' => array($vendorDir . '/roderik/pwgen-php'),
     'PEAR' => array($vendorDir . '/pear/pear_exception'),
