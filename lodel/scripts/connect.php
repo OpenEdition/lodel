@@ -19,7 +19,7 @@ defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
 defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
 $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-include "adodb/adodb.inc.php";
+include "vendor/autoload.php";
 error_reporting($err);
 
 // connect to the database server
@@ -49,19 +49,17 @@ if( $cache_config['driver'] == "memcache") {
 $GLOBALS['db']->connect(DBHOST, DBUSERNAME, DBPASSWD, $GLOBALS['currentdb']) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 $GLOBALS['db']->execute("SET SESSION sql_mode = ''");
 
-$info_mysql = $GLOBALS['db']->ServerInfo();
-$vs_mysql = explode(".", substr($info_mysql['version'], 0, 3));
-$GLOBALS['version_mysql'] = $vs_mysql[0] . $vs_mysql[1];
-unset($info_mysql, $vs_mysql);
-if ($GLOBALS['version_mysql'] > 40) {
-	$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
-	if ($GLOBALS['db_charset'] === false) {
-		$GLOBALS['db_charset'] = 'utf8';
-	}
-	if('utf8' !== $GLOBALS['db_charset']) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
-	$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
-    	C::set('db_charset', $GLOBALS['db_charset']);
+$GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
+
+if ($GLOBALS['db_charset'] === false) {
+	$GLOBALS['db_charset'] = 'utf8';
 }
+
+if(!in_array($GLOBALS['db_charset'], array('utf8', 'utf8mb4'))) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
+
+$GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
+C::set('db_charset', $GLOBALS['db_charset']);
+
 
 $GLOBALS['db']->SetFetchMode(ADODB_FETCH_ASSOC);
 $GLOBALS['tp'] = $GLOBALS['tableprefix'] = C::get('tableprefix', 'cfg');

@@ -22,4 +22,4 @@ $cfg['site']="";
 require 'context.php';
 C::setCfg($cfg);
 require 'class.errors.php';
-?>
+

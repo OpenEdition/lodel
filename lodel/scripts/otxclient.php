@@ -5,21 +5,12 @@
  * @authors See COPYRIGHT file
  */
 
-/**
- * Fichier de la classe permettant de communiquer avec OTX via le protole SOAP
- */
 
-if(C::get('debugMode', 'cfg'))
-{ // pas de cache WSDL si en mode débug
-	ini_set('soap.wsdl_cache_enabled', false);
-	ini_set('soap.wsdl_cache_enabled', '0');
-	ini_set('soap.wsdl_cache_ttl', '60');
-}
 
 /**
  * Classe permettant de communiquer avec OTX
  */
-class OTXClient extends SoapClient
+class OTXClient
 {
 	/**
 	 * @var array liste des paramètres autorisés à l'envoi à OTX
@@ -112,54 +103,53 @@ class OTXClient extends SoapClient
 	public function request(&$request)
 	{
         try {
-			if(!$this->_instanciated)
-				throw new Exception("Webotx client FaultError: client has not been instanciated");
+		if(!$this->_instanciated)
+			throw new Exception("Webotx client FaultError: client has not been instanciated");
+		$this->_checkRequest($request);
+		// make the request and get tei result
+		$data = array(
+                	'mode' => $request['mode'],
+                	'schema'=> $request['schema'],
+                	'site' => $request['site'],
+                	'sourceoriginale' => $request['sourceoriginale'],
+            	);
 
-			$this->_checkRequest($request);
-			// make the request and get tei result
-			$data = array(
-                'mode' => $request['mode'],
-                'schema'=> $request['schema'],
-                'site' => $request['site'],
-                'sourceoriginale' => $request['sourceoriginale'],
-            );
+            	if(function_exists('curl_file_create')){
+                	$data['attachment'] = file_exists($request['attachment']) ? curl_file_create($request['attachment']) : $request['attachment'];
+            	}else{
+                	$data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
+            	}
 
-            if(function_exists('curl_file_create')){
-                $data['attachment'] = file_exists($request['attachment']) ? curl_file_create($request['attachment']) : $request['attachment'];
-            }else{
-                $data['attachment'] = file_exists($request['attachment']) ? "@" . $request['attachment'] : $request['attachment'];
-            }
+            	$request = curl_init($this->_options['otx.url']);
+            	curl_setopt($request, CURLOPT_USERPWD, $this->_options['otx.username'].":".$this->_options['otx.passwd'] );
+            	curl_setopt($request, CURLOPT_POST, 1);
+            	curl_setopt($request ,CURLOPT_POSTFIELDS, $data);
+            	curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
 
-            $request = curl_init($this->_options['otx.url']);
-            curl_setopt($request, CURLOPT_USERPWD, $this->_options['otx.username'].":".$this->_options['otx.passwd'] );
-            curl_setopt($request, CURLOPT_POST, 1);
-            curl_setopt($request ,CURLOPT_POSTFIELDS, $data);
-            curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+            	$req = curl_exec($request);
 
-            $req = curl_exec($request);
+            	if(empty($req))
+			throw new Exception('ERROR: empty return from OTX');
 
-            if(empty($req))
-				throw new Exception('ERROR: empty return from OTX');
+            	if(curl_errno($request))
+                	throw new Exception("ERROR: Unknow error happened: ". curl_error( $request ));
 
-            if(curl_errno($request))
-                throw new Exception("ERROR: Unknow error happened: ". curl_error( $request ));
+            	if(curl_getinfo( $request )['http_code'] != 200 )
+                	throw new Exception("ERROR: $req");
 
-            if(curl_getinfo( $request )['http_code'] != 200 )
-                throw new Exception("ERROR: $req");
+            	curl_close($request);
 
-            curl_close($request);
+		foreach(json_decode($req, true) as $k=>$v){
+			if(is_string($v))
+                		if(!($this->$k = base64_decode($v, true))) $this->$k = $v;
+			#else $this->$k = $v;
+            	}
 
-			foreach(json_decode($req, true) as $k=>$v)
-            {
-                if( ! ( $this->$k = base64_decode($v, true)) )
-                    $this->$k = $v;
-            }
-
-		}
-		catch (Exception $fault) {
-			$this->error = true;
-   			$this->status = $fault->getMessage();
-		}
+	}
+	catch (Exception $fault) {
+		$this->error = true;
+   		$this->status = $fault->getMessage();
+	}
 	}
 
 	/**

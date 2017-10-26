@@ -210,7 +210,9 @@ function makeurlwithid($id, $base = 'index')
         // compat 0.7
         if (C::get('idagauche', 'cfg')) {
             $uri = 'leftid';
-        }
+        } else {
+	    $uri = '';
+	}
     }
 
     $id = trim($id);
@@ -1081,10 +1083,11 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
     $body = wordwrap(strtr($body, $replace), 70);
     $subject = wordwrap(strtr($subject, $replace), 70);
-
+    
+    // @TODO Arrêter d'utiliser PEAR !!
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
-    if (!class_exists('Mail', false)) include 'Mail/Mail.php'; // hardcode because the autoload will look in /lodel/scripts/ and not in /lodel/scripts/Mail/
+    if (!class_exists('Mail', false) || !class_exists('Mail_mime', false)) include 'vendor/autoload.php';
     $pear = new PEAR();
 
     $message = new Mail_mime("\n");
@@ -1139,7 +1142,8 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
 
     unset($message);
     // send the mail
-    $r = Mail::factory('mail')->send($to, $headers, $body);
+    $Mail = new Mail;
+    $r = $Mail->factory('mail')->send($to, $headers, $body);
     $ret = true;
     if ($pear->isError($r)) {
         $ret = $r->getMessage();
@@ -1234,9 +1238,6 @@ function thumbnail($path, $width = null, $height = null)
 
     if (!file_exists($path) && strpos($path, 'http') !== 0) return $path;
 
-    $tmp_path = tempnam(C::get('cacheDir', 'cfg'), 'thumb');
-    file_put_contents($tmp_path, file_get_contents($path));
-
     $new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
 
     if (!file_exists(dirname($new_path))) mkdir(dirname($new_path));
@@ -1249,7 +1250,7 @@ function thumbnail($path, $width = null, $height = null)
     ) return $new_path;
 
     $image = new Zebra_Image();
-    $image->source_path = $tmp_path;
+    $image->source_path = $path;
     $image->target_path = $new_path;
 
     $image->jpeg_quality = 100;
@@ -1260,7 +1261,6 @@ function thumbnail($path, $width = null, $height = null)
     $final_path = $path;
     if($image->resize($width, $height, ZEBRA_IMAGE_NOT_BOXED, -1))
         $final_path = $new_path;
-    unlink($tmp_path);
     return $final_path;
 }
 

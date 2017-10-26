@@ -243,7 +243,7 @@ class GenericLogic extends Logic
 			if ($empty) {
 				$value = lodel_strip_tags($field->defaultvalue, $field->allowedtags); // default value
 			}
-			elseif(-1 === $value) {
+			elseif(isset($value) && -1 === $value) {
 				$context['data'][$name] = isset($context['data'][$name]) ? $context['data'][$name] : '';
 				// check if the field is required or not, and rise an error if any problem.
 				$value = &$context['data'][$name];
@@ -271,7 +271,7 @@ class GenericLogic extends Logic
 			}
 
 			// clean automatically the fields when required.
-			if (!is_array($value) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) 
+			if ((isset($value) && !is_array($value)) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) 
 					&& $GLOBALS['lodelfieldtypes'][$type]['autostriptags']) {
 				$value = trim(strip_tags($value));
 			}
@@ -411,7 +411,7 @@ class GenericLogic extends Logic
 			checkdocannexedir($dirdest);
 			$dest = $dirdest. "/". $dest;
 
-			$vo->$file['name'] = addslashes($dest);
+			$vo->{$file['name']} = addslashes($dest);
 			if ($src == SITEROOT. $dest) {
 				continue;
 			}

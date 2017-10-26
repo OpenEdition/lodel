@@ -20,7 +20,7 @@ class_exists('XMLDB', false) || include 'xmldbfunc.php';
  */
 function mkeditlodeltext($name, $textgroup, $lang = -1)
 {
-	list () = getlodeltext($name, $textgroup, $id, $text, $status, $lang);
+	getlodeltext($name, $textgroup, $id, $text, $status, $lang);
 	if (!$id)	{ // create it ?? 
 		return; // to be decided
 	}
@@ -110,12 +110,12 @@ class XMLDB_Translations extends XMLDB
 	 * @param array $textgroups les groupes de texte des traductions 
 	 * @param string $lang la langue de la traduction
 	 */
-	function XMLDB_Translations($textgroups, $lang = "")
+	function __construct($textgroups, $lang = "")
 	{
 		$this->textgroups = $textgroups;
 		$this->lang = $lang;
 
-		$this->XMLDB("lodeltranslations", $GLOBALS['tp']);
+		parent::__construct("lodeltranslations", $GLOBALS['tp']);
 		$this->addTable("translations", "texts");
 		$this->addElement("translations", "lang", "title", "textgroups", "translators", "modificationdate", "creationdate");
 		$this->addWhere("translations", "lang='$lang'");

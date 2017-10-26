@@ -399,7 +399,8 @@ class UsersLogic extends Logic
 		}
 		$prefix = C::get('adminlodel', 'lodeluser') ? lq("#_MTP_") : lq("#_TP_");
 		$email = $db->getOne("SELECT email FROM {$prefix}users WHERE id = '".C::get('id', 'lodeluser')."'");
-		if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
+		//if(!$email) trigger_error('Error while getting your email for new user mailing', E_USER_ERROR);
+		if(!$email) return;
 		$GLOBALS['nodesk'] = true;
 		$nocache = View::$nocache;
 		View::$nocache = true;

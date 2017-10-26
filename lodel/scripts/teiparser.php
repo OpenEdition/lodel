@@ -154,7 +154,22 @@ class TEIParser extends XMLReader
 
 		$personsClassTypes = $entriesClassTypes = array();
 
-		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$GLOBALS['db']->quote($class), 'id', 'name,title,style,type,otx,class,defaultvalue,g_name');
+		$fields = DAO::getDAO('tablefields')->findMany('status>0 AND class='.$GLOBALS['db']->quote($class), 'id', 'name,title,style,type,otx,class,defaultvalue,g_name, idgroup, rank');
+		//Sorting fields using fieldgroups
+		$fieldgroups = DAO::getDAO('tablefieldgroups')->findMany('1=1','rank', 'id,rank');
+		$fgs = array();
+		foreach($fieldgroups as $fieldgroup) {
+			$fgs[intval($fieldgroup->id)] = intval($fieldgroup->rank);
+		}
+		$fieldgroups = $fgs;
+		usort($fields,
+			function($a, $b) use($fieldgroups){
+				$fgra = $fieldgroups[$a->idgroup];
+				$fgrb = $fieldgroups[$b->idgroup];
+				return $fgra == $fgrb ? $a->rank - $b->rank : $fgra - $fgrb;
+			}
+		);
+
 		if($fields)
 		{
 			foreach($fields as $field)
@@ -713,7 +728,6 @@ class TEIParser extends XMLReader
 		while($element->moveToNextAttribute());
 
 		$element->moveToElement();
-
 		return $attrs;
 	}
 
@@ -760,7 +774,6 @@ class TEIParser extends XMLReader
 	private function _closeTag()
 	{
 		if(empty($this->_tags)) return;
-
 		$tags = array_pop($this->_tags);
 
 		$text = '';
@@ -965,7 +978,8 @@ class TEIParser extends XMLReader
 
 				if(!isset($this->_contents[$obj->name]))
 					$this->_contents[$obj->name] = array();
-
+				$blocks = fopen('/home/helene/lodel/tmp/blocks.txt', 'a+');
+				fputs($blocks, 'Test');
 				foreach($block as $k => $v)
 				{
 					$this->_updateNameSpaces($v);
@@ -985,9 +999,12 @@ class TEIParser extends XMLReader
 						$currentNode =& $this->_contents[$obj->name][$lang][$id];
 					}
 					else $currentNode =& $this->_contents[$obj->name][$id];
-                    
+					
+					fputs($blocks, $v->asXML());
+
 					$currentNode .= $this->_parse($v->asXML());
 				}
+				fclose($blocks);
 			}
 			$this->_currentClass = array();
 		}
@@ -1000,6 +1017,7 @@ class TEIParser extends XMLReader
 	 * @param string $xml la chaîne XML à convertir
 	 * @return string le XHTML équivalent à la chaine XML
 	 */
+	
 	private function _parse($xml)
 	{
         $this->XML($xml, 'UTF-8', LIBXML_COMPACT | LIBXML_NOCDATA);
@@ -1010,34 +1028,33 @@ class TEIParser extends XMLReader
 		{
 			if(parent::ELEMENT === $this->nodeType)
 			{
-				if ('formula' === $this->localName)
-				{
-					$attrs = $this->_parseAttributes();
-					if (isset($attrs['notation'])) {
-						$math = $this->readInnerXml();
-						$text .= $math.$this->_closeTag();
-						$this->next();
-						continue;
-					}
-				}
 				if('div' === $this->localName) continue; // container, not used
-
+				
 				$attrs = $this->_parseAttributes();
-
+				
 				if(isset($attrs['rend']) && in_array(strtolower($attrs['rend']), $this->_notesstyles) ) continue;
 				$text .= $this->_getTagEquiv($this->localName, $attrs);
+				
+				if ('formula' === $this->localName)
+				{
+					if (isset($attrs['notation'])) {
+						$math = $this->readInnerXml();
+						$text .= $math; //.$this->_closeTag(); //Tag fermé ici et aussi ligne 1062
+						$this->read();
+					}
+				}
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
 				if('body' === $this->localName || 'front' === $this->localName || 'back' === $this->localName) break;
+				//elseif(('div' === $this->localName) || ($this->localName === 'formula')) continue;
 				elseif('div' === $this->localName) continue;
 
 				$rend = $this->getAttribute('rend');
 
-
                 if(isset($rend) && in_array(strtolower($rend), $this->_notesstyles) ) continue;
-
-				$text .= $this->_closeTag();
+				
+                $text .= $this->_closeTag();
 
 				if(!empty($rend))
 				{
@@ -1059,6 +1076,7 @@ class TEIParser extends XMLReader
 		}
 
 		$this->close();
+		
 		return $text;
 	}
 
@@ -1072,24 +1090,47 @@ class TEIParser extends XMLReader
 	 */
 	private function _addLocalStyle(array $attrs, $inline = false)
 	{
+		$ret = '';
+		
+		if(empty($attrs)) return;
+		
 		if(!empty($attrs['lang']))
 			$lang = $attrs['lang'];
 		if(!empty($attrs['rendition']))
 			$rendition = $this->_getRendition($attrs['rendition']);
-
-		if(empty($lang) && empty($rendition) && empty($attrs['rend'])) return;
-
+		
+		if(empty($attrs['notation']) && empty($lang) && empty($rendition) && empty($attrs['rend'])) return;
+		print_r($this->_tags);
+		print('<br/>');
+		
 		$tags = $inline ? array() : array_pop($this->_tags);
-
 		if(!is_array($tags)) $tags = array($tags);
 
-		$ret = '';
+		if (!empty($attrs['notation'])) {
+			
+			if ($tags[count($tags)-1] === 'span') {
+				$this->_tags[] = 'span';
+			}
+			
+			$tags = array();
+			
+			if( $this->localName !== "p" && $this->localName !== "q"){ // le <p> indique un paragraphe, le <q> indique une citation
+				$ret   = '<span class="' . $attrs['notation']. '">';
+				$tags[] = 'span';
+			}
+			
+		}
+
+		//if(empty($attrs['notation']) && empty($lang) && empty($rendition) && empty($attrs['rend'])) return;
 
 		if(!empty($rendition))
 		{
 			$styles = array();
+			
 			$rendition = preg_split("/\s*(?<!&(apos|quot));\s*/", $rendition);
+
 			$nb = count($rendition);
+			
 			for($i=0;$i<$nb;$i++)
 			{
 				$style = $rendition[$i];
@@ -1133,8 +1174,7 @@ class TEIParser extends XMLReader
 				}
 			}
 		}
-
-		if(!empty($attrs['rend']))
+		if((!empty($attrs['rend'])))
 		{
 			$styles = $this->_getStyle($attrs['rend']);
 			if(!empty($styles['inline']))
@@ -1196,8 +1236,15 @@ class TEIParser extends XMLReader
 				'>';
 		}
 
-		if(!empty($tags[0])) $this->_tags[] = array_reverse($tags);
-
+		if(!empty($tags[0])) {
+			$this->_tags[] = array_reverse($tags);
+		}
+		/*if ($this->localName ==='formula') {
+			print('<br/>');
+			print_r($this->_tags);
+			die();
+		}*/
+		
 		return $ret;
 	}
 
@@ -1239,7 +1286,9 @@ class TEIParser extends XMLReader
 			case 's':
 				return $this->_addLocalStyle($attrs, true);
 				break;
-
+			case 'formula':
+				return $this->_addLocalStyle($attrs, false);
+				break;
 // 			case 'pb': // page break, we don't need it
 // 				return '';
 // 				break;
@@ -1425,15 +1474,15 @@ class TEIParser extends XMLReader
 				{
                                         $tags = '<li' . $this->_addAttributes($this->_parseAttributes()) . '>';
 					$this->_tags[] = 'li';
-				}elseif('formula' === $this->localName){
-					continue;
+				/*}elseif('formula' === $this->localName){
+					continue;*/
 				}else{
                                     $tags .= $this->_getTagEquiv($this->localName, $this->_parseAttributes());
                                 }
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType)
 			{
-                                if('formula' === $this->localName) continue;
+                if('formula' === $this->localName) continue;
 				$text .= $tags . $this->_closeTag();
 				$tags = '';
 				if('list' === $this->localName) break;
@@ -1497,10 +1546,9 @@ class TEIParser extends XMLReader
 		if (preg_match('/direction:([^\'";]+)/',$attributs,$m)) $attributs .= " dir=\"".$m[1]."\"";
 		$text = '<table id="'.$attrs['id'].'"' . $attributs . $this->_addAttributes(array('class' => end($this->_currentClass))) .'>';
 		$this->_tags[] = 'table';
-
+	
 		while($this->read())
 		{
-
 			if(parent::ELEMENT === $this->nodeType)
 			{
 				if('table' === $this->localName)
@@ -1517,13 +1565,21 @@ class TEIParser extends XMLReader
 					$text .= '<td' . $attributs . '>';
 					$this->_tags[] = 'td';
 				}
-				elseif('anchor' === $this->localName || 'formula' === $this->localName)
+				elseif('anchor' === $this->localName) // || 'formula' === $this->localName)
 				{
 						continue;
 				}
-				else
-					$text .= $this->_getTagEquiv($this->localName === 's' ? 'p' : $this->localName, $this->_parseAttributes());
-
+				else {
+					if($this->localName === 's' || $this->localName === 'formula') 
+				
+					{
+						$localname = 'p';
+					} else 
+					{
+						$localname = $this->localName;
+					}
+					$text .= $this->_getTagEquiv($localname, $this->_parseAttributes());
+				}
 				if( $this->isEmptyElement && in_array($this->localName, array('table', 'row', 'cell')) ){
 					$text .= $this->_closeTag();
 				}

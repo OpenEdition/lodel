@@ -805,13 +805,7 @@ function nicefilesize($lien)
 
 function wiki($text)
 {
-	/* Fonction pour mediawiki : A TESTER !!!
-	require_once('mediawiki/Parser.php');
-	$parser = new ParserMediawiki;
-	$parserOutput = $parser->internalParse($text);
-	print_r($parserOutput);
-	*/
-	class_exists('WikiRenderer', false) || include ('wikirenderer/WikiRenderer.lib.php');
+	class_exists('WikiRenderer', false) || include ('vendor/autoload.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
@@ -995,15 +989,13 @@ function getFileType($filename){
 	return (!isset($tmp[1]) || !($tmp[1] = trim($tmp[1]))) ? 'unknown' : $tmp[1];
 }
 
-
-/** Transforme une date MySql en timestamp UNIX 
+/** Convertit date texte en timestamp
 * @author Bruno Cénou
-* @param string $date 
+* @param string $date
 */
 
 function mysql2TS($date){
-	$date = str_replace(array(' ', '-', ':'), '', $date);
-	return mktime(substr($date, 8, 2), substr($date, 10, 2), substr($date, 12, 2), substr($date, 4, 2), substr($date, 6, 2), substr($date, 0, 4));
+	return strtotime($date);
 }
 
 /** Transforme une date MySql en timestamp UNIX 

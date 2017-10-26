@@ -1,26 +1,28 @@
-Lodel
+Lodel 
 =====
+
+<img src="https://github.com/OpenEdition/lodel/blob/master/share/images/lodel_couleur.png" width="100">
 
 Logiciel d'édition Électronique
 
-Home page: http://www.lodel.org
+Home page (doc générale): http://www.lodel.org
 
-Download: http://openedition.github.io/lodel/
+Documentation technique: https://github.com/OpenEdition/lodel/wiki
 
+English readers: for a presentation in English, see https://lodel.org/666 . The rest of the documentation and the wiki are currently only in French. If you are interested in Lodel, [please contact us](lodel@lodel.org) !  
+    
 E-Mail: lodel@lodel.org
 
 Résumé
 -------
 
-Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des
-articles issus d'un traitement de texte.
+Lodel est un logiciel d'édition électronique. Il permet de publier en ligne des articles issus d'un traitement de texte.
 
 
 Licence
 -------
 
-Lodel est un logiciel libre sous licence GPL Version 2. Lisez la licence dans le fichier
-COPYING.
+Lodel est un logiciel libre sous licence GPL Version 2. Lisez la licence dans [le fichier COPYING](https://github.com/OpenEdition/lodel/blob/master/COPYING).
 
 
 Lodel - Logiciel d'édition Électronique
@@ -36,11 +38,11 @@ Le design du site est défini par des gabarits écrits dans le langage Lodelscri
 
 Installation
 ------------
+Notez qu'une version pré-installée de Lodel (et OTX, l’application de conversion Word/Office vers XML/TEI) en tant qu’image de machine virtuelle linux Debian est téléchargeable à l’adresse : http://lodel.org/downloads/vms/2017/
 
 Pré-requis:
-  - Utiliser son propre serveur linux, Lodel n'est pas utilisable sur hébergement dédié.
   - Serveur HTTP (nginx, apache) avec PHP
-  - Serveur MYSQL
+  - Serveur MySQL/MariaDb
     - pour être utilisé avec OTX, il faut une valeur de max_allowed_packet et key_buffer très grande (16 M)
 
 

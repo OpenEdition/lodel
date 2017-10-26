@@ -576,11 +576,7 @@ class siteManage {
 		$text = file_get_contents(LODELROOT. $this->versiondir."/install/init-site.sql");
 		$text.= "\n";
 			
-		if ($GLOBALS['version_mysql'] > 40) {
-			$db_charset = $this->find_mysql_db_charset($dbname);
-		} else { 
-			$db_charset = '';
-		}
+		$db_charset = $this->find_mysql_db_charset($dbname);
 
 		$text = str_replace("_CHARSET_",$db_charset,$text);
 		$sqlfile = lq($text);
