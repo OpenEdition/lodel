@@ -726,8 +726,11 @@ cp_[#VARNAME].writeDiv();
 			<a href="#down" onclick="addentries(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
 		</div>
 		<div id="entries_[#VARNAME]" class="entrieseditionarea" >
-			<input type="hidden" id="entries_[#VARNAME]_degree" value="0" />
 			<LOOP NAME="entries_types" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+				<BEFORE>
+					<input type="hidden" id="entries_[#VARNAME]_degree" value="[#NBRESULTS|lmath('+', 1)]" />
+				</BEFORE>
+				<DO>
 				<LET VAR="idtype">[#ID]</LET>
 				<LOOP NAME="inline_entries_by_type_in_entities">
 					<LOOP NAME="edition_fields">
@@ -766,6 +769,10 @@ cp_[#VARNAME].writeDiv();
 						</div>
 					</AFTER>
 				</LOOP>
+				</DO>
+				<ALTERNATIVE>
+				<input type="hidden" id="entries_[#VARNAME]_degree" value="0" />
+				</ALTERNATIVE>
 			</LOOP>
 		</div>
 	</IF>
