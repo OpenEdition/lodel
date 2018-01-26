@@ -1,0 +1,49 @@
+FROM php:7.0-fpm-alpine
+
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow
+
+RUN apk --no-cache add --update \
+    curl \
+    wget \
+    libpng-dev \
+    libjpeg \
+    zlib-dev \
+    gettext-dev
+    
+RUN usermod -u 1000 www-data
+
+
+RUN docker-php-ext-install mysqli \
+    pdo_mysql \
+    zip \
+    gd \
+    gettext
+
+RUN sed -i '/phpize/i \
+	[[ ! -f "config.m4" && -f "config0.m4" ]] && mv config0.m4 config.m4' \
+	/usr/local/bin/docker-php-ext-configure
+
+RUN mkdir /code 
+
+RUN sed -i "s|;*listen.owner\s*=\s*.*|listen.owner = www-data|g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s|;*listen.group\s*=\s*.*|listen.group = www-data|g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s|;*listen.mode\s*=\s*.*|listen.mode = 0660|g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s|user\s=\s.*|user = www-data|g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s|group\s*=\s*.*|group = www-data|g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s|;log_level\s*=\s*notice|log_level = notice|g" /usr/local/etc/php-fpm.d/www.conf
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+
+RUN apk del \
+    curl \
+    wget
+RUN rm -rf /var/cache/apk/*
+
+COPY entrypoint.sh /
+
+# CMD
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["php-fpm"]

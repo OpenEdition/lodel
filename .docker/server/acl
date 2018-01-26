@@ -1,0 +1,4 @@
+allow 172.30.0.0/24;
+auth_pam     "Lodel Devel";
+auth_pam_service_name "nginx";
+satisfy any;

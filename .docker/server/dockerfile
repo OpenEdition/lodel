@@ -1,0 +1,47 @@
+FROM alpine:3.6
+
+ENV NGINX_VERSION nginx-1.13.7
+
+RUN adduser -DH -u 1000 www-data
+
+RUN apk --no-cache add --update \
+    git \
+    g++ \
+    make \
+    openssl-dev \
+    zlib-dev \
+    pcre-dev \
+    linux-pam-dev
+
+
+RUN cd /tmp && \
+    git clone https://github.com/nginx/nginx.git && \
+    git clone https://github.com/nginx-modules/ngx_http_auth_pam_module.git
+
+RUN cd /tmp/nginx && \
+     ./auto/configure \
+        --with-http_ssl_module \
+        --with-http_gzip_static_module \
+        --prefix=/etc/nginx \
+        --http-log-path=/var/log/nginx/access.log \
+        --error-log-path=/var/log/nginx/error.log \
+        --sbin-path=/usr/local/sbin/nginx \
+        --add-module=/tmp/ngx_http_auth_pam_module && \
+    make && \
+    make install
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
+RUN apk del \
+    git \
+    g++ \
+    make
+    
+RUN rm -rf /var/cache/apk/*
+
+
+CMD ["nginx", "-g", "daemon off;"]
+
+#EXPOSE 80 443
+

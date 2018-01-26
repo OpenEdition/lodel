@@ -1,0 +1,64 @@
+version: "3.3"
+services:
+    web:
+        build:
+            context: .docker/server
+            dockerfile: dockerfile
+        container_name: lodel_server
+        links:
+            - php
+            - "db:database"
+        networks:
+            lodelnet:
+                ipv4_address: 172.30.0.10
+        expose:
+            - "80"
+            - "443"
+        tty: true
+        restart: always
+        volumes:
+            - .:/code:z
+            - ./.docker/server/lodel-site.conf:/etc/nginx/conf.d/lodel.conf:z
+            - ./.docker/server/fastcgi-php.conf:/etc/nginx/snippets/fastcgi-php.conf:z
+            - ./.docker/server/acl:/etc/nginx/snippets/acl.conf:z
+            - ./.docker/server/nginx.conf:/etc/nginx/conf/nginx.conf:z
+
+
+    php:
+        build:
+            context: .docker/fpm
+            dockerfile: dockerfile
+        container_name: lodel_php
+        env_file:
+            - .docker/config.env
+        expose:
+            - "9000"
+        networks:
+            lodelnet:
+                ipv4_address: 172.30.0.20
+        volumes:
+            - .:/code:z
+            - /var/www/lodelsites:/lodelsites:z
+
+    db:
+        build:
+            context: .docker/db
+            dockerfile: dockerfile
+        env_file:
+            - .docker/config.env
+        ports:
+            - "3306"
+        container_name: lodel_db
+        networks:
+            lodelnet:
+                ipv4_address: 172.30.0.30
+        tty: true
+        volumes:
+            - ./data/mysql:/docker-entrypoint-initdb.d/:z
+
+networks:
+    lodelnet:
+        driver: bridge
+        ipam:
+          config:
+               - subnet: 172.30.0.0/16
