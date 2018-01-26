@@ -55,3 +55,32 @@ Marche à suivre:
   - Il faudra donner temporairement les droits d'écriture sur le dossier d'une instance de site.
   - Vérifer qu'à l'intérieur du dossier d'un site l'utilisateur du serveur HTTP a bien les droits d'écriture sur les dossiers:
       upload, docannexe, docannexe/file, docannexe/image, lodel/sources, lodel/icons
+
+### Avec Docker (pour développement / tests) ###
+
+Lodel est disponible en version conteneurisée (Nginx + Mysql + PHP-FPM). Le code 
+source lui n'est pas disponible dans un conteneur mais est partagé entre la machine
+hôte et le conteneur de PHP-FPM, et est destiner à faciliter le développement
+de Lodel en assurant de partager le même environnement entre chaque personne.
+
+L'installation de Lodel via des conteneurs Docker présuppose que ce dernier soit 
+déjà installé. Voir [l'aide à l'installation officiel](https://docs.docker.com/engine/installation/)
+si ce n'est pas le cas.
+
+Une fois le répositoire cloné, placez-vous à la raçine du code source en ligne de 
+commande, puis :
+  - copier le fichier .docker/config.env.dist en .docker/config.env ;
+  - modifiez les valeurs "environment" du fichier .docker/config.env ;
+  - renommez le fichier .docker/config.env.dist en .docker/config.env puis modifiez son
+    contenu avec vos propres valeurs ;
+  - exécutez la commance `docker-compose up --build` ;
+  
+  Une fois l'opération terminée, ouvrez votre navigateur et rendez vous à l'adresse 
+  suivante : http://172.30.0.10/lodeladmin/install.php. L'interface d'installation de 
+  Lodel devrait alors apparaître et être ok pour continuer de suite !
+  
+Remarque : les adresses IP des différents conteneurs sont les suivantes (celles-ci sont
+configurées dans le fichier "docker-compose.yml") :
+  - NginX > 172.30.0.10
+  - PHP-FPM > 172.30.0.20
+  - MySQL > 172.30.0.30 
