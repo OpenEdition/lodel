@@ -10,6 +10,7 @@ Dependencies:
   + curl
   + mysqlnd
   + zip
++ Composer (https://getcomposer.org/download/)
 
 Steps:
 
@@ -20,4 +21,6 @@ Steps:
 	CREATE DATABASE `lodel` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 	GRANT ALL on `lodel`.* TO `lodeluser`@`127.0.0.1` IDENTIFIED BY "password";	
 5. fill at least the DB parameters in your lodelconfig.php file;
-6. go to lodeladmin/install.php, follow the final instructions.
+6. go to the lodel/scripts directory;
+7. install the dependencies via composer (cd lodel/scripts && composer install);
+8. go to http(s)://yoursite/yourlodelpath/lodeladmin/install.php, follow the final instructions.
