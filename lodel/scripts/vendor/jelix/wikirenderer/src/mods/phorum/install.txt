@@ -1,8 +1,0 @@
-To install:
-
-copy the wiki directory into the mods directory of phorum.
-install the wikirenderer directory somewhere, for example in the wiki directory,
-then set the path of the wikirenderer directory into the wiki.php file.
-
-In this file, you can also modify the name of the rule you want to use (so
-the wiki syntax you want to use).
