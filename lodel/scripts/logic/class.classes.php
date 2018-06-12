@@ -164,15 +164,15 @@ class ClassesLogic extends Logic
 		if (!isset($this->oldvo->class)) {
 			switch($vo->classtype) {
 			case 'entities' :
-				$create = "identity	INTEGER UNSIGNED  UNIQUE, KEY index_identity (identity)";
+				$create = "identity INTEGER UNSIGNED PRIMARY KEY";
 				break;
 			case 'entries' :
-				$create = "identry	INTEGER UNSIGNED  UNIQUE, KEY index_identry (identry)";
-				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$create = "identry INTEGER UNSIGNED PRIMARY KEY";
+				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED PRIMARY KEY )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				break;
 			case 'persons' :
-				$create = "idperson	INTEGER UNSIGNED  UNIQUE, KEY index_idperson (idperson)";
-				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED UNIQUE, KEY index_idrelation (idrelation) )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+				$create = "idperson INTEGER UNSIGNED PRIMARY KEY";
+				$db->execute (lq ("CREATE TABLE IF NOT EXISTS #_TP_entities_". $vo->class." ( idrelation INTEGER UNSIGNED PRIMARY KEY )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				break;
 			}
 			$db->execute(lq("CREATE TABLE IF NOT EXISTS #_TP_". $vo->class." ( ". $create." )")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
