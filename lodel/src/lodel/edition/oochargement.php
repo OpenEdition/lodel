@@ -196,7 +196,7 @@ try
 			{
 				foreach($extracted_files as $file)
 				{
-					if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'docx', 'sxw', 'odt', 'rtf')))
+					if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'sxw', 'odt', 'rtf')))
 					{
 						$tmp = tmpdir(uniqid('import_', true));
 						rename($oldtmpdir . DIRECTORY_SEPARATOR . $file, $tmp . DIRECTORY_SEPARATOR . $file);
@@ -281,9 +281,9 @@ try
 
 		die;
 	}
-	elseif(!in_array($ext, array('doc', 'docx', 'sxw', 'odt', 'rtf')))
+	elseif(!in_array($ext, array('doc', 'sxw', 'odt', 'rtf')))
 	{
-		printErrors('invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .docx, .sxw, .odt, .rtf', true, $isFrame);
+		printErrors('Invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .sxw, .odt, .rtf', true, $isFrame);
 	}
 	elseif(!empty($context['multiple']))
 	{
