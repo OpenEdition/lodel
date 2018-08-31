@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d684c74bc34b236a6dfaeb70db15403",
+    "content-hash": "397af3af4e66ae4cfdeb0396fdd463c4",
     "packages": [
         {
             "name": "adodb/adodb-php",
@@ -505,6 +505,54 @@
                 "rss"
             ],
             "time": "2017-04-17T07:29:31+00:00"
+        },
+        {
+            "name": "stefangabos/zebra_image",
+            "version": "2.2.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stefangabos/Zebra_Image.git",
+                "reference": "d2123c46422acadca782091adbf579d2ed82aaaf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stefangabos/Zebra_Image/zipball/d2123c46422acadca782091adbf579d2ed82aaaf",
+                "reference": "d2123c46422acadca782091adbf579d2ed82aaaf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Zebra_Image.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Stefan Gabos",
+                    "email": "contact@stefangabos.ro",
+                    "homepage": "https://github.com/stefangabos/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A compact (one-file only), lightweight, image manipulation PHP library",
+            "homepage": "https://github.com/stefangabos/Zebra_Image/",
+            "keywords": [
+                "crop",
+                "filters",
+                "gd",
+                "image",
+                "php",
+                "resize",
+                "thumbnail"
+            ],
+            "time": "2017-08-21T15:16:07+00:00"
         }
     ],
     "packages-dev": [],

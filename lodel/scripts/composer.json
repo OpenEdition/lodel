@@ -6,6 +6,7 @@
         "pear/mail": "^1.4",
         "pear/mail_mime": "^1.10",
         "ezyang/htmlpurifier": "^4.9",
-        "roderik/pwgen-php": "^0.1.5"
+        "roderik/pwgen-php": "^0.1.5",
+        "stefangabos/zebra_image": "^2.2"
     }
 }
