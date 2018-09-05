@@ -1722,7 +1722,7 @@ function cleanCallNotes($text)
  */
 function highlight_code($text, $language='xml', $lineNumbers=true)
 {
-	class_exists('GeSHi', false) || include C::get('sharedir', 'cfg') . "/plugins/geshi/geshi.php";
+	class_exists('GeSHi', TRUE) || require_once 'vendor/autoload.php';
 	$geshi = new GeSHi($text, $language);
 	if($lineNumbers)
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
