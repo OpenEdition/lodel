@@ -805,7 +805,7 @@ function nicefilesize($lien)
 
 function wiki($text)
 {
-	class_exists('WikiRenderer', false) || include ('vendor/autoload.php');
+	class_exists('WikiRenderer', TRUE) || require_once ('vendor/autoload.php');
 	$wkr = new WikiRenderer();
 	return $wkr->render($text);
 }
