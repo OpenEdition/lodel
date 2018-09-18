@@ -19,7 +19,7 @@ defined("DBHOST")	|| define("DBHOST", C::get('dbhost','cfg'));
 defined("DBDRIVER") 	|| define("DBDRIVER", C::get('dbDriver', 'cfg'));
 
 $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // packages compat
-include "vendor/autoload.php";
+require_once "vendor/autoload.php";
 error_reporting($err);
 
 // connect to the database server
