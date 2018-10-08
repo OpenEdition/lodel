@@ -947,7 +947,7 @@ function paranumber($texte, $styles='texte')
 	foreach($res as $node){
 		if(in_array($node->parentNode->localName, $illegalparents) 
 			|| in_array($node->parentNode->parentNode->localName, $illegalparents)
-			|| $dom->query(".//img", $node)->length) continue;
+		    || ($dom->query(".//img", $node)->length && ($dom->query('.//img[@class="inline"]', $node)->length == 0))) continue;
 		++$count;
 		$parnum = $doc->createElement('span');
 		$parnum->setAttribute('class', 'paranumber');
