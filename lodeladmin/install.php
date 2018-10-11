@@ -97,8 +97,8 @@ class Install {
         }
 
 	static private function createPass() {
-		class_exists('PWGen') || include 'vendor/autoload.php';
-		$pwgen = new PWGen(15);
+		class_exists('PWGen') || include '../lodel/scripts/vendor/autoload.php';
+		$pwgen = new PWGen\PWGen(15);
 		return $pwgen->generate();
 	}
 
