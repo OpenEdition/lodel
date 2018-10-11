@@ -1645,7 +1645,7 @@ class TEIParser extends XMLReader
 				if (!empty($attrs['rend']) && ($attrs['rend'] === 'inline')) {
 				    $rend = ' class="'.$attrs['rend'].'"';
 				}
-				$text .= '<img src="'.$attrs['url'].'" alt="Image '.end($nb).'" id="'.$id.'"/>';
+				$text .= '<img src="'.$attrs['url'].'"'.$rend.' alt="Image '.end($nb).'" id="'.$id.'"/>';
 			}
 			elseif(parent::END_ELEMENT === $this->nodeType && 'figure' === $this->localName)
 				break;
