@@ -526,10 +526,12 @@ class TEIParser extends XMLReader
 	{
 		$entries = $this->_contents['entries'];
 		$persons = $this->_contents['persons'];
+
 		unset($this->_contents['entries'], $this->_contents['persons']);
 
 		// re-order blocks from their ids
 		// used for inline blocks that are converted to real blocks in the TEI
+		
 		foreach($this->_tablefields as $name => $obj)
 		{
 			if($obj instanceof internalstylesVO || $obj instanceof characterstylesVO || 'entries' === $obj->type || 'persons' === $obj->type) continue;
@@ -556,12 +558,23 @@ class TEIParser extends XMLReader
 
 		// validating fields
 		array_walk($this->_contents, array($this, '_validField'));
+            // strip tags from entries
 
-		// strip tags from entries
-		foreach($entries as $k => $v)
-			$entries[$k] = strip_tags(join(',', $v));
+        foreach($entries as $k => $v) {
+            $g_name = false;
+            foreach($v as $ind_v => $val_v) {
+                if (isset($val_v['g_name'])){
+                    $g_name = true;
+                    break;
+                }
+            }
+            if (!$g_name) {
+                $entries[$k] = strip_tags(join(',', $v));
+            }
+        }
 
 		$this->_contents['entries'] = $entries;
+
 		foreach($this->_contents['entries'] as $type => $arrType)
 		{
                     if(!$this->_entrytypes[$type]->newbyimportallowed)
@@ -632,7 +645,6 @@ class TEIParser extends XMLReader
 				unset($persons[$personType][$k]['g_name']);
 			}
 		}
-
 		$this->_contents['persons'] = $persons;
 	}
 
@@ -878,6 +890,7 @@ class TEIParser extends XMLReader
 // 			}
 
 			if(empty($block)) continue;
+			
 
 			if($obj instanceof tablefieldsVO && ('entries' === $obj->type || 'persons' === $obj->type))
 			{
@@ -887,10 +900,31 @@ class TEIParser extends XMLReader
 					$this->_contents['entries'][$idtype] = array();
 
 					$block = array_shift($block);
-                                        if(isset($block->list[0]))
+
+                    if(isset($block->list[0]))
                                         {
 					    foreach($block->list[0]->item as $k => $v)
 					    $this->_contents['entries'][$idtype][] = (string) $v;
+					} elseif (isset($block->term[0])) { 
+                            //$namespaces = $block->getDocNamespaces();
+               
+                        foreach($block->term as $term) { 
+                         //$block->registerXPathNamespace('tei', $namespaces['']);
+                            // traitement de ark=@ref 
+                             $ark = (string) $term->attributes()['ref'];
+                             $mlnoms = array(); //'';
+			     $mlnoms_str = '';
+                             foreach ($term->term as $ssterm => $v) {
+                                $lang=$v->attributes("http://www.w3.org/XML/1998/namespace")['lang']->__toString();
+                                $mlnoms[$lang] = $v->__toString();
+				$mlnoms_str .= '<r2r:ml lang="'.$lang.'">'.$v->__toString().'</r2r:ml>';
+                             }
+
+                             $data = array ('g_name' => $ark, 'sortkey' => $mlnoms, 'data' => array('ark' => $ark, 'mlnom' => $mlnoms));
+                             $this->_contents['entries'][$idtype][] = $data;
+                        }
+//print_r($term->xpath('//tei:term/tei:term'));
+//print_r($term->xpath("//term")); // ./@ref donne bien l'ark du term courant
 					}
 					else
 					{
