@@ -259,7 +259,9 @@ class GenericLogic extends Logic
 							$value[$keys[$i]] = lodel_strip_tags($value[$keys[$i]], $field->allowedtags);
 						}
 					} else {
+						if ($field->type !== 'mltext') {
 						$value = lodel_strip_tags($value, $field->allowedtags);
+}
 					}
 				}
 			}
