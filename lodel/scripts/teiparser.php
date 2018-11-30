@@ -274,14 +274,17 @@ class TEIParser extends XMLReader
 				$this->_persontypes[$field->class][$field->type] = $field;
 		}
 
-		$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $entriesClassTypes)).')', 'id', 'id,type,title,style,otx,lang,newbyimportallowed');
-		if($fields)
-		{
-			foreach($fields as $field)
+		$fields = null;
+		if (!empty($entriesClassTypes)) {
+			$fields = DAO::getDAO('entrytypes')->findMany('status>0 AND class IN ('.join(',', array_map(array($GLOBALS['db'], 'quote'), $entriesClassTypes)).')', 'id', 'id,type,title,style,otx,lang,newbyimportallowed');
+			if($fields)
 			{
-				$this->_entrytypes[$field->type] = $field;
-				$this->_entrytypes[$field->id] = $field;
-                        }
+				foreach($fields as $field)
+				{
+					$this->_entrytypes[$field->type] = $field;
+					$this->_entrytypes[$field->id] = $field;
+							}
+			}
 		}
 	}
 
