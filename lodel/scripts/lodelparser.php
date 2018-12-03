@@ -560,12 +560,18 @@ PHP;
 <?php 
 \$langfile="lang-".\$context['sitelang']."_tpl_{$this->tpl}";
 if(!isset(\$GLOBALS['langcache'][\$context['sitelang']])) { \$GLOBALS['langcache'][\$context['sitelang']] = array(); }
-if (!(\$langcontents = cache_get(\$langfile))) {
-	\$GLOBALS['langcache'][\$context['sitelang']] += generateLangCache(\$context['sitelang'], \$langfile, array({$tt}));
+\$langcontents = cache_get(\$langfile);
+
+if (\$langcontents === false) {
+    \$cachelang = generateLangCache(\$context['sitelang'], \$langfile, array({$tt}));
+    if (!is_array(\$cachelang)) {
+        \$cachelang = array(\$cachelang);
+    }
+	array_merge(\$GLOBALS['langcache'][\$context['sitelang']], \$cachelang);
 } else {
-	\$GLOBALS['langcache'][\$context['sitelang']] += \$langcontents;
+	array_merge(\$GLOBALS['langcache'][\$context['sitelang']], \$langcontents);
 }
-unset(\$langfile, \$langcontents);
+unset(\$langfile, \$langcontents, \$cachelang);
 ?>
 {$text}
 PHP;
