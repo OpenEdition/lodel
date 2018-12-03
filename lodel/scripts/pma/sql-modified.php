@@ -269,7 +269,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         if (isset($comments_map) && count($comments_map) > 0) {
             $schema_create .= $crlf . $crlf . '/* COMMENTS FOR TABLE ' . PMA_backquote($table, $use_backquotes) . ':' . $crlf;
             @reset($comments_map);
-            while(list($comment_field, $comment) = each($comments_map)) {
+            foreach ($comments_map as list($comment_field, $comment)) {
                 $schema_create .= '    ' . PMA_backquote($comment_field, $use_backquotes) . $crlf . '        ' . PMA_backquote($comment, $use_backquotes) . $crlf;
                 // omitting html_format is intentional. No use for htmlchars in the dump.
             }
@@ -279,7 +279,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         if (isset($mime_map) && count($mime_map) > 0) {
             $schema_create .= $crlf . $crlf . '/* MIME TYPES FOR TABLE ' . PMA_backquote($table, $use_backquotes) . ':' . $crlf;
             @reset($mime_map);
-            while(list($mime_field, $mime) = each($mime_map)) {
+            foreach ($mime_map as list($mime_field, $mime)) {
                 $schema_create .= '    ' . PMA_backquote($mime_field, $use_backquotes) . $crlf . '        ' . PMA_backquote($mime['mimetype'], $use_backquotes) . $crlf;
                 // omitting html_format is intentional. No use for htmlchars in the dump.
             }
@@ -289,7 +289,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         if ($have_rel) {
             $schema_create .= $crlf . $crlf . '/* RELATIONS FOR TABLE ' . PMA_backquote($table, $use_backquotes) . ':' . $crlf;
             @reset($res_rel);
-            while(list($rel_field, $rel) = each($res_rel)) {
+            foreach ($res_rel as list($rel_field, $rel)) {
                 $schema_create .= '    ' . PMA_backquote($rel_field, $use_backquotes) . $crlf . '        ' . PMA_backquote($rel['foreign_table'], $use_backquotes) . ' -> ' . PMA_backquote($rel['foreign_field'], $use_backquotes) . $crlf;
                 // omitting html_format is intentional. No use for htmlchars in the dump.
             }
@@ -352,7 +352,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
     } // end while
     $result->Close();
 
-    while (list($x, $columns) = @each($index)) {
+    foreach ($index as list($x, $columns)) {
         $schema_create     .= ',' . $crlf;
         if ($x == 'PRIMARY') {
             $schema_create .= '   PRIMARY KEY (';

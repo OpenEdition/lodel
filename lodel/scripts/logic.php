@@ -504,7 +504,9 @@ class Logic
 		$mask = $context['mask']['user'];
 		if(isset($context['mask_regexp'])) {
 			// disable eval options for more security
-			$mask = $context['mask']['user'] = preg_replace('/^(.)(.*)(\\1)([msieDASuUXxJ]*)?$/e', "'\\1'.\\2.'\\1'.str_replace('e', '', \"\\4\")", $mask);
+		    $mask = $context['mask']['user'] = preg_replace_callback("/^(.)(.*)(\\1)([msieDASuUXxJ]*)?$/s",
+		        function ($text){return($text[1].$text[2].$text[1].str_replace('e','',"$text[4]"));},$mask);
+			//$mask = $context['mask']['user'] = preg_replace('/^(.)(.*)(\\1)([msieDASuUXxJ]*)?$/e', "'\\1'.\\2.'\\1'.str_replace('e', '', \"\\4\")", $mask);
 			if(FALSE === @preg_match($mask, 'just a test for user regexp')) {
 				$error['mask'] = 'mask: '.getlodeltextcontents('mask_bad_regexp', 'common');
 				return;

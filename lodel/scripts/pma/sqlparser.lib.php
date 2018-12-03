@@ -1970,7 +1970,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
         global $cfg;
 
         $css_string     = '';
-        while (list($key, $col) = each($cfg['SQP']['fmtColor'])) {
+        foreach ($cfg['SQP']['fmtColor'] as list($key, $col)) {
             $css_string .= PMA_SQP_buildCssRule('syntax_' . $key, 'color', $col);
         }
         for ($i = 0; $i < 8; $i++) {
@@ -1993,7 +1993,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
         function PMA_SQP_formatNone($arr)
         {
             $formatted_sql = htmlspecialchars($arr['raw']);
-            $formatted_sql = ereg_replace("((\015\012)|(\015)|(\012)){3,}", "\n\n", $formatted_sql);
+            $formatted_sql = preg_replace("((\015\012)|(\015)|(\012)){3,}", "\n\n", $formatted_sql);
 
             return $formatted_sql;
         } // end of the "PMA_SQP_formatNone()" function

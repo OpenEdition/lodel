@@ -214,10 +214,10 @@ function spip($letexte)
 {
 	$puce = "<IMG SRC=\"Images/smallpuce.gif\">";
 	// Harmoniser les retours chariot
-	$letexte = ereg_replace("\r\n?", "\n", $letexte);
+	$letexte = preg_replace("\r\n?", "\n", $letexte);
 
 	// Corriger HTML
-	$letexte = eregi_replace("</?p>", "\n\n\n", $letexte);
+	$letexte = preg_replace("</?p>/i", "\n\n\n", $letexte);
 
 	//
 	// Raccourcis liens
@@ -225,14 +225,14 @@ function spip($letexte)
 	$regexp = "\[([^][]*)->([^]]*)\]";
 	$texte_a_voir = $letexte;
 	$texte_vu = '';
-	while (ereg($regexp, $texte_a_voir, $regs))	{
+	while (preg($regexp, $texte_a_voir, $regs))	{
 		$lien_texte = $regs[1];
 		$lien_url = trim($regs[2]);
 		$compt_liens ++;
 		$lien_interne = false;
 
 		$insert = "<a href=\"$lien_url\">".$lien_texte."</a>";
-		$zetexte = split($regexp, $texte_a_voir, 2);
+		$zetexte = preg_split($regexp, $texte_a_voir, 2);
 		$texte_vu .= $zetexte[0].$insert;
 		$texte_a_voir = $zetexte[1];
 	}
