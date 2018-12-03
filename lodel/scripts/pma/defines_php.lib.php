@@ -42,16 +42,7 @@ if (!defined('PMA_PHP_INT_VERSION')) {
 
 // MySQL client API
 if (!defined('PMA_MYSQL_CLIENT_API')) {
-    if (function_exists('mysql_get_client_info') || function_exists('mysqli_get_client_info')) {
-	if('mysql' == DBDRIVER)
-        	$client_api = mysql_get_client_info();
-	else
-		$client_api = mysqli_get_client_info();
-    } else {
-        // for compatibility with php <= 4.0.5
-        // expect the worst!
-        $client_api = '3.21.0';
-    }
+	$client_api = mysqli_get_client_info();
     $client_api = explode('.', $client_api);
     define('PMA_MYSQL_CLIENT_API', (int)sprintf('%d%02d%02d', $client_api[0], $client_api[1], intval($client_api[2])));
     unset($client_api);
@@ -80,8 +71,8 @@ function PMA_dl($module) {
                 $a = strip_tags(ob_get_contents());
                 ob_end_clean();
                 /* Get GD version string from phpinfo output */
-                if (ereg('Thread Safety[[:space:]]*enabled', $a)) {
-                    if (ereg('Server API[[:space:]]*\(CGI\|CLI\)', $a)) {
+                if (preg_match('Thread Safety[[:space:]]*enabled', $a)) {
+                    if (preg_match('Server API[[:space:]]*\(CGI\|CLI\)', $a)) {
                         $GLOBALS['PMA_dl_allowed'] = TRUE;
                     } else {
                         $GLOBALS['PMA_dl_allowed'] = FALSE;
@@ -134,7 +125,7 @@ if (!defined('PMA_IS_GD2')) {
                 $a = strip_tags(ob_get_contents());
                 ob_end_clean();
                 /* Get GD version string from phpinfo output */
-                if (ereg('GD Version[[:space:]]*\(.*\)', $a, $v)) {
+                if (preg_match('GD Version[[:space:]]*\(.*\)', $a, $v)) {
                     if (strstr($v, '2.')) {
                         define('PMA_IS_GD2', 1);
                     } else {

@@ -184,8 +184,10 @@ class Entities_IndexLogic extends Logic
 	 */
 	protected function _decode_html_entities($text) 
 	{
-		$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
-		$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
+	    $text= preg_replace_callback('/&#(\d+);/m',function ($str) { return utf8_encode(chr($str[1])); },$text); #decimal notation
+	    $text= preg_replace_callback('/&#x([a-f0-9]+);/mi',function ($str) { return utf8_encode(chr(hexdec('0x'.$str[1]))); },$text);  #hex notation
+		//$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
+		//$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
 		return $text;
 	}
 
@@ -216,7 +218,7 @@ class Entities_IndexLogic extends Logic
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
-		while (list (, $token) = each ($tokens)) {
+		foreach ($tokens as list(, $token)) {
 			//particular case : two letter acronym or initials
 			if (preg_match ("/([A-Z][0-9A-Z]{1,2})/", $token) || strlen ($token) > 3) {
 				//little hack because oe ligature is not supported in ISO-latin!!

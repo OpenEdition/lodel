@@ -159,7 +159,7 @@ try
 
 					if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
 					{
-						array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+					    array_walk_recursive($contents, function(&$var) { $var = htmlentities($var, ENT_COMPAT, "UTF-8");});
 						echo '<pre>'. print_r($contents, 1) . '</pre>';
 						die();
 					}
@@ -257,7 +257,7 @@ try
 
 		if(C::get('sortie') && C::get('adminlodel', 'lodeluser'))
 		{
-			array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+		    array_walk_recursive($contents, function(&$var) {$var = htmlentities($var, ENT_COMPAT, "UTF-8");});
 			echo '<pre>'. print_r($contents, 1) . '</pre>';
 			die();
 		}
@@ -418,7 +418,7 @@ try
 
 			if(empty($context['multiple']) && C::get('sortie') && C::get('adminlodel', 'lodeluser'))
 			{
-				array_walk_recursive($contents, create_function('&$var', '$var = htmlentities($var, ENT_COMPAT, "UTF-8");'));
+			    array_walk_recursive($contents, function(&$var) {$var = htmlentities($var, ENT_COMPAT, "UTF-8");});
 				echo '<pre>'. print_r($contents, 1) . '</pre>';
 				die();
 			}

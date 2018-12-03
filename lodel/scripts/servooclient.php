@@ -64,7 +64,7 @@ class ServOO_Client {
    * @param string $url Location of the ServOO server.
    */
 
-  function ServOO_Client($url) { 
+  function __construct($url) { 
     $this->_soapclient = new soapclientmime($url);
 
     $err = $this->_soapclient->getError();
@@ -576,7 +576,7 @@ function _convertToXML_Pre_Extract_CB($p_event, &$p_header)
 
 class servooattachment {
   var $cid;
-  function servooattachment($cid) {
+  function __construct($cid) {
     $this->cid=$cid;
   }
 

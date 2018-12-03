@@ -73,7 +73,7 @@ semblent ne pas être utilisée
                     if (isset($data[$name])) $ret[PMA_convert_display_charset($name)] = PMA_convert_display_charset($data[$name]);
                 } else {
                     /* Meta information available -> check type of field and convert it according to the type */
-                    if ($meta->blob || eregi('BINARY', $meta->type)) {
+                    if ($meta->blob || preg_match('BINARY/i', $meta->type)) {
                         if (isset($data[$i])) $ret[$i] = $data[$i];
                         if (isset($data[$name])) $ret[PMA_convert_display_charset($name)] = $data[$name];
                     } else {

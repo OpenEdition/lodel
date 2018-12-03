@@ -12,7 +12,7 @@ class ServOO extends ServOO_Client {
 	private $options; // username / passwd / url
 	public $status; // true ou false
 
-	function ServOO($other = "") {
+	function __construct($other = "") {
 		if(!empty($other)) {
 			if(FALSE === $this->SelectOtherServer($other)) {
 				$this->status = FALSE;
