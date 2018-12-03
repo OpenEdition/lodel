@@ -1920,7 +1920,7 @@ class DataLogic
 						}
 						$field = $db->GetRow("SELECT * FROM `{$table}__oldME` WHERE id = '{$val}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						unset($field['id']);
-						array_walk($field, create_function('&$f', '$f = addcslashes($f, "\'");'));
+						array_walk($field, function(&$f) { $f = addcslashes($f, "\'");});
 						$db->execute("INSERT INTO `{$table}` ({$typesFields}) VALUES ('{$id}','".join("','", $field)."')") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$fieldName = $db->getOne("SELECT type FROM `{$table}__oldME` WHERE id = '{$val}'") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 						$db->execute("INSERT INTO `$tablefieldsTable`(name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd, mask) (SELECT name, idgroup, class, title, altertitle, style, type, g_name, cond, defaultvalue, processing, allowedtags, gui_user_complexity, filtering, edition, editionparams, weight, comment, status, rank, upd, mask FROM `{$tablefieldsTable}__oldME` WHERE name = '{$fieldName}');\n") or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);

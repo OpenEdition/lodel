@@ -70,7 +70,7 @@ function extractattachments($mbox, $mnum, $extre, $struct = 0, $pno = "")
 		if ($pno) {
 			$pno .= ".";
 		}
-		while (list ($j) = each($struct->parts)) {
+		foreach ($struct->parts as list($j)) {
 			$nbattachment += extractattachments($mbox, $mnum, $extre, $struct->parts[$j], $pno.$partno);
 			$partno ++;
 		}
