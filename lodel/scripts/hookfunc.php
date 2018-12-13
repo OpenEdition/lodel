@@ -73,7 +73,7 @@ function check_issn(&$context, $field, &$errors)
         }
 
         $check %= 11;
-        $check  = 11 - $check;
+        if ($check != 0) $check  = 11 - $check;
 
         if ($check == $checksum || (($check == 10) && ($checksum == 'X'))) {
             $context['data'][$field] = wordwrap($value,4,'-', true);
