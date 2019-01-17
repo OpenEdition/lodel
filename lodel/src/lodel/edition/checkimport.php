@@ -97,7 +97,7 @@ try
 									$reader->moveToElement();
 								}
 
-								if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol')
+								if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol' && $attrs['class'] !== 'inline')
 								{
 									if(!$parser->getStyle($attrs['class']))
 									{
@@ -214,7 +214,7 @@ try
 							$reader->moveToElement();
 						}
 
-						if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol' && $attrs['class'] !== 'EndnoteSymbol')
+						if(isset($attrs['class']) && $attrs['class'] !== 'footnotecall' && $attrs['class'] !== 'endnotecall' && $attrs['class'] !== 'FootnoteSymbol' && $attrs['class'] !== 'EndnoteSymbol' && $attrs['class'] !== 'inline')
 						{
 							if(!$parser->getStyle($attrs['class']))
 							{
