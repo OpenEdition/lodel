@@ -905,26 +905,17 @@ class TEIParser extends XMLReader
                                         {
 					    foreach($block->list[0]->item as $k => $v)
 					    $this->_contents['entries'][$idtype][] = (string) $v;
-					} elseif (isset($block->term[0])) { 
-                            //$namespaces = $block->getDocNamespaces();
-               
+					} elseif (isset($block->term[0])) {           
                         foreach($block->term as $term) { 
-                         //$block->registerXPathNamespace('tei', $namespaces['']);
-                            // traitement de ark=@ref 
                              $ark = (string) $term->attributes()['ref'];
-                             $mlnoms = array(); //'';
-			     $mlnoms_str = '';
+                             $mlnoms = array(); 
                              foreach ($term->term as $ssterm => $v) {
                                 $lang=$v->attributes("http://www.w3.org/XML/1998/namespace")['lang']->__toString();
                                 $mlnoms[$lang] = $v->__toString();
-				$mlnoms_str .= '<r2r:ml lang="'.$lang.'">'.$v->__toString().'</r2r:ml>';
-                             }
-
-                             $data = array ('g_name' => $ark, 'sortkey' => $mlnoms, 'data' => array('ark' => $ark, 'mlnom' => $mlnoms));
+                            }
+                             $data = array ('g_name' => $ark, 'data' => array('ark' => $ark, 'mlnom' => $mlnoms));
                              $this->_contents['entries'][$idtype][] = $data;
                         }
-//print_r($term->xpath('//tei:term/tei:term'));
-//print_r($term->xpath("//term")); // ./@ref donne bien l'ark du term courant
 					}
 					else
 					{
