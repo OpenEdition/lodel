@@ -184,9 +184,24 @@ class Entities_IndexLogic extends Logic
 	 */
 	protected function _decode_html_entities($text) 
 	{
-		$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
-		$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
-		return $text;
+		//$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
+		$text = preg_replace_callback(
+		    '/&#(\d+);/m',
+		    function ($matches) {
+			return utf8_encode(chr($matches[1]));
+		    },
+		    $text
+		);
+		//$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
+		$text = preg_replace_callback(
+		    '/&#x([a-f0-9]+);/mi',
+		    function ($matches) {
+			return utf8_encode(chr('0x' . $matches[1]));
+		    },
+		    $text
+		);
+		//return $text;
+		return html_entity_decode($text);
 	}
 
 	/**
