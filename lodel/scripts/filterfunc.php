@@ -43,8 +43,12 @@ function makefilterfunc()
 					$arg = $result2[2]; // argument if any
 	
 					// process the variable. The processing is simple here. Need more ? Sould be associated with parser variable processing.
-					$arg = preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e", ' "$"."context[".strtolower("\\1")."]" ', $arg);
-	
+					//$arg = preg_replace("/\[\#([A-Z][A-Z_0-9]*)\]/e", ' "$"."context[".strtolower("\\1")."]" ', $arg);
+					$arg = preg_replace_callback(
+                                            "/\[\#([A-Z][A-Z_0-9]*)\]/",
+                                            function ($matches) {
+                                                return ' "$"."context[".strtolower("'.$matches[1].'")."]" ';
+                                            },$arg);
 					if ($arg) {
 						$arg = ','. $arg;
 					}
