@@ -793,7 +793,8 @@ function renderOptions($arr, $selected)
  */
 function generateLangCache($lang, $file, $tags)
 {
-	$txt = '';
+	//$txt = '';
+	$txt = array();
 	foreach($tags as $tag) {
 		$dotpos = strpos($tag, '.');
 		$group  = substr($tag, 0, $dotpos);
