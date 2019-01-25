@@ -184,7 +184,6 @@ class Entities_IndexLogic extends Logic
 	 */
 	protected function _decode_html_entities($text) 
 	{
-		//$text= preg_replace('/&#(\d+);/me',utf8_encode("chr(\\1)"),$text); #decimal notation
 		$text = preg_replace_callback(
 		    '/&#(\d+);/m',
 		    function ($matches) {
@@ -192,7 +191,6 @@ class Entities_IndexLogic extends Logic
 		    },
 		    $text
 		);
-		//$text= preg_replace('/&#x([a-f0-9]+);/mei',utf8_encode("chr(0x\\1)"),$text);  #hex notation
 		$text = preg_replace_callback(
 		    '/&#x([a-f0-9]+);/mi',
 		    function ($matches) {
@@ -200,7 +198,6 @@ class Entities_IndexLogic extends Logic
 		    },
 		    $text
 		);
-		//return $text;
 		return html_entity_decode($text);
 	}
 
