@@ -99,7 +99,16 @@
 		</IF>
 		<br /><br />
 		<div id="alphabet">
-			<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]">
+			<LOOP NAME="screennameType" TABLE="tablefields" SELECT="type" WHERE="name='[#SCREEN_NAME]'">
+			<DO>
+				<LET VAR="TYPESN" GLOBAL="1">[#TYPE]</LET>
+			</DO>
+			</LOOP>
+			<IF COND="[%TYPESN] EQ 'mltext'">
+				<FUNC NAME="ALPHABETSPECIFICENTRIES" TABLE="entries" FIELD="[#SCREEN_NAME]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
+			<ELSE />
+				<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
+			</IF>
 		</div>	
 	</IF>
 

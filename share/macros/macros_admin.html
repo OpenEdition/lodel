@@ -80,6 +80,27 @@
 	</LOOP>
 </DEFFUNC>
 
+<DEFFUNC NAME="ALPHABETSPECIFICENTRIES" REQUIRED="table, field, idtype" OPTIONAL="listall, external">
+        <LET VAR="field">[#FIELD]</LET>
+        <LET VAR="table">[#TABLE]</LET>
+        <LET VAR="attributestable">#_TP_[#TYPE.CLASS]</LET>
+        <LOOP NAME="alphabetSpecEntries">
+                <IF COND="[#LISTALL]">
+                        <IF COND="[#NBRESULTS] GT 0">
+                                <a href="#[#LETTRE]">[#LETTRE]</a>
+                        <ELSE />
+                                [#LETTRE]&nbsp;
+                        </IF>
+                <ELSE />
+                        <IF COND="[#NBRESULTS] GT 0">
+                                <a href="[#CURRENTURL|reg_replace('/[&?](amp;)?offset_\w+=[^&]+/', '')|reg_replace('/[&?](amp;)?letter=[^&]+/', '')|reg_replace('/[&?](amp;)?clearcache=[^&]+/', '')]&amp;letter=[#LETTRE|urlencode]">[#LETTRE]</a>
+                        <ELSE />
+                                [#LETTRE]&nbsp;
+                        </IF>
+                </IF>
+        </LOOP>
+</DEFFUNC>
+
 <DEFFUNC NAME="LIST_PERSONS" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall">
 	<IF COND="[#LISTALL]">
 		<LET VAR="table">persons</LET>
@@ -148,8 +169,12 @@
 </DEFFUNC>
 
 <DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall, external">
-	<IF COND="[#EXTERNAL]"><LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET><LET VAR="attributes_table">`[#DB_EXT]`.#_TP_[#TYPE.CLASS]</LET>
-	<ELSE/><LET VAR="table">#_TP_entries</LET><LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
+	<IF COND="[#EXTERNAL]">
+		<LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET>
+		<LET VAR="attributes_table">`[#DB_EXT]`.#_TP_[#TYPE.CLASS]</LET>
+	<ELSE/>
+		<LET VAR="table">#_TP_entries</LET>
+		<LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
 	</IF>
 	<IF COND="[#SORT] EQ 'sortkey'">
         <LET VAR="field">[#SORT]</LET>
