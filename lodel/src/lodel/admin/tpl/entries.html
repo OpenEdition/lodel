@@ -117,3 +117,44 @@
 <!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 
 <MACRO NAME="CLOSE_HTML">
+
+			<LOOP NAME="searchscreenname" TABLE="tablefields" SELECT="name" WHERE="g_name='screen_name' AND class=[#TYPE.CLASS]">
+			<DO>
+				<LET VAR="SCREEN_NAME" GLOBAL="1">[#NAME]</LET>
+			</DO>
+			</LOOP>
+			<IF COND="[%SCREEN_NAME]">
+			<ELSE />
+                <LOOP NAME="searchscreenname" TABLE="tablefields" SELECT="name" WHERE="g_name='index_key' AND class=[#TYPE.CLASS]">
+                <DO>
+                    <LET VAR="SCREEN_NAME" GLOBAL="1">[#NAME]</LET>
+                </DO>
+                </LOOP>
+            </IF>
+            <LET ARRAY="entries_sorted" GLOBAL="1"></LET>
+            
+            <LOOP NAME="entries_array" SELECT="entry.id, attributes.[%SCREEN_NAME] as sortk
+ey" TABLE="entries as entry, [#TYPE.CLASS] as attributes" WHERE="entry.id=attributes.identry AND idtype='
+[#TYPE.ID]'">
+					<BEFORE>
+						<ul xml:lang="[#TYPE.LANG]" lang="[#TYPE.LANG]">
+					</BEFORE>
+					<DO>
+						<LET ARRAY="entries_sorted[]" GLOBAL="1">[#SORTKEY|multilingue([#SITELANG])]</LET>
+						</li>
+					</DO>
+					<AFTER>
+						</ul>
+					</AFTER>
+				</LOOP>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            

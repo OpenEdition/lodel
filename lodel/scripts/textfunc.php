@@ -1878,3 +1878,15 @@ function lreg_split($str, $pattern, $limit = -1, $flags = 0)
 {
 	return preg_split($pattern, $str, $limit, $flags);
 }
+
+/**
+ * Tri des tableaux par asort
+ *
+ * @param array $arr
+ * @return $sorted_arr
+ */
+function lsort($arr) {
+    sort($arr, SORT_LOCALE_STRING);
+    return $arr;
+}
+
