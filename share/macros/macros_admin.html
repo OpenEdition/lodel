@@ -83,7 +83,7 @@
 <DEFFUNC NAME="ALPHABETSPECIFICENTRIES" REQUIRED="table, field, idtype" OPTIONAL="listall, external">
         <LET VAR="field">[#FIELD]</LET>
         <LET VAR="table">[#TABLE]</LET>
-        <LET VAR="attributestable">#_TP_[#TYPE.CLASS]</LET>
+        <LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
         <LOOP NAME="alphabetSpecEntries">
                 <IF COND="[#LISTALL]">
                         <IF COND="[#NBRESULTS] GT 0">
