@@ -1890,3 +1890,18 @@ function lsort($arr) {
     return $arr;
 }
 
+/**
+ * Tri d'un tableau de tableau
+ *
+ * @param array $arr
+ * @return $sorted_arr
+ */
+function msort($arr, $key) {
+    $values = array_column($arr, $key);
+    array_multisort($values, SORT_LOCALE_STRING, $arr);
+    return $arr;
+}
+
+
+
+
