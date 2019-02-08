@@ -192,7 +192,7 @@ class Entities_EditionLogic extends GenericLogic
 					$localcontext = array_merge($context, $result->fields);
 					if ($is_screenname) {
 					    $sn_value = $db->getRow(lq("SELECT ".$screen_name['screen_name']." as snname FROM ".$screen_name['class_type']." WHERE identry=".$result->fields['id']));
-					    $localcontext['screen_name']=multilingue($sn_value['snname'], $context['lang']);
+					    $localcontext['screen_name']=multilingue($sn_value['snname'], $context['sitelang']);
 					}
 					$localcontext['root'] = '';
 					$localcontext['selected'] = $checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
