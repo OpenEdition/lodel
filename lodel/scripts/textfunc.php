@@ -1894,6 +1894,7 @@ function lsort($arr) {
  * Tri d'un tableau de tableau
  *
  * @param array $arr
+ * @param string $key
  * @return $sorted_arr
  */
 function msort($arr, $key) {
