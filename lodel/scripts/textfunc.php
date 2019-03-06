@@ -1897,9 +1897,9 @@ function lsort($arr) {
  * @param string $key
  * @return $sorted_arr
  */
-function msort($arr, $key) {
+function msort($arr, $key, $sort_order = SORT_LOCALE_STRING) {
     $values = array_column($arr, $key);
-    array_multisort($values, SORT_LOCALE_STRING, $arr);
+    array_multisort($values, $sort_order, $arr);
     return $arr;
 }
 
