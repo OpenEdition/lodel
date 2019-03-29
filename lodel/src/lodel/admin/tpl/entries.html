@@ -104,15 +104,26 @@
 				<LET VAR="TYPESN" GLOBAL="1">[#TYPE]</LET>
 			</DO>
 			</LOOP>
+			<LET VAR="MULTILANG">1</LET>
 			<IF COND="[%TYPESN] EQ 'mltext'">
-				<FUNC NAME="ALPHABETSPECIFICENTRIES" TABLE="entries" FIELD="[#SCREEN_NAME]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
-			<ELSE />
-				<FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
+                <LOOP NAME="verification_multilingue" SELECT="count(*) as count_ind" TABLE="[#TYPE.CLASS] as data, entries as entry" WHERE="[#SCREEN_NAME] != '' AND [#SCREEN_NAME] IS NOT NULL AND entry.id = data.identry AND entry.idtype=[#TYPE.ID]">
+                    <DO>
+                        <LET VAR="count_index" GLOBAL="1">[#COUNT_IND]</LET>
+                    </DO>
+                </LOOP>
+                <IF COND="[%COUNT_INDEX] EQ 0"><LET VAR="MULTILANG">0</LET></IF>
+            <ELSE/>
+                    <LET VAR="MULTILANG">0</LET>
+            </IF>
+            <IF COND="[#MULTILANG] EQ 1">
+                <FUNC NAME="ALPHABETSPECIFICENTRIES" TABLE="entries" FIELD="[#SCREEN_NAME]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
+            <ELSE />
+                <FUNC NAME="ALPHABETSPECIFIC" TABLE="entries" FIELD="[#TYPE.SORT]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
 			</IF>
 		</div>	
 	</IF>
 
-	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|urldecode|strtoupper]" LISTALL="[#LISTALL]" EXTERNAL="[#EXTERNAL]">
+	<FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|urldecode|strtoupper]" LISTALL="[#LISTALL]" EXTERNAL="[#EXTERNAL]" MULTILANG="[#MULTILANG]">
 </div>
 <!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 
