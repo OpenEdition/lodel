@@ -168,7 +168,7 @@
 	</IF>
 </DEFFUNC>
 
-<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall, external">
+<DEFFUNC NAME="LIST_ENTRIES" REQUIRED="id, idtype" OPTIONAL="folder, sort, letter, listall, external, multilang">
 	<IF COND="[#EXTERNAL]">
 		<LET VAR="table">`[#DB_EXT]`.#_TP_entries</LET>
 		<LET VAR="attributes_table">`[#DB_EXT]`.#_TP_[#TYPE.CLASS]</LET>
@@ -176,6 +176,9 @@
 		<LET VAR="table">#_TP_entries</LET>
 		<LET VAR="attributes_table">#_TP_[#TYPE.CLASS]</LET>
 	</IF>
+	<IF COND="[#MULTILANG] EQ 0">
+        <LET VAR="screen_name">[#INDEX_KEY]</LET>
+    </IF>
 	<IF COND="[#SORT] EQ 'sortkey'">
         <LET VAR="field">[#SORT]</LET>
 		<LET VAR="curtable">[#TABLE]</LET>
