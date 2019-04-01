@@ -32,7 +32,7 @@ class entities_personsVO {
 
 class entities_personsDAO extends DAO 
 {
-	function entities_personsDAO() 
+	function __construct() 
 	{
 		parent::__construct("entities_persons", false);
 		$this->rights = array();
