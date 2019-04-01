@@ -919,10 +919,16 @@ function loop_alphabetSpecEntries($context, $funcname)
         $table = $context['table'];
         $whereSelect = "WHERE idtype = '{$context['idtype']}'";
         $whereCount = " idtype = '{$context['idtype']}' AND ";
+        
+        if (!empty($context['user']['lang'])) {
+                $user_lang = $context['lodeluser']['lang'];
+        } else {
+                $user_lang = $context['sitelang'];
+        }
       
         $status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
         
-        $sql = lq("SELECT entry.id, attribute.{$context['field']} as sortkey FROM #_TP_{$context['table']} entry, #_TP_{$context['attributes_table']} attribute WHERE entry.id=attribute.identry AND entry.idtype={$context['idtype']} AND ".$status);
+        $sql = lq("SELECT entry.id, attribute.{$context['field']} as sortkey, attribute.{$context['index_key']} as e_name FROM #_TP_{$context['table']} entry, #_TP_{$context['attributes_table']} attribute WHERE entry.id=attribute.identry AND entry.idtype={$context['idtype']} AND ".$status);
         
         /*$sql2 = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
         
@@ -937,6 +943,9 @@ function loop_alphabetSpecEntries($context, $funcname)
         
         foreach ($results as $result) {
             $fields[$result['id']] = multilingue($result['sortkey'],$context['sitelang']);
+            if (empty($fields[$result['id']])) {
+                $fields[$result['id']] = $result['e_name'];
+            }
             $firstletters[$result['id']] = strtoupper(substr($fields[$result['sortkey']], 0, 1));
             
         }

@@ -90,6 +90,23 @@
 </LOOP>
 </IF>
 <div id="entries">
+    <LOOP NAME="screennameType" TABLE="tablefields" SELECT="type" WHERE="name='[#SCREEN_NAME]'">
+    <DO>
+        <LET VAR="TYPESN" GLOBAL="1">[#TYPE]</LET>
+    </DO>
+    </LOOP>
+    <LET VAR="MULTILANG">1</LET>
+    <IF COND="[%TYPESN] EQ 'mltext'">
+        <LOOP NAME="verification_multilingue" SELECT="count(*) as count_ind" TABLE="[#TYPE.CLASS] as data, entries as entry" WHERE="[#SCREEN_NAME] != '' AND [#SCREEN_NAME] IS NOT NULL AND entry.id = data.identry AND entry.idtype=[#TYPE.ID]">
+        <DO>
+            <LET VAR="count_index" GLOBAL="1">[#COUNT_IND]</LET>
+        </DO>
+        </LOOP>
+        <IF COND="[%COUNT_INDEX] EQ 0"><LET VAR="MULTILANG">0</LET></IF>
+        <ELSE/>
+            <LET VAR="MULTILANG">0</LET>
+        </IF>
+
 	<IF COND="[#TYPE.SORT] EQ 'sortkey'">
 		<IF COND="[#LISTALL]">
 			<a href="index.php?do=list&amp;lo=entries&amp;idtype=<IF COND="[#EXTERNAL]">[#SITE_EXT].</IF>[#TYPE.ID]"><span style="color:#ED8400;font-weight:bold;">[@ADMIN.LIST_ENTRIES_BY_LETTER]</span></a>&nbsp;|&nbsp;
@@ -99,22 +116,6 @@
 		</IF>
 		<br /><br />
 		<div id="alphabet">
-			<LOOP NAME="screennameType" TABLE="tablefields" SELECT="type" WHERE="name='[#SCREEN_NAME]'">
-			<DO>
-				<LET VAR="TYPESN" GLOBAL="1">[#TYPE]</LET>
-			</DO>
-			</LOOP>
-			<LET VAR="MULTILANG">1</LET>
-			<IF COND="[%TYPESN] EQ 'mltext'">
-                <LOOP NAME="verification_multilingue" SELECT="count(*) as count_ind" TABLE="[#TYPE.CLASS] as data, entries as entry" WHERE="[#SCREEN_NAME] != '' AND [#SCREEN_NAME] IS NOT NULL AND entry.id = data.identry AND entry.idtype=[#TYPE.ID]">
-                    <DO>
-                        <LET VAR="count_index" GLOBAL="1">[#COUNT_IND]</LET>
-                    </DO>
-                </LOOP>
-                <IF COND="[%COUNT_INDEX] EQ 0"><LET VAR="MULTILANG">0</LET></IF>
-            <ELSE/>
-                    <LET VAR="MULTILANG">0</LET>
-            </IF>
             <IF COND="[#MULTILANG] EQ 1">
                 <FUNC NAME="ALPHABETSPECIFICENTRIES" TABLE="entries" FIELD="[#SCREEN_NAME]" IDTYPE="[#IDTYPE]" EXTERNAL="[#EXTERNAL]"  LISTALL="[#LISTALL]">
             <ELSE />
