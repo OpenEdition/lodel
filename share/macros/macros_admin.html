@@ -179,24 +179,35 @@
 	<IF COND="[#MULTILANG] EQ 0">
         <LET VAR="screen_name">[#INDEX_KEY]</LET>
     </IF>
+    <IF COND="[#LODELUSER.LANG] NE [#SITELANG]">
+        <LET VAR="LANG_DISP">[#LODELUSER.LANG]</LET>
+    <ELSE />
+        <LET VAR="LANG_DISP">[#SITELANG]</LET>
+    </IF>
+
 	<IF COND="[#SORT] EQ 'sortkey'">
         <LET VAR="field">[#SORT]</LET>
 		<LET VAR="curtable">[#TABLE]</LET>
 		<LET VAR="table">entries</LET>
         <LET ARRAY="entries_sorted" GLOBAL="1"></LET>
-		<LOOP NAME="series_sortkey_listall" TABLE="[#CURTABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.id, attributes.[#SCREEN_NAME] as sortkey" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'">
+		<LOOP NAME="series_sortkey_listall" TABLE="[#CURTABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.id, attributes.[#SCREEN_NAME] as sortkey, attributes.[#INDEX_KEY] as e_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND idparent='[#ID]'">
             <DO>
-            <LET VAR="curletter">
-                <IF COND="[#SORTKEY|substr(1,3)] EQ 'r2r'">
-                    [#SORTKEY|multilingue([#SITELANG])|substr(0,1)]
+                <IF COND="[#SORTKEY|multilingue([#LANG_DISP])]">
                 <ELSE/>
-                    [#SORTKEY|substr(0,1)]
+                    <LET VAR="sortkey">[#E_NAME]</LET>
                 </IF>
-            </LET>
-            <LET ARRAY="entry_s"></LET>
-            <LET ARRAY="entry_s.letter">[#CURLETTER|strtoupper]</LET>
-            <LET ARRAY="entry_s.id">[#ID]</LET>
-            <LET ARRAY="entries_sorted[]" GLOBAL="1">[#ENTRY_S]</LET>
+            
+                <LET VAR="curletter">
+                    <IF COND="[#SORTKEY|substr(1,3)] EQ 'r2r'">
+                        [#SORTKEY|multilingue([#LANG_DISP])|substr(0,1)]
+                    <ELSE/>
+                        [#SORTKEY|substr(0,1)]
+                    </IF>
+                </LET>
+                <LET ARRAY="entry_s"></LET>
+                <LET ARRAY="entry_s.letter">[#CURLETTER|strtoupper]</LET>
+                <LET ARRAY="entry_s.id">[#ID]</LET>
+                <LET ARRAY="entries_sorted[]" GLOBAL="1">[#ENTRY_S]</LET>
             </DO>
 		</LOOP>
 		<IF COND="[#LISTALL]">
@@ -209,30 +220,30 @@
             <h2 id="[#LETTRE]"><a href="#alphabet">[#LETTRE]</a></h2>
             <ul class="listEntities">
 			<LOOP NAME="foreach" ARRAY="[%ENTRIES_SORTED]">
-                      <IF COND="[#VALUE.LETTER|trim] EQ [#LETTRE]">
-                        <LOOP NAME="series_sortkey_all" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND entry.id=[#VALUE.ID]" SPLIT="30">
-                        <DO>
-                            <IF COND="[#COUNT_ENTRIES_LETTER] % 2">
-                                <li class="line1">
-                            <ELSE/>
-                                <li class="line2">
-                            </IF>
-                            <div class="entityIcons">
-                                <FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
-                                <FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
-                            </div>
-                            <div class="document">
-                                <span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
-                                <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
-                                <IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
+                <IF COND="[#VALUE.LETTER|trim] EQ [#LETTRE]">
+                    <LOOP NAME="series_sortkey_all" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name, attributes.[#INDEX_KEY] as e_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND entry.id=[#VALUE.ID]" SPLIT="30">
+                    <DO>
+                        <IF COND="[#COUNT_ENTRIES_LETTER] % 2">
+                            <li class="line1">
+                        <ELSE/>
+                            <li class="line2">
+                        </IF>
+                        <div class="entityIcons">
+                            <FUNC NAME="STATUS_ICON" STATUS="[#STATUS]">
+                            <FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
+                        </div>
+                        <div class="document">
+                            <span class="titre_document">[#ENTRY_NAME|multilingue([#LANG_DISP])|defaultvalue([#E_NAME])|nbsp]</span>&nbsp;
+                            <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
+                            <IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
                                 <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
-                                </IF>
-                            </div>
-                            <div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
-                            </li>
-                        </DO>
-                        </LOOP>
-                    </IF>
+                            </IF>
+                        </div>
+                        <div class="action"><FUNC NAME="MODIFY_DELETE_BUTTON" LO="[#LO]"></div>
+                        </li>
+                    </DO>
+                    </LOOP>
+                </IF>
 			</LOOP>
 			</ul>
 		</LOOP>
@@ -245,7 +256,7 @@
             <ul class="listEntities">
             <IF COND="[#VALUE.LETTER|trim] EQ [#LETTER]">
                 <IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
-                <LOOP NAME="series_sortkey" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND entry.id=[#VALUE.ID]" SPLIT="30">
+                <LOOP NAME="series_sortkey" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name, attributes.[#INDEX_KEY] as e_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND entry.id=[#VALUE.ID]" SPLIT="30">
                 <DO>
                     <LET VAR="count_entries_letter">[%ENTRIES_SORTED|count]</LET>
                     <IF COND="[#COUNT_ENTRIES_LETTER] % 2">
@@ -258,7 +269,7 @@
                     <FUNC NAME="GET_ASSOCIATED_ICON" IDTYPE="[#IDTYPE]" TABLE="entrytypes">
                     </div>
                     <div class="document">
-                        <span class="titre_document">[#ENTRY_NAME|multilingue([#SITELANG])|defaultvalue([#ENTRY_NAME])|nbsp]</span>&nbsp;
+                        <span class="titre_document">[#ENTRY_NAME|multilingue([#LANG_DISP])|defaultvalue([#E_NAME])|nbsp]</span>&nbsp;
                         <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES" ID="[#ID]" NATURE="E" EXTERNAL="[#EXTERNAL]"/>)</span>
                         <IF COND="[#TYPE.EXTERNALALLOWED] AND ![#EXTERNAL]">
                         <span class="numInfo"> (<FUNC NAME="NOMBRE_ENTITES_LIEES_EXT" ID="[#ID]" NATURE="E" />)</span>
