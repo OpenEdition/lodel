@@ -902,6 +902,90 @@ function loop_alphabetSpec($context, $funcname)
 
 	usecurrentdb();
 }
+/**
+ * Boucle Lodelscript qui affiche la première lettre (distincte) de tous les tuples d'un champ
+ * Spécifique au cas où le champs de tri est un mltext dans une autre table
+ * @param array $context le contexte
+ * @param string $funcname le nom de la fonction
+ */
+function loop_alphabetSpecEntries($context, $funcname)
+{
+    global $db;
+    if(empty($context['table']) || empty($context['field']) || empty($context['attributes_table']) || empty($context['idtype']))
+        trigger_error("ERROR: loop_alphabetSpec requires arguments 'table', 'attributes_table', 'idtype' and 'field'.", E_USER_ERROR);
+        
+        $whereSelect = $whereCount = '';
+        
+        if (!empty($context['user']['lang'])) {
+                $user_lang = $context['lodeluser']['lang'];
+        } else {
+                $user_lang = $context['sitelang'];
+        }
+        
+        $table = $context['table'];
+        $whereSelect = "WHERE idtype = '{$context['idtype']}'";
+        $whereCount = " idtype = '{$context['idtype']}' AND ";
+      
+        $status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
+        
+        $sql = lq("SELECT entry.id, attribute.{$context['field']} as sortkey, attribute.{$context['index_key']} as e_name FROM #_TP_{$context['table']} entry, #_TP_{$context['attributes_table']} attribute WHERE entry.id=attribute.identry AND entry.idtype={$context['idtype']} AND ".$status);
+        
+        $results = $db->getArray(lq($sql));
+        $fields = array();
+        $firstletters = array();
+        
+        foreach ($results as $result) {
+            $fields[$result['id']] = multilingue($result['sortkey'],$user_lang);
+            if (empty($fields[$result['id']])) {
+                $fields[$result['id']] = $result['e_name'];
+            }
+            $firstletters[$result['id']] = strtoupper(substr($fields[$result['id']], 0, 1));
+            
+        }
+        $count_letters = array_count_values($firstletters);
+        
+		$lettres = array_unique($firstletters);
+			if(empty($lettres))
+			{
+			    if(function_exists('code_alter_'.$funcname))
+			        call_user_func('code_alter_'.$funcname, $context);
+			        
+			        usecurrentdb();
+			        return;
+			}
+			
+			foreach($lettres as &$lettre) {
+			    if($lettre != '<' && $lettre != '>' && $lettre != ' ')
+			        $lettre = strtoupper(makeSortKey($lettre));
+			}
+			
+			
+			for ($l = 'A'; $l != 'AA'; $l++) {
+			    $context['lettre'] = $l;
+			    $context['nbresults'] = $count_letters[$l];
+			    call_user_func("code_do_$funcname", $context);
+			}
+			
+			// bug PHP : si on ne passe le tableau en référence, il modifie la derniere valeur du tableau et vire les références !!!
+			foreach($lettres as &$lettre) {
+			    if($lettre >= '0' && $lettre <= '9') {
+			        $context['lettre'] = $lettre;
+			        $context['nbresults'] = $count_letters[$context['lettre']];
+			        call_user_func("code_do_$funcname", $context);
+			    }
+			}
+			
+			foreach($lettres as &$lettre) {
+			    if($lettre == '') continue;
+			    if(!preg_match("/[A-Z]/", $lettre) && !preg_match("/[0-9]/", $lettre)) {
+			        $context['lettre'] = $lettre;
+			        $context['nbresults'] = $count_letters[$context['lettre']];
+			        call_user_func("code_do_$funcname", $context);
+			    }
+			}
+			
+			usecurrentdb();
+}
 
 function loop_classtypes($context, $funcname)
 {

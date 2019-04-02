@@ -317,6 +317,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			$text = $str;
 		}
 		$text = unicode_to_numeric_entity($text); // mysql utf8 encoding workaround
+
 		return true;
 	case 'list' :
 		return true;

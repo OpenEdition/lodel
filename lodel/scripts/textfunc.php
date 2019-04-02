@@ -1878,3 +1878,23 @@ function lreg_split($str, $pattern, $limit = -1, $flags = 0)
 {
 	return preg_split($pattern, $str, $limit, $flags);
 }
+
+/**
+	* * Tri d'un tableau de tableau
+	* *
+	* * @param array $arr
+	* * @return $sorted_arr
+	* */
+function msort($arr, $key, $sort_order = SORT_LOCALE_STRING) {
+	        $values = array_column($arr, $key);
+		        array_multisort($values, $sort_order, $arr);
+		        return $arr;
+}
+
+
+
+
+
+
+
+

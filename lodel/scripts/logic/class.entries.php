@@ -204,6 +204,7 @@ class EntriesLogic extends GenericLogic
 	 */
 	public function editAction (&$context, &$error, $clean=false)
 	{
+
 		if (empty($context['idtype'])) {
 			trigger_error("ERROR: idtype must be known in EntriesLogic::editAction", E_USER_ERROR);
 		}
@@ -253,7 +254,8 @@ class EntriesLogic extends GenericLogic
 				$id=$context['id'] = $vo->id;
 			}
 
-			$context['data'][$g_index_key]=$context['g_name'];
+if (empty($context['data'][$g_index_key])) {
+			$context['data'][$g_index_key]=$context['g_name']; }
 		}
 
 		if(empty($context['data'][$g_index_key]))
@@ -301,17 +303,29 @@ class EntriesLogic extends GenericLogic
 			}
 
 			// populate the entry table
+
 			$vo->idtype=$idtype;
-			$vo->g_name=$index_key;
-			$vo->sortkey=makeSortKey($vo->g_name);
+			if (empty($context['g_name'])) {
+				$vo->g_name=$index_key;
+			} else {
+				$vo->g_name = $context['g_name'];
+			}
+			if (empty($context['sortkey'])) {
+                $sorkey = $vo->g_name;
+            } else {
+                $sorkey = $context['sortkey'];
+            }
+			$vo->sortkey=makeSortKey($sorkey);
 			$id=$context['id']=$dao->save($vo);
 
 			// save the class table
 			$gdao=DAO::getGenericDAO($class,"identry");
 			$gdao->instantiateObject($gvo);
 			$context['data']['id']=$context['id'];
+
 			$this->_populateObject($gvo,$context['data']);
 			$gvo->identry=$id;
+
 			$this->_moveFiles($id,$this->files_to_move,$gvo);
 			$gdao->save($gvo,$new);
 		}

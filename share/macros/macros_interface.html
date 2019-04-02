@@ -693,7 +693,11 @@ cp_[#VARNAME].writeDiv();
 		<input type="hidden" value="" name="[#FIELDNAME]" id="[#FIELDNAME]" />
 		<select multiple="multiple" size="10" style="width:250px" id="pool_candidats_[#VARNAME]" name="pool_candidats_[#VARNAME]">
 			<LOOP NAME="entries_in_entities">
-			<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
+				<IF COND="[#SCREEN_NAME]">
+	            	<option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#SCREEN_NAME]</option>
+	            <ELSE />
+	                <option value="[#G_NAME|htmlspecialchars]" [#SELECTED]>[#G_NAME]</option>
+	            </IF>
 			</LOOP>
 		</select>
 		</td><td>

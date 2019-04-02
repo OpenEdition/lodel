@@ -180,11 +180,20 @@ class Entities_EditionLogic extends GenericLogic
 			{
 				global $db;
 				if(!isset($context['id'])) return;
+				$screen_name = $db->getRow(lq("SELECT field.name as screen_name, type.class as class_type from #_TP_tablefields field, #_TP_entrytypes type WHERE field.g_name='screen name' AND field.class=type.class AND type.id=".$context['idtype']));
+                $is_screenname = false;
+				if (!empty($screen_name)) {
+				    $is_screenname = true;
+				}
 				// get the entries
 				$result = $db->execute(lq("SELECT * FROM #_TP_entries WHERE idtype='". $votype->id. "' AND idparent='". $context['id']. "' AND status>-64 ORDER BY ". $votype->sort)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
 				while (!$result->EOF) {
 					$localcontext = array_merge($context, $result->fields);
+					if ($is_screenname) {
+					    $sn_value = $db->getRow(lq("SELECT ".$screen_name['screen_name']." as snname FROM ".$screen_name['class_type']." WHERE identry=".$result->fields['id']));
+					    $localcontext['screen_name']=multilingue($sn_value['snname'], $context['sitelang']);
+					}
 					$localcontext['root'] = '';
 					$localcontext['selected'] = $checkarr && in_array($result->fields['g_name'],$checkarr) ? "selected=\"selected\"" : "";
 					call_user_func("code_do_$funcname", $localcontext);
