@@ -123,6 +123,7 @@ try
 
 	if($isFrame) printJavascript("window.parent.o.changeStep(1);");
 
+	$auth_imp = C::get('authorized_import', 'cfg') ? C::get('authorized_import', 'cfg') : array('doc', 'rtf', 'sxw', 'odt');
 	set_time_limit(0);
 	$sources = $context['urls'] = array();
 	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
@@ -196,7 +197,7 @@ try
 			{
 				foreach($extracted_files as $file)
 				{
-					if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), array('doc', 'sxw', 'odt', 'rtf')))
+					if(in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $auth_imp))
 					{
 						$tmp = tmpdir(uniqid('import_', true));
 						rename($oldtmpdir . DIRECTORY_SEPARATOR . $file, $tmp . DIRECTORY_SEPARATOR . $file);
@@ -281,9 +282,9 @@ try
 
 		die;
 	}
-	elseif(!in_array($ext, array('doc', 'sxw', 'odt', 'rtf')))
+	elseif(!in_array($ext, $auth_imp))
 	{
-		printErrors('Invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are .doc, .sxw, .odt, .rtf', true, $isFrame);
+		printErrors('Invalid file type for document <em>'.$sourceoriginale.'</em>, authorized are '.implode(', ', $auth_imp), true, $isFrame);
 	}
 	elseif(!empty($context['multiple']))
 	{

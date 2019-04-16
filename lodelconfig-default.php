@@ -176,6 +176,10 @@ $cfg['proxyport']="8080";
  //tableau des types de fichiers acceptés à l'upload
 $cfg['authorizedFiles'] = array( '.png', '.gif', '.jpg', '.jpeg', '.tif', '.doc', '.odt', '.ods', '.odp', '.pdf', '.ppt', '.sxw', '.xls', '.rtf', '.zip', '.gz', '.ps', '.ai', '.eps', '.swf', '.rar', '.mpg', '.mpeg', '.avi', '.asf', '.flv', '.wmv', '.docx', '.xlsx', '.pptx', '.mp3', '.mp4', '.ogg', '.xml');
 
+// Types de fichiers autorisés à l'import par otx
+$cfg['authorized_import'] = array('doc', 'docx', 'sxw', 'odt', 'rtf');
+
+
 // lock les tables.
 // Chez certains hebergeurs n'acceptent pas les LOCK
 
