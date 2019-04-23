@@ -27,7 +27,7 @@ try
         setcookie(C::get('sessionname', 'cfg'), "", $time,C::get('urlroot', 'cfg'));
     }
 
-    header ('Location: http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('urlroot', 'cfg'));
+    header ("Location: http".(C::get('https', 'cfg') ? 's' : '')."://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('urlroot', 'cfg'));
     exit;
 }
 catch(LodelException $e)
