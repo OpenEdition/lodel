@@ -199,9 +199,9 @@
             
                 <LET VAR="curletter">
                     <IF COND="[#SORTKEY|substr(1,3)] EQ 'r2r'">
-                        [#SORTKEY|multilingue([#LANG_DISP])|substr(0,1)]
+                        [#SORTKEY|multilingue([#LANG_DISP])|makeSortKey|mb_substr(0,1)]
                     <ELSE/>
-                        [#SORTKEY|substr(0,1)]
+                        [#SORTKEY|makeSortKey|mb_substr(0,1)]
                     </IF>
                 </LET>
                 <LET ARRAY="entry_s"></LET>
