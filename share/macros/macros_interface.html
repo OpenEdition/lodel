@@ -594,7 +594,7 @@ cp_[#VARNAME].writeDiv();
 							<div class="oneItem">
 						</BEFORE>
 						<DO>
-							<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+							<label for="[#NAME]"><MACRO NAME="DISPLAY_ALTERTITLE" /> :</label><br class="nobr" />
 							<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" FULLVARNAME="persons[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 							<br />
 						</DO>
@@ -620,7 +620,7 @@ cp_[#VARNAME].writeDiv();
 					<div class="oneItem">
 				</BEFORE>
 				<DO>
-					<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+					<label for="[#NAME]"><MACRO NAME="DISPLAY_ALTERTITLE" /> :</label><br class="nobr" />
 					<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="persons[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 					<br />
 				</DO>
@@ -730,8 +730,11 @@ cp_[#VARNAME].writeDiv();
 			<a href="#down" onclick="addentries(this,'[#VARNAME]'); return false;" class="add">[@COMMON.ADD]</a>
 		</div>
 		<div id="entries_[#VARNAME]" class="entrieseditionarea" >
-			<input type="hidden" id="entries_[#VARNAME]_degree" value="0" />
 			<LOOP NAME="entries_types" TABLE="entrytypes,classes" WHERE="classes.class=entrytypes.class AND type='[#VARNAME]' AND classes.classtype='entries'">
+				<BEFORE>
+					<input type="hidden" id="entries_[#VARNAME]_degree" value="[#NBRESULTS|lmath('+', 1)]" />
+				</BEFORE>
+				<DO>
 				<LET VAR="idtype">[#ID]</LET>
 				<LOOP NAME="inline_entries_by_type_in_entities">
 					<LOOP NAME="edition_fields">
@@ -739,7 +742,7 @@ cp_[#VARNAME].writeDiv();
 							<div class="oneItem">
 						</BEFORE>
 						<DO>
-							<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+							<label for="[#NAME]"><MACRO NAME="DISPLAY_ALTERTITLE" /> :</label><br class="nobr" />
 							<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="entries[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="entries[[#IDTYPE]][[#DEGREE]][data][[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 							<br />
 						</DO>
@@ -758,7 +761,7 @@ cp_[#VARNAME].writeDiv();
 						<div class="oneItem">
 					</BEFORE>
 					<DO>
-						<label for="[#NAME]">[#TITLE] :</label><br class="nobr" />
+						<label for="[#NAME]"><MACRO NAME="DISPLAY_ALTERTITLE" /> :</label><br class="nobr" />
 						<FUNC NAME="PRINT_EDIT_FIELD" VARNAME="entries[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" NOM="[#VARNAME]" FULLVARNAME="entries[[#IDTYPE]][__lodel_wildcard][data][[#NAME]]" VALUE="" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]">
 						<br />
 					</DO>
@@ -770,6 +773,10 @@ cp_[#VARNAME].writeDiv();
 						</div>
 					</AFTER>
 				</LOOP>
+				</DO>
+				<ALTERNATIVE>
+				<input type="hidden" id="entries_[#VARNAME]_degree" value="0" />
+				</ALTERNATIVE>
 			</LOOP>
 		</div>
 	</IF>
