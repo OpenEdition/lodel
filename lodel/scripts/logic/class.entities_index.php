@@ -218,7 +218,7 @@ class Entities_IndexLogic extends Logic
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
-		foreach ($tokens as list(, $token)) {
+		foreach ($tokens as $token) {
 			//particular case : two letter acronym or initials
 			if (preg_match ("/([A-Z][0-9A-Z]{1,2})/", $token) || strlen ($token) > 3) {
 				//little hack because oe ligature is not supported in ISO-latin!!
