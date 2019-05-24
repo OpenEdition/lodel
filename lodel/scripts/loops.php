@@ -494,7 +494,6 @@ function _constructPages(& $context, $funcname, $arguments)
  */
 function plageDeRecherche($numPageCourante, $nbPagesTotal)
 {
-	$nbPagesTotal = $nbPagesTotal;
 	$numPageCourante = $numPageCourante +1;
 	$precision = 4;
 	$res = array ();
