@@ -36,7 +36,7 @@ foreach($site_array as $site){
 			
 			$db->Execute(lq("UPDATE tablefields SET editionhooks = " . $db->Quote(implode(",",$hooks)) . " WHERE id = " . $db->Quote($tablefield['id'])));
 			
-			implode($hooks);
+			//implode($hooks);
 		}
 	}
 }
