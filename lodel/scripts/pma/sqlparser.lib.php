@@ -1970,7 +1970,7 @@ if (!defined('PMA_SQP_LIB_INCLUDED')) {
         global $cfg;
 
         $css_string     = '';
-        foreach ($cfg['SQP']['fmtColor'] as list($key, $col)) {
+        foreach ($cfg['SQP']['fmtColor'] as $key => $col) {
             $css_string .= PMA_SQP_buildCssRule('syntax_' . $key, 'color', $col);
         }
         for ($i = 0; $i < 8; $i++) {

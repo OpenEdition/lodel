@@ -32,7 +32,7 @@
                 if (is_array($a_name)) {
                      $result = array();
                      reset($a_name);
-                     foreach ($a_name as list($key, $val)) {
+                     foreach ($a_name as $key => $val) {
                          $result[$key] = '`' . $val . '`';
                      }
                      return $result;
