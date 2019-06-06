@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS #_TP_entities (
 	idtype		INT UNSIGNED DEFAULT '0' NOT NULL,
 
 	identifier	VARCHAR(255) NOT NULL, # internal name
-	g_title		TINYTEXT NOT NULL,     # short title used in the interface
+	g_title		TEXT NOT NULL,     # short title used in the interface
 
 	usergroup	TINYINT UNSIGNED DEFAULT '1' NOT NULL,
 	iduser		INT UNSIGNED DEFAULT '0' NOT NULL,
