@@ -129,7 +129,7 @@ function oai_error ($code, $argument = '', $value = '')
 		$code = 'badArgument';
   }
 
-	$error .= '<error code="'. xmlstr($code, 'utf-8', false). '">'. xmlstr($text, 'utf-8', false). '</error>'. "\n";
+	$error = '<error code="'. xmlstr($code, 'utf-8', false). '">'. xmlstr($text, 'utf-8', false). '</error>'. "\n";
 	return $error;
 }
 
@@ -395,13 +395,13 @@ function verbs_processing()
 		} /*switch */
 
 		if(!$errors){
-			$context['oai_where'] .= "AND #_TP_entities.id ".sql_in_array($context['oai_ids'])." AND #_TP_types.oaireferenced >0 AND #_TP_entities.idtype = #_TP_types.id AND #_TP_entities.status >0 AND #_TP_types.status >0 AND #_TP_entities.creationdate<".date('Ymd');
+			$context['oai_where'] = "AND #_TP_entities.id ".sql_in_array($context['oai_ids'])." AND #_TP_types.oaireferenced >0 AND #_TP_entities.idtype = #_TP_types.id AND #_TP_entities.status >0 AND #_TP_types.status >0 AND #_TP_entities.creationdate<".date('Ymd');
 			$context['oai_where'] = substr($context['oai_where'], 4);
 
 			if($format == 'listidentifiers' || $format == 'listrecords') {
 				$MAX = $format == 'listidentifiers' ? $context['oai_maxids'] : $context['oai_maxrecords'];
 
-				$query = "SELECT  #_TP_entities.id FROM #_entitiestypesjoin_ WHERE ".$context[oai_where];
+				$query = "SELECT  #_TP_entities.id FROM #_entitiestypesjoin_ WHERE ".$context['oai_where'];
 				$result =$db->execute(lq($query));
 				if ($result === false) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
@@ -535,7 +535,7 @@ function check_records ()
 			}
 			unset($args['set']);
 		}
-		if($args['resumptionToken']) {
+		if(isset($args['resumptionToken'])) {
 			$resumptionToken = $args['resumptionToken'];
 			unset($args['resumptionToken']);
 		}
