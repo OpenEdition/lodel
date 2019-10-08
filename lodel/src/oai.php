@@ -28,9 +28,10 @@ try
     define('TOKENVALID', 24); // tokens lifetime in hours
     define('MAXIDS', 10); // max delivered identifiers
     define('MAXRECORDS', 10); // max delivered records
-    $metadataformats = array ('oai_dc'); // only Dublin Core at the moment
+    $metadataformats = array('oai_dc'); // only Dublin Core at the moment
     
     $dateformat = '';
+    global $errors;
 
     function getOut($hostname)
     {
@@ -50,9 +51,6 @@ try
         global $db;
         $db->execute(lq("INSERT INTO #_TP_oailogs (host, denied) VALUES ('". $hostname. "','". $denied. "')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
     }
-
-
-
 
 /**
  * Generates OAI error messages.
@@ -149,7 +147,6 @@ function xmlstr ($string, $charset = 'utf-8', $xmlescaped = false)
 	// just remove invalid characters
 	$pattern = "/[\x-\x8\xb-\xc\xe-\x1f]/";
 	$string = preg_replace($pattern, '', $string);
-
 	// escape only if string is not escaped
 	if (!$xmlescaped) {
 		$xmlstr = htmlspecialchars($string, ENT_QUOTES);
@@ -222,8 +219,6 @@ function insert_token($token, $where, $metadataprefix, $deliveredrecords, $expir
 	}
 }
 
-
-
 /**
  * Deletes outdated tokens from table oaitokens.
  * 
@@ -263,7 +258,6 @@ function dc_rename($str)
 {
 	return preg_replace("/dc./", "dc:", $str);
 }
-
 
 /**
  * Only a limited set of characters is available for sets' names.
@@ -307,8 +301,6 @@ function get_dc_description($id)
   return $result;
 }
 
-
-
 /**
  * Uses $id_class_fields to get the name of an entity's dc.language field, 
  * extract its content from the database and return it.
@@ -348,8 +340,9 @@ function verbs_processing()
 	global $metadataformats;
 	global $format;
 	global $resumptionToken;
+	global $metadataPrefix;
 
-	if ($args['verb']) {
+	if (isset($args['verb'])) {
 		$format = strtolower($args['verb']);
 		C::set('format', $format);
 		switch ($args['verb']) {
@@ -359,7 +352,7 @@ function verbs_processing()
 			break;
 		case 'ListMetadataFormats':
 			unset($args['verb']);
-			if ($args['identifier']) {
+			if (isset($args['identifier'])) {
 				check_identifier($args['identifier']);
 				unset($args['identifier']);
 			}
@@ -367,7 +360,7 @@ function verbs_processing()
 			break;
 		case 'ListSets':
 			unset($args['verb']);
-			if($args['resumptionToken']) {
+			if(isset($args['resumptionToken'])) {
 				$resumptionToken = $args['resumptionToken'];
 				unset($args['resumptionToken']);
 			}
@@ -375,13 +368,13 @@ function verbs_processing()
 			break;
 		case 'GetRecord':
 			unset($args['verb']);
-			if (!$args['identifier']) {
+			if (!isset($args['identifier'])) {
 				$errors .= oai_error('missingArgument', 'identifier');
 			} else {
 				check_identifier($args['identifier']);
 				unset($args['identifier']);
 			}
-			if (!$args['metadataPrefix']) {
+			if (!isset($args['metadataPrefix'])) {
 				$errors .= oai_error('missingArgument', 'metadataPrefix');
 			} else {
 				check_mdp($args['metadataPrefix']);
@@ -435,14 +428,13 @@ function verbs_processing()
         }
 				// Will we need a ResumptionToken?
 				$context['oai_offset'] = isset($deliveredrecords) ? $deliveredrecords : 0;
+				$deliveredrecords = $context['oai_offset'];
 				$query .= " LIMIT ". $context['oai_offset'].", $MAX";
 				$result =$db->execute(lq($query));
 				if ($result === false) {
 					trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				}
-
 				$deliveredrecords += $result->RowCount();
-
 				if ($context['oai_nbtot'] - $deliveredrecords > 0) {
 					$token = uniqid(8); 
 					insert_token($token, $context['oai_where'], $metadataPrefix, $deliveredrecords, $my_expirationdatetime);
@@ -468,8 +460,6 @@ function verbs_processing()
 	}
 }
 
-
-
 /**
  * ListRecords and ListIdentifiers accept the same parameters, the shared 
  * tests are regrouped in this function.
@@ -485,18 +475,18 @@ function check_records ()
 	global $db;
 	global $metadataformats;
 	global $resumptionToken;
-
+	global $metadataPrefix;
 	unset($args['verb']);
-	if ((!$args['metadataPrefix']) && (!$args['resumptionToken'])) {
+	if ((!isset($args['metadataPrefix'])) && (!isset($args['resumptionToken']))) {
 		$errors .= oai_error('missingArgument', 'metadataPrefix');
-	} elseif($args['resumptionToken'] && (count($args)>1)) {
+	} elseif(isset($args['resumptionToken']) && (count($args)>1)) {
 		$errors .= oai_error('exclusiveArgument');
 	} else {
 		// patterns to test date granularity
 		$longdate = "/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/";
 		$shortdate = "/^\\d{4}-\\d{2}-\\d{2}$/";
 
-		if ($args['from']) {
+		if (isset($args['from'])) {
 			$from = $args['from'];
 			if (preg_match($longdate, $from)) {
 				$context['oai_where'] .= "AND (creationdate>= '". $from. "' || modificationdate >= '". $from. "')";
@@ -510,7 +500,7 @@ function check_records ()
 			unset($args['from']);
 		}
 
-		if ($args['until']) {
+		if (isset($args['until'])) {
 			$until = $args['until'];
 			if (preg_match($longdate, $until)) {
 				$context['oai_where'] .= "AND creationdate <= '".$until."'";
@@ -524,12 +514,12 @@ function check_records ()
 			unset($args['until']);
 		}
 
-		if ($args['metadataPrefix']) {
+		if (isset($args['metadataPrefix'])) {
 			check_mdp($args['metadataPrefix']);
 			unset($args['metadataPrefix']);
 		}
 
-		if($args['set']) {
+		if(isset($args['set'])) {
 			$set = $args['set'];
 			$context['oai_ids'] = array();
 
@@ -566,6 +556,7 @@ function check_mdp ($val)
 {
 	global $errors;
 	global $metadataformats;
+        global $metadataPrefix;
 
 	if (in_array($val, $metadataformats)) {
 		$metadataPrefix = $val;
@@ -589,7 +580,8 @@ function check_identifier ($val)
 
 	$identifier = $val; 
 	// remove the OAI part to get the identifier
-	$id = str_replace($context['oai_prefix'], '', $identifier); 
+	//$id = str_replace($context['oai_prefix'], '', $identifier);
+        $id = substr(strrchr($identifier, ':'), 1); 
 	if (in_array($id, $context['oai_ids'])) {
 		$context['oai_ids']   = array();
 		$context['oai_ids'][] = $id;
@@ -637,6 +629,8 @@ if($result['oai.oai_allow']){
 
 if($result['oai.oai_deny']){
 	$denied = $result['oai.oai_deny'];
+}else{
+	$denied = "";
 }
 
 if(!isset($allowed) && !isset($denied)){
@@ -702,7 +696,8 @@ while (!$result->EOF) {
 if(!$context['oai_ids']) {
 	$errors .= oai_error('noRecordsMatch');
 	header("Content-type: application/xml");
-	echo _indent($oai_open. $errors. $oai_close);
+	//echo _indent($oai_open . $errors . $oai_close);
+	echo $oai_open . $errors . $oai_close; 
 	exit;
 }
 
@@ -788,7 +783,8 @@ verbs_processing();
  */
 if(isset($errors)) {
 	header("Content-type: application/xml");
-	echo _indent($oai_open.$errors.$oai_close);
+	//echo _indent($oai_open . $errors . $oai_close);
+	echo $oai_open . " " . $errors . "  " . $oai_close;
   exit;
 }
 
