@@ -272,7 +272,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $model
                     $pathinfos = pathinfo($file);
                     foreach($acceptedexts as $ext)
                     {
-                        if($pathinfos['extension'] == $ext)
+                        if((isset($pathinfos['extension'])) && ($pathinfos['extension'] == $ext))
                         {
                             $files_to_extract[] = $file;
                             break;
