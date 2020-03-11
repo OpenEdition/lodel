@@ -449,7 +449,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
         trigger_error("Internal error in saveuploadedfile dir=$dir", E_USER_ERROR);
     }
     if (is_numeric($dir)) {
-        $dir = "docannexe/$type/$dir";
+        $dir = C::get('siteDir', 'cfg')."docannexe/$type/$dir";
     }
     if (!$file) {
         trigger_error("ERROR: save_file file is not set", E_USER_ERROR);
@@ -491,9 +491,7 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
         $filename = rewriteFilename($filename);
         $dest = $dir . '/' . basename($filename);
     }
-    if (defined("SITEROOT")) {
-        $dest = SITEROOT . $dest;
-    }
+    
     if (!copy($file, $dest)) {
         trigger_error("ERROR: a problem occurs while moving the file.", E_USER_ERROR);
     }
@@ -513,54 +511,32 @@ function save_file($type, $dir, $file, $filename, $uploaded, $move, &$error, $do
  */
 function checkdocannexedir($dir)
 {
-    if (defined("SITEROOT")) { //si le siteroot est défini
-        $rep = SITEROOT . $dir;
-        if (!file_exists(SITEROOT . "docannexe/image")) { // il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-            if (!@mkdir(SITEROOT . "docannexe/image", 0777 & octdec(C::get('filemask', 'cfg')), true)) {
-                trigger_error("ERROR: impossible to create the directory \"docannexe/image\"", E_USER_ERROR); //peut rien faire
-            }
-            @chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
-        }
-    } else {
-        $rep = $dir;
-        if (!file_exists("docannexe/image")) {
-            if (!@mkdir("docannexe/image", 0777 & octdec(C::get('filemask', 'cfg')), true)) {
-                trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
-            }
-            @chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
-        }
+    $docDir = C::get('siteDir', 'cfg');	
+    $rep = $docDir . $dir;
+    $testDirs = ['file', 'image'];
+    foreach($testDirs as $test){
+      if (!file_exists($docDir . 'docannexe/' . $test)) { // il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
+          if (!@mkdir($docDir . 'docannexe/' . $test, 0777 & octdec(C::get('filemask', 'cfg')), true)) {
+             trigger_error('ERROR: unable to create the directory "docannexe/' . $test . '"', E_USER_ERROR); //peut rien faire
+          }
+          @chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
+      }
     }
-    if (defined("SITEROOT")) { //si le siteroot est défini
-        if (!file_exists(SITEROOT . "docannexe/file")) { //il n'y a pas de répertoire docannexe/image dans le siteroot, on essaye de le créer
-            if (!@mkdir(SITEROOT . "docannexe/file", 0777 & octdec(C::get('filemask', 'cfg')), true)) {
-                trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR); //peut rien faire
-            }
-            @chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
-        }
-    } else {
-        if (!file_exists("docannexe/file")) {
-            if (!@mkdir("docannexe/file", 0777 & octdec(C::get('filemask', 'cfg')), true)) {
-                trigger_error("ERROR: impossible to create the directory \"docannexe\"", E_USER_ERROR);
-            }
-            @chmod($GLOBALS['ADODB_CACHE_DIR'], 0777 & octdec(C::get('filemask', 'cfg')));
-        }
-    }
-
     if (!file_exists($rep)) {
         if (!@mkdir($rep, 0777 & octdec(C::get('filemask', 'cfg')))) {
-            trigger_error("ERROR: impossible to create the directory \"$rep\"", E_USER_ERROR);
+            trigger_error('ERROR: unable to create the directory "' . $rep . '"', E_USER_ERROR);
         }
         @chmod($rep, 0777 & octdec(C::get('filemask', 'cfg')));
         writefile($rep . '/index.html', '');
     }
     // pseudo-sécurité. faudrait trouver mieux, ptetre ajouter directement le répertoire docannexe dans la distrib avec un .htaccess
-    $htaccess = defined('SITEROOT') ? SITEROOT . "docannexe/file/.htaccess" : "docannexe/file/.htaccess";
+    $htaccess = $docDir . 'docannexe/file/.htaccess';
     if (!file_exists($htaccess)) {
         file_put_contents($htaccess, "deny from all");
         @chmod($htaccess, 0640);
     }
     // compatibilité 0.7
-    $htaccess07 = defined('SITEROOT') ? SITEROOT . "docannexe/fichier/" : "docannexe/fichier/";
+    $htaccess07 = $docDir . 'docannexe/fichier/';
     if (file_exists($htaccess07) && !file_exists($htaccess07 . '.htaccess')) {
         file_put_contents($htaccess07 . '.htaccess', "deny from all");
         @chmod($htaccess07 . '.htaccess', 0640);
@@ -1238,7 +1214,7 @@ function thumbnail($path, $width = null, $height = null)
 
     if (!file_exists($path) && strpos($path, 'http') !== 0) return $path;
 
-    $new_path = "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
+    $new_path = C::get('siteDir', 'cfg') . "docannexe/image/{$context['id']}/{$image_infos['filename']}-{$width}x{$height}.{$image_infos['extension']}";
 
     if (!file_exists(dirname($new_path))) mkdir(dirname($new_path));
 
@@ -1408,7 +1384,8 @@ function rmtree($rep)
     if(!file_exists($rep)) return;
     $rep = realpath($rep);
     $is_removable = false;
-    foreach (array(realpath(SITEROOT."/docannexe/"), realpath(C::get('cacheDir', 'cfg')), realpath(C::get('tmpoutdir', 'cfg'))) as $removable)
+    $docDir = C::get('siteDir', 'cfg') . '/docannexe/';
+    foreach (array(realpath($docDir), realpath(C::get('cacheDir', 'cfg')), realpath(C::get('tmpoutdir', 'cfg'))) as $removable)
         if (0 === strpos($rep, $removable))
             $is_removable = true;
     if (!$is_removable) {

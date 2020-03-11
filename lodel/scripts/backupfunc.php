@@ -265,8 +265,8 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $model
         foreach($accepteddirs as $dir)
         {
             if(strpos($file, $dir) === 0){
-                if(!file_exists(SITEROOT . DIRECTORY_SEPARATOR . $dir)){
-                    mkdir(SITEROOT . DIRECTORY_SEPARATOR . $dir, 0770, true);
+                if(!file_exists(DIRECTORY_SEPARATOR . $dir)){
+                    mkdir(DIRECTORY_SEPARATOR . $dir, 0770, true);
                 }
                 if($acceptedexts){
                     $pathinfos = pathinfo($file);
@@ -290,7 +290,7 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $model
         }
     }
 
-    extract_files_from_zip($archive, realpath(SITEROOT), null, $files_to_extract);
+    extract_files_from_zip($archive, realpath(), null, $files_to_extract);
 
     /* Extraction du fichier sql */
     extract_files_from_zip($archive, $tmpdir, null, $model_zip);

@@ -18,7 +18,7 @@ function calculateXML($context)
 {
 	function_exists("insert_template") || include 'view.php';
 	ob_start();
-	insert_template($context, "xml-classe", "", SITEROOT."lodel/edition/tpl/");
+	insert_template($context, "xml-classe", "", "lodel/edition/tpl/");
 	$contents = ob_get_contents();
 	ob_end_clean();
 	return indentXML($contents);
@@ -31,7 +31,7 @@ function calculateXMLSchema($context)
 {
 	function_exists("insert_template") || include 'view.php';
 	ob_start();
-	insert_template($context, "schema-xsd", "", SITEROOT."lodel/admin/tpl/");
+	insert_template($context, "schema-xsd", "", "lodel/admin/tpl/");
 	$contents = ob_get_contents();
 	ob_end_clean();
 	return indentXML($contents);

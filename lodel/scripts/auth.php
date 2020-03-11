@@ -217,7 +217,7 @@ function authenticate($level = 0, $mode = "", $return = false)
 		return; // les variables ne sont pas mises... on retourne
 	}
 	elseif ($mode == 'HTTP') {
-		include SITEROOT.'lodel/admin/loginHTTP.php';
+		include 'lodel/admin/loginHTTP.php';
 		return;
 	}
 	else {

@@ -414,11 +414,11 @@ class GenericLogic extends Logic
 			$dest = $dirdest. "/". $dest;
 
 			$vo->{$file['name']} = addslashes($dest);
-			if ($src == SITEROOT. $dest) {
+			if ($src == $dest) {
 				continue;
 			}
-			rename($src, SITEROOT. $dest);
-			chmod(SITEROOT. $dest, 0666 &octdec(C::get('filemask', 'cfg')));
+			rename($src, $dest);
+			chmod($dest, 0666 &octdec(C::get('filemask', 'cfg')));
 			@rmdir(dirname($src)); // do not complain, the directory may not be empty
 		}
 	}

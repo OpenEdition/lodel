@@ -75,7 +75,7 @@ class UserOptionGroupsLogic extends Logic {
 				
 				$new_path = "docannexe/file/option-{$option->id}." . $file_informations['extension'];
 				
-				rename($context['data'][$option->name], SITEROOT . "/{$new_path}");
+				rename($context['data'][$option->name], $new_path);
 				$context['data'][$option->name] = $new_path;
 			}
 			if (is_string($valid)) $error[$option->name]=$valid;

@@ -387,7 +387,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 					// look for a unique dirname.
 					do {
 						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
-					}	while (file_exists(SITEROOT. $tmpdir[$type]));
+					}	while (file_exists(C::get('siteDir', 'cfg') . $tmpdir[$type]));
 				}
 				// let's transfer
 				$text = save_file($type, $tmpdir[$type], $files[$name]['tmp_name']['upload'], $files[$name]['name']['upload'], true, true, $err);
@@ -401,19 +401,19 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 			if (!empty($directory)) {
 				// Champ de type file ou image qui n'est PAS un doc annexe : copié dans le répertoire $directory
 				$text = basename($text['localfilename']);
-				$text = save_file($type, $directory, SITEROOT."upload/$text", $text, false, false, $err, false);
+				$text = save_file($type, $directory, "upload/$text", $text, false, false, $err, false);
 			} else {
 				// check if the tmpdir is defined
 				if (!isset($tmpdir[$type])) {
 					// look for a unique dirname.
 					do {
 						$tmpdir[$type] = "docannexe/$type/tmpdir-". rand();
-					} while (file_exists(SITEROOT. $tmpdir[$type]));
+					} while (file_exists(C::get('siteDir', 'cfg') . $tmpdir[$type]));
 				}
 
 				// let's move
 				$text = basename($text['localfilename']);
-				$text = save_file($type, $tmpdir[$type], SITEROOT."upload/$text", $text, false, false, $err);
+				$text = save_file($type, $tmpdir[$type], "upload/$text", $text, false, false, $err);
 			}
 			if ($err) {
 				return $err;
@@ -439,7 +439,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				}
 			}
 			if ($filetodelete) {
-				unlink(SITEROOT.$text);
+				unlink(C::get('siteDir', 'cfg') . $text);
 				$text = "deleted";
 				unset ($filetodelete);
 			}

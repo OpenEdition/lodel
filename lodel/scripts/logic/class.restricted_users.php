@@ -334,7 +334,7 @@ class Restricted_UsersLogic extends Logic
 		$nocache = View::$nocache;
 		View::$nocache = true;
 		ob_start();
-		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/");
+		insert_template($context, 'users_mail', '', 'lodel/admin/tpl/');
 		$body = ob_get_clean();
 		View::$nocache = $nocache;
 		unset($context['tmppasswd']);

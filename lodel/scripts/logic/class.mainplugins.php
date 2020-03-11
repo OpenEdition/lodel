@@ -664,19 +664,19 @@ class MainPluginsLogic extends Logic
 
 			if($param['type'] == 'file' || $param['type'] == 'image')
 			{
-				if(!file_exists(SITEROOT.'upload/plugins/'))
+				if(!file_exists('upload/plugins/'))
 				{
-					mkdir(SITEROOT.'upload/plugins/', $filemask);
-					@chmod(SITEROOT.'upload/plugins/', $filemask);
+					mkdir('upload/plugins/', $filemask);
+					@chmod('upload/plugins/', $filemask);
 				}
-				if(!file_exists(SITEROOT.'upload/plugins/'.$this->_plugin['name']))
+				if(!file_exists('upload/plugins/'.$this->_plugin['name']))
 				{
-					mkdir(SITEROOT.'upload/plugins/'.$this->_plugin['name'], $filemask);
-					@chmod(SITEROOT.'upload/plugins/'.$this->_plugin['name'], $filemask);
+					mkdir('upload/plugins/'.$this->_plugin['name'], $filemask);
+					@chmod('upload/plugins/'.$this->_plugin['name'], $filemask);
 				}
 			}
 
-			$err = validfield($context['data'][$name], $param['type'], $param['defaultValue'], $name, 'data', SITEROOT.'upload/plugins/'.$this->_plugin['name']);
+			$err = validfield($context['data'][$name], $param['type'], $param['defaultValue'], $name, 'data', 'upload/plugins/'.$this->_plugin['name']);
 
 			if(true !== $err)
 				$error[$name] = $err;

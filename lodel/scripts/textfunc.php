@@ -398,11 +398,7 @@ function vignette($text, $width)
 {
 	if (!$text)
 		return;
-	/*if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
-		return getlodeltextcontents("ERROR_INVALID_PATH_TO_IMAGE", "COMMON");
-	}*/
-	if (defined("SITEROOT"))
-		$text = SITEROOT.$text;
+	$text = C::get('siteDir', 'cfg') . $text;
 	if (!file_exists($text))
 		return getlodeltextcontents("ERROR_FILE_DOES_NOT_EXIST", "COMMON");
 	if (!preg_match("/^(.*)\.([^\.]+)$/", $text, $result))
@@ -779,8 +775,7 @@ function nicefilesize($lien)
 	if (is_numeric($lien)) {
 		$size = $lien;
 	}	else {
-		if (defined("SITEROOT"))
-			$lien = SITEROOT.$lien;
+		$lien = C::get('siteDir', 'cfg').$lien;
 		if (!file_exists($lien))
 			return "0k";
 		$size = filesize($lien);

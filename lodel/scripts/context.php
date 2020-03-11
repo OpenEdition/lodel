@@ -88,7 +88,6 @@ class C
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
-		defined('SITEROOT') || define('SITEROOT', '');
 		function_exists('cache_get') || include 'cachefunc.php';
 		spl_autoload_register(array('self', '__autoload'));
 	}
@@ -326,7 +325,6 @@ class C
 			self::$_context['shareurl'] = self::$_cfg['shareurl'];
 			self::$_context['extensionscripts'] =self::$_cfg['extensionscripts'];
 			self::$_context['currenturl'] = isset($_SERVER['SERVER_NAME']) ? 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'] : '';
-			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['sharedir'] = self::$_cfg['sharedir'];
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::$_cfg['tableprefix'];
 			self::$_context['base_rep'] = array();

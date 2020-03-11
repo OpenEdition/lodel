@@ -552,7 +552,7 @@ PHP;
 			$this->_clearposition();
 			break;
 			case 'USE' :
-			if(!isset($siteroot)) $siteroot = defined('SITEROOT') ? SITEROOT : '';
+			//if(!isset($siteroot)) $siteroot = defined('SITEROOT') ? SITEROOT : '';
 			if(!isset($sharedir)) $sharedir = C::get('sharedir', 'cfg');
 			if(!isset($home)) $home = C::get('home', 'cfg');
 

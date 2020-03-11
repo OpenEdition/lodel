@@ -384,20 +384,19 @@ class TEIParser extends XMLReader
 	 */
 	private function _extractImages($odt, $tmpdir)
 	{
-        $images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/.+/" );
+        	$images = extract_files_from_zip($odt, $tmpdir, "/^Pictures\/.+/" );
 
-        $destination = array_filter(explode('/', $tmpdir));
-        $destination = end($destination);
-        $destination = SITEROOT.'docannexe/image/'.$destination;
-        if (!is_dir($destination))
-            mkdir($destination);
-        foreach($images as $image)
-        {
-            $dest_file = $destination . DIRECTORY_SEPARATOR . basename($image);
-            rename($tmpdir . DIRECTORY_SEPARATOR . $image, $dest_file);
-            $this->_images[basename($image)] = $dest_file;
+        	$destination = array_filter(explode('/', $tmpdir));
+       		$destination = end($destination);
+        	$destination = C::get('siteDir', 'cfg') . 'docannexe/image/' . $destination;
+        	if (!is_dir($destination)) mkdir($destination);
+        	foreach($images as $image)
+        	{
+            		$dest_file = $destination . DIRECTORY_SEPARATOR . basename($image);
+            		rename($tmpdir . DIRECTORY_SEPARATOR . $image, $dest_file);
+            		$this->_images[basename($image)] = $dest_file;
 
-        }
+        	}
 	}
 
 	/**
@@ -1651,7 +1650,7 @@ class TEIParser extends XMLReader
 				if(isset($attrs['url']) && is_readable($source . $attrs['url'])){
 					/* Creation of import folder */
 					$array  = array_filter(explode('/', $this->_tmpdir));
-					$tmpdir = SITEROOT . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
+					$tmpdir = C::get('siteDir', 'cfg') . 'docannexe/image/' . end($array) . DIRECTORY_SEPARATOR;
 					if( ! file_exists($tmpdir) ) mkdir($tmpdir);
 					chmod($tmpdir, 0777 & octdec(C::get('filemask', 'cfg')));
 

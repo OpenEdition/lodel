@@ -261,7 +261,7 @@ class DataLogic
 
 			if (empty($context['sqlonly'])) {
                 /* On créé la liste des fichiers à sauvegarder */
-                $siteroot = realpath(SITEROOT) . DIRECTORY_SEPARATOR;
+                $siteroot = realpath() . DIRECTORY_SEPARATOR;
 
                 foreach($sitedirs as $sitedir)
                 {
@@ -703,10 +703,10 @@ class DataLogic
 	{
 		$dirs = array( 'lodel/sources' );
 		foreach ($dirs as $dir) {
-			if (!file_exists(SITEROOT. $dir)) {
+			if (!file_exists(C::get('siteDir', 'cfg') . $dir)) {
 				continue;
 			}
-			$file = SITEROOT. $dir. '/.htaccess';
+			$file = C::get('siteDir', 'cfg') . $dir. '/.htaccess';
 			if (file_exists($file)) {
 				@unlink($file);
 			}
@@ -739,12 +739,12 @@ class DataLogic
         $file_list = array();
 
 		foreach ($dirs as $dir)	{
-			if (!file_exists(SITEROOT . $dir))
+			if (!file_exists($dir))
 				continue;
 
             $file_list = array_merge(
                 $file_list,
-                array_filter(glob_recursive( SITEROOT . $dir . DIRECTORY_SEPARATOR . '*'), 'is_file')
+                array_filter(glob_recursive( $dir . DIRECTORY_SEPARATOR . '*'), 'is_file')
             );
 		}
 
@@ -757,7 +757,7 @@ class DataLogic
         {
             foreach(preg_grep("/$ext$/", $file_list) as $file)
             {
-                $files_to_zip[$file] = str_replace(SITEROOT, '', $file);
+                $files_to_zip[$file] = $file;
             }
         }
         unset($file_list);
@@ -1372,7 +1372,7 @@ class DataLogic
 	private function _parseXML($file, &$error) {
 		global $db;
 		// besoin de la dtd dans le meme répertoire pour valider
-		$dtd = @copy(SITEROOT . '../share/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
+		$dtd = @copy('../share/lodelEM.dtd', tmpdir().'/lodelEM.dtd');
 		if(false === $dtd) {
 			$error = 'Unable to copy DTD into tmpdir. Aborted.';
 			return;

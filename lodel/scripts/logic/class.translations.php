@@ -35,7 +35,7 @@ class TranslationsLogic extends Logic {
 	{
 		$this->_setTextGroups($context);
 		if('site' === (string)$context['textgroups']) {
-			$tplDirs = SITEROOT.'tpl/';
+			$tplDirs = 'tpl/';
 		} else { // interface
 			$tplDirs = array('./tpl/', '../tpl/', '../share/macros/', '../lodel/tpl/', '../lodel/src/lodel/edition/tpl/', '../lodel/src/lodel/admin/tpl/');
 		}

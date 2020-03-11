@@ -82,14 +82,14 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 		$ret = $this->editAction($context, $error, 'FORCE');
 		$this->id = $context['id'];
-		$sourcefile=SITEROOT."lodel/sources/entite-".$this->id.".source";
+		$sourcefile = C::get('siteDir', 'cfg') . 'lodel/sources/entite-'.$this->id.'.source';
 		if($delete) @unlink ($sourcefile);
 		if(isset($source))
 		{
 			file_put_contents($sourcefile, $source);
 			@chmod ($sourcefile, 0666 & octdec(C::get('filemask', 'cfg')));
 		}
-		$sourcefileodt=SITEROOT."lodel/sources/entite-odt-".$this->id.".source";
+		$sourcefileodt = C::get('siteDir', 'cfg') . 'lodel/sources/entite-odt-'.$this->id.'.source';
 		if($delete) @unlink ($sourcefileodt);
 		if(isset($odt))
 		{
@@ -99,7 +99,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 		$this->_fixImagesPath($tei);
 
-        $teifile = SITEROOT."lodel/sources/entite-tei-".$this->id.".xml";
+        $teifile = C::get('siteDir', 'cfg') . 'lodel/sources/entite-tei-'.$this->id.'.xml';
 		if($delete) @unlink ($teifile);
 		file_put_contents($teifile, $tei);
 		@chmod ($teifile, 0666 & octdec(C::get('filemask', 'cfg')));
@@ -173,7 +173,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 				if (substr ($imgfile, 0, 5)=="http:") continue; // external image
 
 				if (isset($imglist[$imgfile])) { // is it in the cache ?
-					$text = str_replace ($result[0], "<img src=\"$imglist[$imgfile]\" />", $text);
+					$text = str_replace ($result[0], '<img src="'.$imglist[$imgfile].'" />', $text);
 				} else {
 					// not in the cache let's move it
 					if (!$dir) {
@@ -184,11 +184,11 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 					$imgfile_path = (file_exists($imgfile)) ? $imgfile : $base . DIRECTORY_SEPARATOR . $imgfile;
 
-					$ok = @copy ($imgfile_path , SITEROOT.$newimgfile );
+					$ok = @copy ($imgfile_path , C::get('siteDir', 'cfg').$newimgfile );
 					@unlink ($imgfile_path);
 					if ($ok) { // ok, the image has been correctly copied
 						$text=str_replace ($result[0], '<img src="'.$newimgfile.'"'.$result[3], $text);
-						@chmod (SITEROOT.$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
+						@chmod (C::get('siteDir', 'cfg').$newimgfile, 0666  & octdec(C::get('filemask', 'cfg')));
 						++$count;
 					} else { // no, problem copying the image
 						$text=str_replace ($result[0], "<span class=\"image_error\">[Image non convertie]</span>", $text);
@@ -202,15 +202,15 @@ class Entities_ImportLogic extends Entities_EditionLogic
 
 	protected function _checkdir ($dir) 
 	{
-		if (!is_dir (SITEROOT.$dir)) {
-			mkdir (SITEROOT.$dir, 0777 & octdec(C::get('filemask', 'cfg')));
-			@chmod(SITEROOT.$dir,0777 & octdec(C::get('filemask', 'cfg')));
+		if (!is_dir (C::get('siteDir', 'cfg').$dir)) {
+			mkdir (C::get('siteDir', 'cfg').$dir, 0777 & octdec(C::get('filemask', 'cfg')));
+			@chmod(C::get('siteDir', 'cfg').$dir,0777 & octdec(C::get('filemask', 'cfg')));
 		} else { // clear the directory the first time.
-			$fd=@opendir(SITEROOT.$dir);
+			$fd=@opendir(C::get('siteDir', 'cfg').$dir);
 			if (!$fd) trigger_error("ERROR: cannot open the directory $dir", E_USER_ERROR);
 			while ($file=readdir($fd)) {
 				if ($file{0}=="." || !preg_match("/^(img-\d+(-small\d+)?|\w+-small\d+).(jpg|gif|png)$/i", $file)) continue;
-				$file=SITEROOT.$dir."/".$file;
+				$file=C::get('siteDir', 'cfg').$dir."/".$file;
 				if (is_file($file)) @unlink($file);
 			}
 			closedir($fd);

@@ -519,7 +519,7 @@ class View
 			}
 			
 			ob_start();
-			//var_dump($contents);
+		//	var_dump($contents); exit;
 			eval("?>" . $contents);
 			$contents = ob_get_clean();
 		}

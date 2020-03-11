@@ -410,7 +410,7 @@ class UsersLogic extends Logic
 			$context['sitelang'] = $context['lang'];
 		}
 		ob_start();
-		insert_template($context, 'users_mail', "", (!$context['islodeladmin'] ? SITEROOT."lodel/admin/tpl/" : ''));
+		insert_template($context, 'users_mail', "", (!$context['islodeladmin'] ? 'lodel/admin/tpl/' : ''));
 		$body = ob_get_clean();
 		View::$nocache = $nocache;
 		$context['tmppasswd'] = null;

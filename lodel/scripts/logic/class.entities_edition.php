@@ -566,10 +566,9 @@ class Entities_EditionLogic extends GenericLogic
 		}
 
 		if (isset($context['visualiserdocument'])) {
-			return "_location: ". SITEROOT. makeurlwithid($id);
+			return '_location: ' . makeurlwithid($id);
 		}
 		return $ret ? $ret : "_back";
-		//return $ret ? $ret : "_location" . SITEROOT. makeurlwithid($idparent);
 	} //end of editAction
 
         /**

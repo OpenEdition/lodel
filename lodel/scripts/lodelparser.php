@@ -509,7 +509,7 @@ class LodelParser extends Parser
 			if ($group == 'interface')
 				$modifyif .= ' && C::get(\'translationmode\', \'lodeluser\')';
 
-			$modify = ' if ('.$modifyif.') { ?><a href="'.SITEROOT.'lodel/admin/index.php?do=edit&amp;lo=texts&amp;id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
+			$modify = ' if ('.$modifyif.') { ?><a href="lodel/admin/index.php?do=edit&amp;lo=texts&amp;id=<?php echo $id; ?>">[M]</a> <?php if (!$text) $text=\''.$name.'\';  } ';
 
 			return '<?php getlodeltext("'.$name.'","'.$group.'",$id,$text,$status);'.$modify.' echo preg_replace("/(\r\n?\s*){2,}/","<br />",$text); ?>';
 		}	else {

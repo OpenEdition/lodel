@@ -5,7 +5,7 @@
  * @authors See COPYRIGHT file
  */
 
-define("UPLOADDIR",SITEROOT."upload");
+define("UPLOADDIR", 'upload');
 
 /**
  * Classe de logique du navigateur de fichier

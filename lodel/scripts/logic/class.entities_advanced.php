@@ -63,7 +63,7 @@ class Entities_AdvancedLogic extends Logic
 		$this->_populateContext($votype, $context['type']);
 
 		// look for the source
-		$context['sourcefile'] = file_exists(SITEROOT."lodel/sources/entite-".$id.".source");
+		$context['sourcefile'] = file_exists(C::get('siteDir', 'cfg') . 'lodel/sources/entite-'.$id.'.source');
 
 		return '_ok';
 	}

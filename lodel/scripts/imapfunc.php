@@ -112,7 +112,7 @@ function extractattachments($mbox, $mnum, $extre, $struct = 0, $pno = "")
 		}
 
 		// save the attachment as $filename
-		writefile(SITEROOT."upload/".$filename, $body);
+		writefile('upload/'.$filename, $body);
 		$nbattachment ++;
 		break;
 	}
