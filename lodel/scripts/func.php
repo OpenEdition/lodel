@@ -312,7 +312,8 @@ function download($filename, $originalname = "", $contents = "")
     if (!$originalname) $originalname = $filename;
     $originalname = preg_replace("/.*\//", "", $originalname);
     $ext = substr($originalname, strrpos($originalname, ".") + 1);
-    $size = $filename ? filesize($filename) : strlen($contents);
+    $filepath = C::get('siteDir', 'cfg') . $filename;
+    $size = $filepath ? filesize($filepath) : strlen($contents);
     $mime = getMimeType($ext);
     get_PMA_define();
     $mimetype = array(
@@ -340,9 +341,9 @@ function download($filename, $originalname = "", $contents = "")
         $mime = "application/force-download";
         $disposition = "attachment";
     }
-    if ($filename) {
-        $fp = fopen($filename, "rb");
-        if (!$fp) trigger_error("ERROR: The file \"$filename\" is not readable", E_USER_ERROR);
+    if ($filepath) {
+        $fp = fopen($filepath, "rb");
+        if (!$fp) trigger_error("ERROR: The file \"$filepath\" is not readable", E_USER_ERROR);
     }
     // fix for IE catching or PHP bug issue
     header("Pragma: public");
@@ -357,7 +358,7 @@ function download($filename, $originalname = "", $contents = "")
     header("Content-length: " . $size . "\n");
     header("Content-disposition: $disposition; filename=\"$originalname\"\n");
     //  sleep(1); // don't know why... (from on uk.php.net)
-    if ($filename) {
+    if ($filepath) {
         fpassthru($fp);
     } else {
         echo $contents;

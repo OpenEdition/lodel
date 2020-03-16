@@ -405,15 +405,15 @@ function vignette($text, $width)
 		return getlodeltextcontents("ERROR_FILE_WITHOUT_EXTENSION", "COMMON");
 	$vignettefile = $result[1]."-small$width.".$result[2];
 	if (file_exists($vignettefile) && filemtime($vignettefile) >= filemtime($text))
-		return $vignettefile;
-	list($widt, $height, $type, $attr) = @getImageSize($text);
+		return str_replace(C::get('siteDir', 'cfg'), '', $vignettefile);
+	list($widt, $height, $type, $attr) = getImageSize($text);
 	if($widt && $widt <= $width)
-		return $text;
+		return str_replace(C::get('siteDir', 'cfg'), '', $text);
 	// creer la vignette (de largeur width ou de hauteur width en fonction de la forme
 	function_exists('resize_image') || include("images.php");
 	if (!resize_image($width, $text, $vignettefile))
 		return getlodeltextcontents("ERROR_IMAGE_RESIZING_FAILED", "COMMON");
-	return $vignettefile;
+	return str_replace(C::get('siteDir', 'cfg'), '', $vignettefile);
 }
 
 # renvoie les attributs pour une image

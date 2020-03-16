@@ -13,19 +13,19 @@ define('backoffice-lodeladmin', true);
 define('backoffice-lodelindex', true);
 
 if (!file_exists("lodelconfig.php")) {
-	header('location: lodeladmin/install.php');
-	exit;
+        header('location: lodeladmin/install.php');
+        exit;
 }
 
 
 if (file_exists("siteconfig.php")) {
-	require 'siteconfig.php';
+        require 'siteconfig.php';
 } else {
-	require 'lodelconfig.php';
-	ini_set('include_path', $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
-	require 'context.php';
-	C::setCfg($cfg);
-	require 'class.errors.php';
+        require 'lodelconfig.php';
+        ini_set('include_path', $cfg['home']. PATH_SEPARATOR. ini_get('include_path'));
+        require 'context.php';
+        C::setCfg($cfg);
+        require 'class.errors.php';
 }
 
 try
@@ -37,9 +37,9 @@ try
     include 'view.php';
     View::getView()->renderCached('index');
 }
-catch(Exception $e)
+catch(Exception $e) 
 {
-	echo $e->getContent();
-	exit();
+        echo $e->getContent();
+        exit();
 }
 ?>

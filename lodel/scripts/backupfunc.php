@@ -265,8 +265,8 @@ function importFromZip($archive, $accepteddirs, $acceptedexts = array (), $model
         foreach($accepteddirs as $dir)
         {
             if(strpos($file, $dir) === 0){
-                if(!file_exists(DIRECTORY_SEPARATOR . $dir)){
-                    mkdir(DIRECTORY_SEPARATOR . $dir, 0770, true);
+                if(!file_exists($dir)){
+                    mkdir($dir, 0770, true);
                 }
                 if($acceptedexts){
                     $pathinfos = pathinfo($file);
