@@ -396,15 +396,14 @@ function multilingue($text, $lang)
 
 function vignette($text, $width)
 {
-	if (!$text)
-		return;
-	$text = C::get('siteDir', 'cfg') . $text;
-	if (!file_exists($text))
+	if (!$text) return;
+	if (!is_file($text)) $text = C::get('siteDir', 'cfg') . $text;
+	if (!is_file($text))
 		return getlodeltextcontents("ERROR_FILE_DOES_NOT_EXIST", "COMMON");
 	if (!preg_match("/^(.*)\.([^\.]+)$/", $text, $result))
 		return getlodeltextcontents("ERROR_FILE_WITHOUT_EXTENSION", "COMMON");
 	$vignettefile = $result[1]."-small$width.".$result[2];
-	if (file_exists($vignettefile) && filemtime($vignettefile) >= filemtime($text))
+	if (is_file($vignettefile) && filemtime($vignettefile) >= filemtime($text))
 		return str_replace(C::get('siteDir', 'cfg'), '', $vignettefile);
 	list($widt, $height, $type, $attr) = getImageSize($text);
 	if($widt && $widt <= $width)
@@ -770,15 +769,14 @@ function imageheight($image)
  * avec des kilo et mega
  */
 
-function nicefilesize($lien)
+function nicefilesize($in)
 {
-	if (is_numeric($lien)) {
-		$size = $lien;
-	}	else {
-		$lien = C::get('siteDir', 'cfg').$lien;
-		if (!file_exists($lien))
-			return "0k";
-		$size = filesize($lien);
+	if (is_numeric($in)) {
+		$size = $in;
+	} else {
+		if (!is_file($in)) $in = C::get('siteDir', 'cfg') . $in; 
+		if (!is_file($in)) return false;
+		$size = filesize($in);
 	}
 
 	if ($size < 1024)
@@ -959,17 +957,14 @@ function paranumber($texte, $styles='texte')
 }
 
 
-/** renvoie le type mime d'un fichier par le système (a+ windows)
+/** renvoie le type mime d'un fichier ou false
 * @author Bruno Cénou
 * @param  string $filename le nom du fichier
-* @param bool $return 
 */
-function getFileMime($filename, $return=false){
-        $mime = null;
-        exec('file --mime-type -b '.escapeshellarg($filename), $mime);
-        if($return) return join('',$mime);
-        foreach($mime as $l)
-                echo $l;
+function getFileMime($filename){
+	if(!is_file($filename)) $filename = C::get('siteDir', 'cfg') . $filename;
+	if(is_file($filename) && is_readable($filename)) return mime_content_type($filename);
+	return false;
 }
 
 
