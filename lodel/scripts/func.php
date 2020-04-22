@@ -1043,7 +1043,7 @@ function rewriteFilename($string)
  * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
  */
-function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
+function send_mail($to, $body, $subject, $replyaddress, $replyname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
 {
     $replace = array(
         "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
@@ -1084,6 +1084,15 @@ function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = 
     $body = wordwrap(strtr($body, $replace), 70);
     $subject = wordwrap(strtr($subject, $replace), 70);
     
+    // On sauvegarde l'adresse fournie comme adresse from pour l'afficher dans le corps du mail. 
+    // Auparavant elle était utilisée comme champ from dans le header du mail envoyé
+    $user_address = $fromaddress;
+    
+    // On initialise maintenant l'adresse pour le champ from en utilisant l'adresse fournie par le fichier lodelconfig.php, si elle est bien fournie
+    $fromaddress = C::get('fromaddress', 'cfg');
+    if (empty($fromaddress)) {
+        $fromaddress = $user_address;
+    }
     // @TODO Arrêter d'utiliser PEAR !!
     $err = error_reporting(E_ALL & ~E_STRICT & ~E_NOTICE); // PEAR packages compat
 
