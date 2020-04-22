@@ -1043,7 +1043,7 @@ function rewriteFilename($string)
  * @param bool $toBcc envoie le mail en cachant les destinataires
  * @return boolean
  */
-function send_mail($to, $body, $subject, $replyaddress, $replyname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
+function send_mail($to, $body, $subject, $fromaddress, $fromname, array $docs = array(), $isHTML = true, $toBcc = false, $cc = '')
 {
     $replace = array(
         "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
