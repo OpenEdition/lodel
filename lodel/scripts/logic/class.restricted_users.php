@@ -333,6 +333,7 @@ class Restricted_UsersLogic extends Logic
 		$context['restricted'] = true;
 		$nocache = View::$nocache;
 		View::$nocache = true;
+        $context['adminemail'] = $email;
 		ob_start();
 		insert_template($context, 'users_mail', "", SITEROOT."lodel/admin/tpl/");
 		$body = ob_get_clean();

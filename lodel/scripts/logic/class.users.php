@@ -404,6 +404,7 @@ class UsersLogic extends Logic
 		$GLOBALS['nodesk'] = true;
 		$nocache = View::$nocache;
 		View::$nocache = true;
+        $context['adminemail'] = $email;
 		if($context['lang'] != $context['sitelang'])
 		{
 			$sitelang = $context['sitelang'];
