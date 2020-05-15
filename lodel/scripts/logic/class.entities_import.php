@@ -67,7 +67,11 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$context['idparent'] = $task['idparent'];
 		$odt = isset($task['odt']) ? $task['odt'] : null;
 		$tei = $task['tei'];
-		$contents = $task['fichier'];
+		$tmp_importdir = C::get('tmp_importdir', 'cfg');
+	    $contents = $task['fichier'];
+        if (!empty($tmp_importdir)) {
+            $contents['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+        }
 		unset($task);
 
 		// restore the entity

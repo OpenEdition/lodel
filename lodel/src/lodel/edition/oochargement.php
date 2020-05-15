@@ -148,7 +148,17 @@ try
 					try
 					{
 						$parser = new TEIParser($context['idtype']);
-						$contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
+                        $tmp_importdir = C::get('tmp_importdir', 'cfg');
+                        if (!empty($tmp_importdir)) {
+                            if (!file_exists($tmp_importdir)) {
+                                mkdir($tmp_importdir, 0700, true);
+                            }
+                            $tmp_importfile = $tmp_importdir.'/test.xml';
+                            file_put_contents($tmp_importfile, serialize($parser->parse($teiContents, '', $tmpdir, $sourceoriginale)));
+                            $contents['contents'] = '/test.xml';
+                        } else{
+						    $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
+                        }
 					}
 					catch(Exception $e)
 					{
