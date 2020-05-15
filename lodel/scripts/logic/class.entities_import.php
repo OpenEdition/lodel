@@ -57,6 +57,10 @@ class Entities_ImportLogic extends Entities_EditionLogic
 			$this->task = $task = $context['task'];
 			unset($context['task']);
 		}
+        if (!empty($tmp_importdir)) {
+            $this->task['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+            $task['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+        }
 		if (!$task)
 			View::getView()->back();
 		$taskLogic->populateContext($task, $context);
@@ -69,9 +73,7 @@ class Entities_ImportLogic extends Entities_EditionLogic
 		$tei = $task['tei'];
 		$tmp_importdir = C::get('tmp_importdir', 'cfg');
 	    $contents = $task['fichier'];
-        if (!empty($tmp_importdir)) {
-            $contents['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
-        }
+
 		unset($task);
 
 		// restore the entity
