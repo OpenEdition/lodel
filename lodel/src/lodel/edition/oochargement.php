@@ -153,9 +153,10 @@ try
                             if (!file_exists($tmp_importdir)) {
                                 mkdir($tmp_importdir, 0700, true);
                             }
-                            $tmp_importfile = $tmp_importdir.'/test.xml';
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
                             file_put_contents($tmp_importfile, serialize($parser->parse($teiContents, '', $tmpdir, $sourceoriginale)));
-                            $contents['contents'] = '/test.xml';
+                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['use_importdir'] =  true;
                         } else{
 						    $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
                         }

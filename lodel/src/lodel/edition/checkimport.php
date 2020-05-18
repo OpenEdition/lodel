@@ -30,7 +30,9 @@ try
 	$taskLogic->populateContext($task, $context);
     $tmp_importdir = C::get('tmp_importdir', 'cfg');
     if (!empty($tmp_importdir)) {
-        $task['fichier']['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+        if (isset($task['fichier']['use_importdir']) && $task['fichier']['use_importdir']) {
+            $task['fichier']['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+        }
     }
      $context = array_merge($context, $task['fichier']);
  
