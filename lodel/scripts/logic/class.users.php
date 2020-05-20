@@ -405,6 +405,12 @@ class UsersLogic extends Logic
 		$nocache = View::$nocache;
 		View::$nocache = true;
         $context['adminemail'] = $email;
+    
+        // On initialise maintenant l'adresse pour le champ from en utilisant l'adresse fournie par le fichier lodelconfig.php, si elle est bien fournie
+        $fromaddress = C::get('fromaddress', 'cfg');
+        if (!empty($fromaddress)) {
+            $email = $fromaddress;
+        }
 		if($context['lang'] != $context['sitelang'])
 		{
 			$sitelang = $context['sitelang'];
