@@ -28,8 +28,15 @@ try
 	if (!$task)
 		View::getView()->back();
 	$taskLogic->populateContext($task, $context);
-	$context = array_merge($context, $task['fichier']);
-	if(!empty($task['identity']))
+    $tmp_importdir = C::get('tmp_importdir', 'cfg');
+    if (!empty($tmp_importdir)) {
+        if (isset($task['fichier']['use_importdir']) && $task['fichier']['use_importdir']) {
+            $task['fichier']['contents'] = unserialize(file_get_contents($tmp_importdir.$task['fichier']['contents']));
+        }
+    }
+     $context = array_merge($context, $task['fichier']);
+ 
+ if(!empty($task['identity']))
 		$context['identity'] = $task['identity'];
 	if(!empty($task['idparent']))
 		$context['idparent'] = $task['idparent'];
