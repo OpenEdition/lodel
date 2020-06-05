@@ -127,6 +127,7 @@ try
 	set_time_limit(0);
 	$sources = $context['urls'] = array();
 	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
+    $tmp_importdir = C::get('tmp_importdir', 'cfg');
 	if($ext === 'zip')
 	{ // multiple
 
@@ -148,7 +149,6 @@ try
 					try
 					{
 						$parser = new TEIParser($context['idtype']);
-                        $tmp_importdir = C::get('tmp_importdir', 'cfg');
                         if (!empty($tmp_importdir)) {
                             if (!file_exists($tmp_importdir)) {
                                 mkdir($tmp_importdir, 0700, true);
@@ -256,8 +256,18 @@ try
 		try
 		{
 			$parser = new TEIParser($context['idtype']);
-			$contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
-		}
+            if (!empty($tmp_importdir)) {
+                            if (!file_exists($tmp_importdir)) {
+                                mkdir($tmp_importdir, 0700, true);
+                            }
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
+                            file_put_contents($tmp_importfile, serialize($parser->parse($teiContents, '', $tmpdir, $sourceoriginale)));
+                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['use_importdir'] =  true;
+             } else{
+				    $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
+            }
+        }
 		catch(Exception $e)
 		{
 			printErrors($parser->getLogs(), false, $isFrame);
@@ -408,7 +418,17 @@ try
 
 			try
 			{
-				$contents['contents'] = $parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
+                if (!empty($tmp_importdir)) {
+                            if (!file_exists($tmp_importdir)) {
+                                mkdir($tmp_importdir, 0700, true);
+                            }
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
+                            file_put_contents($tmp_importfile, serialize($parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale));
+                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['use_importdir'] =  true;
+                        } else{
+						    $contents['contents'] = $parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);
+                        }
 			}
 			catch(Exception $e)
 			{
