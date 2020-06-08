@@ -423,7 +423,7 @@ try
                                 mkdir($tmp_importdir, 0700, true);
                             }
                             $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
-                            file_put_contents($tmp_importfile, serialize($parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale));
+                            file_put_contents($tmp_importfile, serialize($parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale)));
                             $contents['contents'] = '/'.basename($file1).'-import';
                             $contents['use_importdir'] =  true;
                         } else{
