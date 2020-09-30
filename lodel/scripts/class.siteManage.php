@@ -265,11 +265,11 @@ class siteManage {
                     			C::set('path', '/'. $name);
 				}
 			}
-            
+
 			if (!C::get('url')) {
-				C::set('url', 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] && $_SERVER['SERVER_PORT'] != "80" ? ':'. $_SERVER['SERVER_PORT'] : ""). preg_replace("/\blodeladmin\/.*/", '', $_SERVER['REQUEST_URI']). substr(C::get('path'), 1));
+				C::set('url', dirname(C::get('currenturl'), 2) . C::get('path'));
 			}
-			
+
 			if (C::get('reinstall')) {
 				$status = -32;
 			}

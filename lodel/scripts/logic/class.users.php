@@ -393,7 +393,7 @@ class UsersLogic extends Logic
 			$context['sitetitle'] = $row['title'];
 			$context['islodeladmin'] = false;
 		} else { // lodeladmin
-			$context['siteurl'] = 'http://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT']!=80 ? ':'. $_SERVER['SERVER_PORT'] : '').dirname($_SERVER['REQUEST_URI']);
+			$context['siteurl'] = dirname($context['currenturl'], 2);
 			$context['sitetitle'] = $context['siteurl'];
 			$context['islodeladmin'] = true;
 		}
