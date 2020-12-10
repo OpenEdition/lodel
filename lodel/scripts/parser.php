@@ -1052,7 +1052,7 @@ PHP;
 <<<PHP
 \$currenturl=basename(\$_SERVER['SCRIPT_NAME'])."?";
 \$cleanquery=preg_replace(array("/(^|&){$offsetname}=\d+/","/(^|&)clearcache=[^&]+/"), "", \$_SERVER['QUERY_STRING']);
-if(strlen(\$cleanquery) && \$cleanquery[0]=="&") \$cleanquery=substr(\$cleanquery,1);
+if(strlen(\$cleanquery) && strpos(\$cleanquery, "&")===0) \$cleanquery=substr(\$cleanquery,1);
 if(\$cleanquery) \$currenturl.=\$cleanquery."&";
 if(\$context['nbresults']>\$split) {
 	\$context['nexturl']=\$currenturl."{$offsetname}=".(\$currentoffset + \$split);
