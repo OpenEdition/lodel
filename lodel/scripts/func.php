@@ -317,6 +317,7 @@ function download($filename, $originalname = "", $contents = "")
     get_PMA_define();
     $mimetype = array(
         'application/msword',
+	'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         'text/html',
         'text/html',
         'image/jpeg',
@@ -1173,9 +1174,10 @@ function getMimeType($ext)
         case 'jpg':
         case 'jpeg':
             return 'image/jpeg';
-        case 'docx':
         case 'doc':
             return 'application/msword';
+        case 'docx':
+            return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
         case 'xls':
             return 'application/vnd.ms-excel';
         case 'pdf':
