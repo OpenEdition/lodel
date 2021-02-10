@@ -220,14 +220,23 @@ class Entities_IndexLogic extends Logic
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
+		function_exists('stopwords') || include 'stopwords.php';
 		foreach ($tokens as $token) {
+			$tokenparts = [$token];
 			//particular case : two letter acronym or initials
-			if (preg_match ("/([A-Z][0-9A-Z]{1,2})/", $token) || strlen ($token) > 3) {
-				//little hack because oe ligature is not supported in ISO-latin!!
-				$token = strtolower (str_replace (array ("\305\223", "\305\222"), array ("oe", "OE"), $token));
-				$token = makeSortKey($token); // clean accents
-				if(!isset($indexs[$token])) $indexs[$token]=0;
-				$indexs[$token] ++; //simply count word number
+			if (preg_match ("/([A-Z][0-9A-Z]{1,2})/", $token) || strlen ($token) > 2) {
+				if (preg_match("/-/", $token)) {
+					$tokenparts = array_merge($tokenparts, preg_split("/-/",$token));
+				}
+				foreach ($tokenparts as $tk) {
+					//little hack because oe ligature is not supported in ISO-latin!!
+					$tk = strtolower (str_replace (array ("\305\223", "\305\222"), array ("oe", "OE"), $tk));
+					if (!stopwords($tk)) {
+						$tk = makeSortKey($tk); // clean accents
+						if(!isset($indexs[$tk])) $indexs[$tk]=0;
+						$indexs[$tk] ++; //simply count word number
+					}
+				}
 				/*require_once("class.stemmer.inc.php");
 				$stemmer = new Stemmer();
 				$token = $stemmer->stem($token);*/

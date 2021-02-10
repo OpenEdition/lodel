@@ -40,31 +40,16 @@ function search(&$context, $funcname, $arguments)
 		if ($token[0] == '-')	{
 			$cond = "exclude";
 			$token = substr($token, 1);
-		}	elseif ($token[0] == '+')	{
+        }   else {
 			$cond = "include";
-			$token = substr($token, 1);
-		}	else
-			$cond = 0;
+        }
 
-		//if wildcard * used
-		if ($token[strlen($token) - 1] == '*') {
-			$end_wildcard = "%";
-			$token = substr($token, 0, strlen($token) - 1);
-		}	else {
-			$end_wildcard = "";
-		}
-		if ($token[0] == '*')	{
-			$begin_wildcard = "%";
-			$token = substr($token, 1);
-		}	else {
-			$begin_wildcard = "";
-		}
 		//little hack because oe ligature is not supported in ISO-latin!!
 		$token = strtolower(str_replace(array ("\305\223", "\305\222"), array ("oe", "OE"), $token));
 		$token = makeSortKey($token);
 		//foreach word search entities that match this word
 		$dao =  DAO::getDAO("search_engine");
-		$criteria_index = "word LIKE '$begin_wildcard$token$end_wildcard'";
+		$criteria_index = "word LIKE '$token%'";
 		#echo "criteria_index=$criteria_index bim=$end_wildcard";
 		$from = "#_TP_search_engine";
 		if (!empty($context['qfield'])) {
@@ -104,17 +89,8 @@ function search(&$context, $funcname, $arguments)
 		}
 
 		switch ($cond) { // differents cases : word inclusion, exclusion and no condition
-		case "" :
-			foreach ($we_temp as $id => $weight) {
-				if (isset($we[$id]))
-					$we[$id] += $weight;
-				else
-					$we[$id] = $weight;
-			}
-			break;
 		case "exclude" :
 			foreach ($we_temp as $id => $weight) {
-				if (isset($we[$id]))
 					unset ($we[$id]);
 			}
 			break;
