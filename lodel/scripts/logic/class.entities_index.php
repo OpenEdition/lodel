@@ -194,16 +194,18 @@ class Entities_IndexLogic extends Logic
 	/**
 	 *  Split a string into tokens by given regs
 	 * @param $string the string to be splitted
-	 * @param $regs the regs used to split the string
+	 * @param $regs the regs used to clean non alphanum characters
 	 * @return an array of tokens
 	 * @access private
 	*/
 	protected function _splitInTokens ($string, $regs = 0)
 	{
+
 		if(!$regs)
-			$regs = "'\.],:;*\"!\r\t\\/)({}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
-		$string = strtr( $string , $regs , preg_replace("/./", " " , $regs ) );//non alphanum chars cleaning
+			$regs = "^-[:alnum:]";
+		$string = preg_replace("/[$regs]/u", ' ', $string);//non alphanum chars cleaning
 		$tokens = preg_split("/[\s]+/", $string );//Separate string in tokens
+
 		return $tokens;	
 	}
 

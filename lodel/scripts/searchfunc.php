@@ -26,9 +26,7 @@ function search(&$context, $funcname, $arguments)
 		return;
 	$query = $context['query'];
 	//non alphanum chars cleaning
-	//include utf8 quotes at the end
-	$regs = "'\.],:\"!\r\t\\/){}[|@<>$%Â«Â»\342\200\230\342\200\231\342\200\234\342\200\235";
-	$query = strtr($query, $regs, preg_replace("/./", " ", $regs));
+	$query = preg_replace("/[^-[:alnum:]]/u", ' ', $query);
 	//cut query string in token
 	$tokens = preg_split("/\s+/", $query);
 	#print_r($tokens);
