@@ -127,7 +127,12 @@ try
 	set_time_limit(0);
 	$sources = $context['urls'] = array();
 	$ext = strtolower(pathinfo($sourceoriginale, PATHINFO_EXTENSION));
-    $tmp_importdir = C::get('tmp_importdir', 'cfg');
+        $tmp_importdir = C::get('tmp_importdir', 'cfg');
+	$userid = C::get('id', 'lodeluser');
+	if ($context['idtype'] === 2) {
+		$mask = $tmp_importdir."*-".$userid."-".$context['id'];
+   		array_map( "unlink", glob( $mask ) );
+	}
 	if($ext === 'zip')
 	{ // multiple
 
@@ -153,9 +158,9 @@ try
                             if (!file_exists($tmp_importdir)) {
                                 mkdir($tmp_importdir, 0700, true);
                             }
-                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             file_put_contents($tmp_importfile, serialize($parser->parse($teiContents, '', $tmpdir, $sourceoriginale)));
-                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['contents'] = '/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             $contents['use_importdir'] =  true;
                         } else{
 						    $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
@@ -260,9 +265,9 @@ try
                             if (!file_exists($tmp_importdir)) {
                                 mkdir($tmp_importdir, 0700, true);
                             }
-                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             file_put_contents($tmp_importfile, serialize($parser->parse($teiContents, '', $tmpdir, $sourceoriginale)));
-                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['contents'] = '/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             $contents['use_importdir'] =  true;
              } else{
 				    $contents['contents'] = $parser->parse($teiContents, '', $tmpdir, $sourceoriginale);
@@ -422,9 +427,9 @@ try
                             if (!file_exists($tmp_importdir)) {
                                 mkdir($tmp_importdir, 0700, true);
                             }
-                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-import';
+                            $tmp_importfile = $tmp_importdir.'/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             file_put_contents($tmp_importfile, serialize($parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale)));
-                            $contents['contents'] = '/'.basename($file1).'-import';
+                            $contents['contents'] = '/'.basename($file1).'-'.$userid.'-'.$context['id'];
                             $contents['use_importdir'] =  true;
                         } else{
 						    $contents['contents'] = $parser->parse($client->xml, $odtconverted, $tmpdir[$i - 1], $sourceoriginale);

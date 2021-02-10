@@ -63,8 +63,8 @@ class Entities_ImportLogic extends Entities_EditionLogic
             if (isset($task['fichier']['use_importdir']) && $task['fichier']['use_importdir']) {
                 $this->task['fichier']['contents'] = unserialize(file_get_contents($importfile));
                 $task['fichier']['contents'] = $this->task['fichier']['contents'];
-                delete_files($importfile);
-                
+                //delete_files($importfile);
+               unlink($importfile); 
             }
         }
 		if (!$task)

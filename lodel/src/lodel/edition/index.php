@@ -27,7 +27,6 @@ try
 	else {
 		authenticate(LEVEL_VISITOR);
 	}
-
 	if (!C::get('do') && !C::get('lo')) 
 	{
 		recordurl();
@@ -89,8 +88,12 @@ try
 					break;
 			}
 			C::set('lo', $lo);
+		} else {
+			if ((C::get('do') === 'delete')&& (C::get('lo') === 'tasks')) {
+				$mask = C::get('tmp_importdir', 'cfg')."*-".C::get('id','lodeluser')."-".$context['fromdoc'];
+				array_map("unlink", glob ($mask));
+			}
 		}
-	
 		Controller::getController()->execute(array('entities', 'entities_advanced', 'entities_edition', 'entities_import', 'entities_index', 'filebrowser', 'tasks', 'xml', 'users', 'plugins'), C::get('lo'));
 	}
 }
