@@ -203,6 +203,8 @@ class Entities_IndexLogic extends Logic
 
 		if(!$regs)
 			$regs = "^-[:alnum:]";
+
+		$string = preg_replace("/[\p{Mn}]/u",'',$string);// capture non spacing marks (accents,umlauts etc.) in case where character is in a decomposed form
 		$string = preg_replace("/[$regs]/u", ' ', $string);//non alphanum chars cleaning
 		$tokens = preg_split("/[\s]+/", $string );//Separate string in tokens
 
