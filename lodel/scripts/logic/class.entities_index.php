@@ -221,27 +221,24 @@ class Entities_IndexLogic extends Logic
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
-		function_exists('stopwords') || include 'stopwords.php';
 		foreach ($tokens as $token) {
 			$tokenparts = [$token];
-			//particular case : two letter acronym or initials
-			if (preg_match ("/([A-Z][0-9A-Z]{1,2})/", $token) || strlen ($token) > 2) {
-				if (preg_match("/-/", $token)) {
-					$tokenparts = array_merge($tokenparts, preg_split("/-/",$token));
-				}
-				foreach ($tokenparts as $tk) {
-					//little hack because oe ligature is not supported in ISO-latin!!
-					$tk = strtolower (str_replace (array ("\305\223", "\305\222"), array ("oe", "OE"), $tk));
-					if (!stopwords($tk)) {
-						$tk = makeSortKey($tk); // clean accents
-						if(!isset($indexs[$tk])) $indexs[$tk]=0;
-						$indexs[$tk] ++; //simply count word number
-					}
-				}
-				/*require_once("class.stemmer.inc.php");
-				$stemmer = new Stemmer();
-				$token = $stemmer->stem($token);*/
+			if (preg_match("/-/", $token)) {
+				$tokenparts = array_merge($tokenparts, preg_split("/-/",$token));
 			}
+			foreach ($tokenparts as $tk) {
+				// we discard one character token except if it's uppercase (initial ?) or number (date or else..)
+                if (strlen($tk) > 1 or ctype_upper($tk) or is_numeric($tk)) {
+					//little hack because oe ligature is not supported in ISO-latin!!
+					$tk = str_replace (array ("\305\223", "\305\222"), array ("oe", "OE"), $tk);
+					$tk = makeSortKey(strtolower($tk)); // convert to lowercase and clean accents
+					if(!isset($indexs[$tk])) $indexs[$tk]=0;
+					$indexs[$tk] ++; //simply count word number
+				}
+			}
+			/*require_once("class.stemmer.inc.php");
+			$stemmer = new Stemmer();
+			$token = $stemmer->stem($token);*/
 		}
 		return $indexs;
 	}
