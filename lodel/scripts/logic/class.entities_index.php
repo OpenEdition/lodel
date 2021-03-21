@@ -162,9 +162,8 @@ class Entities_IndexLogic extends Logic
 	protected function _indexField ($id, $fieldValue, $fieldName, $fieldWeight, $daoIndex, $prefixtablefield = '') 
 	{
 		if (!$fieldValue) return;
-		$fieldValue = preg_replace ("/<[^>]*>/", " ", $fieldValue);//HTML tags cleaning
-		$fieldValue = $this->_decode_html_entities ($fieldValue); //HTML Entities decode
-		$indexs = $this->_cleanAndcountTokens ($fieldValue); //clean and count tokens
+		//HTML tags cleaning, entities decode, clean and count tokens
+		$indexs = $this->_cleanAndcountTokens (html_entity_decode(strip_tags($fieldValue)));
 		//Indexation de tous les mots.
 		foreach($indexs as  $key => $index) {
 			$daoIndex->instantiateObject ($voIndex);
