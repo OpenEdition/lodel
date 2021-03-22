@@ -221,12 +221,16 @@ class Entities_IndexLogic extends Logic
 	{
 		$tokens = $this->_splitInTokens($string,$regs);
 		$indexs = array();//Array of each word weight for this field
+		function_exists('stopwords') || include 'searchfunc.php';
+		$stopwords = stopwords();
 		foreach ($tokens as $token) {
 			$tokenparts = [$token];
 			if (preg_match("/-/", $token)) {
 				$tokenparts = array_merge($tokenparts, preg_split("/-/",$token));
 			}
 			foreach ($tokenparts as $tk) {
+				// if any stopword exists (case sensitive).
+				if (in_array($tk,$stopwords)) continue;
 				// we discard one character token except if it's uppercase (initial ?) or number (date or else..)
                 if (strlen($tk) > 1 or ctype_upper($tk) or is_numeric($tk)) {
 					//little hack because oe ligature is not supported in ISO-latin!!

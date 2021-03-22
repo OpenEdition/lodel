@@ -332,3 +332,16 @@ function solrSearch(&$context, array $config)
 
 	return $response->getResponse();
 }
+
+/**
+ * Fonction qui récupère la valeur de l'option générale Mots vides (stopwords)
+ * Si cette option n'a pas été créée ou bien qu'elle n'est pas renseignée, un tableau vide est retourné.
+**/
+function stopwords () {
+	global $db;
+	$stopwords_option = $db->getOne(lq("SELECT value FROM options WHERE name = 'stopwords'"));
+	if (isset($stopwords_option)) {
+		return array_map('trim', explode(',',html_entity_decode($stopwords_option)));
+	}
+	return array();
+}
