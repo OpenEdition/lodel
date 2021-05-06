@@ -381,10 +381,10 @@ class DAO
 	{
 		$vo = null;
 		$this->instantiateObject($vo);
-		if (array_key_exists("status", $vo)) {
+		if (property_exists($vo, "status")) {
 			$vo->status = 1;
 		}
-		if (array_key_exists("rank", $vo)) {
+		if (property_exists($vo, "rank")) {
 			$vo->rank = 0; // auto
 		}
 		return $vo;
