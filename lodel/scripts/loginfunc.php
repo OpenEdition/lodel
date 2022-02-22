@@ -70,11 +70,19 @@ function open_session($login, $name = null)
 	}
 	else
 	{
-		$db->execute(lq("
-        UPDATE #_MTP_session 
-            SET expire='$expire',currenturl=$myurl 
-            WHERE name='$name'")) 
-        		or trigger_error($db->errormsg(), E_USER_ERROR);
+	    db->execute(lq("SET autocommit=0;"));
+	    $db->execute(lq("LOCK TABLES #_MTP_session  WRITE;"));
+	    $rtn_status = $db->execute(lq("
+		    UPDATE #_MTP_session 
+		        SET expire='$expire',currenturl=$myurl 
+		        WHERE name='$name'")); 
+	    $db->execute("COMMIT;");
+	    $db->execute("UNLOCK TABLES;");
+	    $db->execute(lq("SET autocommit=1;"));
+	    if (!$rtn_status) {
+		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+	    }
+
 	}
 
 	C::set('clearcacheurl', mkurl($url, "clearcache=oui"));
