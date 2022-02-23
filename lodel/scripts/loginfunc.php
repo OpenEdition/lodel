@@ -70,7 +70,7 @@ function open_session($login, $name = null)
 	}
 	else
 	{
-	    db->execute(lq("SET autocommit=0;"));
+	    $db->execute(lq("SET autocommit=0;"));
 	    $db->execute(lq("LOCK TABLES #_MTP_session  WRITE;"));
 	    $rtn_status = $db->execute(lq("
 		    UPDATE #_MTP_session 
