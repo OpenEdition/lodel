@@ -50,6 +50,8 @@ function open_session($login, $name = null)
 		for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
 			// name de la session
 			$name = md5($login.uniqid(mt_rand(), true));
+            $GLOBALS['context']['expire'] = $expire;
+	        $GLOBALS['context']['currenturl_auth'] = $myurl;
 			// enregistre la session, si ca marche sort de la boucle
 			$result = $db->execute(lq("
         INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2,userrights,currenturl) 
@@ -70,19 +72,8 @@ function open_session($login, $name = null)
 	}
 	else
 	{
-	    $db->execute(lq("SET autocommit=0;"));
-	    $db->execute(lq("LOCK TABLES #_MTP_session  WRITE;"));
-	    $rtn_status = $db->execute(lq("
-		    UPDATE #_MTP_session 
-		        SET expire='$expire',currenturl=$myurl 
-		        WHERE name='$name'")); 
-	    $db->execute("COMMIT;");
-	    $db->execute("UNLOCK TABLES;");
-	    $db->execute(lq("SET autocommit=1;"));
-	    if (!$rtn_status) {
-		trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-	    }
-
+	    $GLOBALS['context']['expire'] = $expire;
+	    $GLOBALS['context']['currenturl_auth'] = $myurl;
 	}
 
 	C::set('clearcacheurl', mkurl($url, "clearcache=oui"));
