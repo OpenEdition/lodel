@@ -349,7 +349,7 @@ function recordurl()
 		} else {
 			$row['currenturl'] = "'".$row['currenturl']."'";
 		}
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', {$row['currenturl']}, '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
