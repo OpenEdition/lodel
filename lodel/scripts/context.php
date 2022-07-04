@@ -199,9 +199,9 @@ class C
 						if(is_array($v))
 						{
 							foreach($v as $kk => $vv)
-								$uri .= $k[$kk]."=".strip_tags($vv).'&';
+								$uri .= $k[$kk]."=".$vv.'&';
 						}
-						else $uri .= $k."=".strip_tags($v).'&';
+						else $uri .= $k."=".$v.'&';
 					}
 				}
 			}
@@ -219,10 +219,15 @@ class C
 
 			self::cleanRequest($_GET);
 			foreach($_GET as $k=>$v)
-			{
-				self::$_context[$k] = strip_tags($v);
+			{	
+				if (is_array($v)) {
+					foreach($v as $value) {
+						self::$_context[$k][] = strip_tags($value);
+					}
+				}else {
+					self::$_context[$k] = strip_tags($v);
+				}
 			}
-
 			if (!empty($_POST)) 
 			{
 				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
