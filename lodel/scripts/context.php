@@ -219,13 +219,19 @@ class C
 
 			self::cleanRequest($_GET);
 			foreach($_GET as $k=>$v)
-			{	
+			{
 				if (is_array($v)) {
+
 					foreach($v as $value) {
-						self::$_context[$k][] = strip_tags($value);
+
+						if ((strpos($value, '<?php') === false) && (strpos($value, '%3E?php') === false)) {
+							self::$_context[$k][] = $value;
+						}
 					}
 				}else {
-					self::$_context[$k] = strip_tags($v);
+					if ((strpos($v, '<?php') === false) && (strpos($v, '%3E?php') === false )) {
+						self::$_context[$k] = $v;
+					}
 				}
 			}
 			if (!empty($_POST)) 
@@ -234,7 +240,9 @@ class C
 				self::cleanRequest($_POST);
 				foreach($_POST as $k=>&$v)
 				{
-					self::$_context[$k] =& $v;
+					if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
+						self::$_context[$k] =& $v;
+					}
 				}
 			}
 
