@@ -717,7 +717,9 @@ class TEIParser extends XMLReader
 			foreach($msg as $m)
 				$this->_logs[] = (string) (is_object($m) ? $m->message : $m);
 		}
-		else $this->_logs[] = (string)$msg;
+ 		elseif (!empty($msg)) {
+			$this->_logs[] = (string)$msg;
+		}
 	}
 
 	/**
