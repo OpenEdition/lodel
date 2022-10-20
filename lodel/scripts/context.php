@@ -221,14 +221,24 @@ class C
 			foreach($_GET as $k=>$v)
 			{
 				if (is_array($v)) {
-
 					foreach($v as $value) {
+						if ($k === 'site' && (preg_match('/\W+/', $value) === 1)) {
+							$value = null;
+							continue 1; 
+						}
 
 						if ((strpos($value, '<?php') === false) && (strpos($value, '%3E?php') === false)) {
 							self::$_context[$k][] = $value;
 						}
 					}
 				}else {
+
+					if ($k === 'site' && (preg_match('/\W+/', $v) === 1)) {
+						$v = null;
+						continue; 
+					}
+
+
 					if ((strpos($v, '<?php') === false) && (strpos($v, '%3E?php') === false )) {
 						self::$_context[$k] = $v;
 					}
@@ -641,7 +651,6 @@ class C
 		if(is_array($data))
 			array_walk_recursive($data, array('self', 'cleanRequest'));
 		else {
-			$data = get_magic_quotes_gpc() ? stripslashes($data) : $data;
  			// rejects overly long 2 byte sequences, as well as characters above U+10000
 			$data = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]'.'|(?<=^|[\x00-\x7F])[\x80-\xBF]+'.'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/','�', $data);
 			// removes overly long 3 byte sequences and UTF-16 surrogates
@@ -732,8 +741,7 @@ class C
 		}
 	
 		// htmlpurifier does not support namespaces
-		$data = (get_magic_quotes_gpc() ? strtr(trim(stripslashes($data)), array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>')) : 
-						  strtr(trim($data), array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>')));
+		$data = strtr(trim($data), array('<r2r:ml '=>'<r2r ', '</r2r:ml>'=>'</r2r>'));
 		$data = self::$filter->purify($data);
 		$data = strtr($data, array('<r2r '=>'<r2r:ml ', '</r2r>'=>'</r2r:ml>')); // TODO Ceci ne marche pas < est transformé en &lt; juste avant…
 		return true;
