@@ -222,7 +222,7 @@ class C
 			{
 				if (is_array($v)) {
 					foreach($v as $value) {
-						if ($k === 'site' && (preg_match('/\W+/', $value) === 1)) {
+						if ($k === 'site' && (preg_match('/[^a-z0-9-]+/', $value) === 1)) {
 							$value = null;
 							continue 1; 
 						}
@@ -233,7 +233,7 @@ class C
 					}
 				}else {
 
-					if ($k === 'site' && (preg_match('/\W+/', $v) === 1)) {
+					if ($k === 'site' && (preg_match('/[^a-z0-9-]+/', $v) === 1)) {
 						$v = null;
 						continue; 
 					}
