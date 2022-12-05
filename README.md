@@ -38,7 +38,6 @@ Le design du site est défini par des gabarits écrits dans le langage Lodelscri
 
 Installation
 ------------
-Notez qu'une version pré-installée de Lodel (et OTX, l’application de conversion Word/Office vers XML/TEI) en tant qu’image de machine virtuelle linux Debian est téléchargeable à l’adresse : http://lodel.org/downloads/vms/2017/
 
 Pré-requis:
   - Serveur HTTP (nginx, apache) avec PHP
