@@ -324,7 +324,7 @@ class TableField extends MEobject {
 				$done[] = "'$f' => '".$fields[$f]."'";
 			}
 		}
-		return $this->save("Changements de propriétés: ".implode(", ",$done));
+		return $this->save("Changements de propriétés: ".implode(", ", $done));
 	}
 
 	// Copie les valeurs du champ dans un autre
@@ -461,7 +461,7 @@ class TableField extends MEobject {
 					$db->Execute($deleteRelationAttribut);
 				}
 			}
-			$entryName = implode(',', $entryName);
+			$entryName = implode( ',', $entryName);
 			$addField = lq("UPDATE #_TP_".$this->fields['class']." SET ".$tablefield->fields['name']." = ".$db->Quote($entryName)." WHERE identity={$entityRow['id']}");
 			$db->Execute($addField);
 		}
@@ -641,7 +641,7 @@ class Type extends MEobject {
 				$done[] = "'$f' => '".$fields[$f]."'";
 			}
 		}
-		return $this->save("Changements de propriétés: ".implode(", ",$done));
+		return $this->save("Changements de propriétés: ".implode(", ", $done));
 	}
 
 	// change le nom du type
@@ -790,7 +790,7 @@ class EntryType extends MEobject {
 				$done[] = "'$f' => '".$fields[$f]."'";
 			}
 		}
-		return $this->save("Changements de propriétés: ".implode(", ",$done));
+		return $this->save("Changements de propriétés: ".implode(", ", $done));
 	}
 
 	// migrer le type et les données vers une autre classe (la classe doit exister et comporter les mêmes champs)
@@ -809,7 +809,7 @@ class EntryType extends MEobject {
 		$oldentries = lq("SELECT oldclass.* FROM #_TP_$oldclass as oldclass, #_TP_entries as e WHERE e.id = oldclass.identry AND e.idtype=$idtype");
 		$oldentries = $db->Execute($oldentries);
 		while ($row = $oldentries->FetchRow()) {
-			$keys = implode(',', array_keys($row));
+			$keys = implode( ',', array_keys($row));
 			$values = array();
 			foreach ($row as $v) {
 				$values[] = $db->Quote($v);
@@ -905,7 +905,7 @@ class PersonType extends MEobject {
 				$done[] = "'$f' => '".$fields[$f]."'";
 			}
 		}
-		return $this->save("Changements de propriétés: ".implode(", ",$done));
+		return $this->save("Changements de propriétés: ".implode(", ", $done));
 	}
 
 	protected function save($message) {
@@ -1042,7 +1042,7 @@ class Classe extends MEobject {
 			$external[] = $ext->site . "." . $ext->id2;
 		}
 		if ($external)
-			$this->fields['externalentrytypes'] = implode($external, ",");
+			$this->fields['externalentrytypes'] = implode(",", $external);
 	}
 
 	private function get_types() {
@@ -1281,7 +1281,7 @@ class InternalStyle extends MEobject {
 				$done[] = "'$f' => '".$fields[$f]."'";
 			}
 		}
-		return $this->save("Changements de propriétés: ".implode(", ",$done));
+		return $this->save("Changements de propriétés: ".implode(", ", $done));
 	}
 
 	protected function save($message) {
@@ -1628,7 +1628,7 @@ class MEobject {
 		if ($list_two[0] === "") $list_two = array();
 
 		$newlist = array_unique(array_merge($list_one, $list_two));
-		$newlist = implode($newlist, $sep);
+		$newlist = implode($sep, $newlist);
 		return $newlist;
 	}
 

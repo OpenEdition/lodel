@@ -250,10 +250,20 @@ class C
 				self::cleanRequest($_POST);
 				foreach($_POST as $k=>&$v)
 				{
-					if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
+                    if (is_array($v)) {
+                        self::$_context[$k] = array();
+                        foreach($v as $key =>& $value) {
+                            if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $value)) {
+                                self::$_context[$k][$key] =& $value;
+                            }
+                        }
+                        self::$_context[$k] =& $v;
+                    }elseif (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
 						self::$_context[$k] =& $v;
 					}
 				}
+                unset($v);
+                unset($value);
 			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!

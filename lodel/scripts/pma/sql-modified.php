@@ -363,7 +363,7 @@ function PMA_getTableDef($db, $table, $crlf, $error_url, $do_relation = false, $
         } else {
             $schema_create .= '   KEY ' . $x . ' (';
         }
-        $schema_create     .= implode($columns, ', ') . ')';
+        $schema_create     .= implode(', ', $columns) . ')';
     } // end while
 
     $schema_create .= $crlf . ')';
