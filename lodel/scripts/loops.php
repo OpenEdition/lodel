@@ -816,7 +816,7 @@ function childCanBeInThisType($type,$id)
  */
 function loop_alphabet($context, $funcname)
 {
-	for ($l = 'A'; $l != 'AA'; $l++) {
+	foreach (range('A', 'Z') as $l) {
 		$context['lettre'] = $l;
 		call_user_func("code_do_$funcname", $context);
 	}
@@ -875,7 +875,7 @@ function loop_alphabetSpec($context, $funcname)
 	}
 	
 
-	for ($l = 'A'; $l != 'AA'; $l++) {
+	foreach (range('A', 'Z') as $l) {
 		$context['lettre'] = $l;
 		$context['nbresults'] = $db->getOne($sql2."'{$context['lettre']}'");
 		call_user_func("code_do_$funcname", $context);
@@ -959,7 +959,7 @@ function loop_alphabetSpecEntries($context, $funcname)
 			}
 			
 			
-			for ($l = 'A'; $l != 'AA'; $l++) {
+			foreach (range('A', 'Z') as $l) {
 			    $context['lettre'] = $l;
 			    $context['nbresults'] = $count_letters[$l];
 			    call_user_func("code_do_$funcname", $context);
