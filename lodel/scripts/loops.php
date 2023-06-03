@@ -851,8 +851,7 @@ function loop_alphabetSpec($context, $funcname)
 	}
 	
 	$status = C::get('editor', 'lodeluser') ? ' status > -64 ' : ' status > 0 ';
-	$sql2 = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$context['table']} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
-
+	$sql2 = lq("SELECT COUNT({$context['field']}) as nbresults FROM #_TP_{$table} WHERE {$whereCount} {$status} AND SUBSTRING({$context['field']},1,1) = ");
 	$whereSelect .= !empty($whereSelect) ? ' AND '.$status : 'WHERE '.$status;	
 	$sql = "SELECT DISTINCT(SUBSTRING({$context['field']},1,1)) as l 
 			FROM #_TP_{$table} 
