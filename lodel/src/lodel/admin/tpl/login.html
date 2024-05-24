@@ -20,7 +20,7 @@ body{
 <MACRO NAME="HEADER_LOGO_LOGIN">
 	<div id="loginscreen">
 		<h1 id="lodel"><img src="[#SHAREURL]/images/lodel.png" alt="Lodel, logiciel d'édition électronique"/></h1>
-	<form action="<?php echo basename($_SERVER['PHP_SELF']); ?>" method="post">
+	<form action="<?php echo htmlspecialchars(basename($_SERVER['PHP_SELF'])); ?>" method="post">
 	<fieldset>
 		<legend id="titre_formulaire">[@COMMON.WELCOME_ON]&nbsp;
 			<LOOP NAME="nom_site" TABLE="sites" WHERE="name='[#SITE]'">
@@ -51,7 +51,7 @@ body{
 				<span class="error">[@COMMON.ERROR_RIGHTS]</span><br /><br />
 			</IF>
 			<label for="login">[@COMMON.LOGIN]</label>
-			<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN]" />
+			<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN|htmlspecialchars()]" />
 			<label for="passwd">[@COMMON.PASSWD]</label>
 			<input type="password" class="input_formulaire" id="passwd" name="passwd" />
 		<ELSE />
