@@ -40,9 +40,6 @@ function open_session($login, $name = null)
 	$expire2 = time() + $cookietimeout;
 	// clean the url - nettoyage de l'url
 	$url = preg_replace("/[\?&amp;]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
-	if (get_magic_quotes_gpc()) {
-		$url = stripslashes($url);
-	}
 	$myurl = C::get('norecordurl') ? "''" : $db->qstr($url);
 
 	if(is_null($name))

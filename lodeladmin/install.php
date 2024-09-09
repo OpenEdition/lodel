@@ -59,17 +59,17 @@ class Install {
                 $len = strlen($sqlfile);
                 $ilast = 0;
                 for ($i = 0; $i < $len; $i++) {
-                        $c = $sqlfile{$i};
+                        $c = $sqlfile[$i];
                         if ($c == '\\') { $i++; continue; } // quoted char
                         if ($c == '#') {
                                 for (; $i < $len; $i++) {
-                                        if ($sqlfile{$i} == "\n") break;
-                                        $sqlfile{$i} = " ";
+                                        if ($sqlfile[$i] == "\n") break;
+                                        $sqlfile[$i] = " ";
                                 }
                         } elseif ($c == "'") {
                                 $i++;
                                 for (; $i < $len; $i++) {
-                                        $c = $sqlfile{$i};
+                                        $c = $sqlfile[$i];
                                         if ($c == '\\') { $i++; continue; } // quoted char
                                         if ($c == "'") break;
                                 }

@@ -392,7 +392,7 @@ class LodelParser extends Parser
 			if ($varname == "GROUPRIGHT") {
 				return '(C::get(\'admin\', \'lodeluser\') || in_array($context[\'usergroup\'],explode(\',\',C::get(\'groups\', \'lodeluser\')))';
 			}
-			if(0 === strpos($varname, 'OPTION') && ('.' === $varname{6} || '_' === $varname{6})) {// options
+			if(0 === strpos($varname, 'OPTION') && ('.' === $varname[6] || '_' === $varname[6])) {// options
 				return "getoption('".strtolower(substr($varname, 7))."')";
 			}
 		}
@@ -596,7 +596,7 @@ PHP;
 			$bodystarttag = strpos($text, "<body");
             		if(false === $bodystarttag) return;
 
-			if ($text{$bodystarttag+5} === '>') {
+			if ($text[$bodystarttag+5] === '>') {
 				// pas d'attributs dans le body, pas de pbs
 				$bodyendtag = $bodystarttag + 6;
 			} else {
@@ -622,7 +622,7 @@ PHP;
 		$prefixedtable = $this->prefix.$table;
 		$mprefixedtable = $this->mprefix.$table;
 
-		if('"' === $table{0})
+		if('"' === $table[0])
 			return $table;
 		if(isset($this->tablefields[$prefixedtable]))
 			return $prefixedtable;
@@ -664,9 +664,9 @@ PHP;
 		$arr = array ();
 		$ind = 0;
 		$i = -1;
-		while(isset($sql{++$i}))
+		while(isset($sql[++$i]))
 		{
-			$c = $sql {$i};
+			$c = $sql [$i];
 			#echo $c=='"';
 			if (!$escaped) {
 				if ($c == '"') {

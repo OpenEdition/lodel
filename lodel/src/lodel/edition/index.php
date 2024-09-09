@@ -84,7 +84,7 @@ try
 					$lo = 'entities_import';
 					break;
 				default :
-					$lo = '_' === $do{0} ? 'plugins' : 'entities';
+					$lo = '_' === $do[0] ? 'plugins' : 'entities';
 					break;
 			}
 			C::set('lo', $lo);

@@ -118,7 +118,7 @@ class Controller
 	                if ($lo != 'texts' && !in_array($lo, $logics)) {
 				trigger_error("ERROR: unknown logic", E_USER_ERROR);
 			}
-			if('plugins' === $lo && '_' === $context['do']{0})
+			if('plugins' === $lo && '_' === $context['do'][0])
 				$context['do'] = substr($context['do'], 1);
 
 			$do = $context['do'].'Action';

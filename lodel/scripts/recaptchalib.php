@@ -212,13 +212,20 @@ function _recaptcha_aes_pad($val) {
 /* Mailhide related code */
 
 function _recaptcha_aes_encrypt($val,$ky) {
-	if (! function_exists ("mcrypt_encrypt")) {
+    /* Lodel update to php8 : 
+       this function is unused since recaptcha-v1 has disappeared in 2018
+       The constants "MCRYPT_MODE_CBC" and "MCRYPT_RIJNDAEL_128" are removed since PHP 7.2,
+       so are the function mcrypt_encrypt() and extension mcrypt */
+       trigger_error("Function removed to be php 8 compatible, so recaptchav1 is no longer supported", E_USER_ERROR);
+       return null;
+	
+    /*if (! function_exists ("mcrypt_encrypt")) {
 		trigger_error("To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.", E_USER_ERROR);
 	}
 	$mode=MCRYPT_MODE_CBC;   
 	$enc=MCRYPT_RIJNDAEL_128;
 	$val=_recaptcha_aes_pad($val);
-	return mcrypt_encrypt($enc, $ky, $val, $mode, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");
+	return mcrypt_encrypt($enc, $ky, $val, $mode, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0");*/
 }
 
 

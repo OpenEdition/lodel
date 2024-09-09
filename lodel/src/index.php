@@ -83,7 +83,7 @@ try
 				$accepted_logic = array($lo);
 				$called_logic = $lo;
 			}
-		} elseif('_' === $do{0}) {
+		} elseif('_' === $do[0]) {
 			$accepted_logic = array('plugins');
 			C::set('lo', 'plugins');
 		} else {
