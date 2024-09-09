@@ -50,7 +50,7 @@ function magic_addslashes($var)
 
 function magic_stripslashes($var)
 {
-    return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
+    return $var;
 }
 
 /**
@@ -1432,7 +1432,7 @@ function rmtree($rep)
         return;
     }
     while (($file = readdir($fd)) !== false) {
-        if('.' === $file{0}) continue;
+        if('.' === $file[0]) continue;
         $file = $rep. "/". $file;
         if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
             rmtree($file);

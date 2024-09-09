@@ -848,8 +848,8 @@ function _indent($source, $indenter = '  ')
 	while(isset($arr[++$i]))
 	{
 		$current =& $arr[$i];
-		if(!isset($current{0})) continue;
-		if($current{0} === '<')
+		if(!isset($current[0])) continue;
+		if($current[0] === '<')
 		{
 			$prefix = isset($arr[$i+1]) ? $arr[$i+1] : '';
 			$tag = isset($arr[$i+2]) ? $arr[$i+2] : '';
@@ -860,7 +860,7 @@ function _indent($source, $indenter = '  ')
 			$prefix = $tag = $suffix = '';
 		}
 
-		if(isset($current{1}) && '<?' === $current{0}.$current{1})
+		if(isset($current[1]) && '<?' === $current[0].$current[1])
 		{ // php/xml code
 			$closingTag = false;
 			$source .= "\n".$current."\n";

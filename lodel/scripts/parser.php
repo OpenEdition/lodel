@@ -177,25 +177,25 @@ PHP;
 
 	protected function parse_variable(& $text, $escape = 'php')
 	{
-		if(!isset($text{3})) return; // at least 4 chars : [#C]
+		if(!isset($text[3])) return; // at least 4 chars : [#C]
 
 		$i = strpos($text, '[');
 		while ($i !== false) {
 			$startvar = $i;
 
-			if(!isset($text{++$i})) // not a var, just a '['
+			if(!isset($text[++$i])) // not a var, just a '['
 				return;
 
-			$varchar = $text{$i};
+			$varchar = $text[$i];
 			// parenthesis syntaxe [(
 			if ($varchar == '(') {
 				$para = true;
 
-				if(!isset($text{++$i})) // not a var, just a '[('
+				if(!isset($text[++$i])) // not a var, just a '[('
 				{
 					return;
 				}
-				$varchar = $text{$i};
+				$varchar = $text[$i];
 			}	else {
 				$para = false;
 			}
@@ -204,11 +204,11 @@ PHP;
 			{
 				$startvarchar = $varchar;
 
-				if(!isset($text{++$i})) // not a var, just a '[('
+				if(!isset($text[++$i])) // not a var, just a '[('
 				{
 					return;
 				}
-				$varchar = $text{$i};
+				$varchar = $text[$i];
 
 				// look for the name of the variable now
 				if ($varchar < 'A' || $varchar	> 'Z')
@@ -219,21 +219,21 @@ PHP;
 
 				$varname = $varchar;
 
-				if(!isset($text{++$i}))
+				if(!isset($text[++$i]))
 				{
 					return;
 				}
 
-				$varchar = $text{$i};
+				$varchar = $text[$i];
 
 				while (($varchar	>= 'A' && $varchar	<= 'Z') || ($varchar	>= '0' &&
 								$varchar	<= '9') || $varchar	== '_' || $varchar	== '.'){
 					$varname .= $varchar;
-					if(!isset($text{++$i}))
+					if(!isset($text[++$i]))
 					{
 						return;
 					}
-					$varchar = $text{$i};
+					$varchar = $text[$i];
 				}
 
 				if($varchar == '#' || $varchar == '%') { // syntaxe [#VAR.#VAR] pour les tableaux !
@@ -246,20 +246,20 @@ PHP;
 
 						$varname .= $varchar;
 
-						if(!isset($text{++$i}))
+						if(!isset($text[++$i]))
 						{
 							return;
 						}
 
-						$varchar = $text{$i};
+						$varchar = $text[$i];
 						while (($varchar	>= 'A' && $varchar	<= 'Z') || ($varchar	>= '0' &&
 									$varchar	<= '9') || $varchar	== '_') {
 							$varname .= $varchar;
-							if(!isset($text{++$i})) // not a var, just a '[('
+							if(!isset($text[++$i])) // not a var, just a '[('
 							{
 								return;
 							}
-							$varchar = $text{$i};
+							$varchar = $text[$i];
 						}
 
 						// if(isset($text{$i}) && $text{$i} == '.') $varname .= $text{$i};
@@ -271,38 +271,38 @@ PHP;
 
 				if ($varchar == ':')	{ // a lang
 					$lang = '';
-					if(!isset($text{++$i}))
+					if(!isset($text[++$i]))
 					{
 						return;
 					}
-					$varchar = $text{$i};
+					$varchar = $text[$i];
 					if ($varchar == '#') { // pour syntaxe LS [#RESUME:#SITELANG] et [#RESUME:#DEFAULTLANG.#KEY] d'une boucle foreach
-						if(!isset($text{++$i}))
+						if(!isset($text[++$i]))
 						{
 							return;
 						}
-						$varchar = $text{$i};
+						$varchar = $text[$i];
 						$is_var = true; // on a une variable derriere les ':'
 						$is_array = false;
 						while (($varchar >= 'A' && $varchar < 'Z') || $varchar == '.' || $varchar == '#' || $varchar == '_' ||
 							($varchar	>= '0' && $varchar	<= '9')) {
 							if ($varchar == '.') { $is_array = true; }
 							$lang .= $varchar;
-							if(!isset($text{++$i}))
+							if(!isset($text[++$i]))
 							{
 								return;
 							}
-							$varchar = $text{$i};
+							$varchar = $text[$i];
 						}
 					} else { //pour syntaxe LS [#RESUME:FR]
 						$is_var = false;
 						while ($varchar >='A' && $varchar < 'Z') {
 							$lang .= $varchar;
-							if(!isset($text{++$i}))
+							if(!isset($text[++$i]))
 							{
 								return;
 							}
-							$varchar = $text{$i};
+							$varchar = $text[$i];
 						}
 					}
 					$lang = strtolower($lang);
@@ -314,7 +314,7 @@ PHP;
 							$value = '';
 							foreach($tab as $t)
 							{
-								if('#' == $t{0})
+								if('#' == $t[0])
 								{
 									$value .= '[lisset($context[\''.substr($t, 1).'\'])]';
 								}
@@ -349,7 +349,7 @@ PHP;
 						if ($bracket > 0)
 						{
 							$pipefunction .= $varchar;
-							$varchar = isset($text{++$i}) ? $text{$i} : '';
+							$varchar = isset($text[++$i]) ? $text[$i] : '';
 						}
 						else ++$i;
 					}
@@ -363,14 +363,14 @@ PHP;
 					}
 				}
 
-				if(!isset($text{$i}))
+				if(!isset($text[$i]))
 				{
 					return;
 				}
-				$varchar = $text{$i};
+				$varchar = $text[$i];
 
 				// look for a proper end of the variable
-				if ($para && $varchar == ')' && $text{$i+1} == ']')	{
+				if ($para && $varchar == ')' && $text[$i+1] == ']')	{
 					$i += 2;
 				}	elseif (!$para && $varchar == ']')	{
 					++$i;
@@ -412,7 +412,7 @@ PHP;
 					$variable = '%' === $prefix ? '$GLOBALS[\'context\']' : '$context';
 					foreach($arrvar as $v)
 					{
-						$c = $v{0};
+						$c = $v[0];
 						if('#' === $c || '%' === $c)
 						{
 							$variable .= '[lisset('.('%' === $c ? '$GLOBALS[\'context\'][\''.strtolower(substr($v, 1)).'\']' : '$context[\''.strtolower(substr($v, 1)).'\']').')]';
@@ -442,9 +442,9 @@ PHP;
 			$new = false;
 			$i = 0;
 
-			while(isset($pipefunction{++$i}))
+			while(isset($pipefunction[++$i]))
 			{
-				$c = $pipefunction{$i};
+				$c = $pipefunction[$i];
 				if(!$new)
 				{
 					if(!(($c >= 'a' && $c <= 'z') || ($c >= 'A' && $c <= 'Z')))
@@ -454,7 +454,7 @@ PHP;
 					$quote = false;
 					$currentQuote = '';
 				}
-				elseif($open && '\\' !== $pipefunction{$i-1} && ('"' === $c || "'" === $c))
+				elseif($open && '\\' !== $pipefunction[$i-1] && ('"' === $c || "'" === $c))
 				{
 					if(!$quote)
 					{
@@ -467,13 +467,13 @@ PHP;
 						$currentQuote = '';
 					}
 				}
-				elseif('\\' !== $pipefunction{$i-1} && !$quote && '(' === $c)
+				elseif('\\' !== $pipefunction[$i-1] && !$quote && '(' === $c)
 				{
 					++$open;
 					if($open === 1)
 						continue;
 				}
-				elseif('\\' !== $pipefunction{$i-1} && $open && !$quote && ')' === $c)
+				elseif('\\' !== $pipefunction[$i-1] && $open && !$quote && ')' === $c)
 				{
 					--$open;
 					if($open === 0)
@@ -642,7 +642,7 @@ PHP;
 				$this->_clearposition();
 				break;
 			default :
-				if ($this->arr[$this->ind]{0}	== '/')	{
+				if ($this->arr[$this->ind][0]	== '/')	{
 					// closing tag ?
 					if ($this->arr[$this->ind + 1])
 						$this->_errmsg("The closing tag ".$this->arr[$this->ind]." is malformed");
@@ -1687,7 +1687,7 @@ PHP;
 				$vars = explode('.', $var);
 				foreach($vars as $v)
 				{
-					$c = $v{0};
+					$c = $v[0];
 					if('%' === $c || '#' === $c || $this->variablechar === $c)
 					{
 						$v = '['.strtoupper($v).']';
@@ -1788,15 +1788,15 @@ PHP;
 
 	protected function prefixTablesInSQL($sql)
 	{
-		if(!isset($sql{0})) return ''; // empty string
+		if(!isset($sql[0])) return ''; // empty string
 
 		$inquote = false;
 		$str = '';
 		$str2 = '';
 		$i=-1;
-        	while(isset($sql{++$i}))
+        	while(isset($sql[++$i]))
 		{
-			$c = $sql {$i};
+			$c = $sql [$i];
 			if ($inquote) { // we are in a string
 				$str2 = '';
 				if ($c == $quotec && !$escaped) {
@@ -1860,7 +1860,7 @@ PHP;
 
 		foreach($tmp as $texte)
 		{
-			if(isset($texte{3})) // all conditions are less or equals to 3 chars
+			if(isset($texte[3])) // all conditions are less or equals to 3 chars
 			{
 				$ret .= $texte;
 				continue;
@@ -1873,9 +1873,9 @@ PHP;
 			}
 			$i=-1;
 			$nb = 0;
-            		while(isset($texte{++$i}))
+            		while(isset($texte[++$i]))
 			{
-				if($texte{$i} == "'" && ($i>0 && $texte{$i-1} == '\\')) ++$nb;
+				if($texte[$i] == "'" && ($i>0 && $texte[$i-1] == '\\')) ++$nb;
 			}
 			if($nb) $open = !$open;
 

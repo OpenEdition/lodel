@@ -148,7 +148,7 @@ class MainPluginsLogic extends Logic
 			{
 				while (($file = readdir($fd)) !== false) 
 				{
-					if ($file{0} == ".") continue;
+					if ($file[0] == ".") continue;
 		
 					$file = $path.$file;
 					if(!is_dir($file) || !file_exists($file.'/config.xml') || 
@@ -202,7 +202,7 @@ class MainPluginsLogic extends Logic
 									break 2;
 								}
 								$plugin[$localName] = $reader->value;
-								if('_' === $plugin[$localName]{0})
+								if('_' === $plugin[$localName][0])
 									$plugin[$localName] = getlodeltextcontents(substr($plugin[$localName], 1),'lodeladmin');
 								break;
 							case 'hookType':
@@ -274,7 +274,7 @@ class MainPluginsLogic extends Logic
 													break 5;
 												}
 												$param['title'] = $reader->value;
-												if('_' === $param['title']{0})
+												if('_' === $param['title'][0])
 													$param['title'] = getlodeltextcontents(substr($param['title'], 1),'lodeladmin');
 											break;
 		
