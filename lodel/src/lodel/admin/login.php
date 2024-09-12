@@ -18,10 +18,11 @@ try
     C::set('env', 'admin');
 
     $login = C::get('login');
-    
+
     if($login && C::get('passwd') && C::get('passwd2')) {
         include 'loginfunc.php';
         $retour = change_passwd(C::get('datab'), $login, C::get('old_passwd'), C::get('passwd'), C::get('passwd2'));
+
         switch($retour)
         {
             case true:
@@ -46,7 +47,7 @@ try
                         break;
                     } else {
                         check_internal_messaging();
-                        header ("Location: http".(C::get('https', 'cfg') ? 's' : '')."://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
+                        header("Location: " . $context['siteurl'] . C::get('url_retour'));
                     }
                 }
                 break;
@@ -88,7 +89,7 @@ try
                 }
             }
             check_internal_messaging();
-            header ("Location: http".(C::get('https', 'cfg') ? 's' : '')."://". $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). C::get('url_retour'));
+            header("Location: " . $context['siteurl'] . C::get('url_retour'));
         } while (0);
     }
     

@@ -87,6 +87,7 @@ class C
 		self::$filter = null;
 		self::$_cfg = $cfg; // set the config vars
 		self::$_cfg['https'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? true : false);
+                self::$_cfg['base_url'] = isset($_SERVER['SERVER_NAME']) ? "${_SERVER['REQUEST_SCHEME']}://${_SERVER['SERVER_NAME']}" . (!in_array($_SERVER['SERVER_PORT'], ['80', '443']) ? $_SERVER['SERVER_PORT'] : '') : '';
 		$GLOBALS['tp'] = $GLOBALS['tableprefix'] = $cfg['tableprefix'];
 		defined('SITEROOT') || define('SITEROOT', '');
 		function_exists('cache_get') || include 'cachefunc.php';
@@ -358,7 +359,7 @@ class C
 			self::$_context['version'] = self::$_cfg['version'];
 			self::$_context['shareurl'] = self::$_cfg['shareurl'];
 			self::$_context['extensionscripts'] =self::$_cfg['extensionscripts'];
-			self::$_context['currenturl'] = isset($_SERVER['SERVER_NAME']) ? 'http'.(self::$_cfg['https'] ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ':'. $_SERVER['SERVER_PORT'] : ''). $_SERVER['REQUEST_URI'] : '';
+			self::$_context['currenturl'] = self::$_cfg['base_url'] . $_SERVER['REQUEST_URI'];
 			self::$_context['siteroot'] = (defined('SITEROOT') ? SITEROOT : '');
 			self::$_context['sharedir'] = self::$_cfg['sharedir'];
 			self::$_context['tp'] = self::$_context['tableprefix'] = self::$_cfg['tableprefix'];
