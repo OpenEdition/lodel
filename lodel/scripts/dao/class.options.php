@@ -57,6 +57,6 @@ class optionsDAO extends DAO
 	public function __construct()
 	{
 		parent::__construct("options", false);
-		$this->rights = array('write'=>LEVEL_ADMIN, 'protect'=>LEVEL_ADMINLODEL);
+		$this->rights = array('write'=>LEVEL_EDITOR, 'protect'=>LEVEL_ADMINLODEL);
 	}
 }
