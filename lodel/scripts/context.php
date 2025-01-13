@@ -372,7 +372,11 @@ class C
 			defined('INC_CONNECT') || include 'connect.php';
 			defined('INC_FUNC') || include 'func.php';
 			global $db;
-			self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+            if (empty(C::get('site','cfg')))
+                self::$_context['siteurl'] = null;
+            else
+                self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+			//self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(self::$_cfg['site']) . '"')), '/');
 
 			self::_getTriggers();
 		}
@@ -659,7 +663,7 @@ class C
 	static public function cleanRequest(&$data)
 	{
 		if(is_array($data))
-			array_walk_recursive($data, array('self', 'cleanRequest'));
+			array_walk_recursive($data, array(self::class, 'cleanRequest'));
 		else {
  			// rejects overly long 2 byte sequences, as well as characters above U+10000
 			$data = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]'.'|(?<=^|[\x00-\x7F])[\x80-\xBF]+'.'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/','�', $data);

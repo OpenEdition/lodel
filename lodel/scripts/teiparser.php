@@ -1897,6 +1897,7 @@ class TEIParser extends XMLReader
 	 */
 	private function _getAttributes($tagStr, $attributes = array('dir','xml:lang','lang'), $remove=false) {
 		$removed = array();
+        $newTags = array();
 		$tags = explode('>',$tagStr);
 		foreach ($tags as $tag) {
 			if ($tag) {

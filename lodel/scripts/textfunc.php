@@ -308,12 +308,12 @@ function propre($letexte)
 
 function formateddate($date, $format)
 {
-	return strftime($format, strtotime($date));
+	return date($format, strtotime($date));
 }
 
 function formatedtime($time, $format)
 {
-	return strftime($format, $time);
+	return date($format, $time);
 }
 
 function humandate($s)
@@ -390,6 +390,8 @@ function tocable($text, $level = 10)
 
 function multilingue($text, $lang)
 {
+    if (empty($text) || empty($lang))
+        return null;
 	preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s", $text, $result);
 	return isset($result[1]) ? $result[1] : null;
 }
@@ -466,8 +468,10 @@ function removeendnotes($text)
 
 function removenotes($text)
 {
-	$text = preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
-	$text = preg_replace('/<sup[^>]*>\s*(<[^>]+\/?>\s*<\/[^>]+>)*\s*<\/sup>/s', "", $text);
+    if (!empty($text)) {
+        $text = preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
+        $text = preg_replace('/<sup[^>]*>\s*(<[^>]+\/?>\s*<\/[^>]+>)*\s*<\/sup>/s', "", $text);
+    }
 	return $text;
 }
 

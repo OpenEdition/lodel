@@ -395,7 +395,6 @@ PHP;
 		$prefix = (string)$prefix;
 		$varname = (string)$varname;
 		$pipefunction = (string)$pipefunction;
-
 		if(isset($this->_cachedVars[$prefix][$varname]) && !$this->_translationMode)
 		{
 			$variable = $this->_cachedVars[$prefix][$varname]; // var is in cache
@@ -403,7 +402,6 @@ PHP;
 		else
 		{
 			$variable = $this->parse_variable_extra($prefix, $varname);
-
 			if(false === $variable)
 			{
 				if(false !== strpos($varname, '.'))
@@ -520,6 +518,9 @@ PHP;
 				}
 			}
 		}
+
+
+        $variable = preg_replace("/implode\(([\w\[\$\('\]\)]+),('. *')\)/", "implode($2, $1)", $variable);
 
 		if('php' == $escape)
 			return '<?php $tmp='.$variable.';if(!empty($tmp)||0==$tmp){if(is_array($tmp)){$isSerialized=true;echo serialize($tmp);}else{echo $tmp;}$tmp=null;} ?>';

@@ -46,7 +46,8 @@ function cache_get($name, $generate_cacheid = true)
 	$cachename = $generate_cacheid ? getCacheIdFromId($name) : $name;
 
 	if($datas = $cache->get($cachename)){
-		if($content = @unserialize(base64_decode($datas))) return $content;
+		//if($content = @unserialize(base64_decode($datas))) return $content;
+		if($content = $datas) return $content;
 		else return $datas;
 	}else
 		return false;

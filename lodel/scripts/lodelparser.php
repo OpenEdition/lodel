@@ -20,6 +20,7 @@
  * Classe utilitaire pour parser le Lodelscript - Fille de la classe Parser
  *
  */
+ #[AllowDynamicProperties]
 class LodelParser extends Parser
 {
 	/**
@@ -104,6 +105,7 @@ class LodelParser extends Parser
 			global $db;
 			$obj = $db->Execute("SELECT class,classtype FROM {$GLOBALS['tp']}classes WHERE status>0")
 				or trigger_error('SQL Error:<br/>'.$db->ErrorMsg(), E_USER_ERROR);
+            $this->classes = array();
 			while(!$obj->EOF) 
 			{
 				$this->classes[$obj->fields['class']] = array('class'=>$obj->fields['class'], 'classtype'=>$obj->fields['classtype']);
