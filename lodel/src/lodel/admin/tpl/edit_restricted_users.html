@@ -434,7 +434,7 @@ pw.setHelperId('helper');
 		<legend>[@ADMIN.SESSIONS]</legend>
 		<LOOP NAME="session" TABLE="session" WHERE="iduser='[#ID]' AND site='[#SITE]'"> 
 			<DO>
-			<div class="texte_info">[@ADMIN.EXPIRE] [#EXPIRE2|formatedtime('%d/%m/%y %H:%M')] <a href="index.php?do=deletesession&amp;lo=restricted_users&amp;session=[#ID]"><IF COND="[#EXPIRE2] lt time()">[[@COMMON.DELETE]]<ELSE/>[[@ADMIN.DELOGG]]</IF></a></div><br />
+			<div class="texte_info">[@ADMIN.EXPIRE] [#EXPIRE2|formatedtime('d/m/y H:i')] <a href="index.php?do=deletesession&amp;lo=restricted_users&amp;session=[#ID]"><IF COND="[#EXPIRE2] lt time()">[[@COMMON.DELETE]]<ELSE/>[[@ADMIN.DELOGG]]</IF></a></div><br />
 			</DO>
 			<ALTERNATIVE>
 				[@ADMIN.NO_SAVED_SESSION]
