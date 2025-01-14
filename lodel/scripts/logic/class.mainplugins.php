@@ -9,6 +9,7 @@
 /**
  * Classe de logique des plugins
  */
+ #[\AllowDynamicProperties]
 class MainPluginsLogic extends Logic
 {
 
