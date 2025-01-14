@@ -19,6 +19,8 @@
 
 class GenericLogic extends Logic
 {
+    private $_typetable;
+    private $_idfield;
 	/** 
 	 * Constructeur de la classe
 	 *
