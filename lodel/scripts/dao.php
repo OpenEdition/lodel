@@ -526,7 +526,7 @@ class DAO
 	 */
 	public function rightscriteria($access)
 	{
-		if (!isset($this->cache_rightscriteria[$access])) {
+ 		if (!isset($this->cache_rightscriteria[$access])) {
 			$classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {
 				$status = $this->sqltable. '.status';
@@ -536,6 +536,8 @@ class DAO
 					$this->cache_rightscriteria[$access] .= " AND $status<32 AND $status>-32 ";
 				}
 			}
+            if (!isset($this->cache_rightscriteria[$access])) 
+                $this->cache_rightscriteria[$access] = "";
 		}	else	{
 			$this->cache_rightscriteria[$access] = "";
 		}
