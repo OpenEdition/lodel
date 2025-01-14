@@ -29,10 +29,11 @@ function postprocessing(&$context)
         foreach ($context as $key => $val) {
             if (is_array($val)) {
                 postprocessing($context[$key]);
-            } else {
+            } elseif (!empty($val)) {
                 $context[$key] = str_replace("Â\240", "&nbsp;", $val);
 // 	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
-            }
+            } else
+                $context[$key] = $val;
         }
     }
 }
