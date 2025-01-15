@@ -9,7 +9,6 @@
 /**
  * Classe de logique des plugins
  */
- #[\AllowDynamicProperties]
 class MainPluginsLogic extends Logic
 {
 
@@ -17,7 +16,8 @@ class MainPluginsLogic extends Logic
 	* generic equivalent assoc array
 	*/
 	public $g_name;
-
+    public $_plugin;
+    
 	protected $plugin; // current plugin
 
 	protected $_triggers; // triggers list
