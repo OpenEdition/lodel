@@ -329,7 +329,7 @@ function humandate($s)
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
 		$dat = (int)$result[1]."-".(int)$result[2]."-".(int)$result[3];
-		$ret = formateddate($dat, "%d %B %Y");
+		$ret = formateddate($dat, "d F Y");
 	}
     
 	// time
@@ -1017,7 +1017,7 @@ function time2Date($time){
 
 function date2Time($date){
 	$time = mktime(substr($date, 11, 2), substr($date, 14, 2), substr($date, 17, 2), substr($date, 5, 2), substr($date, 8, 2), substr($date, 0, 4));
-	return strftime('%Y%m%d%H%M%S', $time);
+	return strftime('YmdHis', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
@@ -1026,7 +1026,7 @@ function date2Time($date){
 */
 
 function LSgmstrftime($time){
-	return strftime('%Y-%m-%dT%TZ', $time);
+	return strftime('Y-id\TTZ', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
@@ -1748,6 +1748,16 @@ function lexplode($text, $delimiter)
 	return explode($delimiter, $text);
 }
 
+/**
+ * implémentation de la fonction implode
+ * @param string $arr le tableau à assembler
+ * @param string $delimiter le délimiteur
+ * @return string
+ */
+function limplode($arr, $delimiter) 
+{
+	return implode($delimiter, $arr);
+}
 /**
  * fonction permettant de faire des opérations mathématiques simples
  *

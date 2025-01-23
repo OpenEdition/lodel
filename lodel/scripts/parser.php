@@ -160,7 +160,7 @@ PHP;
 		if ($this->charset != 'utf-8') {
 			#$t=microtime();
 			function_exists('convertHTMLtoUTF8') || include 'utf8.php'; // conversion des caracteres
-			$template['contents'] = utf8_encode($template['contents']);
+			$template['contents'] = mb_convert_encoding($template['contents'], "UTF-8", "ISO-8859-1");
 			convertHTMLtoUTF8($template['contents']);
 		}
 

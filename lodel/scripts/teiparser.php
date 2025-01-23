@@ -1246,8 +1246,10 @@ class TEIParser extends XMLReader
 						$attrsAdd[] = 'dir="ltr"';
 				}
 			}elseif( $this->localName !== "p" && $this->localName !== "q"){ // le <p> indique un paragraphe, le <q> indique une citation
-				$ret   .= '<span class="' . $styles['class'] . '">';
-				$tags[] = 'span';
+				If (!empty($styles['class'])) {
+                    $ret   .= '<span class="' . $styles['class'] . '">';
+                    $tags[] = 'span';
+                }
 			}
 			unset($attrs['rend']);
 		}

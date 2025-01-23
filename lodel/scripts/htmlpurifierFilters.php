@@ -50,7 +50,7 @@ if(defined('backoffice'))
 				if( isset($doc->documentElement) ){
     				$xsd = $doc->documentElement->getAttributeNS($doc->lookupNamespaceURI('xsi'), 'schemaLocation');
     
-        			if(! @$doc->schemaValidate($xsd) )
+        			if((!empty($xsd)) && (!@$doc->schemaValidate($xsd)))
         				$errors = libxml_get_errors();
 				}
 
