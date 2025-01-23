@@ -527,7 +527,11 @@ class DAO
 	public function rightscriteria($access)
 	{
  		if (!isset($this->cache_rightscriteria[$access])) {
-			$classvars = get_class_vars($this->table. "VO");
+            $classvars = null;
+            if (!class_exists($this->table."VO", false)) {
+                eval ("#[AllowDynamicProperties] class ". $this->table."VO". " { public $". $this->idfield. "; } ");
+            }
+            $classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {
 				$status = $this->sqltable. '.status';
 				$this->cache_rightscriteria[$access] = C::get('visitor', 'lodeluser') ? '' : " AND $status > 0";

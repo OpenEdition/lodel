@@ -115,6 +115,7 @@ class DataLogic
 	private $_typesClass;
 	/* FIN IMPORT ME XML */
 
+    private $_existingTables;
 	/**
 	 * Constructeur
 	 *
@@ -2221,7 +2222,10 @@ class DataLogic
 		$impl = new DomImplementation();
 		$dtd = $impl->createDocumentType("lodelEM", "", "lodelEM.dtd");
 		$document = $impl->createDocument("", "", $dtd);
-		$document->encoding = $GLOBALS['db_charset'];
+        $encoding = $GLOBALS['db_charset'];
+        if ($encoding === "utf8mb3")
+            $encoding = "utf8";
+		$document->encoding = $encoding;
 		// début création XML
 		$schemaNode = $document->createElement("lodelEM");
 		$document->appendChild($schemaNode);

@@ -16,7 +16,7 @@
  * entrées, personnes par exemple</p>
  *
  */
-
+#[AllowDynamicProperties]
 class GenericLogic extends Logic
 {
     private $_typetable;

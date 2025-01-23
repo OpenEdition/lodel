@@ -14,7 +14,7 @@ echo '<?xml version="1.0" encoding="', $context['charset'], '"?>';
 <!--[Page d'accueil du site]-->
 <url>
 		<loc>[#CURRURL]</loc> <!--[ URL]-->
-		<lastmod>[#MODIFICATIONDATE|formateddate("%Y-%m-%dT%T")]</lastmod> <!--[ Date au format ISO 8601 ]-->
+		<lastmod>[#MODIFICATIONDATE|formateddate("Y-m-d\TT")]</lastmod> <!--[ Date au format ISO 8601 ]-->
 		<changefreq>always</changefreq> <!--[ Frequence de changement des urls : always, hourly,daily,...]-->
 		<priority>1.0</priority> <!--[ Priorité de l'url par rapport aux autres ]-->
 </url>
@@ -26,7 +26,7 @@ echo '<?xml version="1.0" encoding="', $context['charset'], '"?>';
 <DO>
 	<url>
 		<loc>[#CURRURL][#ID|makeurlwithid]</loc> 
-		<lastmod>[#MODIFICATIONDATE|formateddate("%Y-%m-%dT%T")]</lastmod> 
+		<lastmod>[#MODIFICATIONDATE|formateddate("Y-m-d\TT")]</lastmod> 
 		<changefreq>daily</changefreq> 
 		<priority>0.9</priority>
 	</url>
@@ -40,7 +40,7 @@ echo '<?xml version="1.0" encoding="', $context['charset'], '"?>';
 <DO>
 	<url>
 		<loc>[#CURRURL][#ID|makeurlwithid]</loc>
-		<lastmod>[#UPD|formateddate("%Y-%m-%dT%T")]</lastmod>
+		<lastmod>[#UPD|formateddate("Y-m-d\TT")]</lastmod>
 		<changefreq>daily</changefreq>
 		<priority>0.8</priority>
 	</url>
@@ -54,7 +54,7 @@ echo '<?xml version="1.0" encoding="', $context['charset'], '"?>';
 <DO>
 	<url>
 		<loc>[#CURRURL][#ID|makeurlwithid]</loc> 
-		<lastmod>[#UPD|formateddate("%Y-%m-%dT%T")]</lastmod> 
+		<lastmod>[#UPD|formateddate("Y-m-d\TT")]</lastmod> 
 		<changefreq>daily</changefreq>
 		<priority>0.8</priority>
 	</url>
