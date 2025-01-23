@@ -130,7 +130,9 @@
 										<ul>
 										<LOOP NAME="foreach" ARRAY="[#VALUE]">
 											<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
-												<li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+                                                <IF COND="[#VALUE|is_array]">
+                                                    <li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+                                                </IF>
 											</LOOP>
 										</LOOP>
 										</ul>
