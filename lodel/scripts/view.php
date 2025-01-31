@@ -160,6 +160,7 @@ class View
 		global $db;
 
 		$idsession = C::get('idsession', 'lodeluser');
+
 		$offset = $back-1;
 		usemaindb();
 		// selectionne les urls dans la pile grâce à l'idsession et suivant la
@@ -172,16 +173,16 @@ class View
             		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
         	$result->Close();
-		$id = $row['id'];	
+		$id = $row['id'];
 		$newurl = $row['url'];
-		
+
 		if ($id) {
 			$db->execute(lq("
                  DELETE FROM #_TP_urlstack 
                     WHERE id>='{$id}' AND idsession='{$idsession}' AND site='".$this->_site."'")) 
                 		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 
-			$newurl = 'http'.(C::get('https', 'cfg') ? 's' : '').'://'. $_SERVER['SERVER_NAME']. ($_SERVER['SERVER_PORT'] != 80 ? ":". $_SERVER['SERVER_PORT'] : ''). $newurl;
+			$newurl = dirname(C::get('siteurl')) . $newurl;
 		} else {
 			$ext = defined('backoffice') || defined('backoffice-lodeladmin') ? 'php' : C::get('extensionscripts');
 			$newurl = "index.". $ext;
