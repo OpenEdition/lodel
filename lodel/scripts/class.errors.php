@@ -39,6 +39,7 @@ class LodelException extends Exception
                                 E_USER_LODEL_BAD_REQUEST => 'Bad Request',
                                 E_USER_LODEL_NOT_FOUND => 'Page not Found'
 				);
+     public $debug = null;
 	/**
 	 * Constructor
 	 * Will call Exception::__construct, send header if not already done, send mail if $contactbug have been set

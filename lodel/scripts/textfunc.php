@@ -1756,6 +1756,7 @@ function lexplode($text, $delimiter)
  */
 function limplode($arr, $delimiter) 
 {
+    if (is_string($arr)) return $arr;
 	return implode($delimiter, $arr);
 }
 /**
@@ -1905,6 +1906,15 @@ function msort($arr, $key, $sort_order = SORT_LOCALE_STRING) {
 		        return $arr;
 }
 
+/**
+    * * Implemente count()
+    * * évite d'appeler count sur un argument non dénombrable
+    * */
+function lcount($value) {
+    if (!is_countable($value) || !is_array($value)) return null;
+    return count($value);
+}
+    
 
 
 

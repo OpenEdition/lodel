@@ -223,18 +223,18 @@
 				</LOOP>
 			</li>
 			<LET ARRAY="langs"><IF COND="[#STATISTICS.LANG|is_array]">[#STATISTICS.LANG|array_unique]</IF></LET>
-			<li class="title">[@EDITION.USED_LANGUAGES] <span style="color:grey">([#LANGS|count])</span></li>
-			<li>[#LANGS|join(', ')]</li>
-			<li class="title">[@COMMON.IMAGES] <span style="color:grey">([#STATISTICS.IMAGES|count])</span></li>
+            <li class="title">[@EDITION.USED_LANGUAGES] <span style="color:grey">([#LANGS|lcount])</span></li>
+            <li>[#LANGS|limplode(', ')]</li>
+			<li class="title">[@COMMON.IMAGES] <span style="color:grey">([#STATISTICS.IMAGES|lcount])</span></li>
 			<li>
 				<LOOP NAME="foreach" ARRAY="[#STATISTICS.IMAGES]">
 					<p>[#KEY|basename] : [#VALUE.IMAGEWIDTH]x[#VALUE.IMAGEHEIGHT]px, [#VALUE.IMAGEMIME], [#VALUE.IMAGESIZE|niceFileSize]</p>
 				</LOOP>
 			</li>
-			<li class="title">[@EDITION.DOCUMENT_PLAN] <span style="color:grey">([#TITLES|count])</span></li>
-			<li>
-				[#TITLES|join('')]
-			</li>
+            <li class="title">[@EDITION.DOCUMENT_PLAN] <span style="color:grey">([#TITLES|lcount])</span></li>
+            <li>
+                [#TITLES|limplode('')]
+            </li>
 		</ul>
 	</div>
 </div>
