@@ -248,22 +248,8 @@ class C
 			{
 				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
 				self::cleanRequest($_POST);
-				foreach($_POST as $k=>&$v)
-				{
-                    if (is_array($v)) {
-                        self::$_context[$k] = array();
-                        foreach($v as $key =>& $value) {
-                            if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $value)) {
-                                self::$_context[$k][$key] =& $value;
-                            }
-                        }
-                        self::$_context[$k] =& $v;
-                    }elseif (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
-						self::$_context[$k] =& $v;
-					}
-				}
-                unset($v);
-                unset($value);
+                self::secureRequest($_POST);
+				
 			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
@@ -674,6 +660,25 @@ class C
 		return $data;
 	}
 
+    static public function secureRequest(&$data)
+	{
+        foreach($data as $k=>&$v)
+				{
+                    if (is_array($v)) {
+                        self::$_context[$k] = array();
+                        foreach($v as $key =>& $value) {
+                            if (!is_array($value)){
+                                if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $value)) {
+                                    self::$_context[$k][$key] =& $value;
+                                }
+                            }
+                        }
+                        self::$_context[$k] =& $v;
+                    }elseif (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
+						self::$_context[$k] =& $v;
+					}
+				}
+    }
 	/**
 	 * Public function to clean input datas
 	 *

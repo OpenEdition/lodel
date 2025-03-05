@@ -389,10 +389,13 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	}
 
 	$local_context = $context;
-	$local_context['pages'] = $cache[$funcname]['pages'];
-	$local_context['nexturl'] = $cache[$funcname]['nexturl'];
+    if (isset($cache[$funcname]['pages']))
+        $local_context['pages'] = $cache[$funcname]['pages'];
+    if (isset($cache[$funcname]['nexturl']))
+        $local_context['nexturl'] = $cache[$funcname]['nexturl'];
+    if (isset($cache[$funcname]['previousurl']))
 	$local_context['previousurl'] = $cache[$funcname]['previousurl'];
-	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
+	if (empty($local_context["pages"]) || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname", $local_context);
 		return;
 	}

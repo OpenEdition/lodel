@@ -308,6 +308,7 @@ function propre($letexte)
 
 function formateddate($date, $format)
 {
+    if (empty($date)) return null;
 	return date($format, strtotime($date));
 }
 
@@ -1754,11 +1755,14 @@ function lexplode($text, $delimiter)
  * @param string $delimiter le délimiteur
  * @return string
  */
-function limplode($arr, $delimiter) 
+function limplode($arr, $delimiter = ",") 
 {
-    if (is_string($arr)) return $arr;
-	return implode($delimiter, $arr);
+    if (is_array($arr))
+        return implode($delimiter, $arr);
+    else 
+        return $arr;
 }
+
 /**
  * fonction permettant de faire des opérations mathématiques simples
  *
