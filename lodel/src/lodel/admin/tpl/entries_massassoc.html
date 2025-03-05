@@ -241,7 +241,7 @@
 				<a href="javascript:;" onclick="objEntries.getEntitiesList(0);">[@ADMIN.BACK_TO_ENTITIES_LIST]</a>
 			</div>
 		</li>
-		<LOOP NAME="getEntitiesSummary" TABLE="entities, types" SELECT="entities.id, g_title, entities.status, type, display" WHERE="entities.id IN ([#IDS|join(',')]) AND entities.idtype=types.id" ORDER="entities.rank">
+		<LOOP NAME="getEntitiesSummary" TABLE="entities, types" SELECT="entities.id, g_title, entities.status, type, display" WHERE="entities.id IN ([#IDS|limplode(',')]) AND entities.idtype=types.id" ORDER="entities.rank">
 			<li id="entity_[#ID]">
 				<IF COND="[#ADVANCED]">
 					<img src="[#SHAREURL]/images/fleche_grise.png" onclick="objEntries.toggleEntity(this, [#ID]);" alt="[@ADMIN.DISPLAY_RELATED_ENTITIES]" title="[@ADMIN.DISPLAY_RELATED_ENTITIES]" class="left action fleche" onmouseover="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')){this.src='[#SHAREURL]/images/fleche_bleue_verticale_active.png';}" onmouseout="if(-1 === this.src.indexOf('[#SHAREURL]/images/fleche_bleue.png')) {this.src='[#SHAREURL]/images/fleche_grise.png';}"/>
@@ -294,7 +294,7 @@
 				</IF>
 			</LOOP>
 			<IF COND="[%ENTRIESLIST]">
-				[%ENTRIESLIST|join(', ')|cuttext(60, true)]
+				[%ENTRIESLIST|limplode(', ')|cuttext(60, true)]
 				<LET VAR="entrieslist" GLOBAL="1"></LET>
 			</IF>
 		</td>

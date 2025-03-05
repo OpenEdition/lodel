@@ -131,7 +131,7 @@
 										<LOOP NAME="foreach" ARRAY="[#VALUE]">
 											<LOOP NAME="foreach" ARRAY="[#VALUE.STYLE]">
                                                 <IF COND="[#VALUE|is_array]">
-                                                    <li>[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]</li>
+                                                    <li>[#VALUE|lexplode(':')|limplode(':&#8203;')|lexplode(';')|limplode(';&#8203;')]</li>
                                                 </IF>
 											</LOOP>
 										</LOOP>
@@ -188,7 +188,7 @@
 															[#VALUE|niceFileSize]
 														</p>
 													<ELSE/>
-														[#VALUE|lexplode(':')|join(':&#8203;')|lexplode(';')|join(';&#8203;')]<br/>
+														[#VALUE|lexplode(':')|limplode(':&#8203;')|lexplode(';')|limplode(';&#8203;')]<br/>
 													</IF>
 												</LOOP>
 												</li>

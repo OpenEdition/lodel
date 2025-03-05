@@ -47,7 +47,7 @@
 					<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
 				</LOOP>
 				<IF COND="[%OUTPUT]">
-     					[%OUTPUT|join('<br/>')]
+     					[%OUTPUT|limplode('<br/>')]
 				</IF>
 			</td>
 			<td>
@@ -77,7 +77,7 @@
 							<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
 						</LOOP>
 						<IF COND="[%OUTPUT]">
-       							[%OUTPUT|join('<br/>')]
+       							[%OUTPUT|limplode('<br/>')]
 						</IF>
 					</td>
 				</tr>
@@ -112,11 +112,11 @@
 							<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
 						</LOOP>
 						<IF COND="[%OUTPUT]">
-							[%OUTPUT|join('<br/>')]
+							[%OUTPUT|limplode('<br/>')]
 						</IF>
 					</td>
 					<td>[#TYPE]</td>
-					<td>[#STYLE|lexplode(',')|join('<br/>')]</td>
+					<td>[#STYLE|lexplode(',')|limplode('<br/>')]</td>
 					<td>[#GUI_USER_COMPLEXITY]</td>
 					<td>[#[#NAME|strtoupper]]</td>
 					</tr>
@@ -147,11 +147,11 @@
 							<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
 						</LOOP>
 						<IF COND="[%OUTPUT]">
-       							[%OUTPUT|join('<br/>')]
+       							[%OUTPUT|limplode('<br/>')]
 						</IF>
 					</td>
 					<td>
-						[#STYLE|lexplode(',')|join('<br/>')]
+						[#STYLE|lexplode(',')|limplode('<br/>')]
 					</td>
 				</tr>
 			</DO>
@@ -182,11 +182,11 @@
 						<LET ARRAY="output[]" GLOBAL="1">[#VALUE]:[#LANG]</LET>
 					</LOOP>
 					<IF COND="[%OUTPUT]">
-						[%OUTPUT|join('<br/>')]
+						[%OUTPUT|limplode('<br/>')]
 					</IF>
 				</td>
 				<td>[#TYPE]</td>
-				<td>[#STYLE|lexplode(',')|join('<br/>')]</td>
+				<td>[#STYLE|lexplode(',')|limplode('<br/>')]</td>
 				<td>[#GUI_USER_COMPLEXITY]</td>
 				<td>[#[#NAME|strtoupper]]</td>
 				</tr>
