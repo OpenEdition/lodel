@@ -34,7 +34,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 
 	isset($GLOBALS['lodelfieldtypes']) || include 'fieldfunc.php';
 
-	if (isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
+	if (isset($text) && isset($GLOBALS['lodelfieldtypes'][$type]['autostriptags']) && $GLOBALS['lodelfieldtypes'][$type]['autostriptags'] && !is_array($text)) {
 		$text = strip_tags($text);
 	}
 	switch ($type) { //pour chaque type de champ
