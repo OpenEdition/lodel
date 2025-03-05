@@ -155,7 +155,7 @@ class DAO
 	{
 		global $db;
 		$idfield = $this->idfield;
-		#print_r($vo);
+
 		// check the user has the basic right for modifying/creating an object
 		if (isset($this->rights['write']) && C::get('rights', 'lodeluser') < $this->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to modify objects from the table '. $this->table, E_USER_ERROR);
@@ -529,7 +529,7 @@ class DAO
  		if (!isset($this->cache_rightscriteria[$access])) {
             $classvars = null;
             if (!class_exists($this->table."VO", false)) {
-                eval ("#[AllowDynamicProperties] class ". $this->table."VO". " { public $". $this->idfield. "; } ");
+                eval ("#[AllowDynamicProperties]\n class ". $this->table."VO". " { public $". $this->idfield. "; } ");
             }
             $classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {

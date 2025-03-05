@@ -40,7 +40,7 @@ class genericDAO extends DAO
 	{
 		$classname = $this->table."VO";
 		if (!class_exists($this->table."VO", false)) {
-			eval ("#[AllowDynamicProperties] class ". $classname. " { public $". $this->idfield. "; } ");
+			eval ("#[AllowDynamicProperties]\n class ". $classname. " { public $". $this->idfield. "; } ");
 		}
 		$vo = new $classname; // the same name as the table. We don't use factory...
 	}
