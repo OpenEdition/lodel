@@ -15,6 +15,7 @@ function_exists('mkeditlodeltext') || include("translationfunc.php");
  * Classe de logique des textes lodel
  *
  */
+#[\AllowDynamicProperties]
 class TextsLogic extends Logic 
 {
 

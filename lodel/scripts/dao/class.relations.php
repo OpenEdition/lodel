@@ -17,7 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL relations
  */
- #[AllowDynamicProperties]
+#[AllowDynamicProperties]
 class relationsVO 
 {
 	/**#@+
