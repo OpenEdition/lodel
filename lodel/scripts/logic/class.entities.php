@@ -10,7 +10,7 @@
  * Classe de logique des entités
  *
  */
- #[\AllowDynamicProperties]
+#[\AllowDynamicProperties]
 class EntitiesLogic extends Logic
 {
 
