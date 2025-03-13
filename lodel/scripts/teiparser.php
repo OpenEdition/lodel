@@ -830,7 +830,8 @@ class TEIParser extends XMLReader
 				{
 					if(!isset($this->_entrytypes[$obj->name]))
 					{
-						$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE'), $obj->name));
+                        if (!empty(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE')))
+                            $this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE'), $obj->name));
 						continue;
 					}
 
