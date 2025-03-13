@@ -17,7 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL entrytypes
  */
- #[AllowDynamicProperties]
+#[AllowDynamicProperties]
 class entrytypesVO 
 {
 	/**#@+
