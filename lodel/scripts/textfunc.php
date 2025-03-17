@@ -46,6 +46,7 @@ function majuscule($texte) {
 function textebrut($letexte)
 {
 	//$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", "", $letexte);
+    if (empty($letexte)) return $letexte;
 	return strip_tags(preg_replace("/(&nbsp;|[\n\r\t]|<\/(blockquote|div|dl|h[1-6]|ol|p|table|ul|li)>|<br\/?>)+/", " ", $letexte));
 //	return strip_tags(preg_replace("/(&nbsp;|[\n\r\t])+/", " ", $letexte));
 }
@@ -86,7 +87,8 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 		'ending' => '', 'exact' => true, 'html' => $html,
 	);
 	$text = $text;
-
+    if (empty($text)) return $text;
+    
 	if($dots) $options['ending'] = '...';
 
 	extract($options);
@@ -935,14 +937,13 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
+    $doc->preserveWhiteSpace = true;
+    $doc->formatOutput = false;
 	if(!isset($GLOBALS['textfunc_hasbeencleaned'])) $texte = cleanHTML($texte);
 	if(!$doc->loadXML("<body>" . $texte . "</body>"))
 		return $texte;
 
 	$dom = new DOMXpath($doc);
-
-	$dom->preserveWhiteSpace = true;
-	$dom->formatOutput       = false;
 
 	cleanIllegalTags($doc);
 
@@ -1018,7 +1019,7 @@ function time2Date($time){
 
 function date2Time($date){
 	$time = mktime(substr($date, 11, 2), substr($date, 14, 2), substr($date, 17, 2), substr($date, 5, 2), substr($date, 8, 2), substr($date, 0, 4));
-	return strftime('YmdHis', $time);
+	return date('YmdHis', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
@@ -1027,7 +1028,7 @@ function date2Time($date){
 */
 
 function LSgmstrftime($time){
-	return strftime('Y-id\TTZ', $time);
+	return date('Y-id\TTZ', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
