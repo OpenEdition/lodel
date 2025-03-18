@@ -179,9 +179,11 @@ function getlodeltext($name, $group, &$id, &$contents, &$status, $lang = -1)
         $arr->Close();
     } while (!$text);
 
-    $id = $text['id'];
-    $contents = $text['contents'];
-    $status = $text['status'];
+    if (!empty($test)) {
+        $id = $text['id'];
+        $contents = $text['contents'];
+        $status = $text['status'];
+    }
     if (!$contents && (C::get('visitor', 'lodeluser') || C::get('debugMode', 'cfg'))) $contents = "@" . $name;
 }
 
