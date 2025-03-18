@@ -690,7 +690,7 @@ class C
 	{
 		if(is_array($data)) 
 		{
-			array_walk_recursive($data, array('self', '_sanitize'));
+			array_walk_recursive($data, array(self::class, '_sanitize'));
 		}
 		else 
 		{
