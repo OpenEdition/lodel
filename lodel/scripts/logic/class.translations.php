@@ -18,7 +18,8 @@ $GLOBALS['translations_textgroups']=array(
 /**
  * Classe de logique des traductions
  */
-class TranslationsLogic extends Logic {
+#[\AllowDynamicProperties]
+ class TranslationsLogic extends Logic {
 
 	/** Constructor
 	*/
