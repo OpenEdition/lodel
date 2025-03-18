@@ -14,7 +14,8 @@
  * Classe de logique des champs
  *
  */
-class TableFieldsLogic extends Logic 
+#[\AllowDynamicProperties]
+ class TableFieldsLogic extends Logic 
 {
 
 	/**
