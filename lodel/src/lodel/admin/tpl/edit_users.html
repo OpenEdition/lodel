@@ -425,7 +425,7 @@ pw.setHelperId('helper');
 		</label><br class="nobr"><select name="gui_user_complexity" id="gui_user_complexity"><?php 
 						makeSelect($context,"gui_user_complexity","users","select");
 					?></select><LOOP NAME="fielderror" FIELD="gui_user_complexity"><a id="gui_user_complexity"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.GUI_USER_COMPLEXITY]"></FUNC></span></LOOP><br /><label for="protected">[@ADMIN.PROTECTED_USER] : 
-		</label><br class="nobr"><IF COND="abs([#STATUS]) ge 32"><input type="checkbox" name="protected" id="protected" checked><ELSE/><input type="checkbox" name="protected" id="protected"></IF><LOOP NAME="fielderror" FIELD="protected"><a id="protected"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER]"></FUNC></span></LOOP><br />
+		</label><br class="nobr"><IF COND="[#STATUS] AND abs([#STATUS]) ge 32"><input type="checkbox" name="protected" id="protected" checked><ELSE/><input type="checkbox" name="protected" id="protected"></IF><LOOP NAME="fielderror" FIELD="protected"><a id="protected"></a><span class="error"><FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.PROTECTED_USER]"></FUNC></span></LOOP><br />
 </fieldset><fieldset>
 <legend>[@ADMIN.USER_OPTIONAL_INFORMATION]</legend>
 <label for="nickname">[@ADMIN.NICKNAME] : 
