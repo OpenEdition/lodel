@@ -313,8 +313,10 @@ function setLang($lang=null)
     }
 
     // Définition de la locale système
-    if( (!empty($choosed_language)) && ($choosed_language !== substr(setlocale(LC_ALL, 0), 0, 2)) )
+    if(($choosed_language !== substr(setlocale(LC_ALL, 0), 0, 2)) )
     {
+        if (empty($choosed_language))
+            $choosed_language = C::get(C::get('locale', 'cfg'));
         $l = strtolower(substr($choosed_language, 0,2));
         $lu = 'en' === $l ? 'US' : strtoupper($l);
         @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
