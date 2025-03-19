@@ -179,7 +179,7 @@ function getlodeltext($name, $group, &$id, &$contents, &$status, $lang = -1)
         $arr->Close();
     } while (!$text);
 
-    if (!empty($test)) {
+    if (!empty($text)) {
         $id = $text['id'];
         $contents = $text['contents'];
         $status = $text['status'];
