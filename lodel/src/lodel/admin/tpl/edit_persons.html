@@ -32,7 +32,7 @@
   <label for="protected" class="boolean">[@ADMIN.PERMANENT_PERSON]
         : 
       </label>
-  <IF COND="abs([#STATUS]) ge 32">
+  <IF COND="[#STATUS] AND abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">

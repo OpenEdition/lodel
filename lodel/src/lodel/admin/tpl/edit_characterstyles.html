@@ -56,7 +56,13 @@
   <label for="style">[@ADMIN.XPATH_OTX] : 
 		</label>
   <br class="nobr">
-  <input type="text" size="30" name="otx" id="otx" class="text" value="[#OTX]"> <a href="javascript:;" onclick="window.open('./?page=dtd&amp;otx=[#OTX|urlencode]', '','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@ADMIN.REGENERATE]</a>
+  <LET VAR="TMP_OTX">
+    <IF COND="[#OTX]">
+        [#OTX|urlencode]
+    <ELSE/>
+    </IF>
+  </LET>
+  <input type="text" size="30" name="otx" id="otx" class="text" value="[#TMP_OTX]"> <a href="javascript:;" onclick="window.open('./?page=dtd&amp;otx=[#OTX]', '','width=800,height=600,top=0,left=0,resizable=yes,scrollbars=yes');return false;">[@ADMIN.REGENERATE]</a>
   <LOOP NAME="fielderror" FIELD="otx">
     <a id="style"></a><span class="error">
       <FUNC NAME="PRINT_ERROR_MESSAGE" TITLE="[@ADMIN.XPATH_OTX]"></FUNC>
@@ -67,7 +73,7 @@
   <label for="protected">[@ADMIN.PROTECTED_CHARACTERE_STYLE] : 
 		</label>
   <br class="nobr">
-  <IF COND="abs([#STATUS]) ge 32">
+  <IF COND="[#STATUS] AND abs([#STATUS]) ge 32">
     <input type="checkbox" name="protected" id="protected" checked>
     <ELSE/>
     <input type="checkbox" name="protected" id="protected">

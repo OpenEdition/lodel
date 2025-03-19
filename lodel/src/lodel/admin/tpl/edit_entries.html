@@ -47,7 +47,7 @@
       </p>
     </LOOP>
   </IF>
-  <IF COND="abs([#STATUS]) ne 21"> <!--[ 21 = indépubliable ]-->
+  <IF COND="[#STATUS] AND abs([#STATUS]) ne 21"> <!--[ 21 = indépubliable ]-->
     <br />
     <label for="protected" class="boolean">[@ADMIN.PERMANENT_ENTRY] : </label>
     <IF COND="abs([#STATUS]) ge 32">
