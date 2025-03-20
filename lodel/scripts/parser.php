@@ -1158,12 +1158,13 @@ PHP;
 		if($selectparts['groupby']) {
 			$this->fct_txt .=
 <<<PHP
-		\$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->RecordCount();
+        \$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->RecordCount();
 PHP;
 		} else {
 			$this->fct_txt .=
 <<<PHP
-		\$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->fields['nbresults'];
+    if (!empty(\$result->fields) && isset(\$result->fields['nbresults']))
+         \$context['nbresultats'] = \$context['nbresults'] = \$context['nblignes'] = (int)\$result->fields['nbresults'];
 PHP;
 		}
 
