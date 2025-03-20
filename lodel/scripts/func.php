@@ -844,7 +844,10 @@ function mystripslashes(&$var)
         array_walk($var, "mystripslashes");
         return $var;
     } else {
-        return $var = stripslashes($var);
+        if (!empty($var))
+            return $var = stripslashes($var);
+        else
+            return $var;
     }
 }
 

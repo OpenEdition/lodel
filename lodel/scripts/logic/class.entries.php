@@ -84,8 +84,11 @@ class EntriesLogic extends GenericLogic
 				}
 			}
 		}
-		if (empty($context['id'])) // pour une nouvelle entrée on propose le statut du type de l'entrée
-			$context['status']=DAO::getDAO ("entrytypes")->getById ($context['idtype'],"status")->status;
+		if (empty($context['id'])) { // pour une nouvelle entrée on propose le statut du type de l'entrée
+            $entrytype = DAO::getDAO ("entrytypes")->getById($context['idtype'],"status");
+            if (!empty($entrytype))
+                $context['status']=$entrytype->status;
+        }
 		$context['classtype']=$this->maintable;
 		return parent::viewAction ($context, $error); //call the parent method
 	}
