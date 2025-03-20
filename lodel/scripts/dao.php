@@ -470,7 +470,7 @@ class DAO
 
 		//delete the uniqueid entry if required
 		if ($this->uniqueid) {
-			if ($nbid != count($id)) {
+			if (is_countable($nbid) && $nbid != count($id)) {
 				trigger_error("ERROR: internal error in DAO::deleteObject. Please report the bug", E_USER_ERROR);
 			}
 			deleteuniqueid($id);
