@@ -16,7 +16,8 @@
 /**
  * Classe d'objet virtuel de la table SQL characterstyles
  */
-class characterstylesVO 
+#[\AllowDynamicProperties]
+ class characterstylesVO 
 {
 	/**#@+
 	 * @access public
