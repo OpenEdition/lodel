@@ -171,11 +171,13 @@ class View
                 ORDER BY id DESC"), 1, $offset) 
             		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
-        	$result->Close();
-		$id = $row['id'];	
-		$newurl = $row['url'];
+        $result->Close();
+        if (!empty($row)) {
+            $id = $row['id'];	
+            $newurl = $row['url'];
+        }
 		
-		if ($id) {
+		if (!empty($id)) {
 			$db->execute(lq("
                  DELETE FROM #_TP_urlstack 
                     WHERE id>='{$id}' AND idsession='{$idsession}' AND site='".$this->_site."'")) 

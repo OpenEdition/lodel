@@ -17,7 +17,8 @@
 /**
  * Classe d'objet virtuel de la table SQL persontypes
  */
-class persontypesVO 
+#[\AllowDynamicProperties]
+ class persontypesVO 
 {
 	/**#@+
 	 * @access public
