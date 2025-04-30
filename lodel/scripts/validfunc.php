@@ -54,7 +54,7 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 	case 'text' :
 	case 'tinytext' :
 	case 'longtext' :
-		if (!$text) {
+		if (empty($text)) {
 			$text = $default;
 		} elseif($name && isset($context['class'])) {
 			if(!isset($masks[$context['class']])) {
@@ -82,7 +82,8 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 				if(0 === $ret) return 'mask: '.getlodeltextcontents('field_doesnt_match_mask', 'common').' ("'.htmlentities($masks[$context['class']][$name]['user']).'")';
 			}
 		}
-		$text = unicode_to_numeric_entity($text); // mysql utf8 encoding workaround
+        if (!empty($text))
+            $text = unicode_to_numeric_entity($text); // mysql utf8 encoding workaround
 
 		return true; // always true
 		break;
@@ -129,14 +130,16 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		}
 		break;
 	case 'mlstyle' :
-		$text = strtolower($text);
-		$stylesarr = preg_split("/[\n,;]/", $text);
-		foreach ($stylesarr as $style) {
-			$style = trim($style);
-			if ($style && !preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/", $style)) {
-				return $type;
-			}
-		}
+        if (!empty($text)) {
+            $text = strtolower($text);
+            $stylesarr = preg_split("/[\n,;]/", $text);
+            foreach ($stylesarr as $style) {
+                $style = trim($style);
+                if ($style && !preg_match("/^[a-zA-Z0-9]*(\.[a-zA-Z0-9]+)?\s*(:\s*([a-zA-Z]{2}|--))?$/", $style)) {
+                    return $type;
+                }
+            }
+        }
 		break;
 	case 'style' :
 		if ($text)
@@ -462,10 +465,12 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
  * Convertir les caractères utf-8 codés sur 4 bytes dans leur équivalent numerique => &#10000;
  */
 function unicode_to_numeric_entity($text) {
-	// detect 4-byte UTF-8 characters : trouvé sur http://www.w3.org/International/questions/qa-forms-utf-8.en.php
-	$regex = '/(?:\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/xs';
-	              # planes 1-3                  # planes 4-15             # plane 16
-	$text = preg_replace_callback($regex,'unicode_to_numeric_entity_callback', $text);
+    if (!empty($text)) {
+        // detect 4-byte UTF-8 characters : trouvé sur http://www.w3.org/International/questions/qa-forms-utf-8.en.php
+        $regex = '/(?:\xF0[\x90-\xBF][\x80-\xBF]{2}|[\xF1-\xF3][\x80-\xBF]{3}|\xF4[\x80-\x8F][\x80-\xBF]{2})/xs';
+                      # planes 1-3                  # planes 4-15             # plane 16
+        $text = preg_replace_callback($regex,'unicode_to_numeric_entity_callback', $text);
+    }
 	return $text;
 }
 

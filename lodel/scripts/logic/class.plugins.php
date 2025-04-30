@@ -13,6 +13,7 @@
 /**
  * Classe de logique des plugins des sites
  */
+#[\AllowDynamicProperties]
 class PluginsLogic extends MainPluginsLogic
 {
 	/**
