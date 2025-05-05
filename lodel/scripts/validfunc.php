@@ -272,10 +272,12 @@ function validfield(&$text, $type, $default = "", $name = "", $usedata = "", $di
 		$text = (boolean) ( empty($text) ? 0 : 1 );
 		break;
 	case 'tplfile' :
-		$text = trim($text); // should be done elsewhere but to be sure...
-		if ($text && (strpos($text, "/") !== false || $text[0] == ".")) {
-			return "tplfile";
-		}
+        if (!empty($text)) {
+            $text = trim($text); // should be done elsewhere but to be sure...
+            if ($text && (strpos($text, "/") !== false || $text[0] == ".")) {
+                return "tplfile";
+            }
+        }
 		break;
 	case 'color' :
 		if ($text && !preg_match("/^#[A-Fa-f0-9]{3,6}$/", $text)) {
