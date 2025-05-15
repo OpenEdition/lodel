@@ -865,7 +865,8 @@ class DataLogic
 
 		foreach ($conv as $maintable => $changes) {
 			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			while ( ($id=$result->fields['id']) ) {
+            
+			while (isset($result->fields['id']) && ($id=$result->fields['id']) ) {
 				$newid=uniqueid($maintable);
 				$db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				foreach ($changes as $table => $idsname) {
