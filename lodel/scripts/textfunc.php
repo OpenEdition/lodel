@@ -308,16 +308,21 @@ function propre($letexte)
 	return traite_raccourcis(trim($letexte));
 }
 
-function formateddate($date, $format)
-{
-    if (empty($date)) return null;
-	return date($format, strtotime($date));
-}
+use function PHP81_BC\strftime;
 
-function formatedtime($time, $format)
-{
-	return date($format, $time);
-}
+ function formateddate($date, $format)
+ {
+    if (empty($date)) return null;
+    $currentLocal = setlocale(LC_ALL, 0);
+    return strftime($format, strtotime($date), $currentLocal);
+ }
+
+ function formatedtime($time, $format)
+ {
+    $currentLocal = setlocale(LC_ALL, 0);
+    return strftime($format, $time, $currentLocal);
+
+ }
 
 function humandate($s)
 {

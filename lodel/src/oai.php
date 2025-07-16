@@ -418,7 +418,7 @@ function verbs_processing()
 				$tokenValid            = TOKENVALID*3600;
 				$exp_date              = time()+$tokenValid;
 				$my_expirationdatetime = date('YmdHis', $exp_date);
-				$expirationdatetime    = gmdate('Y-m-d\TTZ', $exp_date);
+				$expirationdatetime    = gmdate('Y-m-d\TH:i:s\Z', $exp_date);
 
 				if (isset($resumptionToken)) {
 					$info = get_token_info($resumptionToken);
@@ -672,7 +672,7 @@ if(!(in_array($_SERVER['REMOTE_ADDR'], $oai_allowed) || in_array($hostname, $oai
 
 log_access($hostname);
 $oai_open = "<?xml version=\"1.0\" encoding=\"utf-8\"?><OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd\">
-<responseDate>". gmdatee('Y-m-d\TTZ', time()). "</responseDate>
+<responseDate>". gmdate('Y-m-d\TH:i:s\Z', time()). "</responseDate>
 <request>". dirname($context['currenturl']). '/oai20.'. $context['extensionscripts']. "</request>";
 
 $oai_close = "</OAI-PMH>\n";

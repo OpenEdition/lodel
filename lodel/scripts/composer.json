@@ -1,6 +1,6 @@
 {
     "require": {
-        "adodb/adodb-php": "^5.20",
+        "adodb/adodb-php": "^5.22",
         "simplepie/simplepie": "^1.5",
         "jelix/wikirenderer": "^3.1",
         "pear/mail": "^1.4",
@@ -8,6 +8,9 @@
         "ezyang/htmlpurifier": "^4.9",
         "roderik/pwgen-php": "^0.1.5",
         "stefangabos/zebra_image": "^2.2",
-        "geshi/geshi": "^1.0"
+        "geshi/geshi": "^1.0",
+        "solarium/solarium": "^6.3",
+        "symfony/event-dispatcher": "^7.2",
+        "php81_bc/strftime": "^0.7.6"
     }
 }

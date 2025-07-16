@@ -20,7 +20,7 @@
 		<item>
 			<title>[#G_TITLE|textebrut|htmlspecialchars]</title>
 			<link>[#CURRENTURL|dirname]/index.php?do=view&amp;id=[#ID]</link>
-			<pubDate>[#MODIFICATIONDATE|formateddate('a, d b Y T z')]</pubDate>
+			<pubDate>[#MODIFICATIONDATE|formateddate(''%a, %d %b %Y %T %z')]</pubDate>
 			<description>
 				<IF COND="[#ID|get_dc_fields('description')]">[#ID|get_dc_fields('description')|textebrut|htmlspecialchars]</IF>
 			</description>
