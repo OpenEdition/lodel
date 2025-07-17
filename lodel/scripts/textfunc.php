@@ -309,7 +309,12 @@ function propre($letexte)
 }
 
 use function PHP81_BC\strftime;
-
+function formatednow($format)
+ {
+    $currentLocal = setlocale(LC_ALL, 0);
+    return strftime($format, time(), $currentLocal);
+ }
+ 
  function formateddate($date, $format)
  {
     if (empty($date)) return null;
@@ -337,7 +342,7 @@ function humandate($s)
 		if (is_numeric($result[1]) && $result[2] == 0 && $result[3] == 0)
 			return $result[1];
 		$dat = (int)$result[1]."-".(int)$result[2]."-".(int)$result[3];
-		$ret = formateddate($dat, "d F Y");
+		$ret = formateddate($dat, "%d %B %Y");
 	}
     
 	// time
