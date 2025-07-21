@@ -228,7 +228,7 @@ class C
 						}
 
 						if ((strpos($value, '<?php') === false) && (strpos($value, '%3E?php') === false)) {
-							self::$_context[$k][] = $value;
+							self::$_context[$k][] = strip_tags($value);
 						}
 					}
 				}else {
@@ -240,7 +240,7 @@ class C
 
 
 					if ((strpos($v, '<?php') === false) && (strpos($v, '%3E?php') === false )) {
-						self::$_context[$k] = $v;
+						self::$_context[$k] = strip_tags($v);
 					}
 				}
 			}
