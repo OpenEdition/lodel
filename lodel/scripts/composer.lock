@@ -8,20 +8,23 @@
     "packages": [
         {
             "name": "adodb/adodb-php",
-            "version": "v5.20.16",
+            "version": "v5.22.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ADOdb/ADOdb.git",
-                "reference": "b3cbd53be811f8307493f387ca5831143c1925c1"
+                "reference": "38ce257600e67b1e854f2e9054166569cff4bf6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/b3cbd53be811f8307493f387ca5831143c1925c1",
-                "reference": "b3cbd53be811f8307493f387ca5831143c1925c1",
+                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/38ce257600e67b1e854f2e9054166569cff4bf6b",
+                "reference": "38ce257600e67b1e854f2e9054166569cff4bf6b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "php": "^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
             },
             "type": "library",
             "autoload": {
@@ -50,7 +53,7 @@
                 }
             ],
             "description": "ADOdb is a PHP database abstraction layer library",
-            "homepage": "http://adodb.org/",
+            "homepage": "https://adodb.org/",
             "keywords": [
                 "abstraction",
                 "database",
@@ -58,7 +61,11 @@
                 "library",
                 "php"
             ],
-            "time": "2020-01-12T17:37:13+00:00"
+            "support": {
+                "issues": "https://github.com/ADOdb/ADOdb/issues",
+                "source": "https://github.com/ADOdb/ADOdb"
+            },
+            "time": "2025-08-03T16:20:39+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -608,9 +615,10 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }
