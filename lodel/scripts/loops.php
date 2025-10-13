@@ -670,7 +670,7 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 	if (!isset ($context['editionparams']))
 		trigger_error("ERROR: internal error in loop_field_selection_values", E_USER_ERROR);
 
-	if(empty($context['value']) && $context['value'] != 0) return;
+	//if(empty($context['value']) && $context['value'] != 0) return;
 
 	$arr = explode(",", $context['editionparams']);
 	$choosenvalues = explode(",", $context['value']); //if field contains more than one value (comma separated)

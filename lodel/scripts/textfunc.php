@@ -541,7 +541,10 @@ function replacequotationmark($text)
  */
   
 function replace($str, $search, $replace){
+    if (!empty($str))
         return str_replace($search, $replace, $str);
+    else
+        return "";
 }
 
 /**
