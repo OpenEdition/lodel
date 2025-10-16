@@ -52,10 +52,10 @@ $GLOBALS['db']->execute("SET SESSION sql_mode = ''");
 $GLOBALS['db_charset'] = mysql_find_db_variable($GLOBALS['currentdb'], 'character_set_database');
 
 if ($GLOBALS['db_charset'] === false) {
-	$GLOBALS['db_charset'] = 'utf8';
+	$GLOBALS['db_charset'] = 'utf8mb4';
 }
 
-//if(!in_array($GLOBALS['db_charset'], array('utf8', 'utf8mb4'))) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
+if(!in_array($GLOBALS['db_charset'], C::get('valid_db_charset', 'cfg'))) trigger_error('Please use utf8 for the database to avoid encoding problems', E_USER_ERROR);
 
 $GLOBALS['db']->execute('SET NAMES ' . $GLOBALS['db_charset']);
 C::set('db_charset', $GLOBALS['db_charset']);

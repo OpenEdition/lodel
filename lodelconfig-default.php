@@ -30,6 +30,8 @@ $cfg['dbhost'] = '';
 // driver mysql
 $cfg['dbDriver'] = 'mysqli';
 
+$cfg['valid_db_charset'] = array('utf8', 'utf8mb3', 'utf8mb4');
+
 // Fuseaux horaires supportés : http://php.net/manual/fr/timezones.php
 $cfg['timezone'] = 'Europe/Paris';
 $cfg['locale'] = 'fr_FR.UTF8';
