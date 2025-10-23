@@ -128,7 +128,10 @@ function authenticate($level = 0, $mode = "", $return = false)
 		
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);
-
+        if (isset($GLOBALS['expire'])) {
+		    $lodeluser['expire'] = $row['expire'] = $GLOBALS['context']['expire'];
+		    $lodeluser['currenturl'] = $row['currenturl'] = $GLOBALS['context']['currenturl_auth'];
+		}
 		// verifie que la session n'est pas expiree
 		$time = time();
 		if ($row['expire'] < $time || $row['expire2'] < $time) {
@@ -343,7 +346,12 @@ function recordurl()
 	if (!C::get('norecordurl')) {
 		$row = $db->GetRow(lq("SELECT id,currenturl FROM #_MTP_session WHERE id='". C::get('idsession', 'lodeluser')."' AND currenturl!=''"));
 		if(!$row) return;
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        if (!empty($GLOBALS['context']['currenturl_auth'])) {
+    		    $row['currenturl'] = $GLOBALS['context']['currenturl_auth'];
+		} else {
+			$row['currenturl'] = "'".$row['currenturl']."'";
+		}
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', {$row['currenturl']}, '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 

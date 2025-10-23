@@ -440,7 +440,7 @@
 	<LOOP 	NAME="getAdminAuthentifiedUsersName" 
 		SELECT="distinct(lodelmain.users.username), lodelmain.users.id" 
 		TABLE="lodelmain.session, lodelmain.users" 
-		WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights EQ 128" 
+		WHERE="[#EXPIRE] GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND lodelmain.users.id = lodelmain.session.iduser and lodelmain.session.userrights EQ 128" 
 		GROUPBY="lodelmain.users.id">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]">
 			<LET VAR="hasadminlogged" GLOBAL="1">true</LET>
@@ -452,7 +452,7 @@
 		<LOOP 	NAME="getAdminAuthUsersName" 
 			SELECT="distinct(users.username), users.id" 
 			TABLE="lodelmain.session, users" 
-			WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights AND lodelmain.session.userrights LT 128" 
+			WHERE="[#EXPIRE] GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights AND lodelmain.session.userrights LT 128" 
 			GROUPBY="users.id">
 			<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DOFIRST>
 			<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
@@ -462,7 +462,7 @@
 	<LOOP 	NAME="getAuthentifiedUsersName" 
 		SELECT="distinct(users.username), users.id" 
 		TABLE="lodelmain.session, users" 
-		WHERE="expire GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights AND lodelmain.session.userrights LT 128" 
+		WHERE="[#EXPIRE] GT UNIX_TIMESTAMP() AND expire2 GT UNIX_TIMESTAMP() AND site = '[#SITE]' AND users.id = lodelmain.session.iduser AND lodelmain.session.userrights EQ users.userrights AND lodelmain.session.userrights LT 128" 
 		GROUPBY="users.id">
 		<DOFIRST><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1">[#USERNAME]</LET></IF></DOFIRST>
 		<DO><IF COND="[#USERNAME] NE [#LODELUSER.NAME] OR [#ID] NE [#LODELUSER.ID]"><LET VAR="usersname" GLOBAL="1"><IF COND="[%USERSNAME]">[%USERSNAME], </IF>[#USERNAME]</LET></IF></DO>
