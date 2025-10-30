@@ -9,8 +9,6 @@
         "roderik/pwgen-php": "^0.1.5",
         "stefangabos/zebra_image": "^2.2",
         "geshi/geshi": "^1.0",
-        "solarium/solarium": "^6.3",
-        "symfony/event-dispatcher": "^7.2",
         "php81_bc/strftime": "^0.7.6"
     }
 }
