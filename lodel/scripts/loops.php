@@ -583,7 +583,7 @@ function loop_mldate( &$context, $funcname, $arguments )
 		}
 		if (function_exists("code_after_$funcname"))
 			call_user_func("code_after_$funcname", $localcontext);
-	} elseif (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER)) {
+	} elseif ((!empty($arguments['value'])) && (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER))) {
 		if (function_exists("code_before_$funcname"))
 			call_user_func("code_before_$funcname", $localcontext);
 		$localcontext['nbresults'] = count($results);
