@@ -325,6 +325,7 @@ function formatednow($format)
  function formatedtime($time, $format)
  {
     $currentLocal = setlocale(LC_ALL, 0);
+    $time = (int) $time;
     return strftime($format, $time, $currentLocal);
 
  }

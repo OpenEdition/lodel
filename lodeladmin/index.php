@@ -27,7 +27,7 @@ try
 }
 catch(Exception $e)
 {
-	echo $e->getContent();
+	echo $e->getMessage();
 	exit();
 }
 ?>
