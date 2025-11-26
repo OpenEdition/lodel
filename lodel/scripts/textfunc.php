@@ -534,7 +534,7 @@ function isadate($text)
  */
 function replacequotationmark($text)
 {
-    if (!empty($str))
+    if (!empty($text))
 	return str_replace("\"", "&quot;", $text);
     else
         return "";
