@@ -321,15 +321,23 @@ function setLang($lang=null)
         if (empty($choosed_language))
             $choosed_language = C::get(C::get('locale', 'cfg'));
         $l = strtolower(substr($choosed_language, 0,2));
-        $lu = 'en' === $l ? 'US' : strtoupper($l);
-        @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
-        if('tr' === $l)
-        { // bug with locale tr_TR.UTF8
-        // http://bugs.php.net/bug.php?id=18556
-            @setlocale(LC_CTYPE, 'fr_FR.UTF8');
-        }
-        C::set('locale', $l.'_'.$lu.'.UTF8');
-        unset($l, $lu);
+        function_exists('get_languages_to_locales') || include("lang.php");
+        $languages_to_locales = get_languages_to_locales();
+        if (array_key_exists($l,$languages_to_locales)) {
+            @setlocale(LC_ALL, $languages_to_locales[$l].'.UTF8');
+            C::set('locale', $languages_to_locales[$l].'.UTF8');
+        } else {
+            $lu = strtoupper($l);
+            @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
+            if('tr' === $l)
+            { // bug with locale tr_TR.UTF8
+            // http://bugs.php.net/bug.php?id=18556
+                @setlocale(LC_CTYPE, 'fr_FR.UTF8');
+            }
+            C::set('locale', $l.'_'.$lu.'.UTF8');
+            unset($lu);
+	}
+        unset($l);
     }
     C::set('sitelang', $choosed_language);
 }
@@ -458,6 +466,6 @@ if (C::get('site', 'cfg'))
 }
 setLang();
 // tableaux des langues disponibles
-include 'lang.php';
+function_exists('get_languages_to_locales') || include("lang.php");
 C::set('defaultlang', $GLOBALS['languages']);
 C::set('installlang', C::get('installlang', 'cfg'));

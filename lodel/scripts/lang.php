@@ -288,6 +288,20 @@ $GLOBALS['languages']=array(
 #			    "ZU"=> "isiZulu"
 );
 
+$GLOBALS['languages_to_locales'] = array(
+// mapping languages => locale à utiliser ne répondant pas au motif par défaut : "xx" => "xx_XX"
+	"en" => "en_US",
+	"ar" => "ar_SY",
+	"ca" => "ca_ES",
+	"eu" => "eu_FR",
+	"oc" => "oc_FR",
+	"sl" => "sl_SI",
+	"zh" => "zh_CN",
+);
+
+function get_languages_to_locales () {
+	return $GLOBALS['languages_to_locales'];
+}
 
 
 /**
