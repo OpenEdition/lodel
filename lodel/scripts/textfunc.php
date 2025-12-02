@@ -412,7 +412,7 @@ function multilingue($text, $lang)
 
 function vignette($text, $width)
 {
-	if (!$text)
+	if (empty($text))
 		return;
 	/*if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
 		return getlodeltextcontents("ERROR_INVALID_PATH_TO_IMAGE", "COMMON");
@@ -439,6 +439,8 @@ function vignette($text, $width)
 # renvoie les attributs pour une image
 function sizeattributs($text)
 {
+    if (empty($text))
+        return null;
 	$result = @getImageSize($text);
     	return isset($result[3]) ? $result[3] : null;
 }
