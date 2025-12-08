@@ -92,13 +92,13 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 	if($dots) $options['ending'] = '...';
 
 	extract($options);
-	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8', true);
 
 	if ($html) {
-		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
+		if (mb_strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
 			return $text;
 		}
-		$totalLength = mb_strlen(strip_tags($ending), $encoding);
+		$totalLength = mb_strlen(strip_tags($ending));
 		$openTags = array();
 		$truncate = '';
 
@@ -115,8 +115,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 				}
 			}
 			$truncate .= $tag[1];
-
-			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]), $encoding);
+			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
 			if ($contentLength + $totalLength > $length) {
 				$left = $length - $totalLength;
 				$entitiesLength = 0;
@@ -124,14 +123,14 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 					foreach ($entities[0] as $entity) {
 						if ($entity[1] + 1 - $entitiesLength <= $left) {
 							$left--;
-							$entitiesLength += mb_strlen($entity[0], $encoding);
+							$entitiesLength += mb_strlen($entity[0]);
 						} else {
 							break;
 						}
 					}
 				}
 
-				$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength, $encoding);
+				$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength);
 				break;
 			} else {
 				$truncate .= $tag[3];
@@ -180,7 +179,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 
 function cut_without_tags($text, $length, $dots=false)
 {
-	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8', true);
 	$text2 = mb_substr($text." ", 0, $length, $encoding);
 	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
@@ -203,7 +202,7 @@ function hasbeencut()
 
 function couperpara($texte, $long)
 {
-	$encoding = mb_detect_encoding($texte, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($texte, 'UTF-8', true);
 	$pos = -1;
 	do {
 		$pos = mb_strpos($texte, "</p>", $pos +1, $encoding);
