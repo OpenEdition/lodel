@@ -95,10 +95,10 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 	$encoding = mb_detect_encoding($text, 'UTF-8', true);
 
 	if ($html) {
-		if (mb_strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
+		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
 			return $text;
 		}
-		$totalLength = mb_strlen(strip_tags($ending));
+		$totalLength = mb_strlen(strip_tags($ending), $encoding);
 		$openTags = array();
 		$truncate = '';
 
@@ -115,7 +115,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 				}
 			}
 			$truncate .= $tag[1];
-			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]));
+			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]), $encoding);
 			if ($contentLength + $totalLength > $length) {
 				$left = $length - $totalLength;
 				$entitiesLength = 0;
@@ -123,7 +123,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 					foreach ($entities[0] as $entity) {
 						if ($entity[1] + 1 - $entitiesLength <= $left) {
 							$left--;
-							$entitiesLength += mb_strlen($entity[0]);
+							$entitiesLength += mb_strlen($entity[0], $encoding);
 						} else {
 							break;
 						}
