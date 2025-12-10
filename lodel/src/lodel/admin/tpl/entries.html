@@ -123,12 +123,9 @@
 			</IF>
 		</div>	
 	</IF>
-    
-    <IF COND="[#LETTER]">
+        <IF COND="![#LETTER]"><LET VAR="letter"></LET></IF>   
         <FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="[#LETTER|urldecode|strtoupper]" LISTALL="[#LISTALL]" EXTERNAL="[#EXTERNAL]" MULTILANG="[#MULTILANG]">
-    <ELSE />
-        <FUNC NAME="LIST_ENTRIES" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="[#TYPE.SORT]" LETTER="" LISTALL="[#LISTALL]" EXTERNAL="[#EXTERNAL]" MULTILANG="[#MULTILANG]">
-    </IF>
+
 </div>
 <!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 
