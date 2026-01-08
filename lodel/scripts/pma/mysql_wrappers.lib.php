@@ -98,7 +98,7 @@ semblent ne pas être utilisée
         /* nijel: This is not optimal, but keeps us from duplicating code, if
          * speed really matters, duplicate here code from PMA_mysql_fetch_array
          * with removing rows working with associative array. */
-        return PMA_mysql_fetch_array($result, MYSQL_NUM);
+        return PMA_mysql_fetch_array($result, MYSQLI_NUM);
     }
 /*
     function PMA_mysql_field_flags($result, $field_offset) {
