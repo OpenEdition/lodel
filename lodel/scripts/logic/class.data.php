@@ -213,6 +213,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 
 		if (isset($context['backup'])) { // si on a demandé le backup
+			$files_and_names = array();
 			set_time_limit(0);
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
@@ -238,7 +239,7 @@ class DataLogic
 			// zip le site et ajoute la base
 			$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
             $archivefilename = "site-$site-". date("dmy"). '.zip';
-
+            	$files_and_names[$tmpdir. DIRECTORY_SEPARATOR . $outfile] =$outfile;
 			// fichiers à exclure de l'archive
 			$GLOBALS['excludes'] = $excludes = array(
                 '#\.htaccess$#',
@@ -279,9 +280,8 @@ class DataLogic
                 }
 
                 /* On définit les chemin dans le zip et dans le filesystem */
-                $files_and_names = array(
-                    $tmpdir. DIRECTORY_SEPARATOR . $outfile => $outfile,
-                );
+                $files_and_names[$tmpdir. DIRECTORY_SEPARATOR . $outfile] = $outfile;
+                 
                 foreach($files_to_zip as $file)
                 {
                     $files_and_names[$file] = str_replace($siteroot, '', $file);
