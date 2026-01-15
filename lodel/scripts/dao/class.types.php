@@ -17,6 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL types
  */
+ #[\AllowDynamicProperties]
 class typesVO 
 {
 	/**#@+

@@ -59,7 +59,7 @@ if (!defined('PMA_IS_WINDOWS')) {
 
 function PMA_dl($module) {
     if (!isset($GLOBALS['PMA_dl_allowed'])) {
-        if (((PMA_PHP_INT_VERSION >= 40000 && !@ini_get('safe_mode') && @ini_get('enable_dl'))
+        if (((PMA_PHP_INT_VERSION >= 40000 && @ini_get('enable_dl'))
             || (PMA_PHP_INT_VERSION < 40000 && PMA_PHP_INT_VERSION > 30009 && !@get_cfg_var('safe_mode')))
             && @function_exists('dl')) {
             
@@ -100,9 +100,9 @@ function PMA_dl($module) {
 
 // Whether GD2 is present
 if (!defined('PMA_IS_GD2')) {
-    if ($GLOBALS['cfg']['GD2Available'] == 'yes') {
+    if ((isset($GLOBALS['cfg']['GD2Available'])) && ($GLOBALS['cfg']['GD2Available'] == 'yes')) {
         define('PMA_IS_GD2', 1);
-    } elseif ($GLOBALS['cfg']['GD2Available'] == 'no') {
+    } elseif ((isset($GLOBALS['cfg']['GD2Available'])) && ($GLOBALS['cfg']['GD2Available'] == 'no')) {
         define('PMA_IS_GD2', 0);
     } else {
         if (!@extension_loaded('gd')) {

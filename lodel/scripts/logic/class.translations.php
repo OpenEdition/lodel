@@ -18,7 +18,8 @@ $GLOBALS['translations_textgroups']=array(
 /**
  * Classe de logique des traductions
  */
-class TranslationsLogic extends Logic {
+#[\AllowDynamicProperties]
+ class TranslationsLogic extends Logic {
 
 	/** Constructor
 	*/
@@ -352,7 +353,7 @@ class TranslationsLogic extends Logic {
 							#if (in_array($lang,$langs)) continue; // the text already exists in the correct lang
 							#echo $row['name']," ";
 				
-				$inserts[]="('".$row['name']."','".$row['textgroup']."','".mysqli_escape_string($row['contents'])."','-1','".$context['lang']."')";
+				$inserts[]="('".$row['name']."','".$row['textgroup']."',".$db->qstr($row['contents']).",'-1','".$context['lang']."')";
 				$count++;
 				$result->MoveNext();
 			}

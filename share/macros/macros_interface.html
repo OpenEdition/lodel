@@ -130,6 +130,9 @@
                                 <LET VAR="INTERTITLE">[#ALTERTITLE|multilingue([#LODELUSER.LANG])]</LET>
                                 <label for="[#NAME]" class="[#TYPE]"><MACRO NAME="INTERTITLE">
                                 <!--[[#LODELUSER.GUI_COMPLEXITY] / [#GUI_USER_COMPLEXITY]]--></label><br class="nobr" />
+                                <IF COND="![#VALUE] AND [#TYPE] NE 'passwd'">
+                                        <LET VAR="value">[#DEFAULTVALUE]</LET>
+                                </IF>
                                 <FUNC NAME="PRINT_EDIT_FIELD" VARNAME="[#NAME]" FULLVARNAME="data[[#NAME]]" VALUE="[#VALUE]" TYPE="[#TYPE]" EDITION="[#EDITION]" EDITIONPARAMS="[#EDITIONPARAMS]" />
                                 <br />
                         <IF COND="[#LODELUSER_GUI_COMPLEXITY] LT [#GUI_USER_COMPLEXITY]">
@@ -841,7 +844,7 @@ cp_[#VARNAME].writeDiv();
 		-->
 		</script>
 	<ELSE/>
-		<select id="[#VARNAME]" name="[#FULLVARNAME]">
+ 		<select id="[#VARNAME]" name="[#FULLVARNAME]">
 		<LOOP NAME="field_selection_values">
 			<option value="[#VALUE]" [#SELECTED]>[#VALUE]</option>
 		</LOOP>

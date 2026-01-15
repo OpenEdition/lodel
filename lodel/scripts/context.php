@@ -248,22 +248,8 @@ class C
 			{
 				self::$_cfg['isPost'] = true; // needed for template engine (save or not calculed page)
 				self::cleanRequest($_POST);
-				foreach($_POST as $k=>&$v)
-				{
-                    if (is_array($v)) {
-                        self::$_context[$k] = array();
-                        foreach($v as $key =>& $value) {
-                            if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $value)) {
-                                self::$_context[$k][$key] =& $value;
-                            }
-                        }
-                        self::$_context[$k] =& $v;
-                    }elseif (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
-						self::$_context[$k] =& $v;
-					}
-				}
-                unset($v);
-                unset($value);
+                self::secureRequest($_POST);
+				
 			}
 
 			// ids. Warning: don't remove this, the security in the following rely on these ids are real int !!
@@ -372,7 +358,11 @@ class C
 			defined('INC_CONNECT') || include 'connect.php';
 			defined('INC_FUNC') || include 'func.php';
 			global $db;
-			self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+            if (empty(C::get('site','cfg')))
+                self::$_context['siteurl'] = null;
+            else
+                self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(C::get('site','cfg')) . '"')), '/');
+			//self::$_context['siteurl'] = rtrim( $db->getOne(lq('SELECT url FROM #_MTP_sites WHERE name = "' . addslashes(self::$_cfg['site']) . '"')), '/');
 
 			self::_getTriggers();
 		}
@@ -658,18 +648,39 @@ class C
 	 */
 	static public function cleanRequest(&$data)
 	{
-		if(is_array($data))
-			array_walk_recursive($data, array('self', 'cleanRequest'));
-		else {
- 			// rejects overly long 2 byte sequences, as well as characters above U+10000
-			$data = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]'.'|(?<=^|[\x00-\x7F])[\x80-\xBF]+'.'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/','�', $data);
-			// removes overly long 3 byte sequences and UTF-16 surrogates
-			$data = preg_replace('/\xE0[\x80-\x9F][\x80-\xBF]'.'|\xED[\xA0-\xBF][\x80-\xBF]/S','�', $data );
-		}
+        if (!empty($data)) {
+            if(is_array($data))
+                array_walk_recursive($data, array(self::class, 'cleanRequest'));
+            else {
+                // rejects overly long 2 byte sequences, as well as characters above U+10000
+                $data = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]'.'|(?<=^|[\x00-\x7F])[\x80-\xBF]+'.'|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*'.'|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})'.'|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/','�', $data);
+                // removes overly long 3 byte sequences and UTF-16 surrogates
+                $data = preg_replace('/\xE0[\x80-\x9F][\x80-\xBF]'.'|\xED[\xA0-\xBF][\x80-\xBF]/S','�', $data );
+            }
+        }
 
 		return $data;
 	}
 
+    static public function secureRequest(&$data)
+	{
+        foreach($data as $k=>&$v)
+				{
+                    if (is_array($v)) {
+                        self::$_context[$k] = array();
+                        foreach($v as $key =>& $value) {
+                            if (!is_array($value)){
+                                if (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $value)) {
+                                    self::$_context[$k][$key] =& $value;
+                                }
+                            }
+                        }
+                        self::$_context[$k] =& $v;
+                    }elseif (!preg_match("/(<|\%3C)?\?(php)?.*(php)?\?(>|\%3E)?/", $v)) {
+						self::$_context[$k] =& $v;
+					}
+				}
+    }
 	/**
 	 * Public function to clean input datas
 	 *
@@ -681,7 +692,7 @@ class C
 	{
 		if(is_array($data)) 
 		{
-			array_walk_recursive($data, array('self', '_sanitize'));
+			array_walk_recursive($data, array(self::class, '_sanitize'));
 		}
 		else 
 		{

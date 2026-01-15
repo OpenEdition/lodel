@@ -171,11 +171,13 @@ class View
                 ORDER BY id DESC"), 1, $offset) 
             		or trigger_error('SQL ERROR :<br />'.$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 		$row = $result->fetchRow();
-        	$result->Close();
-		$id = $row['id'];	
-		$newurl = $row['url'];
+        $result->Close();
+        if (!empty($row)) {
+            $id = $row['id'];	
+            $newurl = $row['url'];
+        }
 		
-		if ($id) {
+		if (!empty($id)) {
 			$db->execute(lq("
                  DELETE FROM #_TP_urlstack 
                     WHERE id>='{$id}' AND idsession='{$idsession}' AND site='".$this->_site."'")) 
@@ -517,9 +519,8 @@ class View
 				defined('INC_FUNC') || include 'func.php';
 				$this->_evalCalled = true;
 			}
-			
 			ob_start();
-			//var_dump($contents);
+			//file_put_contents("/tmp/contents".time(),$contents);
 			eval("?>" . $contents);
 			$contents = ob_get_clean();
 		}
@@ -693,7 +694,7 @@ class View
 	* @param string $line ligne contenant l'erreur
 	* @param string $file fichier contenant l'erreur (par défaut dans le cache require_caching/)
 	*/
-	public function myMysqlError($query, $tablename = '', $line, $file)
+	public function myMysqlError($query, $tablename, $line, $file)
 	{
 		global $db;
 		// we are maybe buffering, so clear it
@@ -735,7 +736,7 @@ function insert_template(&$context, $tpl, $cache_rep = '', $base_rep='tpl/', $bl
  * @param int $line ligne de l'erreur
  * @param string $file nom du fichier declenchant l'erreur
  */
-function mymysql_error($query, $tablename = '', $line, $file)
+function mymysql_error($query, $tablename, $line, $file)
 {
 	View::getView()->myMysqlError($query, $tablename, $line, $file);
 }
@@ -848,8 +849,8 @@ function _indent($source, $indenter = '  ')
 	while(isset($arr[++$i]))
 	{
 		$current =& $arr[$i];
-		if(!isset($current{0})) continue;
-		if($current{0} === '<')
+		if(!isset($current[0])) continue;
+		if($current[0] === '<')
 		{
 			$prefix = isset($arr[$i+1]) ? $arr[$i+1] : '';
 			$tag = isset($arr[$i+2]) ? $arr[$i+2] : '';
@@ -860,7 +861,7 @@ function _indent($source, $indenter = '  ')
 			$prefix = $tag = $suffix = '';
 		}
 
-		if(isset($current{1}) && '<?' === $current{0}.$current{1})
+		if(isset($current[1]) && '<?' === $current[0].$current[1])
 		{ // php/xml code
 			$closingTag = false;
 			$source .= "\n".$current."\n";

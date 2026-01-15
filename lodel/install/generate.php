@@ -145,6 +145,7 @@ function buildDAO()
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html) See COPYING file
  * @author     See COPYRIGHT file
  */
+ #[AllowDynamicProperties]
 class '.$table.'VO 
 {
 	/**#@+
@@ -161,6 +162,7 @@ class '.$table.'VO
  * Classe d\'abstraction de la base de données de la table '.$table.'
  *
  */
+ #[AllowDynamicProperties]
 class '. $table. 'DAO extends DAO 
 {
 	/**

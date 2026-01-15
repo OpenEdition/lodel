@@ -20,6 +20,7 @@
  * Classe utilitaire pour parser le Lodelscript - Fille de la classe Parser
  *
  */
+ #[AllowDynamicProperties]
 class LodelParser extends Parser
 {
 	/**
@@ -104,6 +105,7 @@ class LodelParser extends Parser
 			global $db;
 			$obj = $db->Execute("SELECT class,classtype FROM {$GLOBALS['tp']}classes WHERE status>0")
 				or trigger_error('SQL Error:<br/>'.$db->ErrorMsg(), E_USER_ERROR);
+            $this->classes = array();
 			while(!$obj->EOF) 
 			{
 				$this->classes[$obj->fields['class']] = array('class'=>$obj->fields['class'], 'classtype'=>$obj->fields['classtype']);
@@ -392,7 +394,7 @@ class LodelParser extends Parser
 			if ($varname == "GROUPRIGHT") {
 				return '(C::get(\'admin\', \'lodeluser\') || in_array($context[\'usergroup\'],explode(\',\',C::get(\'groups\', \'lodeluser\')))';
 			}
-			if(0 === strpos($varname, 'OPTION') && ('.' === $varname{6} || '_' === $varname{6})) {// options
+			if(0 === strpos($varname, 'OPTION') && ('.' === $varname[6] || '_' === $varname[6])) {// options
 				return "getoption('".strtolower(substr($varname, 7))."')";
 			}
 		}
@@ -596,7 +598,7 @@ PHP;
 			$bodystarttag = strpos($text, "<body");
             		if(false === $bodystarttag) return;
 
-			if ($text{$bodystarttag+5} === '>') {
+			if ($text[$bodystarttag+5] === '>') {
 				// pas d'attributs dans le body, pas de pbs
 				$bodyendtag = $bodystarttag + 6;
 			} else {
@@ -622,7 +624,7 @@ PHP;
 		$prefixedtable = $this->prefix.$table;
 		$mprefixedtable = $this->mprefix.$table;
 
-		if('"' === $table{0})
+		if('"' === $table[0])
 			return $table;
 		if(isset($this->tablefields[$prefixedtable]))
 			return $prefixedtable;
@@ -664,9 +666,9 @@ PHP;
 		$arr = array ();
 		$ind = 0;
 		$i = -1;
-		while(isset($sql{++$i}))
+		while(isset($sql[++$i]))
 		{
-			$c = $sql {$i};
+			$c = $sql [$i];
 			#echo $c=='"';
 			if (!$escaped) {
 				if ($c == '"') {

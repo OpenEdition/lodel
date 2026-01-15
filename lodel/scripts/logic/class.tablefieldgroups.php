@@ -13,7 +13,8 @@
 /**
  * Classe de logique des groupes de champs
  */
-class TablefieldgroupsLogic extends Logic {
+#[\AllowDynamicProperties]
+ class TablefieldgroupsLogic extends Logic {
 
 	/** Constructor
 	*/

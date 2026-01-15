@@ -142,6 +142,362 @@ if (php_sapi_name() != "cli") {
 	require_once 'connect.php';
 }
 
+
+//
+// ME OBJECTS *****************************************************************************************************************************************
+//
+class MEobject {
+	public $messages = array();
+	public $errors = array();
+	public $error = false;
+
+	function __toString() {
+		return "MEObject: ";
+	}
+
+	// recevoir la valeur d'un champ
+	public function field($key) {
+		if (isset($this->fields) && is_array($this->fields) && isset($this->fields[$key]))
+			return $this->fields[$key];
+		return false;
+	}
+
+	public function m() {
+		$this->messages();
+	}
+
+	public function messages() {
+		$onlyerror = (isset($GLOBALS['ME_messages']) && $GLOBALS['ME_messages'] == 'errors') ? true : false;
+		$sep = ((php_sapi_name() != "cli") ? "<br/>" : "") . "\n";
+		$space = ((php_sapi_name() != "cli") ? "&nbsp;" : "") . " ";
+		if ((!$onlyerror && $this->messages) || $this->errors)
+			echo "MESSAGES: $this" . $sep;
+		if (!$onlyerror && $this->messages || ($this->errors && $this->messages)) {
+			echo "${space}OK:" . $sep;
+			echo "${space}${space}" . implode($sep."${space}${space}", $this->messages) . $sep;
+		}
+		if ($this->errors) {
+			echo "${space}ERREUR:" . $sep;
+			echo "${space}${space}" . implode($sep."${space}${space}", $this->errors) . $sep;
+		}
+		if ((!$onlyerror && $this->messages) || $this->errors)
+			echo $sep;
+	}
+
+	protected function err($message, $invalidate=true) {
+		$this->errors[] = $message;
+		if ($invalidate) $this->error = true;
+		return $this;
+	}
+
+	// rajoute un style
+	public function addStyle($style) {
+		if ($this->error) return $this;
+		if (!isset($this->fields['style'])) {
+			$this->messages[] = "Cet élément ne supporte pas les styles !";
+			return $this;
+		}
+			
+		$styles = explode(",", $this->fields['style']);
+		if (!in_array($style, $styles)) {
+			$styles[] = $style;
+			$this->fields['style'] = implode(',', array_filter($styles));
+			return $this->save("Ajout du style: $style");
+		}
+		$this->messages[] = "Ajout du style: $style. Existe déjà !";
+		return $this;
+	}
+
+	// enleve un style
+	public function delStyle($style) {
+		if ($this->error) return $this;
+		if (!isset($this->fields['style'])) {
+			$this->messages[] = "Cet élément ne supporte pas les styles !";
+			return $this;
+		}
+			
+		$styles = explode(",", $this->fields['style']);
+		if (($key = array_search($style, $styles)) !== false) {
+			unset($styles[$key]);
+			$this->fields['style'] = implode(',', array_filter($styles));
+			return $this->save("Effacement du style: $style");
+		}
+		$this->messages[] = "Effacement du style: $style. N'existe pas !";
+		return $this;
+	}
+
+/*
+	TableField
+*/
+	protected function TableField_save($fields) {
+		$logic = (($fields['type'] == 'entries' || $fields['type'] == 'persons') ? "index" : "");
+		if (!empty($fields['allowedtags']) && is_string($fields['allowedtags'])) // grrrr, pourquoi lodel ne fait pas ça ???
+			$fields['allowedtags'] = explode(';', $fields['allowedtags']);
+		return $this->logic_save($logic . "tablefields", $fields);
+	}
+	protected function TableField_delete($fields) {
+		$logic = (($fields['type'] == 'entries' || $fields['type'] == 'persons') ? "index" : "");
+		return $this->logic_delete($logic . "tablefields", $fields);
+	}
+	protected function TableField_get($class, $fieldname) {
+		global $db;
+		$tf = $this->Object_get("tablefields", "class=".$db->Quote($class)." AND name=".$db->Quote($fieldname));
+		if ($tf) {
+			if (!empty($tf['mask']))  // grrrr, pourquoi lodel ne fait pas ça ???
+				$tf['mask'] = @unserialize(html_entity_decode(stripslashes($tf['mask'])));
+			else
+				$tf['mask'] = array();
+		}
+		return $tf;
+	}
+
+/*
+	TableFieldGroup
+*/
+	public function TableFieldGroup_save($fields) {
+		return $this->logic_save("tablefieldgroups", $fields);
+	}
+	public function TableFieldGroup_delete($fields) {
+		return $this->logic_delete("tablefieldgroups", $fields);
+	}
+	public function TableFieldGroup_get($class, $name=false) {
+		global $db;
+		if (intval($class)>0 && !$name)
+			$cond = "id=".intval($class);
+		else
+			$cond = "class=".$db->Quote($class)." AND name=".$db->Quote($name);
+		return $this->Object_get("tablefieldgroups", $cond);
+	}
+
+/*
+	Type
+*/
+	protected function Type_save($fields) {
+		return $this->logic_save("types", $fields);
+	}
+	protected function Type_delete($fields) {
+		return $this->logic_delete("types", $fields);
+	}
+	protected function Type_get($class, $type=false) {
+		global $db;
+		if (intval($class)>0)
+			$cond = "id=".intval($class);
+		else
+			$cond = "type=".$db->Quote($type)." AND class=".$db->Quote($class);
+		return $this->Object_get('types', $cond);
+	}
+
+/*
+	PersonType
+*/
+	protected function PersonType_save($fields) {
+		return $this->logic_save("persontypes", $fields);
+	}
+	protected function PersonType_delete($fields) {
+		return $this->logic_save("persontypes", $fields);
+	}
+	protected function PersonType_get($type) {
+		global $db;
+		if (intval($type)>0)
+			$cond = "id=".intval($type);
+		else
+			$cond = "type=".$db->Quote($type);
+		return $this->Object_get("persontypes", $cond);
+	}
+
+/*
+	EntryType
+*/
+	protected function EntryType_save($fields) {
+		return $this->logic_save("entrytypes", $fields);
+	}
+	protected function EntryType_delete($fields) {
+		return $this->logic_delete("entrytypes", $fields);
+	}
+	protected function EntryType_get($type) {
+		global $db;
+		if (intval($type)>0)
+			$cond = "id=".intval($type);
+		else
+			$cond = "type=".$db->Quote($type);
+		return $this->Object_get("entrytypes", $cond);
+	}
+
+/*
+	Class
+*/
+	protected function Class_save($fields) {
+		return $this->logic_save("classes", $fields);
+	}
+	protected function Class_delete($fields) {
+		return $this->logic_delete("classes", $fields);
+	}
+	protected function Class_get($class) {
+		global $db;
+		return $this->Object_get("classes", "class=" . $db->Quote($class));
+	}
+
+/*
+	Option
+*/
+	protected function Option_save($fields) {
+		return $this->logic_save("options", $fields);
+	}
+	protected function Option_delete($fields) {
+		return $this->logic_delete("options", $fields);
+	}
+	protected function Option_get($name, $idgroup) {
+		global $db;
+		return $this->Object_get("options", "name=" . $db->Quote($name) . " AND idgroup=" . intval($idgroup));
+	}
+
+/*
+	OptionGroup
+*/
+	protected function OptionGroup_save($fields) {
+		return $this->logic_save("optiongroups", $fields);
+	}
+	protected function OptionGroup_delete($fields) {
+		return $this->logic_delete("optiongroups", $fields);
+	}
+	protected function OptionGroup_get($name) {
+		global $db;
+		return $this->Object_get("optiongroups", "name=".$db->Quote($name));
+	}
+
+/*
+	InternalStyle
+*/
+	protected function InternalStyle_save($fields) {
+		return $this->logic_save("internalstyles", $fields);
+	}
+	protected function InternalStyle_delete($fields) {
+		return $this->logic_delete("internalstyles", $fields);
+	}
+	protected function InternalStyle_get($name) {
+		global $db;
+		return $this->Object_get("internalstyles", "style like ".$db->Quote($name."%"));
+	}
+
+/*
+	Entries
+*/
+	// effacer les entrées d'un index
+	protected function Entries_delete($idtype) {
+		global $db;
+		$logic = Logic::getLogic('entries');
+
+		// efface les entrées
+		$tous_racine_tous_depublie = lq("UPDATE #_TP_entries SET idparent=0, status=1 WHERE idtype=$idtype");
+		$db->Execute($tous_racine_tous_depublie); // hack, on publie et applati la hiérarchie !
+
+		$dao = DAO::getDAO('entries');
+		$entries = $dao->findMany("idtype=$idtype","","id");
+		foreach ($entries as $entry) {
+			$entry = array('id' => $entry->id);
+			$logic->deleteAction($entry, $error);
+			if ($error) {
+				$this->errors[] = "Efface les entrées de type $idtype non effectué: ".var_export($error, true)."<br>\n";
+				return false;
+			}
+		}
+
+		$this->messages[] = "Entrées de type $idtype effacé";
+		return true;
+	}
+
+/*
+	UTILS
+*/
+	// recevoir un objet quelconque
+	private function Object_get($table, $cond) {
+		$vo = DAO::getDAO($table)->find($cond);
+		if ($vo) {
+			$class = "ME_".$table;
+			$lo = new $class;
+			$fields = $lo->ME_object_get($vo);
+			return $fields;
+		}
+		return false;
+	}
+
+	// enregistrer un objet
+	private function logic_save($logic, $fields) {
+		$Lo = Logic::getLogic($logic);
+		$Lo->editAction($fields, $error);
+		if ($error)
+			return "$logic: Sauvegarde non effectuée: ".var_export($error, true).".";
+		return true;
+	}
+
+	// effacer un objet
+	private function logic_delete($logic, $fields) {
+		$Lo = Logic::getLogic($logic);
+		$Lo->deleteAction($fields, $error);
+		if ($error)
+			return "$logic: Effacement non effectué: ".var_export($error, true).".";
+		return true;
+	}
+
+	// recevoir le nom canonique (g_name) d'une entry
+	protected function gname_get($class, $name="screen name") {
+		$ret = false;
+		$dao = DAO::getDAO("tablefields");
+		$g_names = $dao->findMany("class='$class' AND status>0 AND g_name!=''", "", "name ,g_name");
+		foreach ($g_names as $g_name) {
+			if ($g_name->g_name == $name) {
+				return $g_name->name;
+			} elseif ($g_name->g_name == 'index key')
+				$ret = $g_name->name;
+		}
+		return $ret;
+	}
+
+	// merger deux listes "jlk,sfjkl" "lkjnk,lj"
+	protected function list_merge($list_one, $list_two, $sep=",") {
+		$list_one = explode($sep, $list_one);
+		if ($list_one[0] === "") $list_one = array();
+		$list_two  = explode($sep, $list_two);
+		if ($list_two[0] === "") $list_two = array();
+
+		$newlist = array_unique(array_merge($list_one, $list_two));
+		$newlist = implode($sep, $newlist);
+		return $newlist;
+	}
+
+	// Return the plural or singular of lodel objects name
+	protected function pluralChange($name) {
+		switch ($name) {
+			case 'persons':
+				return 'person';
+			case 'person':
+				return 'persons';
+			case 'entity':
+				return 'entities';
+			case 'entities':
+				return 'entity';
+			case 'entry':
+				return 'entries';
+			case 'entries':
+				return 'entry';
+		}
+		return false;
+	}
+
+	// Return the type table associated with the classtype
+	protected function typetable($type) {
+		switch ($type) {
+			case 'entities':
+				return 'types';
+			case 'entries':
+				return 'entrytypes';
+			case 'persons' :
+				return 'persontypes';
+		}
+		return false;
+	}
+}
+
 // quick and dirty error handling, au cas où lodel plante
 function ME_errors($errno, $errstr='', $errfile='', $errline=0) {
 	if ($errno<E_STRICT) {
@@ -1310,362 +1666,6 @@ class InternalStyle extends MEobject {
 class IS extends InternalStyle { // alias
 }
 
-//
-// ME OBJECTS *****************************************************************************************************************************************
-//
-class MEobject {
-	public $messages = array();
-	public $errors = array();
-	public $error = false;
-
-	function __toString() {
-		return "MEObject: ";
-	}
-
-	// recevoir la valeur d'un champ
-	public function field($key) {
-		if (isset($this->fields) && is_array($this->fields) && isset($this->fields[$key]))
-			return $this->fields[$key];
-		return false;
-	}
-
-	public function m() {
-		$this->messages();
-	}
-
-	public function messages() {
-		$onlyerror = (isset($GLOBALS['ME_messages']) && $GLOBALS['ME_messages'] == 'errors') ? true : false;
-		$sep = ((php_sapi_name() != "cli") ? "<br/>" : "") . "\n";
-		$space = ((php_sapi_name() != "cli") ? "&nbsp;" : "") . " ";
-		if ((!$onlyerror && $this->messages) || $this->errors)
-			echo "MESSAGES: $this" . $sep;
-		if (!$onlyerror && $this->messages || ($this->errors && $this->messages)) {
-			echo "${space}OK:" . $sep;
-			echo "${space}${space}" . implode($sep."${space}${space}", $this->messages) . $sep;
-		}
-		if ($this->errors) {
-			echo "${space}ERREUR:" . $sep;
-			echo "${space}${space}" . implode($sep."${space}${space}", $this->errors) . $sep;
-		}
-		if ((!$onlyerror && $this->messages) || $this->errors)
-			echo $sep;
-	}
-
-	protected function err($message, $invalidate=true) {
-		$this->errors[] = $message;
-		if ($invalidate) $this->error = true;
-		return $this;
-	}
-
-	// rajoute un style
-	public function addStyle($style) {
-		if ($this->error) return $this;
-		if (!isset($this->fields['style'])) {
-			$this->messages[] = "Cet élément ne supporte pas les styles !";
-			return $this;
-		}
-			
-		$styles = explode(",", $this->fields['style']);
-		if (!in_array($style, $styles)) {
-			$styles[] = $style;
-			$this->fields['style'] = implode(',', array_filter($styles));
-			return $this->save("Ajout du style: $style");
-		}
-		$this->messages[] = "Ajout du style: $style. Existe déjà !";
-		return $this;
-	}
-
-	// enleve un style
-	public function delStyle($style) {
-		if ($this->error) return $this;
-		if (!isset($this->fields['style'])) {
-			$this->messages[] = "Cet élément ne supporte pas les styles !";
-			return $this;
-		}
-			
-		$styles = explode(",", $this->fields['style']);
-		if (($key = array_search($style, $styles)) !== false) {
-			unset($styles[$key]);
-			$this->fields['style'] = implode(',', array_filter($styles));
-			return $this->save("Effacement du style: $style");
-		}
-		$this->messages[] = "Effacement du style: $style. N'existe pas !";
-		return $this;
-	}
-
-/*
-	TableField
-*/
-	protected function TableField_save($fields) {
-		$logic = (($fields['type'] == 'entries' || $fields['type'] == 'persons') ? "index" : "");
-		if (!empty($fields['allowedtags']) && is_string($fields['allowedtags'])) // grrrr, pourquoi lodel ne fait pas ça ???
-			$fields['allowedtags'] = explode(';', $fields['allowedtags']);
-		return $this->logic_save($logic . "tablefields", $fields);
-	}
-	protected function TableField_delete($fields) {
-		$logic = (($fields['type'] == 'entries' || $fields['type'] == 'persons') ? "index" : "");
-		return $this->logic_delete($logic . "tablefields", $fields);
-	}
-	protected function TableField_get($class, $fieldname) {
-		global $db;
-		$tf = $this->Object_get("tablefields", "class=".$db->Quote($class)." AND name=".$db->Quote($fieldname));
-		if ($tf) {
-			if (!empty($tf['mask']))  // grrrr, pourquoi lodel ne fait pas ça ???
-				$tf['mask'] = @unserialize(html_entity_decode(stripslashes($tf['mask'])));
-			else
-				$tf['mask'] = array();
-		}
-		return $tf;
-	}
-
-/*
-	TableFieldGroup
-*/
-	public function TableFieldGroup_save($fields) {
-		return $this->logic_save("tablefieldgroups", $fields);
-	}
-	public function TableFieldGroup_delete($fields) {
-		return $this->logic_delete("tablefieldgroups", $fields);
-	}
-	public function TableFieldGroup_get($class, $name=false) {
-		global $db;
-		if (intval($class)>0 && !$name)
-			$cond = "id=".intval($class);
-		else
-			$cond = "class=".$db->Quote($class)." AND name=".$db->Quote($name);
-		return $this->Object_get("tablefieldgroups", $cond);
-	}
-
-/*
-	Type
-*/
-	protected function Type_save($fields) {
-		return $this->logic_save("types", $fields);
-	}
-	protected function Type_delete($fields) {
-		return $this->logic_delete("types", $fields);
-	}
-	protected function Type_get($class, $type=false) {
-		global $db;
-		if (intval($class)>0)
-			$cond = "id=".intval($class);
-		else
-			$cond = "type=".$db->Quote($type)." AND class=".$db->Quote($class);
-		return $this->Object_get('types', $cond);
-	}
-
-/*
-	PersonType
-*/
-	protected function PersonType_save($fields) {
-		return $this->logic_save("persontypes", $fields);
-	}
-	protected function PersonType_delete($fields) {
-		return $this->logic_save("persontypes", $fields);
-	}
-	protected function PersonType_get($type) {
-		global $db;
-		if (intval($type)>0)
-			$cond = "id=".intval($type);
-		else
-			$cond = "type=".$db->Quote($type);
-		return $this->Object_get("persontypes", $cond);
-	}
-
-/*
-	EntryType
-*/
-	protected function EntryType_save($fields) {
-		return $this->logic_save("entrytypes", $fields);
-	}
-	protected function EntryType_delete($fields) {
-		return $this->logic_delete("entrytypes", $fields);
-	}
-	protected function EntryType_get($type) {
-		global $db;
-		if (intval($type)>0)
-			$cond = "id=".intval($type);
-		else
-			$cond = "type=".$db->Quote($type);
-		return $this->Object_get("entrytypes", $cond);
-	}
-
-/*
-	Class
-*/
-	protected function Class_save($fields) {
-		return $this->logic_save("classes", $fields);
-	}
-	protected function Class_delete($fields) {
-		return $this->logic_delete("classes", $fields);
-	}
-	protected function Class_get($class) {
-		global $db;
-		return $this->Object_get("classes", "class=" . $db->Quote($class));
-	}
-
-/*
-	Option
-*/
-	protected function Option_save($fields) {
-		return $this->logic_save("options", $fields);
-	}
-	protected function Option_delete($fields) {
-		return $this->logic_delete("options", $fields);
-	}
-	protected function Option_get($name, $idgroup) {
-		global $db;
-		return $this->Object_get("options", "name=" . $db->Quote($name) . " AND idgroup=" . intval($idgroup));
-	}
-
-/*
-	OptionGroup
-*/
-	protected function OptionGroup_save($fields) {
-		return $this->logic_save("optiongroups", $fields);
-	}
-	protected function OptionGroup_delete($fields) {
-		return $this->logic_delete("optiongroups", $fields);
-	}
-	protected function OptionGroup_get($name) {
-		global $db;
-		return $this->Object_get("optiongroups", "name=".$db->Quote($name));
-	}
-
-/*
-	InternalStyle
-*/
-	protected function InternalStyle_save($fields) {
-		return $this->logic_save("internalstyles", $fields);
-	}
-	protected function InternalStyle_delete($fields) {
-		return $this->logic_delete("internalstyles", $fields);
-	}
-	protected function InternalStyle_get($name) {
-		global $db;
-		return $this->Object_get("internalstyles", "style like ".$db->Quote($name."%"));
-	}
-
-/*
-	Entries
-*/
-	// effacer les entrées d'un index
-	protected function Entries_delete($idtype) {
-		global $db;
-		$logic = Logic::getLogic('entries');
-
-		// efface les entrées
-		$tous_racine_tous_depublie = lq("UPDATE #_TP_entries SET idparent=0, status=1 WHERE idtype=$idtype");
-		$db->Execute($tous_racine_tous_depublie); // hack, on publie et applati la hiérarchie !
-
-		$dao = DAO::getDAO('entries');
-		$entries = $dao->findMany("idtype=$idtype","","id");
-		foreach ($entries as $entry) {
-			$entry = array('id' => $entry->id);
-			$logic->deleteAction($entry, $error);
-			if ($error) {
-				$this->errors[] = "Efface les entrées de type $idtype non effectué: ".var_export($error, true)."<br>\n";
-				return false;
-			}
-		}
-
-		$this->messages[] = "Entrées de type $idtype effacé";
-		return true;
-	}
-
-/*
-	UTILS
-*/
-	// recevoir un objet quelconque
-	private function Object_get($table, $cond) {
-		$vo = DAO::getDAO($table)->find($cond);
-		if ($vo) {
-			$class = "ME_".$table;
-			$lo = new $class;
-			$fields = $lo->ME_object_get($vo);
-			return $fields;
-		}
-		return false;
-	}
-
-	// enregistrer un objet
-	private function logic_save($logic, $fields) {
-		$Lo = Logic::getLogic($logic);
-		$Lo->editAction($fields, $error);
-		if ($error)
-			return "$logic: Sauvegarde non effectuée: ".var_export($error, true).".";
-		return true;
-	}
-
-	// effacer un objet
-	private function logic_delete($logic, $fields) {
-		$Lo = Logic::getLogic($logic);
-		$Lo->deleteAction($fields, $error);
-		if ($error)
-			return "$logic: Effacement non effectué: ".var_export($error, true).".";
-		return true;
-	}
-
-	// recevoir le nom canonique (g_name) d'une entry
-	protected function gname_get($class, $name="screen name") {
-		$ret = false;
-		$dao = DAO::getDAO("tablefields");
-		$g_names = $dao->findMany("class='$class' AND status>0 AND g_name!=''", "", "name ,g_name");
-		foreach ($g_names as $g_name) {
-			if ($g_name->g_name == $name) {
-				return $g_name->name;
-			} elseif ($g_name->g_name == 'index key')
-				$ret = $g_name->name;
-		}
-		return $ret;
-	}
-
-	// merger deux listes "jlk,sfjkl" "lkjnk,lj"
-	protected function list_merge($list_one, $list_two, $sep=",") {
-		$list_one = explode($sep, $list_one);
-		if ($list_one[0] === "") $list_one = array();
-		$list_two  = explode($sep, $list_two);
-		if ($list_two[0] === "") $list_two = array();
-
-		$newlist = array_unique(array_merge($list_one, $list_two));
-		$newlist = implode($sep, $newlist);
-		return $newlist;
-	}
-
-	// Return the plural or singular of lodel objects name
-	protected function pluralChange($name) {
-		switch ($name) {
-			case 'persons':
-				return 'person';
-			case 'person':
-				return 'persons';
-			case 'entity':
-				return 'entities';
-			case 'entities':
-				return 'entity';
-			case 'entry':
-				return 'entries';
-			case 'entries':
-				return 'entry';
-		}
-		return false;
-	}
-
-	// Return the type table associated with the classtype
-	protected function typetable($type) {
-		switch ($type) {
-			case 'entities':
-				return 'types';
-			case 'entries':
-				return 'entrytypes';
-			case 'persons' :
-				return 'persontypes';
-		}
-		return false;
-	}
-
-}
-
 // Class warper autour des logics de chaque table !
 class ME_tablefields extends TableFieldsLogic {
 	public function ME_object_get($vo) {
@@ -1770,23 +1770,23 @@ class ME_sites_iterator implements Iterator {
 		return $site;
 	}
 
-	function rewind() {
+	function rewind() : void{
 		return;
 	}
 
-	function current() {
+	function current() : mixed {
 		return $this->sites[$this->position];
 	}
 
-	function key() {
+	function key() : mixed {
 		return $this->position;
 	}
 
-	function next() {
+	function next() : void {
 		++$this->position;
 	}
 
-	function valid() {
+	function valid() : bool {
 		return isset($this->sites[$this->position]);
 	}
 

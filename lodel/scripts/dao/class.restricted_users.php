@@ -17,6 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL restricted_users
  */
+#[\AllowDynamicProperties]
 class restricted_usersVO 
 {
 	/**#@+

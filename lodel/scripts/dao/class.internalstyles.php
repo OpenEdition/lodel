@@ -17,6 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL internalstyles
  */
+#[\AllowDynamicProperties]
 class internalstylesVO 
 {
 	/**#@+

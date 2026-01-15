@@ -44,7 +44,11 @@ body{
 					</IF>
 				</div>
 				<label for="login">[@COMMON.LOGIN]</label>
-				<input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN|htmlspecialchars()]" />
+                <IF COND="[#LOGIN]">
+                    <input type="text" class="input_formulaire" id="login" name="login" value="[#LOGIN|htmlspecialchars()]" />
+                <ELSE />
+                    <input type="text" class="input_formulaire" id="login" name="login" value="" />
+                </IF>
 				<label for="passwd">[@COMMON.PASSWD]</label>
 				<input type="password" class="input_formulaire" id="passwd" name="passwd" />
 			<ELSE />

@@ -94,7 +94,7 @@ lodeltextchangecolor(obj,'2');
  *
  * Fille de la classe XMLDB
  */
-
+#[\AllowDynamicProperties]
 class XMLDB_Translations extends XMLDB
 {
 

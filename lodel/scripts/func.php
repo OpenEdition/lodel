@@ -29,10 +29,11 @@ function postprocessing(&$context)
         foreach ($context as $key => $val) {
             if (is_array($val)) {
                 postprocessing($context[$key]);
-            } else {
+            } elseif (!empty($val)) {
                 $context[$key] = str_replace("Â\240", "&nbsp;", $val);
 // 	$context[$key]=str_replace(array("\n","Â\240"),array(" ","&nbsp;"),$val);
-            }
+            } else
+                $context[$key] = $val;
         }
     }
 }
@@ -50,7 +51,7 @@ function magic_addslashes($var)
 
 function magic_stripslashes($var)
 {
-    return (get_magic_quotes_gpc() ? stripslashes($var) : $var);
+    return $var;
 }
 
 /**
@@ -178,9 +179,11 @@ function getlodeltext($name, $group, &$id, &$contents, &$status, $lang = -1)
         $arr->Close();
     } while (!$text);
 
-    $id = $text['id'];
-    $contents = $text['contents'];
-    $status = $text['status'];
+    if (!empty($text)) {
+        $id = $text['id'];
+        $contents = $text['contents'];
+        $status = $text['status'];
+    }
     if (!$contents && (C::get('visitor', 'lodeluser') || C::get('debugMode', 'cfg'))) $contents = "@" . $name;
 }
 
@@ -841,7 +844,10 @@ function mystripslashes(&$var)
         array_walk($var, "mystripslashes");
         return $var;
     } else {
-        return $var = stripslashes($var);
+        if (!empty($var))
+            return $var = stripslashes($var);
+        else
+            return $var;
     }
 }
 
@@ -1432,7 +1438,7 @@ function rmtree($rep)
         return;
     }
     while (($file = readdir($fd)) !== false) {
-        if('.' === $file{0}) continue;
+        if('.' === $file[0]) continue;
         $file = $rep. "/". $file;
         if (is_dir($file)) { //si c'est un répertoire on execute la fonction récursivement
             rmtree($file);

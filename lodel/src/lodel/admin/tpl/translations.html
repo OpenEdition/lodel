@@ -115,7 +115,7 @@
 						<input type="hidden" name="do" value="edit"/>
 						<input type="hidden" name="name" value="[#NAME|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
 						<input type="hidden" name="textgroup" value="[#TEXTGROUP|htmlspecialchars(ENT_COMPAT, 'UTF-8')]"/>
-						<input type="hidden" name="protected" value="<IF COND="abs([#STATUS]) ge 32">1<ELSE/>0</IF>"/>
+						<input type="hidden" name="protected" value="<IF COND="[#STATUS] AND abs([#STATUS]) ge 32">1<ELSE/>0</IF>"/>
 						<input type="button" class="button" value="[@COMMON.MODIFY]" onclick="tr.validateTranslation([#ID]);"/>&nbsp;
 						<input type="button" class="button" value="[@COMMON.CANCEL]" onclick="tr.display([#ID]);"/>&nbsp;
 						<input type="button" class="button" value="[@COMMON.DELETE]" onclick="window.location='index.php?lo=texts&amp;do=delete&amp;id=[#ID]';"/>

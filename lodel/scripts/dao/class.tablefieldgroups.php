@@ -17,7 +17,8 @@
 /**
  * Classe d'objet virtuel de la table SQL tablefieldgroups
  */
-class tablefieldgroupsVO 
+#[\AllowDynamicProperties]
+ class tablefieldgroupsVO 
 {
 	/**#@+
 	 * @access public

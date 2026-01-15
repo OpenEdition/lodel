@@ -10,6 +10,8 @@
  * Classe de logique des classes du système - Fille de la classe Logic
  *
  */
+ 
+#[\AllowDynamicProperties]
 class ClassesLogic extends Logic
 {
 

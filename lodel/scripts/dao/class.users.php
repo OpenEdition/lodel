@@ -17,6 +17,7 @@
 /**
  * Classe d'objet virtuel de la table SQL users
  */
+#[\AllowDynamicProperties]
 class usersVO 
 {
 	/**#@+
@@ -48,6 +49,8 @@ class usersVO
 	public $status;
 	public $rank;
 	public $upd;
+    public $function;
+    
 	/**#@-*/
 }
 

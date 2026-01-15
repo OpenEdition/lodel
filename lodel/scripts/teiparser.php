@@ -830,7 +830,8 @@ class TEIParser extends XMLReader
 				{
 					if(!isset($this->_entrytypes[$obj->name]))
 					{
-						$this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE'), $obj->name));
+                        if (!empty(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE')))
+                            $this->_log(sprintf(getlodeltextcontents('TEIPARSER_UNDEFINED_ENTRYTYPE'), $obj->name));
 						continue;
 					}
 
@@ -1246,8 +1247,10 @@ class TEIParser extends XMLReader
 						$attrsAdd[] = 'dir="ltr"';
 				}
 			}elseif( $this->localName !== "p" && $this->localName !== "q"){ // le <p> indique un paragraphe, le <q> indique une citation
-				$ret   .= '<span class="' . $styles['class'] . '">';
-				$tags[] = 'span';
+				If (!empty($styles['class'])) {
+                    $ret   .= '<span class="' . $styles['class'] . '">';
+                    $tags[] = 'span';
+                }
 			}
 			unset($attrs['rend']);
 		}
@@ -1897,6 +1900,7 @@ class TEIParser extends XMLReader
 	 */
 	private function _getAttributes($tagStr, $attributes = array('dir','xml:lang','lang'), $remove=false) {
 		$removed = array();
+        $newTags = array();
 		$tags = explode('>',$tagStr);
 		foreach ($tags as $tag) {
 			if ($tag) {

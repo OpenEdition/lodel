@@ -12,7 +12,8 @@
 /**
  * Classe de logique des types de personnes
  */
-class PersonTypesLogic extends Logic
+#[\AllowDynamicProperties]
+ class PersonTypesLogic extends Logic
 {
 	/**
 	 * Constructeur

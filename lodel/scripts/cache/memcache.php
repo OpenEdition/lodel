@@ -80,6 +80,7 @@
  * @copyright  (c) 2009-2010 Kohana Team
  * @license    http://kohanaphp.com/license
  */
+ 
 class Cache_Memcache extends Cache implements Cache_Arithmetic {
 
 	// Memcache has a maximum cache lifetime of 30 days
@@ -121,9 +122,13 @@ class Cache_Memcache extends Cache implements Cache_Arithmetic {
 		}
 
 		parent::__construct($config);
-
+if (!extension_loaded('memcached'))
+        {
+            // exception missing memcached extension
+            throw new Cache_Exception('memcached extension is not loaded');
+        }
 		// Setup Memcache
-		$this->_memcache = new Memcache;
+		$this->_memcache = new Memcached;
 
 		// Load servers from configuration
 		$servers = isset($this->_config['servers']) ? $this->_config['servers'] : NULL;
@@ -152,8 +157,8 @@ class Cache_Memcache extends Cache implements Cache_Arithmetic {
 		{
 			// Merge the defined config with defaults
 			$server += $this->_default_config;
-
-			if ( ! $this->_memcache->addServer($server['host'], $server['port'], $server['persistent'], $server['weight'], $server['timeout'], $server['retry_interval'], $server['status'], $server['failure_callback']))
+			//if ( ! $this->_memcache->addServer($server['host'], $server['port'], $server['persistent'], $server['weight'], $server['timeout'], $server['retry_interval'], $server['status'], $server['failure_callback']))
+			if ( ! $this->_memcache->addServer($server['host'], $server['port'], $server['weight']))
 			{
 				throw new Cache_Exception('Memcache could not connect to host \':host\' using port \':port\'', array(':host' => $server['host'], ':port' => $server['port']));
 			}
@@ -226,7 +231,8 @@ class Cache_Memcache extends Cache implements Cache_Arithmetic {
 		}
 
 		// Set the data to memcache
-		return $this->_memcache->set($this->_sanitize_id($id), $data, $this->_flags, $lifetime);
+		//return $this->_memcache->set($this->_sanitize_id($id), $data, $this->_flags, $lifetime);
+		return $this->_memcache->set($this->_sanitize_id($id), $data, $lifetime);
 	}
 
 	/**

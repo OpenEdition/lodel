@@ -254,7 +254,7 @@
         </h2>
 		<LOOP NAME="foreach" ARRAY="[%ENTRIES_SORTED]">
             <ul class="listEntities">
-            <IF COND="[#VALUE.LETTER|trim] EQ [#LETTER]">
+            <IF COND="[#VALUE.LETTER|trim] EQ [#LETTRESQL]">
                 <IF COND="[#NBRESULTS] GT 30"><MACRO NAME="BOTTOM_RESULTS_PAGES"></IF>
                 <LOOP NAME="series_sortkey" TABLE="[#TABLE] as entry, [#ATTRIBUTES_TABLE] as attributes" SELECT="entry.*, attributes.[#SCREEN_NAME] as entry_name, attributes.[#INDEX_KEY] as e_name" WHERE="entry.id=attributes.identry AND idtype='[#TYPE.ID]' AND entry.id=[#VALUE.ID]" SPLIT="30">
                 <DO>

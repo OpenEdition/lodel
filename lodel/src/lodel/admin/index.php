@@ -39,7 +39,7 @@ try
                     'filebrowser', 'xml', 'data', 'internal_messaging', 'plugins');
 
 	$do = C::get('do');
-	if(!empty($do) && '_' === $do{0})
+	if(!empty($do) && '_' === $do[0])
 		C::set('lo', 'plugins');
 
     	Controller::getController()->execute($authorized_logics);

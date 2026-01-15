@@ -34,6 +34,7 @@ class entitiesVO
 	public $modificationdate;
 	public $creationmethod;
 	public $creationinfo;
+    public $g_title;
 	/**#@-*/
 }
 

@@ -46,6 +46,7 @@ function majuscule($texte) {
 function textebrut($letexte)
 {
 	//$letexte = preg_replace("/(<[^>]+>|&nbsp;|[\n\r\t])+/", "", $letexte);
+    if (empty($letexte)) return $letexte;
 	return strip_tags(preg_replace("/(&nbsp;|[\n\r\t]|<\/(blockquote|div|dl|h[1-6]|ol|p|table|ul|li)>|<br\/?>)+/", " ", $letexte));
 //	return strip_tags(preg_replace("/(&nbsp;|[\n\r\t])+/", " ", $letexte));
 }
@@ -86,11 +87,12 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 		'ending' => '', 'exact' => true, 'html' => $html,
 	);
 	$text = $text;
-
+    if (empty($text)) return $text;
+    
 	if($dots) $options['ending'] = '...';
 
 	extract($options);
-	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8', true);
 
 	if ($html) {
 		if (mb_strlen(preg_replace('/<.*?>/', '', $text), $encoding) <= $length) {
@@ -113,7 +115,6 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 				}
 			}
 			$truncate .= $tag[1];
-
 			$contentLength = mb_strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $tag[3]), $encoding);
 			if ($contentLength + $totalLength > $length) {
 				$left = $length - $totalLength;
@@ -129,7 +130,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 					}
 				}
 
-				$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength, $encoding);
+				$truncate .= mb_substr($tag[3], 0 , $left + $entitiesLength);
 				break;
 			} else {
 				$truncate .= $tag[3];
@@ -178,7 +179,7 @@ function cuttext($text, $length = 100, $dots = false, $html = true) {
 
 function cut_without_tags($text, $length, $dots=false)
 {
-	$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($text, 'UTF-8', true);
 	$text2 = mb_substr($text." ", 0, $length, $encoding);
 	if (mb_strlen($text2, $encoding) < mb_strlen($text, $encoding)) {
 		$GLOBALS['textfunc_hasbeencut'] = true;
@@ -201,7 +202,7 @@ function hasbeencut()
 
 function couperpara($texte, $long)
 {
-	$encoding = mb_detect_encoding($texte, 'UTF-8, ISO-8859-1, ISO-8859-15, Windows-1252', true);
+	$encoding = mb_detect_encoding($texte, 'UTF-8', true);
 	$pos = -1;
 	do {
 		$pos = mb_strpos($texte, "</p>", $pos +1, $encoding);
@@ -306,15 +307,27 @@ function propre($letexte)
 	return traite_raccourcis(trim($letexte));
 }
 
-function formateddate($date, $format)
-{
-	return strftime($format, strtotime($date));
-}
+use function PHP81_BC\strftime;
+function formatednow($format)
+ {
+    $currentLocal = setlocale(LC_ALL, 0);
+    return strftime($format, time(), $currentLocal);
+ }
+ 
+ function formateddate($date, $format)
+ {
+    if (empty($date)) return null;
+    $currentLocal = setlocale(LC_ALL, 0);
+    return strftime($format, strtotime($date), $currentLocal);
+ }
 
-function formatedtime($time, $format)
-{
-	return strftime($format, $time);
-}
+ function formatedtime($time, $format)
+ {
+    $currentLocal = setlocale(LC_ALL, 0);
+    $time = (int) $time;
+    return strftime($format, $time, $currentLocal);
+
+ }
 
 function humandate($s)
 {
@@ -390,13 +403,15 @@ function tocable($text, $level = 10)
 
 function multilingue($text, $lang)
 {
+    if (empty($text) || empty($lang))
+        return null;
 	preg_match("/<r2r:ml lang=\"".strtolower($lang)."\">(.*?)<\/r2r:ml>/s", $text, $result);
 	return isset($result[1]) ? $result[1] : null;
 }
 
 function vignette($text, $width)
 {
-	if (!$text)
+	if (empty($text))
 		return;
 	/*if (!preg_match("/^docannexe\/image\/[^\.\/]+\/[^\/]+$/", $text))	{
 		return getlodeltextcontents("ERROR_INVALID_PATH_TO_IMAGE", "COMMON");
@@ -423,6 +438,8 @@ function vignette($text, $width)
 # renvoie les attributs pour une image
 function sizeattributs($text)
 {
+    if (empty($text))
+        return null;
 	$result = @getImageSize($text);
     	return isset($result[3]) ? $result[3] : null;
 }
@@ -466,8 +483,10 @@ function removeendnotes($text)
 
 function removenotes($text)
 {
-	$text = preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
-	$text = preg_replace('/<sup[^>]*>\s*(<[^>]+\/?>\s*<\/[^>]+>)*\s*<\/sup>/s', "", $text);
+    if (!empty($text)) {
+        $text = preg_replace('/<a\b[^>]+class="(foot|end)notecall"[^>]*>.*?<\/a>/s', "", $text);
+        $text = preg_replace('/<sup[^>]*>\s*(<[^>]+\/?>\s*<\/[^>]+>)*\s*<\/sup>/s', "", $text);
+    }
 	return $text;
 }
 
@@ -516,7 +535,10 @@ function isadate($text)
  */
 function replacequotationmark($text)
 {
+    if (!empty($text))
 	return str_replace("\"", "&quot;", $text);
+    else
+        return "";
 }
 
 /**
@@ -524,7 +546,10 @@ function replacequotationmark($text)
  */
   
 function replace($str, $search, $replace){
+    if (!empty($str))
         return str_replace($search, $replace, $str);
+    else
+        return "";
 }
 
 /**
@@ -930,14 +955,13 @@ function paranumber($texte, $styles='texte')
 
 	// on veut pas de numérotation dans les tableaux ni dans les listes ni dans les paragraphes qui contiennent seulement des images
 	$doc = new DOMDocument();
+    $doc->preserveWhiteSpace = true;
+    $doc->formatOutput = false;
 	if(!isset($GLOBALS['textfunc_hasbeencleaned'])) $texte = cleanHTML($texte);
 	if(!$doc->loadXML("<body>" . $texte . "</body>"))
 		return $texte;
 
 	$dom = new DOMXpath($doc);
-
-	$dom->preserveWhiteSpace = true;
-	$dom->formatOutput       = false;
 
 	cleanIllegalTags($doc);
 
@@ -1013,7 +1037,7 @@ function time2Date($time){
 
 function date2Time($date){
 	$time = mktime(substr($date, 11, 2), substr($date, 14, 2), substr($date, 17, 2), substr($date, 5, 2), substr($date, 8, 2), substr($date, 0, 4));
-	return strftime('%Y%m%d%H%M%S', $time);
+	return date('YmdHis', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
@@ -1022,7 +1046,7 @@ function date2Time($date){
 */
 
 function LSgmstrftime($time){
-	return strftime('%Y-%m-%dT%TZ', $time);
+	return date('Y-id\TTZ', $time);
 }
 
 /** Formate une date/heure GMT/CUT en fonction de la configuration locale (pour LS) 
@@ -1745,6 +1769,20 @@ function lexplode($text, $delimiter)
 }
 
 /**
+ * implémentation de la fonction implode
+ * @param string $arr le tableau à assembler
+ * @param string $delimiter le délimiteur
+ * @return string
+ */
+function limplode($arr, $delimiter = ",") 
+{
+    if (is_array($arr))
+        return implode($delimiter, $arr);
+    else 
+        return $arr;
+}
+
+/**
  * fonction permettant de faire des opérations mathématiques simples
  *
  * @author Pierre-Alain Mignot
@@ -1891,6 +1929,15 @@ function msort($arr, $key, $sort_order = SORT_LOCALE_STRING) {
 		        return $arr;
 }
 
+/**
+    * * Implemente count()
+    * * évite d'appeler count sur un argument non dénombrable
+    * */
+function lcount($value) {
+    if (!is_countable($value) || !is_array($value)) return null;
+    return count($value);
+}
+    
 
 
 

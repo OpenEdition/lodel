@@ -61,7 +61,8 @@
 	<div id="alphabet">
 		<FUNC NAME="ALPHABETSPECIFIC" TABLE="persons" FIELD="sortkey" IDTYPE="[#IDTYPE]">
 	</div>
-	<FUNC NAME="LIST_PERSONS" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="sortkey" LETTER="[#LETTER|strtoupper]" LISTALL="[#LISTALL]">
+        <IF COND="![#LETTER]"><LET VAR="letter"></LET></IF>
+        <FUNC NAME="LIST_PERSONS" ID="[#ID]" IDTYPE="[#IDTYPE]" SORT="sortkey" LETTER="[#LETTER|strtoupper]" LISTALL="[#LISTALL]">
 </div>
 <!--[<MACRO NAME="OK_TOINDEX_ADMIN">]-->
 

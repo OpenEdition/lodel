@@ -33,6 +33,7 @@ if (!($tablefields = cache_get('tablefields')))
 					$prefix = "";
 				}
 				$result = $db->MetaTables();
+                if (!$tablefields) $tablefields = array();
 				foreach ($result as $table)	{
 					$fields = $db->MetaColumns($table) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 					$table = $prefix.$table;

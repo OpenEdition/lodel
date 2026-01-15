@@ -54,6 +54,10 @@ class OTXClient
      * @access pricate
      */
     private $_options = array();
+    
+    public $xml;
+    public $report;
+    public $odt;
 
     /**
 	 * Constructeur

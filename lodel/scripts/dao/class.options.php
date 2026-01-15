@@ -18,6 +18,7 @@
  * Classe d'objet virtuel de la table SQL options
  *
  */
+ #[\AllowDynamicProperties]
 class optionsVO 
 {
 	/**#@+

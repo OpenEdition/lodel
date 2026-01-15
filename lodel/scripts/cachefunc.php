@@ -46,7 +46,8 @@ function cache_get($name, $generate_cacheid = true)
 	$cachename = $generate_cacheid ? getCacheIdFromId($name) : $name;
 
 	if($datas = $cache->get($cachename)){
-		if($content = @unserialize(base64_decode($datas))) return $content;
+		//if($content = @unserialize(base64_decode($datas))) return $content;
+		if($content = $datas) return $content;
 		else return $datas;
 	}else
 		return false;
@@ -63,7 +64,7 @@ function getCacheIdFromId( $id ){
 	$cache = getCacheObject();
 	$cache_config = cache_get_config();
 	$site  = C::get('site','cfg') ? C::get('site','cfg') : 'general';
-	$env   = defined('backoffice-lodelindex') ? 'lodelindex' : defined('backoffice-admin') ? 'admin' : defined('backoffice-edition') ? 'edition' : 'site' ;
+	$env   = defined('backoffice-lodelindex') ? 'lodelindex' : (defined('backoffice-admin') ? 'admin' : (defined('backoffice-edition') ? 'edition' : 'site'));
 	if ($sessionsite === null || C::get('clearcache'))
 		$sessionsite = $cache->get( "session_{$site}", 0 );
 

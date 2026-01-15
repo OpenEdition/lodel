@@ -288,7 +288,8 @@ class XMLDB
 			foreach ($info['element'] as $field => $el) {
 				if ($elementtag)
 					$this->_write("<$el>");
-				$this->_write(htmlspecialchars($row[$field]));
+                if (!empty($row[$field]))
+                    $this->_write(htmlspecialchars($row[$field]));
 				if ($elementtag)
 					$this->_write("</$el>\n");
 			}

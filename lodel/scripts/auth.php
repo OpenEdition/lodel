@@ -128,7 +128,10 @@ function authenticate($level = 0, $mode = "", $return = false)
 		
 		// passe les variables en global
 		$lodeluser = unserialize($row['context']);
-
+        if (isset($GLOBALS['expire'])) {
+		    $lodeluser['expire'] = $row['expire'] = $GLOBALS['context']['expire'];
+		    $lodeluser['currenturl'] = $row['currenturl'] = $GLOBALS['context']['currenturl_auth'];
+		}
 		// verifie que la session n'est pas expiree
 		$time = time();
 		if ($row['expire'] < $time || $row['expire2'] < $time) {
@@ -313,18 +316,28 @@ function setLang($lang=null)
     }
 
     // Définition de la locale système
-    if( $choosed_language !== substr(setlocale(LC_ALL, 0), 0, 2) )
+    if(($choosed_language !== substr(setlocale(LC_ALL, 0), 0, 2)) )
     {
+        if (empty($choosed_language))
+            $choosed_language = C::get(C::get('locale', 'cfg'));
         $l = strtolower(substr($choosed_language, 0,2));
-        $lu = 'en' === $l ? 'US' : strtoupper($l);
-        @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
-        if('tr' === $l)
-        { // bug with locale tr_TR.UTF8
-        // http://bugs.php.net/bug.php?id=18556
-            @setlocale(LC_CTYPE, 'fr_FR.UTF8');
-        }
-        C::set('locale', $l.'_'.$lu.'.UTF8');
-        unset($l, $lu);
+        function_exists('get_languages_to_locales') || include("lang.php");
+        $languages_to_locales = get_languages_to_locales();
+        if (array_key_exists($l,$languages_to_locales)) {
+            @setlocale(LC_ALL, $languages_to_locales[$l].'.UTF8');
+            C::set('locale', $languages_to_locales[$l].'.UTF8');
+        } else {
+            $lu = strtoupper($l);
+            @setlocale(LC_ALL, $l.'_'.$lu.'.UTF8');
+            if('tr' === $l)
+            { // bug with locale tr_TR.UTF8
+            // http://bugs.php.net/bug.php?id=18556
+                @setlocale(LC_CTYPE, 'fr_FR.UTF8');
+            }
+            C::set('locale', $l.'_'.$lu.'.UTF8');
+            unset($lu);
+	}
+        unset($l);
     }
     C::set('sitelang', $choosed_language);
 }
@@ -341,7 +354,12 @@ function recordurl()
 	if (!C::get('norecordurl')) {
 		$row = $db->GetRow(lq("SELECT id,currenturl FROM #_MTP_session WHERE id='". C::get('idsession', 'lodeluser')."' AND currenturl!=''"));
 		if(!$row) return;
-		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', '{$row['currenturl']}', '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
+        if (!empty($GLOBALS['context']['currenturl_auth'])) {
+    		    $row['currenturl'] = $GLOBALS['context']['currenturl_auth'];
+		} else {
+			$row['currenturl'] = "'".$row['currenturl']."'";
+		}
+		$db->execute(lq("INSERT INTO #_MTP_urlstack (idsession,url,site) VALUES('{$row['id']}', {$row['currenturl']}, '".C::get('site', 'cfg')."')")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 	}
 }
 
@@ -448,6 +466,6 @@ if (C::get('site', 'cfg'))
 }
 setLang();
 // tableaux des langues disponibles
-include 'lang.php';
+function_exists('get_languages_to_locales') || include("lang.php");
 C::set('defaultlang', $GLOBALS['languages']);
 C::set('installlang', C::get('installlang', 'cfg'));

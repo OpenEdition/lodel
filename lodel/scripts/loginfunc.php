@@ -40,9 +40,6 @@ function open_session($login, $name = null)
 	$expire2 = time() + $cookietimeout;
 	// clean the url - nettoyage de l'url
 	$url = preg_replace("/[\?&amp;]clearcache=\w+/", "", $_SERVER['REQUEST_URI']);
-	if (get_magic_quotes_gpc()) {
-		$url = stripslashes($url);
-	}
 	$myurl = C::get('norecordurl') ? "''" : $db->qstr($url);
 
 	if(is_null($name))
@@ -50,6 +47,8 @@ function open_session($login, $name = null)
 		for ($i = 0; $i < 5; $i ++)	{ // essaie cinq fois, au cas ou on ait le meme name de session
 			// name de la session
 			$name = md5($login.uniqid(mt_rand(), true));
+            $GLOBALS['context']['expire'] = $expire;
+	        $GLOBALS['context']['currenturl_auth'] = $myurl;
 			// enregistre la session, si ca marche sort de la boucle
 			$result = $db->execute(lq("
         INSERT INTO #_MTP_session (name,iduser,site,context,expire,expire2,userrights,currenturl) 
@@ -70,11 +69,8 @@ function open_session($login, $name = null)
 	}
 	else
 	{
-		$db->execute(lq("
-        UPDATE #_MTP_session 
-            SET expire='$expire',currenturl=$myurl 
-            WHERE name='$name'")) 
-        		or trigger_error($db->errormsg(), E_USER_ERROR);
+	    $GLOBALS['context']['expire'] = $expire;
+	    $GLOBALS['context']['currenturl_auth'] = $myurl;
 	}
 
 	C::set('clearcacheurl', mkurl($url, "clearcache=oui"));

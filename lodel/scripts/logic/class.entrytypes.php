@@ -8,7 +8,8 @@
 /**
  * Classe de logique des types d'entrées
  */
-class EntryTypesLogic extends Logic
+#[\AllowDynamicProperties]
+ class EntryTypesLogic extends Logic
 {
 
 	/** Constructor

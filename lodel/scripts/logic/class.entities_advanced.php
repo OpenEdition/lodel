@@ -9,6 +9,7 @@
  * Classe de logique des entités (gestion avancée)
  *
  */
+#[\AllowDynamicProperties]
 class Entities_AdvancedLogic extends Logic
 {
 	/**

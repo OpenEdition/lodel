@@ -155,7 +155,7 @@ class DAO
 	{
 		global $db;
 		$idfield = $this->idfield;
-		#print_r($vo);
+
 		// check the user has the basic right for modifying/creating an object
 		if (isset($this->rights['write']) && C::get('rights', 'lodeluser') < $this->rights['write']) {
 			trigger_error('ERROR: you don\'t have the right to modify objects from the table '. $this->table, E_USER_ERROR);
@@ -470,7 +470,7 @@ class DAO
 
 		//delete the uniqueid entry if required
 		if ($this->uniqueid) {
-			if ($nbid != count($id)) {
+			if (is_countable($nbid) && $nbid != count($id)) {
 				trigger_error("ERROR: internal error in DAO::deleteObject. Please report the bug", E_USER_ERROR);
 			}
 			deleteuniqueid($id);
@@ -526,8 +526,12 @@ class DAO
 	 */
 	public function rightscriteria($access)
 	{
-		if (!isset($this->cache_rightscriteria[$access])) {
-			$classvars = get_class_vars($this->table. "VO");
+ 		if (!isset($this->cache_rightscriteria[$access])) {
+            $classvars = null;
+            if (!class_exists($this->table."VO", false)) {
+                eval ("#[AllowDynamicProperties]\n class ". $this->table."VO". " { public $". $this->idfield. "; } ");
+            }
+            $classvars = get_class_vars($this->table. "VO");
 			if ($classvars && array_key_exists("status", $classvars)) {
 				$status = $this->sqltable. '.status';
 				$this->cache_rightscriteria[$access] = C::get('visitor', 'lodeluser') ? '' : " AND $status > 0";
@@ -536,6 +540,8 @@ class DAO
 					$this->cache_rightscriteria[$access] .= " AND $status<32 AND $status>-32 ";
 				}
 			}
+            if (!isset($this->cache_rightscriteria[$access])) 
+                $this->cache_rightscriteria[$access] = "";
 		}	else	{
 			$this->cache_rightscriteria[$access] = "";
 		}

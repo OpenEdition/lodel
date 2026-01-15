@@ -15,6 +15,7 @@
 /**
  * Classe d'objet virtuel de la table SQL plugins
  */
+#[\AllowDynamicProperties]
 class pluginsVO 
 {
 	/**#@+

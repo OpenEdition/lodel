@@ -9,6 +9,7 @@
  * Classe de logique des groupes d'options
  *
  */
+#[\AllowDynamicProperties]
 class OptiongroupsLogic extends Logic {
 
 	/**

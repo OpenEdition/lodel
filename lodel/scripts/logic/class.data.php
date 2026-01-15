@@ -115,6 +115,7 @@ class DataLogic
 	private $_typesClass;
 	/* FIN IMPORT ME XML */
 
+    private $_existingTables;
 	/**
 	 * Constructeur
 	 *
@@ -212,6 +213,7 @@ class DataLogic
 		$context['importdir'] = C::get('importdir', 'cfg');
 
 		if (isset($context['backup'])) { // si on a demandé le backup
+			$files_and_names = array();
 			set_time_limit(0);
 			$site = C::get('site', 'cfg');
 			$outfile = "site-$site.sql";
@@ -237,7 +239,7 @@ class DataLogic
 			// zip le site et ajoute la base
 			$archivetmp = tempnam($tmpdir, 'lodeldump_'). '.zip';
             $archivefilename = "site-$site-". date("dmy"). '.zip';
-
+            	$files_and_names[$tmpdir. DIRECTORY_SEPARATOR . $outfile] =$outfile;
 			// fichiers à exclure de l'archive
 			$GLOBALS['excludes'] = $excludes = array(
                 '#\.htaccess$#',
@@ -278,9 +280,8 @@ class DataLogic
                 }
 
                 /* On définit les chemin dans le zip et dans le filesystem */
-                $files_and_names = array(
-                    $tmpdir. DIRECTORY_SEPARATOR . $outfile => $outfile,
-                );
+                $files_and_names[$tmpdir. DIRECTORY_SEPARATOR . $outfile] = $outfile;
+                 
                 foreach($files_to_zip as $file)
                 {
                     $files_and_names[$file] = str_replace($siteroot, '', $file);
@@ -864,7 +865,8 @@ class DataLogic
 
 		foreach ($conv as $maintable => $changes) {
 			$result = $db->execute(lq("SELECT id FROM #_TP_$maintable")) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
-			while ( ($id=$result->fields['id']) ) {
+            
+			while (isset($result->fields['id']) && ($id=$result->fields['id']) ) {
 				$newid=uniqueid($maintable);
 				$db->execute(lq('UPDATE #_TP_'.$maintable.' SET id='.$newid.' WHERE id='.$id)) or trigger_error("SQL ERROR :<br />".$GLOBALS['db']->ErrorMsg(), E_USER_ERROR);
 				foreach ($changes as $table => $idsname) {
@@ -2221,7 +2223,10 @@ class DataLogic
 		$impl = new DomImplementation();
 		$dtd = $impl->createDocumentType("lodelEM", "", "lodelEM.dtd");
 		$document = $impl->createDocument("", "", $dtd);
-		$document->encoding = $GLOBALS['db_charset'];
+        $encoding = $GLOBALS['db_charset'];
+        if ($encoding === "utf8mb3")
+            $encoding = "utf8";
+		$document->encoding = $encoding;
 		// début création XML
 		$schemaNode = $document->createElement("lodelEM");
 		$document->appendChild($schemaNode);

@@ -389,10 +389,13 @@ function loop_page_scale(& $context, $funcname, $arguments)
 	}
 
 	$local_context = $context;
-	$local_context['pages'] = $cache[$funcname]['pages'];
-	$local_context['nexturl'] = $cache[$funcname]['nexturl'];
+    if (isset($cache[$funcname]['pages']))
+        $local_context['pages'] = $cache[$funcname]['pages'];
+    if (isset($cache[$funcname]['nexturl']))
+        $local_context['nexturl'] = $cache[$funcname]['nexturl'];
+    if (isset($cache[$funcname]['previousurl']))
 	$local_context['previousurl'] = $cache[$funcname]['previousurl'];
-	if (!$local_context["pages"] || count($local_context["pages"]) == 0) {
+	if (empty($local_context["pages"]) || count($local_context["pages"]) == 0) {
 		call_user_func("code_alter_$funcname", $local_context);
 		return;
 	}
@@ -426,10 +429,6 @@ function _buildPageUrl($offsetname, $offset)
 	if(! array_key_exists('query', $parsed_url)) { $parsed_url['query'] = ''; }
 	parse_str($parsed_url['query'], $parsed_query);
 	$parsed_query[$offsetname] = $offset;
-	if (get_magic_quotes_gpc()) 
-		foreach ($parsed_query as &$v) 
-			$v = stripslashes($v);
-
 	$parsed_url['query'] = http_build_query($parsed_query, '', '&amp;');
 	return $parsed_url['path'].'?'.$parsed_url['query']; #TODO use pecl_http's http_build_url?
 }
@@ -584,7 +583,7 @@ function loop_mldate( &$context, $funcname, $arguments )
 		}
 		if (function_exists("code_after_$funcname"))
 			call_user_func("code_after_$funcname", $localcontext);
-	} elseif (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER)) {
+	} elseif ((!empty($arguments['value'])) && (preg_match_all($regexp, $arguments['value'], $results, PREG_SET_ORDER))) {
 		if (function_exists("code_before_$funcname"))
 			call_user_func("code_before_$funcname", $localcontext);
 		$localcontext['nbresults'] = count($results);
@@ -671,7 +670,7 @@ function loop_field_selection_values(& $context, $funcname, $arguments)
 	if (!isset ($context['editionparams']))
 		trigger_error("ERROR: internal error in loop_field_selection_values", E_USER_ERROR);
 
-	if(empty($context['value']) && $context['value'] != 0) return;
+	//if(empty($context['value']) && $context['value'] != 0) return;
 
 	$arr = explode(",", $context['editionparams']);
 	$choosenvalues = explode(",", $context['value']); //if field contains more than one value (comma separated)
