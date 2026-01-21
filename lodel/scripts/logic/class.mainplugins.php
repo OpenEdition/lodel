@@ -677,7 +677,7 @@ class MainPluginsLogic extends Logic
 				}
 			}
 
-			$err = validfield($context['data'][$name], $param['type'], $param['defaultValue'], $name, 'data', SITEROOT.'upload/plugins/'.$this->_plugin['name']);
+			$err = validfield($context['data'][$name], $param['type'], $param['defaultValue'], $name, 'data', 'upload/plugins/'.$this->_plugin['name']);
 
 			if(true !== $err)
 				$error[$name] = $err;
